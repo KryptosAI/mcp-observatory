@@ -1,13 +1,13 @@
 # MCP Observatory Run Report
 
-Generated at 2026-03-19T03:51:29.140Z
+Generated at 2026-03-19T03:51:25.818Z
 
 ## Target and Environment Metadata
 
-- Target: `ref-tools-server`
+- Target: `context7-server`
 - Adapter: `local-process`
-- Command: `npx -y ref-tools-mcp`
-- Server: `Ref 3.0.3`
+- Command: `npx -y @upstash/context7-mcp`
+- Server: `Context7 2.1.4`
 - Platform: `darwin 25.3.0`
 - Node: `v22.22.1`
 
@@ -15,15 +15,15 @@ Generated at 2026-03-19T03:51:29.140Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| pass | 4 | 3 | 0 | 0 | 1 | 0 | 0 |
+| pass | 4 | 2 | 0 | 0 | 2 | 0 | 0 |
 
 ## At a Glance
 
 - Failing checks: none
 - Partial or flaky checks: none
 - Skipped checks: none
-- Unsupported checks: resources
-- Suggested next step: Confirm that unsupported capabilities are intentional for this target: resources.
+- Unsupported checks: prompts, resources
+- Suggested next step: Confirm that unsupported capabilities are intentional for this target: prompts, resources.
 
 ## Regressions and Recoveries
 
@@ -33,12 +33,24 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
+| confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
-| healthy | prompts | pass | 0.20 | Advertised capability responded with the minimal expected shape (2 items). |
-| healthy | semantics | pass | 0.00 | Advertised capabilities responded and returned the minimal expected shape: tools, prompts. |
-| healthy | tools | pass | 0.90 | Advertised capability responded with the minimal expected shape (2 items). |
+| healthy | semantics | pass | 0.01 | Advertised capabilities responded and returned the minimal expected shape: tools. |
+| healthy | tools | pass | 2.63 | Advertised capability responded with the minimal expected shape (2 items). |
 
 ## Evidence Snippets
+
+### prompts — unsupported
+
+Summary: Prompts are not advertised by the target.
+
+- Endpoint: `prompts/list`
+  - Advertised: `false`
+  - Responded: `false`
+  - Minimal shape present: `false`
+  - Item count: `0`
+  - Identifiers: none
+  - Diagnostics: none
 
 ### resources — unsupported
 
@@ -52,43 +64,31 @@ Summary: Resources are not advertised by the target.
   - Identifiers: none
   - Diagnostics: none
 
-### prompts — pass
-
-Summary: Advertised capability responded with the minimal expected shape (2 items).
-
-- Endpoint: `prompts/list`
-  - Advertised: `true`
-  - Responded: `true`
-  - Minimal shape present: `true`
-  - Item count: `2`
-  - Identifiers: search_docs, my_docs
-  - Diagnostics: Ref MCP Server running on stdio
-
 ### semantics — pass
 
-Summary: Advertised capabilities responded and returned the minimal expected shape: tools, prompts.
+Summary: Advertised capabilities responded and returned the minimal expected shape: tools.
 
 - Endpoint: `tools/list`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
   - Item count: `2`
-  - Identifiers: ref_search_documentation, ref_read_url
-  - Diagnostics: Ref MCP Server running on stdio
+  - Identifiers: resolve-library-id, query-docs
+  - Diagnostics: Context7 Documentation MCP Server v2.1.4 running on stdio
 - Endpoint: `prompts/list`
-  - Advertised: `true`
-  - Responded: `true`
-  - Minimal shape present: `true`
-  - Item count: `2`
-  - Identifiers: search_docs, my_docs
-  - Diagnostics: Ref MCP Server running on stdio
+  - Advertised: `false`
+  - Responded: `false`
+  - Minimal shape present: `false`
+  - Item count: `0`
+  - Identifiers: none
+  - Diagnostics: Context7 Documentation MCP Server v2.1.4 running on stdio
 - Endpoint: `resources/list | resources/templates/list`
   - Advertised: `false`
   - Responded: `false`
   - Minimal shape present: `false`
   - Item count: `0`
   - Identifiers: none
-  - Diagnostics: Ref MCP Server running on stdio
+  - Diagnostics: Context7 Documentation MCP Server v2.1.4 running on stdio
 
 ### tools — pass
 
@@ -99,8 +99,8 @@ Summary: Advertised capability responded with the minimal expected shape (2 item
   - Responded: `true`
   - Minimal shape present: `true`
   - Item count: `2`
-  - Identifiers: ref_search_documentation, ref_read_url
-  - Diagnostics: Ref MCP Server running on stdio
+  - Identifiers: resolve-library-id, query-docs
+  - Diagnostics: Context7 Documentation MCP Server v2.1.4 running on stdio
 
 ## Reproduction Commands
 
@@ -113,5 +113,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-03-19T035129140Z_1cd1d1cc`
+- Run ID: `run_2026-03-19T035125817Z_b7a5dccc`
 - Gate: `pass`

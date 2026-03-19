@@ -2,24 +2,24 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-03-19T035129140Z_1cd1d1cc",
-  "createdAt": "2026-03-19T03:51:29.140Z",
+  "runId": "run_2026-03-19T035125817Z_b7a5dccc",
+  "createdAt": "2026-03-19T03:51:25.818Z",
   "toolVersion": "0.1.0",
   "target": {
-    "targetId": "ref-tools-server",
+    "targetId": "context7-server",
     "adapter": "local-process",
     "command": "npx",
     "args": [
       "-y",
-      "ref-tools-mcp"
+      "@upstash/context7-mcp"
     ],
     "cwd": ".",
     "metadata": {
       "purpose": "real-server-smoke",
-      "shape": "prompts-heavy"
+      "shape": "tool-heavy-third-party"
     },
-    "serverName": "Ref",
-    "serverVersion": "3.0.3"
+    "serverName": "Context7",
+    "serverVersion": "2.1.4"
   },
   "environment": {
     "platform": "darwin 25.3.0",
@@ -27,10 +27,10 @@
   },
   "summary": {
     "total": 4,
-    "pass": 3,
+    "pass": 2,
     "fail": 0,
     "partial": 0,
-    "unsupported": 1,
+    "unsupported": 2,
     "flaky": 0,
     "skipped": 0,
     "gate": "pass"
@@ -40,7 +40,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 0.8976669999997284,
+      "durationMs": 2.626750000000129,
       "message": "Advertised capability responded with the minimal expected shape (2 items).",
       "evidence": [
         {
@@ -50,11 +50,11 @@
           "minimalShapePresent": true,
           "itemCount": 2,
           "identifiers": [
-            "ref_search_documentation",
-            "ref_read_url"
+            "resolve-library-id",
+            "query-docs"
           ],
           "diagnostics": [
-            "Ref MCP Server running on stdio"
+            "Context7 Documentation MCP Server v2.1.4 running on stdio"
           ]
         }
       ]
@@ -62,23 +62,16 @@
     {
       "id": "prompts",
       "capability": "prompts",
-      "status": "pass",
-      "durationMs": 0.1952089999999771,
-      "message": "Advertised capability responded with the minimal expected shape (2 items).",
+      "status": "unsupported",
+      "durationMs": 0.0029159999999137654,
+      "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
           "endpoint": "prompts/list",
-          "advertised": true,
-          "responded": true,
-          "minimalShapePresent": true,
-          "itemCount": 2,
-          "identifiers": [
-            "search_docs",
-            "my_docs"
-          ],
-          "diagnostics": [
-            "Ref MCP Server running on stdio"
-          ]
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
         }
       ]
     },
@@ -86,7 +79,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.0017920000000231084,
+      "durationMs": 0.001583999999866137,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -102,8 +95,8 @@
       "id": "semantics",
       "capability": "semantics",
       "status": "pass",
-      "durationMs": 0.003290999999990163,
-      "message": "Advertised capabilities responded and returned the minimal expected shape: tools, prompts.",
+      "durationMs": 0.012999999999919964,
+      "message": "Advertised capabilities responded and returned the minimal expected shape: tools.",
       "evidence": [
         {
           "endpoint": "tools/list",
@@ -112,25 +105,20 @@
           "minimalShapePresent": true,
           "itemCount": 2,
           "identifiers": [
-            "ref_search_documentation",
-            "ref_read_url"
+            "resolve-library-id",
+            "query-docs"
           ],
           "diagnostics": [
-            "Ref MCP Server running on stdio"
+            "Context7 Documentation MCP Server v2.1.4 running on stdio"
           ]
         },
         {
           "endpoint": "prompts/list",
-          "advertised": true,
-          "responded": true,
-          "minimalShapePresent": true,
-          "itemCount": 2,
-          "identifiers": [
-            "search_docs",
-            "my_docs"
-          ],
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
           "diagnostics": [
-            "Ref MCP Server running on stdio"
+            "Context7 Documentation MCP Server v2.1.4 running on stdio"
           ]
         },
         {
@@ -139,7 +127,7 @@
           "responded": false,
           "minimalShapePresent": false,
           "diagnostics": [
-            "Ref MCP Server running on stdio"
+            "Context7 Documentation MCP Server v2.1.4 running on stdio"
           ]
         }
       ]

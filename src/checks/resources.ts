@@ -6,7 +6,6 @@ import {
   baseEvidence,
   isCapabilityAdvertised,
   makeCheckResult,
-  summarizeObservation,
   type CheckContext,
   type ObservedCheck
 } from "./base.js";
@@ -19,6 +18,15 @@ function hasMinimalTemplateShape(template: ResourceTemplate): boolean {
   return (
     typeof template.uriTemplate === "string" &&
     template.uriTemplate.trim().length > 0
+  );
+}
+
+function isOptionalEndpointFailure(message: string): boolean {
+  const lower = message.toLowerCase();
+  return (
+    lower.includes("method not found") ||
+    lower.includes("not implemented") ||
+    lower.includes("not supported")
   );
 }
 
@@ -55,22 +63,59 @@ export async function runResourcesCheck(context: CheckContext): Promise<Observed
   }
 
   const diagnostics: string[] = [];
-  let responded = false;
-  let minimalShapePresent = false;
   const identifiers: string[] = [];
+  const endpointEvidence = [] as ReturnType<typeof baseEvidence>[];
   let itemCount = 0;
+  let respondedEndpoints = 0;
+  let hardEndpointFailures = 0;
+  let shapeProblems = 0;
 
   try {
     const listResources = await context.client.listResources(undefined, {
       timeout: context.timeoutMs
     });
-    responded = true;
     itemCount += listResources.resources.length;
     identifiers.push(...listResources.resources.map((resource) => resource.uri));
-    minimalShapePresent = minimalShapePresent || listResources.resources.every(hasMinimalResourceShape);
+    respondedEndpoints += 1;
+    const minimalShapePresent = listResources.resources.every(hasMinimalResourceShape);
+    if (!minimalShapePresent) {
+      shapeProblems += 1;
+    }
+    endpointEvidence.push(
+      baseEvidence(
+        {
+          capability: "resources",
+          advertised: true,
+          responded: true,
+          minimalShapePresent,
+          endpoint: "resources/list",
+          itemCount: listResources.resources.length,
+          identifiers: listResources.resources.map((resource) => resource.uri),
+          diagnostics: []
+        },
+        context.stderrLines,
+      ),
+    );
   } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
     diagnostics.push(
-      `resources/list: ${error instanceof Error ? error.message : String(error)}`,
+      `resources/list: ${message}`,
+    );
+    if (!isOptionalEndpointFailure(message)) {
+      hardEndpointFailures += 1;
+    }
+    endpointEvidence.push(
+      baseEvidence(
+        {
+          capability: "resources",
+          advertised: true,
+          responded: false,
+          minimalShapePresent: false,
+          endpoint: "resources/list",
+          diagnostics: [message]
+        },
+        context.stderrLines,
+      ),
     );
   }
 
@@ -78,22 +123,57 @@ export async function runResourcesCheck(context: CheckContext): Promise<Observed
     const listTemplates = await context.client.listResourceTemplates(undefined, {
       timeout: context.timeoutMs
     });
-    responded = true;
     itemCount += listTemplates.resourceTemplates.length;
-    identifiers.push(
-      ...listTemplates.resourceTemplates.map((template) => template.uriTemplate),
+    const templateIdentifiers = listTemplates.resourceTemplates.map(
+      (template) => template.uriTemplate,
     );
-    minimalShapePresent =
-      minimalShapePresent ||
+    identifiers.push(...templateIdentifiers);
+    respondedEndpoints += 1;
+    const minimalShapePresent =
       listTemplates.resourceTemplates.every(hasMinimalTemplateShape);
+    if (!minimalShapePresent) {
+      shapeProblems += 1;
+    }
+    endpointEvidence.push(
+      baseEvidence(
+        {
+          capability: "resources",
+          advertised: true,
+          responded: true,
+          minimalShapePresent,
+          endpoint: "resources/templates/list",
+          itemCount: listTemplates.resourceTemplates.length,
+          identifiers: templateIdentifiers,
+          diagnostics: []
+        },
+        context.stderrLines,
+      ),
+    );
   } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
     diagnostics.push(
-      `resources/templates/list: ${
-        error instanceof Error ? error.message : String(error)
-      }`,
+      `resources/templates/list: ${message}`,
+    );
+    if (!isOptionalEndpointFailure(message)) {
+      hardEndpointFailures += 1;
+    }
+    endpointEvidence.push(
+      baseEvidence(
+        {
+          capability: "resources",
+          advertised: true,
+          responded: false,
+          minimalShapePresent: false,
+          endpoint: "resources/templates/list",
+          diagnostics: [message]
+        },
+        context.stderrLines,
+      ),
     );
   }
 
+  const responded = respondedEndpoints > 0;
+  const minimalShapePresent = responded && shapeProblems === 0;
   const observation = {
     capability: "resources" as const,
     advertised: true,
@@ -105,11 +185,27 @@ export async function runResourcesCheck(context: CheckContext): Promise<Observed
     diagnostics
   };
 
-  const status = responded
-    ? minimalShapePresent
-      ? "pass"
-      : "partial"
-    : "fail";
+  const status = !responded
+    ? "fail"
+    : hardEndpointFailures > 0 || shapeProblems > 0
+      ? "partial"
+      : "pass";
+
+  let message = "Advertised capability responded with the minimal expected shape.";
+  if (!responded) {
+    message = "Advertised capability did not respond successfully.";
+  } else if (hardEndpointFailures > 0) {
+    message =
+      "Advertised capability responded, but at least one resource endpoint failed unexpectedly.";
+  } else if (shapeProblems > 0) {
+    message =
+      "Advertised capability responded, but at least one resource endpoint missed the minimal expected shape.";
+  } else if (diagnostics.length > 0) {
+    message =
+      "Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported.";
+  } else if (itemCount !== undefined) {
+    message = `Advertised capability responded with the minimal expected shape (${itemCount} items).`;
+  }
 
   return {
     observation,
@@ -117,8 +213,8 @@ export async function runResourcesCheck(context: CheckContext): Promise<Observed
       "resources",
       status,
       performance.now() - startedAt,
-      summarizeObservation(observation),
-      [baseEvidence(observation, context.stderrLines)],
+      message,
+      endpointEvidence,
     )
   };
 }

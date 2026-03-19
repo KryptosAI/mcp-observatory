@@ -11,13 +11,15 @@ These notes are the opposite of launch fluff. They exist to record what the repo
 | `@modelcontextprotocol/server-filesystem` | `tools=pass`, `prompts=unsupported`, `resources=unsupported` | proved that `unsupported` is a useful stable state, not an embarrassment |
 | `@modelcontextprotocol/server-everything` | `tools=pass`, `prompts=pass`, `resources=pass` | gave the repo one wide capability reference target |
 | `ref-tools-mcp` | `tools=pass`, `prompts=pass`, `resources=unsupported` | proved the matrix was not only made of official example servers |
+| `@upstash/context7-mcp` | `tools=pass`, `prompts=unsupported`, `resources=unsupported` | added a zero-config third-party server that is clearly useful and reproducible |
+| `puppeteer-mcp-server` | `tools=pass`, `prompts=unsupported`, `resources=pass` | proved the tool can show a useful caveat without overcalling it as failure |
 
 ### Failed probes
 
 | Package | Observed behavior | What it taught us |
 | --- | --- | --- |
 | `@modelcontextprotocol/server-map` | timed out during local-process startup | not every MCP package is a drop-in stdio target |
-| `@modelcontextprotocol/server-pdf` | timed out during local-process startup | package-specific startup expectations matter |
+| `@modelcontextprotocol/server-pdf` | timed out during local-process startup | startup diagnosis needs to be actionable, not just raw timeout text |
 | `@modelcontextprotocol/server-threejs` | connection closed before initialization completed | app-oriented packages need clearer transport assumptions |
 | `@jsonresume/mcp` | connection closed before initialization completed | startup failures should be presented as ecosystem signal, not only raw failure |
 
@@ -27,6 +29,9 @@ These notes are the opposite of launch fluff. They exist to record what the repo
 - the real-server matrix is part of the public story, not a hidden validation step
 - the README now leads with observed behavior instead of generic positioning
 - clearer CLI startup failure messaging is now a real priority, not a hypothetical enhancement
+- one zero-config third-party target is not enough; the coverage bar should be small but credible
+- rerunning a promising target with a simpler invocation can turn a “broken” probe into useful passing evidence
+- a passing check can still carry a meaningful caveat, especially around optional resource endpoints
 
 ### What still feels uncertain
 

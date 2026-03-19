@@ -12,22 +12,39 @@ export function runSemanticsCheck(
 ): ObservedCheck {
   const startedAt = performance.now();
   const advertised = observations.filter((observation) => observation.advertised);
+  const failingCapabilities = advertised
+    .filter((observation) => !observation.responded)
+    .map((observation) => observation.capability);
+  const partialCapabilities = advertised
+    .filter(
+      (observation) =>
+        observation.responded && !observation.minimalShapePresent,
+    )
+    .map((observation) => observation.capability);
+  const passingCapabilities = advertised
+    .filter(
+      (observation) =>
+        observation.responded && observation.minimalShapePresent,
+    )
+    .map((observation) => observation.capability);
 
   let status: ObservedCheck["result"]["status"] = "pass";
-  let message = "Advertised capabilities responded and returned the minimal expected shape.";
+  let message =
+    "Advertised capabilities responded and returned the minimal expected shape.";
 
   if (advertised.length === 0) {
     status = "unsupported";
     message = "No capabilities were advertised, so semantics could not be evaluated.";
-  } else if (advertised.some((observation) => !observation.responded)) {
+  } else if (failingCapabilities.length > 0) {
     status = "fail";
-    message = "At least one advertised capability did not respond successfully.";
-  } else if (
-    advertised.some((observation) => !observation.minimalShapePresent)
-  ) {
+    message = `Advertised capabilities that did not respond cleanly: ${failingCapabilities.join(", ")}.`;
+  } else if (partialCapabilities.length > 0) {
     status = "partial";
     message =
-      "Advertised capabilities responded, but at least one response missed the minimal expected shape.";
+      `Advertised capabilities responded with caveats: ${partialCapabilities.join(", ")}.`;
+  } else if (passingCapabilities.length > 0) {
+    message =
+      `Advertised capabilities responded and returned the minimal expected shape: ${passingCapabilities.join(", ")}.`;
   }
 
   return {

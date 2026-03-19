@@ -1,0 +1,15 @@
+{
+  "targetId": "server-pdf-startup-fail",
+  "adapter": "local-process",
+  "command": "npx",
+  "args": [
+    "-y",
+    "@modelcontextprotocol/server-pdf"
+  ],
+  "cwd": ".",
+  "timeoutMs": 20000,
+  "metadata": {
+    "purpose": "known-bad-startup-probe",
+    "shape": "startup-timeout"
+  }
+}

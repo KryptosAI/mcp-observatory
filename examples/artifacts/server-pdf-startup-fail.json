@@ -1,0 +1,71 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "fail",
+  "runId": "run_2026-03-19T034919813Z_0df24336",
+  "createdAt": "2026-03-19T03:49:19.813Z",
+  "toolVersion": "0.1.0",
+  "target": {
+    "targetId": "server-pdf-startup-fail",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-pdf"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "purpose": "known-bad-startup-probe",
+      "shape": "startup-timeout"
+    }
+  },
+  "environment": {
+    "platform": "darwin 25.3.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 4,
+    "pass": 0,
+    "fail": 0,
+    "partial": 0,
+    "unsupported": 0,
+    "flaky": 0,
+    "skipped": 4,
+    "gate": "fail"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "skipped",
+      "durationMs": 0,
+      "message": "Skipped because startup failed before the MCP session initialized. See the failure diagnosis.",
+      "evidence": []
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "skipped",
+      "durationMs": 0,
+      "message": "Skipped because startup failed before the MCP session initialized. See the failure diagnosis.",
+      "evidence": []
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "skipped",
+      "durationMs": 0,
+      "message": "Skipped because startup failed before the MCP session initialized. See the failure diagnosis.",
+      "evidence": []
+    },
+    {
+      "id": "semantics",
+      "capability": "semantics",
+      "status": "skipped",
+      "durationMs": 0,
+      "message": "Skipped because startup failed before the MCP session initialized. See the failure diagnosis.",
+      "evidence": []
+    }
+  ],
+  "fatalError": "Could not establish a plain stdio MCP session for target `server-pdf-startup-fail`.\nCommand: npx -y @modelcontextprotocol/server-pdf\nDiagnosis: The server did not complete MCP initialization before the configured timeout.\nRaw error: MCP error -32001: Request timed out\nLikely causes:\n- The package may start a browser, app shell, or background service instead of staying attached to stdio.\n- The target may need extra startup flags, credentials, or environment variables before it becomes usable.\n- The timeout may simply be too low for this package on first boot.\nNext steps:\n- Run the command manually and confirm it stays attached to stdio instead of launching and idling elsewhere.\n- Check the package docs for required flags, auth, or setup steps before MCP initialization.\n- If the command is otherwise correct, raise `timeoutMs` and try again.\nRecent stderr:\n- [pdf-server] Ready (1 URL(s) configured)\n- Warning: Server is binding to 0.0.0.0 without DNS rebinding protection. Consider using the allowedHosts option to restrict allowed hosts, or use authentication to protect your server."
+}

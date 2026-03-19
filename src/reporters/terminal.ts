@@ -1,10 +1,24 @@
 import type { DiffArtifact, DiffEntry, RunArtifact } from "../types.js";
+import {
+  describeCheckList,
+  findChecksByStatus,
+  recommendRunNextStep,
+  sortChecksByActionability
+} from "./common.js";
 
 function formatEntry(entry: DiffEntry): string {
   return `- ${entry.id}: ${entry.fromStatus ?? "n/a"} -> ${entry.toStatus ?? "n/a"} (${entry.message})`;
 }
 
 function renderRunTerminal(artifact: RunArtifact): string {
+  const orderedChecks = sortChecksByActionability(artifact.checks);
+  const failingChecks = findChecksByStatus(artifact.checks, "fail");
+  const partialChecks = [
+    ...findChecksByStatus(artifact.checks, "partial"),
+    ...findChecksByStatus(artifact.checks, "flaky")
+  ];
+  const unsupportedChecks = findChecksByStatus(artifact.checks, "unsupported");
+  const skippedChecks = findChecksByStatus(artifact.checks, "skipped");
   const lines = [
     `MCP Observatory Run`,
     `Run ID: ${artifact.runId}`,
@@ -14,12 +28,20 @@ function renderRunTerminal(artifact: RunArtifact): string {
     `Counts: pass=${artifact.summary.pass}, fail=${artifact.summary.fail}, partial=${artifact.summary.partial}, unsupported=${artifact.summary.unsupported}, flaky=${artifact.summary.flaky}, skipped=${artifact.summary.skipped}`
   ];
 
+  lines.push(`Actionable now:`);
+  lines.push(`- failing checks: ${describeCheckList(failingChecks)}`);
+  lines.push(`- partial checks: ${describeCheckList(partialChecks)}`);
+  lines.push(`- skipped checks: ${describeCheckList(skippedChecks)}`);
+  lines.push(`- unsupported checks: ${describeCheckList(unsupportedChecks)}`);
+  lines.push(`Next step: ${recommendRunNextStep(artifact)}`);
+
   if (artifact.fatalError !== undefined) {
-    lines.push(`Fatal error: ${artifact.fatalError}`);
+    lines.push("Failure diagnosis:");
+    lines.push(...artifact.fatalError.split("\n"));
   }
 
-  lines.push("Checks:");
-  for (const check of artifact.checks) {
+  lines.push("Checks (most actionable first):");
+  for (const check of orderedChecks) {
     lines.push(`- ${check.id}: ${check.status} (${check.message})`);
   }
 

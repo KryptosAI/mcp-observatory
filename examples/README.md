@@ -7,10 +7,18 @@ These files are meant to be evidence, not marketing samples.
 - `targets/filesystem-server.json`
 - `targets/everything-server.json`
 - `targets/ref-tools-server.json`
+- `targets/context7-server.json`
+- `targets/puppeteer-server.json`
 
 ## Artifacts
 
 `artifacts/` contains checked-in outputs generated from real MCP servers so people can inspect the product without running anything first.
+
+## Probes
+
+`probes/` contains known-bad or known-noisy invocations that are still worth preserving because they prove the tool's diagnostic value.
+
+- `probes/server-pdf-startup-fail.json`
 
 ## Reports
 

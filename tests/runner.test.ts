@@ -32,8 +32,10 @@ describe("runTarget", () => {
     expect(markdown).toContain("# MCP Observatory Run Report");
     expect(markdown).toContain("## Target and Environment Metadata");
     expect(markdown).toContain("## Executive Summary");
+    expect(markdown).toContain("## At a Glance");
     expect(markdown).toContain("## Full Capability Status Table");
     expect(markdown).toContain("## Evidence Snippets");
+    expect(markdown).toContain("### tools — pass");
     expect(markdown).toContain("## Reproduction Commands");
     expect(markdown).toContain("## Artifact Provenance");
   });

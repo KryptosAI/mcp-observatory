@@ -13,9 +13,17 @@ Generated at 2026-03-18T13:00:00.000Z
 
 ## Executive Summary
 
-| Gate | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
-| --- | --- | --- | --- | --- | --- | --- |
-| fail | 2 | 2 | 0 | 0 | 0 | 0 |
+| Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| fail | 4 | 2 | 2 | 0 | 0 | 0 | 0 |
+
+## At a Glance
+
+- Failing checks: tools, semantics
+- Partial or flaky checks: none
+- Skipped checks: none
+- Unsupported checks: none
+- Suggested next step: Start with the failing checks: tools, semantics.
 
 ## Regressions and Recoveries
 
@@ -23,16 +31,24 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 ## Full Capability Status Table
 
-| Check | Status | Duration (ms) | Message |
-| --- | --- | --- | --- |
-| tools | fail | 6.70 | Advertised capability failed during tools/list: server error |
-| prompts | pass | 1.20 | Advertised capability responded with the minimal expected shape (1 item). |
-| resources | pass | 4.00 | Advertised capability responded with the minimal expected shape (2 items). |
-| semantics | fail | 0.10 | At least one advertised capability did not respond successfully. |
+| Focus | Check | Status | Duration (ms) | Message |
+| --- | --- | --- | --- | --- |
+| act now | semantics | fail | 0.10 | At least one advertised capability did not respond successfully. |
+| act now | tools | fail | 6.70 | Advertised capability failed during tools/list: server error |
+| healthy | prompts | pass | 1.20 | Advertised capability responded with the minimal expected shape (1 item). |
+| healthy | resources | pass | 4.00 | Advertised capability responded with the minimal expected shape (2 items). |
 
 ## Evidence Snippets
 
-### tools
+### semantics — fail
+
+Summary: At least one advertised capability did not respond successfully.
+
+_No evidence was captured._
+
+### tools — fail
+
+Summary: Advertised capability failed during tools/list: server error
 
 - Endpoint: `tools/list`
   - Advertised: `true`
@@ -42,7 +58,9 @@ _Use the `diff` command against another run artifact to classify regressions and
   - Identifiers: none
   - Diagnostics: server error
 
-### prompts
+### prompts — pass
+
+Summary: Advertised capability responded with the minimal expected shape (1 item).
 
 - Endpoint: `prompts/list`
   - Advertised: `true`
@@ -52,7 +70,9 @@ _Use the `diff` command against another run artifact to classify regressions and
   - Identifiers: daily-brief
   - Diagnostics: none
 
-### resources
+### resources — pass
+
+Summary: Advertised capability responded with the minimal expected shape (2 items).
 
 - Endpoint: `resources/list | resources/templates/list`
   - Advertised: `true`
@@ -61,10 +81,6 @@ _Use the `diff` command against another run artifact to classify regressions and
   - Item count: `2`
   - Identifiers: file://fixture/roadmap.txt, memory://cases/{id}
   - Diagnostics: none
-
-### semantics
-
-_No evidence was captured._
 
 ## Reproduction Commands
 
