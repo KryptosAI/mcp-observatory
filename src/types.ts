@@ -9,7 +9,7 @@ export type CheckStatus =
   | "unsupported"
   | "flaky"
   | "skipped";
-export type CheckId = "tools" | "prompts" | "resources";
+export type CheckId = "tools" | "prompts" | "resources" | "tools-invoke";
 
 export const STATUS_RANK: Record<CheckStatus, number> = {
   pass: 6, partial: 5, flaky: 4, unsupported: 3, skipped: 2, fail: 1
@@ -50,6 +50,7 @@ export interface EvidenceSummary {
   itemCount?: number;
   identifiers?: string[];
   diagnostics?: string[];
+  schemas?: Record<string, object>;
 }
 
 export interface CheckResult {
@@ -97,12 +98,19 @@ export interface DiffEntry {
   message: string;
 }
 
+export interface SchemaDriftEntry {
+  capability: CheckId;
+  name: string;
+  changes: string[];
+}
+
 export interface DiffSummary {
   regressions: number;
   recoveries: number;
   unchanged: number;
   added: number;
   removed: number;
+  schemaDriftCount?: number;
   gate: Gate;
 }
 
@@ -119,4 +127,5 @@ export interface DiffArtifact {
   unchanged: DiffEntry[];
   added: DiffEntry[];
   removed: DiffEntry[];
+  schemaDrift?: SchemaDriftEntry[];
 }

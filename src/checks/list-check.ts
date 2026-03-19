@@ -21,6 +21,8 @@ export interface ListCheckConfig<TItem> {
   hasMinimalShape: (item: TItem) => boolean;
   /** Extracts the display name/identifier from an item */
   getItemName: (item: TItem) => string;
+  /** Optionally extracts the schema/definition object for drift detection */
+  getItemSchema?: (item: TItem) => object | undefined;
 }
 
 export async function runListCheck<TItem>(
@@ -73,6 +75,20 @@ export async function runListCheck<TItem>(
       diagnostics: []
     };
 
+    const evidence = baseEvidence(observation, context.stderrLines);
+    if (config.getItemSchema) {
+      const schemas: Record<string, object> = {};
+      for (const item of items) {
+        const schema = config.getItemSchema(item);
+        if (schema !== undefined) {
+          schemas[config.getItemName(item)] = schema;
+        }
+      }
+      if (Object.keys(schemas).length > 0) {
+        evidence.schemas = schemas;
+      }
+    }
+
     return {
       observation,
       result: makeCheckResult(
@@ -80,7 +96,7 @@ export async function runListCheck<TItem>(
         minimalShapePresent ? "pass" : "partial",
         performance.now() - startedAt,
         summarizeObservation(observation),
-        [baseEvidence(observation, context.stderrLines)],
+        [evidence],
       )
     };
   } catch (error) {

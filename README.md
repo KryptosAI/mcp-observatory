@@ -66,18 +66,20 @@ npm run integration:real
 ## Working Surface
 
 - `run`: execute checks against one target and persist a run artifact
-- `diff`: compare two runs and classify regressions and recoveries
+- `diff`: compare two runs and classify regressions, recoveries, and schema drift
 - `report`: turn a saved run artifact into readable terminal, JSON, or Markdown output
-- `scan`: auto-discover MCP servers from local config files and check them all
-- `check`: run a single capability check (tools, prompts, or resources)
+- `scan`: auto-discover MCP servers from local config files and check them all (default command)
+- `check`: run a single capability check (tools, prompts, resources, or tools-invoke)
 
 ## Scan
 
-Auto-discover MCP server configs from Claude Code, Claude Desktop, and project-level config files, then run checks against every discovered server:
+Auto-discover MCP server configs from Claude Code, Claude Desktop, and project-level config files, then run checks against every discovered server. This is the default command — running `mcp-observatory` with no arguments runs scan:
 
 ```bash
+mcp-observatory
 mcp-observatory scan
 mcp-observatory scan --config ~/.claude.json
+mcp-observatory scan --invoke-tools
 ```
 
 Scanned locations (in order):
@@ -95,6 +97,32 @@ Run a single capability check for faster iteration:
 mcp-observatory check tools --target ./my-server.json
 mcp-observatory check prompts --target ./my-server.json
 mcp-observatory check resources --target ./my-server.json
+mcp-observatory check tools-invoke --target ./my-server.json
+```
+
+## Tool Invocation
+
+Go beyond listing — actually call tools and verify they execute. Only safe tools are invoked: those with no required parameters or with `readOnlyHint` annotation. Arguments are auto-generated from the tool's JSON Schema.
+
+```bash
+mcp-observatory scan --invoke-tools
+mcp-observatory run --target ./my-server.json --invoke-tools
+mcp-observatory check tools-invoke --target ./my-server.json
+```
+
+## Schema Drift
+
+When diffing two runs, schema changes are detected automatically. Added/removed required fields, property changes, and type changes are surfaced alongside status regressions:
+
+```bash
+mcp-observatory diff --base run-a.json --head run-b.json
+```
+
+Example output:
+```
+Schema Drift:
+- search (tools): added required field 'limit', changed 'query' type from 'number' to 'string'
+- old-tool (tools): removed
 ```
 
 ## Watch

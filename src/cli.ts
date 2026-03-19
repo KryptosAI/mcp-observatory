@@ -60,8 +60,9 @@ async function main(): Promise<void> {
     )
     .option("--watch", "Re-run checks on an interval and diff against the previous run.", false)
     .option("--interval <seconds>", "Interval in seconds for watch mode.", "30")
+    .option("--invoke-tools", "Invoke safe tools (no required params) to verify they execute.", false)
     .option("--no-color", "Disable colored output.")
-    .action(async (options: { outDir: string; target: string; watch: boolean; interval: string }) => {
+    .action(async (options: { outDir: string; target: string; watch: boolean; interval: string; invokeTools: boolean }) => {
       const target = await readTargetConfig(options.target);
 
       if (options.watch) {
@@ -69,7 +70,7 @@ async function main(): Promise<void> {
         return;
       }
 
-      const artifact = await runTarget(target);
+      const artifact = await runTarget(target, { invokeTools: options.invokeTools });
       const outPath = await writeRunArtifact(artifact, options.outDir);
       const summary = renderTerminal(artifact);
       process.stdout.write(`${summary}\nArtifact: ${outPath}\n`);
@@ -152,8 +153,9 @@ async function main(): Promise<void> {
     .command("scan")
     .description("Auto-discover MCP server configs and run checks against each discovered server.")
     .option("--config <path>", "Path to a specific MCP config file.")
+    .option("--invoke-tools", "Invoke safe tools (no required params) to verify they execute.", false)
     .option("--no-color", "Disable colored output.")
-    .action(async (options: { config?: string }) => {
+    .action(async (options: { config?: string; invokeTools: boolean }) => {
       const targets = await scanForTargets(options.config);
 
       if (targets.length === 0) {
@@ -167,21 +169,23 @@ async function main(): Promise<void> {
       }
       process.stdout.write("\n");
 
-      const results: { targetId: string; gate: string; tools: string; prompts: string; resources: string }[] = [];
+      const results: { targetId: string; gate: string; tools: string; prompts: string; resources: string; invoke?: string }[] = [];
 
       for (const t of targets) {
         process.stdout.write(`Running checks for ${c(ANSI.bold, t.config.targetId)}...\n`);
         try {
-          const artifact = await runTarget(t.config);
+          const artifact = await runTarget(t.config, { invokeTools: options.invokeTools });
           const toolsStatus = artifact.checks.find((ch) => ch.id === "tools")?.status ?? "skipped";
           const promptsStatus = artifact.checks.find((ch) => ch.id === "prompts")?.status ?? "skipped";
           const resourcesStatus = artifact.checks.find((ch) => ch.id === "resources")?.status ?? "skipped";
+          const invokeStatus = artifact.checks.find((ch) => ch.id === "tools-invoke")?.status;
           results.push({
             targetId: t.config.targetId,
             gate: artifact.gate,
             tools: toolsStatus,
             prompts: promptsStatus,
             resources: resourcesStatus,
+            invoke: invokeStatus,
           });
         } catch (error) {
           const msg = error instanceof Error ? error.message : String(error);
@@ -196,32 +200,42 @@ async function main(): Promise<void> {
         }
       }
 
+      const showInvoke = options.invokeTools;
       process.stdout.write("\n" + c(ANSI.bold, "Scan Results:\n"));
-      process.stdout.write(`${"Target".padEnd(30)} ${"Gate".padEnd(6)} ${"Tools".padEnd(14)} ${"Prompts".padEnd(14)} ${"Resources".padEnd(14)}\n`);
-      process.stdout.write(`${"─".repeat(30)} ${"─".repeat(6)} ${"─".repeat(14)} ${"─".repeat(14)} ${"─".repeat(14)}\n`);
+      let header = `${"Target".padEnd(30)} ${"Gate".padEnd(6)} ${"Tools".padEnd(14)} ${"Prompts".padEnd(14)} ${"Resources".padEnd(14)}`;
+      let separator = `${"─".repeat(30)} ${"─".repeat(6)} ${"─".repeat(14)} ${"─".repeat(14)} ${"─".repeat(14)}`;
+      if (showInvoke) {
+        header += ` ${"Invoke".padEnd(14)}`;
+        separator += ` ${"─".repeat(14)}`;
+      }
+      process.stdout.write(`${header}\n${separator}\n`);
 
       for (const r of results) {
         const gateStr = r.gate === "pass" ? c(ANSI.green, "pass") : c(ANSI.red, "fail");
-        process.stdout.write(
-          `${r.targetId.padEnd(30)} ${gateStr.padEnd(useColor() ? 6 + 9 : 6)} ${colorStatus(r.tools).padEnd(useColor() ? 14 + 9 : 14)} ${colorStatus(r.prompts).padEnd(useColor() ? 14 + 9 : 14)} ${colorStatus(r.resources)}\n`,
-        );
+        const pad = useColor() ? 9 : 0;
+        let line = `${r.targetId.padEnd(30)} ${gateStr.padEnd(6 + pad)} ${colorStatus(r.tools).padEnd(14 + pad)} ${colorStatus(r.prompts).padEnd(14 + pad)} ${colorStatus(r.resources).padEnd(14 + pad)}`;
+        if (showInvoke) {
+          line += ` ${colorStatus(r.invoke ?? "skipped")}`;
+        }
+        process.stdout.write(`${line}\n`);
       }
     });
 
   program
     .command("check")
     .description("Run a single capability check against a target.")
-    .argument("<capability>", "Capability to check: tools, prompts, or resources.")
+    .argument("<capability>", "Capability to check: tools, prompts, resources, or tools-invoke.")
     .requiredOption("--target <config>", "Path to a target config JSON file.")
     .option("--no-color", "Disable colored output.")
     .action(async (capability: string, options: { target: string }) => {
-      const validCapabilities = ["tools", "prompts", "resources"];
+      const validCapabilities = ["tools", "prompts", "resources", "tools-invoke"];
       if (!validCapabilities.includes(capability)) {
         throw new Error(`Invalid capability '${capability}'. Must be one of: ${validCapabilities.join(", ")}`);
       }
 
       const target = await readTargetConfig(options.target);
-      const artifact = await runTarget(target);
+      const invokeTools = capability === "tools-invoke";
+      const artifact = await runTarget(target, { invokeTools });
       const check = artifact.checks.find((ch) => ch.id === capability);
 
       if (!check) {
@@ -243,6 +257,11 @@ async function main(): Promise<void> {
         }
       }
     });
+
+  // Default to scan when invoked with no arguments
+  if (process.argv.length === 2) {
+    process.argv.push("scan");
+  }
 
   await program.parseAsync(process.argv);
 }

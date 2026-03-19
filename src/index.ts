@@ -2,7 +2,7 @@ export { diffArtifacts } from "./diff.js";
 export { scanForTargets } from "./discovery.js";
 export { renderMarkdown } from "./reporters/markdown.js";
 export { renderTerminal } from "./reporters/terminal.js";
-export { runTarget } from "./runner.js";
+export { runTarget, type RunOptions } from "./runner.js";
 export {
   defaultRunsDirectory,
   readArtifact,

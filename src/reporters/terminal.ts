@@ -111,8 +111,14 @@ function renderDiffTerminal(artifact: DiffArtifact): string {
     lines.push(co(ANSI.dim, "Unchanged:"));
     lines.push(...artifact.unchanged.map((e) => co(ANSI.dim, formatEntry(e))));
   }
-  if (artifact.regressions.length === 0 && artifact.recoveries.length === 0) {
-    lines.push(co(ANSI.dim, "No regressions or recoveries were detected."));
+  if (artifact.schemaDrift && artifact.schemaDrift.length > 0) {
+    lines.push(co(ANSI.yellow, "Schema Drift:"));
+    for (const entry of artifact.schemaDrift) {
+      lines.push(co(ANSI.yellow, `- ${entry.name} (${entry.capability}): ${entry.changes.join(", ")}`));
+    }
+  }
+  if (artifact.regressions.length === 0 && artifact.recoveries.length === 0 && (!artifact.schemaDrift || artifact.schemaDrift.length === 0)) {
+    lines.push(co(ANSI.dim, "No regressions, recoveries, or schema drift detected."));
   }
 
   return lines.join("\n");

@@ -4,6 +4,7 @@ import { AdapterConnectError, LocalProcessAdapter } from "./adapters/local-proce
 import { runPromptsCheck } from "./checks/prompts.js";
 import { runResourcesCheck } from "./checks/resources.js";
 import { runToolsCheck } from "./checks/tools.js";
+import { runToolsInvokeCheck } from "./checks/tools-invoke.js";
 import type { CheckResult, Gate, RunArtifact, StatusCounts, TargetConfig } from "./types.js";
 import { SCHEMA_VERSION } from "./types.js";
 import { buildRunId } from "./utils/ids.js";
@@ -35,7 +36,11 @@ function buildSummary(checks: CheckResult[], fatalError?: string): RunArtifact["
   };
 }
 
-export async function runTarget(target: TargetConfig): Promise<RunArtifact> {
+export interface RunOptions {
+  invokeTools?: boolean;
+}
+
+export async function runTarget(target: TargetConfig, options?: RunOptions): Promise<RunArtifact> {
   const adapter = new LocalProcessAdapter();
   const runId = buildRunId();
   const createdAt = new Date().toISOString();
@@ -68,6 +73,11 @@ export async function runTarget(target: TargetConfig): Promise<RunArtifact> {
         promptsCheck.result,
         resourcesCheck.result
       ];
+
+      if (options?.invokeTools) {
+        const invokeCheck = await runToolsInvokeCheck(checkContext);
+        checks.push(invokeCheck.result);
+      }
     } finally {
       await session.close();
     }
