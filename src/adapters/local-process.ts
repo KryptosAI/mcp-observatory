@@ -2,7 +2,7 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import type { ServerCapabilities } from "@modelcontextprotocol/sdk/types.js";
 
-import type { TargetConfig } from "../types.js";
+import type { LocalProcessTargetConfig, TargetConfig } from "../types.js";
 import { formatConnectionFailureDiagnosis } from "../utils/failure-diagnosis.js";
 import { TOOL_VERSION } from "../version.js";
 
@@ -28,7 +28,7 @@ export class AdapterConnectError extends Error {
 }
 
 export class LocalProcessAdapter {
-  async connect(target: TargetConfig): Promise<AdapterSession> {
+  async connect(target: LocalProcessTargetConfig): Promise<AdapterSession> {
     const transport = new StdioClientTransport({
       command: target.command,
       args: target.args,

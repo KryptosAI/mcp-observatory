@@ -1,5 +1,6 @@
 export { diffArtifacts } from "./diff.js";
 export { scanForTargets } from "./discovery.js";
+export { renderHtml } from "./reporters/html.js";
 export { renderMarkdown } from "./reporters/markdown.js";
 export { renderTerminal } from "./reporters/terminal.js";
 export { runTarget, type RunOptions } from "./runner.js";

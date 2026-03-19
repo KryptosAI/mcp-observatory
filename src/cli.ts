@@ -9,6 +9,7 @@ import { scanForTargets } from "./discovery.js";
 import {
   diffArtifacts,
   readArtifact,
+  renderHtml,
   renderMarkdown,
   renderTerminal,
   runTarget,
@@ -80,7 +81,8 @@ async function main(): Promise<void> {
     .command("diff")
     .requiredOption("--base <artifact>", "Base run artifact JSON.")
     .requiredOption("--head <artifact>", "Head run artifact JSON.")
-    .option("--format <format>", "terminal, json, or markdown", "terminal")
+    .option("--format <format>", "terminal, json, markdown, or html", "terminal")
+    .option("--output <file>", "Optional output file path (useful for html format).")
     .option("--no-color", "Disable colored output.")
     .option(
       "--fail-on-regression",
@@ -91,8 +93,9 @@ async function main(): Promise<void> {
       async (options: {
         base: string;
         failOnRegression?: boolean;
-        format: "json" | "markdown" | "terminal";
+        format: "html" | "json" | "markdown" | "terminal";
         head: string;
+        output?: string;
       }) => {
         const baseArtifact = await readArtifact(options.base);
         const headArtifact = await readArtifact(options.head);
@@ -107,8 +110,18 @@ async function main(): Promise<void> {
             ? JSON.stringify(artifact, null, 2)
             : options.format === "markdown"
               ? renderMarkdown(artifact)
-              : renderTerminal(artifact);
-        process.stdout.write(`${output}\n`);
+              : options.format === "html"
+                ? renderHtml(artifact)
+                : renderTerminal(artifact);
+
+        if (options.output !== undefined) {
+          await mkdir(path.dirname(options.output), { recursive: true });
+          await writeFile(options.output, output + "\n", "utf8");
+          process.stdout.write(`Wrote ${options.format} report to ${options.output}\n`);
+        } else {
+          process.stdout.write(`${output}\n`);
+        }
+
         if (options.failOnRegression && artifact.gate === "fail") {
           process.exitCode = 1;
         }
@@ -118,12 +131,12 @@ async function main(): Promise<void> {
   program
     .command("report")
     .requiredOption("--run <artifact>", "Run artifact JSON.")
-    .option("--format <format>", "terminal, markdown, or json", "terminal")
-    .option("--output <file>", "Optional output file path.")
+    .option("--format <format>", "terminal, markdown, json, or html", "terminal")
+    .option("--output <file>", "Optional output file path (useful for html format).")
     .option("--no-color", "Disable colored output.")
     .action(
       async (options: {
-        format: "json" | "markdown" | "terminal";
+        format: "html" | "json" | "markdown" | "terminal";
         output?: string;
         run: string;
       }) => {
@@ -136,7 +149,9 @@ async function main(): Promise<void> {
             ? JSON.stringify(artifact, null, 2)
             : options.format === "markdown"
               ? renderMarkdown(artifact)
-              : renderTerminal(artifact);
+              : options.format === "html"
+                ? renderHtml(artifact)
+                : renderTerminal(artifact);
 
         if (options.output !== undefined) {
           await mkdir(path.dirname(options.output), { recursive: true });

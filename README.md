@@ -12,14 +12,17 @@ Current status: GitHub-release-installable, tested against 7 real servers, and s
 
 > Maintainer note, March 19, 2026: this repo exists because real MCP servers drift in ways conformance does not explain. Some servers pass cleanly with very different capability shapes. Others time out or close early when treated as plain stdio targets. Both outcomes are useful evidence.
 
-## Install And Prove It
-
-No clone required. The first public install path is the GitHub release tarball:
+## Install
 
 ```bash
-npx --yes https://github.com/KryptosAI/mcp-observatory/releases/download/v0.2.0/kryptosai-mcp-observatory-0.2.0.tgz --help
-npx --yes https://github.com/KryptosAI/mcp-observatory/releases/download/v0.2.0/kryptosai-mcp-observatory-0.2.0.tgz --version
+# npm (when published)
+npx @kryptosai/mcp-observatory
+
+# or from GitHub release tarball
+npx --yes https://github.com/KryptosAI/mcp-observatory/releases/download/v0.3.0/kryptosai-mcp-observatory-0.3.0.tgz
 ```
+
+Running with no arguments auto-discovers your MCP servers and checks them all.
 
 Create one tiny target config in any directory:
 
@@ -136,12 +139,40 @@ mcp-observatory run --target ./my-server.json --watch --interval 60
 
 Press Ctrl+C to stop.
 
+## HTTP / SSE Targets
+
+In addition to local-process stdio, you can check remote MCP servers over HTTP (Streamable HTTP and SSE):
+
+```json
+{
+  "targetId": "my-remote-server",
+  "adapter": "http",
+  "url": "http://localhost:3000/mcp",
+  "authToken": "optional-bearer-token",
+  "timeoutMs": 15000
+}
+```
+
+```bash
+mcp-observatory run --target ./remote-target.json
+mcp-observatory run --target ./remote-target.json --invoke-tools
+```
+
+## HTML Reports
+
+Generate a self-contained HTML report from any run or diff artifact:
+
+```bash
+mcp-observatory report --run ./run-artifact.json --format html --output report.html
+mcp-observatory diff --base run-a.json --head run-b.json --format html --output diff.html
+```
+
+Open the file in any browser — no server required, shareable via Slack/email/GitHub comments.
+
 ## Do Not Use This If...
 
-- you need non-stdio transports
 - you need deep semantic correctness validation
 - you need every MCP package on npm to work out of the box
-- you need a dashboard instead of artifacts and reports
 
 If those are the requirements, this repo is the wrong tool.
 

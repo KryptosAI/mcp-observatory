@@ -1,6 +1,9 @@
 import type { TargetConfig } from "../types.js";
 
 function buildCommand(target: TargetConfig): string {
+  if (target.adapter === "http") {
+    return target.url;
+  }
   return [target.command, ...target.args].join(" ");
 }
 
