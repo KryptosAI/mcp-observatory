@@ -12,14 +12,17 @@ Current status: GitHub-release-installable, tested against 7 real servers, and s
 
 > Maintainer note, March 19, 2026: this repo exists because real MCP servers drift in ways conformance does not explain. Some servers pass cleanly with very different capability shapes. Others time out or close early when treated as plain stdio targets. Both outcomes are useful evidence.
 
-## Install And Prove It
-
-No clone required. The first public install path is the GitHub release tarball:
+## Install
 
 ```bash
-npx --yes https://github.com/KryptosAI/mcp-observatory/releases/download/v0.2.0/kryptosai-mcp-observatory-0.2.0.tgz --help
-npx --yes https://github.com/KryptosAI/mcp-observatory/releases/download/v0.2.0/kryptosai-mcp-observatory-0.2.0.tgz --version
+# npm (when published)
+npx @kryptosai/mcp-observatory
+
+# or from GitHub release tarball
+npx --yes https://github.com/KryptosAI/mcp-observatory/releases/download/v0.3.0/kryptosai-mcp-observatory-0.3.0.tgz
 ```
+
+Running with no arguments auto-discovers your MCP servers and checks them all.
 
 Create one tiny target config in any directory:
 
@@ -66,18 +69,20 @@ npm run integration:real
 ## Working Surface
 
 - `run`: execute checks against one target and persist a run artifact
-- `diff`: compare two runs and classify regressions and recoveries
+- `diff`: compare two runs and classify regressions, recoveries, and schema drift
 - `report`: turn a saved run artifact into readable terminal, JSON, or Markdown output
-- `scan`: auto-discover MCP servers from local config files and check them all
-- `check`: run a single capability check (tools, prompts, or resources)
+- `scan`: auto-discover MCP servers from local config files and check them all (default command)
+- `check`: run a single capability check (tools, prompts, resources, or tools-invoke)
 
 ## Scan
 
-Auto-discover MCP server configs from Claude Code, Claude Desktop, and project-level config files, then run checks against every discovered server:
+Auto-discover MCP server configs from Claude Code, Claude Desktop, and project-level config files, then run checks against every discovered server. This is the default command — running `mcp-observatory` with no arguments runs scan:
 
 ```bash
+mcp-observatory
 mcp-observatory scan
 mcp-observatory scan --config ~/.claude.json
+mcp-observatory scan --invoke-tools
 ```
 
 Scanned locations (in order):
@@ -95,6 +100,32 @@ Run a single capability check for faster iteration:
 mcp-observatory check tools --target ./my-server.json
 mcp-observatory check prompts --target ./my-server.json
 mcp-observatory check resources --target ./my-server.json
+mcp-observatory check tools-invoke --target ./my-server.json
+```
+
+## Tool Invocation
+
+Go beyond listing — actually call tools and verify they execute. Only safe tools are invoked: those with no required parameters or with `readOnlyHint` annotation. Arguments are auto-generated from the tool's JSON Schema.
+
+```bash
+mcp-observatory scan --invoke-tools
+mcp-observatory run --target ./my-server.json --invoke-tools
+mcp-observatory check tools-invoke --target ./my-server.json
+```
+
+## Schema Drift
+
+When diffing two runs, schema changes are detected automatically. Added/removed required fields, property changes, and type changes are surfaced alongside status regressions:
+
+```bash
+mcp-observatory diff --base run-a.json --head run-b.json
+```
+
+Example output:
+```
+Schema Drift:
+- search (tools): added required field 'limit', changed 'query' type from 'number' to 'string'
+- old-tool (tools): removed
 ```
 
 ## Watch
@@ -108,12 +139,40 @@ mcp-observatory run --target ./my-server.json --watch --interval 60
 
 Press Ctrl+C to stop.
 
+## HTTP / SSE Targets
+
+In addition to local-process stdio, you can check remote MCP servers over HTTP (Streamable HTTP and SSE):
+
+```json
+{
+  "targetId": "my-remote-server",
+  "adapter": "http",
+  "url": "http://localhost:3000/mcp",
+  "authToken": "optional-bearer-token",
+  "timeoutMs": 15000
+}
+```
+
+```bash
+mcp-observatory run --target ./remote-target.json
+mcp-observatory run --target ./remote-target.json --invoke-tools
+```
+
+## HTML Reports
+
+Generate a self-contained HTML report from any run or diff artifact:
+
+```bash
+mcp-observatory report --run ./run-artifact.json --format html --output report.html
+mcp-observatory diff --base run-a.json --head run-b.json --format html --output diff.html
+```
+
+Open the file in any browser — no server required, shareable via Slack/email/GitHub comments.
+
 ## Do Not Use This If...
 
-- you need non-stdio transports
 - you need deep semantic correctness validation
 - you need every MCP package on npm to work out of the box
-- you need a dashboard instead of artifacts and reports
 
 If those are the requirements, this repo is the wrong tool.
 

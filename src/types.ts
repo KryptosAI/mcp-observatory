@@ -9,13 +9,13 @@ export type CheckStatus =
   | "unsupported"
   | "flaky"
   | "skipped";
-export type CheckId = "tools" | "prompts" | "resources";
+export type CheckId = "tools" | "prompts" | "resources" | "tools-invoke";
 
 export const STATUS_RANK: Record<CheckStatus, number> = {
   pass: 6, partial: 5, flaky: 4, unsupported: 3, skipped: 2, fail: 1
 };
 
-export interface TargetConfig {
+export interface LocalProcessTargetConfig {
   targetId: string;
   adapter: "local-process";
   command: string;
@@ -26,11 +26,24 @@ export interface TargetConfig {
   metadata?: Record<string, string>;
 }
 
+export interface HttpTargetConfig {
+  targetId: string;
+  adapter: "http";
+  url: string;
+  authToken?: string;
+  headers?: Record<string, string>;
+  timeoutMs?: number;
+  metadata?: Record<string, string>;
+}
+
+export type TargetConfig = LocalProcessTargetConfig | HttpTargetConfig;
+
 export interface TargetSnapshot {
   targetId: string;
   adapter: TargetConfig["adapter"];
   command: string;
   args: string[];
+  url?: string;
   cwd?: string;
   metadata?: Record<string, string>;
   serverVersion?: string;
@@ -50,6 +63,7 @@ export interface EvidenceSummary {
   itemCount?: number;
   identifiers?: string[];
   diagnostics?: string[];
+  schemas?: Record<string, object>;
 }
 
 export interface CheckResult {
@@ -97,12 +111,19 @@ export interface DiffEntry {
   message: string;
 }
 
+export interface SchemaDriftEntry {
+  capability: CheckId;
+  name: string;
+  changes: string[];
+}
+
 export interface DiffSummary {
   regressions: number;
   recoveries: number;
   unchanged: number;
   added: number;
   removed: number;
+  schemaDriftCount?: number;
   gate: Gate;
 }
 
@@ -119,4 +140,5 @@ export interface DiffArtifact {
   unchanged: DiffEntry[];
   added: DiffEntry[];
   removed: DiffEntry[];
+  schemaDrift?: SchemaDriftEntry[];
 }

@@ -27,9 +27,24 @@ export function validateTargetConfig(data: unknown): TargetConfig {
 
   const targetId = requireString(data, "targetId", "Target config");
   const adapter = requireString(data, "adapter", "Target config");
-  if (adapter !== "local-process") {
-    throw new Error(`Target config has unsupported adapter '${adapter}'. Only 'local-process' is supported.`);
+
+  if (adapter === "http") {
+    const url = requireString(data, "url", "Target config");
+    return {
+      targetId,
+      adapter: "http",
+      url,
+      authToken: typeof data["authToken"] === "string" ? data["authToken"] : undefined,
+      headers: isObject(data["headers"]) ? data["headers"] as Record<string, string> : undefined,
+      timeoutMs: typeof data["timeoutMs"] === "number" ? data["timeoutMs"] : undefined,
+      metadata: isObject(data["metadata"]) ? data["metadata"] as Record<string, string> : undefined,
+    };
   }
+
+  if (adapter !== "local-process") {
+    throw new Error(`Target config has unsupported adapter '${adapter}'. Supported: 'local-process', 'http'.`);
+  }
+
   const command = requireString(data, "command", "Target config");
   const argsRaw = requireArray(data, "args", "Target config");
   const args = argsRaw.map((arg, i) => {

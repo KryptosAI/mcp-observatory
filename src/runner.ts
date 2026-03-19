@@ -1,9 +1,12 @@
 import os from "node:os";
 
+import { HttpAdapter } from "./adapters/http.js";
 import { AdapterConnectError, LocalProcessAdapter } from "./adapters/local-process.js";
+import type { AdapterSession } from "./adapters/local-process.js";
 import { runPromptsCheck } from "./checks/prompts.js";
 import { runResourcesCheck } from "./checks/resources.js";
 import { runToolsCheck } from "./checks/tools.js";
+import { runToolsInvokeCheck } from "./checks/tools-invoke.js";
 import type { CheckResult, Gate, RunArtifact, StatusCounts, TargetConfig } from "./types.js";
 import { SCHEMA_VERSION } from "./types.js";
 import { buildRunId } from "./utils/ids.js";
@@ -35,8 +38,20 @@ function buildSummary(checks: CheckResult[], fatalError?: string): RunArtifact["
   };
 }
 
-export async function runTarget(target: TargetConfig): Promise<RunArtifact> {
+export interface RunOptions {
+  invokeTools?: boolean;
+}
+
+async function connectTarget(target: TargetConfig): Promise<AdapterSession> {
+  if (target.adapter === "http") {
+    const adapter = new HttpAdapter();
+    return adapter.connect(target);
+  }
   const adapter = new LocalProcessAdapter();
+  return adapter.connect(target);
+}
+
+export async function runTarget(target: TargetConfig, options?: RunOptions): Promise<RunArtifact> {
   const runId = buildRunId();
   const createdAt = new Date().toISOString();
 
@@ -46,7 +61,7 @@ export async function runTarget(target: TargetConfig): Promise<RunArtifact> {
   let serverVersion: string | undefined;
 
   try {
-    const session = await adapter.connect(target);
+    const session = await connectTarget(target);
     serverName = session.serverName;
     serverVersion = session.serverVersion;
 
@@ -68,6 +83,11 @@ export async function runTarget(target: TargetConfig): Promise<RunArtifact> {
         promptsCheck.result,
         resourcesCheck.result
       ];
+
+      if (options?.invokeTools) {
+        const invokeCheck = await runToolsInvokeCheck(checkContext);
+        checks.push(invokeCheck.result);
+      }
     } finally {
       await session.close();
     }
@@ -117,9 +137,10 @@ export async function runTarget(target: TargetConfig): Promise<RunArtifact> {
     target: {
       targetId: target.targetId,
       adapter: target.adapter,
-      command: target.command,
-      args: target.args,
-      cwd: target.cwd,
+      command: target.adapter === "http" ? target.url : target.command,
+      args: target.adapter === "http" ? [] : target.args,
+      url: target.adapter === "http" ? target.url : undefined,
+      cwd: target.adapter === "http" ? undefined : target.cwd,
       metadata: target.metadata,
       serverName,
       serverVersion

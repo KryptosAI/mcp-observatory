@@ -122,7 +122,7 @@ async function main(): Promise<void> {
       resources: checkStatus(artifact, "resources"),
       artifactPath: relativeToRoot(artifactPath),
       reportPath: relativeToRoot(markdownPath),
-      command: [target.command, ...target.args].join(" "),
+      command: target.adapter === "http" ? target.url : [target.command, ...target.args].join(" "),
       whyItMatters:
         target.metadata?.whyItMatters ??
         target.metadata?.shape ??

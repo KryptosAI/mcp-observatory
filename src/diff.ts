@@ -1,4 +1,5 @@
-import type { CheckResult, DiffArtifact, DiffEntry, RunArtifact } from "./types.js";
+import { diffSchemas } from "./schema-diff.js";
+import type { CheckResult, DiffArtifact, DiffEntry, RunArtifact, SchemaDriftEntry } from "./types.js";
 import { SCHEMA_VERSION, STATUS_RANK } from "./types.js";
 
 function toEntry(base: CheckResult | undefined, head: CheckResult | undefined): DiffEntry {
@@ -58,12 +59,28 @@ export function diffArtifacts(base: RunArtifact, head: RunArtifact): DiffArtifac
     recoveries.push(toEntry(baseCheck, headCheck));
   }
 
+  // Schema drift detection
+  const schemaDrift: SchemaDriftEntry[] = [];
+  for (const checkId of checkIds) {
+    const baseCheck = baseChecks.get(checkId);
+    const headCheck = headChecks.get(checkId);
+    if (baseCheck === undefined || headCheck === undefined) continue;
+
+    const baseSchemas = extractSchemas(baseCheck);
+    const headSchemas = extractSchemas(headCheck);
+    if (baseSchemas === undefined && headSchemas === undefined) continue;
+
+    const drift = diffSchemas(checkId, baseSchemas ?? {}, headSchemas ?? {});
+    schemaDrift.push(...drift);
+  }
+
   const summary = {
     regressions: regressions.length,
     recoveries: recoveries.length,
     unchanged: unchanged.length,
     added: added.length,
     removed: removed.length,
+    schemaDriftCount: schemaDrift.length > 0 ? schemaDrift.length : undefined,
     gate: regressions.length > 0 ? ("fail" as const) : ("pass" as const)
   };
 
@@ -79,6 +96,16 @@ export function diffArtifacts(base: RunArtifact, head: RunArtifact): DiffArtifac
     recoveries,
     unchanged,
     added,
-    removed
+    removed,
+    schemaDrift: schemaDrift.length > 0 ? schemaDrift : undefined,
   };
+}
+
+function extractSchemas(check: CheckResult): Record<string, object> | undefined {
+  for (const ev of check.evidence) {
+    if (ev.schemas !== undefined) {
+      return ev.schemas;
+    }
+  }
+  return undefined;
 }

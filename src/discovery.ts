@@ -65,6 +65,23 @@ function extractTargets(data: unknown, source: string): DiscoveredTarget[] {
     const command = serverEntry["command"];
     const args = serverEntry["args"];
 
+    // HTTP/SSE server (has url field)
+    const url = serverEntry["url"];
+    if (typeof url === "string" && url.length > 0) {
+      results.push({
+        source,
+        config: {
+          targetId: name,
+          adapter: "http",
+          url,
+          authToken: typeof serverEntry["authToken"] === "string" ? serverEntry["authToken"] : undefined,
+          timeoutMs: 15_000,
+        }
+      });
+      continue;
+    }
+
+    // Local process server (has command field)
     if (typeof command !== "string" || command.length === 0) {
       continue;
     }
@@ -110,7 +127,9 @@ export async function scanForTargets(configPath?: string): Promise<DiscoveredTar
 
     const targets = extractTargets(data, p);
     for (const target of targets) {
-      const key = `${target.config.command} ${target.config.args.join(" ")}`;
+      const key = target.config.adapter === "http"
+        ? target.config.url
+        : `${target.config.command} ${target.config.args.join(" ")}`;
       if (!seen.has(key)) {
         seen.add(key);
         allTargets.push(target);
