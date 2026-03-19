@@ -89,6 +89,8 @@ export function validateRunArtifact(data: unknown): RunArtifact {
     throw new Error("Run artifact is missing required field 'summary'.");
   }
 
+  // Structure validated above. The intermediate unknown cast is required because
+  // TypeScript can't narrow Record<string, unknown> to a specific interface.
   return data as unknown as RunArtifact;
 }
 

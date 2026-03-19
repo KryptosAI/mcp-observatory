@@ -20,6 +20,16 @@ import { defaultRunsDirectory } from "./storage.js";
 import { validateTargetConfig } from "./validate.js";
 import { TOOL_VERSION } from "./version.js";
 
+// ── ASCII Logo ──────────────────────────────────────────────────────────────
+
+const LOGO = `
+  ╔═╗┌┐ ┌─┐┌─┐┬─┐┬  ┬┌─┐┌┬┐┌─┐┬─┐┬ ┬
+  ║ ║├┴┐└─┐├┤ ├┬┘└┐┌┘├─┤ │ │ │├┬┘└┬┘
+  ╚═╝└─┘└─┘└─┘┴└─ └┘ ┴ ┴ ┴ └─┘┴└─ ┴
+`;
+
+// ── Helpers ─────────────────────────────────────────────────────────────────
+
 async function readTargetConfig(filePath: string): Promise<TargetConfig> {
   const content = await readFile(filePath, "utf8");
   return validateTargetConfig(JSON.parse(content));
@@ -43,7 +53,6 @@ function targetFromCommand(args: string[]): TargetConfig {
 const _rawArgv = [...process.argv];
 const _dashDashIdx = _rawArgv.indexOf("--");
 const _passthroughArgs: string[] = _dashDashIdx !== -1 ? _rawArgv.splice(_dashDashIdx) .slice(1) : [];
-// Mutate process.argv so Commander doesn't choke on passthrough args
 if (_dashDashIdx !== -1) {
   process.argv = _rawArgv;
 }
@@ -71,6 +80,8 @@ const ANSI = {
   red: "\x1b[31m",
   green: "\x1b[32m",
   yellow: "\x1b[33m",
+  blue: "\x1b[34m",
+  cyan: "\x1b[36m",
   dim: "\x1b[2m",
   bold: "\x1b[1m",
   reset: "\x1b[0m",
@@ -80,145 +91,50 @@ function c(code: string, text: string): string {
   return useColor() ? `${code}${text}${ANSI.reset}` : text;
 }
 
+function formatOutput(
+  artifact: Parameters<typeof renderTerminal>[0],
+  format: "html" | "json" | "markdown" | "terminal",
+): string {
+  if (format === "json") return JSON.stringify(artifact, null, 2);
+  if (format === "markdown") return renderMarkdown(artifact);
+  if (format === "html") return renderHtml(artifact);
+  return renderTerminal(artifact);
+}
+
+async function writeOutput(content: string, format: string, outputPath?: string): Promise<void> {
+  if (outputPath !== undefined) {
+    await mkdir(path.dirname(outputPath), { recursive: true });
+    await writeFile(outputPath, content + "\n", "utf8");
+    process.stdout.write(`Wrote ${format} report to ${outputPath}\n`);
+  } else {
+    process.stdout.write(`${content}\n`);
+  }
+}
+
+// ── Main ────────────────────────────────────────────────────────────────────
+
 async function main(): Promise<void> {
   const program = new Command();
   program
     .name("mcp-observatory")
-    .description(
-      "Regression intelligence for MCP targets: detect, diff, and explain interoperability drift over time.",
-    )
-    .version(TOOL_VERSION);
+    .description("Test your MCP servers for breaking changes.")
+    .version(TOOL_VERSION)
+    .addHelpText("before", useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n` : LOGO + `  v${TOOL_VERSION}\n`);
 
-  program
-    .command("run")
-    .description("Run checks against a target. Pass --target <config.json> or an inline command after --.")
-    .option("--target <config>", "Path to a target config JSON file.")
-    .option(
-      "--out-dir <directory>",
-      "Directory for persisted run artifacts.",
-      defaultRunsDirectory(process.cwd()),
-    )
-    .option("--watch", "Re-run checks on an interval and diff against the previous run.", false)
-    .option("--interval <seconds>", "Interval in seconds for watch mode.", "30")
-    .option("--invoke-tools", "Invoke safe tools (no required params) to verify they execute.", false)
-    .option("--no-color", "Disable colored output.")
-    .action(async (options: { outDir: string; target?: string; watch: boolean; interval: string; invokeTools: boolean }) => {
-      const target = await resolveTarget(options);
-
-      if (options.watch) {
-        await runWatchMode(target, options.outDir, parseInt(options.interval, 10) || 30);
-        return;
-      }
-
-      const artifact = await runTarget(target, { invokeTools: options.invokeTools });
-      const outPath = await writeRunArtifact(artifact, options.outDir);
-      const summary = renderTerminal(artifact);
-      process.stdout.write(`${summary}\nArtifact: ${outPath}\n`);
-      if (artifact.gate === "fail") {
-        process.exitCode = 1;
-      }
-    });
-
-  program
-    .command("diff")
-    .description("Compare two run artifacts and classify regressions, recoveries, and schema drift.")
-    .requiredOption("--base <artifact>", "Base run artifact JSON.")
-    .requiredOption("--head <artifact>", "Head run artifact JSON.")
-    .option("--format <format>", "terminal, json, markdown, or html", "terminal")
-    .option("--output <file>", "Optional output file path (useful for html format).")
-    .option("--no-color", "Disable colored output.")
-    .option(
-      "--fail-on-regression",
-      "Exit with code 1 when regressions are present.",
-      false,
-    )
-    .action(
-      async (options: {
-        base: string;
-        failOnRegression?: boolean;
-        format: "html" | "json" | "markdown" | "terminal";
-        head: string;
-        output?: string;
-      }) => {
-        const baseArtifact = await readArtifact(options.base);
-        const headArtifact = await readArtifact(options.head);
-
-        if (baseArtifact.artifactType !== "run" || headArtifact.artifactType !== "run") {
-          throw new Error("The diff command only accepts run artifacts.");
-        }
-
-        const artifact = diffArtifacts(baseArtifact, headArtifact);
-        const output =
-          options.format === "json"
-            ? JSON.stringify(artifact, null, 2)
-            : options.format === "markdown"
-              ? renderMarkdown(artifact)
-              : options.format === "html"
-                ? renderHtml(artifact)
-                : renderTerminal(artifact);
-
-        if (options.output !== undefined) {
-          await mkdir(path.dirname(options.output), { recursive: true });
-          await writeFile(options.output, output + "\n", "utf8");
-          process.stdout.write(`Wrote ${options.format} report to ${options.output}\n`);
-        } else {
-          process.stdout.write(`${output}\n`);
-        }
-
-        if (options.failOnRegression && artifact.gate === "fail") {
-          process.exitCode = 1;
-        }
-      },
-    );
-
-  program
-    .command("report")
-    .description("Render a run artifact as terminal, markdown, json, or html output.")
-    .requiredOption("--run <artifact>", "Run artifact JSON.")
-    .option("--format <format>", "terminal, markdown, json, or html", "terminal")
-    .option("--output <file>", "Optional output file path (useful for html format).")
-    .option("--no-color", "Disable colored output.")
-    .action(
-      async (options: {
-        format: "html" | "json" | "markdown" | "terminal";
-        output?: string;
-        run: string;
-      }) => {
-        const artifact = await readArtifact(options.run);
-        if (artifact.artifactType !== "run") {
-          throw new Error("The report command only accepts run artifacts.");
-        }
-        const output =
-          options.format === "json"
-            ? JSON.stringify(artifact, null, 2)
-            : options.format === "markdown"
-              ? renderMarkdown(artifact)
-              : options.format === "html"
-                ? renderHtml(artifact)
-                : renderTerminal(artifact);
-
-        if (options.output !== undefined) {
-          await mkdir(path.dirname(options.output), { recursive: true });
-          await writeFile(options.output, output + "\n", "utf8");
-          process.stdout.write(`Wrote ${options.format} report to ${options.output}\n`);
-          return;
-        }
-
-        process.stdout.write(`${output}\n`);
-      },
-    );
+  // ── Core Commands ───────────────────────────────────────────────────────
 
   program
     .command("scan")
-    .description("Auto-discover MCP server configs and run checks against each discovered server.")
+    .description("Check all MCP servers found in your Claude configs.")
     .option("--config <path>", "Path to a specific MCP config file.")
-    .option("--invoke-tools", "Invoke safe tools (no required params) to verify they execute.", false)
+    .option("--invoke-tools", "Actually call safe tools to verify they execute.", false)
     .option("--no-color", "Disable colored output.")
     .action(async (options: { config?: string; invokeTools: boolean }) => {
       const targets = await scanForTargets(options.config);
 
       if (targets.length === 0) {
         process.stdout.write("No MCP server configs found.\n");
+        process.stdout.write(c(ANSI.dim, "\nLooked in ~/.claude.json, Claude Desktop config, .claude.json, and .mcp.json\n"));
         return;
       }
 
@@ -229,6 +145,8 @@ async function main(): Promise<void> {
       process.stdout.write("\n");
 
       const results: { targetId: string; gate: string; tools: string; prompts: string; resources: string; invoke?: string }[] = [];
+      let passCount = 0;
+      let failCount = 0;
 
       for (const t of targets) {
         process.stdout.write(`Running checks for ${c(ANSI.bold, t.config.targetId)}...\n`);
@@ -246,6 +164,7 @@ async function main(): Promise<void> {
             resources: resourcesStatus,
             invoke: invokeStatus,
           });
+          if (artifact.gate === "pass") passCount++; else failCount++;
         } catch (error) {
           const msg = error instanceof Error ? error.message : String(error);
           results.push({
@@ -255,6 +174,7 @@ async function main(): Promise<void> {
             prompts: "skipped",
             resources: "skipped",
           });
+          failCount++;
           process.stderr.write(`  Error: ${msg}\n`);
         }
       }
@@ -278,11 +198,54 @@ async function main(): Promise<void> {
         }
         process.stdout.write(`${line}\n`);
       }
+
+      // Summary line
+      process.stdout.write("\n");
+      if (failCount === 0) {
+        process.stdout.write(c(ANSI.green, `${passCount} server${passCount === 1 ? "" : "s"} checked, all healthy.\n`));
+      } else {
+        process.stdout.write(c(ANSI.red, `${passCount + failCount} server${passCount + failCount === 1 ? "" : "s"} checked, ${failCount} failing.\n`));
+      }
+
+      // First-run hints
+      if (!options.invokeTools) {
+        process.stdout.write(c(ANSI.dim, "\nTip: run with --invoke-tools to verify tools actually execute.\n"));
+      }
+    });
+
+  program
+    .command("run")
+    .description("Check one server and save a run artifact.")
+    .option("--target <config>", "Path to a target config JSON file.")
+    .option(
+      "--out-dir <directory>",
+      "Directory for persisted run artifacts.",
+      defaultRunsDirectory(process.cwd()),
+    )
+    .option("--watch", "Re-run checks on an interval and diff against the previous run.", false)
+    .option("--interval <seconds>", "Interval in seconds for watch mode.", "30")
+    .option("--invoke-tools", "Actually call safe tools to verify they execute.", false)
+    .option("--no-color", "Disable colored output.")
+    .action(async (options: { outDir: string; target?: string; watch: boolean; interval: string; invokeTools: boolean }) => {
+      const target = await resolveTarget(options);
+
+      if (options.watch) {
+        await runWatchMode(target, options.outDir, parseInt(options.interval, 10) || 30);
+        return;
+      }
+
+      const artifact = await runTarget(target, { invokeTools: options.invokeTools });
+      const outPath = await writeRunArtifact(artifact, options.outDir);
+      const summary = renderTerminal(artifact);
+      process.stdout.write(`${summary}\nArtifact: ${outPath}\n`);
+      if (artifact.gate === "fail") {
+        process.exitCode = 1;
+      }
     });
 
   program
     .command("check")
-    .description("Run a single capability check. Pass --target <config.json> or an inline command after --.")
+    .description("Run a single capability check (tools, prompts, resources, tools-invoke).")
     .argument("<capability>", "Capability to check: tools, prompts, resources, or tools-invoke.")
     .option("--target <config>", "Path to a target config JSON file.")
     .option("--no-color", "Disable colored output.")
@@ -317,9 +280,69 @@ async function main(): Promise<void> {
       }
     });
 
+  // ── Analysis Commands ─────────────────────────────────────────────────
+
+  program
+    .command("diff")
+    .description("Compare two runs and show regressions, recoveries, and schema drift.")
+    .requiredOption("--base <artifact>", "Base run artifact JSON.")
+    .requiredOption("--head <artifact>", "Head run artifact JSON.")
+    .option("--format <format>", "terminal, json, markdown, or html", "terminal")
+    .option("--output <file>", "Write to file instead of stdout.")
+    .option("--no-color", "Disable colored output.")
+    .option("--fail-on-regression", "Exit with code 1 when regressions are present.", false)
+    .action(
+      async (options: {
+        base: string;
+        failOnRegression?: boolean;
+        format: "html" | "json" | "markdown" | "terminal";
+        head: string;
+        output?: string;
+      }) => {
+        const baseArtifact = await readArtifact(options.base);
+        const headArtifact = await readArtifact(options.head);
+
+        if (baseArtifact.artifactType !== "run" || headArtifact.artifactType !== "run") {
+          throw new Error("The diff command only accepts run artifacts.");
+        }
+
+        const artifact = diffArtifacts(baseArtifact, headArtifact);
+        const output = formatOutput(artifact, options.format);
+        await writeOutput(output, options.format, options.output);
+
+        if (options.failOnRegression && artifact.gate === "fail") {
+          process.exitCode = 1;
+        }
+      },
+    );
+
+  program
+    .command("report")
+    .description("Render a run artifact as terminal, markdown, json, or html.")
+    .requiredOption("--run <artifact>", "Run artifact JSON.")
+    .option("--format <format>", "terminal, markdown, json, or html", "terminal")
+    .option("--output <file>", "Write to file instead of stdout.")
+    .option("--no-color", "Disable colored output.")
+    .action(
+      async (options: {
+        format: "html" | "json" | "markdown" | "terminal";
+        output?: string;
+        run: string;
+      }) => {
+        const artifact = await readArtifact(options.run);
+        if (artifact.artifactType !== "run") {
+          throw new Error("The report command only accepts run artifacts.");
+        }
+        const output = formatOutput(artifact, options.format);
+        await writeOutput(output, options.format, options.output);
+      },
+    );
+
+  // ── Server Mode ───────────────────────────────────────────────────────
+
   program
     .command("serve")
-    .description("Start mcp-observatory as an MCP server on stdio. Exposes scan, check_server, diff_runs, and get_last_run as tools.")
+    .description("Run as an MCP server. Exposes scan, check, diff, suggest as tools for AI agents.")
     .action(async () => {
       const { startServer } = await import("./server.js");
       await startServer();
@@ -378,7 +401,6 @@ async function runWatchMode(target: TargetConfig, outDir: string, intervalSecond
 
   void loop();
 
-  // Keep the process alive until Ctrl+C
   await new Promise<void>((resolve) => {
     process.on("SIGINT", () => {
       process.stdout.write("\nWatch mode stopped.\n");
