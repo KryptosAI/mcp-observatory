@@ -14,7 +14,7 @@
     "url": "https://github.com/KryptosAI/mcp-observatory/issues"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=20"
   },
   "publishConfig": {
     "access": "public"
@@ -25,13 +25,7 @@
   "files": [
     "dist/src",
     "README.md",
-    "CHANGELOG.md",
-    "RELEASE.md",
     "LICENSE",
-    "CONTRIBUTING.md",
-    "ROADMAP.md",
-    "SECURITY.md",
-    "CODE_OF_CONDUCT.md",
     "schemas"
   ],
   "scripts": {
@@ -57,7 +51,7 @@
     "observability"
   ],
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.27.1",
+    "@modelcontextprotocol/sdk": "^1.27.1",
     "commander": "14.0.2"
   },
   "devDependencies": {
