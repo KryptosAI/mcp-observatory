@@ -1,0 +1,15 @@
+{
+  "targetId": "everything-server",
+  "adapter": "local-process",
+  "command": "npx",
+  "args": [
+    "-y",
+    "@modelcontextprotocol/server-everything"
+  ],
+  "cwd": ".",
+  "timeoutMs": 15000,
+  "metadata": {
+    "purpose": "real-server-smoke",
+    "shape": "resources-heavy"
+  }
+}

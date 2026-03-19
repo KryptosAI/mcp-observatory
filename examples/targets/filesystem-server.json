@@ -1,0 +1,16 @@
+{
+  "targetId": "filesystem-server",
+  "adapter": "local-process",
+  "command": "npx",
+  "args": [
+    "-y",
+    "@modelcontextprotocol/server-filesystem",
+    "examples/filesystem-fixture"
+  ],
+  "cwd": ".",
+  "timeoutMs": 10000,
+  "metadata": {
+    "purpose": "real-server-smoke",
+    "shape": "tool-heavy"
+  }
+}

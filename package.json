@@ -34,6 +34,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "cli": "tsx src/cli.ts",
+    "integration:real": "tsx scripts/run-real-server-matrix.ts",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",

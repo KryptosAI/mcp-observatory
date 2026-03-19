@@ -41,6 +41,27 @@ npm test
 npm run smoke
 ```
 
+Optional but recommended before opening a larger PR:
+
+```bash
+npm run integration:real
+```
+
+## First Contribution Walkthrough
+
+If this is your first contribution to the project, pick one of these paths:
+
+1. Docs path: improve one README or CONTRIBUTING section and keep the change tightly scoped.
+2. Reporting path: improve one Markdown report section and update the checked-in report examples.
+3. Fixture path: add or refine one deterministic target or artifact in `examples/` or `tests/fixtures/`.
+
+For each path:
+
+- open the matching GitHub issue
+- mention the specific files you plan to touch
+- keep the diff small and obvious
+- include the exact validation commands you ran
+
 ## Fixture Contributions
 
 When you add a fixture:

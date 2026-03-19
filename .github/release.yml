@@ -1,0 +1,26 @@
+changelog:
+  categories:
+    - title: CLI and Core
+      labels:
+        - area:cli
+        - area:artifacts
+        - area:integration
+    - title: Reporting and Docs
+      labels:
+        - area:reporting
+        - area:docs
+        - documentation
+    - title: Examples and Contributor Experience
+      labels:
+        - area:examples
+        - good first issue
+        - help wanted
+    - title: Release and Packaging
+      labels:
+        - area:release
+        - roadmap
+  exclude:
+    labels:
+      - duplicate
+      - invalid
+      - wontfix

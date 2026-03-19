@@ -1,0 +1,200 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-03-19T010608367Z_bccf39df",
+  "createdAt": "2026-03-19T01:06:08.368Z",
+  "toolVersion": "0.1.0",
+  "target": {
+    "targetId": "everything-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-everything"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "purpose": "real-server-smoke",
+      "shape": "resources-heavy"
+    },
+    "serverName": "mcp-servers/everything",
+    "serverVersion": "2.0.0"
+  },
+  "environment": {
+    "platform": "darwin 25.3.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 4,
+    "pass": 4,
+    "fail": 0,
+    "partial": 0,
+    "unsupported": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 11.036374999999907,
+      "message": "Advertised capability responded with the minimal expected shape (13 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 13,
+          "identifiers": [
+            "echo",
+            "get-annotated-message",
+            "get-env",
+            "get-resource-links",
+            "get-resource-reference",
+            "get-structured-content",
+            "get-sum",
+            "get-tiny-image",
+            "gzip-file-as-resource",
+            "toggle-simulated-logging",
+            "toggle-subscriber-updates",
+            "trigger-long-running-operation",
+            "simulate-research-query"
+          ],
+          "diagnostics": [
+            "Starting default (STDIO) server..."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "pass",
+      "durationMs": 1.1857499999998709,
+      "message": "Advertised capability responded with the minimal expected shape (4 items).",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 4,
+          "identifiers": [
+            "simple-prompt",
+            "args-prompt",
+            "completable-prompt",
+            "resource-prompt"
+          ],
+          "diagnostics": [
+            "Starting default (STDIO) server..."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "pass",
+      "durationMs": 1.8087080000000242,
+      "message": "Advertised capability responded with the minimal expected shape (9 items).",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 9,
+          "identifiers": [
+            "demo://resource/static/document/architecture.md",
+            "demo://resource/static/document/extension.md",
+            "demo://resource/static/document/features.md",
+            "demo://resource/static/document/how-it-works.md",
+            "demo://resource/static/document/instructions.md",
+            "demo://resource/static/document/startup.md",
+            "demo://resource/static/document/structure.md",
+            "demo://resource/dynamic/text/{resourceId}",
+            "demo://resource/dynamic/blob/{resourceId}"
+          ],
+          "diagnostics": [
+            "Starting default (STDIO) server..."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "semantics",
+      "capability": "semantics",
+      "status": "pass",
+      "durationMs": 0.008915999999999258,
+      "message": "Advertised capabilities responded and returned the minimal expected shape.",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 13,
+          "identifiers": [
+            "echo",
+            "get-annotated-message",
+            "get-env",
+            "get-resource-links",
+            "get-resource-reference",
+            "get-structured-content",
+            "get-sum",
+            "get-tiny-image",
+            "gzip-file-as-resource",
+            "toggle-simulated-logging",
+            "toggle-subscriber-updates",
+            "trigger-long-running-operation",
+            "simulate-research-query"
+          ],
+          "diagnostics": [
+            "Starting default (STDIO) server..."
+          ]
+        },
+        {
+          "endpoint": "prompts/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 4,
+          "identifiers": [
+            "simple-prompt",
+            "args-prompt",
+            "completable-prompt",
+            "resource-prompt"
+          ],
+          "diagnostics": [
+            "Starting default (STDIO) server..."
+          ]
+        },
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 9,
+          "identifiers": [
+            "demo://resource/static/document/architecture.md",
+            "demo://resource/static/document/extension.md",
+            "demo://resource/static/document/features.md",
+            "demo://resource/static/document/how-it-works.md",
+            "demo://resource/static/document/instructions.md",
+            "demo://resource/static/document/startup.md",
+            "demo://resource/static/document/structure.md",
+            "demo://resource/dynamic/text/{resourceId}",
+            "demo://resource/dynamic/blob/{resourceId}"
+          ],
+          "diagnostics": [
+            "Starting default (STDIO) server..."
+          ]
+        }
+      ]
+    }
+  ]
+}

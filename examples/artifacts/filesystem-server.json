@@ -1,0 +1,173 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-03-19T010609952Z_6b138360",
+  "createdAt": "2026-03-19T01:06:09.952Z",
+  "toolVersion": "0.1.0",
+  "target": {
+    "targetId": "filesystem-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-filesystem",
+      "examples/filesystem-fixture"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "purpose": "real-server-smoke",
+      "shape": "tool-heavy"
+    },
+    "serverName": "secure-filesystem-server",
+    "serverVersion": "0.2.0"
+  },
+  "environment": {
+    "platform": "darwin 25.3.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 4,
+    "pass": 2,
+    "fail": 0,
+    "partial": 0,
+    "unsupported": 2,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 8.13274999999976,
+      "message": "Advertised capability responded with the minimal expected shape (14 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 14,
+          "identifiers": [
+            "read_file",
+            "read_text_file",
+            "read_media_file",
+            "read_multiple_files",
+            "write_file",
+            "edit_file",
+            "create_directory",
+            "list_directory",
+            "list_directory_with_sizes",
+            "directory_tree",
+            "move_file",
+            "search_files",
+            "get_file_info",
+            "list_allowed_directories"
+          ],
+          "diagnostics": [
+            "Secure MCP Filesystem Server running on stdio",
+            "Client does not support MCP Roots, using allowed directories set from server args: [",
+            "'/Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/filesystem-fixture'",
+            "]"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.002292000000124972,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.0008339999999407155,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "semantics",
+      "capability": "semantics",
+      "status": "pass",
+      "durationMs": 0.0013750000002801244,
+      "message": "Advertised capabilities responded and returned the minimal expected shape.",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 14,
+          "identifiers": [
+            "read_file",
+            "read_text_file",
+            "read_media_file",
+            "read_multiple_files",
+            "write_file",
+            "edit_file",
+            "create_directory",
+            "list_directory",
+            "list_directory_with_sizes",
+            "directory_tree",
+            "move_file",
+            "search_files",
+            "get_file_info",
+            "list_allowed_directories"
+          ],
+          "diagnostics": [
+            "Secure MCP Filesystem Server running on stdio",
+            "Client does not support MCP Roots, using allowed directories set from server args: [",
+            "'/Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/filesystem-fixture'",
+            "]"
+          ]
+        },
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": [
+            "Secure MCP Filesystem Server running on stdio",
+            "Client does not support MCP Roots, using allowed directories set from server args: [",
+            "'/Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/filesystem-fixture'",
+            "]"
+          ]
+        },
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": [
+            "Secure MCP Filesystem Server running on stdio",
+            "Client does not support MCP Roots, using allowed directories set from server args: [",
+            "'/Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/filesystem-fixture'",
+            "]"
+          ]
+        }
+      ]
+    }
+  ]
+}
