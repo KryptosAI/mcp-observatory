@@ -23,9 +23,13 @@ import { TOOL_VERSION } from "./version.js";
 // ── ASCII Logo ──────────────────────────────────────────────────────────────
 
 const LOGO = `
-  ╔═╗┌┐ ┌─┐┌─┐┬─┐┬  ┬┌─┐┌┬┐┌─┐┬─┐┬ ┬
-  ║ ║├┴┐└─┐├┤ ├┬┘└┐┌┘├─┤ │ │ │├┬┘└┬┘
-  ╚═╝└─┘└─┘└─┘┴└─ └┘ ┴ ┴ ┴ └─┘┴└─ ┴
+  ███╗   ███╗ ██████╗██████╗
+  ████╗ ████║██╔════╝██╔══██╗
+  ██╔████╔██║██║     ██████╔╝
+  ██║╚██╔╝██║██║     ██╔═══╝
+  ██║ ╚═╝ ██║╚██████╗██║
+  ╚═╝     ╚═╝ ╚═════╝╚═╝
+     O B S E R V A T O R Y
 `;
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -130,6 +134,8 @@ async function main(): Promise<void> {
     .option("--invoke-tools", "Actually call safe tools to verify they execute.", false)
     .option("--no-color", "Disable colored output.")
     .action(async (options: { config?: string; invokeTools: boolean }) => {
+      process.stdout.write(useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n\n` : LOGO + `  v${TOOL_VERSION}\n\n`);
+
       const targets = await scanForTargets(options.config);
 
       if (targets.length === 0) {
