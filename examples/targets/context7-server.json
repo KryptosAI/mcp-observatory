@@ -1,0 +1,15 @@
+{
+  "targetId": "context7-server",
+  "adapter": "local-process",
+  "command": "npx",
+  "args": [
+    "-y",
+    "@upstash/context7-mcp"
+  ],
+  "cwd": ".",
+  "timeoutMs": 20000,
+  "metadata": {
+    "purpose": "real-server-smoke",
+    "shape": "tool-heavy-third-party"
+  }
+}

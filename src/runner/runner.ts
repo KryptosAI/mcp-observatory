@@ -1,6 +1,6 @@
 import os from "node:os";
 
-import { LocalProcessAdapter } from "../adapters/local-process.js";
+import { AdapterConnectError, LocalProcessAdapter } from "../adapters/local-process.js";
 import { runPromptsCheck } from "../checks/prompts.js";
 import { runResourcesCheck } from "../checks/resources.js";
 import { runSemanticsCheck } from "../checks/semantics.js";
@@ -81,13 +81,17 @@ export async function runTarget(target: TargetConfig): Promise<RunArtifact> {
     }
   } catch (error) {
     fatalError = error instanceof Error ? error.message : String(error);
+    const skippedMessage =
+      error instanceof AdapterConnectError
+        ? "Skipped because startup failed before the MCP session initialized. See the failure diagnosis."
+        : "Skipped because the adapter never established a session.";
     checks = [
       {
         id: "tools",
         capability: "tools",
         status: "skipped",
         durationMs: 0,
-        message: "Skipped because the adapter never established a session.",
+        message: skippedMessage,
         evidence: []
       },
       {
@@ -95,7 +99,7 @@ export async function runTarget(target: TargetConfig): Promise<RunArtifact> {
         capability: "prompts",
         status: "skipped",
         durationMs: 0,
-        message: "Skipped because the adapter never established a session.",
+        message: skippedMessage,
         evidence: []
       },
       {
@@ -103,7 +107,7 @@ export async function runTarget(target: TargetConfig): Promise<RunArtifact> {
         capability: "resources",
         status: "skipped",
         durationMs: 0,
-        message: "Skipped because the adapter never established a session.",
+        message: skippedMessage,
         evidence: []
       },
       {
@@ -111,7 +115,7 @@ export async function runTarget(target: TargetConfig): Promise<RunArtifact> {
         capability: "semantics",
         status: "skipped",
         durationMs: 0,
-        message: "Skipped because the adapter never established a session.",
+        message: skippedMessage,
         evidence: []
       }
     ];

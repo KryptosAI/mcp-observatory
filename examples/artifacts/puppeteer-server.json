@@ -1,0 +1,159 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-03-19T035128464Z_de4d0c26",
+  "createdAt": "2026-03-19T03:51:28.464Z",
+  "toolVersion": "0.1.0",
+  "target": {
+    "targetId": "puppeteer-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "puppeteer-mcp-server"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "purpose": "real-server-smoke",
+      "shape": "tools-and-resources"
+    },
+    "serverName": "example-servers/puppeteer",
+    "serverVersion": "0.1.0"
+  },
+  "environment": {
+    "platform": "darwin 25.3.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 4,
+    "pass": 3,
+    "fail": 0,
+    "partial": 0,
+    "unsupported": 1,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 0.4492079999999987,
+      "message": "Advertised capability responded with the minimal expected shape (8 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 8,
+          "identifiers": [
+            "puppeteer_connect_active_tab",
+            "puppeteer_navigate",
+            "puppeteer_screenshot",
+            "puppeteer_click",
+            "puppeteer_fill",
+            "puppeteer_select",
+            "puppeteer_hover",
+            "puppeteer_evaluate"
+          ],
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.0017920000000231084,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "pass",
+      "durationMs": 0.851875000000291,
+      "message": "Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported.",
+      "evidence": [
+        {
+          "endpoint": "resources/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "console://logs"
+          ],
+          "diagnostics": []
+        },
+        {
+          "endpoint": "resources/templates/list",
+          "advertised": true,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": [
+            "MCP error -32601: Method not found"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "semantics",
+      "capability": "semantics",
+      "status": "pass",
+      "durationMs": 0.0030839999999443535,
+      "message": "Advertised capabilities responded and returned the minimal expected shape: tools, resources.",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 8,
+          "identifiers": [
+            "puppeteer_connect_active_tab",
+            "puppeteer_navigate",
+            "puppeteer_screenshot",
+            "puppeteer_click",
+            "puppeteer_fill",
+            "puppeteer_select",
+            "puppeteer_hover",
+            "puppeteer_evaluate"
+          ],
+          "diagnostics": []
+        },
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        },
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "console://logs"
+          ],
+          "diagnostics": [
+            "resources/templates/list: MCP error -32601: Method not found"
+          ]
+        }
+      ]
+    }
+  ]
+}

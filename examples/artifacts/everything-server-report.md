@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-03-19T03:08:06.622Z
+Generated at 2026-03-19T03:51:26.734Z
 
 ## Target and Environment Metadata
 
@@ -13,9 +13,17 @@ Generated at 2026-03-19T03:08:06.622Z
 
 ## Executive Summary
 
-| Gate | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
-| --- | --- | --- | --- | --- | --- | --- |
-| pass | 4 | 0 | 0 | 0 | 0 | 0 |
+| Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| pass | 4 | 4 | 0 | 0 | 0 | 0 | 0 |
+
+## At a Glance
+
+- Failing checks: none
+- Partial or flaky checks: none
+- Skipped checks: none
+- Unsupported checks: none
+- Suggested next step: Save this run artifact and diff it against the next meaningful server or package change.
 
 ## Regressions and Recoveries
 
@@ -23,26 +31,18 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 ## Full Capability Status Table
 
-| Check | Status | Duration (ms) | Message |
-| --- | --- | --- | --- |
-| tools | pass | 10.96 | Advertised capability responded with the minimal expected shape (13 items). |
-| prompts | pass | 1.19 | Advertised capability responded with the minimal expected shape (4 items). |
-| resources | pass | 1.14 | Advertised capability responded with the minimal expected shape (9 items). |
-| semantics | pass | 0.01 | Advertised capabilities responded and returned the minimal expected shape. |
+| Focus | Check | Status | Duration (ms) | Message |
+| --- | --- | --- | --- | --- |
+| healthy | prompts | pass | 0.66 | Advertised capability responded with the minimal expected shape (4 items). |
+| healthy | resources | pass | 1.00 | Advertised capability responded with the minimal expected shape (9 items). |
+| healthy | semantics | pass | 0.00 | Advertised capabilities responded and returned the minimal expected shape: tools, prompts, resources. |
+| healthy | tools | pass | 6.64 | Advertised capability responded with the minimal expected shape (13 items). |
 
 ## Evidence Snippets
 
-### tools
+### prompts — pass
 
-- Endpoint: `tools/list`
-  - Advertised: `true`
-  - Responded: `true`
-  - Minimal shape present: `true`
-  - Item count: `13`
-  - Identifiers: echo, get-annotated-message, get-env, get-resource-links, get-resource-reference, get-structured-content, get-sum, get-tiny-image, gzip-file-as-resource, toggle-simulated-logging, toggle-subscriber-updates, trigger-long-running-operation, simulate-research-query
-  - Diagnostics: Starting default (STDIO) server...
-
-### prompts
+Summary: Advertised capability responded with the minimal expected shape (4 items).
 
 - Endpoint: `prompts/list`
   - Advertised: `true`
@@ -52,24 +52,35 @@ _Use the `diff` command against another run artifact to classify regressions and
   - Identifiers: simple-prompt, args-prompt, completable-prompt, resource-prompt
   - Diagnostics: Starting default (STDIO) server...
 
-### resources
+### resources — pass
 
-- Endpoint: `resources/list | resources/templates/list`
+Summary: Advertised capability responded with the minimal expected shape (9 items).
+
+- Endpoint: `resources/list`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
-  - Item count: `9`
-  - Identifiers: demo://resource/static/document/architecture.md, demo://resource/static/document/extension.md, demo://resource/static/document/features.md, demo://resource/static/document/how-it-works.md, demo://resource/static/document/instructions.md, demo://resource/static/document/startup.md, demo://resource/static/document/structure.md, demo://resource/dynamic/text/{resourceId}, demo://resource/dynamic/blob/{resourceId}
+  - Item count: `7`
+  - Identifiers: demo://resource/static/document/architecture.md, demo://resource/static/document/extension.md, demo://resource/static/document/features.md, demo://resource/static/document/how-it-works.md, demo://resource/static/document/instructions.md (+2 more)
+  - Diagnostics: Starting default (STDIO) server...
+- Endpoint: `resources/templates/list`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `2`
+  - Identifiers: demo://resource/dynamic/text/{resourceId}, demo://resource/dynamic/blob/{resourceId}
   - Diagnostics: Starting default (STDIO) server...
 
-### semantics
+### semantics — pass
+
+Summary: Advertised capabilities responded and returned the minimal expected shape: tools, prompts, resources.
 
 - Endpoint: `tools/list`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
   - Item count: `13`
-  - Identifiers: echo, get-annotated-message, get-env, get-resource-links, get-resource-reference, get-structured-content, get-sum, get-tiny-image, gzip-file-as-resource, toggle-simulated-logging, toggle-subscriber-updates, trigger-long-running-operation, simulate-research-query
+  - Identifiers: echo, get-annotated-message, get-env, get-resource-links, get-resource-reference (+8 more)
   - Diagnostics: Starting default (STDIO) server...
 - Endpoint: `prompts/list`
   - Advertised: `true`
@@ -83,7 +94,19 @@ _Use the `diff` command against another run artifact to classify regressions and
   - Responded: `true`
   - Minimal shape present: `true`
   - Item count: `9`
-  - Identifiers: demo://resource/static/document/architecture.md, demo://resource/static/document/extension.md, demo://resource/static/document/features.md, demo://resource/static/document/how-it-works.md, demo://resource/static/document/instructions.md, demo://resource/static/document/startup.md, demo://resource/static/document/structure.md, demo://resource/dynamic/text/{resourceId}, demo://resource/dynamic/blob/{resourceId}
+  - Identifiers: demo://resource/static/document/architecture.md, demo://resource/static/document/extension.md, demo://resource/static/document/features.md, demo://resource/static/document/how-it-works.md, demo://resource/static/document/instructions.md (+4 more)
+  - Diagnostics: Starting default (STDIO) server...
+
+### tools — pass
+
+Summary: Advertised capability responded with the minimal expected shape (13 items).
+
+- Endpoint: `tools/list`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `13`
+  - Identifiers: echo, get-annotated-message, get-env, get-resource-links, get-resource-reference (+8 more)
   - Diagnostics: Starting default (STDIO) server...
 
 ## Reproduction Commands
@@ -97,5 +120,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-03-19T030806621Z_8c2ccb42`
+- Run ID: `run_2026-03-19T035126734Z_26bc9124`
 - Gate: `pass`

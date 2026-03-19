@@ -1,4 +1,12 @@
-import type { DiffArtifact, DiffEntry, EvidenceSummary, RunArtifact } from "../types.js";
+import type { CheckResult, DiffArtifact, DiffEntry, EvidenceSummary, RunArtifact } from "../types.js";
+import {
+  describeCheckList,
+  findChecksByStatus,
+  focusLabel,
+  previewList,
+  recommendRunNextStep,
+  sortChecksByActionability
+} from "./common.js";
 
 function table(entries: string[][]): string {
   if (entries.length === 0) {
@@ -18,26 +26,63 @@ function renderEvidence(evidence: EvidenceSummary[]): string {
 
   return evidence
     .map((entry) => {
-      const identifiers =
-        entry.identifiers !== undefined && entry.identifiers.length > 0
-          ? `Identifiers: ${entry.identifiers.join(", ")}`
-          : "Identifiers: none";
-      const diagnostics =
-        entry.diagnostics !== undefined && entry.diagnostics.length > 0
-          ? entry.diagnostics.join("; ")
-          : "none";
-
       return [
         `- Endpoint: \`${entry.endpoint}\``,
         `  - Advertised: \`${String(entry.advertised)}\``,
         `  - Responded: \`${String(entry.responded)}\``,
         `  - Minimal shape present: \`${String(entry.minimalShapePresent)}\``,
         `  - Item count: \`${entry.itemCount ?? 0}\``,
-        `  - ${identifiers}`,
-        `  - Diagnostics: ${diagnostics}`
+        `  - Identifiers: ${previewList(entry.identifiers)}`,
+        `  - Diagnostics: ${previewList(entry.diagnostics, 3)}`
       ].join("\n");
     })
     .join("\n");
+}
+
+function renderRunAtAGlance(artifact: RunArtifact): string {
+  const failingChecks = findChecksByStatus(artifact.checks, "fail");
+  const partialChecks = [
+    ...findChecksByStatus(artifact.checks, "partial"),
+    ...findChecksByStatus(artifact.checks, "flaky")
+  ];
+  const unsupportedChecks = findChecksByStatus(artifact.checks, "unsupported");
+  const skippedChecks = findChecksByStatus(artifact.checks, "skipped");
+
+  return [
+    `## At a Glance`,
+    ``,
+    `- Failing checks: ${describeCheckList(failingChecks)}`,
+    `- Partial or flaky checks: ${describeCheckList(partialChecks)}`,
+    `- Skipped checks: ${describeCheckList(skippedChecks)}`,
+    `- Unsupported checks: ${describeCheckList(unsupportedChecks)}`,
+    `- Suggested next step: ${recommendRunNextStep(artifact)}`
+  ].join("\n");
+}
+
+function renderFailureDiagnosis(artifact: RunArtifact): string[] {
+  if (artifact.fatalError === undefined) {
+    return [];
+  }
+
+  return [
+    `## Failure Diagnosis`,
+    ``,
+    "```text",
+    artifact.fatalError,
+    "```",
+    ``
+  ];
+}
+
+function renderCheckSection(check: CheckResult): string[] {
+  return [
+    `### ${check.id} — ${check.status}`,
+    ``,
+    `Summary: ${check.message}`,
+    ``,
+    renderEvidence(check.evidence),
+    ``
+  ];
 }
 
 function renderDiffEntries(title: string, entries: DiffEntry[]): string {
@@ -53,6 +98,7 @@ function renderDiffEntries(title: string, entries: DiffEntry[]): string {
 }
 
 function renderRunMarkdown(artifact: RunArtifact): string {
+  const orderedChecks = sortChecksByActionability(artifact.checks);
   return [
     `# MCP Observatory Run Report`,
     ``,
@@ -70,9 +116,10 @@ function renderRunMarkdown(artifact: RunArtifact): string {
     `## Executive Summary`,
     ``,
     table([
-      ["Gate", "Pass", "Fail", "Partial", "Unsupported", "Flaky", "Skipped"],
+      ["Gate", "Total", "Pass", "Fail", "Partial", "Unsupported", "Flaky", "Skipped"],
       [
         artifact.gate,
+        String(artifact.summary.total),
         String(artifact.summary.pass),
         String(artifact.summary.fail),
         String(artifact.summary.partial),
@@ -82,15 +129,19 @@ function renderRunMarkdown(artifact: RunArtifact): string {
       ]
     ]),
     ``,
+    renderRunAtAGlance(artifact),
+    ``,
     `## Regressions and Recoveries`,
     ``,
     `_Use the \`diff\` command against another run artifact to classify regressions and recoveries over time._`,
     ``,
+    ...renderFailureDiagnosis(artifact),
     `## Full Capability Status Table`,
     ``,
     table([
-      ["Check", "Status", "Duration (ms)", "Message"],
-      ...artifact.checks.map((check) => [
+      ["Focus", "Check", "Status", "Duration (ms)", "Message"],
+      ...orderedChecks.map((check) => [
+        focusLabel(check.status),
         check.id,
         check.status,
         check.durationMs.toFixed(2),
@@ -100,12 +151,7 @@ function renderRunMarkdown(artifact: RunArtifact): string {
     ``,
     `## Evidence Snippets`,
     ``,
-    ...artifact.checks.flatMap((check) => [
-      `### ${check.id}`,
-      ``,
-      renderEvidence(check.evidence),
-      ``
-    ]),
+    ...orderedChecks.flatMap(renderCheckSection),
     `## Reproduction Commands`,
     ``,
     "```bash",
@@ -123,6 +169,20 @@ function renderRunMarkdown(artifact: RunArtifact): string {
 }
 
 function renderDiffMarkdown(artifact: DiffArtifact): string {
+  const regressionList =
+    artifact.regressions.length > 0
+      ? artifact.regressions.map((entry) => `- ${entry.id}: ${entry.message}`).join("\n")
+      : "_None._";
+  const recoveryList =
+    artifact.recoveries.length > 0
+      ? artifact.recoveries.map((entry) => `- ${entry.id}: ${entry.message}`).join("\n")
+      : "_None._";
+  const suggestedNextStep =
+    artifact.regressions.length > 0
+      ? `Start with the regressions: ${artifact.regressions.map((entry) => entry.id).join(", ")}.`
+      : artifact.recoveries.length > 0
+        ? "No regressions were detected. Review recoveries and decide whether they should become part of the expected baseline."
+        : "No status movement was detected. Save the diff artifact with the paired run artifacts for future comparison.";
   return [
     `# MCP Observatory Diff Report`,
     ``,
@@ -147,10 +207,19 @@ function renderDiffMarkdown(artifact: DiffArtifact): string {
       ]
     ]),
     ``,
-    renderDiffEntries("Regressions and Recoveries", [
-      ...artifact.regressions,
-      ...artifact.recoveries
-    ]),
+    `## At a Glance`,
+    ``,
+    `- Regressions: ${artifact.regressions.map((entry) => entry.id).join(", ") || "none"}`,
+    `- Recoveries: ${artifact.recoveries.map((entry) => entry.id).join(", ") || "none"}`,
+    `- Suggested next step: ${suggestedNextStep}`,
+    ``,
+    `## Regressions`,
+    ``,
+    regressionList,
+    ``,
+    `## Recoveries`,
+    ``,
+    recoveryList,
     ``,
     `## Full Capability Status Table`,
     ``,

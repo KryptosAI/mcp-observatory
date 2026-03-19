@@ -8,7 +8,7 @@
 
 MCP Observatory exists because real MCP servers drift in ways conformance does not explain.
 
-> Maintainer note, March 19, 2026: I started this repo after running a small real-server matrix and seeing two different truths at once. `@modelcontextprotocol/server-filesystem`, `@modelcontextprotocol/server-everything`, and `ref-tools-mcp` all worked, but they exposed very different capability shapes. At the same time, `@modelcontextprotocol/server-map`, `@modelcontextprotocol/server-pdf`, `@modelcontextprotocol/server-threejs`, and `@jsonresume/mcp` timed out or closed early when treated as plain local-process stdio targets. Official conformance still matters. This repo exists because field evidence matters too.
+> Maintainer note, March 19, 2026: I started this repo after running a small real-server matrix and seeing two different truths at once. `@modelcontextprotocol/server-filesystem`, `@modelcontextprotocol/server-everything`, `ref-tools-mcp`, `@upstash/context7-mcp`, and `puppeteer-mcp-server` all worked, but they exposed meaningfully different capability shapes. At the same time, packages like `@modelcontextprotocol/server-map` and `@modelcontextprotocol/server-pdf` still timed out or closed early when treated as plain local-process stdio targets. Official conformance still matters. This repo exists because field evidence matters too.
 
 If the project ever turns into generic MCP theater, that is a regression.
 
@@ -58,7 +58,9 @@ These are not hypothetical scenarios. They came from launch-day runs on March 19
 - `@modelcontextprotocol/server-filesystem` passed `tools` and cleanly surfaced `prompts` and `resources` as `unsupported`. That is a legitimate capability shape, not a failure.
 - `@modelcontextprotocol/server-everything` passed `tools`, `prompts`, and `resources`. It is a good wide reference target, but it should not be mistaken for the average package.
 - `ref-tools-mcp` passed `tools` and `prompts` while leaving `resources` unsupported. That is useful third-party diversity.
-- `@modelcontextprotocol/server-map`, `@modelcontextprotocol/server-pdf`, `@modelcontextprotocol/server-threejs`, and `@jsonresume/mcp` did not behave like plain local-process stdio targets under the current harness. That is ecosystem signal first, product bug second.
+- `@upstash/context7-mcp` passed cleanly as a zero-config third-party tools server. That makes the matrix feel more like the real ecosystem and less like an official-demo loop.
+- `puppeteer-mcp-server` passed as a zero-config tools-and-resources server, but still surfaced an unsupported optional resource-template endpoint. That is exactly the kind of useful caveat the report should make obvious.
+- `@modelcontextprotocol/server-map`, `@modelcontextprotocol/server-pdf`, `@modelcontextprotocol/server-threejs`, and `@jsonresume/mcp` still do not behave like plain local-process stdio targets under the current harness. That is ecosystem signal first, product bug second.
 
 See [docs/field-notes.md](./docs/field-notes.md) for the full launch-day observations and what they changed about the repo.
 
@@ -84,6 +86,8 @@ Checked-in evidence:
 - [Sample fixture report](./examples/results/sample-report.md)
 - [Everything server report](./examples/artifacts/everything-server-report.md)
 - [Filesystem server report](./examples/artifacts/filesystem-server-report.md)
+- [Puppeteer server report](./examples/artifacts/puppeteer-server-report.md)
+- [Server PDF startup failure report](./examples/artifacts/server-pdf-startup-fail-report.md)
 - [Examples overview](./examples/README.md)
 
 ## Real Server Coverage
@@ -95,6 +99,8 @@ Current passing matrix:
 | [filesystem-server.json](./examples/targets/filesystem-server.json) | `@modelcontextprotocol/server-filesystem` | tool-heavy | pass | unsupported | unsupported | good baseline for unsupported vs failed |
 | [everything-server.json](./examples/targets/everything-server.json) | `@modelcontextprotocol/server-everything` | broad capability reference | pass | pass | pass | best wide target in the current matrix |
 | [ref-tools-server.json](./examples/targets/ref-tools-server.json) | `ref-tools-mcp` | prompts-heavy third-party case | pass | pass | unsupported | useful non-official signal |
+| [context7-server.json](./examples/targets/context7-server.json) | `@upstash/context7-mcp` | tool-heavy third-party docs server | pass | unsupported | unsupported | zero-config third-party proof |
+| [puppeteer-server.json](./examples/targets/puppeteer-server.json) | `puppeteer-mcp-server` | tools and resources | pass | unsupported | pass | useful browser-oriented third-party coverage |
 
 Manual recipe:
 
@@ -102,6 +108,8 @@ Manual recipe:
 npm run cli -- run --target examples/targets/filesystem-server.json
 npm run cli -- run --target examples/targets/everything-server.json
 npm run cli -- run --target examples/targets/ref-tools-server.json
+npm run cli -- run --target examples/targets/context7-server.json
+npm run cli -- run --target examples/targets/puppeteer-server.json
 ```
 
 Repeatable script:
@@ -111,6 +119,8 @@ npm run integration:real
 ```
 
 The same matrix also runs in GitHub Actions on a nightly schedule and by manual dispatch. That workflow exists to surface drift, not to make the main PR gate slower.
+
+For known-bad startup probes that are useful for diagnosis work, see [examples/probes/server-pdf-startup-fail.json](./examples/probes/server-pdf-startup-fail.json) and the checked-in [failure report](./examples/artifacts/server-pdf-startup-fail-report.md).
 
 ## Project Status
 

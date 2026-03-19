@@ -3,6 +3,19 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 
 import type { AdapterSession, TargetAdapter } from "./base.js";
 import type { TargetConfig } from "../types.js";
+import { formatConnectionFailureDiagnosis } from "../utils/failure-diagnosis.js";
+
+export class AdapterConnectError extends Error {
+  readonly rawMessage: string;
+  readonly stderrLines: string[];
+
+  constructor(target: TargetConfig, rawMessage: string, stderrLines: string[]) {
+    super(formatConnectionFailureDiagnosis(target, rawMessage, stderrLines));
+    this.name = "AdapterConnectError";
+    this.rawMessage = rawMessage;
+    this.stderrLines = stderrLines;
+  }
+}
 
 export class LocalProcessAdapter implements TargetAdapter {
   async connect(target: TargetConfig): Promise<AdapterSession> {
@@ -35,9 +48,15 @@ export class LocalProcessAdapter implements TargetAdapter {
       },
     );
 
-    await client.connect(transport, {
-      timeout: target.timeoutMs ?? 10_000
-    });
+    try {
+      await client.connect(transport, {
+        timeout: target.timeoutMs ?? 10_000
+      });
+    } catch (error) {
+      const rawMessage = error instanceof Error ? error.message : String(error);
+      await client.close().catch(() => undefined);
+      throw new AdapterConnectError(target, rawMessage, stderrLines);
+    }
 
     const serverVersion = client.getServerVersion();
 
