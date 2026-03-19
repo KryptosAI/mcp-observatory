@@ -33,5 +33,8 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Validate checked-in artifacts
+        run: npm run validate:artifacts
+
       - name: README smoke test
         run: npm run smoke

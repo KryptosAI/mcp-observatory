@@ -1,0 +1,36 @@
+name: real-server-matrix
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 8 * * *"
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm install
+
+      - name: Run real-server matrix
+        id: matrix
+        run: npm run integration:real
+
+      - name: Upload matrix artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-server-matrix-artifacts
+          path: |
+            examples/artifacts/*.json
+            examples/artifacts/*-report.md
+          retention-days: 14
