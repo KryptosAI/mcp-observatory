@@ -139,83 +139,165 @@ async function main(): Promise<void> {
       const targets = await scanForTargets(options.config);
 
       if (targets.length === 0) {
-        process.stdout.write("No MCP server configs found.\n");
-        process.stdout.write(c(ANSI.dim, "\nLooked in ~/.claude.json, Claude Desktop config, .claude.json, and .mcp.json\n"));
+        process.stdout.write(c(ANSI.yellow, "  No MCP servers found.\n\n"));
+        process.stdout.write("  Looked in:\n");
+        process.stdout.write(c(ANSI.dim, "    ~/.claude.json\n"));
+        process.stdout.write(c(ANSI.dim, "    ~/Library/Application Support/Claude/claude_desktop_config.json\n"));
+        process.stdout.write(c(ANSI.dim, "    ./.claude.json, ./.mcp.json\n\n"));
+        process.stdout.write("  To check a specific server:\n");
+        process.stdout.write(`  ${c(ANSI.cyan, "mcp-observatory run -- npx -y @modelcontextprotocol/server-filesystem .")}\n\n`);
         return;
       }
 
-      process.stdout.write(c(ANSI.bold, `Discovered ${targets.length} MCP server(s):\n`));
+      process.stdout.write(c(ANSI.bold, `  Found ${targets.length} MCP server${targets.length === 1 ? "" : "s"}:\n`));
       for (const t of targets) {
-        process.stdout.write(`  ${t.config.targetId} (from ${t.source})\n`);
+        process.stdout.write(`  ${c(ANSI.cyan, "●")} ${c(ANSI.bold, t.config.targetId)} ${c(ANSI.dim, `← ${t.source}`)}\n`);
       }
       process.stdout.write("\n");
 
-      const results: { targetId: string; gate: string; tools: string; prompts: string; resources: string; invoke?: string }[] = [];
+      interface ScanRow {
+        targetId: string;
+        gate: string;
+        tools: string;
+        toolCount: number;
+        prompts: string;
+        promptCount: number;
+        resources: string;
+        resourceCount: number;
+        invoke?: string;
+        invokeMsg?: string;
+        error?: string;
+        diagnostics: string[];
+      }
+
+      const results: ScanRow[] = [];
       let passCount = 0;
       let failCount = 0;
+      let totalTools = 0;
+      let totalPrompts = 0;
+      let totalResources = 0;
 
       for (const t of targets) {
-        process.stdout.write(`Running checks for ${c(ANSI.bold, t.config.targetId)}...\n`);
+        process.stdout.write(`  ${c(ANSI.dim, "⟳")} Checking ${c(ANSI.bold, t.config.targetId)}...`);
         try {
           const artifact = await runTarget(t.config, { invokeTools: options.invokeTools });
-          const toolsStatus = artifact.checks.find((ch) => ch.id === "tools")?.status ?? "skipped";
-          const promptsStatus = artifact.checks.find((ch) => ch.id === "prompts")?.status ?? "skipped";
-          const resourcesStatus = artifact.checks.find((ch) => ch.id === "resources")?.status ?? "skipped";
-          const invokeStatus = artifact.checks.find((ch) => ch.id === "tools-invoke")?.status;
+          const toolsCheck = artifact.checks.find((ch) => ch.id === "tools");
+          const promptsCheck = artifact.checks.find((ch) => ch.id === "prompts");
+          const resourcesCheck = artifact.checks.find((ch) => ch.id === "resources");
+          const invokeCheck = artifact.checks.find((ch) => ch.id === "tools-invoke");
+
+          const toolCount = toolsCheck?.evidence[0]?.itemCount ?? 0;
+          const promptCount = promptsCheck?.evidence[0]?.itemCount ?? 0;
+          const resourceCount = resourcesCheck?.evidence[0]?.itemCount ?? 0;
+
+          totalTools += toolCount;
+          totalPrompts += promptCount;
+          totalResources += resourceCount;
+
+          const diagnostics: string[] = [];
+          for (const check of artifact.checks) {
+            if (check.status === "fail") {
+              diagnostics.push(`${check.id}: ${check.message}`);
+            } else if (check.status === "partial") {
+              diagnostics.push(`${check.id}: ${check.message}`);
+            }
+          }
+
+          const gateIcon = artifact.gate === "pass" ? c(ANSI.green, " ✓") : c(ANSI.red, " ✗");
+          process.stdout.write(`\r  ${gateIcon} ${c(ANSI.bold, t.config.targetId)}${" ".repeat(Math.max(1, 40 - t.config.targetId.length))}`);
+          process.stdout.write(`${c(ANSI.dim, `${toolCount} tools, ${promptCount} prompts, ${resourceCount} resources`)}\n`);
+
           results.push({
             targetId: t.config.targetId,
             gate: artifact.gate,
-            tools: toolsStatus,
-            prompts: promptsStatus,
-            resources: resourcesStatus,
-            invoke: invokeStatus,
+            tools: toolsCheck?.status ?? "skipped",
+            toolCount,
+            prompts: promptsCheck?.status ?? "skipped",
+            promptCount,
+            resources: resourcesCheck?.status ?? "skipped",
+            resourceCount,
+            invoke: invokeCheck?.status,
+            invokeMsg: invokeCheck?.message,
+            diagnostics,
           });
           if (artifact.gate === "pass") passCount++; else failCount++;
         } catch (error) {
           const msg = error instanceof Error ? error.message : String(error);
+          // Provide a friendlier error message
+          let friendlyMsg = msg;
+          if (msg.includes("ENOENT") || msg.includes("not found")) {
+            const cmd = t.config.adapter === "http" ? (t.config as { url: string }).url : (t.config as { command: string }).command;
+            friendlyMsg = `Could not start server — "${cmd}" not found. Is it installed?`;
+          } else if (msg.includes("ECONNREFUSED")) {
+            friendlyMsg = `Server is not running or refused the connection.`;
+          } else if (msg.includes("timed out") || msg.includes("timeout")) {
+            friendlyMsg = `Server took too long to respond.`;
+          }
+
+          process.stdout.write(`\r  ${c(ANSI.red, "✗")} ${c(ANSI.bold, t.config.targetId)}\n`);
+          process.stdout.write(`    ${c(ANSI.red, friendlyMsg)}\n`);
+
           results.push({
             targetId: t.config.targetId,
             gate: "fail",
             tools: "skipped",
+            toolCount: 0,
             prompts: "skipped",
+            promptCount: 0,
             resources: "skipped",
+            resourceCount: 0,
+            error: friendlyMsg,
+            diagnostics: [],
           });
           failCount++;
-          process.stderr.write(`  Error: ${msg}\n`);
         }
       }
 
-      const showInvoke = options.invokeTools;
-      process.stdout.write("\n" + c(ANSI.bold, "Scan Results:\n"));
-      let header = `${"Target".padEnd(30)} ${"Gate".padEnd(6)} ${"Tools".padEnd(14)} ${"Prompts".padEnd(14)} ${"Resources".padEnd(14)}`;
-      let separator = `${"─".repeat(30)} ${"─".repeat(6)} ${"─".repeat(14)} ${"─".repeat(14)} ${"─".repeat(14)}`;
-      if (showInvoke) {
-        header += ` ${"Invoke".padEnd(14)}`;
-        separator += ` ${"─".repeat(14)}`;
-      }
-      process.stdout.write(`${header}\n${separator}\n`);
-
-      for (const r of results) {
-        const gateStr = r.gate === "pass" ? c(ANSI.green, "pass") : c(ANSI.red, "fail");
-        const pad = useColor() ? 9 : 0;
-        let line = `${r.targetId.padEnd(30)} ${gateStr.padEnd(6 + pad)} ${colorStatus(r.tools).padEnd(14 + pad)} ${colorStatus(r.prompts).padEnd(14 + pad)} ${colorStatus(r.resources).padEnd(14 + pad)}`;
-        if (showInvoke) {
-          line += ` ${colorStatus(r.invoke ?? "skipped")}`;
-        }
-        process.stdout.write(`${line}\n`);
-      }
-
-      // Summary line
+      // ── Summary ──────────────────────────────────────────────────────────
       process.stdout.write("\n");
+
       if (failCount === 0) {
-        process.stdout.write(c(ANSI.green, `${passCount} server${passCount === 1 ? "" : "s"} checked, all healthy.\n`));
+        process.stdout.write(c(ANSI.green, `  ✓ All ${passCount} server${passCount === 1 ? "" : "s"} healthy`));
+        process.stdout.write(c(ANSI.dim, ` — ${totalTools} tools, ${totalPrompts} prompts, ${totalResources} resources\n`));
       } else {
-        process.stdout.write(c(ANSI.red, `${passCount + failCount} server${passCount + failCount === 1 ? "" : "s"} checked, ${failCount} failing.\n`));
+        process.stdout.write(c(ANSI.red, `  ✗ ${failCount} of ${passCount + failCount} server${passCount + failCount === 1 ? "" : "s"} failing`));
+        if (totalTools > 0 || totalPrompts > 0 || totalResources > 0) {
+          process.stdout.write(c(ANSI.dim, ` — ${totalTools} tools, ${totalPrompts} prompts, ${totalResources} resources found\n`));
+        } else {
+          process.stdout.write("\n");
+        }
       }
 
-      // First-run hints
-      if (!options.invokeTools) {
-        process.stdout.write(c(ANSI.dim, "\nTip: run with --invoke-tools to verify tools actually execute.\n"));
+      // Show diagnostics for failures or notable partials
+      const issues = results.filter((r) => r.gate === "fail" || r.diagnostics.some((d) => d.startsWith("tools:") || d.startsWith("prompts:") || d.startsWith("resources:")));
+      const invokeIssues = options.invokeTools ? results.filter((r) => r.diagnostics.some((d) => d.startsWith("tools-invoke:"))) : [];
+      const allIssues = [...issues, ...invokeIssues.filter((r) => !issues.includes(r))];
+      if (allIssues.length > 0) {
+        process.stdout.write("\n");
+        for (const r of allIssues) {
+          if (r.error) continue; // Already printed inline
+          if (r.diagnostics.length > 0) {
+            process.stdout.write(`  ${c(ANSI.yellow, r.targetId)}:\n`);
+            for (const d of r.diagnostics.slice(0, 3)) {
+              process.stdout.write(`    ${c(ANSI.dim, "→")} ${d}\n`);
+            }
+          }
+        }
+      }
+
+      // ── Next steps ───────────────────────────────────────────────────────
+      process.stdout.write("\n");
+      if (!options.invokeTools && totalTools > 0) {
+        process.stdout.write(c(ANSI.dim, `  Tip: ${c(ANSI.cyan, "mcp-observatory scan --invoke-tools")} to verify tools actually execute\n`));
+      }
+      if (passCount > 0) {
+        process.stdout.write(c(ANSI.dim, `  Tip: ${c(ANSI.cyan, "mcp-observatory run --target <config> --watch")} to monitor for changes\n`));
+      }
+      process.stdout.write(c(ANSI.dim, `  Tip: ${c(ANSI.cyan, "mcp-observatory run -- <command>")} to check any MCP server by command\n`));
+      process.stdout.write("\n");
+
+      if (failCount > 0) {
+        process.exitCode = 1;
       }
     });
 
@@ -417,6 +499,13 @@ async function runWatchMode(target: TargetConfig, outDir: string, intervalSecond
 
 void main().catch((error: unknown) => {
   const message = error instanceof Error ? error.message : String(error);
-  process.stderr.write(`${message}\n`);
+  // Make common errors friendlier
+  let friendly = message;
+  if (message.includes("Unexpected end of JSON") || message.includes("Unexpected token")) {
+    friendly = "Invalid config file — expected valid JSON. Check the file path and contents.";
+  } else if (message.includes("ENOENT")) {
+    friendly = `File not found: ${message.replace(/.*ENOENT[^']*'([^']*)'.*/, "$1")}`;
+  }
+  process.stderr.write(`\n  ${useColor() ? `\x1b[31m✗\x1b[0m` : "✗"} ${friendly}\n\n`);
   process.exitCode = 1;
 });
