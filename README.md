@@ -1,9 +1,16 @@
 # MCP Observatory
 
+```
+  ╔═╗┌┐ ┌─┐┌─┐┬─┐┬  ┬┌─┐┌┬┐┌─┐┬─┐┬ ┬
+  ║ ║├┴┐└─┐├┤ ├┬┘└┐┌┘├─┤ │ │ │├┬┘└┬┘
+  ╚═╝└─┘└─┘└─┘┴└─ └┘ ┴ ┴ ┴ └─┘┴└─ ┴
+```
+
 [![CI](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/@kryptosai/mcp-observatory)](https://www.npmjs.com/package/@kryptosai/mcp-observatory)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 [![Node >= 20](https://img.shields.io/badge/node-%3E%3D20-339933)](./package.json)
+[![mcp-observatory MCP server](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory/badges/score.svg)](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory)
 
 Find problems in your MCP servers before your users do.
 
