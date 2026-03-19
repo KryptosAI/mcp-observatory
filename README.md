@@ -6,51 +6,65 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 [![Node >= 22](https://img.shields.io/badge/node-%3E%3D22-339933)](./package.json)
 
-MCP Observatory is a developer confidence harness for MCP authors and integrators.
+MCP Observatory exists because real MCP servers drift in ways conformance does not explain.
 
-It detects, stores, compares, and explains interoperability drift over time so you can answer the question most conformance tooling does not try to answer:
+> Maintainer note, March 19, 2026: I started this repo after running a small real-server matrix and seeing two different truths at once. `@modelcontextprotocol/server-filesystem`, `@modelcontextprotocol/server-everything`, and `ref-tools-mcp` all worked, but they exposed very different capability shapes. At the same time, `@modelcontextprotocol/server-map`, `@modelcontextprotocol/server-pdf`, `@modelcontextprotocol/server-threejs`, and `@jsonresume/mcp` timed out or closed early when treated as plain local-process stdio targets. Official conformance still matters. This repo exists because field evidence matters too.
 
-"What changed, what regressed, what recovered, and what artifact proves it?"
+If the project ever turns into generic MCP theater, that is a regression.
 
-## Why This Exists
+## Working Surface
 
-MCP adoption is accelerating, which means MCP breakage is getting more expensive.
+The product surface is deliberately small:
 
-Official conformance tooling is necessary, but it is not the same as regression intelligence. MCP Observatory exists to preserve historical evidence over time so teams can:
+- `run`: execute checks against one target and always persist a run artifact
+- `diff`: compare two runs and classify regressions and recoveries
+- `report`: turn a saved run artifact into readable terminal, JSON, or Markdown output
 
-- spot capability drift before users do
-- compare runs across versions and server changes
-- publish a clear artifact that explains what broke or recovered
-- build confidence in real-world MCP server behavior without inventing a dashboard first
+That is enough to answer a practical question: what changed, what regressed, what recovered, and what artifact proves it?
 
-## Who It Is For
+## Non-goals
 
-- MCP server authors who want confidence before release
-- integrators who need a repeatable way to compare servers or versions
-- OSS contributors who want a concrete, evidence-driven surface to improve
-- CI owners who need a machine-friendly gate plus a human-readable report
+This repo is not trying to be:
 
-## Why Not Conformance?
+- a dashboard product
+- a spec fork or alternate conformance suite
+- broad MCP certification
+- deep semantic correctness validation
+- a promise that every MCP package is a drop-in stdio target
 
-Official MCP conformance tooling already exists.
+If that is the problem you need solved, this is the wrong tool.
 
-MCP Observatory is not trying to replace conformance or redefine the protocol. It complements conformance by focusing on historical compatibility drift and evidence over time. The framing for this repo is consistent on purpose:
+## 60-Second Start
 
-**This is a developer confidence tool for MCP authors and integrators.**
+```bash
+npm install
+npm run cli -- run --target tests/fixtures/sample-target-config.json
+npm run cli -- diff --base tests/fixtures/sample-run-a.json --head tests/fixtures/sample-run-b.json
+# Observe obvious regression/recovery output in the terminal summary
+```
 
-It is not a generic dashboard, not a trust platform, and not a spec fork.
+This is the shortest path to seeing the project work end-to-end without depending on an external MCP server.
 
-## Where It Fits
+The flagship output is still the Markdown report:
 
-| Surface | Primary question answered | Output style | Positioning |
-| --- | --- | --- | --- |
-| Official conformance | "Does this implementation satisfy the protocol contract right now?" | pass/fail conformance evidence | compliance baseline |
-| MCP Observatory | "What changed over time, what regressed, and what recovered?" | versioned run artifacts, diffs, Markdown reports | developer confidence harness |
-| Ad hoc local testing | "Did my one manual run look okay?" | transient console output | useful but not durable |
+```bash
+npm run cli -- report --run tests/fixtures/sample-run-b.json --format markdown --output examples/results/sample-report.md
+```
+
+## What We Learned From Actual Servers
+
+These are not hypothetical scenarios. They came from launch-day runs on March 19, 2026.
+
+- `@modelcontextprotocol/server-filesystem` passed `tools` and cleanly surfaced `prompts` and `resources` as `unsupported`. That is a legitimate capability shape, not a failure.
+- `@modelcontextprotocol/server-everything` passed `tools`, `prompts`, and `resources`. It is a good wide reference target, but it should not be mistaken for the average package.
+- `ref-tools-mcp` passed `tools` and `prompts` while leaving `resources` unsupported. That is useful third-party diversity.
+- `@modelcontextprotocol/server-map`, `@modelcontextprotocol/server-pdf`, `@modelcontextprotocol/server-threejs`, and `@jsonresume/mcp` did not behave like plain local-process stdio targets under the current harness. That is ecosystem signal first, product bug second.
+
+See [docs/field-notes.md](./docs/field-notes.md) for the full launch-day observations and what they changed about the repo.
 
 ## Visual Proof
 
-The fastest way to understand the product is to look at the artifact surface directly:
+The quickest way to understand the repo is still to look at a diff artifact:
 
 ```text
 MCP Observatory Diff
@@ -65,46 +79,22 @@ Recoveries:
 - prompts: unsupported -> pass (Advertised capability responded with the minimal expected shape (1 item).)
 ```
 
-See the full checked-in reports:
+Checked-in evidence:
 
 - [Sample fixture report](./examples/results/sample-report.md)
 - [Everything server report](./examples/artifacts/everything-server-report.md)
 - [Filesystem server report](./examples/artifacts/filesystem-server-report.md)
-
-## What You Get
-
-- `run`: execute checks against a target config and persist a versioned run artifact
-- `diff`: compare two run artifacts and classify regressions and recoveries
-- `report`: render a saved run artifact as terminal, JSON, or polished Markdown
-- stable artifact fields from day one: `artifactType`, `schemaVersion`, and `gate`
-- focused checks only: `tools`, `prompts`, `resources`, and a narrow `semantics` pass
-
-## 60-Second Start
-
-```bash
-npm install
-npm run cli -- run --target tests/fixtures/sample-target-config.json
-npm run cli -- diff --base tests/fixtures/sample-run-a.json --head tests/fixtures/sample-run-b.json
-# Observe obvious regression/recovery output in the terminal summary
-```
-
-This is the shortest path to seeing the product work end-to-end with no external MCP dependency.
-
-The flagship artifact is the Markdown report:
-
-```bash
-npm run cli -- report --run tests/fixtures/sample-run-b.json --format markdown --output examples/results/sample-report.md
-```
+- [Examples overview](./examples/README.md)
 
 ## Real Server Coverage
 
-The repo includes a small real-world smoke matrix across distinct MCP implementations:
+Current passing matrix:
 
-| Target | Server | Shape | Tools | Prompts | Resources | Notes |
+| Target | Server | Shape observed on 2026-03-19 | Tools | Prompts | Resources | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| [filesystem-server.json](./examples/targets/filesystem-server.json) | `@modelcontextprotocol/server-filesystem` | tool-heavy | pass | unsupported | unsupported | good basic stdio smoke |
-| [everything-server.json](./examples/targets/everything-server.json) | `@modelcontextprotocol/server-everything` | resources-heavy | pass | pass | pass | best capability diversity today |
-| [ref-tools-server.json](./examples/targets/ref-tools-server.json) | `ref-tools-mcp` | prompts-heavy | pass | pass | unsupported | third-party implementation signal |
+| [filesystem-server.json](./examples/targets/filesystem-server.json) | `@modelcontextprotocol/server-filesystem` | tool-heavy | pass | unsupported | unsupported | good baseline for unsupported vs failed |
+| [everything-server.json](./examples/targets/everything-server.json) | `@modelcontextprotocol/server-everything` | broad capability reference | pass | pass | pass | best wide target in the current matrix |
+| [ref-tools-server.json](./examples/targets/ref-tools-server.json) | `ref-tools-mcp` | prompts-heavy third-party case | pass | pass | unsupported | useful non-official signal |
 
 Manual recipe:
 
@@ -120,27 +110,35 @@ Repeatable script:
 npm run integration:real
 ```
 
-The real-server matrix also runs in GitHub Actions as a separate nightly and manually-triggered workflow so ecosystem drift is visible without slowing normal PR CI.
+The same matrix also runs in GitHub Actions on a nightly schedule and by manual dispatch. That workflow exists to surface drift, not to make the main PR gate slower.
+
+## Project Status
+
+- Current maturity: useful for local-process stdio targets, local regression checks, and CI smoke gating.
+- Actively improving now: report readability, clearer startup failure messaging, and a more representative real-server matrix.
+- Not ready yet: app-oriented packages, alternate transports, or deep semantic correctness beyond advertised/responded/minimal-shape checks.
+
+If those are the requirements you care about most today, the repo is still early.
 
 ## Artifact Contract
 
-Every artifact is versioned and machine-friendly:
+Every artifact is versioned and intentionally boring:
 
 - `artifactType`: `run` or `diff`
 - `schemaVersion`: currently `1.0.0`
 - `gate`: `pass` or `fail`
 
-Schema compatibility rules:
+Compatibility rules:
 
 - additive changes stay within `1.x`
-- any breaking artifact change requires a major schema bump
+- breaking artifact changes require a major schema bump
 
 Published schemas:
 
 - [schemas/run-artifact.schema.json](./schemas/run-artifact.schema.json)
 - [schemas/diff-artifact.schema.json](./schemas/diff-artifact.schema.json)
 
-Validate checked-in artifacts locally:
+Validate the checked-in artifacts locally:
 
 ```bash
 npm run validate:artifacts
@@ -148,73 +146,43 @@ npm run validate:artifacts
 
 ## Semantics v1
 
-The `semantics` check is intentionally narrow in v1. It only verifies:
+`semantics` is intentionally narrow in v1. It only verifies:
 
 - the capability is advertised
 - the corresponding callable endpoint responds
 - the response contains the minimal expected shape
 
-It does not validate tool correctness, prompt quality, resource content, or protocol behavior beyond those three assertions.
+It does not claim tool correctness, prompt quality, resource validity, or protocol completeness. That is a deliberate decision, not an unfinished sentence. The reasoning is documented in [docs/decisions.md](./docs/decisions.md).
 
-## Target Config
+## Current Priorities
 
-Targets are JSON files with this shape:
+The public queue is intentionally smaller than it was at launch. Current priorities are:
 
-```json
-{
-  "targetId": "fixture-server",
-  "adapter": "local-process",
-  "command": "node",
-  "args": ["tests/fixtures/fixture-server.mjs"],
-  "cwd": ".",
-  "timeoutMs": 10000,
-  "metadata": {
-    "purpose": "golden-path"
-  }
-}
-```
-
-## Architecture
-
-See [docs/architecture.md](./docs/architecture.md) for the short system map and [docs/performance.md](./docs/performance.md) for illustrative timing notes from checked-in artifacts.
-
-## How To Pick An Issue
-
-If you want the highest-leverage starting points, begin here:
-
-- [#1 Add a second resources-heavy real-server smoke target](https://github.com/KryptosAI/mcp-observatory/issues/1)
 - [#3 Improve artifact output readability in the Markdown report](https://github.com/KryptosAI/mcp-observatory/issues/3)
-- [#5 Document unsupported vs failed semantics clearly](https://github.com/KryptosAI/mcp-observatory/issues/5)
-- [#7 Add JSON Schema validation for run artifacts](https://github.com/KryptosAI/mcp-observatory/issues/7)
-- [#10 Add example integrations folder for CI and PR comment usage](https://github.com/KryptosAI/mcp-observatory/issues/10)
-
-The public work queue lives in GitHub Issues, and the `good first issue` label is curated intentionally.
+- [#6 Improve CLI startup error messaging for connection and setup failures](https://github.com/KryptosAI/mcp-observatory/issues/6)
+- [#1 Add a second resources-heavy real-server smoke target](https://github.com/KryptosAI/mcp-observatory/issues/1)
+- [#2 Add a second prompts-capable real-server smoke target](https://github.com/KryptosAI/mcp-observatory/issues/2)
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for small, medium, and advanced contribution paths.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for the contribution bar and the kinds of work that are likely to be declined.
 
-If you want the quickest useful contribution:
-
-1. add or refine a real-server smoke case
-2. improve one evidence message or report section
-3. add one integration example or artifact validation improvement
-
-See [examples/integrations](./examples/integrations) for lightweight CI and PR-comment wiring examples.
+If you want the shortest path to a useful first contribution, start with one of the current priorities above and keep the diff small enough that the checked-in artifact or report still teaches something obvious.
 
 ## Release Posture
 
-The repo is ready for tagged GitHub releases before npm publishing.
+The repo is GitHub-release-first for now. npm publishing remains deferred on purpose.
 
 - changelog: [CHANGELOG.md](./CHANGELOG.md)
 - release process: [RELEASE.md](./RELEASE.md)
 - release notes template: [docs/release-notes-template.md](./docs/release-notes-template.md)
-- helper script: `npm run release:prep`
-- npm publishing decision tracking: keep scoped for now, revisit later
+- decisions log: [docs/decisions.md](./docs/decisions.md)
+
+The current maintainer rule is simple: every release should include either a real-server learning, a report-quality improvement, or a schema trust improvement.
 
 ## Known Issues
 
-See [docs/known-issues.md](./docs/known-issues.md) for current integration caveats and why they matter to the ecosystem story.
+See [docs/known-issues.md](./docs/known-issues.md) for the difference between `unsupported` and `failed`, plus the current list of packages that do not behave like drop-in stdio targets under the local-process harness.
 
 ## Security
 

@@ -2,27 +2,28 @@
 
 Thanks for helping make MCP Observatory sharper and more trustworthy.
 
-## Contribution Paths
+This repo is intentionally small. Good contributions make the evidence clearer. Weak contributions usually add surface area faster than they add trust.
 
-### Small
+## What Good Contributions Look Like
 
-- improve report wording or evidence formatting
-- add or refine README examples
-- tighten issue templates or docs
-- add fixture coverage for an already-supported capability
+- clarity over breadth
+- evidence over feature count
+- smaller, opinionated PRs over speculative scaffolding
+- checked-in artifacts or reports that teach something concrete
+- docs that remove a real confusion, not just add more prose
 
-### Medium
+## Current Priorities
 
-- add a new deterministic fixture server
-- improve diff messaging or artifact ergonomics
-- harden error handling for local-process targets
-- improve CI smoke coverage
+- [#3 Improve artifact output readability in the Markdown report](https://github.com/KryptosAI/mcp-observatory/issues/3)
+- [#6 Improve CLI startup error messaging for connection and setup failures](https://github.com/KryptosAI/mcp-observatory/issues/6)
+- [#1](https://github.com/KryptosAI/mcp-observatory/issues/1) and [#2](https://github.com/KryptosAI/mcp-observatory/issues/2) once a concrete passing server is identified
 
-### Advanced
+## What Will Probably Be Declined
 
-- add a new adapter shape without breaking the current target contract
-- add richer corpus tooling for reproducible interoperability cases
-- evolve the artifact schema in an additive, backwards-compatible way
+- generic dashboard or control-plane ideas
+- speculative adapter abstraction work without a concrete failing target
+- feature additions that do not come with evidence or artifacts
+- broad packaging or workflow churn that does not improve trust, clarity, or report quality
 
 ## Ground Rules
 
@@ -61,6 +62,14 @@ For each path:
 - mention the specific files you plan to touch
 - keep the diff small and obvious
 - include the exact validation commands you ran
+
+## Evidence Bar For Examples And Integrations
+
+If you add or modify anything under `examples/` or a real-server workflow, include:
+
+- a concrete server or workflow, not a hypothetical integration
+- a checked-in artifact or Markdown report when the change affects observable output
+- one sentence explaining what the example teaches us
 
 ## Fixture Contributions
 

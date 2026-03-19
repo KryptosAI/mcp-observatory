@@ -13,7 +13,15 @@ The format is intentionally simple while the project is pre-1.0:
 
 ### Changed
 
-- reserved for follow-up work after `v0.1.0`
+- README now leads with observed server behavior, explicit non-goals, and project status instead of generic launch framing
+- contributor guidance now emphasizes evidence, smaller opinionated PRs, and the kinds of work likely to be declined
+
+### Docs
+
+- added `docs/field-notes.md` to record launch-day real-server observations and what they changed
+- added `docs/decisions.md` to document the narrow semantics bar, CLI-first posture, and release bar
+- expanded `docs/known-issues.md` with an explicit `unsupported` vs `failed` explanation
+- updated release guidance so future notes stay observational rather than launch-like
 
 ## v0.1.0 - 2026-03-19
 

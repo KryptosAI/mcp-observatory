@@ -2,31 +2,26 @@
 
 Use this structure when publishing a tagged GitHub release:
 
-## Highlights
+## What Changed
 
-- the one-sentence release story
-- the biggest user-visible win
+- the short release story
+- the biggest practical user-visible change
 
-## CLI and Core
+## What We Learned
 
-- command or runtime changes
-- adapter/check/diff improvements
+- one concrete field note from real usage
+- one thing the release clarified about the ecosystem or the product
 
-## Reporting and Docs
+## What Still Feels Uncertain
 
-- Markdown report improvements
-- README or contributor-surface upgrades
+- one honest caveat
+- one thing the project still does not do well
 
-## Examples and Contributor Experience
+## Evidence Shipped
 
-- new real-server examples
-- new docs, issue surfacing, or onboarding improvements
+- the most useful report, artifact, or doc added in this release
+- links to the exact artifacts or field notes worth reading
 
-## Release and Packaging
+## Contributor Follow-ups
 
-- versioning or release-process changes
-- npm posture updates, if any
-
-## Next Recommended Issues
-
-- link to 2-4 issues that are good follow-ups after the release lands
+- link to 2-4 issues that are still worth doing next
