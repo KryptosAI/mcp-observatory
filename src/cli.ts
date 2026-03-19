@@ -25,6 +25,44 @@ async function readTargetConfig(filePath: string): Promise<TargetConfig> {
   return validateTargetConfig(JSON.parse(content));
 }
 
+function targetFromCommand(args: string[]): TargetConfig {
+  if (args.length === 0) {
+    throw new Error("No command provided. Pass a target config file with --target or an inline command after --.");
+  }
+  const command = args[0]!;
+  return {
+    targetId: command,
+    adapter: "local-process",
+    command,
+    args: args.slice(1),
+    timeoutMs: 15_000,
+  };
+}
+
+// Extract args after -- before Commander sees them
+const _rawArgv = [...process.argv];
+const _dashDashIdx = _rawArgv.indexOf("--");
+const _passthroughArgs: string[] = _dashDashIdx !== -1 ? _rawArgv.splice(_dashDashIdx) .slice(1) : [];
+// Mutate process.argv so Commander doesn't choke on passthrough args
+if (_dashDashIdx !== -1) {
+  process.argv = _rawArgv;
+}
+
+function getPassthroughArgs(): string[] {
+  return _passthroughArgs;
+}
+
+async function resolveTarget(options: { target?: string }): Promise<TargetConfig> {
+  if (options.target) {
+    return readTargetConfig(options.target);
+  }
+  const passthrough = getPassthroughArgs();
+  if (passthrough.length > 0) {
+    return targetFromCommand(passthrough);
+  }
+  throw new Error("Provide --target <config.json> or pass a command after --, e.g.: mcp-observatory run -- npx -y @modelcontextprotocol/server-filesystem .");
+}
+
 function useColor(): boolean {
   return !process.env["NO_COLOR"] && !process.argv.includes("--no-color");
 }
@@ -53,7 +91,8 @@ async function main(): Promise<void> {
 
   program
     .command("run")
-    .requiredOption("--target <config>", "Path to a target config JSON file.")
+    .description("Run checks against a target. Pass --target <config.json> or an inline command after --.")
+    .option("--target <config>", "Path to a target config JSON file.")
     .option(
       "--out-dir <directory>",
       "Directory for persisted run artifacts.",
@@ -63,8 +102,8 @@ async function main(): Promise<void> {
     .option("--interval <seconds>", "Interval in seconds for watch mode.", "30")
     .option("--invoke-tools", "Invoke safe tools (no required params) to verify they execute.", false)
     .option("--no-color", "Disable colored output.")
-    .action(async (options: { outDir: string; target: string; watch: boolean; interval: string; invokeTools: boolean }) => {
-      const target = await readTargetConfig(options.target);
+    .action(async (options: { outDir: string; target?: string; watch: boolean; interval: string; invokeTools: boolean }) => {
+      const target = await resolveTarget(options);
 
       if (options.watch) {
         await runWatchMode(target, options.outDir, parseInt(options.interval, 10) || 30);
@@ -238,17 +277,17 @@ async function main(): Promise<void> {
 
   program
     .command("check")
-    .description("Run a single capability check against a target.")
+    .description("Run a single capability check. Pass --target <config.json> or an inline command after --.")
     .argument("<capability>", "Capability to check: tools, prompts, resources, or tools-invoke.")
-    .requiredOption("--target <config>", "Path to a target config JSON file.")
+    .option("--target <config>", "Path to a target config JSON file.")
     .option("--no-color", "Disable colored output.")
-    .action(async (capability: string, options: { target: string }) => {
+    .action(async (capability: string, options: { target?: string }) => {
       const validCapabilities = ["tools", "prompts", "resources", "tools-invoke"];
       if (!validCapabilities.includes(capability)) {
         throw new Error(`Invalid capability '${capability}'. Must be one of: ${validCapabilities.join(", ")}`);
       }
 
-      const target = await readTargetConfig(options.target);
+      const target = await resolveTarget(options);
       const invokeTools = capability === "tools-invoke";
       const artifact = await runTarget(target, { invokeTools });
       const check = artifact.checks.find((ch) => ch.id === capability);
