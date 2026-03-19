@@ -32,10 +32,16 @@ Scan every MCP server in your Claude config:
 npx @kryptosai/mcp-observatory
 ```
 
-Check a specific server:
+Go deeper — also invoke safe tools to verify they actually run:
 
 ```bash
-npx @kryptosai/mcp-observatory run -- npx -y @modelcontextprotocol/server-everything
+npx @kryptosai/mcp-observatory scan deep
+```
+
+Test a specific server:
+
+```bash
+npx @kryptosai/mcp-observatory test npx -y @modelcontextprotocol/server-everything
 ```
 
 Add it to Claude Code as an MCP server:
@@ -57,6 +63,17 @@ Or add it manually to your config:
 }
 ```
 
+## Commands
+
+| Command | What it does |
+|---------|-------------|
+| `scan` | Auto-discover servers from config files and check them all (default) |
+| `scan deep` | Scan and also invoke safe tools to verify they execute |
+| `test <cmd>` | Test a specific server by command |
+| `diff <base> <head>` | Compare two run artifacts for regressions and schema drift |
+| `watch <config>` | Watch a server for changes, alert on regressions |
+| `serve` | Start as an MCP server for AI agents |
+
 ## What It Does
 
 **Check capabilities** — connects to a server and verifies tools, prompts, and resources respond correctly.
@@ -64,13 +81,13 @@ Or add it manually to your config:
 **Invoke tools** — goes beyond listing. Actually calls safe tools (no required params / readOnlyHint) and reports which ones work and which ones crash.
 
 ```bash
-npx @kryptosai/mcp-observatory scan --invoke-tools
+npx @kryptosai/mcp-observatory scan deep
 ```
 
 **Detect schema drift** — diffs two runs and surfaces added/removed fields, type changes, and breaking parameter changes.
 
 ```bash
-npx @kryptosai/mcp-observatory diff --base run-a.json --head run-b.json
+npx @kryptosai/mcp-observatory diff run-a.json run-b.json
 ```
 
 **Recommend servers** — scans your project for languages, frameworks, databases, and cloud providers, then cross-references the [MCP registry](https://registry.modelcontextprotocol.io) to suggest servers you're missing. Ask your agent "what MCP servers should I add?" and it figures out the rest.
@@ -78,19 +95,8 @@ npx @kryptosai/mcp-observatory diff --base run-a.json --head run-b.json
 **Watch for regressions** — re-runs checks on an interval and alerts when something changes.
 
 ```bash
-npx @kryptosai/mcp-observatory run --watch -- npx -y @modelcontextprotocol/server-filesystem .
+npx @kryptosai/mcp-observatory watch target.json
 ```
-
-## Commands
-
-| Command | What it does |
-|---------|-------------|
-| `scan` | Auto-discover servers from config files and check them all (default) |
-| `run` | Check one server and save a run artifact |
-| `check` | Run a single capability check (tools, prompts, resources, tools-invoke) |
-| `diff` | Compare two runs — regressions, recoveries, schema drift |
-| `report` | Render a run as terminal, JSON, markdown, or HTML |
-| `serve` | Run as an MCP server — exposes scan, check, diff, suggest as tools |
 
 ### Scan locations
 
@@ -129,18 +135,6 @@ Works with any MCP server that uses standard transports:
 
 Servers needing API keys work via `env` in the target config. Python servers work via `uvx`. See the [full compatibility matrix](./docs/compatibility.md) for tested servers and known issues.
 
-### HTTP / SSE targets
-
-```json
-{
-  "targetId": "my-remote-server",
-  "adapter": "http",
-  "url": "http://localhost:3000/mcp",
-  "authToken": "optional-bearer-token",
-  "timeoutMs": 15000
-}
-```
-
 ### Target config files
 
 For more control (env vars, metadata, custom timeout):
@@ -157,6 +151,18 @@ For more control (env vars, metadata, custom timeout):
 
 ```bash
 npx @kryptosai/mcp-observatory run --target ./target.json
+```
+
+### HTTP / SSE targets
+
+```json
+{
+  "targetId": "my-remote-server",
+  "adapter": "http",
+  "url": "http://localhost:3000/mcp",
+  "authToken": "optional-bearer-token",
+  "timeoutMs": 15000
+}
 ```
 
 ## Limitations

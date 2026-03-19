@@ -41,7 +41,7 @@ async function readTargetConfig(filePath: string): Promise<TargetConfig> {
 
 function targetFromCommand(args: string[]): TargetConfig {
   if (args.length === 0) {
-    throw new Error("No command provided. Pass a target config file with --target or an inline command after --.");
+    throw new Error("No command provided. Usage: mcp-observatory test <command> [args...]");
   }
   const command = args[0]!;
   return {
@@ -73,7 +73,7 @@ async function resolveTarget(options: { target?: string }): Promise<TargetConfig
   if (passthrough.length > 0) {
     return targetFromCommand(passthrough);
   }
-  throw new Error("Provide --target <config.json> or use: mcp-observatory test npx -y @modelcontextprotocol/server-filesystem .");
+  throw new Error("Provide --target <config.json> or use: mcp-observatory test <command>");
 }
 
 function useColor(): boolean {
@@ -119,8 +119,6 @@ async function writeOutput(content: string, format: string, outputPath?: string)
 
 /** Returns the command the user actually typed, so tips are copy-pasteable. */
 function getBinName(): string {
-  // npx sets npm_execpath / npm_lifecycle_event, but the reliable signal
-  // is that process.argv[1] lives inside an npx cache directory.
   const script = process.argv[1] ?? "";
   if (script.includes(".npm/_npx") || script.includes("npx")) {
     return "npx @kryptosai/mcp-observatory";
@@ -139,188 +137,50 @@ async function main(): Promise<void> {
     .description("Test your MCP servers for breaking changes.")
     .version(TOOL_VERSION)
     .addHelpText("before", useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n` : LOGO + `  v${TOOL_VERSION}\n`)
-    .addHelpText("after", `\nExamples:\n  ${c(ANSI.dim, "$")} ${bin}${" ".repeat(Math.max(1, 53 - bin.length))}Scan all your MCP servers\n  ${c(ANSI.dim, "$")} ${bin} scan --invoke-tools${" ".repeat(Math.max(1, 39 - bin.length))}Also test that tools actually run\n  ${c(ANSI.dim, "$")} ${bin} test npx server-foo${" ".repeat(Math.max(1, 39 - bin.length))}Test a specific server by command\n`);
+    .addHelpText("after", [
+      "",
+      "Examples:",
+      `  ${c(ANSI.dim, "$")} ${bin}${" ".repeat(Math.max(1, 48 - bin.length))}Scan all your MCP servers`,
+      `  ${c(ANSI.dim, "$")} ${bin} scan deep${" ".repeat(Math.max(1, 38 - bin.length))}Also test that tools actually run`,
+      `  ${c(ANSI.dim, "$")} ${bin} test npx server-foo${" ".repeat(Math.max(1, 28 - bin.length))}Test a specific server by command`,
+      `  ${c(ANSI.dim, "$")} ${bin} diff run-a.json run-b.json${" ".repeat(Math.max(1, 20 - bin.length))}Compare two runs`,
+      "",
+    ].join("\n"));
 
-  // ── Core Commands ───────────────────────────────────────────────────────
+  // ── scan ──────────────────────────────────────────────────────────────
 
-  program
+  const scanCmd = program
     .command("scan")
-    .description("Check all MCP servers found in your Claude configs.")
+    .description("Check all MCP servers in your Claude configs.")
     .option("--config <path>", "Path to a specific MCP config file.")
-    .option("--invoke-tools", "Actually call safe tools to verify they execute.", false)
-    .option("--no-color", "Disable colored output.")
-    .action(async (options: { config?: string; invokeTools: boolean }) => {
-      process.stdout.write(useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n\n` : LOGO + `  v${TOOL_VERSION}\n\n`);
+    .option("--no-color", "Disable colored output.");
 
-      const targets = await scanForTargets(options.config);
+  // `scan` with no subcommand — basic scan
+  scanCmd.action(async (options: { config?: string }) => {
+    await runScan(bin, options.config, false);
+  });
 
-      if (targets.length === 0) {
-        process.stdout.write(c(ANSI.yellow, "  No MCP servers found.\n\n"));
-        process.stdout.write(c(ANSI.dim, "  Looked in ~/.claude.json, Claude Desktop config, .mcp.json\n\n"));
-        process.stdout.write("  Test a specific server:\n");
-        process.stdout.write(`    ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} test npx -y @modelcontextprotocol/server-filesystem .`)}\n\n`);
-        return;
-      }
-
-      process.stdout.write(c(ANSI.bold, `  Found ${targets.length} MCP server${targets.length === 1 ? "" : "s"}:\n`));
-      for (const t of targets) {
-        process.stdout.write(`  ${c(ANSI.cyan, "●")} ${c(ANSI.bold, t.config.targetId)} ${c(ANSI.dim, `← ${t.source}`)}\n`);
-      }
-      process.stdout.write("\n");
-
-      interface ScanRow {
-        targetId: string;
-        gate: string;
-        tools: string;
-        toolCount: number;
-        prompts: string;
-        promptCount: number;
-        resources: string;
-        resourceCount: number;
-        invoke?: string;
-        invokeMsg?: string;
-        error?: string;
-        diagnostics: string[];
-      }
-
-      const results: ScanRow[] = [];
-      let passCount = 0;
-      let failCount = 0;
-      let totalTools = 0;
-      let totalPrompts = 0;
-      let totalResources = 0;
-
-      for (const t of targets) {
-        process.stdout.write(`  ${c(ANSI.dim, "⟳")} Checking ${c(ANSI.bold, t.config.targetId)}...`);
-        try {
-          const artifact = await runTarget(t.config, { invokeTools: options.invokeTools });
-          const toolsCheck = artifact.checks.find((ch) => ch.id === "tools");
-          const promptsCheck = artifact.checks.find((ch) => ch.id === "prompts");
-          const resourcesCheck = artifact.checks.find((ch) => ch.id === "resources");
-          const invokeCheck = artifact.checks.find((ch) => ch.id === "tools-invoke");
-
-          const toolCount = toolsCheck?.evidence[0]?.itemCount ?? 0;
-          const promptCount = promptsCheck?.evidence[0]?.itemCount ?? 0;
-          const resourceCount = resourcesCheck?.evidence[0]?.itemCount ?? 0;
-
-          totalTools += toolCount;
-          totalPrompts += promptCount;
-          totalResources += resourceCount;
-
-          const diagnostics: string[] = [];
-          for (const check of artifact.checks) {
-            if (check.status === "fail") {
-              diagnostics.push(`${check.id}: ${check.message}`);
-            } else if (check.status === "partial") {
-              diagnostics.push(`${check.id}: ${check.message}`);
-            }
-          }
-
-          const gateIcon = artifact.gate === "pass" ? c(ANSI.green, " ✓") : c(ANSI.red, " ✗");
-          process.stdout.write(`\r  ${gateIcon} ${c(ANSI.bold, t.config.targetId)}${" ".repeat(Math.max(1, 40 - t.config.targetId.length))}`);
-          process.stdout.write(`${c(ANSI.dim, `${toolCount} tools, ${promptCount} prompts, ${resourceCount} resources`)}\n`);
-
-          results.push({
-            targetId: t.config.targetId,
-            gate: artifact.gate,
-            tools: toolsCheck?.status ?? "skipped",
-            toolCount,
-            prompts: promptsCheck?.status ?? "skipped",
-            promptCount,
-            resources: resourcesCheck?.status ?? "skipped",
-            resourceCount,
-            invoke: invokeCheck?.status,
-            invokeMsg: invokeCheck?.message,
-            diagnostics,
-          });
-          if (artifact.gate === "pass") passCount++; else failCount++;
-        } catch (error) {
-          const msg = error instanceof Error ? error.message : String(error);
-          // Provide a friendlier error message
-          let friendlyMsg = msg;
-          if (msg.includes("ENOENT") || msg.includes("not found")) {
-            const cmd = t.config.adapter === "http" ? (t.config as { url: string }).url : (t.config as { command: string }).command;
-            friendlyMsg = `Could not start server — "${cmd}" not found. Is it installed?`;
-          } else if (msg.includes("ECONNREFUSED")) {
-            friendlyMsg = `Server is not running or refused the connection.`;
-          } else if (msg.includes("timed out") || msg.includes("timeout")) {
-            friendlyMsg = `Server took too long to respond.`;
-          }
-
-          process.stdout.write(`\r  ${c(ANSI.red, "✗")} ${c(ANSI.bold, t.config.targetId)}\n`);
-          process.stdout.write(`    ${c(ANSI.red, friendlyMsg)}\n`);
-
-          results.push({
-            targetId: t.config.targetId,
-            gate: "fail",
-            tools: "skipped",
-            toolCount: 0,
-            prompts: "skipped",
-            promptCount: 0,
-            resources: "skipped",
-            resourceCount: 0,
-            error: friendlyMsg,
-            diagnostics: [],
-          });
-          failCount++;
-        }
-      }
-
-      // ── Summary ──────────────────────────────────────────────────────────
-      process.stdout.write("\n");
-
-      if (failCount === 0) {
-        process.stdout.write(c(ANSI.green, `  ✓ All ${passCount} server${passCount === 1 ? "" : "s"} healthy`));
-        process.stdout.write(c(ANSI.dim, ` — ${totalTools} tools, ${totalPrompts} prompts, ${totalResources} resources\n`));
-      } else {
-        process.stdout.write(c(ANSI.red, `  ✗ ${failCount} of ${passCount + failCount} server${passCount + failCount === 1 ? "" : "s"} failing`));
-        if (totalTools > 0 || totalPrompts > 0 || totalResources > 0) {
-          process.stdout.write(c(ANSI.dim, ` — ${totalTools} tools, ${totalPrompts} prompts, ${totalResources} resources found\n`));
-        } else {
-          process.stdout.write("\n");
-        }
-      }
-
-      // Show diagnostics for failures or notable partials
-      const issues = results.filter((r) => r.gate === "fail" || r.diagnostics.some((d) => d.startsWith("tools:") || d.startsWith("prompts:") || d.startsWith("resources:")));
-      const invokeIssues = options.invokeTools ? results.filter((r) => r.diagnostics.some((d) => d.startsWith("tools-invoke:"))) : [];
-      const allIssues = [...issues, ...invokeIssues.filter((r) => !issues.includes(r))];
-      if (allIssues.length > 0) {
-        process.stdout.write("\n");
-        for (const r of allIssues) {
-          if (r.error) continue; // Already printed inline
-          if (r.diagnostics.length > 0) {
-            process.stdout.write(`  ${c(ANSI.yellow, r.targetId)}:\n`);
-            for (const d of r.diagnostics.slice(0, 3)) {
-              process.stdout.write(`    ${c(ANSI.dim, "→")} ${d}\n`);
-            }
-          }
-        }
-      }
-
-      // ── Next step ────────────────────────────────────────────────────────
-      process.stdout.write("\n");
-      if (!options.invokeTools && totalTools > 0) {
-        process.stdout.write(c(ANSI.dim, `  Next: ${c(ANSI.cyan, `${bin} scan --invoke-tools`)} to also test that tools run\n`));
-      } else {
-        process.stdout.write(c(ANSI.dim, `  Run ${c(ANSI.cyan, `${bin} --help`)} for more commands\n`));
-      }
-      process.stdout.write("\n");
-
-      if (failCount > 0) {
-        process.exitCode = 1;
-      }
+  // `scan deep` — scan + invoke tools
+  scanCmd
+    .command("deep")
+    .description("Scan and also invoke safe tools to verify they execute.")
+    .option("--config <path>", "Path to a specific MCP config file.")
+    .action(async (options: { config?: string }) => {
+      // Inherit parent config option if set
+      const parentConfig = scanCmd.opts().config as string | undefined;
+      await runScan(bin, options.config ?? parentConfig, true);
     });
+
+  // ── test ──────────────────────────────────────────────────────────────
 
   program
     .command("test")
     .description("Test a specific server by command.")
     .argument("<command...>", "Server command and arguments to run.")
-    .option("--invoke-tools", "Also call safe tools to verify they execute.", false)
     .option("--no-color", "Disable colored output.")
-    .action(async (commandArgs: string[], options: { invokeTools: boolean }) => {
+    .action(async (commandArgs: string[]) => {
       const target = targetFromCommand(commandArgs);
-      const artifact = await runTarget(target, { invokeTools: options.invokeTools });
+      const artifact = await runTarget(target);
       const outPath = await writeRunArtifact(artifact, defaultRunsDirectory(process.cwd()));
       const summary = renderTerminal(artifact);
       process.stdout.write(`${summary}\nArtifact: ${outPath}\n`);
@@ -329,94 +189,25 @@ async function main(): Promise<void> {
       }
     });
 
-  program
-    .command("run", { hidden: true })
-    .description("Check one server and save a run artifact.")
-    .option("--target <config>", "Path to a target config JSON file.")
-    .option(
-      "--out-dir <directory>",
-      "Directory for persisted run artifacts.",
-      defaultRunsDirectory(process.cwd()),
-    )
-    .option("--watch", "Re-run checks on an interval and diff against the previous run.", false)
-    .option("--interval <seconds>", "Interval in seconds for watch mode.", "30")
-    .option("--invoke-tools", "Actually call safe tools to verify they execute.", false)
-    .option("--no-color", "Disable colored output.")
-    .action(async (options: { outDir: string; target?: string; watch: boolean; interval: string; invokeTools: boolean }) => {
-      const target = await resolveTarget(options);
-
-      if (options.watch) {
-        await runWatchMode(target, options.outDir, parseInt(options.interval, 10) || 30);
-        return;
-      }
-
-      const artifact = await runTarget(target, { invokeTools: options.invokeTools });
-      const outPath = await writeRunArtifact(artifact, options.outDir);
-      const summary = renderTerminal(artifact);
-      process.stdout.write(`${summary}\nArtifact: ${outPath}\n`);
-      if (artifact.gate === "fail") {
-        process.exitCode = 1;
-      }
-    });
-
-  program
-    .command("check", { hidden: true })
-    .description("Run a single capability check (tools, prompts, resources, tools-invoke).")
-    .argument("<capability>", "Capability to check: tools, prompts, resources, or tools-invoke.")
-    .option("--target <config>", "Path to a target config JSON file.")
-    .option("--no-color", "Disable colored output.")
-    .action(async (capability: string, options: { target?: string }) => {
-      const validCapabilities = ["tools", "prompts", "resources", "tools-invoke"];
-      if (!validCapabilities.includes(capability)) {
-        throw new Error(`Invalid capability '${capability}'. Must be one of: ${validCapabilities.join(", ")}`);
-      }
-
-      const target = await resolveTarget(options);
-      const invokeTools = capability === "tools-invoke";
-      const artifact = await runTarget(target, { invokeTools });
-      const check = artifact.checks.find((ch) => ch.id === capability);
-
-      if (!check) {
-        throw new Error(`Check '${capability}' was not found in the run results.`);
-      }
-
-      const statusStr = colorStatus(check.status);
-      process.stdout.write(`${c(ANSI.bold, capability)}: ${statusStr}\n`);
-      process.stdout.write(`${check.message}\n`);
-
-      if (check.evidence.length > 0) {
-        for (const ev of check.evidence) {
-          if (ev.identifiers && ev.identifiers.length > 0) {
-            process.stdout.write(`Items: ${ev.identifiers.join(", ")}\n`);
-          }
-          if (ev.diagnostics && ev.diagnostics.length > 0) {
-            process.stdout.write(`Diagnostics: ${ev.diagnostics.join("; ")}\n`);
-          }
-        }
-      }
-    });
-
-  // ── Analysis Commands ─────────────────────────────────────────────────
+  // ── diff ──────────────────────────────────────────────────────────────
 
   program
     .command("diff")
-    .description("Compare two runs and show regressions, recoveries, and schema drift.")
-    .requiredOption("--base <artifact>", "Base run artifact JSON.")
-    .requiredOption("--head <artifact>", "Head run artifact JSON.")
+    .description("Compare two runs and show regressions and schema drift.")
+    .argument("<base>", "Base run artifact JSON file.")
+    .argument("<head>", "Head run artifact JSON file.")
     .option("--format <format>", "terminal, json, markdown, or html", "terminal")
     .option("--output <file>", "Write to file instead of stdout.")
     .option("--no-color", "Disable colored output.")
     .option("--fail-on-regression", "Exit with code 1 when regressions are present.", false)
     .action(
-      async (options: {
-        base: string;
+      async (base: string, head: string, options: {
         failOnRegression?: boolean;
         format: "html" | "json" | "markdown" | "terminal";
-        head: string;
         output?: string;
       }) => {
-        const baseArtifact = await readArtifact(options.base);
-        const headArtifact = await readArtifact(options.head);
+        const baseArtifact = await readArtifact(base);
+        const headArtifact = await readArtifact(head);
 
         if (baseArtifact.artifactType !== "run" || headArtifact.artifactType !== "run") {
           throw new Error("The diff command only accepts run artifacts.");
@@ -432,9 +223,92 @@ async function main(): Promise<void> {
       },
     );
 
+  // ── watch ─────────────────────────────────────────────────────────────
+
+  program
+    .command("watch")
+    .description("Watch a server for changes, alert on regressions.")
+    .argument("<config>", "Path to a target config JSON file.")
+    .option("--interval <seconds>", "Check interval in seconds.", "30")
+    .option("--no-color", "Disable colored output.")
+    .action(async (configPath: string, options: { interval: string }) => {
+      const target = await readTargetConfig(configPath);
+      const outDir = defaultRunsDirectory(process.cwd());
+      await runWatchMode(target, outDir, parseInt(options.interval, 10) || 30);
+    });
+
+  // ── serve ─────────────────────────────────────────────────────────────
+
+  program
+    .command("serve")
+    .description("Start as an MCP server for AI agents.")
+    .action(async () => {
+      const { startServer } = await import("./server.js");
+      await startServer();
+    });
+
+  // ── Hidden legacy commands ────────────────────────────────────────────
+
+  program
+    .command("run", { hidden: true })
+    .description("Check one server and save a run artifact.")
+    .option("--target <config>", "Path to a target config JSON file.")
+    .option("--out-dir <directory>", "Directory for persisted run artifacts.", defaultRunsDirectory(process.cwd()))
+    .option("--watch", "Re-run checks on an interval.", false)
+    .option("--interval <seconds>", "Interval in seconds for watch mode.", "30")
+    .option("--invoke-tools", "Actually call safe tools to verify they execute.", false)
+    .option("--no-color", "Disable colored output.")
+    .action(async (options: { outDir: string; target?: string; watch: boolean; interval: string; invokeTools: boolean }) => {
+      const target = await resolveTarget(options);
+      if (options.watch) {
+        await runWatchMode(target, options.outDir, parseInt(options.interval, 10) || 30);
+        return;
+      }
+      const artifact = await runTarget(target, { invokeTools: options.invokeTools });
+      const outPath = await writeRunArtifact(artifact, options.outDir);
+      const summary = renderTerminal(artifact);
+      process.stdout.write(`${summary}\nArtifact: ${outPath}\n`);
+      if (artifact.gate === "fail") {
+        process.exitCode = 1;
+      }
+    });
+
+  program
+    .command("check", { hidden: true })
+    .description("Run a single capability check.")
+    .argument("<capability>", "tools, prompts, resources, or tools-invoke.")
+    .option("--target <config>", "Path to a target config JSON file.")
+    .option("--no-color", "Disable colored output.")
+    .action(async (capability: string, options: { target?: string }) => {
+      const validCapabilities = ["tools", "prompts", "resources", "tools-invoke"];
+      if (!validCapabilities.includes(capability)) {
+        throw new Error(`Invalid capability '${capability}'. Must be one of: ${validCapabilities.join(", ")}`);
+      }
+      const target = await resolveTarget(options);
+      const invokeTools = capability === "tools-invoke";
+      const artifact = await runTarget(target, { invokeTools });
+      const check = artifact.checks.find((ch) => ch.id === capability);
+      if (!check) {
+        throw new Error(`Check '${capability}' was not found in the run results.`);
+      }
+      const statusStr = colorStatus(check.status);
+      process.stdout.write(`${c(ANSI.bold, capability)}: ${statusStr}\n`);
+      process.stdout.write(`${check.message}\n`);
+      if (check.evidence.length > 0) {
+        for (const ev of check.evidence) {
+          if (ev.identifiers && ev.identifiers.length > 0) {
+            process.stdout.write(`Items: ${ev.identifiers.join(", ")}\n`);
+          }
+          if (ev.diagnostics && ev.diagnostics.length > 0) {
+            process.stdout.write(`Diagnostics: ${ev.diagnostics.join("; ")}\n`);
+          }
+        }
+      }
+    });
+
   program
     .command("report", { hidden: true })
-    .description("Render a run artifact as terminal, markdown, json, or html.")
+    .description("Render a run artifact.")
     .requiredOption("--run <artifact>", "Run artifact JSON.")
     .option("--format <format>", "terminal, markdown, json, or html", "terminal")
     .option("--output <file>", "Write to file instead of stdout.")
@@ -454,16 +328,6 @@ async function main(): Promise<void> {
       },
     );
 
-  // ── Server Mode ───────────────────────────────────────────────────────
-
-  program
-    .command("serve")
-    .description("Run as an MCP server. Exposes scan, check, diff, suggest as tools for AI agents.")
-    .action(async () => {
-      const { startServer } = await import("./server.js");
-      await startServer();
-    });
-
   // Default to scan when invoked with no arguments
   if (process.argv.length === 2) {
     process.argv.push("scan");
@@ -471,6 +335,136 @@ async function main(): Promise<void> {
 
   await program.parseAsync(process.argv);
 }
+
+// ── Scan implementation ─────────────────────────────────────────────────────
+
+async function runScan(bin: string, configPath: string | undefined, invokeTools: boolean): Promise<void> {
+  process.stdout.write(useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n\n` : LOGO + `  v${TOOL_VERSION}\n\n`);
+
+  const targets = await scanForTargets(configPath);
+
+  if (targets.length === 0) {
+    process.stdout.write(c(ANSI.yellow, "  No MCP servers found.\n\n"));
+    process.stdout.write(c(ANSI.dim, "  Looked in ~/.claude.json, Claude Desktop config, .mcp.json\n\n"));
+    process.stdout.write("  Test a specific server:\n");
+    process.stdout.write(`    ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} test npx -y @modelcontextprotocol/server-filesystem .`)}\n\n`);
+    return;
+  }
+
+  process.stdout.write(c(ANSI.bold, `  Found ${targets.length} MCP server${targets.length === 1 ? "" : "s"}:\n`));
+  for (const t of targets) {
+    process.stdout.write(`  ${c(ANSI.cyan, "●")} ${c(ANSI.bold, t.config.targetId)} ${c(ANSI.dim, `← ${t.source}`)}\n`);
+  }
+  process.stdout.write("\n");
+
+  interface ScanRow {
+    targetId: string;
+    gate: string;
+    toolCount: number;
+    promptCount: number;
+    resourceCount: number;
+    error?: string;
+    diagnostics: string[];
+  }
+
+  const results: ScanRow[] = [];
+  let passCount = 0;
+  let failCount = 0;
+  let totalTools = 0;
+  let totalPrompts = 0;
+  let totalResources = 0;
+
+  for (const t of targets) {
+    process.stdout.write(`  ${c(ANSI.dim, "⟳")} Checking ${c(ANSI.bold, t.config.targetId)}...`);
+    try {
+      const artifact = await runTarget(t.config, { invokeTools });
+      const toolsCheck = artifact.checks.find((ch) => ch.id === "tools");
+      const promptsCheck = artifact.checks.find((ch) => ch.id === "prompts");
+      const resourcesCheck = artifact.checks.find((ch) => ch.id === "resources");
+
+      const toolCount = toolsCheck?.evidence[0]?.itemCount ?? 0;
+      const promptCount = promptsCheck?.evidence[0]?.itemCount ?? 0;
+      const resourceCount = resourcesCheck?.evidence[0]?.itemCount ?? 0;
+
+      totalTools += toolCount;
+      totalPrompts += promptCount;
+      totalResources += resourceCount;
+
+      const diagnostics: string[] = [];
+      for (const check of artifact.checks) {
+        if (check.status === "fail" || check.status === "partial") {
+          diagnostics.push(`${check.id}: ${check.message}`);
+        }
+      }
+
+      const gateIcon = artifact.gate === "pass" ? c(ANSI.green, " ✓") : c(ANSI.red, " ✗");
+      process.stdout.write(`\r  ${gateIcon} ${c(ANSI.bold, t.config.targetId)}${" ".repeat(Math.max(1, 40 - t.config.targetId.length))}`);
+      process.stdout.write(`${c(ANSI.dim, `${toolCount} tools, ${promptCount} prompts, ${resourceCount} resources`)}\n`);
+
+      results.push({ targetId: t.config.targetId, gate: artifact.gate, toolCount, promptCount, resourceCount, diagnostics });
+      if (artifact.gate === "pass") passCount++; else failCount++;
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
+      let friendlyMsg = msg;
+      if (msg.includes("ENOENT") || msg.includes("not found")) {
+        const cmd = t.config.adapter === "http" ? (t.config as { url: string }).url : (t.config as { command: string }).command;
+        friendlyMsg = `Could not start server — "${cmd}" not found. Is it installed?`;
+      } else if (msg.includes("ECONNREFUSED")) {
+        friendlyMsg = `Server is not running or refused the connection.`;
+      } else if (msg.includes("timed out") || msg.includes("timeout")) {
+        friendlyMsg = `Server took too long to respond.`;
+      }
+
+      process.stdout.write(`\r  ${c(ANSI.red, "✗")} ${c(ANSI.bold, t.config.targetId)}\n`);
+      process.stdout.write(`    ${c(ANSI.red, friendlyMsg)}\n`);
+
+      results.push({ targetId: t.config.targetId, gate: "fail", toolCount: 0, promptCount: 0, resourceCount: 0, error: friendlyMsg, diagnostics: [] });
+      failCount++;
+    }
+  }
+
+  // ── Summary ──────────────────────────────────────────────────────────
+  process.stdout.write("\n");
+
+  if (failCount === 0) {
+    process.stdout.write(c(ANSI.green, `  ✓ All ${passCount} server${passCount === 1 ? "" : "s"} healthy`));
+    process.stdout.write(c(ANSI.dim, ` — ${totalTools} tools, ${totalPrompts} prompts, ${totalResources} resources\n`));
+  } else {
+    process.stdout.write(c(ANSI.red, `  ✗ ${failCount} of ${passCount + failCount} server${passCount + failCount === 1 ? "" : "s"} failing`));
+    if (totalTools > 0 || totalPrompts > 0 || totalResources > 0) {
+      process.stdout.write(c(ANSI.dim, ` — ${totalTools} tools, ${totalPrompts} prompts, ${totalResources} resources found\n`));
+    } else {
+      process.stdout.write("\n");
+    }
+  }
+
+  // Show diagnostics for failures or notable partials
+  const issues = results.filter((r) => r.diagnostics.length > 0 && !r.error);
+  if (issues.length > 0) {
+    process.stdout.write("\n");
+    for (const r of issues) {
+      process.stdout.write(`  ${c(ANSI.yellow, r.targetId)}:\n`);
+      for (const d of r.diagnostics.slice(0, 3)) {
+        process.stdout.write(`    ${c(ANSI.dim, "→")} ${d}\n`);
+      }
+    }
+  }
+
+  // ── Next step ────────────────────────────────────────────────────────
+  process.stdout.write("\n");
+  if (!invokeTools && totalTools > 0) {
+    process.stdout.write(c(ANSI.dim, `  Next: ${c(ANSI.cyan, `${bin} scan deep`)} to also test that tools run\n`));
+  } else {
+    process.stdout.write(c(ANSI.dim, `  Run ${c(ANSI.cyan, `${bin} --help`)} for more commands\n`));
+  }
+  process.stdout.write("\n");
+
+  if (failCount > 0) {
+    process.exitCode = 1;
+  }
+}
+
+// ── Utilities ───────────────────────────────────────────────────────────────
 
 function colorStatus(status: string): string {
   switch (status) {
@@ -527,7 +521,6 @@ async function runWatchMode(target: TargetConfig, outDir: string, intervalSecond
 
 void main().catch((error: unknown) => {
   const message = error instanceof Error ? error.message : String(error);
-  // Make common errors friendlier
   let friendly = message;
   if (message.includes("Unexpected end of JSON") || message.includes("Unexpected token")) {
     friendly = "Invalid config file — expected valid JSON. Check the file path and contents.";
