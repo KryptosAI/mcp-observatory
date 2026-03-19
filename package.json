@@ -1,7 +1,8 @@
 {
   "name": "@kryptosai/mcp-observatory",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Regression intelligence for MCP targets: detect, diff, and explain interoperability drift over time.",
+  "mcpName": "io.github.KryptosAI/mcp-observatory",
   "license": "MIT",
   "type": "module",
   "private": false,

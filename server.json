@@ -1,0 +1,22 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.KryptosAI/mcp-observatory",
+  "description": "Regression testing for MCP servers. Checks capabilities, invokes tools, detects schema drift.",
+  "repository": {
+    "url": "https://github.com/KryptosAI/mcp-observatory",
+    "source": "github"
+  },
+  "version": "0.3.2",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@kryptosai/mcp-observatory",
+      "version": "0.3.2",
+      "transport": {
+        "type": "stdio"
+      },
+      "arguments": ["serve"],
+      "environmentVariables": []
+    }
+  ]
+}
