@@ -25,5 +25,3 @@ These are good candidates for future integration work because they help clarify:
 - stdio vs app/server transport expectations
 - startup requirements for package-specific servers
 - how MCP Observatory should present connection/setup failures clearly
-
-See [docs/field-notes.md](./field-notes.md) for the launch-day observations that pushed these packages onto the known-issues list.

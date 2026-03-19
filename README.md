@@ -4,7 +4,7 @@
 [![Real Server Matrix](https://github.com/KryptosAI/mcp-observatory/actions/workflows/real-server-matrix.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/real-server-matrix.yml)
 [![Latest Release](https://img.shields.io/github/v/release/KryptosAI/mcp-observatory?display_name=tag)](https://github.com/KryptosAI/mcp-observatory/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
-[![Node >= 22](https://img.shields.io/badge/node-%3E%3D22-339933)](./package.json)
+[![Node >= 20](https://img.shields.io/badge/node-%3E%3D20-339933)](./package.json)
 
 Regression evidence for Node/local-process stdio MCP targets.
 
@@ -60,19 +60,6 @@ Artifact: .../filesystem-cli-proof.json
 ```
 
 The equivalent repo-tracked target lives at [examples/install/filesystem-target.json](./examples/install/filesystem-target.json).
-
-Proof surfaces:
-
-- [Proof index](./examples/INDEX.md)
-- [Machine-readable matrix summary](./examples/matrix-summary.json)
-- [Sample fixture report](./examples/results/sample-report.md)
-- [Canonical startup failure report](./examples/artifacts/server-pdf-startup-fail-report.md)
-
-## Why A Skeptic Might Distrust This Repo
-
-- Can I use it without cloning? Yes. The release tarball is installable via `npx` today, and the packed-install path is checked in CI with `npm run verify:packed-install`.
-- What has it actually been run against? See the dated matrix in [examples/matrix-summary.json](./examples/matrix-summary.json) and the human-readable map in [examples/INDEX.md](./examples/INDEX.md).
-- What does not work? See [examples/probes/server-pdf-startup-fail.json](./examples/probes/server-pdf-startup-fail.json) and [docs/known-issues.md](./docs/known-issues.md). This repo does not pretend every MCP package is a drop-in stdio target.
 
 ## Known-Good Matrix
 
@@ -170,18 +157,6 @@ The fastest way to contribute something credible is to add evidence:
 - a clearer report surface
 - a cleaner startup diagnosis
 
-## Release And Launch Notes
-
-- changelog: [CHANGELOG.md](./CHANGELOG.md)
-- release process: [RELEASE.md](./RELEASE.md)
-- release notes template: [docs/release-notes-template.md](./docs/release-notes-template.md)
-- technical launch note: [docs/v0.2.0-technical-launch.md](./docs/v0.2.0-technical-launch.md)
-- launch scoreboard: [docs/launch-scoreboard.md](./docs/launch-scoreboard.md)
-
 ## Known Issues
 
 See [docs/known-issues.md](./docs/known-issues.md) for the difference between `unsupported` and `failed`, plus the current list of packages that do not behave like drop-in stdio targets under the local-process harness.
-
-## Security
-
-See [SECURITY.md](./SECURITY.md) for disclosure guidance.
