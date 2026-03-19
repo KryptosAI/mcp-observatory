@@ -9,6 +9,10 @@
 
 Regression detection for MCP servers. Checks capabilities, invokes tools, detects schema drift, and diffs runs over time. Supports local stdio and remote HTTP/SSE targets.
 
+<p align="center">
+  <img src="./docs/demo.svg" alt="MCP Observatory scan output" width="820">
+</p>
+
 ## Install
 
 ```bash
