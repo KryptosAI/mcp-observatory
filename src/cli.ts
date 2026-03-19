@@ -114,10 +114,14 @@ async function main(): Promise<void> {
       const outPath = await writeRunArtifact(artifact, options.outDir);
       const summary = renderTerminal(artifact);
       process.stdout.write(`${summary}\nArtifact: ${outPath}\n`);
+      if (artifact.gate === "fail") {
+        process.exitCode = 1;
+      }
     });
 
   program
     .command("diff")
+    .description("Compare two run artifacts and classify regressions, recoveries, and schema drift.")
     .requiredOption("--base <artifact>", "Base run artifact JSON.")
     .requiredOption("--head <artifact>", "Head run artifact JSON.")
     .option("--format <format>", "terminal, json, markdown, or html", "terminal")
@@ -169,6 +173,7 @@ async function main(): Promise<void> {
 
   program
     .command("report")
+    .description("Render a run artifact as terminal, markdown, json, or html output.")
     .requiredOption("--run <artifact>", "Run artifact JSON.")
     .option("--format <format>", "terminal, markdown, json, or html", "terminal")
     .option("--output <file>", "Optional output file path (useful for html format).")
