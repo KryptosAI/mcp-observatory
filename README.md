@@ -1,9 +1,13 @@
 # MCP Observatory
 
 ```
-  ╔═╗┌┐ ┌─┐┌─┐┬─┐┬  ┬┌─┐┌┬┐┌─┐┬─┐┬ ┬
-  ║ ║├┴┐└─┐├┤ ├┬┘└┐┌┘├─┤ │ │ │├┬┘└┬┘
-  ╚═╝└─┘└─┘└─┘┴└─ └┘ ┴ ┴ ┴ └─┘┴└─ ┴
+  ███╗   ███╗ ██████╗██████╗
+  ████╗ ████║██╔════╝██╔══██╗
+  ██╔████╔██║██║     ██████╔╝
+  ██║╚██╔╝██║██║     ██╔═══╝
+  ██║ ╚═╝ ██║╚██████╗██║
+  ╚═╝     ╚═╝ ╚═════╝╚═╝
+     O B S E R V A T O R Y
 ```
 
 [![CI](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml)
