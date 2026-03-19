@@ -1,26 +1,44 @@
 #!/usr/bin/env node
 
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { Command } from "commander";
 
+import { scanForTargets } from "./discovery.js";
 import {
   diffArtifacts,
   readArtifact,
-  renderJson,
   renderMarkdown,
   renderTerminal,
   runTarget,
   writeRunArtifact,
   type TargetConfig
 } from "./index.js";
-import { defaultRunsDirectory } from "./storage/filesystem.js";
+import { defaultRunsDirectory } from "./storage.js";
+import { validateTargetConfig } from "./validate.js";
 import { TOOL_VERSION } from "./version.js";
 
 async function readTargetConfig(filePath: string): Promise<TargetConfig> {
-  const artifact = await readArtifact(filePath);
-  return artifact as unknown as TargetConfig;
+  const content = await readFile(filePath, "utf8");
+  return validateTargetConfig(JSON.parse(content));
+}
+
+function useColor(): boolean {
+  return !process.env["NO_COLOR"] && !process.argv.includes("--no-color");
+}
+
+const ANSI = {
+  red: "\x1b[31m",
+  green: "\x1b[32m",
+  yellow: "\x1b[33m",
+  dim: "\x1b[2m",
+  bold: "\x1b[1m",
+  reset: "\x1b[0m",
+} as const;
+
+function c(code: string, text: string): string {
+  return useColor() ? `${code}${text}${ANSI.reset}` : text;
 }
 
 async function main(): Promise<void> {
@@ -40,8 +58,17 @@ async function main(): Promise<void> {
       "Directory for persisted run artifacts.",
       defaultRunsDirectory(process.cwd()),
     )
-    .action(async (options: { outDir: string; target: string }) => {
+    .option("--watch", "Re-run checks on an interval and diff against the previous run.", false)
+    .option("--interval <seconds>", "Interval in seconds for watch mode.", "30")
+    .option("--no-color", "Disable colored output.")
+    .action(async (options: { outDir: string; target: string; watch: boolean; interval: string }) => {
       const target = await readTargetConfig(options.target);
+
+      if (options.watch) {
+        await runWatchMode(target, options.outDir, parseInt(options.interval, 10) || 30);
+        return;
+      }
+
       const artifact = await runTarget(target);
       const outPath = await writeRunArtifact(artifact, options.outDir);
       const summary = renderTerminal(artifact);
@@ -53,6 +80,7 @@ async function main(): Promise<void> {
     .requiredOption("--base <artifact>", "Base run artifact JSON.")
     .requiredOption("--head <artifact>", "Head run artifact JSON.")
     .option("--format <format>", "terminal, json, or markdown", "terminal")
+    .option("--no-color", "Disable colored output.")
     .option(
       "--fail-on-regression",
       "Exit with code 1 when regressions are present.",
@@ -75,7 +103,7 @@ async function main(): Promise<void> {
         const artifact = diffArtifacts(baseArtifact, headArtifact);
         const output =
           options.format === "json"
-            ? renderJson(artifact)
+            ? JSON.stringify(artifact, null, 2)
             : options.format === "markdown"
               ? renderMarkdown(artifact)
               : renderTerminal(artifact);
@@ -91,6 +119,7 @@ async function main(): Promise<void> {
     .requiredOption("--run <artifact>", "Run artifact JSON.")
     .option("--format <format>", "terminal, markdown, or json", "terminal")
     .option("--output <file>", "Optional output file path.")
+    .option("--no-color", "Disable colored output.")
     .action(
       async (options: {
         format: "json" | "markdown" | "terminal";
@@ -103,7 +132,7 @@ async function main(): Promise<void> {
         }
         const output =
           options.format === "json"
-            ? renderJson(artifact)
+            ? JSON.stringify(artifact, null, 2)
             : options.format === "markdown"
               ? renderMarkdown(artifact)
               : renderTerminal(artifact);
@@ -119,7 +148,157 @@ async function main(): Promise<void> {
       },
     );
 
+  program
+    .command("scan")
+    .description("Auto-discover MCP server configs and run checks against each discovered server.")
+    .option("--config <path>", "Path to a specific MCP config file.")
+    .option("--no-color", "Disable colored output.")
+    .action(async (options: { config?: string }) => {
+      const targets = await scanForTargets(options.config);
+
+      if (targets.length === 0) {
+        process.stdout.write("No MCP server configs found.\n");
+        return;
+      }
+
+      process.stdout.write(c(ANSI.bold, `Discovered ${targets.length} MCP server(s):\n`));
+      for (const t of targets) {
+        process.stdout.write(`  ${t.config.targetId} (from ${t.source})\n`);
+      }
+      process.stdout.write("\n");
+
+      const results: { targetId: string; gate: string; tools: string; prompts: string; resources: string }[] = [];
+
+      for (const t of targets) {
+        process.stdout.write(`Running checks for ${c(ANSI.bold, t.config.targetId)}...\n`);
+        try {
+          const artifact = await runTarget(t.config);
+          const toolsStatus = artifact.checks.find((ch) => ch.id === "tools")?.status ?? "skipped";
+          const promptsStatus = artifact.checks.find((ch) => ch.id === "prompts")?.status ?? "skipped";
+          const resourcesStatus = artifact.checks.find((ch) => ch.id === "resources")?.status ?? "skipped";
+          results.push({
+            targetId: t.config.targetId,
+            gate: artifact.gate,
+            tools: toolsStatus,
+            prompts: promptsStatus,
+            resources: resourcesStatus,
+          });
+        } catch (error) {
+          const msg = error instanceof Error ? error.message : String(error);
+          results.push({
+            targetId: t.config.targetId,
+            gate: "fail",
+            tools: "skipped",
+            prompts: "skipped",
+            resources: "skipped",
+          });
+          process.stderr.write(`  Error: ${msg}\n`);
+        }
+      }
+
+      process.stdout.write("\n" + c(ANSI.bold, "Scan Results:\n"));
+      process.stdout.write(`${"Target".padEnd(30)} ${"Gate".padEnd(6)} ${"Tools".padEnd(14)} ${"Prompts".padEnd(14)} ${"Resources".padEnd(14)}\n`);
+      process.stdout.write(`${"─".repeat(30)} ${"─".repeat(6)} ${"─".repeat(14)} ${"─".repeat(14)} ${"─".repeat(14)}\n`);
+
+      for (const r of results) {
+        const gateStr = r.gate === "pass" ? c(ANSI.green, "pass") : c(ANSI.red, "fail");
+        process.stdout.write(
+          `${r.targetId.padEnd(30)} ${gateStr.padEnd(useColor() ? 6 + 9 : 6)} ${colorStatus(r.tools).padEnd(useColor() ? 14 + 9 : 14)} ${colorStatus(r.prompts).padEnd(useColor() ? 14 + 9 : 14)} ${colorStatus(r.resources)}\n`,
+        );
+      }
+    });
+
+  program
+    .command("check")
+    .description("Run a single capability check against a target.")
+    .argument("<capability>", "Capability to check: tools, prompts, or resources.")
+    .requiredOption("--target <config>", "Path to a target config JSON file.")
+    .option("--no-color", "Disable colored output.")
+    .action(async (capability: string, options: { target: string }) => {
+      const validCapabilities = ["tools", "prompts", "resources"];
+      if (!validCapabilities.includes(capability)) {
+        throw new Error(`Invalid capability '${capability}'. Must be one of: ${validCapabilities.join(", ")}`);
+      }
+
+      const target = await readTargetConfig(options.target);
+      const artifact = await runTarget(target);
+      const check = artifact.checks.find((ch) => ch.id === capability);
+
+      if (!check) {
+        throw new Error(`Check '${capability}' was not found in the run results.`);
+      }
+
+      const statusStr = colorStatus(check.status);
+      process.stdout.write(`${c(ANSI.bold, capability)}: ${statusStr}\n`);
+      process.stdout.write(`${check.message}\n`);
+
+      if (check.evidence.length > 0) {
+        for (const ev of check.evidence) {
+          if (ev.identifiers && ev.identifiers.length > 0) {
+            process.stdout.write(`Items: ${ev.identifiers.join(", ")}\n`);
+          }
+          if (ev.diagnostics && ev.diagnostics.length > 0) {
+            process.stdout.write(`Diagnostics: ${ev.diagnostics.join("; ")}\n`);
+          }
+        }
+      }
+    });
+
   await program.parseAsync(process.argv);
+}
+
+function colorStatus(status: string): string {
+  switch (status) {
+    case "pass":
+      return c(ANSI.green, status);
+    case "fail":
+      return c(ANSI.red, status);
+    case "partial":
+    case "flaky":
+      return c(ANSI.yellow, status);
+    case "unsupported":
+    case "skipped":
+      return c(ANSI.dim, status);
+    default:
+      return status;
+  }
+}
+
+async function runWatchMode(target: TargetConfig, outDir: string, intervalSeconds: number): Promise<void> {
+  const { diffArtifacts: diff } = await import("./diff.js");
+
+  process.stdout.write(`Watch mode: checking every ${intervalSeconds}s. Press Ctrl+C to stop.\n\n`);
+
+  let previousArtifact = await runTarget(target);
+  await writeRunArtifact(previousArtifact, outDir);
+  process.stdout.write(`${renderTerminal(previousArtifact)}\n\n`);
+
+  const loop = async (): Promise<void> => {
+    await new Promise((resolve) => setTimeout(resolve, intervalSeconds * 1000));
+
+    const currentArtifact = await runTarget(target);
+    const diffResult = diff(previousArtifact, currentArtifact);
+
+    if (diffResult.summary.regressions > 0 || diffResult.summary.recoveries > 0 || diffResult.summary.added > 0 || diffResult.summary.removed > 0) {
+      const outPath = await writeRunArtifact(currentArtifact, outDir);
+      process.stdout.write(`\n--- Change detected at ${currentArtifact.createdAt} ---\n`);
+      process.stdout.write(`${renderTerminal(diffResult)}\n`);
+      process.stdout.write(`Artifact: ${outPath}\n\n`);
+    }
+
+    previousArtifact = currentArtifact;
+    void loop();
+  };
+
+  void loop();
+
+  // Keep the process alive until Ctrl+C
+  await new Promise<void>((resolve) => {
+    process.on("SIGINT", () => {
+      process.stdout.write("\nWatch mode stopped.\n");
+      resolve();
+    });
+  });
 }
 
 void main().catch((error: unknown) => {

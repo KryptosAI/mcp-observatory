@@ -82,7 +82,7 @@
     },
     "checkId": {
       "type": "string",
-      "enum": ["tools", "prompts", "resources", "semantics"]
+      "enum": ["tools", "prompts", "resources"]
     },
     "diffEntry": {
       "type": "object",

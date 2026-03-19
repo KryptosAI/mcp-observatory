@@ -1,11 +1,12 @@
-export { diffArtifacts } from "./diff/diff.js";
-export { renderJson } from "./reporters/json.js";
+export { diffArtifacts } from "./diff.js";
+export { scanForTargets } from "./discovery.js";
 export { renderMarkdown } from "./reporters/markdown.js";
 export { renderTerminal } from "./reporters/terminal.js";
-export { runTarget } from "./runner/runner.js";
+export { runTarget } from "./runner.js";
 export {
   defaultRunsDirectory,
   readArtifact,
   writeRunArtifact
-} from "./storage/filesystem.js";
+} from "./storage.js";
 export * from "./types.js";
+export { validateDiffArtifact, validateRunArtifact, validateTargetConfig } from "./validate.js";

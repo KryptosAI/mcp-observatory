@@ -1,24 +1,20 @@
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
 
-interface PackageManifest {
-  version?: string;
-}
-
-function readManifest(): PackageManifest {
-  const candidates = [
-    new URL("../package.json", import.meta.url),
-    new URL("../../package.json", import.meta.url)
-  ];
-
-  for (const candidate of candidates) {
-    if (existsSync(candidate)) {
-      return JSON.parse(readFileSync(candidate, "utf8")) as PackageManifest;
+function resolveVersion(): string {
+  const dir = path.dirname(fileURLToPath(import.meta.url));
+  // Walk up looking for package.json (works in both src/ dev and dist/src/ packed)
+  for (const relative of ["../package.json", "../../package.json"]) {
+    try {
+      const content = readFileSync(path.resolve(dir, relative), "utf8");
+      const pkg = JSON.parse(content) as { version?: string };
+      if (pkg.version) return pkg.version;
+    } catch {
+      // continue searching
     }
   }
-
-  return {};
+  return "0.0.0";
 }
 
-const manifest = readManifest();
-
-export const TOOL_VERSION = manifest.version ?? "0.0.0";
+export const TOOL_VERSION = resolveVersion();

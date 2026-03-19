@@ -28,8 +28,8 @@
     "nodeVersion": "v22.22.1"
   },
   "summary": {
-    "total": 4,
-    "pass": 3,
+    "total": 3,
+    "pass": 2,
     "fail": 0,
     "partial": 0,
     "unsupported": 1,
@@ -97,52 +97,6 @@
           "responded": false,
           "minimalShapePresent": false,
           "diagnostics": []
-        }
-      ]
-    },
-    {
-      "id": "semantics",
-      "capability": "semantics",
-      "status": "pass",
-      "durationMs": 0.005416999998487881,
-      "message": "Advertised capabilities responded and returned the minimal expected shape: tools, prompts.",
-      "evidence": [
-        {
-          "endpoint": "tools/list",
-          "advertised": true,
-          "responded": true,
-          "minimalShapePresent": true,
-          "itemCount": 2,
-          "identifiers": [
-            "ref_search_documentation",
-            "ref_read_url"
-          ],
-          "diagnostics": [
-            "Ref MCP Server running on stdio"
-          ]
-        },
-        {
-          "endpoint": "prompts/list",
-          "advertised": true,
-          "responded": true,
-          "minimalShapePresent": true,
-          "itemCount": 2,
-          "identifiers": [
-            "search_docs",
-            "my_docs"
-          ],
-          "diagnostics": [
-            "Ref MCP Server running on stdio"
-          ]
-        },
-        {
-          "endpoint": "resources/list | resources/templates/list",
-          "advertised": false,
-          "responded": false,
-          "minimalShapePresent": false,
-          "diagnostics": [
-            "Ref MCP Server running on stdio"
-          ]
         }
       ]
     }

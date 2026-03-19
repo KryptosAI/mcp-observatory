@@ -1,14 +1,13 @@
 import os from "node:os";
 
-import { AdapterConnectError, LocalProcessAdapter } from "../adapters/local-process.js";
-import { runPromptsCheck } from "../checks/prompts.js";
-import { runResourcesCheck } from "../checks/resources.js";
-import { runSemanticsCheck } from "../checks/semantics.js";
-import { runToolsCheck } from "../checks/tools.js";
-import type { CheckResult, Gate, RunArtifact, StatusCounts, TargetConfig } from "../types.js";
-import { SCHEMA_VERSION } from "../types.js";
-import { buildRunId } from "../utils/ids.js";
-import { TOOL_VERSION } from "../version.js";
+import { AdapterConnectError, LocalProcessAdapter } from "./adapters/local-process.js";
+import { runPromptsCheck } from "./checks/prompts.js";
+import { runResourcesCheck } from "./checks/resources.js";
+import { runToolsCheck } from "./checks/tools.js";
+import type { CheckResult, Gate, RunArtifact, StatusCounts, TargetConfig } from "./types.js";
+import { SCHEMA_VERSION } from "./types.js";
+import { buildRunId } from "./utils/ids.js";
+import { TOOL_VERSION } from "./version.js";
 
 function createEmptyCounts(): StatusCounts {
   return {
@@ -63,19 +62,11 @@ export async function runTarget(target: TargetConfig): Promise<RunArtifact> {
       const toolsCheck = await runToolsCheck(checkContext);
       const promptsCheck = await runPromptsCheck(checkContext);
       const resourcesCheck = await runResourcesCheck(checkContext);
-      const semanticsCheck = runSemanticsCheck(
-        [toolsCheck.observation, promptsCheck.observation, resourcesCheck.observation].filter(
-          (observation): observation is NonNullable<typeof observation> =>
-            observation !== undefined,
-        ),
-        session.stderrLines,
-      );
 
       checks = [
         toolsCheck.result,
         promptsCheck.result,
-        resourcesCheck.result,
-        semanticsCheck.result
+        resourcesCheck.result
       ];
     } finally {
       await session.close();
@@ -106,14 +97,6 @@ export async function runTarget(target: TargetConfig): Promise<RunArtifact> {
       {
         id: "resources",
         capability: "resources",
-        status: "skipped",
-        durationMs: 0,
-        message: skippedMessage,
-        evidence: []
-      },
-      {
-        id: "semantics",
-        capability: "semantics",
         status: "skipped",
         durationMs: 0,
         message: skippedMessage,

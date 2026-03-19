@@ -28,8 +28,8 @@
     "nodeVersion": "v22.22.1"
   },
   "summary": {
-    "total": 4,
-    "pass": 3,
+    "total": 3,
+    "pass": 2,
     "fail": 0,
     "partial": 0,
     "unsupported": 1,
@@ -103,59 +103,6 @@
           "responded": false,
           "minimalShapePresent": false,
           "diagnostics": []
-        }
-      ]
-    },
-    {
-      "id": "semantics",
-      "capability": "semantics",
-      "status": "pass",
-      "durationMs": 0.0032920000003286987,
-      "message": "Advertised capabilities responded and returned the minimal expected shape: tools, prompts.",
-      "evidence": [
-        {
-          "endpoint": "tools/list",
-          "advertised": true,
-          "responded": true,
-          "minimalShapePresent": true,
-          "itemCount": 7,
-          "identifiers": [
-            "add_prompt",
-            "update_prompt",
-            "get_prompt",
-            "list_prompts",
-            "delete_prompt",
-            "apply_prompt",
-            "add_multi_message_prompt"
-          ],
-          "diagnostics": [
-            "Watching for changes in prompts directory: /Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/promptopia-prompts",
-            "promptopia-mcp MCP server running (v1.1.0)"
-          ]
-        },
-        {
-          "endpoint": "prompts/list",
-          "advertised": true,
-          "responded": true,
-          "minimalShapePresent": true,
-          "itemCount": 1,
-          "identifiers": [
-            "demo_welcome"
-          ],
-          "diagnostics": [
-            "Watching for changes in prompts directory: /Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/promptopia-prompts",
-            "promptopia-mcp MCP server running (v1.1.0)"
-          ]
-        },
-        {
-          "endpoint": "resources/list | resources/templates/list",
-          "advertised": false,
-          "responded": false,
-          "minimalShapePresent": false,
-          "diagnostics": [
-            "Watching for changes in prompts directory: /Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/promptopia-prompts",
-            "promptopia-mcp MCP server running (v1.1.0)"
-          ]
         }
       ]
     }

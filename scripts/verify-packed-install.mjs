@@ -11,7 +11,8 @@ function run(command, args, cwd) {
   return execFileSync(command, args, {
     cwd,
     encoding: "utf8",
-    stdio: ["ignore", "pipe", "pipe"]
+    stdio: ["ignore", "pipe", "pipe"],
+    env: { ...process.env, NO_COLOR: "1" }
   });
 }
 

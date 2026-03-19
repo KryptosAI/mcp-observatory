@@ -1,10 +1,19 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import type { ServerCapabilities } from "@modelcontextprotocol/sdk/types.js";
 
-import type { AdapterSession, TargetAdapter } from "./base.js";
 import type { TargetConfig } from "../types.js";
 import { formatConnectionFailureDiagnosis } from "../utils/failure-diagnosis.js";
 import { TOOL_VERSION } from "../version.js";
+
+export interface AdapterSession {
+  client: Client;
+  serverCapabilities?: ServerCapabilities;
+  serverName?: string;
+  serverVersion?: string;
+  stderrLines: string[];
+  close(): Promise<void>;
+}
 
 export class AdapterConnectError extends Error {
   readonly rawMessage: string;
@@ -18,7 +27,7 @@ export class AdapterConnectError extends Error {
   }
 }
 
-export class LocalProcessAdapter implements TargetAdapter {
+export class LocalProcessAdapter {
   async connect(target: TargetConfig): Promise<AdapterSession> {
     const transport = new StdioClientTransport({
       command: target.command,
