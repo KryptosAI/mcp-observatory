@@ -1,4 +1,4 @@
-import type { CheckResult, DiffArtifact, DiffEntry, EvidenceSummary, RunArtifact } from "../types.js";
+import type { CheckResult, DiffArtifact, EvidenceSummary, RunArtifact } from "../types.js";
 import {
   describeCheckList,
   findChecksByStatus,
@@ -83,18 +83,6 @@ function renderCheckSection(check: CheckResult): string[] {
     renderEvidence(check.evidence),
     ``
   ];
-}
-
-function renderDiffEntries(title: string, entries: DiffEntry[]): string {
-  return `## ${title}\n\n${table([
-    ["Check", "From", "To", "Message"],
-    ...entries.map((entry) => [
-      entry.id,
-      entry.fromStatus ?? "n/a",
-      entry.toStatus ?? "n/a",
-      entry.message
-    ])
-  ])}`;
 }
 
 function renderRunMarkdown(artifact: RunArtifact): string {

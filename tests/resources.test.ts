@@ -12,12 +12,12 @@ function makeContext(overrides: {
     client: {
       listResources:
         overrides.listResources ??
-        (async () => ({
+        (() => Promise.resolve({
           resources: [{ uri: "demo://resource/one", name: "one" }]
         })),
       listResourceTemplates:
         overrides.listResourceTemplates ??
-        (async () => ({
+        (() => Promise.resolve({
           resourceTemplates: []
         }))
     } as unknown as CheckContext["client"],
@@ -40,7 +40,7 @@ describe("runResourcesCheck", () => {
   it("treats unsupported optional resource-template endpoints as pass when resources/list works", async () => {
     const check = await runResourcesCheck(
       makeContext({
-        listResourceTemplates: async () => {
+        listResourceTemplates: () => {
           throw new Error("Method not found");
         }
       }),
@@ -54,7 +54,7 @@ describe("runResourcesCheck", () => {
   it("treats unexpected resource endpoint failures as partial when another endpoint still responds", async () => {
     const check = await runResourcesCheck(
       makeContext({
-        listResourceTemplates: async () => {
+        listResourceTemplates: () => {
           throw new Error("Request timed out");
         }
       }),
