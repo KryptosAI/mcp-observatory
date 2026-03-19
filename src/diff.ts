@@ -42,21 +42,21 @@ export function diffArtifacts(base: RunArtifact, head: RunArtifact): DiffArtifac
       removed.push(toEntry(baseCheck, undefined));
       continue;
     }
-    if (baseCheck === undefined || headCheck === undefined) {
+    // Both must be defined at this point — prior branches handle all undefined cases
+    const base = baseCheck!;
+    const head = headCheck!;
+
+    if (base.status === head.status) {
+      unchanged.push(toEntry(base, head));
       continue;
     }
 
-    if (baseCheck.status === headCheck.status) {
-      unchanged.push(toEntry(baseCheck, headCheck));
+    if (STATUS_RANK[head.status] < STATUS_RANK[base.status]) {
+      regressions.push(toEntry(base, head));
       continue;
     }
 
-    if (STATUS_RANK[headCheck.status] < STATUS_RANK[baseCheck.status]) {
-      regressions.push(toEntry(baseCheck, headCheck));
-      continue;
-    }
-
-    recoveries.push(toEntry(baseCheck, headCheck));
+    recoveries.push(toEntry(base, head));
   }
 
   // Schema drift detection
