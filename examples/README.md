@@ -1,6 +1,6 @@
 # Examples
 
-This directory makes the project tangible quickly.
+These files are meant to be evidence, not marketing samples.
 
 ## Targets
 
@@ -15,3 +15,5 @@ This directory makes the project tangible quickly.
 ## Reports
 
 Markdown reports sit next to their corresponding JSON artifacts so readers can compare machine-friendly and human-friendly output surfaces side by side.
+
+If an example does not teach something specific about a real server, it probably does not belong here.

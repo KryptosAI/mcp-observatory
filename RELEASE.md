@@ -2,6 +2,18 @@
 
 The repo is GitHub-release-ready before it is npm-publish-ready.
 
+## Release Bar
+
+Do not cut a release just because a branch merged cleanly.
+
+Every release should include at least one of:
+
+- a real-server learning
+- a report-quality improvement
+- a schema trust improvement
+
+If the diff is mostly packaging churn or generic polish, wait.
+
 ## Versioning Approach
 
 - artifact schema is versioned independently through `schemaVersion`
@@ -29,7 +41,7 @@ For now:
 ## Changelog vs Release Notes
 
 - `CHANGELOG.md` is the durable project history
-- GitHub release notes are the launch-facing summary for one tagged release
+- GitHub release notes are the observational summary for one tagged release
 
 Use the changelog for:
 
@@ -39,8 +51,9 @@ Use the changelog for:
 
 Use release notes for:
 
-- the best story of the release
-- highlighted improvements grouped by the categories in `.github/release.yml`
+- what changed
+- what the release taught us
+- what still feels uncertain
 - links to the most important docs, artifacts, and next-step issues
 
 ## Release Notes Template
