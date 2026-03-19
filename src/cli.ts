@@ -123,7 +123,8 @@ async function main(): Promise<void> {
     .name("mcp-observatory")
     .description("Test your MCP servers for breaking changes.")
     .version(TOOL_VERSION)
-    .addHelpText("before", useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n` : LOGO + `  v${TOOL_VERSION}\n`);
+    .addHelpText("before", useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n` : LOGO + `  v${TOOL_VERSION}\n`)
+    .addHelpText("after", `\nExamples:\n  ${c(ANSI.dim, "$")} mcp-observatory${" ".repeat(37)}Scan all your MCP servers\n  ${c(ANSI.dim, "$")} mcp-observatory scan --invoke-tools${" ".repeat(7)}Also test that tools actually run\n  ${c(ANSI.dim, "$")} mcp-observatory test npx server-foo${" ".repeat(7)}Test a specific server by command\n`);
 
   // ── Core Commands ───────────────────────────────────────────────────────
 
@@ -140,12 +141,9 @@ async function main(): Promise<void> {
 
       if (targets.length === 0) {
         process.stdout.write(c(ANSI.yellow, "  No MCP servers found.\n\n"));
-        process.stdout.write("  Looked in:\n");
-        process.stdout.write(c(ANSI.dim, "    ~/.claude.json\n"));
-        process.stdout.write(c(ANSI.dim, "    ~/Library/Application Support/Claude/claude_desktop_config.json\n"));
-        process.stdout.write(c(ANSI.dim, "    ./.claude.json, ./.mcp.json\n\n"));
-        process.stdout.write("  To check a specific server:\n");
-        process.stdout.write(`  ${c(ANSI.cyan, "mcp-observatory run -- npx -y @modelcontextprotocol/server-filesystem .")}\n\n`);
+        process.stdout.write(c(ANSI.dim, "  Looked in ~/.claude.json, Claude Desktop config, .mcp.json\n\n"));
+        process.stdout.write("  Test a specific server:\n");
+        process.stdout.write(`    ${c(ANSI.dim, "$")} ${c(ANSI.cyan, "mcp-observatory test npx -y @modelcontextprotocol/server-filesystem .")}\n\n`);
         return;
       }
 
@@ -285,15 +283,13 @@ async function main(): Promise<void> {
         }
       }
 
-      // ── Next steps ───────────────────────────────────────────────────────
+      // ── Next step ────────────────────────────────────────────────────────
       process.stdout.write("\n");
       if (!options.invokeTools && totalTools > 0) {
-        process.stdout.write(c(ANSI.dim, `  Tip: ${c(ANSI.cyan, "mcp-observatory scan --invoke-tools")} to verify tools actually execute\n`));
+        process.stdout.write(c(ANSI.dim, `  Next: ${c(ANSI.cyan, "mcp-observatory scan --invoke-tools")} to also test that tools run\n`));
+      } else {
+        process.stdout.write(c(ANSI.dim, `  Run ${c(ANSI.cyan, "mcp-observatory --help")} for more commands\n`));
       }
-      if (passCount > 0) {
-        process.stdout.write(c(ANSI.dim, `  Tip: ${c(ANSI.cyan, "mcp-observatory run --target <config> --watch")} to monitor for changes\n`));
-      }
-      process.stdout.write(c(ANSI.dim, `  Tip: ${c(ANSI.cyan, "mcp-observatory run -- <command>")} to check any MCP server by command\n`));
       process.stdout.write("\n");
 
       if (failCount > 0) {
@@ -302,7 +298,24 @@ async function main(): Promise<void> {
     });
 
   program
-    .command("run")
+    .command("test")
+    .description("Test a server by command.  e.g. mcp-observatory test npx server-foo")
+    .argument("<command...>", "Server command and arguments to run.")
+    .option("--invoke-tools", "Also call safe tools to verify they execute.", false)
+    .option("--no-color", "Disable colored output.")
+    .action(async (commandArgs: string[], options: { invokeTools: boolean }) => {
+      const target = targetFromCommand(commandArgs);
+      const artifact = await runTarget(target, { invokeTools: options.invokeTools });
+      const outPath = await writeRunArtifact(artifact, defaultRunsDirectory(process.cwd()));
+      const summary = renderTerminal(artifact);
+      process.stdout.write(`${summary}\nArtifact: ${outPath}\n`);
+      if (artifact.gate === "fail") {
+        process.exitCode = 1;
+      }
+    });
+
+  program
+    .command("run", { hidden: true })
     .description("Check one server and save a run artifact.")
     .option("--target <config>", "Path to a target config JSON file.")
     .option(
@@ -332,7 +345,7 @@ async function main(): Promise<void> {
     });
 
   program
-    .command("check")
+    .command("check", { hidden: true })
     .description("Run a single capability check (tools, prompts, resources, tools-invoke).")
     .argument("<capability>", "Capability to check: tools, prompts, resources, or tools-invoke.")
     .option("--target <config>", "Path to a target config JSON file.")
@@ -405,7 +418,7 @@ async function main(): Promise<void> {
     );
 
   program
-    .command("report")
+    .command("report", { hidden: true })
     .description("Render a run artifact as terminal, markdown, json, or html.")
     .requiredOption("--run <artifact>", "Run artifact JSON.")
     .option("--format <format>", "terminal, markdown, json, or html", "terminal")
