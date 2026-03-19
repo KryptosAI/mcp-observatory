@@ -73,7 +73,7 @@ async function resolveTarget(options: { target?: string }): Promise<TargetConfig
   if (passthrough.length > 0) {
     return targetFromCommand(passthrough);
   }
-  throw new Error("Provide --target <config.json> or pass a command after --, e.g.: mcp-observatory run -- npx -y @modelcontextprotocol/server-filesystem .");
+  throw new Error("Provide --target <config.json> or use: mcp-observatory test npx -y @modelcontextprotocol/server-filesystem .");
 }
 
 function useColor(): boolean {
@@ -115,16 +115,31 @@ async function writeOutput(content: string, format: string, outputPath?: string)
   }
 }
 
+// ── Invocation detection ─────────────────────────────────────────────────────
+
+/** Returns the command the user actually typed, so tips are copy-pasteable. */
+function getBinName(): string {
+  // npx sets npm_execpath / npm_lifecycle_event, but the reliable signal
+  // is that process.argv[1] lives inside an npx cache directory.
+  const script = process.argv[1] ?? "";
+  if (script.includes(".npm/_npx") || script.includes("npx")) {
+    return "npx @kryptosai/mcp-observatory";
+  }
+  return "mcp-observatory";
+}
+
 // ── Main ────────────────────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
+  const bin = getBinName();
+
   const program = new Command();
   program
     .name("mcp-observatory")
     .description("Test your MCP servers for breaking changes.")
     .version(TOOL_VERSION)
     .addHelpText("before", useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n` : LOGO + `  v${TOOL_VERSION}\n`)
-    .addHelpText("after", `\nExamples:\n  ${c(ANSI.dim, "$")} mcp-observatory${" ".repeat(37)}Scan all your MCP servers\n  ${c(ANSI.dim, "$")} mcp-observatory scan --invoke-tools${" ".repeat(7)}Also test that tools actually run\n  ${c(ANSI.dim, "$")} mcp-observatory test npx server-foo${" ".repeat(7)}Test a specific server by command\n`);
+    .addHelpText("after", `\nExamples:\n  ${c(ANSI.dim, "$")} ${bin}${" ".repeat(Math.max(1, 53 - bin.length))}Scan all your MCP servers\n  ${c(ANSI.dim, "$")} ${bin} scan --invoke-tools${" ".repeat(Math.max(1, 39 - bin.length))}Also test that tools actually run\n  ${c(ANSI.dim, "$")} ${bin} test npx server-foo${" ".repeat(Math.max(1, 39 - bin.length))}Test a specific server by command\n`);
 
   // ── Core Commands ───────────────────────────────────────────────────────
 
@@ -143,7 +158,7 @@ async function main(): Promise<void> {
         process.stdout.write(c(ANSI.yellow, "  No MCP servers found.\n\n"));
         process.stdout.write(c(ANSI.dim, "  Looked in ~/.claude.json, Claude Desktop config, .mcp.json\n\n"));
         process.stdout.write("  Test a specific server:\n");
-        process.stdout.write(`    ${c(ANSI.dim, "$")} ${c(ANSI.cyan, "mcp-observatory test npx -y @modelcontextprotocol/server-filesystem .")}\n\n`);
+        process.stdout.write(`    ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} test npx -y @modelcontextprotocol/server-filesystem .`)}\n\n`);
         return;
       }
 
@@ -286,9 +301,9 @@ async function main(): Promise<void> {
       // ── Next step ────────────────────────────────────────────────────────
       process.stdout.write("\n");
       if (!options.invokeTools && totalTools > 0) {
-        process.stdout.write(c(ANSI.dim, `  Next: ${c(ANSI.cyan, "mcp-observatory scan --invoke-tools")} to also test that tools run\n`));
+        process.stdout.write(c(ANSI.dim, `  Next: ${c(ANSI.cyan, `${bin} scan --invoke-tools`)} to also test that tools run\n`));
       } else {
-        process.stdout.write(c(ANSI.dim, `  Run ${c(ANSI.cyan, "mcp-observatory --help")} for more commands\n`));
+        process.stdout.write(c(ANSI.dim, `  Run ${c(ANSI.cyan, `${bin} --help`)} for more commands\n`));
       }
       process.stdout.write("\n");
 
@@ -299,7 +314,7 @@ async function main(): Promise<void> {
 
   program
     .command("test")
-    .description("Test a server by command.  e.g. mcp-observatory test npx server-foo")
+    .description("Test a specific server by command.")
     .argument("<command...>", "Server command and arguments to run.")
     .option("--invoke-tools", "Also call safe tools to verify they execute.", false)
     .option("--no-color", "Disable colored output.")
