@@ -63,11 +63,12 @@ Servers needing API keys work via `env` in the target config. Python servers wor
 
 ## Working Surface
 
-- `run`: execute checks against one target and persist a run artifact
-- `diff`: compare two runs and classify regressions, recoveries, and schema drift
-- `report`: turn a saved run artifact into readable terminal, JSON, or Markdown output
 - `scan`: auto-discover MCP servers from local config files and check them all (default command)
+- `run`: execute checks against one target and persist a run artifact
 - `check`: run a single capability check (tools, prompts, resources, or tools-invoke)
+- `diff`: compare two runs and classify regressions, recoveries, and schema drift
+- `report`: turn a saved run artifact into readable terminal, JSON, markdown, or HTML output
+- `serve`: run as an MCP server — exposes scan, check, diff, suggest as tools for AI agents
 
 ## Scan
 
@@ -181,7 +182,7 @@ Add it to your Claude config:
 }
 ```
 
-This exposes four tools to your AI agent:
+This exposes five tools to your AI agent:
 
 | Tool | What it does |
 |------|-------------|
@@ -189,8 +190,22 @@ This exposes four tools to your AI agent:
 | `check_server` | Check a specific server by command |
 | `diff_runs` | Compare two saved run artifacts |
 | `get_last_run` | Return the most recent run for a target |
+| `suggest_servers` | Scan your environment and recommend MCP servers you're missing |
 
-Or start it manually: `mcp-observatory serve`
+### Server Recommendations
+
+`suggest_servers` detects what you're working on and cross-references the [official MCP registry](https://registry.modelcontextprotocol.io) to find servers that would help. It scans for:
+
+- **Languages** — Node.js, Python, Go, Rust, Ruby, Java
+- **Frameworks** — Next.js, Nuxt, Angular, and others
+- **Databases** — PostgreSQL, MySQL, Redis, MongoDB (from docker-compose and .env patterns)
+- **Cloud** — AWS, GCP, Azure, Terraform, CloudFormation
+- **CI/CD** — GitHub Actions, GitLab CI, Jenkins
+- **Services** — Stripe, Slack, Sentry, Notion, and others (detected from .env key names, never values)
+
+The tool gathers evidence. The AI does the thinking. Ask your agent "what MCP servers should I add?" and it figures out the rest.
+
+Or start the server manually: `mcp-observatory serve`
 
 ## Limitations
 
