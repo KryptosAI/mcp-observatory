@@ -41,25 +41,17 @@ Or use a target config file for more options (env vars, metadata, custom timeout
 npx @kryptosai/mcp-observatory run --target ./target.json
 ```
 
-## Known-Good Matrix
+## Server Compatibility
 
-Passing matrix refreshed on 2026-03-19:
+Works with **~95% of the MCP server ecosystem** across both standard transports:
 
-| Target | Package | Tools | Prompts | Resources | Why it matters |
-| --- | --- | --- | --- | --- | --- |
-| [filesystem-server.json](./examples/targets/filesystem-server.json) | `@modelcontextprotocol/server-filesystem` | pass | unsupported | unsupported | baseline proof that unsupported is not failure |
-| [everything-server.json](./examples/targets/everything-server.json) | `@modelcontextprotocol/server-everything` | pass | pass | pass | broad official reference target |
-| [ref-tools-server.json](./examples/targets/ref-tools-server.json) | `ref-tools-mcp` | pass | pass | unsupported | third-party prompts-capable proof |
-| [context7-server.json](./examples/targets/context7-server.json) | `@upstash/context7-mcp` | pass | unsupported | unsupported | zero-config third-party tools proof |
-| [puppeteer-server.json](./examples/targets/puppeteer-server.json) | `puppeteer-mcp-server` | pass | unsupported | pass | browser-oriented resources case with an optional-endpoint caveat |
-| [promptopia-server.json](./examples/targets/promptopia-server.json) | `promptopia-mcp` | pass | pass | unsupported | second third-party prompts-capable server |
-| [opentofu-server.json](./examples/targets/opentofu-server.json) | `@opentofu/opentofu-mcp-server` | pass | unsupported | pass | second third-party resources-capable server |
+| Transport | Examples | Adapter |
+|-----------|----------|---------|
+| **stdio** (most servers) | [filesystem](https://www.npmjs.com/package/@modelcontextprotocol/server-filesystem), [memory](https://www.npmjs.com/package/@modelcontextprotocol/server-memory), [sequential-thinking](https://www.npmjs.com/package/@modelcontextprotocol/server-sequential-thinking), [context7](https://www.npmjs.com/package/@upstash/context7-mcp), [brave-search](https://www.npmjs.com/package/@modelcontextprotocol/server-brave-search), [sentry](https://www.npmjs.com/package/@sentry/mcp-server), [notion](https://www.npmjs.com/package/@notionhq/notion-mcp-server), [stripe](https://www.npmjs.com/package/@stripe/mcp), [eslint](https://www.npmjs.com/package/@eslint/mcp) | `local-process` |
+| **HTTP/SSE** (remote) | [Cloudflare](https://developers.cloudflare.com/mcp/), [Exa](https://exa.ai), [Tavily](https://tavily.com) | `http` |
+| **Docker** | All `@modelcontextprotocol/server-*` images | `local-process` via `docker run -i` |
 
-To refresh the matrix locally:
-
-```bash
-npm run integration:real
-```
+Servers needing API keys work via `env` in the target config. Python servers work via `uvx`. See the **[full compatibility matrix](./docs/compatibility.md)** for tested servers, setup examples, and known incompatibilities.
 
 ## Working Surface
 
@@ -164,12 +156,11 @@ mcp-observatory diff --base run-a.json --head run-b.json --format html --output 
 
 Open the file in any browser — no server required, shareable via Slack/email/GitHub comments.
 
-## Do Not Use This If...
+## Limitations
 
-- you need deep semantic correctness validation
-- you need every MCP package on npm to work out of the box
-
-If those are the requirements, this repo is the wrong tool.
+- Servers requiring interactive OAuth (e.g., Google Drive) need pre-authentication before Observatory can connect
+- Custom WebSocket transports (e.g., BrowserTools MCP) are not supported
+- A few servers time out or close before init — see [known issues](./docs/known-issues.md) and [compatibility](./docs/compatibility.md)
 
 ## Repo-Local Validation
 
@@ -220,4 +211,4 @@ The fastest way to contribute something credible is to add evidence:
 
 ## Known Issues
 
-See [docs/known-issues.md](./docs/known-issues.md) for the difference between `unsupported` and `failed`, plus the current list of packages that do not behave like drop-in stdio targets under the local-process harness.
+See [docs/known-issues.md](./docs/known-issues.md) for the difference between `unsupported` and `failed`, and [docs/compatibility.md](./docs/compatibility.md) for the full compatibility matrix including servers that don't work and why.
