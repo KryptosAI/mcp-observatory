@@ -1,5 +1,11 @@
 # MCP Observatory
 
+[![CI](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml)
+[![Real Server Matrix](https://github.com/KryptosAI/mcp-observatory/actions/workflows/real-server-matrix.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/real-server-matrix.yml)
+[![Latest Release](https://img.shields.io/github/v/release/KryptosAI/mcp-observatory?display_name=tag)](https://github.com/KryptosAI/mcp-observatory/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
+[![Node >= 22](https://img.shields.io/badge/node-%3E%3D22-339933)](./package.json)
+
 MCP Observatory is a developer confidence harness for MCP authors and integrators.
 
 It detects, stores, compares, and explains interoperability drift over time so you can answer the question most conformance tooling does not try to answer:
@@ -34,6 +40,37 @@ MCP Observatory is not trying to replace conformance or redefine the protocol. I
 
 It is not a generic dashboard, not a trust platform, and not a spec fork.
 
+## Where It Fits
+
+| Surface | Primary question answered | Output style | Positioning |
+| --- | --- | --- | --- |
+| Official conformance | "Does this implementation satisfy the protocol contract right now?" | pass/fail conformance evidence | compliance baseline |
+| MCP Observatory | "What changed over time, what regressed, and what recovered?" | versioned run artifacts, diffs, Markdown reports | developer confidence harness |
+| Ad hoc local testing | "Did my one manual run look okay?" | transient console output | useful but not durable |
+
+## Visual Proof
+
+The fastest way to understand the product is to look at the artifact surface directly:
+
+```text
+MCP Observatory Diff
+Base: run_20260318T120000000Z_a1b2c3d4
+Head: run_20260318T130000000Z_e5f6g7h8
+Gate: fail
+Counts: regressions=2, recoveries=1, unchanged=1, added=0, removed=0
+Regressions:
+- tools: pass -> fail (Advertised capability failed during tools/list: server error)
+- semantics: pass -> fail (At least one advertised capability did not respond successfully.)
+Recoveries:
+- prompts: unsupported -> pass (Advertised capability responded with the minimal expected shape (1 item).)
+```
+
+See the full checked-in reports:
+
+- [Sample fixture report](./examples/results/sample-report.md)
+- [Everything server report](./examples/artifacts/everything-server-report.md)
+- [Filesystem server report](./examples/artifacts/filesystem-server-report.md)
+
 ## What You Get
 
 - `run`: execute checks against a target config and persist a versioned run artifact
@@ -53,36 +90,21 @@ npm run cli -- diff --base tests/fixtures/sample-run-a.json --head tests/fixture
 
 This is the shortest path to seeing the product work end-to-end with no external MCP dependency.
 
-## Sample Output
-
-```text
-MCP Observatory Diff
-Base: run_20260318T120000000Z_a1b2c3d4
-Head: run_20260318T130000000Z_e5f6g7h8
-Gate: fail
-Counts: regressions=2, recoveries=1, unchanged=1, added=0, removed=0
-Regressions:
-- tools: pass -> fail (Advertised capability failed during tools/list: server error)
-- semantics: pass -> fail (At least one advertised capability did not respond successfully.)
-Recoveries:
-- prompts: unsupported -> pass (Advertised capability responded with the minimal expected shape (1 item).)
-```
-
 The flagship artifact is the Markdown report:
 
 ```bash
 npm run cli -- report --run tests/fixtures/sample-run-b.json --format markdown --output examples/results/sample-report.md
 ```
 
-See [examples/results/sample-report.md](./examples/results/sample-report.md) for a checked-in example.
-
 ## Real Server Coverage
 
-The repo now includes a small real-world smoke matrix across distinct MCP implementations:
+The repo includes a small real-world smoke matrix across distinct MCP implementations:
 
-- [examples/targets/filesystem-server.json](./examples/targets/filesystem-server.json): official filesystem server, tool-heavy local-process target
-- [examples/targets/everything-server.json](./examples/targets/everything-server.json): official everything server, resources-heavy and prompts-capable target
-- [examples/targets/ref-tools-server.json](./examples/targets/ref-tools-server.json): third-party ref tools server, prompts-capable target from a different implementation
+| Target | Server | Shape | Tools | Prompts | Resources | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| [filesystem-server.json](./examples/targets/filesystem-server.json) | `@modelcontextprotocol/server-filesystem` | tool-heavy | pass | unsupported | unsupported | good basic stdio smoke |
+| [everything-server.json](./examples/targets/everything-server.json) | `@modelcontextprotocol/server-everything` | resources-heavy | pass | pass | pass | best capability diversity today |
+| [ref-tools-server.json](./examples/targets/ref-tools-server.json) | `ref-tools-mcp` | prompts-heavy | pass | pass | unsupported | third-party implementation signal |
 
 Manual recipe:
 
@@ -98,7 +120,31 @@ Repeatable script:
 npm run integration:real
 ```
 
-That script regenerates checked-in example artifacts and Markdown reports under [examples/artifacts](./examples/artifacts).
+The real-server matrix also runs in GitHub Actions as a separate nightly and manually-triggered workflow so ecosystem drift is visible without slowing normal PR CI.
+
+## Artifact Contract
+
+Every artifact is versioned and machine-friendly:
+
+- `artifactType`: `run` or `diff`
+- `schemaVersion`: currently `1.0.0`
+- `gate`: `pass` or `fail`
+
+Schema compatibility rules:
+
+- additive changes stay within `1.x`
+- any breaking artifact change requires a major schema bump
+
+Published schemas:
+
+- [schemas/run-artifact.schema.json](./schemas/run-artifact.schema.json)
+- [schemas/diff-artifact.schema.json](./schemas/diff-artifact.schema.json)
+
+Validate checked-in artifacts locally:
+
+```bash
+npm run validate:artifacts
+```
 
 ## Semantics v1
 
@@ -128,39 +174,21 @@ Targets are JSON files with this shape:
 }
 ```
 
-## Artifact Contract
-
-Every artifact is versioned and machine-friendly:
-
-- `artifactType`: `run` or `diff`
-- `schemaVersion`: currently `1.0.0`
-- `gate`: `pass` or `fail`
-
-Schema compatibility rules:
-
-- additive changes stay within `1.x`
-- any breaking artifact change requires a major schema bump
-
 ## Architecture
 
-- `src/runner`: session orchestration and result normalization
-- `src/adapters`: target-specific connection logic, starting with local process/stdio
-- `src/checks`: isolated capability checks with minimal-shape evidence
-- `src/diff`: run-to-run status comparison with regression/recovery classification
-- `src/reporters`: terminal, JSON, and Markdown renderers
-- `src/storage`: filesystem artifact persistence
+See [docs/architecture.md](./docs/architecture.md) for the short system map and [docs/performance.md](./docs/performance.md) for illustrative timing notes from checked-in artifacts.
 
-## Roadmap / Good First Issues
+## How To Pick An Issue
 
-The public work queue lives in GitHub Issues, but the current contribution themes are:
+If you want the highest-leverage starting points, begin here:
 
-- expand real-server coverage across more MCP implementations
-- improve artifact readability and evidence density
-- document unsupported vs failed semantics more clearly
-- add artifact validation and integration examples
-- improve release posture before npm publishing
+- [#1 Add a second resources-heavy real-server smoke target](https://github.com/KryptosAI/mcp-observatory/issues/1)
+- [#3 Improve artifact output readability in the Markdown report](https://github.com/KryptosAI/mcp-observatory/issues/3)
+- [#5 Document unsupported vs failed semantics clearly](https://github.com/KryptosAI/mcp-observatory/issues/5)
+- [#7 Add JSON Schema validation for run artifacts](https://github.com/KryptosAI/mcp-observatory/issues/7)
+- [#10 Add example integrations folder for CI and PR comment usage](https://github.com/KryptosAI/mcp-observatory/issues/10)
 
-See [ROADMAP.md](./ROADMAP.md), [CONTRIBUTING.md](./CONTRIBUTING.md), and the repo’s `good first issue` label for the easiest starting points.
+The public work queue lives in GitHub Issues, and the `good first issue` label is curated intentionally.
 
 ## Contributing
 
@@ -180,7 +208,8 @@ The repo is ready for tagged GitHub releases before npm publishing.
 
 - changelog: [CHANGELOG.md](./CHANGELOG.md)
 - release process: [RELEASE.md](./RELEASE.md)
-- helper script: `node scripts/release.mjs`
+- release notes template: [docs/release-notes-template.md](./docs/release-notes-template.md)
+- helper script: `npm run release:prep`
 - npm publishing decision tracking: keep scoped for now, revisit later
 
 ## Known Issues

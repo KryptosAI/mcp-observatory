@@ -25,19 +25,24 @@
   "files": [
     "dist",
     "README.md",
+    "CHANGELOG.md",
+    "RELEASE.md",
     "LICENSE",
     "CONTRIBUTING.md",
     "ROADMAP.md",
     "SECURITY.md",
-    "CODE_OF_CONDUCT.md"
+    "CODE_OF_CONDUCT.md",
+    "schemas"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "cli": "tsx src/cli.ts",
     "integration:real": "tsx scripts/run-real-server-matrix.ts",
     "lint": "eslint .",
+    "release:prep": "node scripts/release.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
+    "validate:artifacts": "tsx scripts/validate-artifacts.ts",
     "smoke": "npm run cli -- run --target tests/fixtures/sample-target-config.json && npm run cli -- diff --base tests/fixtures/sample-run-a.json --head tests/fixtures/sample-run-b.json"
   },
   "keywords": [
@@ -53,6 +58,7 @@
     "commander": "14.0.2"
   },
   "devDependencies": {
+    "ajv": "8.17.1",
     "@eslint/js": "9.39.1",
     "@types/node": "24.10.1",
     "@typescript-eslint/eslint-plugin": "8.46.3",

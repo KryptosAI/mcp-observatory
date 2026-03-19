@@ -2,8 +2,8 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-03-19T010609952Z_6b138360",
-  "createdAt": "2026-03-19T01:06:09.952Z",
+  "runId": "run_2026-03-19T030808111Z_d9ae6a33",
+  "createdAt": "2026-03-19T03:08:08.111Z",
   "toolVersion": "0.1.0",
   "target": {
     "targetId": "filesystem-server",
@@ -41,7 +41,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 8.13274999999976,
+      "durationMs": 8.91412500000024,
       "message": "Advertised capability responded with the minimal expected shape (14 items).",
       "evidence": [
         {
@@ -79,7 +79,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.002292000000124972,
+      "durationMs": 0.002375000000029104,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -95,7 +95,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.0008339999999407155,
+      "durationMs": 0.0008749999997235136,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -111,7 +111,7 @@
       "id": "semantics",
       "capability": "semantics",
       "status": "pass",
-      "durationMs": 0.0013750000002801244,
+      "durationMs": 0.0014999999998508429,
       "message": "Advertised capabilities responded and returned the minimal expected shape.",
       "evidence": [
         {

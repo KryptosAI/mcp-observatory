@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-03-19T01:06:08.368Z
+Generated at 2026-03-19T03:08:06.622Z
 
 ## Target and Environment Metadata
 
@@ -25,9 +25,9 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- |
-| tools | pass | 11.04 | Advertised capability responded with the minimal expected shape (13 items). |
+| tools | pass | 10.96 | Advertised capability responded with the minimal expected shape (13 items). |
 | prompts | pass | 1.19 | Advertised capability responded with the minimal expected shape (4 items). |
-| resources | pass | 1.81 | Advertised capability responded with the minimal expected shape (9 items). |
+| resources | pass | 1.14 | Advertised capability responded with the minimal expected shape (9 items). |
 | semantics | pass | 0.01 | Advertised capabilities responded and returned the minimal expected shape. |
 
 ## Evidence Snippets
@@ -97,5 +97,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-03-19T010608367Z_bccf39df`
+- Run ID: `run_2026-03-19T030806621Z_8c2ccb42`
 - Gate: `pass`

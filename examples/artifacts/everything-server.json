@@ -2,8 +2,8 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-03-19T010608367Z_bccf39df",
-  "createdAt": "2026-03-19T01:06:08.368Z",
+  "runId": "run_2026-03-19T030806621Z_8c2ccb42",
+  "createdAt": "2026-03-19T03:08:06.622Z",
   "toolVersion": "0.1.0",
   "target": {
     "targetId": "everything-server",
@@ -40,7 +40,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 11.036374999999907,
+      "durationMs": 10.961958999999979,
       "message": "Advertised capability responded with the minimal expected shape (13 items).",
       "evidence": [
         {
@@ -74,7 +74,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "pass",
-      "durationMs": 1.1857499999998709,
+      "durationMs": 1.1916670000000522,
       "message": "Advertised capability responded with the minimal expected shape (4 items).",
       "evidence": [
         {
@@ -99,7 +99,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 1.8087080000000242,
+      "durationMs": 1.1422079999999823,
       "message": "Advertised capability responded with the minimal expected shape (9 items).",
       "evidence": [
         {
@@ -129,7 +129,7 @@
       "id": "semantics",
       "capability": "semantics",
       "status": "pass",
-      "durationMs": 0.008915999999999258,
+      "durationMs": 0.00825000000008913,
       "message": "Advertised capabilities responded and returned the minimal expected shape.",
       "evidence": [
         {

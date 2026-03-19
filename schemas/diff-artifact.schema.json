@@ -1,0 +1,132 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/KryptosAI/mcp-observatory/schemas/diff-artifact.schema.json",
+  "title": "MCP Observatory Diff Artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "artifactType",
+    "schemaVersion",
+    "gate",
+    "baseRunId",
+    "headRunId",
+    "createdAt",
+    "summary",
+    "regressions",
+    "recoveries",
+    "unchanged",
+    "added",
+    "removed"
+  ],
+  "properties": {
+    "artifactType": {
+      "const": "diff"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "gate": {
+      "$ref": "#/definitions/gate"
+    },
+    "baseRunId": {
+      "type": "string"
+    },
+    "headRunId": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "summary": {
+      "$ref": "#/definitions/diffSummary"
+    },
+    "regressions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diffEntry"
+      }
+    },
+    "recoveries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diffEntry"
+      }
+    },
+    "unchanged": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diffEntry"
+      }
+    },
+    "added": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diffEntry"
+      }
+    },
+    "removed": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diffEntry"
+      }
+    }
+  },
+  "definitions": {
+    "gate": {
+      "type": "string",
+      "enum": ["pass", "fail"]
+    },
+    "checkStatus": {
+      "type": "string",
+      "enum": ["pass", "fail", "partial", "unsupported", "flaky", "skipped"]
+    },
+    "checkId": {
+      "type": "string",
+      "enum": ["tools", "prompts", "resources", "semantics"]
+    },
+    "diffEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "capability", "message"],
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/checkId"
+        },
+        "capability": {
+          "$ref": "#/definitions/checkId"
+        },
+        "fromStatus": {
+          "$ref": "#/definitions/checkStatus"
+        },
+        "toStatus": {
+          "$ref": "#/definitions/checkStatus"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "diffSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "regressions",
+        "recoveries",
+        "unchanged",
+        "added",
+        "removed",
+        "gate"
+      ],
+      "properties": {
+        "regressions": { "type": "integer", "minimum": 0 },
+        "recoveries": { "type": "integer", "minimum": 0 },
+        "unchanged": { "type": "integer", "minimum": 0 },
+        "added": { "type": "integer", "minimum": 0 },
+        "removed": { "type": "integer", "minimum": 0 },
+        "gate": {
+          "$ref": "#/definitions/gate"
+        }
+      }
+    }
+  }
+}
