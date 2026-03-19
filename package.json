@@ -1,6 +1,6 @@
 {
   "name": "@kryptosai/mcp-observatory",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Test your MCP servers for breaking changes. Checks capabilities, invokes tools, detects schema drift between versions.",
   "mcpName": "io.github.KryptosAI/mcp-observatory",
   "license": "MIT",
@@ -46,7 +46,7 @@
     "test": "vitest run",
     "validate:artifacts": "tsx scripts/validate-artifacts.ts",
     "verify:packed-install": "node scripts/verify-packed-install.mjs",
-    "smoke": "npm run cli -- run --target tests/fixtures/sample-target-config.json && npm run cli -- diff --base tests/fixtures/sample-run-a.json --head tests/fixtures/sample-run-b.json"
+    "smoke": "npm run cli -- run --target tests/fixtures/sample-target-config.json && npm run cli -- diff tests/fixtures/sample-run-a.json tests/fixtures/sample-run-b.json"
   },
   "keywords": [
     "mcp",

@@ -64,6 +64,9 @@ jobs:
           NPM_TOKEN_SET: ${{ secrets.NPM_TOKEN }}
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
+          # Wait for npm registry propagation
+          echo "Waiting 30s for npm registry propagation..."
+          sleep 30
           TMPDIR="$(mktemp -d)"
           cd "$TMPDIR"
           cat > filesystem-target.json <<'JSON'
