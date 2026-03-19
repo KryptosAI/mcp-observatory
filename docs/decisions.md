@@ -14,9 +14,9 @@ The durable product surface is the artifact plus the report. A dashboard can wai
 
 `unsupported` means the target did not advertise the capability. `failed` means the capability path or startup path should have worked and did not. Collapsing those states would hide useful ecosystem truth.
 
-## 2026-03-19: npm publishing is deferred
+## 2026-03-19: installability is part of the credibility bar
 
-GitHub releases are enough for now. The package stays scoped as `@kryptosai/mcp-observatory` until there is real demand for broader distribution.
+The package stays scoped as `@kryptosai/mcp-observatory`, and the release flow should be able to publish it. Until npm credentials are configured, GitHub release tarballs are the honest fallback. The repo should never imply a one-command install path that does not actually work.
 
 ## 2026-03-19: Every release needs a reason to exist
 

@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-03-19T035126734Z_26bc9124",
-  "createdAt": "2026-03-19T03:51:26.734Z",
-  "toolVersion": "0.1.0",
+  "runId": "run_2026-03-19T042653732Z_e1e96f21",
+  "createdAt": "2026-03-19T04:26:53.732Z",
+  "toolVersion": "0.2.0",
   "target": {
     "targetId": "everything-server",
     "adapter": "local-process",
@@ -15,8 +15,10 @@
     ],
     "cwd": ".",
     "metadata": {
+      "package": "@modelcontextprotocol/server-everything",
       "purpose": "real-server-smoke",
-      "shape": "resources-heavy"
+      "shape": "resources-heavy",
+      "whyItMatters": "Broad official reference target that exercises tools, prompts, and resources in one run."
     },
     "serverName": "mcp-servers/everything",
     "serverVersion": "2.0.0"
@@ -40,7 +42,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 6.642207999999982,
+      "durationMs": 7.787832999999864,
       "message": "Advertised capability responded with the minimal expected shape (13 items).",
       "evidence": [
         {
@@ -74,7 +76,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "pass",
-      "durationMs": 0.6649999999999636,
+      "durationMs": 0.8985410000000229,
       "message": "Advertised capability responded with the minimal expected shape (4 items).",
       "evidence": [
         {
@@ -99,7 +101,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 1.0017499999999018,
+      "durationMs": 1.7872500000003129,
       "message": "Advertised capability responded with the minimal expected shape (9 items).",
       "evidence": [
         {
@@ -141,7 +143,7 @@
       "id": "semantics",
       "capability": "semantics",
       "status": "pass",
-      "durationMs": 0.0029169999997975538,
+      "durationMs": 0.003125000000181899,
       "message": "Advertised capabilities responded and returned the minimal expected shape: tools, prompts, resources.",
       "evidence": [
         {

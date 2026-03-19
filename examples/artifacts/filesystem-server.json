@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-03-19T035127790Z_efda1443",
-  "createdAt": "2026-03-19T03:51:27.790Z",
-  "toolVersion": "0.1.0",
+  "runId": "run_2026-03-19T042655002Z_11723e5f",
+  "createdAt": "2026-03-19T04:26:55.002Z",
+  "toolVersion": "0.2.0",
   "target": {
     "targetId": "filesystem-server",
     "adapter": "local-process",
@@ -16,8 +16,10 @@
     ],
     "cwd": ".",
     "metadata": {
+      "package": "@modelcontextprotocol/server-filesystem",
       "purpose": "real-server-smoke",
-      "shape": "tool-heavy"
+      "shape": "tool-heavy",
+      "whyItMatters": "Baseline passing tools server that proves unsupported prompts and resources are not treated as failures."
     },
     "serverName": "secure-filesystem-server",
     "serverVersion": "0.2.0"
@@ -41,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 7.873417000000245,
+      "durationMs": 9.299708000000464,
       "message": "Advertised capability responded with the minimal expected shape (14 items).",
       "evidence": [
         {
@@ -79,7 +81,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0011669999998957792,
+      "durationMs": 0.0017079999997804407,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -95,7 +97,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.0010000000002037268,
+      "durationMs": 0.00112500000068394,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -111,7 +113,7 @@
       "id": "semantics",
       "capability": "semantics",
       "status": "pass",
-      "durationMs": 0.0020410000001902517,
+      "durationMs": 0.0022500000004583853,
       "message": "Advertised capabilities responded and returned the minimal expected shape: tools.",
       "evidence": [
         {

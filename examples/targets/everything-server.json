@@ -9,7 +9,9 @@
   "cwd": ".",
   "timeoutMs": 15000,
   "metadata": {
+    "package": "@modelcontextprotocol/server-everything",
     "purpose": "real-server-smoke",
-    "shape": "resources-heavy"
+    "shape": "resources-heavy",
+    "whyItMatters": "Broad official reference target that exercises tools, prompts, and resources in one run."
   }
 }

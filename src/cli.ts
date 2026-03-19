@@ -16,6 +16,7 @@ import {
   type TargetConfig
 } from "./index.js";
 import { defaultRunsDirectory } from "./storage/filesystem.js";
+import { TOOL_VERSION } from "./version.js";
 
 async function readTargetConfig(filePath: string): Promise<TargetConfig> {
   const artifact = await readArtifact(filePath);
@@ -29,7 +30,7 @@ async function main(): Promise<void> {
     .description(
       "Regression intelligence for MCP targets: detect, diff, and explain interoperability drift over time.",
     )
-    .version("0.1.0");
+    .version(TOOL_VERSION);
 
   program
     .command("run")

@@ -8,6 +8,7 @@ import { runToolsCheck } from "../checks/tools.js";
 import type { CheckResult, Gate, RunArtifact, StatusCounts, TargetConfig } from "../types.js";
 import { SCHEMA_VERSION } from "../types.js";
 import { buildRunId } from "../utils/ids.js";
+import { TOOL_VERSION } from "../version.js";
 
 function createEmptyCounts(): StatusCounts {
   return {
@@ -129,7 +130,7 @@ export async function runTarget(target: TargetConfig): Promise<RunArtifact> {
     gate: summary.gate,
     runId,
     createdAt,
-    toolVersion: "0.1.0",
+    toolVersion: TOOL_VERSION,
     target: {
       targetId: target.targetId,
       adapter: target.adapter,

@@ -1,13 +1,13 @@
 # MCP Observatory Run Report
 
-Generated at 2026-03-19T04:26:59.241Z
+Generated at 2026-03-19T04:26:55.684Z
 
 ## Target and Environment Metadata
 
-- Target: `puppeteer-server`
+- Target: `opentofu-server`
 - Adapter: `local-process`
-- Command: `npx -y puppeteer-mcp-server`
-- Server: `example-servers/puppeteer 0.1.0`
+- Command: `npx -y @opentofu/opentofu-mcp-server`
+- Server: `opentofu 0.1.0`
 - Platform: `darwin 25.3.0`
 - Node: `v22.22.1`
 
@@ -34,9 +34,9 @@ _Use the `diff` command against another run artifact to classify regressions and
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
-| healthy | resources | pass | 0.98 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
+| healthy | resources | pass | 1.03 | Advertised capability responded with the minimal expected shape (1 items). |
 | healthy | semantics | pass | 0.00 | Advertised capabilities responded and returned the minimal expected shape: tools, resources. |
-| healthy | tools | pass | 0.48 | Advertised capability responded with the minimal expected shape (8 items). |
+| healthy | tools | pass | 2.94 | Advertised capability responded with the minimal expected shape (5 items). |
 
 ## Evidence Snippets
 
@@ -54,22 +54,22 @@ Summary: Prompts are not advertised by the target.
 
 ### resources — pass
 
-Summary: Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported.
+Summary: Advertised capability responded with the minimal expected shape (1 items).
 
 - Endpoint: `resources/list`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
   - Item count: `1`
-  - Identifiers: console://logs
+  - Identifiers: opentofu:registry-info
   - Diagnostics: none
 - Endpoint: `resources/templates/list`
   - Advertised: `true`
-  - Responded: `false`
-  - Minimal shape present: `false`
+  - Responded: `true`
+  - Minimal shape present: `true`
   - Item count: `0`
   - Identifiers: none
-  - Diagnostics: MCP error -32601: Method not found
+  - Diagnostics: none
 
 ### semantics — pass
 
@@ -79,8 +79,8 @@ Summary: Advertised capabilities responded and returned the minimal expected sha
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
-  - Item count: `8`
-  - Identifiers: puppeteer_connect_active_tab, puppeteer_navigate, puppeteer_screenshot, puppeteer_click, puppeteer_fill (+3 more)
+  - Item count: `5`
+  - Identifiers: search-opentofu-registry, get-provider-details, get-module-details, get-resource-docs, get-datasource-docs
   - Diagnostics: none
 - Endpoint: `prompts/list`
   - Advertised: `false`
@@ -94,19 +94,19 @@ Summary: Advertised capabilities responded and returned the minimal expected sha
   - Responded: `true`
   - Minimal shape present: `true`
   - Item count: `1`
-  - Identifiers: console://logs
-  - Diagnostics: resources/templates/list: MCP error -32601: Method not found
+  - Identifiers: opentofu:registry-info
+  - Diagnostics: none
 
 ### tools — pass
 
-Summary: Advertised capability responded with the minimal expected shape (8 items).
+Summary: Advertised capability responded with the minimal expected shape (5 items).
 
 - Endpoint: `tools/list`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
-  - Item count: `8`
-  - Identifiers: puppeteer_connect_active_tab, puppeteer_navigate, puppeteer_screenshot, puppeteer_click, puppeteer_fill (+3 more)
+  - Item count: `5`
+  - Identifiers: search-opentofu-registry, get-provider-details, get-module-details, get-resource-docs, get-datasource-docs
   - Diagnostics: none
 
 ## Reproduction Commands
@@ -120,5 +120,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-03-19T042659241Z_37eec400`
+- Run ID: `run_2026-03-19T042655684Z_47b34ad4`
 - Gate: `pass`

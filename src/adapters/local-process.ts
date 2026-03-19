@@ -4,6 +4,7 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 import type { AdapterSession, TargetAdapter } from "./base.js";
 import type { TargetConfig } from "../types.js";
 import { formatConnectionFailureDiagnosis } from "../utils/failure-diagnosis.js";
+import { TOOL_VERSION } from "../version.js";
 
 export class AdapterConnectError extends Error {
   readonly rawMessage: string;
@@ -41,7 +42,7 @@ export class LocalProcessAdapter implements TargetAdapter {
     const client = new Client(
       {
         name: "mcp-observatory",
-        version: "0.1.0"
+        version: TOOL_VERSION
       },
       {
         capabilities: {}

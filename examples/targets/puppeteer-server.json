@@ -9,7 +9,9 @@
   "cwd": ".",
   "timeoutMs": 20000,
   "metadata": {
+    "package": "puppeteer-mcp-server",
     "purpose": "real-server-smoke",
-    "shape": "tools-and-resources"
+    "shape": "tools-and-resources",
+    "whyItMatters": "Browser-oriented third-party target that passes resources while surfacing an optional endpoint caveat."
   }
 }

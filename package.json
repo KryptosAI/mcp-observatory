@@ -1,6 +1,6 @@
 {
   "name": "@kryptosai/mcp-observatory",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Regression intelligence for MCP targets: detect, diff, and explain interoperability drift over time.",
   "license": "MIT",
   "type": "module",
@@ -20,10 +20,10 @@
     "access": "public"
   },
   "bin": {
-    "mcp-observatory": "./dist/cli.js"
+    "mcp-observatory": "./dist/src/cli.js"
   },
   "files": [
-    "dist",
+    "dist/src",
     "README.md",
     "CHANGELOG.md",
     "RELEASE.md",
@@ -39,10 +39,13 @@
     "cli": "tsx src/cli.ts",
     "integration:real": "tsx scripts/run-real-server-matrix.ts",
     "lint": "eslint .",
+    "prepack": "npm run build",
+    "proof:refresh": "tsx scripts/refresh-proof-artifacts.ts",
     "release:prep": "node scripts/release.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "validate:artifacts": "tsx scripts/validate-artifacts.ts",
+    "verify:packed-install": "node scripts/verify-packed-install.mjs",
     "smoke": "npm run cli -- run --target tests/fixtures/sample-target-config.json && npm run cli -- diff --base tests/fixtures/sample-run-a.json --head tests/fixtures/sample-run-b.json"
   },
   "keywords": [

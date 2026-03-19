@@ -1,0 +1,17 @@
+{
+  "targetId": "opentofu-server",
+  "adapter": "local-process",
+  "command": "npx",
+  "args": [
+    "-y",
+    "@opentofu/opentofu-mcp-server"
+  ],
+  "cwd": ".",
+  "timeoutMs": 15000,
+  "metadata": {
+    "package": "@opentofu/opentofu-mcp-server",
+    "purpose": "real-server-smoke",
+    "shape": "tools-and-resources",
+    "whyItMatters": "Resource-capable third-party target that broadens the matrix beyond the everything server."
+  }
+}

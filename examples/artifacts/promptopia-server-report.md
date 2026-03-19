@@ -1,13 +1,13 @@
 # MCP Observatory Run Report
 
-Generated at 2026-03-19T04:26:59.997Z
+Generated at 2026-03-19T04:26:56.579Z
 
 ## Target and Environment Metadata
 
-- Target: `ref-tools-server`
+- Target: `promptopia-server`
 - Adapter: `local-process`
-- Command: `npx -y ref-tools-mcp`
-- Server: `Ref 3.0.3`
+- Command: `npx -y promptopia-mcp`
+- Server: `promptopia-mcp 1.1.0`
 - Platform: `darwin 25.3.0`
 - Node: `v22.22.1`
 
@@ -34,9 +34,9 @@ _Use the `diff` command against another run artifact to classify regressions and
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
-| healthy | prompts | pass | 0.21 | Advertised capability responded with the minimal expected shape (2 items). |
-| healthy | semantics | pass | 0.01 | Advertised capabilities responded and returned the minimal expected shape: tools, prompts. |
-| healthy | tools | pass | 0.94 | Advertised capability responded with the minimal expected shape (2 items). |
+| healthy | prompts | pass | 0.83 | Advertised capability responded with the minimal expected shape (1 item). |
+| healthy | semantics | pass | 0.00 | Advertised capabilities responded and returned the minimal expected shape: tools, prompts. |
+| healthy | tools | pass | 2.18 | Advertised capability responded with the minimal expected shape (7 items). |
 
 ## Evidence Snippets
 
@@ -54,15 +54,15 @@ Summary: Resources are not advertised by the target.
 
 ### prompts — pass
 
-Summary: Advertised capability responded with the minimal expected shape (2 items).
+Summary: Advertised capability responded with the minimal expected shape (1 item).
 
 - Endpoint: `prompts/list`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
-  - Item count: `2`
-  - Identifiers: search_docs, my_docs
-  - Diagnostics: Ref MCP Server running on stdio
+  - Item count: `1`
+  - Identifiers: demo_welcome
+  - Diagnostics: Watching for changes in prompts directory: /Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/promptopia-prompts, promptopia-mcp MCP server running (v1.1.0)
 
 ### semantics — pass
 
@@ -72,35 +72,35 @@ Summary: Advertised capabilities responded and returned the minimal expected sha
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
-  - Item count: `2`
-  - Identifiers: ref_search_documentation, ref_read_url
-  - Diagnostics: Ref MCP Server running on stdio
+  - Item count: `7`
+  - Identifiers: add_prompt, update_prompt, get_prompt, list_prompts, delete_prompt (+2 more)
+  - Diagnostics: Watching for changes in prompts directory: /Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/promptopia-prompts, promptopia-mcp MCP server running (v1.1.0)
 - Endpoint: `prompts/list`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
-  - Item count: `2`
-  - Identifiers: search_docs, my_docs
-  - Diagnostics: Ref MCP Server running on stdio
+  - Item count: `1`
+  - Identifiers: demo_welcome
+  - Diagnostics: Watching for changes in prompts directory: /Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/promptopia-prompts, promptopia-mcp MCP server running (v1.1.0)
 - Endpoint: `resources/list | resources/templates/list`
   - Advertised: `false`
   - Responded: `false`
   - Minimal shape present: `false`
   - Item count: `0`
   - Identifiers: none
-  - Diagnostics: Ref MCP Server running on stdio
+  - Diagnostics: Watching for changes in prompts directory: /Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/promptopia-prompts, promptopia-mcp MCP server running (v1.1.0)
 
 ### tools — pass
 
-Summary: Advertised capability responded with the minimal expected shape (2 items).
+Summary: Advertised capability responded with the minimal expected shape (7 items).
 
 - Endpoint: `tools/list`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
-  - Item count: `2`
-  - Identifiers: ref_search_documentation, ref_read_url
-  - Diagnostics: Ref MCP Server running on stdio
+  - Item count: `7`
+  - Identifiers: add_prompt, update_prompt, get_prompt, list_prompts, delete_prompt (+2 more)
+  - Diagnostics: Watching for changes in prompts directory: /Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/promptopia-prompts, promptopia-mcp MCP server running (v1.1.0)
 
 ## Reproduction Commands
 
@@ -113,5 +113,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-03-19T042659996Z_4844f321`
+- Run ID: `run_2026-03-19T042656579Z_02cc0224`
 - Gate: `pass`

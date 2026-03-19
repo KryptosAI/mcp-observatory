@@ -1,0 +1,11 @@
+{
+  "id": "prompt-demo-welcome",
+  "name": "demo_welcome",
+  "content": "Say hello to {{name}} and keep it under one sentence.",
+  "description": "Small seeded prompt for Promptopia proof runs.",
+  "variables": [
+    "name"
+  ],
+  "createdAt": "2026-03-19T00:00:00.000Z",
+  "updatedAt": "2026-03-19T00:00:00.000Z"
+}

@@ -9,7 +9,9 @@
   "cwd": ".",
   "timeoutMs": 20000,
   "metadata": {
+    "package": "@upstash/context7-mcp",
     "purpose": "real-server-smoke",
-    "shape": "tool-heavy-third-party"
+    "shape": "tool-heavy-third-party",
+    "whyItMatters": "Zero-config third-party tools server that keeps the matrix grounded in real package usage."
   }
 }
