@@ -105,7 +105,7 @@ export async function runToolsInvokeCheck(context: CheckContext): Promise<Observ
         invoked: true,
         responded: true,
         isError,
-        error: isError ? String(response.content) : undefined,
+        error: isError ? JSON.stringify(response.content) : undefined,
       });
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
