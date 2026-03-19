@@ -53,13 +53,15 @@ jobs:
           npm pack --pack-destination release-assets
 
       - name: Publish to npm
-        if: ${{ secrets.NPM_TOKEN != '' }}
+        if: env.NODE_AUTH_TOKEN != ''
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --access public --provenance
 
       - name: Verify published npm install
-        if: ${{ secrets.NPM_TOKEN != '' }}
+        if: env.NPM_TOKEN_SET != ''
+        env:
+          NPM_TOKEN_SET: ${{ secrets.NPM_TOKEN }}
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
           TMPDIR="$(mktemp -d)"
