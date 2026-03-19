@@ -13,6 +13,8 @@ Regression detection for MCP servers. Checks capabilities, invokes tools, detect
   <img src="./docs/demo.svg" alt="MCP Observatory scan output" width="820">
 </p>
 
+[![Observatory MCP server](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory/badges/card.svg)](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory)
+
 ## Install
 
 ```bash
