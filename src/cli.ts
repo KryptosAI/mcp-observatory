@@ -317,6 +317,14 @@ async function main(): Promise<void> {
       }
     });
 
+  program
+    .command("serve")
+    .description("Start mcp-observatory as an MCP server on stdio. Exposes scan, check_server, diff_runs, and get_last_run as tools.")
+    .action(async () => {
+      const { startServer } = await import("./server.js");
+      await startServer();
+    });
+
   // Default to scan when invoked with no arguments
   if (process.argv.length === 2) {
     process.argv.push("scan");

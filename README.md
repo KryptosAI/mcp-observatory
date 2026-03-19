@@ -160,6 +160,34 @@ mcp-observatory diff --base run-a.json --head run-b.json --format html --output 
 
 Open the file in any browser — no server required, shareable via Slack/email/GitHub comments.
 
+## Use as an MCP Server
+
+mcp-observatory can also run as an MCP server itself, letting any AI agent check MCP server health directly in conversation.
+
+Add it to your Claude config:
+
+```json
+{
+  "mcpServers": {
+    "mcp-observatory": {
+      "command": "npx",
+      "args": ["-y", "@kryptosai/mcp-observatory", "serve"]
+    }
+  }
+}
+```
+
+This exposes four tools to your AI agent:
+
+| Tool | What it does |
+|------|-------------|
+| `scan` | Discover and check all configured servers |
+| `check_server` | Check a specific server by command |
+| `diff_runs` | Compare two saved run artifacts |
+| `get_last_run` | Return the most recent run for a target |
+
+Or start it manually: `mcp-observatory serve`
+
 ## Limitations
 
 - Servers requiring interactive OAuth (e.g., Google Drive) need pre-authentication before Observatory can connect
