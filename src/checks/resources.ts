@@ -203,7 +203,7 @@ export async function runResourcesCheck(context: CheckContext): Promise<Observed
   } else if (diagnostics.length > 0) {
     message =
       "Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported.";
-  } else if (itemCount !== undefined) {
+  } else {
     message = `Advertised capability responded with the minimal expected shape (${itemCount} items).`;
   }
 

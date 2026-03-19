@@ -51,7 +51,7 @@ npx @kryptosai/mcp-observatory run --target ./target.json
 
 ## Server Compatibility
 
-Works with **~95% of the MCP server ecosystem** across both standard transports:
+Works with any MCP server that uses standard transports:
 
 | Transport | Examples | Adapter |
 |-----------|----------|---------|
