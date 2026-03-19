@@ -1,0 +1,11 @@
+{
+  "targetId": "fixture-server",
+  "adapter": "local-process",
+  "command": "node",
+  "args": ["tests/fixtures/fixture-server.mjs"],
+  "cwd": ".",
+  "timeoutMs": 10000,
+  "metadata": {
+    "purpose": "example-fixture"
+  }
+}

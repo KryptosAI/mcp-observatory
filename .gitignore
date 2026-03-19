@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.mcp-observatory/
+coverage/
+.DS_Store
+*.log

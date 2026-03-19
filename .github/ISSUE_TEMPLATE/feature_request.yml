@@ -1,0 +1,24 @@
+name: Feature request
+description: Propose a focused improvement to the CLI, schema, or reporting flow.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What user problem should this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: Keep it concrete and aligned with CLI-first scope.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Explain how the change would improve evidence quality, schema trust, or report quality.

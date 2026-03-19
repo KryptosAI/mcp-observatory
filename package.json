@@ -1,0 +1,67 @@
+{
+  "name": "@kryptosai/mcp-observatory",
+  "version": "0.1.0",
+  "description": "Regression intelligence for MCP targets: detect, diff, and explain interoperability drift over time.",
+  "license": "MIT",
+  "type": "module",
+  "private": false,
+  "homepage": "https://github.com/KryptosAI/mcp-observatory#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KryptosAI/mcp-observatory.git"
+  },
+  "bugs": {
+    "url": "https://github.com/KryptosAI/mcp-observatory/issues"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "mcp-observatory": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CONTRIBUTING.md",
+    "ROADMAP.md",
+    "SECURITY.md",
+    "CODE_OF_CONDUCT.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "cli": "tsx src/cli.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "smoke": "npm run cli -- run --target tests/fixtures/sample-target-config.json && npm run cli -- diff --base tests/fixtures/sample-run-a.json --head tests/fixtures/sample-run-b.json"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "cli",
+    "regression-testing",
+    "interoperability",
+    "observability"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.27.1",
+    "commander": "14.0.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.1",
+    "@types/node": "24.10.1",
+    "@typescript-eslint/eslint-plugin": "8.46.3",
+    "@typescript-eslint/parser": "8.46.3",
+    "eslint": "9.39.1",
+    "globals": "16.5.0",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.46.3",
+    "vitest": "4.0.8",
+    "zod": "4.1.12"
+  }
+}

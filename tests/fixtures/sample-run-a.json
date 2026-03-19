@@ -1,0 +1,96 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_20260318T120000000Z_a1b2c3d4",
+  "createdAt": "2026-03-18T12:00:00.000Z",
+  "toolVersion": "0.1.0",
+  "target": {
+    "targetId": "fixture-server",
+    "adapter": "local-process",
+    "command": "node",
+    "args": ["tests/fixtures/fixture-server.mjs"],
+    "cwd": ".",
+    "metadata": {
+      "purpose": "sample"
+    },
+    "serverName": "fixture-server",
+    "serverVersion": "1.0.0"
+  },
+  "environment": {
+    "platform": "darwin 25.0.0",
+    "nodeVersion": "v22.0.0"
+  },
+  "summary": {
+    "total": 4,
+    "pass": 3,
+    "fail": 0,
+    "partial": 0,
+    "unsupported": 1,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 5.1,
+      "message": "Advertised capability responded with the minimal expected shape (1 item).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": ["echo"],
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.9,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "pass",
+      "durationMs": 4.2,
+      "message": "Advertised capability responded with the minimal expected shape (2 items).",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 2,
+          "identifiers": ["file://fixture/roadmap.txt", "memory://cases/{id}"],
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "semantics",
+      "capability": "semantics",
+      "status": "pass",
+      "durationMs": 0.1,
+      "message": "Advertised capabilities responded and returned the minimal expected shape.",
+      "evidence": []
+    }
+  ]
+}
