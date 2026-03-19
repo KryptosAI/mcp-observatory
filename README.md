@@ -7,7 +7,11 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 [![Node >= 20](https://img.shields.io/badge/node-%3E%3D20-339933)](./package.json)
 
-Regression detection for MCP servers. Checks capabilities, invokes tools, detects schema drift, and diffs runs over time. Supports local stdio and remote HTTP/SSE targets.
+An AI tool that checks other AI tools. It's a tool testing tools that serve tools.*
+
+<sub>* I'm a dude playing a dude disguised as another dude.</sub>
+
+Checks capabilities, invokes tools, detects schema drift, and diffs runs over time. Supports local stdio and remote HTTP/SSE targets.
 
 <p align="center">
   <img src="./docs/demo.svg" alt="MCP Observatory scan output" width="820">
@@ -162,7 +166,7 @@ Open the file in any browser — no server required, shareable via Slack/email/G
 
 ## Use as an MCP Server
 
-mcp-observatory can also run as an MCP server itself, letting any AI agent check MCP server health directly in conversation.
+mcp-observatory can also run as an MCP server itself, letting any AI agent check MCP server health directly in conversation. Yes, that means your AI uses a tool to check whether its other tools work. We've reached peak meta.
 
 Add it to your Claude config:
 

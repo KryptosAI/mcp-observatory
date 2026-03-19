@@ -51,7 +51,8 @@ export async function startServer(): Promise<void> {
 
       const lines: string[] = [`Discovered ${targets.length} server(s):\n`];
       for (const t of targets) {
-        // Skip ourselves to avoid recursive loop
+        // Skip ourselves to avoid recursive loop.
+        // A tool checking itself checking itself... we have to draw the line somewhere.
         if (t.config.targetId === "mcp-observatory") continue;
 
         lines.push(`--- ${t.config.targetId} (from ${t.source}) ---`);
