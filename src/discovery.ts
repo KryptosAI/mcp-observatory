@@ -10,10 +10,6 @@ interface McpServerEntry {
   env?: Record<string, string>;
 }
 
-interface McpConfigFile {
-  mcpServers?: Record<string, McpServerEntry>;
-}
-
 interface DiscoveredTarget {
   source: string;
   config: TargetConfig;
@@ -46,7 +42,7 @@ function defaultConfigPaths(): string[] {
   return paths;
 }
 
-async function tryReadJson(filePath: string): Promise<unknown | undefined> {
+async function tryReadJson(filePath: string): Promise<unknown> {
   try {
     const content = await readFile(filePath, "utf8");
     return JSON.parse(content) as unknown;
