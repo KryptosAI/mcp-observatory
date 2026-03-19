@@ -4,12 +4,6 @@ import path from "node:path";
 
 import type { TargetConfig } from "./types.js";
 
-interface McpServerEntry {
-  command?: string;
-  args?: string[];
-  env?: Record<string, string>;
-}
-
 interface DiscoveredTarget {
   source: string;
   config: TargetConfig;
