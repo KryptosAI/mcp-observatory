@@ -17,7 +17,15 @@ npx @kryptosai/mcp-observatory
 
 That's it. Running with no arguments auto-discovers your MCP servers from Claude Code and Claude Desktop configs and checks them all.
 
-To check a specific server, create a target config:
+To check a specific server, pass the command directly:
+
+```bash
+npx @kryptosai/mcp-observatory run -- npx -y @modelcontextprotocol/server-everything
+npx @kryptosai/mcp-observatory run --invoke-tools -- npx -y @modelcontextprotocol/server-everything
+npx @kryptosai/mcp-observatory check tools -- npx -y @modelcontextprotocol/server-filesystem .
+```
+
+Or use a target config file for more options (env vars, metadata, custom timeout):
 
 ```json
 {
@@ -31,7 +39,6 @@ To check a specific server, create a target config:
 
 ```bash
 npx @kryptosai/mcp-observatory run --target ./target.json
-npx @kryptosai/mcp-observatory run --target ./target.json --invoke-tools
 ```
 
 ## Known-Good Matrix
