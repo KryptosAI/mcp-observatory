@@ -2,48 +2,36 @@
 
 [![CI](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml)
 [![Real Server Matrix](https://github.com/KryptosAI/mcp-observatory/actions/workflows/real-server-matrix.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/real-server-matrix.yml)
+[![npm](https://img.shields.io/npm/v/@kryptosai/mcp-observatory)](https://www.npmjs.com/package/@kryptosai/mcp-observatory)
 [![Latest Release](https://img.shields.io/github/v/release/KryptosAI/mcp-observatory?display_name=tag)](https://github.com/KryptosAI/mcp-observatory/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 [![Node >= 20](https://img.shields.io/badge/node-%3E%3D20-339933)](./package.json)
 
-Regression evidence for Node/local-process stdio MCP targets.
-
-Current status: GitHub-release-installable, tested against 7 real servers, and still at zero external adoption proof until that changes. The public package identity is `@kryptosai/mcp-observatory`; npm publishing is wired into the release flow but needs credentials before it becomes a live install path.
-
-> Maintainer note, March 19, 2026: this repo exists because real MCP servers drift in ways conformance does not explain. Some servers pass cleanly with very different capability shapes. Others time out or close early when treated as plain stdio targets. Both outcomes are useful evidence.
+Regression detection for MCP servers. Checks capabilities, invokes tools, detects schema drift, and diffs runs over time. Supports local stdio and remote HTTP/SSE targets.
 
 ## Install
 
 ```bash
-# npm (when published)
 npx @kryptosai/mcp-observatory
-
-# or from GitHub release tarball
-npx --yes https://github.com/KryptosAI/mcp-observatory/releases/download/v0.3.0/kryptosai-mcp-observatory-0.3.0.tgz
 ```
 
-Running with no arguments auto-discovers your MCP servers and checks them all.
+That's it. Running with no arguments auto-discovers your MCP servers from Claude Code and Claude Desktop configs and checks them all.
 
-Create one tiny target config in any directory:
+To check a specific server, create a target config:
 
 ```json
 {
-  "targetId": "filesystem-cli-proof",
+  "targetId": "filesystem-server",
   "adapter": "local-process",
   "command": "npx",
   "args": ["-y", "@modelcontextprotocol/server-filesystem", "."],
-  "timeoutMs": 15000,
-  "metadata": {
-    "package": "@modelcontextprotocol/server-filesystem",
-    "purpose": "standalone-cli-proof"
-  }
+  "timeoutMs": 15000
 }
 ```
 
-Run it:
-
 ```bash
-npx --yes https://github.com/KryptosAI/mcp-observatory/releases/download/v0.2.0/kryptosai-mcp-observatory-0.2.0.tgz run --target ./filesystem-target.json
+npx @kryptosai/mcp-observatory run --target ./target.json
+npx @kryptosai/mcp-observatory run --target ./target.json --invoke-tools
 ```
 
 ## Known-Good Matrix
