@@ -28,8 +28,8 @@
     "nodeVersion": "v22.22.1"
   },
   "summary": {
-    "total": 4,
-    "pass": 3,
+    "total": 3,
+    "pass": 2,
     "fail": 0,
     "partial": 0,
     "unsupported": 1,
@@ -106,53 +106,6 @@
           "minimalShapePresent": false,
           "diagnostics": [
             "MCP error -32601: Method not found"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "semantics",
-      "capability": "semantics",
-      "status": "pass",
-      "durationMs": 0.0037089999987074407,
-      "message": "Advertised capabilities responded and returned the minimal expected shape: tools, resources.",
-      "evidence": [
-        {
-          "endpoint": "tools/list",
-          "advertised": true,
-          "responded": true,
-          "minimalShapePresent": true,
-          "itemCount": 8,
-          "identifiers": [
-            "puppeteer_connect_active_tab",
-            "puppeteer_navigate",
-            "puppeteer_screenshot",
-            "puppeteer_click",
-            "puppeteer_fill",
-            "puppeteer_select",
-            "puppeteer_hover",
-            "puppeteer_evaluate"
-          ],
-          "diagnostics": []
-        },
-        {
-          "endpoint": "prompts/list",
-          "advertised": false,
-          "responded": false,
-          "minimalShapePresent": false,
-          "diagnostics": []
-        },
-        {
-          "endpoint": "resources/list | resources/templates/list",
-          "advertised": true,
-          "responded": true,
-          "minimalShapePresent": true,
-          "itemCount": 1,
-          "identifiers": [
-            "console://logs"
-          ],
-          "diagnostics": [
-            "resources/templates/list: MCP error -32601: Method not found"
           ]
         }
       ]

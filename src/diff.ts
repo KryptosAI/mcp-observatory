@@ -1,14 +1,5 @@
-import type { CheckResult, CheckStatus, DiffArtifact, DiffEntry, RunArtifact } from "../types.js";
-import { SCHEMA_VERSION } from "../types.js";
-
-const STATUS_RANK: Record<CheckStatus, number> = {
-  pass: 6,
-  partial: 5,
-  flaky: 4,
-  unsupported: 3,
-  skipped: 2,
-  fail: 1
-};
+import type { CheckResult, DiffArtifact, DiffEntry, RunArtifact } from "./types.js";
+import { SCHEMA_VERSION, STATUS_RANK } from "./types.js";
 
 function toEntry(base: CheckResult | undefined, head: CheckResult | undefined): DiffEntry {
   const source = head ?? base;

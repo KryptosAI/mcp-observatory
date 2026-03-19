@@ -43,24 +43,6 @@ Run it:
 npx --yes https://github.com/KryptosAI/mcp-observatory/releases/download/v0.2.0/kryptosai-mcp-observatory-0.2.0.tgz run --target ./filesystem-target.json
 ```
 
-Expected proof shape:
-
-```text
-MCP Observatory Run
-Gate: pass
-Target: filesystem-cli-proof (local-process)
-Actionable now:
-- unsupported checks: prompts, resources
-Checks (most actionable first):
-- prompts: unsupported (...)
-- resources: unsupported (...)
-- semantics: pass (...)
-- tools: pass (...)
-Artifact: .../filesystem-cli-proof.json
-```
-
-The equivalent repo-tracked target lives at [examples/install/filesystem-target.json](./examples/install/filesystem-target.json).
-
 ## Known-Good Matrix
 
 Passing matrix refreshed on 2026-03-19:
@@ -81,6 +63,51 @@ To refresh the matrix locally:
 npm run integration:real
 ```
 
+## Working Surface
+
+- `run`: execute checks against one target and persist a run artifact
+- `diff`: compare two runs and classify regressions and recoveries
+- `report`: turn a saved run artifact into readable terminal, JSON, or Markdown output
+- `scan`: auto-discover MCP servers from local config files and check them all
+- `check`: run a single capability check (tools, prompts, or resources)
+
+## Scan
+
+Auto-discover MCP server configs from Claude Code, Claude Desktop, and project-level config files, then run checks against every discovered server:
+
+```bash
+mcp-observatory scan
+mcp-observatory scan --config ~/.claude.json
+```
+
+Scanned locations (in order):
+- `~/.claude.json` (Claude Code)
+- `~/Library/Application Support/Claude/claude_desktop_config.json` (Claude Desktop, macOS)
+- `%APPDATA%/Claude/claude_desktop_config.json` (Claude Desktop, Windows)
+- `.claude.json` (current directory)
+- `.mcp.json` (current directory)
+
+## Check
+
+Run a single capability check for faster iteration:
+
+```bash
+mcp-observatory check tools --target ./my-server.json
+mcp-observatory check prompts --target ./my-server.json
+mcp-observatory check resources --target ./my-server.json
+```
+
+## Watch
+
+Re-run checks on an interval and output only when something changes:
+
+```bash
+mcp-observatory run --target ./my-server.json --watch
+mcp-observatory run --target ./my-server.json --watch --interval 60
+```
+
+Press Ctrl+C to stop.
+
 ## Do Not Use This If...
 
 - you need non-stdio transports
@@ -89,16 +116,6 @@ npm run integration:real
 - you need a dashboard instead of artifacts and reports
 
 If those are the requirements, this repo is the wrong tool.
-
-## Working Surface
-
-The product surface stays deliberately small:
-
-- `run`: execute checks against one target and always persist a run artifact
-- `diff`: compare two runs and classify regressions and recoveries
-- `report`: turn a saved run artifact into readable terminal, JSON, or Markdown output
-
-That is enough to answer one practical question: what changed, what regressed, what recovered, and what artifact proves it?
 
 ## Repo-Local Validation
 
@@ -136,16 +153,6 @@ Validate checked-in artifacts locally:
 ```bash
 npm run validate:artifacts
 ```
-
-## Semantics v1
-
-`semantics` stays intentionally narrow. It only verifies:
-
-- the capability is advertised
-- the corresponding callable endpoint responds
-- the response contains the minimal expected shape
-
-It does not claim tool correctness, prompt quality, resource validity, or protocol completeness. The reasoning is documented in [docs/decisions.md](./docs/decisions.md).
 
 ## Contributing
 

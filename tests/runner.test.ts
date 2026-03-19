@@ -18,14 +18,13 @@ describe("runTarget", () => {
     expect(artifact.artifactType).toBe("run");
     expect(artifact.schemaVersion).toBe("1.0.0");
     expect(artifact.gate).toBe("pass");
-    expect(artifact.summary.total).toBe(4);
+    expect(artifact.summary.total).toBe(3);
     expect(artifact.summary.fail).toBe(0);
-    expect(artifact.summary.pass).toBe(4);
+    expect(artifact.summary.pass).toBe(3);
     expect(artifact.checks.map((check) => check.id)).toEqual([
       "tools",
       "prompts",
-      "resources",
-      "semantics"
+      "resources"
     ]);
 
     const markdown = renderMarkdown(artifact);

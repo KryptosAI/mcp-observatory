@@ -1,13 +1,9 @@
 import type { CheckResult, CheckStatus, RunArtifact } from "../types.js";
+import { STATUS_RANK } from "../types.js";
 
-const STATUS_PRIORITY: Record<CheckStatus, number> = {
-  fail: 0,
-  partial: 1,
-  flaky: 2,
-  skipped: 3,
-  unsupported: 4,
-  pass: 5
-};
+const STATUS_PRIORITY: Record<CheckStatus, number> = Object.fromEntries(
+  Object.entries(STATUS_RANK).map(([status, rank]) => [status, -rank])
+) as Record<CheckStatus, number>;
 
 export function sortChecksByActionability(checks: CheckResult[]): CheckResult[] {
   return [...checks].sort((left, right) => {

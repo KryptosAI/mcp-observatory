@@ -24,13 +24,13 @@
     "nodeVersion": "v22.22.1"
   },
   "summary": {
-    "total": 4,
+    "total": 3,
     "pass": 0,
     "fail": 0,
     "partial": 0,
     "unsupported": 0,
     "flaky": 0,
-    "skipped": 4,
+    "skipped": 3,
     "gate": "fail"
   },
   "checks": [
@@ -53,14 +53,6 @@
     {
       "id": "resources",
       "capability": "resources",
-      "status": "skipped",
-      "durationMs": 0,
-      "message": "Skipped because startup failed before the MCP session initialized. See the failure diagnosis.",
-      "evidence": []
-    },
-    {
-      "id": "semantics",
-      "capability": "semantics",
       "status": "skipped",
       "durationMs": 0,
       "message": "Skipped because startup failed before the MCP session initialized. See the failure diagnosis.",

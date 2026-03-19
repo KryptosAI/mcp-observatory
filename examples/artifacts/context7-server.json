@@ -28,8 +28,8 @@
     "nodeVersion": "v22.22.1"
   },
   "summary": {
-    "total": 4,
-    "pass": 2,
+    "total": 3,
+    "pass": 1,
     "fail": 0,
     "partial": 0,
     "unsupported": 2,
@@ -90,47 +90,6 @@
           "responded": false,
           "minimalShapePresent": false,
           "diagnostics": []
-        }
-      ]
-    },
-    {
-      "id": "semantics",
-      "capability": "semantics",
-      "status": "pass",
-      "durationMs": 0.01970900000014808,
-      "message": "Advertised capabilities responded and returned the minimal expected shape: tools.",
-      "evidence": [
-        {
-          "endpoint": "tools/list",
-          "advertised": true,
-          "responded": true,
-          "minimalShapePresent": true,
-          "itemCount": 2,
-          "identifiers": [
-            "resolve-library-id",
-            "query-docs"
-          ],
-          "diagnostics": [
-            "Context7 Documentation MCP Server v2.1.4 running on stdio"
-          ]
-        },
-        {
-          "endpoint": "prompts/list",
-          "advertised": false,
-          "responded": false,
-          "minimalShapePresent": false,
-          "diagnostics": [
-            "Context7 Documentation MCP Server v2.1.4 running on stdio"
-          ]
-        },
-        {
-          "endpoint": "resources/list | resources/templates/list",
-          "advertised": false,
-          "responded": false,
-          "minimalShapePresent": false,
-          "diagnostics": [
-            "Context7 Documentation MCP Server v2.1.4 running on stdio"
-          ]
         }
       ]
     }

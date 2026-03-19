@@ -22,9 +22,9 @@
     "nodeVersion": "v22.0.0"
   },
   "summary": {
-    "total": 4,
+    "total": 3,
     "pass": 2,
-    "fail": 2,
+    "fail": 1,
     "partial": 0,
     "unsupported": 0,
     "flaky": 0,
@@ -83,14 +83,6 @@
           "diagnostics": []
         }
       ]
-    },
-    {
-      "id": "semantics",
-      "capability": "semantics",
-      "status": "fail",
-      "durationMs": 0.1,
-      "message": "At least one advertised capability did not respond successfully.",
-      "evidence": []
     }
   ]
 }
