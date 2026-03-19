@@ -10,9 +10,11 @@ run("npm run lint");
 run("npm run typecheck");
 run("npm test");
 run("npm run build");
+run("npm run verify:packed-install");
 
 process.stdout.write("\nRelease checks passed.\n");
 process.stdout.write("Next steps:\n");
 process.stdout.write("1. Update CHANGELOG or release notes.\n");
-process.stdout.write("2. Create a git tag.\n");
-process.stdout.write("3. Publish a GitHub release.\n");
+process.stdout.write("2. Confirm the repo has an NPM_TOKEN secret or local npm auth if this release should publish to npm.\n");
+process.stdout.write("3. Create and push the git tag.\n");
+process.stdout.write("4. Verify the GitHub release asset and, when configured, the npm package install path.\n");

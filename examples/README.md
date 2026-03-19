@@ -2,6 +2,11 @@
 
 These files are meant to be evidence, not marketing samples.
 
+Start with:
+
+- [INDEX.md](./INDEX.md) for the human-readable proof map
+- [matrix-summary.json](./matrix-summary.json) for the machine-readable matrix summary
+
 ## Targets
 
 - `targets/filesystem-server.json`
@@ -9,6 +14,9 @@ These files are meant to be evidence, not marketing samples.
 - `targets/ref-tools-server.json`
 - `targets/context7-server.json`
 - `targets/puppeteer-server.json`
+- `targets/promptopia-server.json`
+- `targets/opentofu-server.json`
+- `install/filesystem-target.json`
 
 ## Artifacts
 

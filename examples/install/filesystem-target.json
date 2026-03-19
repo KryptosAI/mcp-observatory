@@ -1,0 +1,16 @@
+{
+  "targetId": "filesystem-cli-proof",
+  "adapter": "local-process",
+  "command": "npx",
+  "args": [
+    "-y",
+    "@modelcontextprotocol/server-filesystem",
+    "."
+  ],
+  "timeoutMs": 15000,
+  "metadata": {
+    "package": "@modelcontextprotocol/server-filesystem",
+    "purpose": "standalone-cli-proof",
+    "whyItMatters": "This target works in any directory and is the easiest no-clone proof run for the CLI."
+  }
+}

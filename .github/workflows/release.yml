@@ -1,0 +1,88 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install
+        run: npm install
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Packed install verification
+        run: npm run verify:packed-install
+
+      - name: Validate checked-in artifacts
+        run: npm run validate:artifacts
+
+      - name: README smoke test
+        run: npm run smoke
+
+      - name: Pack release tarball
+        run: |
+          mkdir -p release-assets
+          npm pack --pack-destination release-assets
+
+      - name: Publish to npm
+        if: ${{ secrets.NPM_TOKEN != '' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public --provenance
+
+      - name: Verify published npm install
+        if: ${{ secrets.NPM_TOKEN != '' }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          TMPDIR="$(mktemp -d)"
+          cd "$TMPDIR"
+          cat > filesystem-target.json <<'JSON'
+          {
+            "targetId": "filesystem-cli-proof",
+            "adapter": "local-process",
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-filesystem", "."],
+            "timeoutMs": 15000,
+            "metadata": {
+              "package": "@modelcontextprotocol/server-filesystem",
+              "purpose": "published-package-proof"
+            }
+          }
+          JSON
+          npx -y @kryptosai/mcp-observatory@"$VERSION" --help
+          npx -y @kryptosai/mcp-observatory@"$VERSION" --version
+          npx -y @kryptosai/mcp-observatory@"$VERSION" run --target filesystem-target.json
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: release-assets/*.tgz

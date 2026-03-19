@@ -1,7 +1,5 @@
 # Release Process
 
-The repo is GitHub-release-ready before it is npm-publish-ready.
-
 ## Release Bar
 
 Do not cut a release just because a branch merged cleanly.
@@ -27,15 +25,18 @@ If the diff is mostly packaging churn or generic polish, wait.
 2. run `npm run release:prep`
 3. create a PR and merge through the protected path
 4. create the release tag on `main`
-5. publish GitHub release notes using the template categories in `.github/release.yml`
-6. decide whether the release is GitHub-only or npm-worthy
+5. push the tag so `.github/workflows/release.yml` can:
+   - build and test
+   - verify the packed install path
+   - attach the release tarball to GitHub
+   - publish to npm when `NPM_TOKEN` is configured
+6. verify the release asset install path and, if published, the npm install path
 
 ## npm Publish Posture
 
-For now:
-
 - keep the package scoped as `@kryptosai/mcp-observatory`
-- do not optimize for npm distribution yet
+- treat installability as part of the release bar
+- use GitHub release tarballs as the honest fallback when npm credentials are not configured
 - revisit unscoped publishing only if adoption warrants it
 
 ## Changelog vs Release Notes

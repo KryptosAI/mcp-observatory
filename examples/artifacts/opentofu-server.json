@@ -2,25 +2,25 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-03-19T042659241Z_37eec400",
-  "createdAt": "2026-03-19T04:26:59.241Z",
+  "runId": "run_2026-03-19T042655684Z_47b34ad4",
+  "createdAt": "2026-03-19T04:26:55.684Z",
   "toolVersion": "0.2.0",
   "target": {
-    "targetId": "puppeteer-server",
+    "targetId": "opentofu-server",
     "adapter": "local-process",
     "command": "npx",
     "args": [
       "-y",
-      "puppeteer-mcp-server"
+      "@opentofu/opentofu-mcp-server"
     ],
     "cwd": ".",
     "metadata": {
-      "package": "puppeteer-mcp-server",
+      "package": "@opentofu/opentofu-mcp-server",
       "purpose": "real-server-smoke",
       "shape": "tools-and-resources",
-      "whyItMatters": "Browser-oriented third-party target that passes resources while surfacing an optional endpoint caveat."
+      "whyItMatters": "Resource-capable third-party target that broadens the matrix beyond the everything server."
     },
-    "serverName": "example-servers/puppeteer",
+    "serverName": "opentofu",
     "serverVersion": "0.1.0"
   },
   "environment": {
@@ -42,24 +42,21 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 0.47687500000029104,
-      "message": "Advertised capability responded with the minimal expected shape (8 items).",
+      "durationMs": 2.942542000000685,
+      "message": "Advertised capability responded with the minimal expected shape (5 items).",
       "evidence": [
         {
           "endpoint": "tools/list",
           "advertised": true,
           "responded": true,
           "minimalShapePresent": true,
-          "itemCount": 8,
+          "itemCount": 5,
           "identifiers": [
-            "puppeteer_connect_active_tab",
-            "puppeteer_navigate",
-            "puppeteer_screenshot",
-            "puppeteer_click",
-            "puppeteer_fill",
-            "puppeteer_select",
-            "puppeteer_hover",
-            "puppeteer_evaluate"
+            "search-opentofu-registry",
+            "get-provider-details",
+            "get-module-details",
+            "get-resource-docs",
+            "get-datasource-docs"
           ],
           "diagnostics": []
         }
@@ -69,7 +66,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0031249999992724042,
+      "durationMs": 0.0029580000000350992,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -85,8 +82,8 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 0.9757499999996071,
-      "message": "Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported.",
+      "durationMs": 1.0339589999994132,
+      "message": "Advertised capability responded with the minimal expected shape (1 items).",
       "evidence": [
         {
           "endpoint": "resources/list",
@@ -95,18 +92,18 @@
           "minimalShapePresent": true,
           "itemCount": 1,
           "identifiers": [
-            "console://logs"
+            "opentofu:registry-info"
           ],
           "diagnostics": []
         },
         {
           "endpoint": "resources/templates/list",
           "advertised": true,
-          "responded": false,
-          "minimalShapePresent": false,
-          "diagnostics": [
-            "MCP error -32601: Method not found"
-          ]
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": [],
+          "diagnostics": []
         }
       ]
     },
@@ -114,7 +111,7 @@
       "id": "semantics",
       "capability": "semantics",
       "status": "pass",
-      "durationMs": 0.0037089999987074407,
+      "durationMs": 0.004249999999956344,
       "message": "Advertised capabilities responded and returned the minimal expected shape: tools, resources.",
       "evidence": [
         {
@@ -122,16 +119,13 @@
           "advertised": true,
           "responded": true,
           "minimalShapePresent": true,
-          "itemCount": 8,
+          "itemCount": 5,
           "identifiers": [
-            "puppeteer_connect_active_tab",
-            "puppeteer_navigate",
-            "puppeteer_screenshot",
-            "puppeteer_click",
-            "puppeteer_fill",
-            "puppeteer_select",
-            "puppeteer_hover",
-            "puppeteer_evaluate"
+            "search-opentofu-registry",
+            "get-provider-details",
+            "get-module-details",
+            "get-resource-docs",
+            "get-datasource-docs"
           ],
           "diagnostics": []
         },
@@ -149,11 +143,9 @@
           "minimalShapePresent": true,
           "itemCount": 1,
           "identifiers": [
-            "console://logs"
+            "opentofu:registry-info"
           ],
-          "diagnostics": [
-            "resources/templates/list: MCP error -32601: Method not found"
-          ]
+          "diagnostics": []
         }
       ]
     }

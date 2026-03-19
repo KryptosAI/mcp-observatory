@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-03-19T03:51:25.818Z
+Generated at 2026-03-19T04:26:51.781Z
 
 ## Target and Environment Metadata
 
@@ -35,8 +35,8 @@ _Use the `diff` command against another run artifact to classify regressions and
 | --- | --- | --- | --- | --- |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
-| healthy | semantics | pass | 0.01 | Advertised capabilities responded and returned the minimal expected shape: tools. |
-| healthy | tools | pass | 2.63 | Advertised capability responded with the minimal expected shape (2 items). |
+| healthy | semantics | pass | 0.02 | Advertised capabilities responded and returned the minimal expected shape: tools. |
+| healthy | tools | pass | 3.19 | Advertised capability responded with the minimal expected shape (2 items). |
 
 ## Evidence Snippets
 
@@ -113,5 +113,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-03-19T035125817Z_b7a5dccc`
+- Run ID: `run_2026-03-19T042651779Z_06a46a74`
 - Gate: `pass`

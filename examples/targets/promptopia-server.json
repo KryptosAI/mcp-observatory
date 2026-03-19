@@ -1,0 +1,20 @@
+{
+  "targetId": "promptopia-server",
+  "adapter": "local-process",
+  "command": "npx",
+  "args": [
+    "-y",
+    "promptopia-mcp"
+  ],
+  "cwd": ".",
+  "env": {
+    "PROMPTS_DIR": "examples/promptopia-prompts"
+  },
+  "timeoutMs": 15000,
+  "metadata": {
+    "package": "promptopia-mcp",
+    "purpose": "real-server-smoke",
+    "shape": "prompts-heavy",
+    "whyItMatters": "Filesystem-backed prompts server that gives the matrix a second third-party prompts-capable target."
+  }
+}

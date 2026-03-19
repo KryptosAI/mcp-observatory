@@ -2,26 +2,26 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-03-19T042659996Z_4844f321",
-  "createdAt": "2026-03-19T04:26:59.997Z",
+  "runId": "run_2026-03-19T042656579Z_02cc0224",
+  "createdAt": "2026-03-19T04:26:56.579Z",
   "toolVersion": "0.2.0",
   "target": {
-    "targetId": "ref-tools-server",
+    "targetId": "promptopia-server",
     "adapter": "local-process",
     "command": "npx",
     "args": [
       "-y",
-      "ref-tools-mcp"
+      "promptopia-mcp"
     ],
     "cwd": ".",
     "metadata": {
-      "package": "ref-tools-mcp",
+      "package": "promptopia-mcp",
       "purpose": "real-server-smoke",
       "shape": "prompts-heavy",
-      "whyItMatters": "Third-party prompts-capable target that proves prompt support is not limited to official example servers."
+      "whyItMatters": "Filesystem-backed prompts server that gives the matrix a second third-party prompts-capable target."
     },
-    "serverName": "Ref",
-    "serverVersion": "3.0.3"
+    "serverName": "promptopia-mcp",
+    "serverVersion": "1.1.0"
   },
   "environment": {
     "platform": "darwin 25.3.0",
@@ -42,21 +42,27 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 0.9360409999990225,
-      "message": "Advertised capability responded with the minimal expected shape (2 items).",
+      "durationMs": 2.1804169999995793,
+      "message": "Advertised capability responded with the minimal expected shape (7 items).",
       "evidence": [
         {
           "endpoint": "tools/list",
           "advertised": true,
           "responded": true,
           "minimalShapePresent": true,
-          "itemCount": 2,
+          "itemCount": 7,
           "identifiers": [
-            "ref_search_documentation",
-            "ref_read_url"
+            "add_prompt",
+            "update_prompt",
+            "get_prompt",
+            "list_prompts",
+            "delete_prompt",
+            "apply_prompt",
+            "add_multi_message_prompt"
           ],
           "diagnostics": [
-            "Ref MCP Server running on stdio"
+            "Watching for changes in prompts directory: /Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/promptopia-prompts",
+            "promptopia-mcp MCP server running (v1.1.0)"
           ]
         }
       ]
@@ -65,21 +71,21 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "pass",
-      "durationMs": 0.2088339999991149,
-      "message": "Advertised capability responded with the minimal expected shape (2 items).",
+      "durationMs": 0.8290420000002996,
+      "message": "Advertised capability responded with the minimal expected shape (1 item).",
       "evidence": [
         {
           "endpoint": "prompts/list",
           "advertised": true,
           "responded": true,
           "minimalShapePresent": true,
-          "itemCount": 2,
+          "itemCount": 1,
           "identifiers": [
-            "search_docs",
-            "my_docs"
+            "demo_welcome"
           ],
           "diagnostics": [
-            "Ref MCP Server running on stdio"
+            "Watching for changes in prompts directory: /Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/promptopia-prompts",
+            "promptopia-mcp MCP server running (v1.1.0)"
           ]
         }
       ]
@@ -88,7 +94,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.0029169999997975538,
+      "durationMs": 0.0019170000005033216,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -104,7 +110,7 @@
       "id": "semantics",
       "capability": "semantics",
       "status": "pass",
-      "durationMs": 0.005416999998487881,
+      "durationMs": 0.0032920000003286987,
       "message": "Advertised capabilities responded and returned the minimal expected shape: tools, prompts.",
       "evidence": [
         {
@@ -112,13 +118,19 @@
           "advertised": true,
           "responded": true,
           "minimalShapePresent": true,
-          "itemCount": 2,
+          "itemCount": 7,
           "identifiers": [
-            "ref_search_documentation",
-            "ref_read_url"
+            "add_prompt",
+            "update_prompt",
+            "get_prompt",
+            "list_prompts",
+            "delete_prompt",
+            "apply_prompt",
+            "add_multi_message_prompt"
           ],
           "diagnostics": [
-            "Ref MCP Server running on stdio"
+            "Watching for changes in prompts directory: /Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/promptopia-prompts",
+            "promptopia-mcp MCP server running (v1.1.0)"
           ]
         },
         {
@@ -126,13 +138,13 @@
           "advertised": true,
           "responded": true,
           "minimalShapePresent": true,
-          "itemCount": 2,
+          "itemCount": 1,
           "identifiers": [
-            "search_docs",
-            "my_docs"
+            "demo_welcome"
           ],
           "diagnostics": [
-            "Ref MCP Server running on stdio"
+            "Watching for changes in prompts directory: /Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/promptopia-prompts",
+            "promptopia-mcp MCP server running (v1.1.0)"
           ]
         },
         {
@@ -141,7 +153,8 @@
           "responded": false,
           "minimalShapePresent": false,
           "diagnostics": [
-            "Ref MCP Server running on stdio"
+            "Watching for changes in prompts directory: /Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/promptopia-prompts",
+            "promptopia-mcp MCP server running (v1.1.0)"
           ]
         }
       ]

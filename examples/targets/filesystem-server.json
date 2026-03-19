@@ -10,7 +10,9 @@
   "cwd": ".",
   "timeoutMs": 10000,
   "metadata": {
+    "package": "@modelcontextprotocol/server-filesystem",
     "purpose": "real-server-smoke",
-    "shape": "tool-heavy"
+    "shape": "tool-heavy",
+    "whyItMatters": "Baseline passing tools server that proves unsupported prompts and resources are not treated as failures."
   }
 }

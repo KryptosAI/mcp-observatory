@@ -9,7 +9,9 @@
   "cwd": ".",
   "timeoutMs": 15000,
   "metadata": {
+    "package": "ref-tools-mcp",
     "purpose": "real-server-smoke",
-    "shape": "prompts-heavy"
+    "shape": "prompts-heavy",
+    "whyItMatters": "Third-party prompts-capable target that proves prompt support is not limited to official example servers."
   }
 }
