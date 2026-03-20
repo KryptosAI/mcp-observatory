@@ -106,6 +106,12 @@ npx @kryptosai/mcp-observatory suggest
 
 Or ask your agent "what MCP servers should I add?" when running in MCP server mode.
 
+**Security scanning** — analyzes tool schemas for dangerous patterns: shell injection surfaces, broad filesystem access, missing auth, and credential leakage in responses.
+
+```bash
+npx @kryptosai/mcp-observatory test --security npx -y my-mcp-server
+```
+
 **Record / replay / verify** — capture a live session, replay it offline in CI, and verify nothing changed. Like [VCR](https://github.com/vcr/vcr) for MCP.
 
 ```bash
@@ -133,6 +139,28 @@ When you run `scan`, it looks for MCP configs in:
 - `~/Library/Application Support/Claude/claude_desktop_config.json` (Claude Desktop, macOS)
 - `%APPDATA%/Claude/claude_desktop_config.json` (Claude Desktop, Windows)
 - `.claude.json` and `.mcp.json` (current directory)
+
+## CI / GitHub Action
+
+Add Observatory to your MCP server's CI pipeline:
+
+```yaml
+# .github/workflows/observatory.yml
+name: MCP Server Check
+on: [pull_request]
+
+jobs:
+  observatory:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: KryptosAI/mcp-observatory/action@main
+        with:
+          command: npx -y my-mcp-server
+          security: true
+```
+
+The action runs checks on every PR, comments a markdown report, and blocks merge on regressions. See [`action/README.md`](./action/README.md) for all options.
 
 ## MCP Server Mode
 
