@@ -37,6 +37,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "cli": "tsx src/cli.ts",
+    "dashboard:build": "tsx scripts/build-dashboard.ts",
     "integration:real": "tsx scripts/run-real-server-matrix.ts",
     "lint": "eslint .",
     "prepack": "npm run build",
@@ -59,7 +60,9 @@
     "replay",
     "cassette",
     "vcr",
-    "mcp-testing"
+    "mcp-testing",
+    "security",
+    "github-action"
   ],
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",

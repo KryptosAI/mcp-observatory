@@ -1,0 +1,178 @@
+name: "MCP Observatory"
+description: "Test your MCP servers for breaking changes, security issues, and schema drift."
+branding:
+  icon: "shield"
+  color: "blue"
+
+inputs:
+  command:
+    description: "Server command to test (e.g., 'npx -y @modelcontextprotocol/server-filesystem .')"
+    required: false
+  target:
+    description: "Path to a target config JSON file (alternative to command)"
+    required: false
+  baseline:
+    description: "Path to a baseline cassette file for regression verification"
+    required: false
+  deep:
+    description: "Also invoke safe tools to verify they execute"
+    required: false
+    default: "false"
+  security:
+    description: "Run security analysis on tool schemas"
+    required: false
+    default: "false"
+  fail-on-regression:
+    description: "Fail the action if the server has issues"
+    required: false
+    default: "true"
+  comment-on-pr:
+    description: "Post a markdown report as a PR comment"
+    required: false
+    default: "true"
+  github-token:
+    description: "GitHub token for PR comments"
+    required: false
+    default: ${{ github.token }}
+  node-version:
+    description: "Node.js version to use"
+    required: false
+    default: "22"
+
+outputs:
+  gate:
+    description: "Overall result: 'pass' or 'fail'"
+    value: ${{ steps.run.outputs.gate }}
+  artifact-path:
+    description: "Path to the run artifact JSON file"
+    value: ${{ steps.run.outputs.artifact_path }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Install MCP Observatory
+      shell: bash
+      run: npm install -g @kryptosai/mcp-observatory
+
+    - name: Run Observatory checks
+      id: run
+      shell: bash
+      env:
+        INPUT_COMMAND: ${{ inputs.command }}
+        INPUT_TARGET: ${{ inputs.target }}
+        INPUT_DEEP: ${{ inputs.deep }}
+        INPUT_SECURITY: ${{ inputs.security }}
+      run: |
+        ARGS=""
+
+        if [ -n "$INPUT_TARGET" ]; then
+          # Use run command with target config
+          CMD="mcp-observatory run --target $INPUT_TARGET"
+        elif [ -n "$INPUT_COMMAND" ]; then
+          # Use test command with server command
+          CMD="mcp-observatory test $INPUT_COMMAND"
+        else
+          echo "::error::Either 'command' or 'target' input is required"
+          exit 1
+        fi
+
+        if [ "$INPUT_DEEP" = "true" ] && [ -n "$INPUT_TARGET" ]; then
+          ARGS="$ARGS --invoke"
+        fi
+
+        if [ "$INPUT_SECURITY" = "true" ]; then
+          ARGS="$ARGS --security"
+        fi
+
+        # Run and capture output
+        ARTIFACT_DIR="${RUNNER_TEMP}/observatory"
+        mkdir -p "$ARTIFACT_DIR"
+
+        set +e
+        $CMD $ARGS --no-color 2>&1 | tee "${ARTIFACT_DIR}/output.txt"
+        EXIT_CODE=$?
+        set -e
+
+        # Find the artifact file
+        ARTIFACT_PATH=$(find .mcp-observatory/runs -name "*.json" -type f 2>/dev/null | sort | tail -1)
+
+        if [ -n "$ARTIFACT_PATH" ]; then
+          cp "$ARTIFACT_PATH" "${ARTIFACT_DIR}/run.json"
+          echo "artifact_path=${ARTIFACT_DIR}/run.json" >> "$GITHUB_OUTPUT"
+
+          # Extract gate from artifact
+          GATE=$(python3 -c "import json; print(json.load(open('${ARTIFACT_DIR}/run.json'))['gate'])" 2>/dev/null || echo "unknown")
+          echo "gate=${GATE}" >> "$GITHUB_OUTPUT"
+        else
+          echo "gate=fail" >> "$GITHUB_OUTPUT"
+          echo "artifact_path=" >> "$GITHUB_OUTPUT"
+        fi
+
+        # Generate markdown report
+        if [ -n "$ARTIFACT_PATH" ]; then
+          mcp-observatory report "$ARTIFACT_PATH" --format markdown --no-color > "${ARTIFACT_DIR}/report.md" 2>/dev/null || true
+        fi
+
+    - name: Verify against baseline
+      if: inputs.baseline != ''
+      shell: bash
+      env:
+        INPUT_BASELINE: ${{ inputs.baseline }}
+        INPUT_COMMAND: ${{ inputs.command }}
+        INPUT_TARGET: ${{ inputs.target }}
+      run: |
+        VERIFY_CMD="mcp-observatory verify $INPUT_BASELINE"
+        if [ -n "$INPUT_TARGET" ]; then
+          VERIFY_CMD="$VERIFY_CMD --target $INPUT_TARGET"
+        elif [ -n "$INPUT_COMMAND" ]; then
+          VERIFY_CMD="$VERIFY_CMD $INPUT_COMMAND"
+        fi
+
+        set +e
+        $VERIFY_CMD --no-color 2>&1 | tee "${RUNNER_TEMP}/observatory/verify.txt"
+        VERIFY_EXIT=$?
+        set -e
+
+        if [ $VERIFY_EXIT -ne 0 ]; then
+          echo "::warning::Baseline verification detected changes"
+        fi
+
+    - name: Comment on PR
+      if: inputs.comment-on-pr == 'true' && github.event_name == 'pull_request'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+      run: |
+        REPORT_FILE="${RUNNER_TEMP}/observatory/report.md"
+
+        if [ ! -f "$REPORT_FILE" ]; then
+          echo "No report file found, skipping PR comment"
+          exit 0
+        fi
+
+        BODY="## MCP Observatory Report
+
+        $(cat "$REPORT_FILE")
+
+        ---
+        <sub>Generated by [MCP Observatory](https://github.com/KryptosAI/mcp-observatory) action</sub>"
+
+        gh pr comment ${{ github.event.pull_request.number }} \
+          --repo ${{ github.repository }} \
+          --body "$BODY" \
+          --edit-last 2>/dev/null || \
+        gh pr comment ${{ github.event.pull_request.number }} \
+          --repo ${{ github.repository }} \
+          --body "$BODY"
+
+    - name: Check gate
+      if: inputs.fail-on-regression == 'true' && steps.run.outputs.gate == 'fail'
+      shell: bash
+      run: |
+        echo "::error::MCP Observatory detected issues (gate: fail)"
+        exit 1

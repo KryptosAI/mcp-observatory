@@ -5,15 +5,19 @@ on:
   schedule:
     - cron: "0 8 * * *"
 
+permissions:
+  contents: write
+  pages: write
+
 jobs:
   matrix:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
@@ -25,12 +29,30 @@ jobs:
         id: matrix
         run: npm run integration:real
 
+      - name: Build dashboard
+        run: npm run dashboard:build
+
       - name: Upload matrix artifacts
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: real-server-matrix-artifacts
           path: |
             examples/artifacts/*.json
             examples/artifacts/*-report.md
           retention-days: 14
+
+      - name: Commit history update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add examples/matrix-history.json
+          git diff --staged --quiet || git commit -m "Update matrix history [skip ci]"
+          git push || true
+
+      - name: Deploy dashboard to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dashboard
+          publish_branch: gh-pages

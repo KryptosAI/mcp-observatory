@@ -348,11 +348,12 @@ async function main(): Promise<void> {
     .command("scan")
     .description("Check all MCP servers in your Claude configs.")
     .option("--config <path>", "Path to a specific MCP config file.")
+    .option("--security", "Run security analysis on tool schemas.")
     .option("--no-color", "Disable colored output.");
 
   // `scan` with no subcommand — basic scan
-  scanCmd.action(async (options: { config?: string }) => {
-    await runScan(bin, options.config, false);
+  scanCmd.action(async (options: { config?: string; security?: boolean }) => {
+    await runScan(bin, options.config, false, options.security);
   });
 
   // `scan deep` — scan + invoke tools
@@ -360,10 +361,12 @@ async function main(): Promise<void> {
     .command("deep")
     .description("Scan and also invoke safe tools to verify they execute.")
     .option("--config <path>", "Path to a specific MCP config file.")
-    .action(async (options: { config?: string }) => {
+    .option("--security", "Run security analysis on tool schemas.")
+    .action(async (options: { config?: string; security?: boolean }) => {
       // Inherit parent config option if set
       const parentConfig = scanCmd.opts().config as string | undefined;
-      await runScan(bin, options.config ?? parentConfig, true);
+      const parentSecurity = scanCmd.opts().security as boolean | undefined;
+      await runScan(bin, options.config ?? parentConfig, true, options.security ?? parentSecurity ?? true);
     });
 
   // ── test ──────────────────────────────────────────────────────────────
@@ -373,11 +376,12 @@ async function main(): Promise<void> {
     .passThroughOptions()
     .description("Test a specific server by command.")
     .argument("<command...>", "Server command and arguments to run.")
+    .option("--security", "Run security analysis on tool schemas.")
     .option("--no-color", "Disable colored output.")
-    .action(async (commandArgs: string[]) => {
+    .action(async (commandArgs: string[], options: { security?: boolean }) => {
       const target = targetFromCommand(commandArgs);
       process.stdout.write(`  ${c(ANSI.dim, "⟳")} Checking ${c(ANSI.bold, target.targetId)}...`);
-      const artifact = await runTarget(target);
+      const artifact = await runTarget(target, { securityCheck: options.security });
       const outPath = await writeRunArtifact(artifact, defaultRunsDirectory(process.cwd()));
 
       const toolsEvidence = artifact.checks.find(ch => ch.id === "tools");
@@ -866,7 +870,7 @@ async function main(): Promise<void> {
 
 // ── Scan implementation ─────────────────────────────────────────────────────
 
-async function runScan(bin: string, configPath: string | undefined, invokeTools: boolean): Promise<void> {
+async function runScan(bin: string, configPath: string | undefined, invokeTools: boolean, securityCheck?: boolean): Promise<void> {
   process.stdout.write(useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n\n` : LOGO + `  v${TOOL_VERSION}\n\n`);
 
   if (configPath) {
@@ -915,7 +919,7 @@ async function runScan(bin: string, configPath: string | undefined, invokeTools:
   for (const t of targets) {
     process.stdout.write(`  ${c(ANSI.dim, "⟳")} Checking ${c(ANSI.bold, t.config.targetId)}...`);
     try {
-      const artifact = await runTarget(t.config, { invokeTools });
+      const artifact = await runTarget(t.config, { invokeTools, securityCheck });
       const toolsCheck = artifact.checks.find((ch) => ch.id === "tools");
       const promptsCheck = artifact.checks.find((ch) => ch.id === "prompts");
       const resourcesCheck = artifact.checks.find((ch) => ch.id === "resources");

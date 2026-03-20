@@ -12,6 +12,7 @@ const root = process.cwd();
 const targetsDir = path.join(root, "examples", "targets");
 const artifactsDir = path.join(root, "examples", "artifacts");
 const matrixSummaryPath = path.join(root, "examples", "matrix-summary.json");
+const matrixHistoryPath = path.join(root, "examples", "matrix-history.json");
 const proofIndexPath = path.join(root, "examples", "INDEX.md");
 
 interface MatrixSummaryEntry {
@@ -135,6 +136,17 @@ async function main(): Promise<void> {
   }
 
   await writeSummaryAndIndex(summaryEntries);
+
+  // Append to history (capped at 90 entries)
+  let history: Array<{ date: string; entries: MatrixSummaryEntry[] }> = [];
+  try {
+    history = JSON.parse(await readFile(matrixHistoryPath, "utf8"));
+  } catch {
+    // No history yet
+  }
+  history.push({ date: new Date().toISOString().split("T")[0]!, entries: summaryEntries });
+  if (history.length > 90) history = history.slice(-90);
+  await writeFile(matrixHistoryPath, JSON.stringify(history, null, 2) + "\n", "utf8");
 
   if (sawFailure) {
     process.exitCode = 1;

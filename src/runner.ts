@@ -7,6 +7,7 @@ import type { CassetteEntry } from "./cassette.js";
 import { runPromptsCheck } from "./checks/prompts.js";
 import { runResourcesCheck } from "./checks/resources.js";
 import { runToolsCheck } from "./checks/tools.js";
+import { runSecurityCheck } from "./checks/security.js";
 import { runToolsInvokeCheck } from "./checks/tools-invoke.js";
 import { RecordingTransport } from "./transport/recording-transport.js";
 import type { CheckResult, Gate, RunArtifact, StatusCounts, TargetConfig } from "./types.js";
@@ -43,6 +44,7 @@ function buildSummary(checks: CheckResult[], fatalError?: string): RunArtifact["
 export interface RunOptions {
   invokeTools?: boolean;
   record?: boolean;
+  securityCheck?: boolean;
 }
 
 export interface RunResult {
@@ -115,6 +117,11 @@ async function runTargetWithRecording(target: TargetConfig, options?: RunOptions
       if (options?.invokeTools && !target.skipInvoke) {
         const invokeCheck = await runToolsInvokeCheck(checkContext);
         checks.push(invokeCheck.result);
+      }
+
+      if (options?.securityCheck) {
+        const secCheck = await runSecurityCheck(checkContext, checks);
+        checks.push(secCheck.result);
       }
     } finally {
       // Extract cassette entries before closing

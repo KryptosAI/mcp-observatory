@@ -5,6 +5,8 @@ export {
   type Cassette,
   type CassetteEntry,
 } from "./cassette.js";
+export { runSecurityCheck } from "./checks/security.js";
+export { SECURITY_RULES, type SecurityFinding, type SecurityRule, type ToolInfo } from "./checks/security-rules.js";
 export { diffArtifacts } from "./diff.js";
 export { scanForTargets } from "./discovery.js";
 export { renderHtml } from "./reporters/html.js";
