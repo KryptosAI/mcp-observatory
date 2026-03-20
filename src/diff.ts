@@ -1,5 +1,5 @@
 import { diffSchemas } from "./schema-diff.js";
-import type { CheckResult, DiffArtifact, DiffEntry, RunArtifact, SchemaDriftEntry } from "./types.js";
+import type { CheckResult, DiffArtifact, DiffEntry, ResponseChangeEntry, RunArtifact, SchemaDriftEntry } from "./types.js";
 import { SCHEMA_VERSION, STATUS_RANK } from "./types.js";
 
 function toEntry(base: CheckResult | undefined, head: CheckResult | undefined): DiffEntry {
@@ -74,6 +74,36 @@ export function diffArtifacts(base: RunArtifact, head: RunArtifact): DiffArtifac
     schemaDrift.push(...drift);
   }
 
+  // Response snapshot comparison
+  const responseChanges: ResponseChangeEntry[] = [];
+  for (const checkId of checkIds) {
+    const baseCheck = baseChecks.get(checkId);
+    const headCheck = headChecks.get(checkId);
+    if (baseCheck === undefined || headCheck === undefined) continue;
+
+    const baseSnapshots = extractResponseSnapshots(baseCheck);
+    const headSnapshots = extractResponseSnapshots(headCheck);
+    if (baseSnapshots === undefined && headSnapshots === undefined) continue;
+
+    const allNames = new Set([
+      ...Object.keys(baseSnapshots ?? {}),
+      ...Object.keys(headSnapshots ?? {}),
+    ]);
+
+    for (const name of allNames) {
+      const baseVal = baseSnapshots?.[name];
+      const headVal = headSnapshots?.[name];
+
+      if (baseVal === undefined && headVal !== undefined) {
+        responseChanges.push({ capability: checkId, name, change: "added" });
+      } else if (baseVal !== undefined && headVal === undefined) {
+        responseChanges.push({ capability: checkId, name, change: "removed" });
+      } else if (JSON.stringify(baseVal) !== JSON.stringify(headVal)) {
+        responseChanges.push({ capability: checkId, name, change: "response content changed" });
+      }
+    }
+  }
+
   const summary = {
     regressions: regressions.length,
     recoveries: recoveries.length,
@@ -81,6 +111,7 @@ export function diffArtifacts(base: RunArtifact, head: RunArtifact): DiffArtifac
     added: added.length,
     removed: removed.length,
     schemaDriftCount: schemaDrift.length > 0 ? schemaDrift.length : undefined,
+    responseChangeCount: responseChanges.length > 0 ? responseChanges.length : undefined,
     gate: regressions.length > 0 ? ("fail" as const) : ("pass" as const)
   };
 
@@ -98,6 +129,7 @@ export function diffArtifacts(base: RunArtifact, head: RunArtifact): DiffArtifac
     added,
     removed,
     schemaDrift: schemaDrift.length > 0 ? schemaDrift : undefined,
+    responseChanges: responseChanges.length > 0 ? responseChanges : undefined,
   };
 }
 
@@ -105,6 +137,15 @@ function extractSchemas(check: CheckResult): Record<string, object> | undefined 
   for (const ev of check.evidence) {
     if (ev.schemas !== undefined) {
       return ev.schemas;
+    }
+  }
+  return undefined;
+}
+
+function extractResponseSnapshots(check: CheckResult): Record<string, unknown> | undefined {
+  for (const ev of check.evidence) {
+    if (ev.responseSnapshots !== undefined) {
+      return ev.responseSnapshots;
     }
   }
   return undefined;

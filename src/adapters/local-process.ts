@@ -2,9 +2,16 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import type { ServerCapabilities } from "@modelcontextprotocol/sdk/types.js";
 
+import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
+
 import type { LocalProcessTargetConfig, TargetConfig } from "../types.js";
+import { RecordingTransport } from "../transport/recording-transport.js";
 import { formatConnectionFailureDiagnosis } from "../utils/failure-diagnosis.js";
 import { TOOL_VERSION } from "../version.js";
+
+export interface AdapterConnectOptions {
+  record?: boolean;
+}
 
 export interface AdapterSession {
   client: Client;
@@ -12,6 +19,8 @@ export interface AdapterSession {
   serverName?: string;
   serverVersion?: string;
   stderrLines: string[];
+  /** The transport used for the connection. Present when recording. */
+  transport?: Transport;
   close(): Promise<void>;
 }
 
@@ -28,8 +37,8 @@ export class AdapterConnectError extends Error {
 }
 
 export class LocalProcessAdapter {
-  async connect(target: LocalProcessTargetConfig): Promise<AdapterSession> {
-    const transport = new StdioClientTransport({
+  async connect(target: LocalProcessTargetConfig, options?: AdapterConnectOptions): Promise<AdapterSession> {
+    const stdioTransport = new StdioClientTransport({
       command: target.command,
       args: target.args,
       cwd: target.cwd,
@@ -38,7 +47,7 @@ export class LocalProcessAdapter {
     });
 
     const stderrLines: string[] = [];
-    transport.stderr?.on("data", (chunk: Buffer | string) => {
+    stdioTransport.stderr?.on("data", (chunk: Buffer | string) => {
       const text = typeof chunk === "string" ? chunk : chunk.toString("utf8");
       for (const line of text.split(/\r?\n/)) {
         const trimmed = line.trim();
@@ -47,6 +56,11 @@ export class LocalProcessAdapter {
         }
       }
     });
+
+    // Optionally wrap in RecordingTransport
+    const transport: Transport = options?.record
+      ? new RecordingTransport(stdioTransport)
+      : stdioTransport;
 
     const client = new Client(
       {
@@ -76,6 +90,7 @@ export class LocalProcessAdapter {
       serverName: serverVersion?.name,
       serverVersion: serverVersion?.version,
       stderrLines,
+      transport: options?.record ? transport : undefined,
       close: async () => {
         await client.close();
       }

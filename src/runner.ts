@@ -2,11 +2,13 @@ import os from "node:os";
 
 import { HttpAdapter } from "./adapters/http.js";
 import { AdapterConnectError, LocalProcessAdapter } from "./adapters/local-process.js";
-import type { AdapterSession } from "./adapters/local-process.js";
+import type { AdapterConnectOptions, AdapterSession } from "./adapters/local-process.js";
+import type { CassetteEntry } from "./cassette.js";
 import { runPromptsCheck } from "./checks/prompts.js";
 import { runResourcesCheck } from "./checks/resources.js";
 import { runToolsCheck } from "./checks/tools.js";
 import { runToolsInvokeCheck } from "./checks/tools-invoke.js";
+import { RecordingTransport } from "./transport/recording-transport.js";
 import type { CheckResult, Gate, RunArtifact, StatusCounts, TargetConfig } from "./types.js";
 import { SCHEMA_VERSION } from "./types.js";
 import { buildRunId } from "./utils/ids.js";
@@ -40,18 +42,42 @@ function buildSummary(checks: CheckResult[], fatalError?: string): RunArtifact["
 
 export interface RunOptions {
   invokeTools?: boolean;
+  record?: boolean;
 }
 
-async function connectTarget(target: TargetConfig): Promise<AdapterSession> {
+export interface RunResult {
+  artifact: RunArtifact;
+  cassetteEntries?: CassetteEntry[];
+}
+
+async function connectTarget(target: TargetConfig, adapterOptions?: AdapterConnectOptions): Promise<AdapterSession> {
   if (target.adapter === "http") {
     const adapter = new HttpAdapter();
-    return adapter.connect(target);
+    return adapter.connect(target, adapterOptions);
   }
   const adapter = new LocalProcessAdapter();
-  return adapter.connect(target);
+  return adapter.connect(target, adapterOptions);
 }
 
+/**
+ * Run checks against a target and optionally record the session.
+ * When `options.record` is true, returns a `RunResult` with both the artifact and cassette entries.
+ * Otherwise returns just the `RunArtifact`.
+ */
 export async function runTarget(target: TargetConfig, options?: RunOptions): Promise<RunArtifact> {
+  const result = await runTargetWithRecording(target, options);
+  return result.artifact;
+}
+
+/**
+ * Run checks against a target with recording support.
+ * Always returns a `RunResult` containing the artifact and optional cassette entries.
+ */
+export async function runTargetRecording(target: TargetConfig, options?: RunOptions): Promise<RunResult> {
+  return runTargetWithRecording(target, { ...options, record: true });
+}
+
+async function runTargetWithRecording(target: TargetConfig, options?: RunOptions): Promise<RunResult> {
   const runId = buildRunId();
   const createdAt = new Date().toISOString();
 
@@ -60,8 +86,10 @@ export async function runTarget(target: TargetConfig, options?: RunOptions): Pro
   let serverName: string | undefined;
   let serverVersion: string | undefined;
 
+  let cassetteEntries: CassetteEntry[] | undefined;
+
   try {
-    const session = await connectTarget(target);
+    const session = await connectTarget(target, { record: options?.record });
     serverName = session.serverName;
     serverVersion = session.serverVersion;
 
@@ -89,6 +117,10 @@ export async function runTarget(target: TargetConfig, options?: RunOptions): Pro
         checks.push(invokeCheck.result);
       }
     } finally {
+      // Extract cassette entries before closing
+      if (options?.record && session.transport instanceof RecordingTransport) {
+        cassetteEntries = session.transport.getEntries();
+      }
       await session.close();
     }
   } catch (error) {
@@ -127,7 +159,7 @@ export async function runTarget(target: TargetConfig, options?: RunOptions): Pro
 
   const summary = buildSummary(checks, fatalError);
 
-  return {
+  const artifact: RunArtifact = {
     artifactType: "run",
     schemaVersion: SCHEMA_VERSION,
     gate: summary.gate,
@@ -153,4 +185,6 @@ export async function runTarget(target: TargetConfig, options?: RunOptions): Pro
     checks,
     fatalError
   };
+
+  return { artifact, cassetteEntries };
 }

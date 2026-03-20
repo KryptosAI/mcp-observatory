@@ -70,6 +70,9 @@ Or add it manually to your config:
 | `scan` | Auto-discover servers from config files and check them all (default) |
 | `scan deep` | Scan and also invoke safe tools to verify they execute |
 | `test <cmd>` | Test a specific server by command |
+| `record <cmd>` | Record a server session to a cassette file for offline replay |
+| `replay <cassette>` | Replay a cassette offline — no live server needed |
+| `verify <cassette> <cmd>` | Verify a live server still matches a recorded cassette |
 | `diff <base> <head>` | Compare two run artifacts for regressions and schema drift |
 | `watch <config>` | Watch a server for changes, alert on regressions |
 | `serve` | Start as an MCP server for AI agents |
@@ -91,6 +94,19 @@ npx @kryptosai/mcp-observatory diff run-a.json run-b.json
 ```
 
 **Recommend servers** — scans your project for languages, frameworks, databases, and cloud providers, then cross-references the [MCP registry](https://registry.modelcontextprotocol.io) to suggest servers you're missing. Ask your agent "what MCP servers should I add?" and it figures out the rest.
+
+**Record / replay / verify** — capture a live session, replay it offline in CI, and verify nothing changed. Like [VCR](https://github.com/vcr/vcr) for MCP.
+
+```bash
+# Record a session
+npx @kryptosai/mcp-observatory record npx -y @modelcontextprotocol/server-everything
+
+# Replay offline (no server needed)
+npx @kryptosai/mcp-observatory replay .mcp-observatory/cassettes/latest.cassette.json
+
+# Verify the live server still matches
+npx @kryptosai/mcp-observatory verify cassette.json npx -y @modelcontextprotocol/server-everything
+```
 
 **Watch for regressions** — re-runs checks on an interval and alerts when something changes.
 
@@ -164,6 +180,34 @@ npx @kryptosai/mcp-observatory run --target ./target.json
   "timeoutMs": 15000
 }
 ```
+
+## How It Compares
+
+| Feature | Observatory | [mcp-recorder](https://github.com/punkpeye/mcp-recorder) | [MCPBench](https://github.com/QuantGeekDev/mcpbench) | [mcp-jest](https://github.com/nicobailon/mcp-jest) |
+|---------|:-----------:|:----------:|:-------:|:-------:|
+| Auto-discover servers | ✅ | — | — | — |
+| Check capabilities | ✅ | — | ✅ | ✅ |
+| Invoke tools | ✅ | — | — | ✅ |
+| Schema drift detection | ✅ | — | — | — |
+| Record / replay | ✅ | ✅ | — | — |
+| Verify against cassette | ✅ | — | — | — |
+| Response snapshot diffs | ✅ | — | — | — |
+| Benchmarking / latency | — | — | ✅ | — |
+| Jest integration | — | — | — | ✅ |
+| MCP proxy mode | — | ✅ | — | — |
+| Works as MCP server | ✅ | — | — | — |
+
+Each tool has strengths. Observatory focuses on regression detection and CI-friendly workflows. mcp-recorder is great as a transparent proxy. MCPBench is the go-to for performance benchmarking. mcp-jest is ideal if you're already in a Jest workflow.
+
+## Prior Art
+
+The record/replay/verify pattern is inspired by:
+
+- [VCR](https://github.com/vcr/vcr) (Ruby) — pioneered cassette-based HTTP record/replay
+- [Polly.js](https://github.com/Netflix/pollyjs) (Netflix) — HTTP interaction recording for JavaScript
+- [mcp-recorder](https://github.com/punkpeye/mcp-recorder) — MCP-specific traffic recording proxy
+- [MCPBench](https://github.com/QuantGeekDev/mcpbench) — MCP server benchmarking
+- [mcp-jest](https://github.com/nicobailon/mcp-jest) — Jest-style testing for MCP servers
 
 ## Limitations
 

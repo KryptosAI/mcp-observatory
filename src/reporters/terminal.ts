@@ -117,8 +117,14 @@ function renderDiffTerminal(artifact: DiffArtifact): string {
       lines.push(co(ANSI.yellow, `- ${entry.name} (${entry.capability}): ${entry.changes.join(", ")}`));
     }
   }
-  if (artifact.regressions.length === 0 && artifact.recoveries.length === 0 && (!artifact.schemaDrift || artifact.schemaDrift.length === 0)) {
-    lines.push(co(ANSI.dim, "No regressions, recoveries, or schema drift detected."));
+  if (artifact.responseChanges && artifact.responseChanges.length > 0) {
+    lines.push(co(ANSI.yellow, "Response Changes:"));
+    for (const entry of artifact.responseChanges) {
+      lines.push(co(ANSI.yellow, `- ${entry.name} (${entry.capability}): ${entry.change}`));
+    }
+  }
+  if (artifact.regressions.length === 0 && artifact.recoveries.length === 0 && (!artifact.schemaDrift || artifact.schemaDrift.length === 0) && (!artifact.responseChanges || artifact.responseChanges.length === 0)) {
+    lines.push(co(ANSI.dim, "No regressions, recoveries, schema drift, or response changes detected."));
   }
 
   return lines.join("\n");
