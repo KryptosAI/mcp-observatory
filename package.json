@@ -1,6 +1,6 @@
 {
   "name": "@kryptosai/mcp-observatory",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Test your MCP servers for breaking changes. Checks capabilities, invokes tools, detects schema drift between versions.",
   "mcpName": "io.github.KryptosAI/mcp-observatory",
   "license": "MIT",
@@ -54,7 +54,12 @@
     "cli",
     "regression-testing",
     "interoperability",
-    "observability"
+    "observability",
+    "record",
+    "replay",
+    "cassette",
+    "vcr",
+    "mcp-testing"
   ],
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",

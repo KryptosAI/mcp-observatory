@@ -1,14 +1,16 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
 
 import type { HttpTargetConfig } from "../types.js";
+import { RecordingTransport } from "../transport/recording-transport.js";
 import { formatConnectionFailureDiagnosis } from "../utils/failure-diagnosis.js";
 import { TOOL_VERSION } from "../version.js";
-import type { AdapterSession } from "./local-process.js";
+import type { AdapterConnectOptions, AdapterSession } from "./local-process.js";
 
 export class HttpAdapter {
-  async connect(target: HttpTargetConfig): Promise<AdapterSession> {
+  async connect(target: HttpTargetConfig, options?: AdapterConnectOptions): Promise<AdapterSession> {
     const headers: Record<string, string> = { ...(target.headers ?? {}) };
     if (target.authToken) {
       headers["Authorization"] = `Bearer ${target.authToken}`;
@@ -25,9 +27,12 @@ export class HttpAdapter {
 
     // Try streamable-http first, fall back to SSE
     let connected = false;
+    let activeTransport: Transport | undefined;
     try {
-      const transport = new StreamableHTTPClientTransport(url, { requestInit: { headers } });
+      let transport: Transport = new StreamableHTTPClientTransport(url, { requestInit: { headers } });
+      if (options?.record) transport = new RecordingTransport(transport);
       await client.connect(transport, { timeout: timeoutMs });
+      activeTransport = transport;
       connected = true;
     } catch {
       stderrLines.push("Streamable HTTP failed, falling back to SSE.");
@@ -35,8 +40,10 @@ export class HttpAdapter {
 
     if (!connected) {
       try {
-        const transport = new SSEClientTransport(url, { requestInit: { headers } });
+        let transport: Transport = new SSEClientTransport(url, { requestInit: { headers } });
+        if (options?.record) transport = new RecordingTransport(transport);
         await client.connect(transport, { timeout: timeoutMs });
+        activeTransport = transport;
         connected = true;
       } catch (error) {
         const rawMessage = error instanceof Error ? error.message : String(error);
@@ -56,6 +63,7 @@ export class HttpAdapter {
       serverName: serverVersion?.name,
       serverVersion: serverVersion?.version,
       stderrLines,
+      transport: options?.record ? activeTransport : undefined,
       close: async () => {
         await client.close();
       },

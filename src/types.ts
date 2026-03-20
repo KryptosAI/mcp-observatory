@@ -64,6 +64,7 @@ export interface EvidenceSummary {
   identifiers?: string[];
   diagnostics?: string[];
   schemas?: Record<string, object>;
+  responseSnapshots?: Record<string, unknown>;
 }
 
 export interface CheckResult {
@@ -117,6 +118,12 @@ export interface SchemaDriftEntry {
   changes: string[];
 }
 
+export interface ResponseChangeEntry {
+  capability: CheckId;
+  name: string;
+  change: string;
+}
+
 export interface DiffSummary {
   regressions: number;
   recoveries: number;
@@ -124,6 +131,7 @@ export interface DiffSummary {
   added: number;
   removed: number;
   schemaDriftCount?: number;
+  responseChangeCount?: number;
   gate: Gate;
 }
 
@@ -141,4 +149,5 @@ export interface DiffArtifact {
   added: DiffEntry[];
   removed: DiffEntry[];
   schemaDrift?: SchemaDriftEntry[];
+  responseChanges?: ResponseChangeEntry[];
 }

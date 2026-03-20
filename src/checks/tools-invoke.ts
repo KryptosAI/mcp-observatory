@@ -16,6 +16,7 @@ interface InvokeResult {
   responded: boolean;
   isError: boolean;
   error?: string;
+  responseContent?: unknown;
 }
 
 export async function runToolsInvokeCheck(context: CheckContext): Promise<ObservedCheck> {
@@ -106,6 +107,7 @@ export async function runToolsInvokeCheck(context: CheckContext): Promise<Observ
         responded: true,
         isError,
         error: isError ? JSON.stringify(response.content) : undefined,
+        responseContent: response.content,
       });
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -139,6 +141,14 @@ export async function runToolsInvokeCheck(context: CheckContext): Promise<Observ
       ? ` (${tools.length - safeTools.length} skipped — have required params)`
       : "");
 
+  // Build response snapshots for diffing
+  const responseSnapshots: Record<string, unknown> = {};
+  for (const r of results) {
+    if (r.responded && r.responseContent !== undefined) {
+      responseSnapshots[r.name] = r.responseContent;
+    }
+  }
+
   return {
     result: makeCheckResult(
       "tools-invoke",
@@ -153,6 +163,7 @@ export async function runToolsInvokeCheck(context: CheckContext): Promise<Observ
         itemCount: results.length,
         identifiers: results.map((r) => r.name),
         diagnostics,
+        responseSnapshots: Object.keys(responseSnapshots).length > 0 ? responseSnapshots : undefined,
       }],
     )
   };
