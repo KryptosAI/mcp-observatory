@@ -24,6 +24,8 @@ You update a server, a tool silently breaks, and your agent starts failing. MCP 
   <img src="./docs/demo.svg" alt="MCP Observatory scan output" width="820">
 </p>
 
+[![Observatory MCP server](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory/badges/card.svg)](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory)
+
 ## Quick Start
 
 Scan every MCP server in your Claude config:
