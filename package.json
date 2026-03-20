@@ -1,6 +1,6 @@
 {
   "name": "@kryptosai/mcp-observatory",
-  "version": "0.5.1",
+  "version": "0.5.3",
   "description": "Test your MCP servers for breaking changes. Checks capabilities, invokes tools, detects schema drift between versions.",
   "mcpName": "io.github.KryptosAI/mcp-observatory",
   "license": "MIT",

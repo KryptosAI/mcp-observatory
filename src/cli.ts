@@ -2,6 +2,7 @@
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { createInterface } from "node:readline";
 
 import { Command } from "commander";
 
@@ -141,6 +142,69 @@ function getBinName(): string {
   return "mcp-observatory";
 }
 
+// ── Interactive Menu ─────────────────────────────────────────────────────────
+
+interface MenuItem {
+  key: string;
+  command: string[];
+  label: string;
+  description: string;
+}
+
+const MENU_ITEMS: MenuItem[] = [
+  { key: "1", command: ["scan"],         label: "scan",    description: "Check all MCP servers in your Claude configs" },
+  { key: "2", command: ["scan", "deep"], label: "scan deep", description: "Also invoke safe tools to verify they run" },
+  { key: "3", command: ["test"],         label: "test",    description: "Test a specific server by command" },
+  { key: "4", command: ["record"],       label: "record",  description: "Record a session to a cassette file" },
+  { key: "5", command: ["replay"],       label: "replay",  description: "Replay offline — no live server needed" },
+  { key: "6", command: ["verify"],       label: "verify",  description: "Verify server still matches a cassette" },
+  { key: "7", command: ["diff"],         label: "diff",    description: "Compare two runs for regressions" },
+  { key: "8", command: ["watch"],        label: "watch",   description: "Watch for changes, alert on regressions" },
+  { key: "9", command: ["serve"],        label: "serve",   description: "Start as an MCP server for AI agents" },
+];
+
+async function showInteractiveMenu(bin: string): Promise<string[] | null> {
+  // Non-interactive (piped stdin) — fall back to scan
+  if (!process.stdin.isTTY) {
+    return ["scan"];
+  }
+
+  process.stdout.write(useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n\n` : LOGO + `  v${TOOL_VERSION}\n\n`);
+  process.stdout.write(`  ${c(ANSI.bold, "What would you like to do?")}\n\n`);
+
+  for (const item of MENU_ITEMS) {
+    const num = c(ANSI.cyan, `  ${item.key})`);
+    const label = c(ANSI.bold, item.label);
+    const pad = " ".repeat(Math.max(1, 14 - item.label.length));
+    process.stdout.write(`${num} ${label}${pad}${c(ANSI.dim, item.description)}\n`);
+  }
+
+  process.stdout.write(`\n  ${c(ANSI.dim, "q) quit")}\n\n`);
+
+  const rl = createInterface({ input: process.stdin, output: process.stdout });
+
+  return new Promise<string[] | null>((resolve) => {
+    rl.question(`  ${c(ANSI.cyan, "›")} Pick a command ${c(ANSI.dim, "[1-9, q]")}: `, (answer) => {
+      rl.close();
+      const trimmed = answer.trim().toLowerCase();
+
+      if (trimmed === "q" || trimmed === "quit" || trimmed === "") {
+        resolve(null);
+        return;
+      }
+
+      const match = MENU_ITEMS.find((m) => m.key === trimmed || m.label === trimmed);
+      if (match) {
+        process.stdout.write("\n");
+        resolve(match.command);
+      } else {
+        process.stdout.write(`\n  ${c(ANSI.red, "✗")} Unknown choice "${trimmed}". Run ${c(ANSI.cyan, `${bin} --help`)} for usage.\n\n`);
+        resolve(null);
+      }
+    });
+  });
+}
+
 // ── Main ────────────────────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
@@ -148,25 +212,26 @@ async function main(): Promise<void> {
 
   const program = new Command();
   program
-    .name("mcp-observatory")
+    .name(bin)
     .description("Test your MCP servers for breaking changes.")
     .version(TOOL_VERSION)
     .addHelpText("before", useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n` : LOGO + `  v${TOOL_VERSION}\n`)
     .addHelpText("after", (() => {
       const examples: [string, string][] = [
-        ["", "Scan all your MCP servers"],
-        [" scan deep", "Also test that tools actually run"],
+        ["", "Interactive menu (pick a command)"],
+        [" scan deep", "Also invoke safe tools to verify they run"],
         [" test npx server-foo", "Test a specific server by command"],
-        [" record npx server-foo", "Record a session for replay"],
-        [" replay cassette.json", "Replay offline — no server needed"],
-        [" diff run-a.json run-b.json", "Compare two runs"],
+        [" record npx server-foo", "Record a session to a cassette file"],
+        [" replay cassette.json", "Replay offline — no live server needed"],
+        [" verify cassette.json npx server-foo", "Verify server still matches cassette"],
+        [" diff run-a.json run-b.json", "Compare two runs for regressions"],
       ];
       const maxCmd = Math.max(...examples.map(([cmd]) => (bin + cmd).length));
       const pad = (cmd: string) => " ".repeat(Math.max(2, maxCmd - (bin + cmd).length + 3));
       const lines = examples.map(([cmd, desc]) =>
-        `  ${c(ANSI.dim, "$")} ${bin}${cmd}${pad(cmd)}${c(ANSI.dim, desc)}`
+        `  ${c(ANSI.dim, "$")} ${bin}${cmd}${pad(cmd)}${desc}`
       );
-      return ["", "Examples:", ...lines, ""].join("\n");
+      return ["", "Examples:", "", ...lines, ""].join("\n");
     })());
 
   // ── scan ──────────────────────────────────────────────────────────────
@@ -543,9 +608,11 @@ async function main(): Promise<void> {
       },
     );
 
-  // Default to scan when invoked with no arguments
+  // Interactive menu when invoked with no arguments
   if (process.argv.length === 2) {
-    process.argv.push("scan");
+    const choice = await showInteractiveMenu(bin);
+    if (!choice) return;
+    process.argv.push(...choice);
   }
 
   await program.parseAsync(process.argv);
