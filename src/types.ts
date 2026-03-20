@@ -24,6 +24,8 @@ export interface LocalProcessTargetConfig {
   env?: Record<string, string>;
   timeoutMs?: number;
   metadata?: Record<string, string>;
+  /** Skip tool invocation checks for this target even with `scan deep`. */
+  skipInvoke?: boolean;
 }
 
 export interface HttpTargetConfig {
@@ -34,6 +36,8 @@ export interface HttpTargetConfig {
   headers?: Record<string, string>;
   timeoutMs?: number;
   metadata?: Record<string, string>;
+  /** Skip tool invocation checks for this target even with `scan deep`. */
+  skipInvoke?: boolean;
 }
 
 export type TargetConfig = LocalProcessTargetConfig | HttpTargetConfig;

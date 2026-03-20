@@ -112,7 +112,7 @@ async function runTargetWithRecording(target: TargetConfig, options?: RunOptions
         resourcesCheck.result
       ];
 
-      if (options?.invokeTools) {
+      if (options?.invokeTools && !target.skipInvoke) {
         const invokeCheck = await runToolsInvokeCheck(checkContext);
         checks.push(invokeCheck.result);
       }

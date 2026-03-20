@@ -81,4 +81,32 @@ describe("RecordingTransport", () => {
     expect(responses[0]!.method).toBe("tools/list");
     expect(responses[1]!.method).toBe("prompts/list");
   });
+
+  it("matches responses correctly when they arrive out of order", async () => {
+    const inner = createFakeTransport();
+    const recorder = new RecordingTransport(inner);
+    recorder.onmessage = () => {};
+    await recorder.start();
+
+    // Send three concurrent requests
+    await recorder.send({ jsonrpc: "2.0", id: 10, method: "tools/list" } as JSONRPCMessage);
+    await recorder.send({ jsonrpc: "2.0", id: 20, method: "prompts/list" } as JSONRPCMessage);
+    await recorder.send({ jsonrpc: "2.0", id: 30, method: "resources/list" } as JSONRPCMessage);
+
+    // Responses arrive out of order: 20, 30, 10
+    inner.simulateResponse({ jsonrpc: "2.0", id: 20, result: { prompts: [] } } as unknown as JSONRPCMessage);
+    inner.simulateResponse({ jsonrpc: "2.0", id: 30, result: { resources: [] } } as unknown as JSONRPCMessage);
+    inner.simulateResponse({ jsonrpc: "2.0", id: 10, result: { tools: [] } } as unknown as JSONRPCMessage);
+
+    const entries = recorder.getEntries();
+    const responses = entries.filter((e) => e.direction === "response");
+    expect(responses).toHaveLength(3);
+    // Responses should be matched to their original method regardless of arrival order
+    expect(responses[0]!.method).toBe("prompts/list");
+    expect(responses[0]!.result).toEqual({ prompts: [] });
+    expect(responses[1]!.method).toBe("resources/list");
+    expect(responses[1]!.result).toEqual({ resources: [] });
+    expect(responses[2]!.method).toBe("tools/list");
+    expect(responses[2]!.result).toEqual({ tools: [] });
+  });
 });
