@@ -2,8 +2,6 @@
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { createInterface } from "node:readline";
-
 import { Command } from "commander";
 
 import { scanForTargets } from "./discovery.js";
@@ -146,64 +144,152 @@ function getBinName(): string {
 // ── Interactive Menu ─────────────────────────────────────────────────────────
 
 interface MenuItem {
-  key: string;
   command: string[];
   label: string;
-  description: string;
+  outcome: string;
+  recommended?: boolean;
 }
 
-const MENU_ITEMS: MenuItem[] = [
-  { key: "1",  command: ["scan"],         label: "scan",      description: "Check all MCP servers in your Claude configs" },
-  { key: "2",  command: ["scan", "deep"], label: "scan deep", description: "Also invoke safe tools to verify they run" },
-  { key: "3",  command: ["test"],         label: "test",      description: "Test a specific server by command" },
-  { key: "4",  command: ["record"],       label: "record",    description: "Record a session to a cassette file" },
-  { key: "5",  command: ["replay"],       label: "replay",    description: "Replay offline — no live server needed" },
-  { key: "6",  command: ["verify"],       label: "verify",    description: "Verify server still matches a cassette" },
-  { key: "7",  command: ["diff"],         label: "diff",      description: "Compare two runs for regressions" },
-  { key: "8",  command: ["watch"],        label: "watch",     description: "Watch for changes, alert on regressions" },
-  { key: "9",  command: ["suggest"],      label: "suggest",   description: "Detect your stack and recommend MCP servers" },
-  { key: "10", command: ["serve"],        label: "serve",     description: "Start as an MCP server for AI agents" },
+interface MenuGroup {
+  heading: string;
+  items: MenuItem[];
+}
+
+const MENU_GROUPS: MenuGroup[] = [
+  {
+    heading: "",
+    items: [
+      { command: ["scan"],    label: "scan",    outcome: "See which servers are healthy and what they expose",    recommended: true },
+      { command: ["record"],  label: "record",  outcome: "Capture a session so you can test offline or in CI" },
+      { command: ["verify"],  label: "verify",  outcome: "Confirm a server still returns the same responses" },
+      { command: ["diff"],    label: "diff",    outcome: "Find regressions between two runs" },
+      { command: ["suggest"], label: "suggest", outcome: "Discover MCP servers that match your project stack" },
+    ],
+  },
+  {
+    heading: "Advanced",
+    items: [
+      { command: ["scan", "deep"], label: "scan deep", outcome: "Scan + invoke every tool to verify it executes" },
+      { command: ["test"],         label: "test",      outcome: "Test one server by command (e.g. npx server-foo)" },
+      { command: ["replay"],       label: "replay",    outcome: "Re-run checks from a cassette — no server needed" },
+      { command: ["watch"],        label: "watch",     outcome: "Monitor a server on a loop, alert on changes" },
+      { command: ["serve"],        label: "serve",     outcome: "Expose Observatory as an MCP server for AI agents" },
+    ],
+  },
 ];
 
-async function showInteractiveMenu(bin: string): Promise<string[] | null> {
+function getAllMenuItems(): MenuItem[] {
+  return MENU_GROUPS.flatMap((g) => g.items);
+}
+
+async function showInteractiveMenu(): Promise<string[] | null> {
   // Non-interactive (piped stdin) — fall back to scan
   if (!process.stdin.isTTY) {
     return ["scan"];
   }
 
-  process.stdout.write(useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n\n` : LOGO + `  v${TOOL_VERSION}\n\n`);
-  process.stdout.write(`  ${c(ANSI.bold, "What would you like to do?")}\n\n`);
+  const allItems = getAllMenuItems();
+  let cursor = 0; // start on "scan" (recommended)
 
-  for (const item of MENU_ITEMS) {
-    const num = c(ANSI.cyan, `  ${item.key})`);
-    const label = c(ANSI.bold, item.label);
-    const pad = " ".repeat(Math.max(1, 14 - item.label.length));
-    process.stdout.write(`${num} ${label}${pad}${c(ANSI.dim, item.description)}\n`);
+  const write = (s: string) => process.stdout.write(s);
+
+  // Render the full menu with the current cursor position
+  function render(): string {
+    const lines: string[] = [];
+    let idx = 0;
+    for (const group of MENU_GROUPS) {
+      if (group.heading) {
+        lines.push("");
+        lines.push(`  ${c(ANSI.dim, group.heading)}`);
+      }
+      for (const item of group.items) {
+        const selected = idx === cursor;
+        const pointer = selected ? c(ANSI.cyan, "❯") : " ";
+        const label = selected ? c(ANSI.cyan, c(ANSI.bold, item.label)) : `  ${item.label}`;
+        const pad = " ".repeat(Math.max(1, 13 - item.label.length));
+        const outcome = selected ? item.outcome : c(ANSI.dim, item.outcome);
+        const tag = item.recommended && !selected ? ` ${c(ANSI.dim, "← start here")}` : "";
+        lines.push(`  ${pointer} ${label}${pad}${outcome}${tag}`);
+        idx++;
+      }
+    }
+    lines.push("");
+    lines.push(`  ${c(ANSI.dim, "↑↓ navigate  enter select  q quit")}`);
+    lines.push("");
+    return lines.join("\n");
   }
 
-  process.stdout.write(`\n  ${c(ANSI.dim, "q) quit")}\n\n`);
+  // Print header + initial render
+  write(useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n\n` : LOGO + `  v${TOOL_VERSION}\n\n`);
+  write(`  ${c(ANSI.bold, "What would you like to do?")}\n`);
 
-  const rl = createInterface({ input: process.stdin, output: process.stdout });
+  const rendered = render();
+  const lineCount = rendered.split("\n").length;
+  write(rendered);
 
+  // Arrow-key selection loop
   return new Promise<string[] | null>((resolve) => {
-    rl.question(`  ${c(ANSI.cyan, "›")} Pick a command ${c(ANSI.dim, "[1-10, q]")}: `, (answer) => {
-      rl.close();
-      const trimmed = answer.trim().toLowerCase();
+    const stdin = process.stdin;
+    stdin.setRawMode(true);
+    stdin.resume();
+    stdin.setEncoding("utf8");
 
-      if (trimmed === "q" || trimmed === "quit" || trimmed === "") {
+    const cleanup = () => {
+      stdin.setRawMode(false);
+      stdin.pause();
+      stdin.removeListener("data", onKey);
+    };
+
+    const redraw = () => {
+      // Move up to overwrite previous render
+      write(`\x1b[${lineCount}A\x1b[0J`);
+      write(render());
+    };
+
+    const onKey = (key: string) => {
+      // Ctrl+C
+      if (key === "\x03") {
+        cleanup();
+        write("\n");
+        process.exit(0);
+      }
+
+      // q or Escape
+      if (key === "q" || key === "\x1b" && key.length === 1) {
+        cleanup();
+        write("\n");
         resolve(null);
         return;
       }
 
-      const match = MENU_ITEMS.find((m) => m.key === trimmed || m.label === trimmed);
-      if (match) {
-        process.stdout.write("\n");
-        resolve(match.command);
-      } else {
-        process.stdout.write(`\n  ${c(ANSI.red, "✗")} Unknown choice "${trimmed}". Run ${c(ANSI.cyan, `${bin} --help`)} for usage.\n\n`);
-        resolve(null);
+      // Enter
+      if (key === "\r" || key === "\n") {
+        cleanup();
+        const item = allItems[cursor]!;
+        // Clear menu and show what was picked
+        write(`\x1b[${lineCount}A\x1b[0J`);
+        write(`  ${c(ANSI.cyan, "❯")} ${c(ANSI.bold, item.label)}\n\n`);
+        resolve(item.command);
+        return;
       }
-    });
+
+      // Arrow keys (escape sequences: \x1b[A = up, \x1b[B = down)
+      if (key === "\x1b[A" || key === "k") {
+        // Up
+        if (cursor > 0) {
+          cursor--;
+          redraw();
+        }
+      } else if (key === "\x1b[B" || key === "j") {
+        // Down
+        if (cursor < allItems.length - 1) {
+          cursor++;
+          redraw();
+        }
+      }
+    };
+
+    stdin.on("data", onKey);
   });
 }
 
@@ -690,7 +776,7 @@ async function main(): Promise<void> {
 
   // Interactive menu when invoked with no arguments
   if (process.argv.length === 2) {
-    const choice = await showInteractiveMenu(bin);
+    const choice = await showInteractiveMenu();
     if (!choice) return;
     process.argv.push(...choice);
   }
