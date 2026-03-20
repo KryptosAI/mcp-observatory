@@ -7,6 +7,7 @@ import { createInterface } from "node:readline";
 import { Command } from "commander";
 
 import { scanForTargets } from "./discovery.js";
+import { detectEnvironment } from "./environment.js";
 import os from "node:os";
 
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
@@ -152,15 +153,16 @@ interface MenuItem {
 }
 
 const MENU_ITEMS: MenuItem[] = [
-  { key: "1", command: ["scan"],         label: "scan",    description: "Check all MCP servers in your Claude configs" },
-  { key: "2", command: ["scan", "deep"], label: "scan deep", description: "Also invoke safe tools to verify they run" },
-  { key: "3", command: ["test"],         label: "test",    description: "Test a specific server by command" },
-  { key: "4", command: ["record"],       label: "record",  description: "Record a session to a cassette file" },
-  { key: "5", command: ["replay"],       label: "replay",  description: "Replay offline — no live server needed" },
-  { key: "6", command: ["verify"],       label: "verify",  description: "Verify server still matches a cassette" },
-  { key: "7", command: ["diff"],         label: "diff",    description: "Compare two runs for regressions" },
-  { key: "8", command: ["watch"],        label: "watch",   description: "Watch for changes, alert on regressions" },
-  { key: "9", command: ["serve"],        label: "serve",   description: "Start as an MCP server for AI agents" },
+  { key: "1",  command: ["scan"],         label: "scan",      description: "Check all MCP servers in your Claude configs" },
+  { key: "2",  command: ["scan", "deep"], label: "scan deep", description: "Also invoke safe tools to verify they run" },
+  { key: "3",  command: ["test"],         label: "test",      description: "Test a specific server by command" },
+  { key: "4",  command: ["record"],       label: "record",    description: "Record a session to a cassette file" },
+  { key: "5",  command: ["replay"],       label: "replay",    description: "Replay offline — no live server needed" },
+  { key: "6",  command: ["verify"],       label: "verify",    description: "Verify server still matches a cassette" },
+  { key: "7",  command: ["diff"],         label: "diff",      description: "Compare two runs for regressions" },
+  { key: "8",  command: ["watch"],        label: "watch",     description: "Watch for changes, alert on regressions" },
+  { key: "9",  command: ["suggest"],      label: "suggest",   description: "Detect your stack and recommend MCP servers" },
+  { key: "10", command: ["serve"],        label: "serve",     description: "Start as an MCP server for AI agents" },
 ];
 
 async function showInteractiveMenu(bin: string): Promise<string[] | null> {
@@ -184,7 +186,7 @@ async function showInteractiveMenu(bin: string): Promise<string[] | null> {
   const rl = createInterface({ input: process.stdin, output: process.stdout });
 
   return new Promise<string[] | null>((resolve) => {
-    rl.question(`  ${c(ANSI.cyan, "›")} Pick a command ${c(ANSI.dim, "[1-9, q]")}: `, (answer) => {
+    rl.question(`  ${c(ANSI.cyan, "›")} Pick a command ${c(ANSI.dim, "[1-10, q]")}: `, (answer) => {
       rl.close();
       const trimmed = answer.trim().toLowerCase();
 
@@ -225,6 +227,7 @@ async function main(): Promise<void> {
         [" replay cassette.json", "Replay offline — no live server needed"],
         [" verify cassette.json npx server-foo", "Verify server still matches cassette"],
         [" diff run-a.json run-b.json", "Compare two runs for regressions"],
+        [" suggest", "Detect your stack and recommend MCP servers"],
       ];
       const maxCmd = Math.max(...examples.map(([cmd]) => (bin + cmd).length));
       const pad = (cmd: string) => " ".repeat(Math.max(2, maxCmd - (bin + cmd).length + 3));
@@ -332,6 +335,83 @@ async function main(): Promise<void> {
     .action(async () => {
       const { startServer } = await import("./server.js");
       await startServer();
+    });
+
+  // ── suggest ────────────────────────────────────────────────────────────
+
+  program
+    .command("suggest")
+    .description("Detect your stack and recommend MCP servers.")
+    .option("--cwd <path>", "Directory to scan for project signals.", process.cwd())
+    .option("--no-color", "Disable colored output.")
+    .action(async (options: { cwd: string }) => {
+      process.stdout.write(`${c(ANSI.dim, "⟳")} Scanning environment...\n\n`);
+
+      // 1. Current MCP servers
+      const targets = await scanForTargets();
+      if (targets.length > 0) {
+        process.stdout.write(c(ANSI.bold, "  Configured MCP Servers\n"));
+        for (const t of targets) {
+          const detail = t.config.adapter === "http"
+            ? (t.config as { url: string }).url
+            : `${(t.config as { command: string }).command} ${t.config.args.join(" ")}`;
+          process.stdout.write(`  ${c(ANSI.cyan, "●")} ${c(ANSI.bold, t.config.targetId)} ${c(ANSI.dim, detail)} ${c(ANSI.dim, `← ${t.source}`)}\n`);
+        }
+      } else {
+        process.stdout.write(`  ${c(ANSI.yellow, "No MCP servers configured.")}\n`);
+      }
+      process.stdout.write("\n");
+
+      // 2. Environment detection
+      const env = await detectEnvironment(options.cwd);
+      const hasSignals = env.languages.length > 0 || env.frameworks.length > 0 || env.databases.length > 0;
+      if (hasSignals) {
+        process.stdout.write(c(ANSI.bold, "  Detected Stack\n"));
+        if (env.languages.length > 0)  process.stdout.write(`  ${c(ANSI.dim, "Languages:")}  ${env.languages.join(", ")}\n`);
+        if (env.frameworks.length > 0) process.stdout.write(`  ${c(ANSI.dim, "Frameworks:")} ${env.frameworks.join(", ")}\n`);
+        if (env.databases.length > 0)  process.stdout.write(`  ${c(ANSI.dim, "Databases:")}  ${env.databases.join(", ")}\n`);
+        if (env.cloud.length > 0)      process.stdout.write(`  ${c(ANSI.dim, "Cloud:")}      ${env.cloud.join(", ")}\n`);
+        if (env.cicd.length > 0)       process.stdout.write(`  ${c(ANSI.dim, "CI/CD:")}      ${env.cicd.join(", ")}\n`);
+        if (env.services.length > 0)   process.stdout.write(`  ${c(ANSI.dim, "Services:")}   ${env.services.join(", ")}\n`);
+      } else {
+        process.stdout.write(`  ${c(ANSI.dim, "No recognizable project signals in")} ${options.cwd}\n`);
+      }
+      process.stdout.write("\n");
+
+      // 3. MCP Registry
+      process.stdout.write(c(ANSI.bold, "  MCP Registry\n"));
+      try {
+        const response = await fetch("https://registry.modelcontextprotocol.io/v0/servers", {
+          signal: AbortSignal.timeout(10_000),
+          headers: { "Accept": "application/json" },
+        });
+        if (response.ok) {
+          const data: unknown = await response.json();
+          const raw = Array.isArray(data) ? data : (typeof data === "object" && data !== null
+            ? ((data as Record<string, unknown>)["servers"] ?? (data as Record<string, unknown>)["results"] ?? (data as Record<string, unknown>)["items"])
+            : null);
+          if (Array.isArray(raw)) {
+            const entries = (raw as Array<Record<string, unknown>>).slice(0, 25);
+            for (const entry of entries) {
+              const srv = (typeof entry["server"] === "object" && entry["server"] !== null ? entry["server"] : entry) as Record<string, unknown>;
+              const name = typeof srv["name"] === "string" ? srv["name"] : (typeof entry["name"] === "string" ? entry["name"] : "unknown");
+              const desc = typeof srv["description"] === "string" ? srv["description"] : (typeof entry["description"] === "string" ? entry["description"] : "");
+              process.stdout.write(`  ${c(ANSI.dim, "●")} ${c(ANSI.bold, name)}${desc ? ` ${c(ANSI.dim, "—")} ${desc}` : ""}\n`);
+            }
+            if (raw.length > 25) {
+              process.stdout.write(`  ${c(ANSI.dim, `... and ${raw.length - 25} more at registry.modelcontextprotocol.io`)}\n`);
+            }
+          } else {
+            process.stdout.write(`  ${c(ANSI.dim, "Registry returned unexpected format.")}\n`);
+          }
+        } else {
+          process.stdout.write(`  ${c(ANSI.dim, `Registry returned HTTP ${response.status}`)}\n`);
+        }
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : String(error);
+        process.stdout.write(`  ${c(ANSI.yellow, "Could not reach registry:")} ${msg}\n`);
+      }
+      process.stdout.write("\n");
     });
 
   // ── record ─────────────────────────────────────────────────────────────
