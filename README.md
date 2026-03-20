@@ -75,7 +75,10 @@ Or add it manually to your config:
 | `verify <cassette> <cmd>` | Verify a live server still matches a recorded cassette |
 | `diff <base> <head>` | Compare two run artifacts for regressions and schema drift |
 | `watch <config>` | Watch a server for changes, alert on regressions |
+| `suggest` | Detect your stack and recommend MCP servers from the registry |
 | `serve` | Start as an MCP server for AI agents |
+
+Run with no arguments for an interactive menu:
 
 ## What It Does
 
@@ -93,7 +96,13 @@ npx @kryptosai/mcp-observatory scan deep
 npx @kryptosai/mcp-observatory diff run-a.json run-b.json
 ```
 
-**Recommend servers** — scans your project for languages, frameworks, databases, and cloud providers, then cross-references the [MCP registry](https://registry.modelcontextprotocol.io) to suggest servers you're missing. Ask your agent "what MCP servers should I add?" and it figures out the rest.
+**Recommend servers** — scans your project for languages, frameworks, databases, and cloud providers, then cross-references the [MCP registry](https://registry.modelcontextprotocol.io) to suggest servers you're missing.
+
+```bash
+npx @kryptosai/mcp-observatory suggest
+```
+
+Or ask your agent "what MCP servers should I add?" when running in MCP server mode.
 
 **Record / replay / verify** — capture a live session, replay it offline in CI, and verify nothing changed. Like [VCR](https://github.com/vcr/vcr) for MCP.
 
@@ -125,12 +134,16 @@ When you run `scan`, it looks for MCP configs in:
 
 ## MCP Server Mode
 
-When running as an MCP server (`serve`), your AI agent gets five tools:
+When running as an MCP server (`serve`), your AI agent gets the same capabilities as the CLI:
 
 | Tool | What it does |
 |------|-------------|
 | `scan` | Discover and check all configured servers |
 | `check_server` | Check a specific server by command |
+| `record` | Record a server session to a cassette file |
+| `replay` | Replay a cassette offline — no live server needed |
+| `verify` | Verify a live server still matches a cassette |
+| `watch` | Run checks and diff against the previous run |
 | `diff_runs` | Compare two saved run artifacts |
 | `get_last_run` | Return the most recent run for a target |
 | `suggest_servers` | Scan your environment and recommend servers you're missing |

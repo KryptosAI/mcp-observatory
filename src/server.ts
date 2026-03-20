@@ -7,13 +7,16 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 
+import type { Cassette } from "./cassette.js";
+import { defaultCassettesDirectory, loadCassette, saveCassette } from "./cassette.js";
 import { diffArtifacts } from "./diff.js";
 import { scanForTargets } from "./discovery.js";
 import { detectEnvironment } from "./environment.js";
 import { renderMarkdown } from "./reporters/markdown.js";
-import { runTarget } from "./runner.js";
+import { runTarget, runTargetRecording } from "./runner.js";
 import { defaultRunsDirectory, readArtifact, writeRunArtifact } from "./storage.js";
 import type { RunArtifact } from "./types.js";
+import { compareResponses } from "./verify.js";
 import { TOOL_VERSION } from "./version.js";
 
 function formatRun(artifact: RunArtifact): string {
@@ -264,6 +267,190 @@ export async function startServer(): Promise<void> {
       }
 
       return { content: [{ type: "text" as const, text: sections.join("\n\n") }] };
+    },
+  );
+
+  server.tool(
+    "record",
+    "Record a live MCP server session to a cassette file. The cassette captures all JSON-RPC traffic and can be replayed offline or used to verify future server versions.",
+    {
+      command: z.string().describe("The command to launch the MCP server."),
+      args: z.array(z.string()).optional().describe("Additional arguments for the command."),
+    },
+    async ({ command, args }) => {
+      try {
+        const target = {
+          targetId: command,
+          adapter: "local-process" as const,
+          command,
+          args: args ?? [],
+          timeoutMs: 15_000,
+        };
+        const { artifact, cassetteEntries } = await runTargetRecording(target, { invokeTools: true });
+
+        if (!cassetteEntries || cassetteEntries.length === 0) {
+          return { content: [{ type: "text" as const, text: "No traffic recorded." }], isError: true };
+        }
+
+        const cassette: Cassette = {
+          version: 1,
+          targetId: target.targetId,
+          recordedAt: new Date().toISOString(),
+          transport: "stdio",
+          entries: cassetteEntries,
+        };
+
+        const cassettePath = await saveCassette(cassette, defaultCassettesDirectory());
+        return {
+          content: [{ type: "text" as const, text: `${formatRun(artifact)}\n\nCassette saved: ${cassettePath}\n${cassetteEntries.length} entries recorded.\n\nReplay offline: replay({ cassette: "${cassettePath}" })\nVerify live: verify({ cassette: "${cassettePath}", command: "${command}" })` }],
+        };
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : String(error);
+        return { content: [{ type: "text" as const, text: `Error recording: ${msg}` }], isError: true };
+      }
+    },
+  );
+
+  server.tool(
+    "replay",
+    "Replay a cassette file offline — no live server needed. Runs all checks against the recorded responses.",
+    {
+      cassette: z.string().describe("Path to a cassette JSON file."),
+    },
+    async ({ cassette: cassettePath }) => {
+      try {
+        const { ReplayTransport } = await import("./transport/replay-transport.js");
+        const { Client } = await import("@modelcontextprotocol/sdk/client/index.js");
+        const { runToolsCheck } = await import("./checks/tools.js");
+        const { runPromptsCheck } = await import("./checks/prompts.js");
+        const { runResourcesCheck } = await import("./checks/resources.js");
+        const { runToolsInvokeCheck } = await import("./checks/tools-invoke.js");
+
+        const cassette = await loadCassette(cassettePath);
+        const replayTransport = new ReplayTransport(cassette.entries);
+        const client = new Client({ name: "mcp-observatory", version: TOOL_VERSION }, { capabilities: {} });
+        await client.connect(replayTransport);
+
+        const checkContext = {
+          client,
+          serverCapabilities: client.getServerCapabilities(),
+          target: { targetId: cassette.targetId, adapter: "local-process" as const, command: "replay", args: [] as string[] },
+          timeoutMs: 10_000,
+          stderrLines: [] as string[],
+        };
+
+        const checks = [
+          (await runToolsCheck(checkContext)).result,
+          (await runPromptsCheck(checkContext)).result,
+          (await runResourcesCheck(checkContext)).result,
+          (await runToolsInvokeCheck(checkContext)).result,
+        ];
+        await client.close();
+
+        const lines = [`Replay of ${cassette.targetId} (${cassette.entries.length} entries):\n`];
+        for (const check of checks) {
+          lines.push(`  [${check.status}] ${check.id}: ${check.message}`);
+        }
+        return { content: [{ type: "text" as const, text: lines.join("\n") }] };
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : String(error);
+        return { content: [{ type: "text" as const, text: `Error replaying: ${msg}` }], isError: true };
+      }
+    },
+  );
+
+  server.tool(
+    "verify",
+    "Verify a live server still matches a recorded cassette. Connects to the server, replays the same requests, and compares responses.",
+    {
+      cassette: z.string().describe("Path to a cassette JSON file."),
+      command: z.string().describe("The command to launch the MCP server."),
+      args: z.array(z.string()).optional().describe("Additional arguments for the command."),
+    },
+    async ({ cassette: cassettePath, command, args }) => {
+      try {
+        const cassette = await loadCassette(cassettePath);
+        const target = {
+          targetId: command,
+          adapter: "local-process" as const,
+          command,
+          args: args ?? [],
+          timeoutMs: 15_000,
+        };
+
+        const { cassetteEntries } = await runTargetRecording(target, { invokeTools: true });
+        if (!cassetteEntries) {
+          return { content: [{ type: "text" as const, text: "Failed to record live session for comparison." }], isError: true };
+        }
+
+        const result = compareResponses(cassette, cassetteEntries);
+        const lines: string[] = [`Verify: ${result.passed} passed, ${result.failed} changed, ${result.missing} missing\n`];
+        for (const entry of result.entries) {
+          const icon = entry.status === "pass" ? "✓" : entry.status === "fail" ? "✗" : "?";
+          lines.push(`  ${icon} ${entry.method}${entry.diff ? ` — ${entry.diff}` : ""}`);
+        }
+        return { content: [{ type: "text" as const, text: lines.join("\n") }] };
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : String(error);
+        return { content: [{ type: "text" as const, text: `Error verifying: ${msg}` }], isError: true };
+      }
+    },
+  );
+
+  server.tool(
+    "watch",
+    "Run checks against a server repeatedly and report when results change. Returns the initial check and starts monitoring. Note: in MCP server mode this runs a single check and diff against the previous run rather than a persistent loop.",
+    {
+      command: z.string().describe("The command to launch the MCP server."),
+      args: z.array(z.string()).optional().describe("Additional arguments for the command."),
+    },
+    async ({ command, args }) => {
+      try {
+        const target = {
+          targetId: command,
+          adapter: "local-process" as const,
+          command,
+          args: args ?? [],
+          timeoutMs: 15_000,
+        };
+
+        // Run current check
+        const artifact = await runTarget(target);
+        const outDir = defaultRunsDirectory();
+        const outPath = await writeRunArtifact(artifact, outDir);
+
+        // Find previous run to diff against
+        let diffText = "";
+        try {
+          const files = await readdir(outDir);
+          const needle = target.targetId.toLowerCase();
+          const matching = files
+            .filter((f) => f.endsWith(".json") && f.toLowerCase().includes(needle) && path.join(outDir, f) !== outPath)
+            .sort()
+            .reverse();
+
+          if (matching.length > 0) {
+            const prevArtifact = await readArtifact(path.join(outDir, matching[0]!));
+            if (prevArtifact.artifactType === "run") {
+              const diff = diffArtifacts(prevArtifact, artifact);
+              if (diff.summary.regressions > 0 || diff.summary.recoveries > 0 || diff.summary.added > 0 || diff.summary.removed > 0) {
+                diffText = `\n\nChanges since last run:\n${renderMarkdown(diff)}`;
+              } else {
+                diffText = "\n\nNo changes since last run.";
+              }
+            }
+          }
+        } catch {
+          // No previous run — that's fine
+        }
+
+        return {
+          content: [{ type: "text" as const, text: `${formatRun(artifact)}\n\nArtifact saved: ${outPath}${diffText}` }],
+        };
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : String(error);
+        return { content: [{ type: "text" as const, text: `Error watching: ${msg}` }], isError: true };
+      }
     },
   );
 
