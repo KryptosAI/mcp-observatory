@@ -193,7 +193,8 @@ async function showInteractiveMenu(): Promise<string[] | null> {
 
   const write = (s: string) => process.stdout.write(s);
 
-  // Render the full menu with the current cursor position
+  // Render the menu with the current cursor position.
+  // Returns lines WITHOUT a trailing newline so line count is exact.
   function render(): string {
     const lines: string[] = [];
     let idx = 0;
@@ -215,7 +216,6 @@ async function showInteractiveMenu(): Promise<string[] | null> {
     }
     lines.push("");
     lines.push(`  ${c(ANSI.dim, "↑↓ navigate  enter select  q quit")}`);
-    lines.push("");
     return lines.join("\n");
   }
 
@@ -224,64 +224,72 @@ async function showInteractiveMenu(): Promise<string[] | null> {
   write(`  ${c(ANSI.bold, "What would you like to do?")}\n`);
 
   const rendered = render();
-  const lineCount = rendered.split("\n").length;
-  write(rendered);
+  // Exact number of lines in the menu (used for cursor repositioning)
+  const menuLineCount = rendered.split("\n").length;
+  write(rendered + "\n");
+
+  // Use readline keypress events for reliable key detection on macOS/Linux
+  const { emitKeypressEvents } = await import("node:readline");
+  const stdin = process.stdin;
+  emitKeypressEvents(stdin);
+  stdin.setRawMode(true);
+  stdin.resume();
+  stdin.setEncoding("utf8");
 
   // Arrow-key selection loop
   return new Promise<string[] | null>((resolve) => {
-    const stdin = process.stdin;
-    stdin.setRawMode(true);
-    stdin.resume();
-    stdin.setEncoding("utf8");
 
     const cleanup = () => {
       stdin.setRawMode(false);
       stdin.pause();
-      stdin.removeListener("data", onKey);
+      stdin.removeListener("keypress", onKeypress);
     };
 
     const redraw = () => {
-      // Move up to overwrite previous render
-      write(`\x1b[${lineCount}A\x1b[0J`);
-      write(render());
+      // Move cursor up to start of menu, clear to end of screen, re-render
+      write(`\x1b[${menuLineCount}A\x1b[0J`);
+      write(render() + "\n");
     };
 
-    const onKey = (key: string) => {
+    const onKeypress = (_ch: string | undefined, key: { name?: string; ctrl?: boolean; sequence?: string } | undefined) => {
+      if (!key) return;
+
       // Ctrl+C
-      if (key === "\x03") {
+      if (key.ctrl && key.name === "c") {
         cleanup();
         write("\n");
         process.exit(0);
       }
 
-      // q or Escape
-      if (key === "q" || key === "\x1b" && key.length === 1) {
+      // q or Q or Escape
+      if (key.name === "q" || key.name === "escape") {
         cleanup();
         write("\n");
         resolve(null);
         return;
       }
 
-      // Enter
-      if (key === "\r" || key === "\n") {
+      // Enter / Return
+      if (key.name === "return") {
         cleanup();
         const item = allItems[cursor]!;
         // Clear menu and show what was picked
-        write(`\x1b[${lineCount}A\x1b[0J`);
+        write(`\x1b[${menuLineCount}A\x1b[0J`);
         write(`  ${c(ANSI.cyan, "❯")} ${c(ANSI.bold, item.label)}\n\n`);
         resolve(item.command);
         return;
       }
 
-      // Arrow keys (escape sequences: \x1b[A = up, \x1b[B = down)
-      if (key === "\x1b[A" || key === "k") {
-        // Up
+      // Arrow up / k
+      if (key.name === "up" || key.name === "k") {
         if (cursor > 0) {
           cursor--;
           redraw();
         }
-      } else if (key === "\x1b[B" || key === "j") {
-        // Down
+      }
+
+      // Arrow down / j
+      if (key.name === "down" || key.name === "j") {
         if (cursor < allItems.length - 1) {
           cursor++;
           redraw();
@@ -289,7 +297,7 @@ async function showInteractiveMenu(): Promise<string[] | null> {
       }
     };
 
-    stdin.on("data", onKey);
+    stdin.on("keypress", onKeypress);
   });
 }
 
