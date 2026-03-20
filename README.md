@@ -176,7 +176,8 @@ For more control (env vars, metadata, custom timeout):
   "adapter": "local-process",
   "command": "npx",
   "args": ["-y", "@modelcontextprotocol/server-filesystem", "."],
-  "timeoutMs": 15000
+  "timeoutMs": 15000,
+  "skipInvoke": false
 }
 ```
 
@@ -233,3 +234,7 @@ The record/replay/verify pattern is inspired by:
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines. The fastest way to contribute is to add a real passing target with a distinct capability shape, a clearer report surface, or a cleaner startup diagnosis.
+
+---
+
+If Observatory saved you a broken deploy, consider giving it a [star](https://github.com/KryptosAI/mcp-observatory). It helps others find the project.

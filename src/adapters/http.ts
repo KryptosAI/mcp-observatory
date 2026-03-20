@@ -5,8 +5,8 @@ import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
 
 import type { HttpTargetConfig } from "../types.js";
 import { RecordingTransport } from "../transport/recording-transport.js";
-import { formatConnectionFailureDiagnosis } from "../utils/failure-diagnosis.js";
 import { TOOL_VERSION } from "../version.js";
+import { AdapterConnectError } from "./local-process.js";
 import type { AdapterConnectOptions, AdapterSession } from "./local-process.js";
 
 export class HttpAdapter {
@@ -48,10 +48,7 @@ export class HttpAdapter {
       } catch (error) {
         const rawMessage = error instanceof Error ? error.message : String(error);
         await client.close().catch(() => undefined);
-        const msg = formatConnectionFailureDiagnosis(target, rawMessage, stderrLines);
-        const err = new Error(msg);
-        err.name = "AdapterConnectError";
-        throw err;
+        throw new AdapterConnectError(target, rawMessage, stderrLines);
       }
     }
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { Command } from "commander";
 
@@ -59,11 +59,21 @@ function targetFromCommand(args: string[]): TargetConfig {
     throw new Error("No command provided. Usage: mcp-observatory test <command> [args...]");
   }
   const command = args[0]!;
+  const restArgs = args.slice(1);
+
+  // Build a meaningful targetId: for wrapper commands, use the package/script name
+  let targetId = command;
+  const wrappers = new Set(["npx", "node", "docker", "uvx", "bunx", "pnpx"]);
+  if (wrappers.has(command)) {
+    const pkg = restArgs.find(a => !a.startsWith("-") && a !== "run");
+    if (pkg) targetId = pkg;
+  }
+
   return {
-    targetId: command,
+    targetId,
     adapter: "local-process",
     command,
-    args: args.slice(1),
+    args: restArgs,
     timeoutMs: 15_000,
   };
 }
@@ -309,6 +319,7 @@ async function main(): Promise<void> {
   const program = new Command();
   program
     .name(bin)
+    .enablePositionalOptions()
     .description("Test your MCP servers for breaking changes.")
     .version(TOOL_VERSION)
     .addHelpText("before", useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n` : LOGO + `  v${TOOL_VERSION}\n`)
@@ -359,15 +370,34 @@ async function main(): Promise<void> {
 
   program
     .command("test")
+    .passThroughOptions()
     .description("Test a specific server by command.")
     .argument("<command...>", "Server command and arguments to run.")
     .option("--no-color", "Disable colored output.")
     .action(async (commandArgs: string[]) => {
       const target = targetFromCommand(commandArgs);
+      process.stdout.write(`  ${c(ANSI.dim, "⟳")} Checking ${c(ANSI.bold, target.targetId)}...`);
       const artifact = await runTarget(target);
       const outPath = await writeRunArtifact(artifact, defaultRunsDirectory(process.cwd()));
-      const summary = renderTerminal(artifact);
-      process.stdout.write(`${summary}\nArtifact: ${outPath}\n`);
+
+      const toolsEvidence = artifact.checks.find(ch => ch.id === "tools");
+      const promptsEvidence = artifact.checks.find(ch => ch.id === "prompts");
+      const resourcesEvidence = artifact.checks.find(ch => ch.id === "resources");
+      const toolCount = toolsEvidence?.evidence[0]?.itemCount ?? 0;
+      const promptCount = promptsEvidence?.evidence[0]?.itemCount ?? 0;
+      const resourceCount = resourcesEvidence?.evidence[0]?.itemCount ?? 0;
+
+      const gateIcon = artifact.gate === "pass" ? c(ANSI.green, "✓") : c(ANSI.red, "✗");
+      process.stdout.write(`\r  ${gateIcon} ${c(ANSI.bold, target.targetId)}${" ".repeat(Math.max(1, 40 - target.targetId.length))}`);
+      process.stdout.write(`${c(ANSI.dim, `${toolCount} tools, ${promptCount} prompts, ${resourceCount} resources`)}\n`);
+
+      for (const check of artifact.checks) {
+        if (check.status === "fail" || check.status === "partial") {
+          process.stdout.write(`    ${c(ANSI.dim, "→")} ${check.id}: ${check.message}\n`);
+        }
+      }
+
+      process.stdout.write(`\n  ${c(ANSI.dim, `Artifact: ${outPath}`)}\n\n`);
       if (artifact.gate === "fail") {
         process.exitCode = 1;
       }
@@ -472,8 +502,7 @@ async function main(): Promise<void> {
       }
       process.stdout.write("\n");
 
-      // 3. MCP Registry
-      process.stdout.write(c(ANSI.bold, "  MCP Registry\n"));
+      // 3. MCP Registry — filtered by detected stack
       try {
         const response = await fetch("https://registry.modelcontextprotocol.io/v0/servers", {
           signal: AbortSignal.timeout(10_000),
@@ -485,15 +514,56 @@ async function main(): Promise<void> {
             ? ((data as Record<string, unknown>)["servers"] ?? (data as Record<string, unknown>)["results"] ?? (data as Record<string, unknown>)["items"])
             : null);
           if (Array.isArray(raw)) {
-            const entries = (raw as Array<Record<string, unknown>>).slice(0, 25);
-            for (const entry of entries) {
+            const allEntries = (raw as Array<Record<string, unknown>>);
+
+            // Build keyword set from detected environment
+            const keywords = new Set<string>([
+              ...env.languages, ...env.frameworks, ...env.databases,
+              ...env.services, ...env.cloud, ...env.cicd,
+            ].map(s => s.toLowerCase()));
+
+            // Also add common aliases
+            const aliases: Record<string, string[]> = {
+              typescript: ["ts"], javascript: ["js", "node"], python: ["py"],
+              postgresql: ["postgres"], mongodb: ["mongo"], github: ["gh"],
+            };
+            for (const kw of [...keywords]) {
+              for (const [full, abbrs] of Object.entries(aliases)) {
+                if (kw === full) for (const a of abbrs) keywords.add(a);
+                if (abbrs.includes(kw)) keywords.add(full);
+              }
+            }
+
+            // Score each entry against detected stack
+            const scored = allEntries.map(entry => {
               const srv = (typeof entry["server"] === "object" && entry["server"] !== null ? entry["server"] : entry) as Record<string, unknown>;
               const name = typeof srv["name"] === "string" ? srv["name"] : (typeof entry["name"] === "string" ? entry["name"] : "unknown");
               const desc = typeof srv["description"] === "string" ? srv["description"] : (typeof entry["description"] === "string" ? entry["description"] : "");
-              process.stdout.write(`  ${c(ANSI.dim, "●")} ${c(ANSI.bold, name)}${desc ? ` ${c(ANSI.dim, "—")} ${desc}` : ""}\n`);
+              const text = `${name} ${desc}`.toLowerCase();
+              const matches = [...keywords].filter(k => text.includes(k)).length;
+              return { name, desc, matches };
+            });
+
+            const recommended = scored.filter(s => s.matches > 0).sort((a, b) => b.matches - a.matches);
+            const others = scored.filter(s => s.matches === 0);
+
+            if (recommended.length > 0) {
+              process.stdout.write(c(ANSI.bold, "  Recommended for Your Stack\n"));
+              for (const r of recommended.slice(0, 10)) {
+                process.stdout.write(`  ${c(ANSI.green, "★")} ${c(ANSI.bold, r.name)}${r.desc ? ` ${c(ANSI.dim, "—")} ${r.desc}` : ""}\n`);
+              }
+              if (recommended.length > 10) {
+                process.stdout.write(`  ${c(ANSI.dim, `... and ${recommended.length - 10} more matches`)}\n`);
+              }
+            } else {
+              process.stdout.write(c(ANSI.bold, "  MCP Registry\n"));
+              for (const s of scored.slice(0, 10)) {
+                process.stdout.write(`  ${c(ANSI.dim, "●")} ${c(ANSI.bold, s.name)}${s.desc ? ` ${c(ANSI.dim, "—")} ${s.desc}` : ""}\n`);
+              }
             }
-            if (raw.length > 25) {
-              process.stdout.write(`  ${c(ANSI.dim, `... and ${raw.length - 25} more at registry.modelcontextprotocol.io`)}\n`);
+
+            if (others.length > 0) {
+              process.stdout.write(`\n  ${c(ANSI.dim, `${others.length} more servers at registry.modelcontextprotocol.io`)}\n`);
             }
           } else {
             process.stdout.write(`  ${c(ANSI.dim, "Registry returned unexpected format.")}\n`);
@@ -512,6 +582,7 @@ async function main(): Promise<void> {
 
   program
     .command("record")
+    .passThroughOptions()
     .description("Record a server session to a cassette file for replay.")
     .argument("[command...]", "Server command and arguments to run.")
     .option("--target <config>", "Path to a target config JSON file.")
@@ -650,6 +721,7 @@ async function main(): Promise<void> {
 
   program
     .command("verify")
+    .passThroughOptions()
     .description("Verify a live server still matches a recorded cassette.")
     .argument("<cassette>", "Path to a cassette JSON file.")
     .argument("[command...]", "Server command and arguments to run.")
@@ -797,6 +869,16 @@ async function main(): Promise<void> {
 async function runScan(bin: string, configPath: string | undefined, invokeTools: boolean): Promise<void> {
   process.stdout.write(useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n\n` : LOGO + `  v${TOOL_VERSION}\n\n`);
 
+  if (configPath) {
+    try {
+      await access(configPath);
+    } catch {
+      process.stdout.write(c(ANSI.red, `  ✗ Config file not found: ${configPath}\n\n`));
+      process.exitCode = 1;
+      return;
+    }
+  }
+
   const targets = await scanForTargets(configPath);
 
   if (targets.length === 0) {
@@ -856,6 +938,12 @@ async function runScan(bin: string, configPath: string | undefined, invokeTools:
       const gateIcon = artifact.gate === "pass" ? c(ANSI.green, " ✓") : c(ANSI.red, " ✗");
       process.stdout.write(`\r  ${gateIcon} ${c(ANSI.bold, t.config.targetId)}${" ".repeat(Math.max(1, 40 - t.config.targetId.length))}`);
       process.stdout.write(`${c(ANSI.dim, `${toolCount} tools, ${promptCount} prompts, ${resourceCount} resources`)}\n`);
+
+      if (artifact.fatalError) {
+        process.stdout.write(`    ${c(ANSI.red, "→")} ${artifact.fatalError.split("\n")[0]}\n`);
+      } else if (artifact.gate === "fail" && diagnostics.length > 0) {
+        process.stdout.write(`    ${c(ANSI.dim, "→")} ${diagnostics[0]}\n`);
+      }
 
       results.push({ targetId: t.config.targetId, gate: artifact.gate, toolCount, promptCount, resourceCount, diagnostics });
       if (artifact.gate === "pass") passCount++; else failCount++;

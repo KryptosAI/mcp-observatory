@@ -2,42 +2,94 @@
 
 All notable changes to MCP Observatory will be documented in this file.
 
-The format is intentionally simple while the project is pre-1.0:
-
-- `Added`
-- `Changed`
-- `Fixed`
-- `Docs`
-
 ## Unreleased
+
+## v0.6.0 - 2026-03-20
+
+### Added
+
+- full CLI/MCP server feature parity — every CLI command is now available as an MCP tool
+- `suggest` command and MCP tool for environment-aware MCP server recommendations
+- interactive arrow-key menu when invoked with no arguments
+
+### Fixed
+
+- q-quit and arrow key scrolling in interactive menu
+- Glama MCP server card badge added to README
+
+## v0.5.3 - 2026-03-19
+
+### Added
+
+- interactive menu when invoked with no command
+
+## v0.5.1 - 2026-03-19
+
+### Fixed
+
+- help examples alignment for `npx` prefix
+
+## v0.5.0 - 2026-03-19
+
+### Added
+
+- record/replay/verify: VCR-style testing for MCP servers
+- cassette-based session capture and offline replay
+- `verify` command to check a live server against a recorded cassette
+
+## v0.4.1 - 2026-03-19
+
+### Changed
+
+- natural language commands: `scan deep`, `diff a b`, `watch`, `test`
+- flags replaced with positional words for better first-run experience
+
+## v0.4.0 - 2026-03-19
+
+### Added
+
+- MCP server mode via `serve` command
+- `suggest_servers` tool: scans your project and recommends MCP servers from the registry
+- `test` command for single-server testing
+- server compatibility matrix documentation
+- inline commands for `run` and `check`
+
+### Changed
+
+- scan output redesigned for instant time-to-value
+- bold ASCII art logo on scan and help
+
+### Fixed
+
+- exit code 1 on failed runs
+- copy-pasteable tip formatting
+
+## v0.3.0 - 2026-03-19
+
+### Added
+
+- HTTP/SSE adapter with streamable-http fallback
+- HTML and Markdown report generation
+- tool invocation checks (safe tools with no required params)
+- schema drift detection via `diff`
+- auto-discovery of MCP servers from Claude config files
+
+### Changed
+
+- package published as `@kryptosai/mcp-observatory` on npm
+- README rewritten for clarity and first impressions
 
 ## v0.2.0 - 2026-03-19
 
 ### Added
 
-- packed-install verification that proves the CLI works from a release tarball without cloning the repo
-- a machine-readable real-server matrix summary at `examples/matrix-summary.json`
-- a human-readable proof index at `examples/INDEX.md`
-- checked-in real-server coverage for `promptopia-mcp` and `@opentofu/opentofu-mcp-server`
-- a reusable standalone filesystem target at `examples/install/filesystem-target.json`
-- release automation that builds release tarballs and publishes to npm when `NPM_TOKEN` is configured
+- packed-install verification that proves the CLI works from a release tarball
+- real-server coverage matrix with checked-in artifacts
+- release automation for npm publishing on tagged releases
 
 ### Changed
 
-- package version bumped to `0.2.0` and the published CLI bin path now matches the actual build output
-- README now prioritizes install proof, skeptic questions, and known-good matrix evidence
-- release guidance now treats installability as part of the credibility bar instead of a deferred concern
-- README now leads with observed server behavior, explicit non-goals, and project status instead of generic launch framing
-- contributor guidance now emphasizes evidence, smaller opinionated PRs, and the kinds of work likely to be declined
-
-### Docs
-
-- added a launch scoreboard for the first 14 days after `v0.2.0`
-- added a short technical launch note built around one regression diff and one startup diagnosis example
-- added `docs/field-notes.md` to record launch-day real-server observations and what they changed
-- added `docs/decisions.md` to document the narrow semantics bar, CLI-first posture, and release bar
-- expanded `docs/known-issues.md` with an explicit `unsupported` vs `failed` explanation
-- updated release guidance so future notes stay observational rather than launch-like
+- README repositioned around install proof and real evidence
 
 ## v0.1.0 - 2026-03-19
 
@@ -45,20 +97,6 @@ The format is intentionally simple while the project is pre-1.0:
 
 - initial CLI with `run`, `diff`, and `report`
 - stable `1.0.0` artifact schema with top-level `gate`
-- published JSON Schema files for run and diff artifacts
 - local-process adapter built on the official MCP TypeScript SDK
 - fixture server, sample artifacts, and Markdown reporting
-- real-server smoke coverage and a nightly/manual matrix workflow
-- checked-in real-server artifacts for filesystem, everything, and ref-tools servers
-- CODEOWNERS, release metadata, and contributor-facing examples
-
-### Changed
-
-- README repositioned as a landing page and adoption asset
-- release process expanded to support tagged GitHub releases before npm publishing
-
-### Docs
-
-- architecture and performance notes
-- known-issues documentation for ecosystem setup caveats
-- release notes template aligned to GitHub release categories
+- real-server smoke coverage for filesystem, everything, and ref-tools servers

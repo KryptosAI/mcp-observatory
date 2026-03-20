@@ -38,6 +38,7 @@ export function validateTargetConfig(data: unknown): TargetConfig {
       headers: isObject(data["headers"]) ? data["headers"] as Record<string, string> : undefined,
       timeoutMs: typeof data["timeoutMs"] === "number" ? data["timeoutMs"] : undefined,
       metadata: isObject(data["metadata"]) ? data["metadata"] as Record<string, string> : undefined,
+      skipInvoke: data["skipInvoke"] === true ? true : undefined,
     };
   }
 
@@ -63,6 +64,7 @@ export function validateTargetConfig(data: unknown): TargetConfig {
     env: isObject(data["env"]) ? data["env"] as Record<string, string> : undefined,
     timeoutMs: typeof data["timeoutMs"] === "number" ? data["timeoutMs"] : undefined,
     metadata: isObject(data["metadata"]) ? data["metadata"] as Record<string, string> : undefined,
+    skipInvoke: data["skipInvoke"] === true ? true : undefined,
   };
 }
 
