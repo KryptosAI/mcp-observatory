@@ -4,6 +4,20 @@ All notable changes to MCP Observatory will be documented in this file.
 
 ## Unreleased
 
+## v0.7.0 - 2026-03-20
+
+### Added
+
+- **Security scanning** — `--security` flag analyzes tool schemas for shell injection, broad filesystem access, permissive schemas, and credential leakage in responses
+- **GitHub Action** — composite action for CI pipelines (`KryptosAI/mcp-observatory/action@main`), comments markdown reports on PRs
+- **Public dashboard** — static HTML generator with server health table, SVG badges, trend visualization, and API JSON endpoint
+- Matrix history tracking (last 90 runs) with trend dots on dashboard
+- 14 new security-focused tests
+
+### Changed
+
+- `scan deep` now enables security scanning by default
+
 ## v0.6.0 - 2026-03-20
 
 ### Added
