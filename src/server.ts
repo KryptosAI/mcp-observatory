@@ -14,10 +14,57 @@ import { scanForTargets } from "./discovery.js";
 import { detectEnvironment } from "./environment.js";
 import { renderMarkdown } from "./reporters/markdown.js";
 import { runTarget, runTargetRecording } from "./runner.js";
+import type { RunOptions } from "./runner.js";
 import { defaultRunsDirectory, readArtifact, writeRunArtifact } from "./storage.js";
 import type { RunArtifact } from "./types.js";
 import { compareResponses } from "./verify.js";
 import { TOOL_VERSION } from "./version.js";
+
+// ── Security: Command Allowlist ────────────────────────────────────────────
+// MCP server mode is invoked by an LLM, not an operator. Arbitrary command
+// execution would let a prompt-injection attack run anything on the host.
+// Only commands whose base executable appears in this set are permitted.
+const ALLOWED_COMMANDS = new Set([
+  "npx",
+  "node",
+  "python",
+  "python3",
+  "uvx",
+  "docker",
+  "deno",
+  "bun",
+]);
+
+function validateCommand(command: string): void {
+  const base = path.basename(command.split(/\s+/)[0] ?? "");
+  if (!ALLOWED_COMMANDS.has(base)) {
+    throw new Error(
+      `Command "${base}" is not in the MCP server allowlist. ` +
+      `Allowed executables: ${[...ALLOWED_COMMANDS].join(", ")}. ` +
+      `Use the CLI for arbitrary commands.`
+    );
+  }
+}
+
+// ── Security: Path Validation ──────────────────────────────────────────────
+// File-reading tools must not traverse outside expected directories.
+function validatePath(filePath: string, allowedRoot: string): string {
+  const resolved = path.resolve(filePath);
+  const root = path.resolve(allowedRoot);
+  if (!resolved.startsWith(root + path.sep) && resolved !== root) {
+    throw new Error(
+      `Path "${filePath}" resolves outside allowed directory "${allowedRoot}".`
+    );
+  }
+  return resolved;
+}
+
+// ── Observability ──────────────────────────────────────────────────────────
+function logRequest(tool: string, startMs: number, error?: boolean): void {
+  const durationMs = Date.now() - startMs;
+  const status = error ? "ERROR" : "OK";
+  process.stderr.write(`[observatory] ${tool} ${status} ${durationMs}ms\n`);
+}
 
 function formatRun(artifact: RunArtifact): string {
   const lines: string[] = [];
@@ -46,22 +93,30 @@ export async function startServer(): Promise<void> {
   server.tool(
     "scan",
     "Auto-discover MCP servers from config files and run checks against each one. Returns a summary of tools/prompts/resources status for every discovered server.",
-    { config: z.string().optional().describe("Path to a specific MCP config file. If omitted, scans default locations.") },
-    async ({ config }) => {
+    {
+      config: z.string().optional().describe("Path to a specific MCP config file. If omitted, scans default locations."),
+      deep: z.boolean().optional().describe("Also invoke safe tools to verify they execute."),
+      security: z.boolean().optional().describe("Run security analysis on tool schemas."),
+    },
+    async ({ config, deep, security }) => {
+      const startMs = Date.now();
       const targets = await scanForTargets(config);
       if (targets.length === 0) {
+        logRequest("scan", startMs);
         return { content: [{ type: "text" as const, text: "No MCP server configs found." }] };
       }
 
+      const opts: RunOptions = {};
+      if (deep) opts.invokeTools = true;
+      if (security) opts.securityCheck = true;
+
       const lines: string[] = [`Discovered ${targets.length} server(s):\n`];
       for (const t of targets) {
-        // Skip ourselves to avoid recursive loop.
-        // A tool checking itself checking itself... we have to draw the line somewhere.
         if (t.config.targetId === "mcp-observatory") continue;
 
         lines.push(`--- ${t.config.targetId} (from ${t.source}) ---`);
         try {
-          const artifact = await runTarget(t.config);
+          const artifact = await runTarget(t.config, opts);
           lines.push(formatRun(artifact));
         } catch (error) {
           const msg = error instanceof Error ? error.message : String(error);
@@ -69,6 +124,7 @@ export async function startServer(): Promise<void> {
         }
         lines.push("");
       }
+      logRequest("scan", startMs);
       return { content: [{ type: "text" as const, text: lines.join("\n") }] };
     },
   );
@@ -79,9 +135,13 @@ export async function startServer(): Promise<void> {
     {
       command: z.string().describe("The command to launch the MCP server (e.g. 'npx -y @modelcontextprotocol/server-everything')."),
       args: z.array(z.string()).optional().describe("Additional arguments for the command."),
+      deep: z.boolean().optional().describe("Also invoke safe tools to verify they execute."),
+      security: z.boolean().optional().describe("Run security analysis on tool schemas."),
     },
-    async ({ command, args }) => {
+    async ({ command, args, deep, security }) => {
+      const startMs = Date.now();
       try {
+        validateCommand(command);
         const target = {
           targetId: command,
           adapter: "local-process" as const,
@@ -89,14 +149,19 @@ export async function startServer(): Promise<void> {
           args: args ?? [],
           timeoutMs: 15_000,
         };
-        const artifact = await runTarget(target);
+        const opts: RunOptions = {};
+        if (deep) opts.invokeTools = true;
+        if (security) opts.securityCheck = true;
+        const artifact = await runTarget(target, opts);
         const outDir = defaultRunsDirectory();
         const outPath = await writeRunArtifact(artifact, outDir);
+        logRequest("check_server", startMs);
         return {
           content: [{ type: "text" as const, text: `${formatRun(artifact)}\n\nArtifact saved: ${outPath}` }],
         };
       } catch (error) {
         const msg = error instanceof Error ? error.message : String(error);
+        logRequest("check_server", startMs, true);
         return { content: [{ type: "text" as const, text: `Error checking server: ${msg}` }], isError: true };
       }
     },
@@ -110,9 +175,14 @@ export async function startServer(): Promise<void> {
       head: z.string().describe("Path to the head run artifact JSON file."),
     },
     async ({ base, head }) => {
+      const startMs = Date.now();
       try {
-        const baseArtifact = await readArtifact(base);
-        const headArtifact = await readArtifact(head);
+        const runsDir = defaultRunsDirectory();
+        const basePath = validatePath(base, runsDir);
+        const headPath = validatePath(head, runsDir);
+
+        const baseArtifact = await readArtifact(basePath);
+        const headArtifact = await readArtifact(headPath);
 
         if (baseArtifact.artifactType !== "run" || headArtifact.artifactType !== "run") {
           return { content: [{ type: "text" as const, text: "Both files must be run artifacts (not diff artifacts)." }], isError: true };
@@ -120,9 +190,11 @@ export async function startServer(): Promise<void> {
 
         const diff = diffArtifacts(baseArtifact, headArtifact);
         const markdown = renderMarkdown(diff);
+        logRequest("diff_runs", startMs);
         return { content: [{ type: "text" as const, text: markdown }] };
       } catch (error) {
         const msg = error instanceof Error ? error.message : String(error);
+        logRequest("diff_runs", startMs, true);
         return { content: [{ type: "text" as const, text: `Error diffing runs: ${msg}` }], isError: true };
       }
     },
@@ -133,11 +205,11 @@ export async function startServer(): Promise<void> {
     "Return the most recent run artifact for a given target ID. Searches the default runs directory.",
     {
       targetId: z.string().describe("The target ID to find the last run for (e.g. server name or command)."),
-      runsDir: z.string().optional().describe("Custom runs directory. Defaults to .mcp-observatory/runs in cwd."),
     },
-    async ({ targetId, runsDir }) => {
+    async ({ targetId }) => {
+      const startMs = Date.now();
       try {
-        const dir = runsDir ?? defaultRunsDirectory();
+        const dir = defaultRunsDirectory();
         let files: string[];
         try {
           files = await readdir(dir);
@@ -145,7 +217,6 @@ export async function startServer(): Promise<void> {
           return { content: [{ type: "text" as const, text: `No runs directory found at ${dir}` }], isError: true };
         }
 
-        // Filter to JSON files matching the target, sorted newest-first by filename (ISO timestamp prefix)
         const needle = targetId.toLowerCase();
         const matching = files
           .filter((f) => f.endsWith(".json") && f.toLowerCase().includes(needle))
@@ -162,11 +233,13 @@ export async function startServer(): Promise<void> {
           return { content: [{ type: "text" as const, text: `Latest matching file is not a run artifact: ${latest}` }], isError: true };
         }
 
+        logRequest("get_last_run", startMs);
         return {
           content: [{ type: "text" as const, text: `${formatRun(artifact)}\n\nFile: ${path.join(dir, latest)}` }],
         };
       } catch (error) {
         const msg = error instanceof Error ? error.message : String(error);
+        logRequest("get_last_run", startMs, true);
         return { content: [{ type: "text" as const, text: `Error reading last run: ${msg}` }], isError: true };
       }
     },
@@ -179,7 +252,15 @@ export async function startServer(): Promise<void> {
       cwd: z.string().optional().describe("Working directory to scan for environment signals. Defaults to process.cwd()."),
     },
     async ({ cwd }) => {
+      const startMs = Date.now();
       const workDir = cwd ?? process.cwd();
+      // Constrain to cwd subtree
+      const resolvedDir = path.resolve(workDir);
+      const cwdRoot = path.resolve(process.cwd());
+      if (!resolvedDir.startsWith(cwdRoot + path.sep) && resolvedDir !== cwdRoot) {
+        logRequest("suggest_servers", startMs, true);
+        return { content: [{ type: "text" as const, text: `Path "${cwd}" resolves outside the working directory.` }], isError: true };
+      }
       const sections: string[] = [];
 
       // 1. Current MCP servers
@@ -266,6 +347,7 @@ export async function startServer(): Promise<void> {
         sections.push(`## MCP Registry\nCould not reach registry: ${msg}`);
       }
 
+      logRequest("suggest_servers", startMs);
       return { content: [{ type: "text" as const, text: sections.join("\n\n") }] };
     },
   );
@@ -278,7 +360,9 @@ export async function startServer(): Promise<void> {
       args: z.array(z.string()).optional().describe("Additional arguments for the command."),
     },
     async ({ command, args }) => {
+      const startMs = Date.now();
       try {
+        validateCommand(command);
         const target = {
           targetId: command,
           adapter: "local-process" as const,
@@ -301,11 +385,13 @@ export async function startServer(): Promise<void> {
         };
 
         const cassettePath = await saveCassette(cassette, defaultCassettesDirectory());
+        logRequest("record", startMs);
         return {
           content: [{ type: "text" as const, text: `${formatRun(artifact)}\n\nCassette saved: ${cassettePath}\n${cassetteEntries.length} entries recorded.\n\nReplay offline: replay({ cassette: "${cassettePath}" })\nVerify live: verify({ cassette: "${cassettePath}", command: "${command}" })` }],
         };
       } catch (error) {
         const msg = error instanceof Error ? error.message : String(error);
+        logRequest("record", startMs, true);
         return { content: [{ type: "text" as const, text: `Error recording: ${msg}` }], isError: true };
       }
     },
@@ -318,7 +404,10 @@ export async function startServer(): Promise<void> {
       cassette: z.string().describe("Path to a cassette JSON file."),
     },
     async ({ cassette: cassettePath }) => {
+      const startMs = Date.now();
       try {
+        const cassettesDir = defaultCassettesDirectory();
+        validatePath(cassettePath, cassettesDir);
         const { ReplayTransport } = await import("./transport/replay-transport.js");
         const { Client } = await import("@modelcontextprotocol/sdk/client/index.js");
         const { runToolsCheck } = await import("./checks/tools.js");
@@ -351,9 +440,11 @@ export async function startServer(): Promise<void> {
         for (const check of checks) {
           lines.push(`  [${check.status}] ${check.id}: ${check.message}`);
         }
+        logRequest("replay", startMs);
         return { content: [{ type: "text" as const, text: lines.join("\n") }] };
       } catch (error) {
         const msg = error instanceof Error ? error.message : String(error);
+        logRequest("replay", startMs, true);
         return { content: [{ type: "text" as const, text: `Error replaying: ${msg}` }], isError: true };
       }
     },
@@ -368,7 +459,11 @@ export async function startServer(): Promise<void> {
       args: z.array(z.string()).optional().describe("Additional arguments for the command."),
     },
     async ({ cassette: cassettePath, command, args }) => {
+      const startMs = Date.now();
       try {
+        validateCommand(command);
+        const cassettesDir = defaultCassettesDirectory();
+        validatePath(cassettePath, cassettesDir);
         const cassette = await loadCassette(cassettePath);
         const target = {
           targetId: command,
@@ -389,9 +484,11 @@ export async function startServer(): Promise<void> {
           const icon = entry.status === "pass" ? "✓" : entry.status === "fail" ? "✗" : "?";
           lines.push(`  ${icon} ${entry.method}${entry.diff ? ` — ${entry.diff}` : ""}`);
         }
+        logRequest("verify", startMs);
         return { content: [{ type: "text" as const, text: lines.join("\n") }] };
       } catch (error) {
         const msg = error instanceof Error ? error.message : String(error);
+        logRequest("verify", startMs, true);
         return { content: [{ type: "text" as const, text: `Error verifying: ${msg}` }], isError: true };
       }
     },
@@ -405,7 +502,9 @@ export async function startServer(): Promise<void> {
       args: z.array(z.string()).optional().describe("Additional arguments for the command."),
     },
     async ({ command, args }) => {
+      const startMs = Date.now();
       try {
+        validateCommand(command);
         const target = {
           targetId: command,
           adapter: "local-process" as const,
@@ -444,11 +543,13 @@ export async function startServer(): Promise<void> {
           // No previous run — that's fine
         }
 
+        logRequest("watch", startMs);
         return {
           content: [{ type: "text" as const, text: `${formatRun(artifact)}\n\nArtifact saved: ${outPath}${diffText}` }],
         };
       } catch (error) {
         const msg = error instanceof Error ? error.message : String(error);
+        logRequest("watch", startMs, true);
         return { content: [{ type: "text" as const, text: `Error watching: ${msg}` }], isError: true };
       }
     },

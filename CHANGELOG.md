@@ -4,6 +4,25 @@ All notable changes to MCP Observatory will be documented in this file.
 
 ## Unreleased
 
+## v0.7.1 - 2026-03-20
+
+### Security
+
+- **MCP server: command allowlist** — only `npx`, `node`, `python`, `python3`, `uvx`, `docker`, `deno`, `bun` are permitted as base executables. Arbitrary command execution is blocked. Use the CLI for unrestricted commands.
+- **GitHub Action: eliminate shell injection** — all variable expansions now use bash arrays and quoted parameters. PR comments use `--body-file` instead of inline `--body` to prevent content injection.
+- **MCP server: path validation** — `diff_runs`, `get_last_run`, `replay`, and `verify` file paths are constrained to the runs/cassettes directory. `suggest_servers` `cwd` is constrained to the process working directory subtree.
+- **Stderr buffer cap** — adapter stderr collection capped at 500 lines to prevent unbounded memory growth.
+
+### Added
+
+- **MCP server: `deep` and `security` params** — `check_server` and `scan` tools now accept `deep` (invoke safe tools) and `security` (run security analysis) boolean parameters, closing the CLI/MCP parity gap.
+- **MCP server: request logging** — all tool calls log method name, status, and duration to stderr for observability.
+- **17 new security tests** — command allowlist, path traversal, and prefix-matching attack coverage.
+
+### Changed
+
+- `get_last_run` MCP tool no longer accepts a custom `runsDir` parameter (security: prevents arbitrary directory reads).
+
 ## v0.7.0 - 2026-03-20
 
 ### Added

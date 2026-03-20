@@ -46,10 +46,13 @@ export class LocalProcessAdapter {
       stderr: "pipe"
     });
 
+    const MAX_STDERR_LINES = 500;
     const stderrLines: string[] = [];
     stdioTransport.stderr?.on("data", (chunk: Buffer | string) => {
+      if (stderrLines.length >= MAX_STDERR_LINES) return;
       const text = typeof chunk === "string" ? chunk : chunk.toString("utf8");
       for (const line of text.split(/\r?\n/)) {
+        if (stderrLines.length >= MAX_STDERR_LINES) break;
         const trimmed = line.trim();
         if (trimmed.length > 0) {
           stderrLines.push(trimmed);
