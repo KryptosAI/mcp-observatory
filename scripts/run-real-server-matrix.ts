@@ -140,7 +140,7 @@ async function main(): Promise<void> {
   // Append to history (capped at 90 entries)
   let history: Array<{ date: string; entries: MatrixSummaryEntry[] }> = [];
   try {
-    history = JSON.parse(await readFile(matrixHistoryPath, "utf8"));
+    history = JSON.parse(await readFile(matrixHistoryPath, "utf8")) as Array<{ date: string; entries: MatrixSummaryEntry[] }>;
   } catch {
     // No history yet
   }

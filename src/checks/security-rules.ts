@@ -152,7 +152,7 @@ export const SECURITY_RULES: SecurityRule[] = [
       }
 
       const props = schema?.["properties"];
-      if (schema && (!props || (typeof props === "object" && Object.keys(props as object).length === 0)) && isDangerous) {
+      if (schema && (!props || (typeof props === "object" && Object.keys(props as Record<string, unknown>).length === 0)) && isDangerous) {
         return {
           ruleId: this.id,
           severity: this.severity,

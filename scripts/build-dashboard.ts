@@ -174,14 +174,14 @@ async function main(): Promise<void> {
   await mkdir(apiDir, { recursive: true });
 
   // Load current matrix summary
-  const current: MatrixSummaryEntry[] = JSON.parse(
+  const current = JSON.parse(
     await readFile(matrixSummaryPath, "utf8"),
-  );
+  ) as MatrixSummaryEntry[];
 
   // Load or initialize history
   let history: HistoryEntry[] = [];
   try {
-    history = JSON.parse(await readFile(matrixHistoryPath, "utf8"));
+    history = JSON.parse(await readFile(matrixHistoryPath, "utf8")) as HistoryEntry[];
   } catch {
     // No history yet
   }
