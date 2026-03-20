@@ -152,17 +152,22 @@ async function main(): Promise<void> {
     .description("Test your MCP servers for breaking changes.")
     .version(TOOL_VERSION)
     .addHelpText("before", useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n` : LOGO + `  v${TOOL_VERSION}\n`)
-    .addHelpText("after", [
-      "",
-      "Examples:",
-      `  ${c(ANSI.dim, "$")} ${bin}${" ".repeat(Math.max(1, 48 - bin.length))}Scan all your MCP servers`,
-      `  ${c(ANSI.dim, "$")} ${bin} scan deep${" ".repeat(Math.max(1, 38 - bin.length))}Also test that tools actually run`,
-      `  ${c(ANSI.dim, "$")} ${bin} test npx server-foo${" ".repeat(Math.max(1, 28 - bin.length))}Test a specific server by command`,
-      `  ${c(ANSI.dim, "$")} ${bin} record npx server-foo${" ".repeat(Math.max(1, 26 - bin.length))}Record a session for replay`,
-      `  ${c(ANSI.dim, "$")} ${bin} replay cassette.json${" ".repeat(Math.max(1, 27 - bin.length))}Replay offline — no server needed`,
-      `  ${c(ANSI.dim, "$")} ${bin} diff run-a.json run-b.json${" ".repeat(Math.max(1, 20 - bin.length))}Compare two runs`,
-      "",
-    ].join("\n"));
+    .addHelpText("after", (() => {
+      const examples: [string, string][] = [
+        ["", "Scan all your MCP servers"],
+        [" scan deep", "Also test that tools actually run"],
+        [" test npx server-foo", "Test a specific server by command"],
+        [" record npx server-foo", "Record a session for replay"],
+        [" replay cassette.json", "Replay offline — no server needed"],
+        [" diff run-a.json run-b.json", "Compare two runs"],
+      ];
+      const maxCmd = Math.max(...examples.map(([cmd]) => (bin + cmd).length));
+      const pad = (cmd: string) => " ".repeat(Math.max(2, maxCmd - (bin + cmd).length + 3));
+      const lines = examples.map(([cmd, desc]) =>
+        `  ${c(ANSI.dim, "$")} ${bin}${cmd}${pad(cmd)}${c(ANSI.dim, desc)}`
+      );
+      return ["", "Examples:", ...lines, ""].join("\n");
+    })());
 
   // ── scan ──────────────────────────────────────────────────────────────
 
