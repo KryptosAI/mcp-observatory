@@ -4,6 +4,17 @@ All notable changes to MCP Observatory will be documented in this file.
 
 ## Unreleased
 
+## v0.8.0 - 2026-03-20
+
+### Added
+
+- **CLI/MCP parity tests** — automated tests verifying CLI and MCP server produce equivalent check results, artifact structures, and tool coverage.
+- **tools-invoke unit tests** — 12 tests covering `isSafeToInvoke`, `stubFromSchema`, and `runToolsInvokeCheck` with mocked clients.
+- **HTTP adapter tests** — 6 tests covering connection failures, auth tokens, headers, timeouts, and recording mode.
+- **CLI entrypoint tests** — 18 tests covering `--version`, `--help`, all subcommand help pages, `--format json/markdown`, fixture server runs, and error exits.
+- **MCP `diff_runs` format param** — accepts `"json"` or `"markdown"` (default), closing the last CLI/MCP output format parity gap.
+- **Intentional differences documented** — README and living test document all CLI/MCP parity gaps with explanations.
+
 ## v0.7.1 - 2026-03-20
 
 ### Security

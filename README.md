@@ -182,6 +182,26 @@ An AI tool that checks other AI tools. It's a tool testing tools that serve tool
 
 <sub>* I'm a dude playing a dude disguised as another dude.</sub>
 
+### Security
+
+The MCP server runs inside AI hosts where an LLM chooses which tools to call. To prevent prompt-injection attacks:
+
+- **Command allowlist:** Only `npx`, `node`, `python`, `python3`, `uvx`, `docker`, `deno`, `bun` are permitted as base executables. The CLI has no restrictions.
+- **Path validation:** File-reading tools are constrained to the runs/cassettes directories.
+- **No arbitrary execution:** Use the CLI for unrestricted commands.
+
+### CLI vs MCP: Intentional Differences
+
+| Feature | CLI | MCP Server | Why |
+|---------|-----|------------|-----|
+| `watch` | Polling loop | Single check + diff | Request/response doesn't support long-polling |
+| Interactive menu | Arrow-key navigation | Not available | MCP has no interactive UI |
+| Color output | `--no-color` flag | Always plain text | MCP returns structured content |
+| `report` | Renders saved artifacts | Not available | Agents read artifacts directly |
+| `serve` | Starts MCP server | N/A | Is the MCP server |
+| `run` | Reads target config files | Inline params | MCP tools accept params directly |
+| `get_last_run` | Not available (use `ls` + `diff`) | Available | Convenience for agents |
+
 ## Compatibility
 
 Works with any MCP server that uses standard transports:

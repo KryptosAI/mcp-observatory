@@ -173,8 +173,9 @@ export async function startServer(): Promise<void> {
     {
       base: z.string().describe("Path to the base run artifact JSON file."),
       head: z.string().describe("Path to the head run artifact JSON file."),
+      format: z.enum(["markdown", "json"]).optional().describe("Output format: 'markdown' (default) or 'json'."),
     },
-    async ({ base, head }) => {
+    async ({ base, head, format }) => {
       const startMs = Date.now();
       try {
         const runsDir = defaultRunsDirectory();
@@ -189,9 +190,11 @@ export async function startServer(): Promise<void> {
         }
 
         const diff = diffArtifacts(baseArtifact, headArtifact);
-        const markdown = renderMarkdown(diff);
+        const output = format === "json"
+          ? JSON.stringify(diff, null, 2)
+          : renderMarkdown(diff);
         logRequest("diff_runs", startMs);
-        return { content: [{ type: "text" as const, text: markdown }] };
+        return { content: [{ type: "text" as const, text: output }] };
       } catch (error) {
         const msg = error instanceof Error ? error.message : String(error);
         logRequest("diff_runs", startMs, true);
