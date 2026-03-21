@@ -18,6 +18,7 @@ import type { RunOptions } from "./runner.js";
 import { defaultRunsDirectory, readArtifact, writeRunArtifact } from "./storage.js";
 import type { RunArtifact } from "./types.js";
 import { compareResponses } from "./verify.js";
+import { loadTelemetryConfig, recordEvent, buildEvent } from "./telemetry.js";
 import { TOOL_VERSION } from "./version.js";
 
 // ── Security: Command Allowlist ────────────────────────────────────────────
@@ -64,6 +65,7 @@ function logRequest(tool: string, startMs: number, error?: boolean): void {
   const durationMs = Date.now() - startMs;
   const status = error ? "ERROR" : "OK";
   process.stderr.write(`[observatory] ${tool} ${status} ${durationMs}ms\n`);
+  recordEvent(buildEvent("tool_call", tool, "mcp"));
 }
 
 function formatRun(artifact: RunArtifact): string {
@@ -85,6 +87,9 @@ function formatRun(artifact: RunArtifact): string {
 }
 
 export async function startServer(): Promise<void> {
+  // Warm telemetry config cache
+  await loadTelemetryConfig();
+
   const server = new McpServer({
     name: "mcp-observatory",
     version: TOOL_VERSION,

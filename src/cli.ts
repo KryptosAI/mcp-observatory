@@ -33,6 +33,8 @@ import { SCHEMA_VERSION, type RunArtifact } from "./types.js";
 import { buildRunId } from "./utils/ids.js";
 import { validateTargetConfig } from "./validate.js";
 import { compareResponses } from "./verify.js";
+import { isCI } from "./ci.js";
+import { loadTelemetryConfig, saveTelemetryConfig, showFirstRunNotice, recordEvent, buildEvent, isTelemetryEnabled } from "./telemetry.js";
 import { TOOL_VERSION } from "./version.js";
 
 // ── ASCII Logo ──────────────────────────────────────────────────────────────
@@ -315,6 +317,22 @@ async function showInteractiveMenu(): Promise<string[] | null> {
 
 async function main(): Promise<void> {
   const bin = getBinName();
+
+  // Telemetry: first-run notice
+  const telemetryConfig = await loadTelemetryConfig();
+  if (!telemetryConfig.noticeShown && isTelemetryEnabled()) {
+    await showFirstRunNotice();
+  }
+
+  // Update check (CLI only, not MCP server mode)
+  if (process.argv[2] !== "serve") {
+    try {
+      const { default: updateNotifier } = await import("update-notifier");
+      updateNotifier({ pkg: { name: "@kryptosai/mcp-observatory", version: TOOL_VERSION } }).notify();
+    } catch {
+      // update-notifier not available — skip silently
+    }
+  }
 
   const program = new Command();
   program
@@ -858,12 +876,46 @@ async function main(): Promise<void> {
       },
     );
 
+  // ── telemetry ──────────────────────────────────────────────────────────
+
+  program
+    .command("telemetry")
+    .description("Manage anonymous usage telemetry.")
+    .argument("[action]", "enable, disable, or status (default: status)")
+    .action(async (action?: string) => {
+      const config = await loadTelemetryConfig();
+      const envDisabled = process.env["DO_NOT_TRACK"] === "1" ||
+        process.env["MCP_OBSERVATORY_TELEMETRY_DISABLED"] === "1";
+
+      if (action === "enable") {
+        config.telemetryEnabled = true;
+        await saveTelemetryConfig(config);
+        process.stdout.write("  Telemetry enabled.\n\n");
+      } else if (action === "disable") {
+        config.telemetryEnabled = false;
+        await saveTelemetryConfig(config);
+        process.stdout.write("  Telemetry disabled.\n\n");
+      } else {
+        const effective = isTelemetryEnabled();
+        process.stdout.write(`  Telemetry: ${effective ? "enabled" : "disabled"}\n`);
+        process.stdout.write(`  Config:    telemetryEnabled=${String(config.telemetryEnabled)}\n`);
+        if (envDisabled) {
+          process.stdout.write(`  Override:  disabled via environment variable\n`);
+        }
+        process.stdout.write(`  Session:   ${config.sessionId}\n\n`);
+      }
+    });
+
   // Interactive menu when invoked with no arguments
-  if (process.argv.length === 2) {
+  if (process.argv.length === 2 && !isCI) {
     const choice = await showInteractiveMenu();
     if (!choice) return;
     process.argv.push(...choice);
   }
+
+  // Telemetry: record command usage
+  const commandName = process.argv[2] ?? "interactive";
+  recordEvent(buildEvent("command_run", commandName, "cli"));
 
   await program.parseAsync(process.argv);
 }
