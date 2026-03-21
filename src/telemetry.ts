@@ -29,7 +29,7 @@ export interface TelemetryEvent {
 
 const CONFIG_DIR = path.join(os.homedir(), ".mcp-observatory");
 const CONFIG_PATH = path.join(CONFIG_DIR, "config.json");
-const DEFAULT_ENDPOINT = "https://telemetry.mcp-observatory.dev/v1/events";
+const DEFAULT_ENDPOINT = "https://mcp-observatory-telemetry.kryptosai.workers.dev/v1/events";
 
 // ── Config cache ─────────────────────────────────────────────────────────────
 
