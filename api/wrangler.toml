@@ -1,0 +1,16 @@
+name = "mcp-observatory-api"
+main = "src/worker.ts"
+compatibility_date = "2025-03-15"
+compatibility_flags = ["nodejs_compat"]
+
+[observability]
+enabled = true
+
+[[kv_namespaces]]
+binding = "SCAN_CACHE"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
+
+# For local dev, wrangler will create a local KV automatically.
+# To create the production namespace:
+#   wrangler kv namespace create SCAN_CACHE
+# Then paste the returned id above.

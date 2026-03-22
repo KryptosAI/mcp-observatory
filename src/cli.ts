@@ -1034,6 +1034,94 @@ async function main(): Promise<void> {
       }
     });
 
+  // ── smithery ─────────────────────────────────────────────────────────
+
+  const smitheryCmd = program
+    .command("smithery")
+    .description("Smithery registry integration — scan, report, and batch-check servers.");
+
+  smitheryCmd
+    .command("scan")
+    .description("Resolve a Smithery server, run checks, and output a report.")
+    .argument("<qualified-name>", "Smithery qualified name (e.g. @anthropic/mcp-server-fetch)")
+    .option("--security", "Run security analysis on tool schemas.")
+    .option("--api-key <key>", "Smithery API key.")
+    .option("--base-url <url>", "Override Smithery API base URL.")
+    .action(async (qualifiedName: string, options: { security?: boolean; apiKey?: string; baseUrl?: string }) => {
+      const { resolveSmitheryTarget, generateSubmission: genSub, renderSubmissionMarkdown: renderMd } = await import("./integrations/smithery.js");
+      const smitheryConfig = { apiKey: options.apiKey, baseUrl: options.baseUrl };
+
+      process.stdout.write(`  Resolving ${qualifiedName} from Smithery...\n`);
+      const target = await resolveSmitheryTarget(qualifiedName, smitheryConfig);
+
+      process.stdout.write(`  Running checks against ${target.targetId}...\n`);
+      const artifact = await runTarget(target, { securityCheck: options.security });
+
+      const submission = genSub(qualifiedName, artifact);
+      const md = renderMd(submission);
+
+      process.stdout.write(`\n${md}\n`);
+    });
+
+  smitheryCmd
+    .command("report")
+    .description("Generate a formatted markdown report suitable for submitting to Smithery.")
+    .argument("<qualified-name>", "Smithery qualified name")
+    .option("--output <path>", "Write report to file instead of stdout.")
+    .option("--security", "Run security analysis on tool schemas.")
+    .option("--api-key <key>", "Smithery API key.")
+    .option("--base-url <url>", "Override Smithery API base URL.")
+    .action(async (qualifiedName: string, options: { output?: string; security?: boolean; apiKey?: string; baseUrl?: string }) => {
+      const { resolveSmitheryTarget, generateSubmission: genSub, renderSubmissionMarkdown: renderMd } = await import("./integrations/smithery.js");
+      const smitheryConfig = { apiKey: options.apiKey, baseUrl: options.baseUrl };
+
+      process.stdout.write(`  Resolving ${qualifiedName} from Smithery...\n`);
+      const target = await resolveSmitheryTarget(qualifiedName, smitheryConfig);
+
+      process.stdout.write(`  Running checks against ${target.targetId}...\n`);
+      const artifact = await runTarget(target, { securityCheck: options.security });
+
+      const submission = genSub(qualifiedName, artifact);
+      const md = renderMd(submission);
+
+      if (options.output) {
+        await writeFile(options.output, md, "utf8");
+        process.stdout.write(`  Report written to ${options.output}\n`);
+      } else {
+        process.stdout.write(`\n${md}\n`);
+      }
+    });
+
+  smitheryCmd
+    .command("batch")
+    .description("Scan top N servers from the Smithery registry and generate a comparative report.")
+    .option("--top <n>", "Number of servers to scan.", "10")
+    .option("--output <path>", "Write report to file instead of stdout.")
+    .option("--api-key <key>", "Smithery API key.")
+    .option("--base-url <url>", "Override Smithery API base URL.")
+    .action(async (options: { top: string; output?: string; apiKey?: string; baseUrl?: string }) => {
+      const { batchScanServers, renderBatchReportMarkdown } = await import("./integrations/smithery.js");
+      const smitheryConfig = { apiKey: options.apiKey, baseUrl: options.baseUrl };
+      const top = parseInt(options.top, 10) || 10;
+
+      process.stdout.write(`  Scanning top ${top} servers from Smithery registry...\n`);
+
+      const results = await batchScanServers(
+        (target) => runTarget(target, {}),
+        smitheryConfig,
+        { top },
+      );
+
+      const md = renderBatchReportMarkdown(results);
+
+      if (options.output) {
+        await writeFile(options.output, md, "utf8");
+        process.stdout.write(`  Batch report written to ${options.output}\n`);
+      } else {
+        process.stdout.write(`\n${md}\n`);
+      }
+    });
+
   // Interactive menu when invoked with no arguments
   if (process.argv.length === 2 && !isCI) {
     const choice = await showInteractiveMenu();

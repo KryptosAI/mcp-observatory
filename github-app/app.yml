@@ -1,0 +1,20 @@
+name: MCP Observatory
+description: Automated MCP server configuration health checks for pull requests
+url: https://github.com/KryptosAI/mcp-observatory
+
+# Webhook configuration
+default_events:
+  - pull_request
+
+default_permissions:
+  contents: read
+  pull_requests: write
+  issues: write
+  metadata: read
+
+# Visibility
+public: true
+
+# Webhook URL (set during registration)
+# hook_attributes:
+#   url: https://your-server.example.com/api/webhooks
