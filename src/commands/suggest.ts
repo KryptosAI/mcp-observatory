@@ -107,7 +107,7 @@ export function registerSuggestCommands(program: Command): void {
               }
             } else {
               process.stdout.write(c(ANSI.bold, "  MCP Registry\n"));
-              for (const s of scored.slice(0, 10)) {
+              for (const s of deduped.slice(0, 10)) {
                 process.stdout.write(`  ${c(ANSI.dim, "●")} ${c(ANSI.bold, s.name)}${s.desc ? ` ${c(ANSI.dim, "—")} ${s.desc}` : ""}\n`);
               }
             }
