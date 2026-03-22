@@ -18,7 +18,7 @@
 [![Smithery](https://smithery.ai/badge/@kryptosai/mcp-observatory)](https://smithery.ai/server/@kryptosai/mcp-observatory)
 [![mcp-observatory MCP server](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory/badges/score.svg)](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory)
 
-**The first testing tool that is itself an MCP server.** Your AI agent can scan, test, record, replay, and verify other MCP servers autonomously — catching regressions, schema drift, and security issues without human intervention.
+**The first testing tool that is itself an MCP server.** Your AI agent can scan, test, record, replay, and verify other MCP servers on its own — no human in the loop.
 
 Use it as a CLI, a CI action, or give it to your agent as an MCP server and let it test your other servers for you.
 
@@ -79,28 +79,33 @@ Or add it manually to your config:
 | `verify <cassette> <cmd>` | Verify a live server still matches a recorded cassette |
 | `diff <base> <head>` | Compare two run artifacts for regressions and schema drift |
 | `watch <config>` | Watch a server for changes, alert on regressions |
+| `report <artifact>` | Render a saved run artifact (terminal, markdown, json, html) |
 | `suggest` | Detect your stack and recommend MCP servers from the registry |
 | `serve` | Start as an MCP server for AI agents |
+| **Integrations** | |
+| `smithery scan` | Scan servers listed on [Smithery](https://smithery.ai) |
+| `smithery report` | Generate a report from a Smithery scan |
+| `smithery batch` | Batch-scan multiple Smithery servers |
 
 Run with no arguments for an interactive menu:
 
 ## What It Does
 
-**Check capabilities** — connects to a server and verifies tools, prompts, and resources respond correctly.
+**Check capabilities** — connects to a server, lists its tools/prompts/resources, and makes sure they respond.
 
-**Invoke tools** — goes beyond listing. Actually calls safe tools (no required params / readOnlyHint) and reports which ones work and which ones crash.
+**Invoke tools** — doesn't just list them. Actually calls safe tools (no required params / readOnlyHint) and tells you which ones work and which ones crash.
 
 ```bash
 npx @kryptosai/mcp-observatory scan deep
 ```
 
-**Detect schema drift** — diffs two runs and surfaces added/removed fields, type changes, and breaking parameter changes.
+**Detect schema drift** — diffs two runs and shows you added/removed fields, type changes, and breaking parameter changes.
 
 ```bash
 npx @kryptosai/mcp-observatory diff run-a.json run-b.json
 ```
 
-**Recommend servers** — scans your project for languages, frameworks, databases, and cloud providers, then cross-references the [MCP registry](https://registry.modelcontextprotocol.io) to suggest servers you're missing.
+**Recommend servers** — looks at your project (languages, frameworks, databases, cloud providers) and checks the [MCP registry](https://registry.modelcontextprotocol.io) for servers you're missing.
 
 ```bash
 npx @kryptosai/mcp-observatory suggest
@@ -108,13 +113,13 @@ npx @kryptosai/mcp-observatory suggest
 
 Or ask your agent "what MCP servers should I add?" when running in MCP server mode.
 
-**Security scanning** — analyzes tool schemas for dangerous patterns: shell injection surfaces, broad filesystem access, missing auth, and credential leakage in responses.
+**Security scanning** — checks tool schemas for dangerous patterns: shell injection surfaces, broad filesystem access, missing auth, credential leakage in responses.
 
 ```bash
 npx @kryptosai/mcp-observatory test --security npx -y my-mcp-server
 ```
 
-**Record / replay / verify** — capture a live session, replay it offline in CI, and verify nothing changed. Like [VCR](https://github.com/vcr/vcr) for MCP.
+**Record / replay / verify** — capture a live session, replay it offline in CI, verify nothing changed. [VCR](https://github.com/vcr/vcr) for MCP.
 
 ```bash
 # Record a session
@@ -127,7 +132,7 @@ npx @kryptosai/mcp-observatory replay .mcp-observatory/cassettes/latest.cassette
 npx @kryptosai/mcp-observatory verify cassette.json npx -y @modelcontextprotocol/server-everything
 ```
 
-**Watch for regressions** — re-runs checks on an interval and alerts when something changes.
+**Watch for regressions** — re-runs checks on an interval, alerts you when something changes.
 
 ```bash
 npx @kryptosai/mcp-observatory watch target.json
@@ -144,7 +149,7 @@ When you run `scan`, it looks for MCP configs in:
 
 ## CI / GitHub Action
 
-Add Observatory to your MCP server's CI pipeline:
+Drop Observatory into your CI pipeline:
 
 ```yaml
 # .github/workflows/observatory.yml
@@ -162,22 +167,23 @@ jobs:
           security: true
 ```
 
-The action runs checks on every PR, comments a markdown report, and blocks merge on regressions. See [`action/README.md`](./action/README.md) for all options.
+Runs checks on every PR, comments a markdown report, blocks merge on regressions. See [`action/README.md`](./action/README.md) for all options.
 
 ## MCP Server Mode
 
-**No other testing tool is itself an MCP server.** Add Observatory as a server and your AI agent can autonomously test, diagnose, and monitor your other MCP servers.
+**No other testing tool is itself an MCP server.** Add Observatory as a server and your AI agent can test, diagnose, and monitor your other servers on its own.
 
 ```bash
 claude mcp add mcp-observatory -- npx -y @kryptosai/mcp-observatory serve
 ```
 
-Your agent gets 9 tools:
+Your agent gets 10 tools:
 
 | Tool | When to use it |
 |------|---------------|
 | `scan` | Check if all your configured MCP servers are healthy |
 | `check_server` | Test a specific server before installing or after updating |
+| `score_server` | Get a 0-100 health grade with A-F rating and per-category breakdown |
 | `record` | Capture a baseline of a working server for future comparison |
 | `replay` | Test against a recorded session — no live server needed |
 | `verify` | Confirm a server update didn't break anything |
@@ -192,10 +198,10 @@ An AI tool that checks other AI tools. It's a tool testing tools that serve tool
 
 ### Security
 
-The MCP server runs inside AI hosts where an LLM chooses which tools to call. To prevent prompt-injection attacks:
+The MCP server runs inside AI hosts where an LLM picks which tools to call. To prevent prompt-injection attacks:
 
-- **Command allowlist:** Only `npx`, `node`, `python`, `python3`, `uvx`, `docker`, `deno`, `bun` are permitted as base executables. The CLI has no restrictions.
-- **Path validation:** File-reading tools are constrained to the runs/cassettes directories.
+- **Command allowlist:** Only `npx`, `node`, `python`, `python3`, `uvx`, `docker`, `deno`, `bun` are allowed as base executables. The CLI has no restrictions.
+- **Path validation:** File-reading tools can only access the runs/cassettes directories.
 - **No arbitrary execution:** Use the CLI for unrestricted commands.
 
 ### CLI vs MCP: Intentional Differences
@@ -212,7 +218,7 @@ The MCP server runs inside AI hosts where an LLM chooses which tools to call. To
 
 ## Compatibility
 
-Works with any MCP server that uses standard transports:
+Works with any MCP server on standard transports:
 
 | Transport | Examples | Adapter |
 |-----------|----------|---------|
@@ -269,11 +275,11 @@ npx @kryptosai/mcp-observatory run --target ./target.json
 | MCP proxy mode | — | ✅ | — | — |
 | **Works as MCP server** | **✅** | — | — | — |
 
-Each tool has strengths. Observatory focuses on regression detection and CI-friendly workflows. mcp-recorder is great as a transparent proxy. MCPBench is the go-to for performance benchmarking. mcp-jest is ideal if you're already in a Jest workflow.
+Each tool has its niche. Observatory is for regression detection and CI. mcp-recorder is great as a transparent proxy. MCPBench is the go-to for performance benchmarking. mcp-jest works well if you're already using Jest.
 
 ## Prior Art
 
-The record/replay/verify pattern is inspired by:
+Record/replay/verify is inspired by:
 
 - [VCR](https://github.com/vcr/vcr) (Ruby) — pioneered cassette-based HTTP record/replay
 - [Polly.js](https://github.com/Netflix/pollyjs) (Netflix) — HTTP interaction recording for JavaScript
@@ -283,13 +289,13 @@ The record/replay/verify pattern is inspired by:
 
 ## Limitations
 
-- Servers requiring interactive OAuth (e.g., Google Drive) need pre-authentication before Observatory can connect
-- Custom WebSocket transports (e.g., BrowserTools MCP) are not supported
-- A few servers time out or close before init — see [known issues](./docs/known-issues.md) and [compatibility](./docs/compatibility.md)
+- Servers that need interactive OAuth (e.g., Google Drive) must be pre-authenticated before Observatory can connect
+- Custom WebSocket transports (e.g., BrowserTools MCP) aren't supported
+- Some servers time out or close before init -- see [known issues](./docs/known-issues.md) and [compatibility](./docs/compatibility.md)
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines. The fastest way to contribute is to add a real passing target with a distinct capability shape, a clearer report surface, or a cleaner startup diagnosis.
+See [CONTRIBUTING.md](./CONTRIBUTING.md). The easiest way to help: add a real passing target with a distinct capability shape, improve the report output, or fix a startup diagnosis.
 
 ---
 

@@ -14,6 +14,16 @@ export interface TelemetryConfig {
   statsToken?: string;
 }
 
+export interface TelemetryEnrichment {
+  ciProvider?: string;
+  serversScanned?: number;
+  toolsFound?: number;
+  gateResult?: string;
+  executionMs?: number;
+  securityFlag?: boolean;
+  targetIds?: string[];
+}
+
 export interface TelemetryEvent {
   event: string;
   version: string;
@@ -24,6 +34,13 @@ export interface TelemetryEvent {
   isCI: boolean;
   ciName?: string | null;
   transport: "cli" | "mcp";
+  ciProvider?: string;
+  serversScanned?: number;
+  toolsFound?: number;
+  gateResult?: string;
+  executionMs?: number;
+  securityFlag?: boolean;
+  targetIds?: string[];
 }
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -90,6 +107,18 @@ export function detectCI(): { isCI: boolean; ciName: string | null } {
   return { isCI: _isCI, ciName: _ciName };
 }
 
+export function detectCiProvider(): string | null {
+  if (process.env["GITHUB_ACTIONS"]) return "github-actions";
+  if (process.env["GITLAB_CI"]) return "gitlab-ci";
+  if (process.env["CIRCLECI"]) return "circleci";
+  if (process.env["JENKINS_URL"]) return "jenkins";
+  if (process.env["BUILDKITE"]) return "buildkite";
+  if (process.env["TRAVIS"]) return "travis";
+  if (process.env["CODEBUILD_BUILD_ID"]) return "aws-codebuild";
+  if (process.env["TF_BUILD"]) return "azure-pipelines";
+  return null;
+}
+
 // ── First-run notice ─────────────────────────────────────────────────────────
 
 export async function showFirstRunNotice(): Promise<void> {
@@ -147,9 +176,11 @@ export function buildEvent(
   event: string,
   command: string,
   transport: "cli" | "mcp",
+  enrichment?: TelemetryEnrichment,
 ): TelemetryEvent {
   const ci = detectCI();
-  return {
+  const ciProvider = detectCiProvider();
+  const base: TelemetryEvent = {
     event,
     version: TOOL_VERSION,
     command,
@@ -160,4 +191,15 @@ export function buildEvent(
     ciName: ci.ciName,
     transport,
   };
+  if (ciProvider) base.ciProvider = ciProvider;
+  if (enrichment) {
+    if (enrichment.ciProvider !== undefined) base.ciProvider = enrichment.ciProvider;
+    if (enrichment.serversScanned !== undefined) base.serversScanned = enrichment.serversScanned;
+    if (enrichment.toolsFound !== undefined) base.toolsFound = enrichment.toolsFound;
+    if (enrichment.gateResult !== undefined) base.gateResult = enrichment.gateResult;
+    if (enrichment.executionMs !== undefined) base.executionMs = enrichment.executionMs;
+    if (enrichment.securityFlag !== undefined) base.securityFlag = enrichment.securityFlag;
+    if (enrichment.targetIds !== undefined) base.targetIds = enrichment.targetIds;
+  }
+  return base;
 }

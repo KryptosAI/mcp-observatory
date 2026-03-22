@@ -8,6 +8,7 @@ import {
   writeRunArtifact,
 } from "../index.js";
 import { defaultRunsDirectory } from "../storage.js";
+import { buildEvent, recordEvent } from "../telemetry.js";
 import { ANSI, c, formatOutput, targetFromCommand, writeOutput } from "./helpers.js";
 
 export function registerScoreCommands(program: Command): void {
@@ -22,10 +23,24 @@ export function registerScoreCommands(program: Command): void {
     .option("--output <file>", "Write to file instead of stdout.")
     .option("--no-color", "Disable colored output.")
     .action(async (commandArgs: string[], options: { format: string; output?: string }) => {
+      const t0 = Date.now();
       const target = targetFromCommand(commandArgs);
       process.stdout.write(`${c(ANSI.dim, "⟳")} Scoring ${c(ANSI.bold, target.targetId)}...\n\n`);
       const artifact = await runTarget(target, { invokeTools: true, securityCheck: true });
       await writeRunArtifact(artifact, defaultRunsDirectory(process.cwd()));
+
+      const toolsEvidence = artifact.checks.find(ch => ch.id === "tools");
+      const toolCount = toolsEvidence?.evidence[0]?.itemCount ?? 0;
+      const secCheck = artifact.checks.find(ch => ch.id === "security");
+
+      recordEvent(buildEvent("command_complete", "score", "cli", {
+        serversScanned: 1,
+        toolsFound: toolCount,
+        gateResult: artifact.gate,
+        executionMs: Date.now() - t0,
+        securityFlag: secCheck?.status === "fail",
+        targetIds: [target.targetId],
+      }));
 
       if (options.format !== "terminal") {
         const output = formatOutput(artifact, options.format as "json" | "junit" | "sarif" | "markdown" | "html" | "terminal");
