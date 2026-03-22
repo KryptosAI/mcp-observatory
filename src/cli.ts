@@ -881,7 +881,7 @@ async function main(): Promise<void> {
   program
     .command("telemetry")
     .description("Manage anonymous usage telemetry.")
-    .argument("[action]", "enable, disable, or status (default: status)")
+    .argument("[action]", "enable, disable, stats, or status (default: status)")
     .action(async (action?: string) => {
       const config = await loadTelemetryConfig();
       const envDisabled = process.env["DO_NOT_TRACK"] === "1" ||
@@ -895,6 +895,27 @@ async function main(): Promise<void> {
         config.telemetryEnabled = false;
         await saveTelemetryConfig(config);
         process.stdout.write("  Telemetry disabled.\n\n");
+      } else if (action === "stats") {
+        const endpoint = process.env["MCP_OBSERVATORY_TELEMETRY_URL"] ?? "https://mcp-observatory-telemetry.kryptosai.workers.dev";
+        try {
+          const [all, others] = await Promise.all([
+            fetch(`${endpoint}/v1/stats`).then(r => r.json() as Promise<Record<string, unknown>>),
+            fetch(`${endpoint}/v1/stats?exclude=${config.sessionId}`).then(r => r.json() as Promise<Record<string, unknown>>),
+          ]);
+          const totalAll = (all.total as number) ?? 0;
+          const totalOthers = (others.total as number) ?? 0;
+          const you = totalAll - totalOthers;
+          const sessionsAll = (all.uniqueSessions as number) ?? 0;
+          const sessionsOthers = (others.uniqueSessions as number) ?? 0;
+
+          process.stdout.write(`  Total events:     ${totalAll}\n`);
+          process.stdout.write(`  Your events:      ${you}\n`);
+          process.stdout.write(`  Other events:     ${totalOthers}\n`);
+          process.stdout.write(`  Unique sessions:  ${sessionsAll}  (${sessionsOthers} excluding you)\n`);
+          process.stdout.write(`  Last 24h:         ${(all.last24h as number) ?? 0}  (${(others.last24h as number) ?? 0} excluding you)\n\n`);
+        } catch {
+          process.stderr.write("  Failed to fetch telemetry stats.\n\n");
+        }
       } else {
         const effective = isTelemetryEnabled();
         process.stdout.write(`  Telemetry: ${effective ? "enabled" : "disabled"}\n`);
