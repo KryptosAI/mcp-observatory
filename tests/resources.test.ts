@@ -3,12 +3,13 @@ import { describe, expect, it } from "vitest";
 
 import { runResourcesCheck } from "../src/checks/resources.js";
 import type { CheckContext } from "../src/checks/base.js";
+import { makeContext as makeBaseContext } from "./fixtures/test-helpers.js";
 
 function makeContext(overrides: {
   listResources?: CheckContext["client"]["listResources"];
   listResourceTemplates?: CheckContext["client"]["listResourceTemplates"];
 }): CheckContext {
-  return {
+  return makeBaseContext({
     client: {
       listResources:
         overrides.listResources ??
@@ -32,8 +33,7 @@ function makeContext(overrides: {
       cwd: "."
     },
     timeoutMs: 1000,
-    stderrLines: []
-  };
+  });
 }
 
 describe("runResourcesCheck", () => {

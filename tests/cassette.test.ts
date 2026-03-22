@@ -3,32 +3,8 @@ import { mkdir, rm } from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
 
-import type { Cassette } from "../src/cassette.js";
 import { loadCassette, saveCassette } from "../src/cassette.js";
-
-function makeCassette(overrides?: Partial<Cassette>): Cassette {
-  return {
-    version: 1,
-    targetId: "test-server",
-    recordedAt: "2026-03-20T00:00:00.000Z",
-    transport: "stdio",
-    entries: [
-      {
-        direction: "request",
-        method: "initialize",
-        params: { capabilities: {} },
-        timestampMs: 0,
-      },
-      {
-        direction: "response",
-        method: "initialize",
-        result: { capabilities: { tools: {} } },
-        timestampMs: 5,
-      },
-    ],
-    ...overrides,
-  };
-}
+import { makeCassette } from "./fixtures/test-helpers.js";
 
 describe("cassette round-trip", () => {
   it("saves and loads a cassette file", async () => {

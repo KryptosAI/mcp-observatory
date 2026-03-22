@@ -1,17 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import type { Cassette, CassetteEntry } from "../src/cassette.js";
+import type { CassetteEntry } from "../src/cassette.js";
 import { compareResponses } from "../src/verify.js";
-
-function makeCassette(entries: CassetteEntry[]): Cassette {
-  return {
-    version: 1,
-    targetId: "test-server",
-    recordedAt: "2026-03-20T00:00:00.000Z",
-    transport: "stdio",
-    entries,
-  };
-}
+import { makeCassette } from "./fixtures/test-helpers.js";
 
 describe("compareResponses", () => {
   it("all pass when live matches cassette", () => {

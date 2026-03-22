@@ -2,6 +2,7 @@ import { performance } from "node:perf_hooks";
 
 import type { Tool } from "@modelcontextprotocol/sdk/types.js";
 
+import { errorMessage } from "../utils/errors.js";
 import { isSafeToInvoke, stubFromSchema } from "../utils/schema-stub.js";
 import {
   isCapabilityAdvertised,
@@ -46,7 +47,7 @@ export async function runToolsInvokeCheck(context: CheckContext): Promise<Observ
     const resp = await context.client.listTools(undefined, { timeout: context.timeoutMs });
     tools = resp.tools;
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
+    const msg = errorMessage(error);
     return {
       result: makeCheckResult(
         "tools-invoke",
@@ -110,7 +111,7 @@ export async function runToolsInvokeCheck(context: CheckContext): Promise<Observ
         responseContent: response.content,
       });
     } catch (error) {
-      const msg = error instanceof Error ? error.message : String(error);
+      const msg = errorMessage(error);
       results.push({
         name: tool.name,
         invoked: true,

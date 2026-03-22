@@ -33,7 +33,10 @@ async function extractEnvKeyNames(filePath: string): Promise<string[]> {
       }
     }
     return keys;
-  } catch {
+  } catch (err) {
+    if (process.env["MCP_OBSERVATORY_DEBUG"]) {
+      process.stderr.write(`[observatory] environment detection error: ${err instanceof Error ? err.message : String(err)}\n`);
+    }
     return [];
   }
 }
@@ -50,7 +53,10 @@ async function extractDockerComposeServices(filePath: string): Promise<string[]>
       }
     }
     return services;
-  } catch {
+  } catch (err) {
+    if (process.env["MCP_OBSERVATORY_DEBUG"]) {
+      process.stderr.write(`[observatory] environment detection error: ${err instanceof Error ? err.message : String(err)}\n`);
+    }
     return [];
   }
 }
@@ -217,8 +223,10 @@ export async function detectEnvironment(cwd: string): Promise<EnvironmentDetecti
   try {
     const dirEntries = await readdir(cwd);
     envFiles = dirEntries.filter((f) => f === ".env" || f.startsWith(".env."));
-  } catch {
-    // ignore
+  } catch (err) {
+    if (process.env["MCP_OBSERVATORY_DEBUG"]) {
+      process.stderr.write(`[observatory] environment detection error: ${err instanceof Error ? err.message : String(err)}\n`);
+    }
   }
 
   for (const envFile of envFiles) {

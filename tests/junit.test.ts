@@ -1,23 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { renderJUnit } from "../src/reporters/junit.js";
-import type { RunArtifact } from "../src/types.js";
-
-function makeArtifact(checks: RunArtifact["checks"] = [], fatalError?: string): RunArtifact {
-  return {
-    artifactType: "run",
-    schemaVersion: "1.0.0",
-    gate: checks.some(c => c.status === "fail") ? "fail" : "pass",
-    runId: "test-run-id",
-    createdAt: "2026-03-21T00:00:00Z",
-    toolVersion: "0.9.0",
-    target: { targetId: "test", adapter: "local-process", command: "test", args: [] },
-    environment: { platform: "darwin", nodeVersion: "v22.0.0" },
-    summary: { total: checks.length, pass: 0, fail: 0, partial: 0, unsupported: 0, flaky: 0, skipped: 0, gate: "pass" },
-    checks,
-    fatalError,
-  };
-}
+import { makeArtifact } from "./fixtures/test-helpers.js";
 
 describe("renderJUnit", () => {
   it("produces valid XML structure", () => {

@@ -9,11 +9,16 @@ describe("detectEnvironment", () => {
   });
 
   it("returns empty arrays for a directory with no project files", async () => {
-    const env = await detectEnvironment("/tmp");
-    expect(env.languages).toEqual([]);
-    expect(env.frameworks).toEqual([]);
-    expect(env.databases).toEqual([]);
-    expect(env.cloud).toEqual([]);
-    expect(env.services).toEqual([]);
+    const dir = await import("node:fs/promises").then(fs => fs.mkdtemp("/tmp/obs-test-"));
+    try {
+      const env = await detectEnvironment(dir);
+      expect(env.languages).toEqual([]);
+      expect(env.frameworks).toEqual([]);
+      expect(env.databases).toEqual([]);
+      expect(env.cloud).toEqual([]);
+      expect(env.services).toEqual([]);
+    } finally {
+      await import("node:fs/promises").then(fs => fs.rm(dir, { recursive: true }));
+    }
   });
 });

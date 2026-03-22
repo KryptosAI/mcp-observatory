@@ -1,31 +1,6 @@
-import path from "node:path";
 import { describe, expect, it } from "vitest";
 
-// We test the exported server module indirectly by importing and testing
-// the validation functions. Since they're module-private, we replicate
-// the logic here to verify the allowlist and path validation behavior.
-
-const ALLOWED_COMMANDS = new Set([
-  "npx",
-  "node",
-  "python",
-  "python3",
-  "uvx",
-  "docker",
-  "deno",
-  "bun",
-]);
-
-function validateCommand(command: string): void {
-  const base = command.split(/\s+/)[0]?.split("/").pop() ?? "";
-  if (!ALLOWED_COMMANDS.has(base)) {
-    throw new Error(
-      `Command "${base}" is not in the MCP server allowlist. ` +
-      `Allowed executables: ${[...ALLOWED_COMMANDS].join(", ")}. ` +
-      `Use the CLI for arbitrary commands.`
-    );
-  }
-}
+import { validateCommand, validatePath } from "../src/server.js";
 
 describe("MCP Server Command Allowlist", () => {
   it("allows npx commands", () => {
@@ -77,24 +52,12 @@ describe("MCP Server Command Allowlist", () => {
   });
 
   it("handles full paths to allowed commands", () => {
-    // path.basename extracts the executable name
     expect(() => validateCommand("/usr/local/bin/npx -y server")).not.toThrow();
     expect(() => validateCommand("/usr/bin/node server.js")).not.toThrow();
   });
 });
 
 describe("Path Validation", () => {
-  function validatePath(filePath: string, allowedRoot: string): string {
-    const resolved = path.resolve(filePath);
-    const root = path.resolve(allowedRoot);
-    if (!resolved.startsWith(root + path.sep) && resolved !== root) {
-      throw new Error(
-        `Path "${filePath}" resolves outside allowed directory "${allowedRoot}".`
-      );
-    }
-    return resolved;
-  }
-
   it("allows paths within the root", () => {
     expect(() => validatePath("/tmp/runs/artifact.json", "/tmp/runs")).not.toThrow();
   });

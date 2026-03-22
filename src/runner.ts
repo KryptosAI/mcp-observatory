@@ -13,6 +13,7 @@ import { runToolsCheck } from "./checks/tools.js";
 import { runSecurityCheck } from "./checks/security.js";
 import { runToolsInvokeCheck } from "./checks/tools-invoke.js";
 import { computeHealthScore } from "./score.js";
+import { errorMessage } from "./utils/errors.js";
 import { RecordingTransport } from "./transport/recording-transport.js";
 import type { CheckResult, Gate, PerformanceMetrics, RunArtifact, StatusCounts, TargetConfig } from "./types.js";
 import { SCHEMA_VERSION } from "./types.js";
@@ -167,7 +168,7 @@ async function runTargetWithRecording(target: TargetConfig, options?: RunOptions
 
     performanceMetrics = perfMetrics;
   } catch (error) {
-    fatalError = error instanceof Error ? error.message : String(error);
+    fatalError = errorMessage(error);
     const skippedMessage =
       error instanceof AdapterConnectError
         ? "Skipped because startup failed before the MCP session initialized. See the failure diagnosis."

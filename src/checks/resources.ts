@@ -2,6 +2,7 @@ import { performance } from "node:perf_hooks";
 
 import type { Resource, ResourceTemplate } from "@modelcontextprotocol/sdk/types.js";
 
+import { errorMessage } from "../utils/errors.js";
 import {
   baseEvidence,
   isCapabilityAdvertised,
@@ -97,7 +98,7 @@ export async function runResourcesCheck(context: CheckContext): Promise<Observed
       ),
     );
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
+    const message = errorMessage(error);
     diagnostics.push(
       `resources/list: ${message}`,
     );
@@ -150,7 +151,7 @@ export async function runResourcesCheck(context: CheckContext): Promise<Observed
       ),
     );
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
+    const message = errorMessage(error);
     diagnostics.push(
       `resources/templates/list: ${message}`,
     );

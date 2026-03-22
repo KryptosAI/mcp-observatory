@@ -5,6 +5,7 @@ import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
 
 import type { HttpTargetConfig } from "../types.js";
 import { RecordingTransport } from "../transport/recording-transport.js";
+import { errorMessage } from "../utils/errors.js";
 import { TOOL_VERSION } from "../version.js";
 import { AdapterConnectError } from "./local-process.js";
 import type { AdapterConnectOptions, AdapterSession } from "./local-process.js";
@@ -23,6 +24,9 @@ export class HttpAdapter {
 
     const stderrLines: string[] = [];
     const url = new URL(target.url);
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+      throw new Error(`Unsupported protocol "${url.protocol}" — only http: and https: are allowed.`);
+    }
     const timeoutMs = target.timeoutMs ?? 15_000;
 
     // Try streamable-http first, fall back to SSE
@@ -46,8 +50,8 @@ export class HttpAdapter {
         activeTransport = transport;
         connected = true;
       } catch (error) {
-        const rawMessage = error instanceof Error ? error.message : String(error);
-        await client.close().catch(() => undefined);
+        const rawMessage = errorMessage(error);
+        await client.close().catch(() => undefined); // Cleanup errors are non-fatal
         throw new AdapterConnectError(target, rawMessage, stderrLines);
       }
     }

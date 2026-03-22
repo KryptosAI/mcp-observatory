@@ -1,5 +1,6 @@
 import { performance } from "node:perf_hooks";
 
+import { errorMessage } from "../utils/errors.js";
 import {
   baseEvidence,
   isCapabilityAdvertised,
@@ -100,7 +101,7 @@ export async function runListCheck<TItem>(
       )
     };
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
+    const message = errorMessage(error);
     const observation: CapabilityObservation = {
       capability: config.capability,
       advertised: true,
