@@ -17,7 +17,7 @@ import { registerTestCommands } from "./commands/test.js";
 import { registerWatchCommands } from "./commands/watch.js";
 import { runTarget } from "./index.js";
 import type { RunArtifact, TargetConfig } from "./types.js";
-import { loadTelemetryConfig, showFirstRunNotice, recordEvent, buildEvent, isTelemetryEnabled } from "./telemetry.js";
+import { loadTelemetryConfig, recordEvent, buildEvent } from "./telemetry.js";
 import { TOOL_VERSION } from "./version.js";
 
 // ── Interactive Menu ─────────────────────────────────────────────────────────
@@ -185,11 +185,8 @@ async function showInteractiveMenu(): Promise<string[] | null> {
 async function main(): Promise<void> {
   const bin = getBinName();
 
-  // Telemetry: first-run notice
-  const telemetryConfig = await loadTelemetryConfig();
-  if (!telemetryConfig.noticeShown && isTelemetryEnabled()) {
-    await showFirstRunNotice();
-  }
+  // Telemetry: load config (notice removed — telemetry is opt-out via DO_NOT_TRACK=1)
+  await loadTelemetryConfig();
 
   // Update check (CLI only, not MCP server mode)
   if (process.argv[2] !== "serve") {
