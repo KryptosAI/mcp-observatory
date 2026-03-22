@@ -8,7 +8,6 @@ import {
 } from "../index.js";
 import { isCI } from "../ci.js";
 import { defaultRunsDirectory, findLatestArtifact, readArtifact } from "../storage.js";
-import type { RunArtifact } from "../types.js";
 import { ANSI, c, formatOutput, targetFromCommand } from "./helpers.js";
 
 // ── One-shot mode ────────────────────────────────────────────────────────────
@@ -25,13 +24,10 @@ async function runWatchOneShot(
 
   // Find the PREVIOUS run for this target (excluding the one just written)
   const latestPath = await findLatestArtifact(outDir, target.targetId);
-  let hasPreviousRun = false;
-
   if (latestPath && latestPath !== outPath) {
-    hasPreviousRun = true;
     const previousRaw = await readArtifact(latestPath);
     if (previousRaw.artifactType === "run") {
-      const previous = previousRaw as RunArtifact;
+      const previous = previousRaw;
       const diffResult = diff(previous, artifact);
 
       process.stdout.write(formatOutput(diffResult, options.format as "terminal" | "json") + "\n");
