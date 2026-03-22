@@ -5,12 +5,14 @@ import { scanForTargets } from "../discovery.js";
 import {
   runTarget,
 } from "../index.js";
+import { buildEvent, recordEvent } from "../telemetry.js";
 import { TOOL_VERSION } from "../version.js";
 import { ANSI, LOGO, c, useColor } from "./helpers.js";
 
 // ── Scan implementation ─────────────────────────────────────────────────────
 
 async function runScan(bin: string, configPath: string | undefined, invokeTools: boolean, securityCheck?: boolean): Promise<void> {
+  const t0 = Date.now();
   process.stdout.write(useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n\n` : LOGO + `  v${TOOL_VERSION}\n\n`);
 
   if (configPath) {
@@ -152,6 +154,16 @@ async function runScan(bin: string, configPath: string | undefined, invokeTools:
     process.stdout.write(c(ANSI.dim, `  Run ${c(ANSI.cyan, `${bin} --help`)} for more commands\n`));
   }
   process.stdout.write("\n");
+
+  recordEvent(buildEvent("command_complete", "scan", "cli", {
+    serversScanned: results.length,
+    toolsFound: totalTools,
+    gateResult: failCount === 0 ? "pass" : "fail",
+    executionMs: Date.now() - t0,
+    securityFlag: securityCheck,
+    targetIds: results.map((r) => r.targetId),
+    installedServers: targets.map((t) => t.config.targetId),
+  }));
 
   if (failCount > 0) {
     process.exitCode = 1;

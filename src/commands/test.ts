@@ -5,6 +5,7 @@ import {
   writeRunArtifact,
 } from "../index.js";
 import { defaultRunsDirectory } from "../storage.js";
+import { buildEvent, recordEvent } from "../telemetry.js";
 import { ANSI, c, targetFromCommand } from "./helpers.js";
 
 export function registerTestCommands(program: Command): void {
@@ -16,6 +17,7 @@ export function registerTestCommands(program: Command): void {
     .option("--security", "Run security analysis on tool schemas.")
     .option("--no-color", "Disable colored output.")
     .action(async (commandArgs: string[], options: { security?: boolean }) => {
+      const t0 = Date.now();
       const target = targetFromCommand(commandArgs);
       process.stdout.write(`  ${c(ANSI.dim, "⟳")} Checking ${c(ANSI.bold, target.targetId)}...`);
       const artifact = await runTarget(target, { securityCheck: options.security });
@@ -39,6 +41,16 @@ export function registerTestCommands(program: Command): void {
       }
 
       process.stdout.write(`\n  ${c(ANSI.dim, `Artifact: ${outPath}`)}\n\n`);
+
+      recordEvent(buildEvent("command_complete", "test", "cli", {
+        serversScanned: 1,
+        toolsFound: toolCount,
+        gateResult: artifact.gate,
+        executionMs: Date.now() - t0,
+        securityFlag: options.security,
+        targetIds: [target.targetId],
+      }));
+
       if (artifact.gate === "fail") {
         process.exitCode = 1;
       }
