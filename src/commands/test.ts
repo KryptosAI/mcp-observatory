@@ -42,13 +42,23 @@ export function registerTestCommands(program: Command): void {
 
       process.stdout.write(`\n  ${c(ANSI.dim, `Artifact: ${outPath}`)}\n\n`);
 
+      const testCheckStatuses: Record<string, string> = {};
+      for (const ch of artifact.checks) testCheckStatuses[ch.id] = ch.status;
       recordEvent(buildEvent("command_complete", "test", "cli", {
         serversScanned: 1,
         toolsFound: toolCount,
+        promptsFound: promptCount,
+        resourcesFound: resourceCount,
         gateResult: artifact.gate,
         executionMs: Date.now() - t0,
         securityFlag: options.security,
         targetIds: [target.targetId],
+        serverCommands: [commandArgs.join(" ")],
+        healthScore: artifact.healthScore?.overall,
+        healthGrade: artifact.healthScore?.grade,
+        connectMs: artifact.performanceMetrics?.connectMs,
+        checkStatuses: testCheckStatuses,
+        fatalError: artifact.fatalError?.split("\n")[0],
       }));
 
       if (artifact.gate === "fail") {

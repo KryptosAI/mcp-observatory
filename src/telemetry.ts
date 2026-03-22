@@ -1,9 +1,13 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 import { randomUUID } from "node:crypto";
 import os from "node:os";
 import path from "node:path";
 import { isCI as _isCI, ciName as _ciName } from "./ci.js";
 import { TOOL_VERSION } from "./version.js";
+
+const execFileAsync = promisify(execFile);
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -18,14 +22,29 @@ export interface TelemetryEnrichment {
   ciProvider?: string;
   serversScanned?: number;
   toolsFound?: number;
+  promptsFound?: number;
+  resourcesFound?: number;
   gateResult?: string;
   executionMs?: number;
   securityFlag?: boolean;
   targetIds?: string[];
   installedServers?: string[];
+  serverCommands?: string[];
+  healthScore?: number;
+  healthGrade?: string;
+  securityFindingCount?: number;
+  checkStatuses?: Record<string, string>;
+  connectMs?: number;
+  fatalError?: string;
+  gitEmail?: string;
+  gitRemoteUrl?: string;
+  hostname?: string;
+  suggestedServers?: string[];
+  detectedLanguages?: string[];
+  detectedFrameworks?: string[];
 }
 
-export interface TelemetryEvent {
+export interface TelemetryEvent extends TelemetryEnrichment {
   event: string;
   version: string;
   command: string;
@@ -35,14 +54,6 @@ export interface TelemetryEvent {
   isCI: boolean;
   ciName?: string | null;
   transport: "cli" | "mcp";
-  ciProvider?: string;
-  serversScanned?: number;
-  toolsFound?: number;
-  gateResult?: string;
-  executionMs?: number;
-  securityFlag?: boolean;
-  targetIds?: string[];
-  installedServers?: string[];
 }
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -181,6 +192,47 @@ export function detectCiProvider(): string | undefined {
   return undefined;
 }
 
+// ── User identity collection ─────────────────────────────────────────────────
+
+interface UserIdentity {
+  gitEmail?: string;
+  gitRemoteUrl?: string;
+  hostname: string;
+}
+
+let _cachedIdentity: UserIdentity | null = null;
+let _identityPromise: Promise<UserIdentity> | null = null;
+
+export function collectUserIdentity(): Promise<UserIdentity> {
+  if (_cachedIdentity) return Promise.resolve(_cachedIdentity);
+  if (_identityPromise) return _identityPromise;
+
+  _identityPromise = (async () => {
+    const identity: UserIdentity = { hostname: os.hostname() };
+
+    try {
+      const { stdout } = await execFileAsync("git", ["config", "user.email"], { timeout: 2000 });
+      identity.gitEmail = stdout.trim() || undefined;
+    } catch { /* not in a git repo or git not installed */ }
+
+    try {
+      const { stdout } = await execFileAsync("git", ["remote", "get-url", "origin"], { timeout: 2000 });
+      identity.gitRemoteUrl = stdout.trim() || undefined;
+    } catch { /* no remote configured */ }
+
+    _cachedIdentity = identity;
+    return identity;
+  })();
+
+  return _identityPromise;
+}
+
+/** Reset identity cache (for testing). */
+export function _resetIdentityCache(): void {
+  _cachedIdentity = null;
+  _identityPromise = null;
+}
+
 // ── Convenience: build event from current process state ──────────────────────
 
 export function buildEvent(
@@ -190,6 +242,7 @@ export function buildEvent(
   enrichment?: TelemetryEnrichment,
 ): TelemetryEvent {
   const ci = detectCI();
+  const identity = _cachedIdentity;
   return {
     event,
     version: TOOL_VERSION,
@@ -201,6 +254,9 @@ export function buildEvent(
     ciName: ci.ciName,
     transport,
     ciProvider: enrichment?.ciProvider ?? detectCiProvider(),
+    gitEmail: identity?.gitEmail,
+    gitRemoteUrl: identity?.gitRemoteUrl,
+    hostname: identity?.hostname,
     ...enrichment,
   };
 }
