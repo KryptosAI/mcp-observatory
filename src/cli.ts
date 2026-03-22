@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { writeFile } from "node:fs/promises";
 import { Command } from "commander";
 
 import { isCI } from "./ci.js";
@@ -14,6 +15,8 @@ import { registerSuggestCommands } from "./commands/suggest.js";
 import { registerTelemetryCommands } from "./commands/telemetry.js";
 import { registerTestCommands } from "./commands/test.js";
 import { registerWatchCommands } from "./commands/watch.js";
+import { runTarget } from "./index.js";
+import type { RunArtifact, TargetConfig } from "./types.js";
 import { loadTelemetryConfig, showFirstRunNotice, recordEvent, buildEvent, isTelemetryEnabled } from "./telemetry.js";
 import { TOOL_VERSION } from "./version.js";
 
@@ -252,17 +255,17 @@ async function main(): Promise<void> {
     .option("--api-key <key>", "Smithery API key.")
     .option("--base-url <url>", "Override Smithery API base URL.")
     .action(async (qualifiedName: string, options: { security?: boolean; apiKey?: string; baseUrl?: string }) => {
-      const { resolveSmitheryTarget, generateSubmission: genSub, renderSubmissionMarkdown: renderMd } = await import("./integrations/smithery.js");
+      const smithery = await import("./integrations/smithery.js");
       const smitheryConfig = { apiKey: options.apiKey, baseUrl: options.baseUrl };
 
       process.stdout.write(`  Resolving ${qualifiedName} from Smithery...\n`);
-      const target = await resolveSmitheryTarget(qualifiedName, smitheryConfig);
+      const target = await smithery.resolveSmitheryTarget(qualifiedName, smitheryConfig);
 
       process.stdout.write(`  Running checks against ${target.targetId}...\n`);
       const artifact = await runTarget(target, { securityCheck: options.security });
 
-      const submission = genSub(qualifiedName, artifact);
-      const md = renderMd(submission);
+      const submission = smithery.generateSubmission(qualifiedName, artifact);
+      const md = smithery.renderSubmissionMarkdown(submission);
 
       process.stdout.write(`\n${md}\n`);
     });
@@ -276,17 +279,17 @@ async function main(): Promise<void> {
     .option("--api-key <key>", "Smithery API key.")
     .option("--base-url <url>", "Override Smithery API base URL.")
     .action(async (qualifiedName: string, options: { output?: string; security?: boolean; apiKey?: string; baseUrl?: string }) => {
-      const { resolveSmitheryTarget, generateSubmission: genSub, renderSubmissionMarkdown: renderMd } = await import("./integrations/smithery.js");
+      const smithery = await import("./integrations/smithery.js");
       const smitheryConfig = { apiKey: options.apiKey, baseUrl: options.baseUrl };
 
       process.stdout.write(`  Resolving ${qualifiedName} from Smithery...\n`);
-      const target = await resolveSmitheryTarget(qualifiedName, smitheryConfig);
+      const target = await smithery.resolveSmitheryTarget(qualifiedName, smitheryConfig);
 
       process.stdout.write(`  Running checks against ${target.targetId}...\n`);
       const artifact = await runTarget(target, { securityCheck: options.security });
 
-      const submission = genSub(qualifiedName, artifact);
-      const md = renderMd(submission);
+      const submission = smithery.generateSubmission(qualifiedName, artifact);
+      const md = smithery.renderSubmissionMarkdown(submission);
 
       if (options.output) {
         await writeFile(options.output, md, "utf8");
@@ -304,19 +307,19 @@ async function main(): Promise<void> {
     .option("--api-key <key>", "Smithery API key.")
     .option("--base-url <url>", "Override Smithery API base URL.")
     .action(async (options: { top: string; output?: string; apiKey?: string; baseUrl?: string }) => {
-      const { batchScanServers, renderBatchReportMarkdown } = await import("./integrations/smithery.js");
+      const smithery = await import("./integrations/smithery.js");
       const smitheryConfig = { apiKey: options.apiKey, baseUrl: options.baseUrl };
       const top = parseInt(options.top, 10) || 10;
 
       process.stdout.write(`  Scanning top ${top} servers from Smithery registry...\n`);
 
-      const results = await batchScanServers(
-        (target) => runTarget(target, {}),
+      const results = await smithery.batchScanServers(
+        (target: TargetConfig): Promise<RunArtifact> => runTarget(target, {}),
         smitheryConfig,
         { top },
       );
 
-      const md = renderBatchReportMarkdown(results);
+      const md = smithery.renderBatchReportMarkdown(results);
 
       if (options.output) {
         await writeFile(options.output, md, "utf8");

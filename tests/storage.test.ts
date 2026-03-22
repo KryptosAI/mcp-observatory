@@ -19,10 +19,10 @@ describe("writeRunArtifact", () => {
       expect(outPath).toContain(".json");
 
       const content = await readFile(outPath, "utf8");
-      const parsed = JSON.parse(content);
-      expect(parsed.artifactType).toBe("run");
-      expect(parsed.runId).toBe("test-run-id");
-      expect(parsed.checks).toHaveLength(1);
+      const parsed = JSON.parse(content) as Record<string, unknown>;
+      expect(parsed["artifactType"]).toBe("run");
+      expect(parsed["runId"]).toBe("test-run-id");
+      expect(parsed["checks"]).toHaveLength(1);
     } finally {
       await rm(tmpDir, { recursive: true, force: true });
     }
