@@ -9,7 +9,7 @@ export type CheckStatus =
   | "unsupported"
   | "flaky"
   | "skipped";
-export type CheckId = "tools" | "prompts" | "resources" | "tools-invoke" | "security" | "conformance" | "schema-quality";
+export type CheckId = "tools" | "prompts" | "resources" | "tools-invoke" | "security" | "security-lite" | "conformance" | "schema-quality";
 
 export const STATUS_RANK: Record<CheckStatus, number> = {
   pass: 6, partial: 5, flaky: 4, unsupported: 3, skipped: 2, fail: 1

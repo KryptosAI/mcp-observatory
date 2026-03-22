@@ -14,7 +14,7 @@ export function registerTestCommands(program: Command): void {
     .passThroughOptions()
     .description("Test a specific server by command.")
     .argument("<command...>", "Server command and arguments to run.")
-    .option("--security", "Run security analysis on tool schemas.")
+    .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
     .option("--no-color", "Disable colored output.")
     .action(async (commandArgs: string[], options: { security?: boolean }) => {
       const t0 = Date.now();

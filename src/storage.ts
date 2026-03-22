@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import type { DiffArtifact, RunArtifact } from "./types.js";
@@ -26,6 +26,22 @@ export async function writeRunArtifact(
   const filePath = path.join(outDir, fileName);
   await writeFile(filePath, JSON.stringify(artifact, null, 2) + "\n", "utf8");
   return filePath;
+}
+
+export async function findLatestArtifact(outDir: string, targetId: string): Promise<string | null> {
+  const slug = slugify(targetId);
+  const suffix = `--${slug}.json`;
+  try {
+    const entries = await readdir(outDir);
+    const matching = entries
+      .filter(f => f.endsWith(suffix))
+      .sort()
+      .reverse();
+    if (matching.length === 0) return null;
+    return path.join(outDir, matching[0]!);
+  } catch {
+    return null;
+  }
 }
 
 export async function readArtifact(filePath: string): Promise<Artifact> {

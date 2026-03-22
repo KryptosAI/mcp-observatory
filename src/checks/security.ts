@@ -58,6 +58,66 @@ function scanResponsesForCredentials(
   return findings;
 }
 
+export function runLightweightSecurityCheck(
+  tools: Tool[],
+  target: TargetConfig,
+): ObservedCheck {
+  const startedAt = performance.now();
+  const findings: SecurityFinding[] = [];
+
+  // Rule: no-auth-http (target-level)
+  const authFinding = checkNoAuthHttp(target);
+  if (authFinding) findings.push(authFinding);
+
+  // Tool-level rules against already-fetched tools
+  const toolInfos = tools.map(toolToInfo);
+  for (const tool of toolInfos) {
+    for (const rule of SECURITY_RULES) {
+      const finding = rule.match(tool);
+      if (finding) findings.push(finding);
+    }
+  }
+
+  // Determine status based on highest severity
+  const hasHigh = findings.some(f => f.severity === "high");
+  const hasMedium = findings.some(f => f.severity === "medium");
+  let status: "pass" | "partial" | "fail";
+  if (hasHigh) {
+    status = "fail";
+  } else if (hasMedium) {
+    status = "partial";
+  } else {
+    status = "pass";
+  }
+
+  const diagnostics = findings.map(f => `[${f.severity}] ${f.message}`);
+  const toolNames = [...new Set(findings.map(f => f.toolName))];
+
+  const message = findings.length === 0
+    ? "No security issues detected (lightweight scan)."
+    : `Found ${findings.length} security finding(s): ${findings.filter(f => f.severity === "high").length} high, ${findings.filter(f => f.severity === "medium").length} medium, ${findings.filter(f => f.severity === "low").length} low.`;
+
+  const evidence: EvidenceSummary = {
+    endpoint: "security/scan-lite",
+    advertised: true,
+    responded: true,
+    minimalShapePresent: true,
+    itemCount: findings.length,
+    identifiers: toolNames.length > 0 ? toolNames : undefined,
+    diagnostics: diagnostics.length > 0 ? diagnostics : undefined,
+  };
+
+  return {
+    result: makeCheckResult(
+      "security-lite",
+      status,
+      performance.now() - startedAt,
+      message,
+      [evidence],
+    ),
+  };
+}
+
 export async function runSecurityCheck(
   context: CheckContext,
   previousChecks: CheckResult[],

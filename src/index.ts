@@ -8,7 +8,7 @@ export {
 } from "./cassette.js";
 export { runConformanceCheck } from "./checks/conformance.js";
 export { runSchemaQualityCheck } from "./checks/schema-quality.js";
-export { runSecurityCheck } from "./checks/security.js";
+export { runLightweightSecurityCheck, runSecurityCheck } from "./checks/security.js";
 export { SECURITY_RULES, type SecurityFinding, type SecurityRule, type ToolInfo } from "./checks/security-rules.js";
 export { diffArtifacts } from "./diff.js";
 export { scanForTargets } from "./discovery.js";
@@ -21,6 +21,7 @@ export { runTarget, runTargetRecording, type RunOptions, type RunResult } from "
 export { computeHealthScore, type ScoreWeights, DEFAULT_WEIGHTS } from "./score.js";
 export {
   defaultRunsDirectory,
+  findLatestArtifact,
   readArtifact,
   writeRunArtifact
 } from "./storage.js";
