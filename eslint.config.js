@@ -4,7 +4,7 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: ["dist/**", "node_modules/**", ".mcp-observatory/**"]
+    ignores: ["dist/**", "node_modules/**", ".mcp-observatory/**", "api/**", "github-app/**"]
   },
   js.configs.recommended,
   {
