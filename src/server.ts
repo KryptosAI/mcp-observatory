@@ -97,7 +97,7 @@ export async function startServer(): Promise<void> {
 
   server.tool(
     "scan",
-    "Auto-discover MCP servers from config files and run checks against each one. Returns a summary of tools/prompts/resources status for every discovered server.",
+    "Use this to check if all your MCP servers are healthy. Auto-discovers servers from Claude config files, connects to each one, and verifies tools/prompts/resources respond correctly. Use with deep=true to also invoke tools and confirm they actually execute. Returns pass/fail status for every server.",
     {
       config: z.string().optional().describe("Path to a specific MCP config file. If omitted, scans default locations."),
       deep: z.boolean().optional().describe("Also invoke safe tools to verify they execute."),
@@ -136,7 +136,7 @@ export async function startServer(): Promise<void> {
 
   server.tool(
     "check_server",
-    "Run checks against a specific MCP server by command. Example: check_server({ command: 'npx -y @modelcontextprotocol/server-everything' })",
+    "Use this to test a specific MCP server before installing or after updating it. Launches the server by command, checks all capabilities, and saves a run artifact for future comparison. Example: check_server({ command: 'npx -y @modelcontextprotocol/server-everything' }). Use deep=true to invoke tools, security=true to analyze schemas for vulnerabilities.",
     {
       command: z.string().describe("The command to launch the MCP server (e.g. 'npx -y @modelcontextprotocol/server-everything')."),
       args: z.array(z.string()).optional().describe("Additional arguments for the command."),
@@ -174,7 +174,7 @@ export async function startServer(): Promise<void> {
 
   server.tool(
     "score_server",
-    "Score an MCP server's health (0-100) including protocol compliance, schema quality, security, reliability, and performance. Returns grade A-F with detailed breakdown.",
+    "Use this to get a quick health grade for an MCP server. Runs all checks (capabilities, tool invocation, security) and returns a 0-100 score with A-F grade and detailed breakdown across protocol compliance, schema quality, security, reliability, and performance.",
     {
       command: z.string().describe("The command to launch the MCP server."),
       args: z.array(z.string()).optional().describe("Additional arguments for the command."),
@@ -224,7 +224,7 @@ export async function startServer(): Promise<void> {
 
   server.tool(
     "diff_runs",
-    "Compare two run artifact files and return the diff showing regressions, recoveries, and schema drift.",
+    "Use this to find what changed between two server checks. Compares two run artifacts and surfaces regressions (things that broke), recoveries (things that got fixed), schema drift (added/removed/changed tool parameters), and gate status changes. Essential after updating a server.",
     {
       base: z.string().describe("Path to the base run artifact JSON file."),
       head: z.string().describe("Path to the head run artifact JSON file."),
@@ -260,7 +260,7 @@ export async function startServer(): Promise<void> {
 
   server.tool(
     "get_last_run",
-    "Return the most recent run artifact for a given target ID. Searches the default runs directory.",
+    "Use this to retrieve the last check results for a server. Finds the most recent run artifact by target ID so you can review previous results or diff against a new run.",
     {
       targetId: z.string().describe("The target ID to find the last run for (e.g. server name or command)."),
     },
@@ -305,7 +305,7 @@ export async function startServer(): Promise<void> {
 
   server.tool(
     "suggest_servers",
-    "Gather context about the current environment to help recommend MCP servers. Returns currently configured servers, detected languages/frameworks/databases/services, and available servers from the MCP registry.",
+    "Use this when setting up a project or wondering what MCP servers to add. Scans the working directory for languages, frameworks, databases, and cloud providers, lists currently configured servers, and cross-references the MCP registry to recommend servers you're missing.",
     {
       cwd: z.string().optional().describe("Working directory to scan for environment signals. Defaults to process.cwd()."),
     },
@@ -412,7 +412,7 @@ export async function startServer(): Promise<void> {
 
   server.tool(
     "record",
-    "Record a live MCP server session to a cassette file. The cassette captures all JSON-RPC traffic and can be replayed offline or used to verify future server versions.",
+    "Use this to capture a baseline of a working MCP server. Records all JSON-RPC traffic to a cassette file that can be replayed offline (no server needed) or used to verify future versions haven't broken anything. Like VCR for MCP.",
     {
       command: z.string().describe("The command to launch the MCP server."),
       args: z.array(z.string()).optional().describe("Additional arguments for the command."),
@@ -457,7 +457,7 @@ export async function startServer(): Promise<void> {
 
   server.tool(
     "replay",
-    "Replay a cassette file offline — no live server needed. Runs all checks against the recorded responses.",
+    "Use this to test a server without running it. Replays a previously recorded cassette offline and runs all checks against the recorded responses. Useful in CI or when the live server is unavailable.",
     {
       cassette: z.string().describe("Path to a cassette JSON file."),
     },
@@ -510,7 +510,7 @@ export async function startServer(): Promise<void> {
 
   server.tool(
     "verify",
-    "Verify a live server still matches a recorded cassette. Connects to the server, replays the same requests, and compares responses.",
+    "Use this after updating a server to confirm nothing broke. Connects to the live server, sends the same requests from a recorded cassette, and compares responses. Reports exactly what changed — added tools, removed parameters, different response shapes.",
     {
       cassette: z.string().describe("Path to a cassette JSON file."),
       command: z.string().describe("The command to launch the MCP server."),
@@ -554,7 +554,7 @@ export async function startServer(): Promise<void> {
 
   server.tool(
     "watch",
-    "Run checks against a server repeatedly and report when results change. Returns the initial check and starts monitoring. Note: in MCP server mode this runs a single check and diff against the previous run rather than a persistent loop.",
+    "Use this to check a server and see what changed since the last check. Runs all checks, saves the result, and diffs against the previous run for the same target. Shows regressions, recoveries, and schema drift in one call.",
     {
       command: z.string().describe("The command to launch the MCP server."),
       args: z.array(z.string()).optional().describe("Additional arguments for the command."),

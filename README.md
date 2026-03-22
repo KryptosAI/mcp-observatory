@@ -12,13 +12,15 @@
 
 [![CI](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/@kryptosai/mcp-observatory)](https://www.npmjs.com/package/@kryptosai/mcp-observatory)
+[![npm downloads](https://img.shields.io/npm/dm/@kryptosai/mcp-observatory)](https://www.npmjs.com/package/@kryptosai/mcp-observatory)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 [![Node >= 20](https://img.shields.io/badge/node-%3E%3D20-339933)](./package.json)
+[![Smithery](https://smithery.ai/badge/@kryptosai/mcp-observatory)](https://smithery.ai/server/@kryptosai/mcp-observatory)
 [![mcp-observatory MCP server](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory/badges/score.svg)](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory)
 
-Find problems in your MCP servers before your users do.
+**The first testing tool that is itself an MCP server.** Your AI agent can scan, test, record, replay, and verify other MCP servers autonomously — catching regressions, schema drift, and security issues without human intervention.
 
-You update a server, a tool silently breaks, and your agent starts failing. MCP Observatory catches that. It connects to your servers, checks every capability, actually calls tools to make sure they work, and diffs runs to catch what changed.
+Use it as a CLI, a CI action, or give it to your agent as an MCP server and let it test your other servers for you.
 
 <p align="center">
   <img src="./docs/demo.svg" alt="MCP Observatory scan output" width="820">
@@ -164,19 +166,25 @@ The action runs checks on every PR, comments a markdown report, and blocks merge
 
 ## MCP Server Mode
 
-When running as an MCP server (`serve`), your AI agent gets the same capabilities as the CLI:
+**No other testing tool is itself an MCP server.** Add Observatory as a server and your AI agent can autonomously test, diagnose, and monitor your other MCP servers.
 
-| Tool | What it does |
-|------|-------------|
-| `scan` | Discover and check all configured servers |
-| `check_server` | Check a specific server by command |
-| `record` | Record a server session to a cassette file |
-| `replay` | Replay a cassette offline — no live server needed |
-| `verify` | Verify a live server still matches a cassette |
-| `watch` | Run checks and diff against the previous run |
-| `diff_runs` | Compare two saved run artifacts |
-| `get_last_run` | Return the most recent run for a target |
-| `suggest_servers` | Scan your environment and recommend servers you're missing |
+```bash
+claude mcp add mcp-observatory -- npx -y @kryptosai/mcp-observatory serve
+```
+
+Your agent gets 9 tools:
+
+| Tool | When to use it |
+|------|---------------|
+| `scan` | Check if all your configured MCP servers are healthy |
+| `check_server` | Test a specific server before installing or after updating |
+| `record` | Capture a baseline of a working server for future comparison |
+| `replay` | Test against a recorded session — no live server needed |
+| `verify` | Confirm a server update didn't break anything |
+| `watch` | Check a server and see what changed since the last check |
+| `diff_runs` | Find regressions between two check results |
+| `get_last_run` | Retrieve previous check results for a server |
+| `suggest_servers` | Discover MCP servers that match your project stack |
 
 An AI tool that checks other AI tools. It's a tool testing tools that serve tools.*
 
@@ -259,7 +267,7 @@ npx @kryptosai/mcp-observatory run --target ./target.json
 | Benchmarking / latency | — | — | ✅ | — |
 | Jest integration | — | — | — | ✅ |
 | MCP proxy mode | — | ✅ | — | — |
-| Works as MCP server | ✅ | — | — | — |
+| **Works as MCP server** | **✅** | — | — | — |
 
 Each tool has strengths. Observatory focuses on regression detection and CI-friendly workflows. mcp-recorder is great as a transparent proxy. MCPBench is the go-to for performance benchmarking. mcp-jest is ideal if you're already in a Jest workflow.
 
