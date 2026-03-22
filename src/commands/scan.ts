@@ -27,7 +27,7 @@ async function runScan(bin: string, configPath: string | undefined, invokeTools:
 
   if (targets.length === 0) {
     process.stdout.write(c(ANSI.yellow, "  No MCP servers found.\n\n"));
-    process.stdout.write(c(ANSI.dim, "  Looked in ~/.claude.json, Claude Desktop config, .mcp.json\n\n"));
+    process.stdout.write(c(ANSI.dim, "  Looked in ~/.claude.json, Claude Desktop config, .mcp.json (+ parent dirs)\n\n"));
     process.stdout.write("  Test a specific server:\n");
     process.stdout.write(`    ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} test npx -y @modelcontextprotocol/server-filesystem .`)}\n\n`);
     return;
@@ -105,6 +105,12 @@ async function runScan(bin: string, configPath: string | undefined, invokeTools:
 
       process.stdout.write(`\r  ${c(ANSI.red, "✗")} ${c(ANSI.bold, t.config.targetId)}\n`);
       process.stdout.write(`    ${c(ANSI.red, friendlyMsg)}\n`);
+
+      // Docker-specific hint
+      const serverCmd = t.config.adapter === "local-process" ? (t.config as { command: string }).command : "";
+      if (serverCmd === "docker" || serverCmd.startsWith("docker ")) {
+        process.stdout.write(`    ${c(ANSI.dim, "Tip: Docker servers need the Docker daemon running and env vars configured.")}\n`);
+      }
 
       results.push({ targetId: t.config.targetId, gate: "fail", toolCount: 0, promptCount: 0, resourceCount: 0, error: friendlyMsg, diagnostics: [] });
       failCount++;

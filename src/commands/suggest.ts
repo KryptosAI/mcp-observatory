@@ -86,8 +86,16 @@ export function registerSuggestCommands(program: Command): void {
               return { name, desc, matches };
             });
 
-            const recommended = scored.filter(s => s.matches > 0).sort((a, b) => b.matches - a.matches);
-            const others = scored.filter(s => s.matches === 0);
+            // Deduplicate by name (registry can return duplicates)
+            const seenNames = new Set<string>();
+            const deduped = scored.filter(s => {
+              if (seenNames.has(s.name)) return false;
+              seenNames.add(s.name);
+              return true;
+            });
+
+            const recommended = deduped.filter(s => s.matches > 0).sort((a, b) => b.matches - a.matches);
+            const others = deduped.filter(s => s.matches === 0);
 
             if (recommended.length > 0) {
               process.stdout.write(c(ANSI.bold, "  Recommended for Your Stack\n"));

@@ -29,9 +29,19 @@ function defaultConfigPaths(): string[] {
     }
   }
 
-  // Current directory configs
-  paths.push(path.join(process.cwd(), ".claude.json"));
-  paths.push(path.join(process.cwd(), ".mcp.json"));
+  // Walk up from cwd to find .mcp.json and .claude.json in parent directories
+  // (capped at 10 levels to avoid scanning the entire filesystem)
+  let dir = process.cwd();
+  const root = path.parse(dir).root;
+  let depth = 0;
+  while (dir !== root && depth < 10) {
+    paths.push(path.join(dir, ".claude.json"));
+    paths.push(path.join(dir, ".mcp.json"));
+    // Also check for Claude Code project-level config
+    paths.push(path.join(dir, ".claude", "settings.local.json"));
+    dir = path.dirname(dir);
+    depth++;
+  }
 
   return paths;
 }
