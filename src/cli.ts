@@ -45,8 +45,9 @@ const MENU_GROUPS: MenuGroup[] = [
     ],
   },
   {
-    heading: "More",
+    heading: "CI / Regression Testing",
     items: [
+      { command: ["watch"],   label: "watch",   outcome: "Run a check, diff against previous, alert on regressions" },
       { command: ["record"],  label: "record",  outcome: "Capture a session for offline replay or CI" },
       { command: ["diff"],    label: "diff",    outcome: "Compare two runs for regressions" },
       { command: ["test"],    label: "test",    outcome: "Test a single server by command" },
@@ -221,6 +222,7 @@ async function main(): Promise<void> {
         "",
         `  ${c(ANSI.bold, "CI / Regression Testing")}`,
         "",
+        `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} watch`)} ${c(ANSI.dim, "<cmd>")}       Run check, diff against previous, alert regressions`,
         `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} record`)} ${c(ANSI.dim, "<cmd>")}      Capture a session for offline replay`,
         `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} diff`)} ${c(ANSI.dim, "<a> <b>")}      Compare two runs for regressions`,
         `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} badge`)} ${c(ANSI.dim, "<cmd>")}       Generate a health badge for README`,

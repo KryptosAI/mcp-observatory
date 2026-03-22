@@ -177,7 +177,7 @@ export function registerScanCommands(program: Command, bin: string): void {
     .command("scan")
     .description("Check all MCP servers in your Claude configs.")
     .option("--config <path>", "Path to a specific MCP config file.")
-    .option("--security", "Run security analysis on tool schemas.")
+    .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
     .option("--no-color", "Disable colored output.");
 
   // `scan` with no subcommand — basic scan
@@ -190,7 +190,7 @@ export function registerScanCommands(program: Command, bin: string): void {
     .command("deep")
     .description("Scan and also invoke safe tools to verify they execute.")
     .option("--config <path>", "Path to a specific MCP config file.")
-    .option("--security", "Run security analysis on tool schemas.")
+    .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
     .action(async (options: { config?: string; security?: boolean }) => {
       // Inherit parent config option if set
       const parentConfig = scanCmd.opts().config as string | undefined;

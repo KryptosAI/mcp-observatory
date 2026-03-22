@@ -10,7 +10,7 @@ import { runPromptsCheck } from "./checks/prompts.js";
 import { runResourcesCheck } from "./checks/resources.js";
 import { runSchemaQualityCheck } from "./checks/schema-quality.js";
 import { runToolsCheck } from "./checks/tools.js";
-import { runSecurityCheck } from "./checks/security.js";
+import { runLightweightSecurityCheck, runSecurityCheck } from "./checks/security.js";
 import { runToolsInvokeCheck } from "./checks/tools-invoke.js";
 import { computeHealthScore } from "./score.js";
 import { errorMessage } from "./utils/errors.js";
@@ -127,6 +127,15 @@ async function runTargetWithRecording(target: TargetConfig, options?: RunOptions
         promptsCheck.result,
         resourcesCheck.result
       ];
+
+      // Lightweight security check: run against already-fetched tools (no extra MCP calls)
+      try {
+        const toolsResp = await session.client.listTools(undefined, { timeout: checkContext.timeoutMs });
+        const liteSecCheck = runLightweightSecurityCheck(toolsResp.tools, target);
+        checks.push(liteSecCheck.result);
+      } catch {
+        // If listing tools fails, skip lightweight security (tools check already reports the error)
+      }
 
       if (options?.invokeTools && !target.skipInvoke) {
         const invokeCheck = await runToolsInvokeCheck(checkContext);
