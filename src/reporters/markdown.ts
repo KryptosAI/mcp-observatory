@@ -103,6 +103,15 @@ function renderRunMarkdown(artifact: RunArtifact): string {
     ``,
     `## Executive Summary`,
     ``,
+    ...(artifact.healthScore ? [
+      `**Health Score: ${artifact.healthScore.overall}/100 (${artifact.healthScore.grade})**`,
+      ``,
+      table([
+        ["Dimension", "Score", "Weight"],
+        ...artifact.healthScore.dimensions.map(d => [d.name, `${d.score}/100`, `${Math.round(d.weight * 100)}%`]),
+      ]),
+      ``,
+    ] : []),
     table([
       ["Gate", "Total", "Pass", "Fail", "Partial", "Unsupported", "Flaky", "Skipped"],
       [

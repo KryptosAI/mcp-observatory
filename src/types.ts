@@ -9,7 +9,7 @@ export type CheckStatus =
   | "unsupported"
   | "flaky"
   | "skipped";
-export type CheckId = "tools" | "prompts" | "resources" | "tools-invoke" | "security";
+export type CheckId = "tools" | "prompts" | "resources" | "tools-invoke" | "security" | "conformance" | "schema-quality";
 
 export const STATUS_RANK: Record<CheckStatus, number> = {
   pass: 6, partial: 5, flaky: 4, unsupported: 3, skipped: 2, fail: 1
@@ -105,7 +105,32 @@ export interface RunArtifact {
   environment: EnvironmentSnapshot;
   summary: RunSummary;
   checks: CheckResult[];
+  healthScore?: HealthScore;
+  performanceMetrics?: PerformanceMetrics;
   fatalError?: string;
+}
+
+export type HealthGrade = "A" | "B" | "C" | "D" | "F";
+
+export interface ScoreDimension {
+  name: string;
+  weight: number;
+  score: number;
+  details: string[];
+}
+
+export interface HealthScore {
+  overall: number;
+  grade: HealthGrade;
+  dimensions: ScoreDimension[];
+}
+
+export interface PerformanceMetrics {
+  connectMs: number;
+  toolsListMs?: number;
+  promptsListMs?: number;
+  resourcesListMs?: number;
+  toolInvokeMs?: Record<string, number>;
 }
 
 export interface DiffEntry {

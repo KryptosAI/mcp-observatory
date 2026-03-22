@@ -1,0 +1,118 @@
+import { describe, expect, it } from "vitest";
+
+import { computeHealthScore, gradeFromScore } from "../src/score.js";
+import type { CheckResult, PerformanceMetrics } from "../src/types.js";
+
+function makeCheck(id: string, status: string): CheckResult {
+  return {
+    id: id as CheckResult["id"],
+    capability: id as CheckResult["capability"],
+    status: status as CheckResult["status"],
+    durationMs: 100,
+    message: `${id} ${status}`,
+    evidence: [],
+  };
+}
+
+describe("gradeFromScore", () => {
+  it("returns correct grades", () => {
+    expect(gradeFromScore(95)).toBe("A");
+    expect(gradeFromScore(90)).toBe("A");
+    expect(gradeFromScore(85)).toBe("B");
+    expect(gradeFromScore(80)).toBe("B");
+    expect(gradeFromScore(75)).toBe("C");
+    expect(gradeFromScore(65)).toBe("D");
+    expect(gradeFromScore(55)).toBe("F");
+    expect(gradeFromScore(0)).toBe("F");
+  });
+});
+
+describe("computeHealthScore", () => {
+  it("scores all-pass checks highly", () => {
+    const checks = [
+      makeCheck("tools", "pass"),
+      makeCheck("prompts", "pass"),
+      makeCheck("resources", "pass"),
+      makeCheck("tools-invoke", "pass"),
+      makeCheck("security", "pass"),
+      makeCheck("conformance", "pass"),
+      makeCheck("schema-quality", "pass"),
+    ];
+    const score = computeHealthScore(checks);
+    expect(score.overall).toBeGreaterThanOrEqual(90);
+    expect(score.grade).toBe("A");
+    expect(score.dimensions).toHaveLength(5);
+  });
+
+  it("scores all-fail checks low", () => {
+    const checks = [
+      makeCheck("tools", "fail"),
+      makeCheck("prompts", "fail"),
+      makeCheck("resources", "fail"),
+      makeCheck("security", "fail"),
+      makeCheck("conformance", "fail"),
+      makeCheck("schema-quality", "fail"),
+    ];
+    const score = computeHealthScore(checks);
+    expect(score.overall).toBeLessThanOrEqual(10);
+    expect(score.grade).toBe("F");
+  });
+
+  it("handles mixed statuses", () => {
+    const checks = [
+      makeCheck("tools", "pass"),
+      makeCheck("prompts", "pass"),
+      makeCheck("resources", "partial"),
+      makeCheck("security", "partial"),
+      makeCheck("conformance", "pass"),
+      makeCheck("schema-quality", "fail"),
+    ];
+    const score = computeHealthScore(checks);
+    expect(score.overall).toBeGreaterThan(30);
+    expect(score.overall).toBeLessThan(90);
+  });
+
+  it("handles missing checks gracefully", () => {
+    const checks = [
+      makeCheck("tools", "pass"),
+      makeCheck("prompts", "pass"),
+    ];
+    const score = computeHealthScore(checks);
+    expect(score.overall).toBeGreaterThan(0);
+    expect(score.dimensions).toHaveLength(5);
+  });
+
+  it("uses performance metrics when provided", () => {
+    const checks = [
+      makeCheck("tools", "pass"),
+      makeCheck("conformance", "pass"),
+      makeCheck("schema-quality", "pass"),
+      makeCheck("security", "pass"),
+    ];
+    const fastMetrics: PerformanceMetrics = {
+      connectMs: 50,
+      toolsListMs: 100,
+      promptsListMs: 80,
+    };
+    const slowMetrics: PerformanceMetrics = {
+      connectMs: 5000,
+      toolsListMs: 8000,
+      promptsListMs: 6000,
+    };
+    const fastScore = computeHealthScore(checks, fastMetrics);
+    const slowScore = computeHealthScore(checks, slowMetrics);
+    expect(fastScore.overall).toBeGreaterThan(slowScore.overall);
+  });
+
+  it("accepts custom weights", () => {
+    const checks = [
+      makeCheck("security", "fail"),
+      makeCheck("conformance", "pass"),
+      makeCheck("schema-quality", "pass"),
+      makeCheck("tools", "pass"),
+    ];
+    const highSecurity = computeHealthScore(checks, undefined, { security: 0.80, protocolCompliance: 0.05, schemaQuality: 0.05, reliability: 0.05, performance: 0.05 });
+    const lowSecurity = computeHealthScore(checks, undefined, { security: 0.05, protocolCompliance: 0.30, schemaQuality: 0.25, reliability: 0.25, performance: 0.15 });
+    expect(highSecurity.overall).toBeLessThan(lowSecurity.overall);
+  });
+});

@@ -41,7 +41,7 @@ function runAndGetArtifact(extraArgs: string[] = []): Record<string, unknown> {
 describe("CLI/MCP Parity", () => {
   // ── Check coverage parity ────────────────────────────────────────────────
 
-  it("CLI run produces tools, prompts, resources checks", () => {
+  it("CLI run produces tools, prompts, resources, conformance, schema-quality checks", () => {
     const artifact = runAndGetArtifact();
     const checks = artifact.checks as Array<{ id: string }>;
     const checkIds = checks.map((c) => c.id);
@@ -49,6 +49,8 @@ describe("CLI/MCP Parity", () => {
     expect(checkIds).toContain("tools");
     expect(checkIds).toContain("prompts");
     expect(checkIds).toContain("resources");
+    expect(checkIds).toContain("conformance");
+    expect(checkIds).toContain("schema-quality");
   });
 
   it("CLI run with --invoke-tools adds tools-invoke check", () => {
@@ -141,6 +143,7 @@ describe("CLI/MCP Parity", () => {
     const expectedMcpTools = [
       "scan",
       "check_server",
+      "score_server",
       "diff_runs",
       "get_last_run",
       "suggest_servers",
@@ -154,6 +157,8 @@ describe("CLI/MCP Parity", () => {
     const expectedCliCommands = [
       "scan",
       "test",      // maps to check_server
+      "score",     // maps to score_server
+      "badge",     // CLI-only (generates SVG)
       "diff",      // maps to diff_runs
       "run",       // no direct MCP equivalent (uses target config)
       "suggest",   // maps to suggest_servers
@@ -166,12 +171,13 @@ describe("CLI/MCP Parity", () => {
     ];
 
     // Intentional CLI-only commands:
-    const intentionalCliOnly = ["run", "report", "serve"];
+    const intentionalCliOnly = ["run", "report", "serve", "badge"];
     // Intentional MCP-only tools:
     const intentionalMcpOnly = ["get_last_run"];
     // Name mappings:
     const nameMap: Record<string, string> = {
       test: "check_server",
+      score: "score_server",
       diff: "diff_runs",
       suggest: "suggest_servers",
     };
@@ -209,6 +215,7 @@ describe("CLI/MCP Parity", () => {
       "serve": "CLI-only command that starts the MCP server itself",
       "run": "CLI-only command that reads target config files; MCP tools accept inline params",
       "get_last_run": "MCP-only convenience tool; CLI users use ls + diff manually",
+      "badge": "CLI-only command that generates SVG badge from health score",
     };
 
     expect(Object.keys(intentionalDifferences).length).toBeGreaterThanOrEqual(5);

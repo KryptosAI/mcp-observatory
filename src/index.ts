@@ -1,3 +1,4 @@
+export { generateBadgeSvg, type BadgeOptions } from "./badge.js";
 export {
   defaultCassettesDirectory,
   loadCassette,
@@ -5,14 +6,19 @@ export {
   type Cassette,
   type CassetteEntry,
 } from "./cassette.js";
+export { runConformanceCheck } from "./checks/conformance.js";
+export { runSchemaQualityCheck } from "./checks/schema-quality.js";
 export { runSecurityCheck } from "./checks/security.js";
 export { SECURITY_RULES, type SecurityFinding, type SecurityRule, type ToolInfo } from "./checks/security-rules.js";
 export { diffArtifacts } from "./diff.js";
 export { scanForTargets } from "./discovery.js";
 export { renderHtml } from "./reporters/html.js";
+export { renderJUnit } from "./reporters/junit.js";
 export { renderMarkdown } from "./reporters/markdown.js";
+export { renderSarif } from "./reporters/sarif.js";
 export { renderTerminal } from "./reporters/terminal.js";
 export { runTarget, runTargetRecording, type RunOptions, type RunResult } from "./runner.js";
+export { computeHealthScore, type ScoreWeights, DEFAULT_WEIGHTS } from "./score.js";
 export {
   defaultRunsDirectory,
   readArtifact,

@@ -16,6 +16,7 @@ import { runPromptsCheck } from "./checks/prompts.js";
 import { runResourcesCheck } from "./checks/resources.js";
 import { runToolsCheck } from "./checks/tools.js";
 import { runToolsInvokeCheck } from "./checks/tools-invoke.js";
+import { generateBadgeSvg } from "./badge.js";
 import {
   diffArtifacts,
   readArtifact,
@@ -26,6 +27,8 @@ import {
   writeRunArtifact,
   type TargetConfig
 } from "./index.js";
+import { renderJUnit } from "./reporters/junit.js";
+import { renderSarif } from "./reporters/sarif.js";
 import { runTargetRecording } from "./runner.js";
 import { defaultRunsDirectory } from "./storage.js";
 import { ReplayTransport } from "./transport/replay-transport.js";
@@ -124,11 +127,13 @@ function c(code: string, text: string): string {
 
 function formatOutput(
   artifact: Parameters<typeof renderTerminal>[0],
-  format: "html" | "json" | "markdown" | "terminal",
+  format: "html" | "json" | "junit" | "markdown" | "sarif" | "terminal",
 ): string {
   if (format === "json") return JSON.stringify(artifact, null, 2);
   if (format === "markdown") return renderMarkdown(artifact);
   if (format === "html") return renderHtml(artifact);
+  if (format === "junit" && artifact.artifactType === "run") return renderJUnit(artifact);
+  if (format === "sarif" && artifact.artifactType === "run") return renderSarif(artifact);
   return renderTerminal(artifact);
 }
 
@@ -351,6 +356,8 @@ async function main(): Promise<void> {
         [" verify cassette.json npx server-foo", "Verify server still matches cassette"],
         [" diff run-a.json run-b.json", "Compare two runs for regressions"],
         [" suggest", "Detect your stack and recommend MCP servers"],
+        [" score npx server-foo", "Score a server's health (0-100)"],
+        [" badge npx server-foo --output badge.svg", "Generate a health badge for README"],
       ];
       const maxCmd = Math.max(...examples.map(([cmd]) => (bin + cmd).length));
       const pad = (cmd: string) => " ".repeat(Math.max(2, maxCmd - (bin + cmd).length + 3));
@@ -432,14 +439,14 @@ async function main(): Promise<void> {
     .description("Compare two runs and show regressions and schema drift.")
     .argument("<base>", "Base run artifact JSON file.")
     .argument("<head>", "Head run artifact JSON file.")
-    .option("--format <format>", "terminal, json, markdown, or html", "terminal")
+    .option("--format <format>", "terminal, json, markdown, html, junit, or sarif", "terminal")
     .option("--output <file>", "Write to file instead of stdout.")
     .option("--no-color", "Disable colored output.")
     .option("--fail-on-regression", "Exit with code 1 when regressions are present.", false)
     .action(
       async (base: string, head: string, options: {
         failOnRegression?: boolean;
-        format: "html" | "json" | "markdown" | "terminal";
+        format: "html" | "json" | "junit" | "markdown" | "sarif" | "terminal";
         output?: string;
       }) => {
         const baseArtifact = await readArtifact(base);
@@ -863,7 +870,7 @@ async function main(): Promise<void> {
     .option("--no-color", "Disable colored output.")
     .action(
       async (options: {
-        format: "html" | "json" | "markdown" | "terminal";
+        format: "html" | "json" | "junit" | "markdown" | "sarif" | "terminal";
         output?: string;
         run: string;
       }) => {
@@ -875,6 +882,98 @@ async function main(): Promise<void> {
         await writeOutput(output, options.format, options.output);
       },
     );
+
+  // ── score ────────────────────────────────────────────────────────────
+
+  program
+    .command("score")
+    .passThroughOptions()
+    .description("Score an MCP server's health (0-100).")
+    .argument("<command...>", "Server command and arguments to run.")
+    .option("--format <format>", "terminal, json, junit, markdown, html, or sarif", "terminal")
+    .option("--output <file>", "Write to file instead of stdout.")
+    .option("--no-color", "Disable colored output.")
+    .action(async (commandArgs: string[], options: { format: string; output?: string }) => {
+      const target = targetFromCommand(commandArgs);
+      process.stdout.write(`${c(ANSI.dim, "⟳")} Scoring ${c(ANSI.bold, target.targetId)}...\n\n`);
+      const artifact = await runTarget(target, { invokeTools: true, securityCheck: true });
+      await writeRunArtifact(artifact, defaultRunsDirectory(process.cwd()));
+
+      if (options.format !== "terminal") {
+        const output = formatOutput(artifact, options.format as "json" | "junit" | "sarif" | "markdown" | "html" | "terminal");
+        await writeOutput(output, options.format, options.output);
+        return;
+      }
+
+      const score = artifact.healthScore;
+      if (!score) {
+        process.stdout.write("  Could not compute health score.\n\n");
+        return;
+      }
+
+      const gradeColor = score.grade === "A" || score.grade === "B" ? ANSI.green
+        : score.grade === "C" ? ANSI.yellow
+        : ANSI.red;
+
+      process.stdout.write(c(ANSI.bold, `  MCP Health Score: ${c(gradeColor, `${score.overall}/100`)} (${c(gradeColor, score.grade)})\n\n`));
+
+      for (const dim of score.dimensions) {
+        const filled = Math.round(dim.score / 5);
+        const empty = 20 - filled;
+        const bar = "█".repeat(filled) + "░".repeat(empty);
+        const dimColor = dim.score >= 80 ? ANSI.green : dim.score >= 60 ? ANSI.yellow : ANSI.red;
+        const weightPct = Math.round(dim.weight * 100);
+        process.stdout.write(`  ${dim.name.padEnd(22)} ${c(dimColor, bar)} ${String(dim.score).padStart(3)}  ${c(ANSI.dim, `(weight: ${weightPct}%)`)}\n`);
+      }
+      process.stdout.write("\n");
+
+      // Show details for dimensions that aren't perfect
+      for (const dim of score.dimensions) {
+        if (dim.score < 100 && dim.details.length > 0) {
+          process.stdout.write(`  ${c(ANSI.dim, dim.name + ":")}\n`);
+          for (const detail of dim.details) {
+            process.stdout.write(`    ${c(ANSI.dim, "→")} ${detail}\n`);
+          }
+        }
+      }
+      process.stdout.write("\n");
+
+      if (artifact.gate === "fail") {
+        process.exitCode = 1;
+      }
+    });
+
+  // ── badge ───────────────────────────────────────────────────────────
+
+  program
+    .command("badge")
+    .passThroughOptions()
+    .description("Generate an SVG health score badge for your README.")
+    .argument("<command...>", "Server command and arguments to run.")
+    .option("--output <file>", "Write SVG to file (default: stdout).")
+    .option("--label <text>", "Badge label text.", "MCP Health")
+    .action(async (commandArgs: string[], options: { output?: string; label: string }) => {
+      const target = targetFromCommand(commandArgs);
+      process.stderr.write(`${c(ANSI.dim, "⟳")} Scoring ${c(ANSI.bold, target.targetId)}...\n`);
+      const artifact = await runTarget(target, { invokeTools: true, securityCheck: true });
+
+      const score = artifact.healthScore;
+      if (!score) {
+        process.stderr.write("  Could not compute health score.\n");
+        process.exitCode = 1;
+        return;
+      }
+
+      const svg = generateBadgeSvg({ score: score.overall, grade: score.grade, label: options.label });
+
+      if (options.output) {
+        await mkdir(path.dirname(options.output), { recursive: true });
+        await writeFile(options.output, svg, "utf8");
+        process.stderr.write(`  Badge written to ${options.output}\n`);
+      } else {
+        process.stdout.write(svg);
+      }
+    });
 
   // ── telemetry ──────────────────────────────────────────────────────────
 

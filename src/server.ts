@@ -173,6 +173,56 @@ export async function startServer(): Promise<void> {
   );
 
   server.tool(
+    "score_server",
+    "Score an MCP server's health (0-100) including protocol compliance, schema quality, security, reliability, and performance. Returns grade A-F with detailed breakdown.",
+    {
+      command: z.string().describe("The command to launch the MCP server."),
+      args: z.array(z.string()).optional().describe("Additional arguments for the command."),
+    },
+    async ({ command, args }) => {
+      const startMs = Date.now();
+      try {
+        validateCommand(command);
+        const target = {
+          targetId: command,
+          adapter: "local-process" as const,
+          command,
+          args: args ?? [],
+          timeoutMs: 15_000,
+        };
+        const artifact = await runTarget(target, { invokeTools: true, securityCheck: true });
+        const outDir = defaultRunsDirectory();
+        await writeRunArtifact(artifact, outDir);
+
+        const score = artifact.healthScore;
+        if (!score) {
+          logRequest("score_server", startMs);
+          return { content: [{ type: "text" as const, text: `${formatRun(artifact)}\n\nCould not compute health score.` }] };
+        }
+
+        const lines: string[] = [
+          `MCP Health Score: ${score.overall}/100 (${score.grade})`,
+          "",
+        ];
+        for (const dim of score.dimensions) {
+          lines.push(`  ${dim.name}: ${dim.score}/100 (weight: ${Math.round(dim.weight * 100)}%)`);
+          for (const detail of dim.details) {
+            lines.push(`    → ${detail}`);
+          }
+        }
+        lines.push("", formatRun(artifact));
+
+        logRequest("score_server", startMs);
+        return { content: [{ type: "text" as const, text: lines.join("\n") }] };
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : String(error);
+        logRequest("score_server", startMs, true);
+        return { content: [{ type: "text" as const, text: `Error scoring server: ${msg}` }], isError: true };
+      }
+    },
+  );
+
+  server.tool(
     "diff_runs",
     "Compare two run artifact files and return the diff showing regressions, recoveries, and schema drift.",
     {
