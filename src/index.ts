@@ -29,3 +29,25 @@ export { ReplayTransport } from "./transport/replay-transport.js";
 export * from "./types.js";
 export { validateDiffArtifact, validateRunArtifact, validateTargetConfig } from "./validate.js";
 export { compareResponses, type VerifyResult } from "./verify.js";
+export {
+  ObservatoryMonitor,
+  type MonitorOptions,
+  type MonitoredServer,
+  type ServerStatus,
+} from "./runtime/index.js";
+export { withObservatory, type WrapperOptions } from "./runtime/index.js";
+export {
+  generateSubmission,
+  renderSubmissionMarkdown,
+  resolveSmitheryTarget,
+  listSmitheryServers,
+  batchScanServers,
+  renderBatchReportMarkdown,
+  SmitheryApiError,
+  SmitheryRateLimitError,
+  type SmitherySubmission,
+  type SmitheryConfig,
+  type SmitheryServerEntry,
+  type SmitheryConnection,
+  type SmitheryServerListResponse,
+} from "./integrations/index.js";
