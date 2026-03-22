@@ -11,7 +11,7 @@ import {
   type SmitheryServerEntry,
   type SmitherySubmission,
 } from "../src/integrations/smithery.js";
-import type { CheckResult, HealthScore, RunArtifact } from "../src/types.js";
+import type { CheckResult, RunArtifact } from "../src/types.js";
 import { SCHEMA_VERSION } from "../src/types.js";
 
 // ── Fixtures ────────────────────────────────────────────────────────────────
@@ -87,7 +87,7 @@ function makeArtifact(overrides: Partial<RunArtifact> = {}): RunArtifact {
 
 const originalFetch = globalThis.fetch;
 
-function mockFetch(handler: (url: string, init?: RequestInit) => Promise<Response>): void {
+function mockFetch(handler: (url: string, init?: RequestInit) => Response | Promise<Response>): void {
   globalThis.fetch = handler as typeof fetch;
 }
 
@@ -199,7 +199,7 @@ describe("resolveSmitheryTarget", () => {
       ],
     };
 
-    mockFetch(async () =>
+    mockFetch(() =>
       new Response(JSON.stringify(serverEntry), {
         status: 200,
         headers: { "Content-Type": "application/json" },
@@ -222,7 +222,7 @@ describe("resolveSmitheryTarget", () => {
       connections: [],
     };
 
-    mockFetch(async () =>
+    mockFetch(() =>
       new Response(JSON.stringify(serverEntry), {
         status: 200,
         headers: { "Content-Type": "application/json" },
@@ -242,7 +242,7 @@ describe("resolveSmitheryTarget", () => {
   it("uses custom base URL", async () => {
     let capturedUrl = "";
 
-    mockFetch(async (url: string) => {
+    mockFetch((url: string) => {
       capturedUrl = url;
       return new Response(
         JSON.stringify({ qualifiedName: "@test/srv", connections: [] }),
@@ -260,7 +260,7 @@ describe("resolveSmitheryTarget", () => {
   it("sends Authorization header when apiKey is provided", async () => {
     let capturedHeaders: Record<string, string> = {};
 
-    mockFetch(async (_url: string, init?: RequestInit) => {
+    mockFetch((_url: string, init?: RequestInit) => {
       const headers = init?.headers as Record<string, string> | undefined;
       if (headers) capturedHeaders = headers;
       return new Response(
@@ -275,7 +275,7 @@ describe("resolveSmitheryTarget", () => {
   });
 
   it("throws SmitheryApiError on non-OK response", async () => {
-    mockFetch(async () =>
+    mockFetch(() =>
       new Response("Not Found", { status: 404, statusText: "Not Found" }),
     );
 
@@ -285,7 +285,7 @@ describe("resolveSmitheryTarget", () => {
   });
 
   it("throws SmitheryRateLimitError on 429", async () => {
-    mockFetch(async () =>
+    mockFetch(() =>
       new Response("Too Many Requests", { status: 429, statusText: "Too Many Requests" }),
     );
 
@@ -295,7 +295,7 @@ describe("resolveSmitheryTarget", () => {
   });
 
   it("throws on network failure", async () => {
-    mockFetch(async () => {
+    mockFetch(() => {
       throw new TypeError("fetch failed");
     });
 
@@ -316,7 +316,7 @@ describe("listSmitheryServers", () => {
       ],
     };
 
-    mockFetch(async () =>
+    mockFetch(() =>
       new Response(JSON.stringify(response), {
         status: 200,
         headers: { "Content-Type": "application/json" },
@@ -331,7 +331,7 @@ describe("listSmitheryServers", () => {
   it("passes pagination params", async () => {
     let capturedUrl = "";
 
-    mockFetch(async (url: string) => {
+    mockFetch((url: string) => {
       capturedUrl = url;
       return new Response(
         JSON.stringify({ servers: [] }),
@@ -352,7 +352,7 @@ describe("batchScanServers", () => {
   });
 
   it("scans multiple servers and returns results", async () => {
-    mockFetch(async () =>
+    mockFetch(() =>
       new Response(
         JSON.stringify({
           servers: [
@@ -376,7 +376,7 @@ describe("batchScanServers", () => {
   });
 
   it("captures errors for individual servers without aborting", async () => {
-    mockFetch(async () =>
+    mockFetch(() =>
       new Response(
         JSON.stringify({
           servers: [

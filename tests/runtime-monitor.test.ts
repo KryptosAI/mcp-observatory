@@ -300,9 +300,9 @@ describe("ObservatoryMonitor", () => {
     monitor.addServer(makeTarget("sick-server"));
 
     // healthy-server is fine, sick-server is degraded
-    mockedRunTarget.mockImplementation(async (target) => {
-      if (target.targetId === "healthy-server") return makeArtifact(95);
-      return makeArtifact(55);
+    mockedRunTarget.mockImplementation((target) => {
+      if (target.targetId === "healthy-server") return Promise.resolve(makeArtifact(95));
+      return Promise.resolve(makeArtifact(55));
     });
 
     await monitor.checkNow();
