@@ -192,7 +192,14 @@ async function main(): Promise<void> {
   if (process.argv[2] !== "serve") {
     try {
       const { default: updateNotifier } = await import("update-notifier");
-      updateNotifier({ pkg: { name: "@kryptosai/mcp-observatory", version: TOOL_VERSION } }).notify();
+      const notifier = updateNotifier({
+        pkg: { name: "@kryptosai/mcp-observatory", version: TOOL_VERSION },
+        updateCheckInterval: 1000 * 60 * 60, // check every hour
+      });
+      notifier.notify({
+        isGlobal: true,
+        message: "Update available: {currentVersion} → {latestVersion}\nRun: npx @kryptosai/mcp-observatory@latest",
+      });
     } catch {
       // update-notifier not available — skip silently
     }
