@@ -96,19 +96,26 @@ export async function showFirstRunNotice(): Promise<void> {
   const config = await loadTelemetryConfig();
   if (config.noticeShown) return;
 
-  process.stderr.write(`
-  Attention: MCP Observatory collects anonymous usage telemetry.
-
-  This helps us understand how the tool is used and prioritize features.
-  No personal data, file paths, or server content is ever collected.
-
-  To opt out: mcp-observatory telemetry disable
-  Or set:     DO_NOT_TRACK=1
-
-`);
+  // Print notice to stderr synchronously so it appears before any command output
+  const notice = [
+    "",
+    "  ┌─────────────────────────────────────────────────────────────┐",
+    "  │  MCP Observatory collects anonymous usage telemetry.       │",
+    "  │                                                            │",
+    "  │  No personal data, file paths, or server content is sent.  │",
+    "  │  To opt out: mcp-observatory telemetry disable             │",
+    "  │  Or set:     DO_NOT_TRACK=1                                │",
+    "  └─────────────────────────────────────────────────────────────┘",
+    "",
+  ].join("\n");
+  process.stderr.write(notice + "\n");
 
   config.noticeShown = true;
-  await saveTelemetryConfig(config);
+  try {
+    await saveTelemetryConfig(config);
+  } catch {
+    // Don't crash on first run if config dir can't be created
+  }
 }
 
 // ── Event recording ──────────────────────────────────────────────────────────

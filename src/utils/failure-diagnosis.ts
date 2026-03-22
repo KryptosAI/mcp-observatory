@@ -52,6 +52,25 @@ function classifyFailure(message: string): {
     };
   }
 
+  if (lower.includes("docker")) {
+    return {
+      diagnosis:
+        "A Docker-based MCP server failed to connect.",
+      likelyCauses: [
+        "Docker Desktop may not be running.",
+        "The Docker image may not be pulled yet or may not exist.",
+        "The server may require environment variables (e.g. API tokens) passed via -e flags.",
+        "The container may be exiting immediately — check stderr output below for details."
+      ],
+      nextSteps: [
+        "Ensure Docker Desktop is running (`docker info` should succeed).",
+        "Try running the docker command manually to see its output.",
+        "If the server needs API keys or tokens, ensure they are set in the env config.",
+        "Check that the image name and tag are correct."
+      ]
+    };
+  }
+
   if (lower.includes("enoent") || lower.includes("spawn")) {
     return {
       diagnosis: "The command could not be started successfully.",
@@ -91,9 +110,15 @@ export function formatConnectionFailureDiagnosis(
   const details = classifyFailure(rawMessage);
   const recentStderr = trimLines(stderrLines);
 
+  const cmd = buildCommand(target);
+  const isDocker = cmd.startsWith("docker ");
+  const header = isDocker
+    ? `Docker-based MCP server \`${target.targetId}\` failed to connect.`
+    : `Could not establish a plain stdio MCP session for target \`${target.targetId}\`.`;
+
   const lines = [
-    `Could not establish a plain stdio MCP session for target \`${target.targetId}\`.`,
-    `Command: ${buildCommand(target)}`,
+    header,
+    `Command: ${cmd}`,
     `Diagnosis: ${details.diagnosis}`,
     `Raw error: ${rawMessage}`,
     `Likely causes:`,

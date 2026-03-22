@@ -35,7 +35,17 @@ export function registerScoreCommands(program: Command): void {
 
       const score = artifact.healthScore;
       if (!score) {
-        process.stdout.write("  Could not compute health score.\n\n");
+        process.stdout.write(`  ${c(ANSI.red, "✗")} Could not compute health score.\n`);
+        if (artifact.fatalError) {
+          process.stdout.write(`    Fatal: ${artifact.fatalError.split("\n")[0]}\n`);
+        }
+        const passed = artifact.checks.filter(ch => ch.status === "pass").length;
+        const failed = artifact.checks.filter(ch => ch.status === "fail").length;
+        const skipped = artifact.checks.filter(ch => ch.status === "skipped").length;
+        if (artifact.checks.length > 0) {
+          process.stdout.write(`    Checks: ${passed} passed, ${failed} failed, ${skipped} skipped\n`);
+        }
+        process.stdout.write("\n");
         return;
       }
 
@@ -87,7 +97,16 @@ export function registerScoreCommands(program: Command): void {
 
       const score = artifact.healthScore;
       if (!score) {
-        process.stderr.write("  Could not compute health score.\n");
+        process.stderr.write(`  ${c(ANSI.red, "✗")} Could not compute health score.\n`);
+        if (artifact.fatalError) {
+          process.stderr.write(`    Fatal: ${artifact.fatalError.split("\n")[0]}\n`);
+        }
+        const passed = artifact.checks.filter(ch => ch.status === "pass").length;
+        const failed = artifact.checks.filter(ch => ch.status === "fail").length;
+        const skipped = artifact.checks.filter(ch => ch.status === "skipped").length;
+        if (artifact.checks.length > 0) {
+          process.stderr.write(`    Checks: ${passed} passed, ${failed} failed, ${skipped} skipped\n`);
+        }
         process.exitCode = 1;
         return;
       }
