@@ -4,6 +4,20 @@ import { scanForTargets } from "../discovery.js";
 import { detectEnvironment } from "../environment.js";
 import { ANSI, c } from "./helpers.js";
 
+// Curated popular servers shown when no stack-specific matches exist
+const POPULAR_SERVERS: { name: string; desc: string }[] = [
+  { name: "filesystem",        desc: "Read, write, and manage local files" },
+  { name: "github",            desc: "Repos, issues, PRs, and code search" },
+  { name: "fetch",             desc: "Fetch and parse any URL or web page" },
+  { name: "memory",            desc: "Persistent knowledge graph for context" },
+  { name: "postgres",          desc: "Query and manage PostgreSQL databases" },
+  { name: "slack",             desc: "Read and send Slack messages" },
+  { name: "google-maps",       desc: "Geocoding, directions, and place search" },
+  { name: "puppeteer",         desc: "Browser automation and screenshots" },
+  { name: "sequential-thinking", desc: "Step-by-step reasoning for complex tasks" },
+  { name: "sentry",            desc: "Error tracking and performance monitoring" },
+];
+
 export function registerSuggestCommands(program: Command): void {
   program
     .command("suggest")
@@ -106,9 +120,9 @@ export function registerSuggestCommands(program: Command): void {
                 process.stdout.write(`  ${c(ANSI.dim, `... and ${recommended.length - 10} more matches`)}\n`);
               }
             } else {
-              process.stdout.write(c(ANSI.bold, "  MCP Registry\n"));
-              for (const s of deduped.slice(0, 10)) {
-                process.stdout.write(`  ${c(ANSI.dim, "●")} ${c(ANSI.bold, s.name)}${s.desc ? ` ${c(ANSI.dim, "—")} ${s.desc}` : ""}\n`);
+              process.stdout.write(c(ANSI.bold, "  Popular MCP Servers\n"));
+              for (const s of POPULAR_SERVERS) {
+                process.stdout.write(`  ${c(ANSI.green, "★")} ${c(ANSI.bold, s.name)} ${c(ANSI.dim, "—")} ${s.desc}\n`);
               }
             }
 
