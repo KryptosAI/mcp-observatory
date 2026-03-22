@@ -28,7 +28,7 @@ export async function writeRunArtifact(
   return filePath;
 }
 
-export async function findLatestArtifact(outDir: string, targetId: string): Promise<string | null> {
+export async function findLatestArtifact(outDir: string, targetId: string, excludePath?: string): Promise<string | null> {
   const slug = slugify(targetId);
   const suffix = `--${slug}.json`;
   try {
@@ -36,9 +36,11 @@ export async function findLatestArtifact(outDir: string, targetId: string): Prom
     const matching = entries
       .filter(f => f.endsWith(suffix))
       .sort()
-      .reverse();
+      .reverse()
+      .map(f => path.join(outDir, f))
+      .filter(f => f !== excludePath);
     if (matching.length === 0) return null;
-    return path.join(outDir, matching[0]!);
+    return matching[0]!;
   } catch {
     return null;
   }

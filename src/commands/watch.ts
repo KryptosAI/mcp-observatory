@@ -23,14 +23,18 @@ async function runWatchOneShot(
   const outPath = await writeRunArtifact(artifact, outDir);
 
   // Find the PREVIOUS run for this target (excluding the one just written)
-  const latestPath = await findLatestArtifact(outDir, target.targetId);
-  if (latestPath && latestPath !== outPath) {
-    const previousRaw = await readArtifact(latestPath);
+  const previousPath = await findLatestArtifact(outDir, target.targetId, outPath);
+  if (previousPath) {
+    const previousRaw = await readArtifact(previousPath);
     if (previousRaw.artifactType === "run") {
-      const previous = previousRaw;
-      const diffResult = diff(previous, artifact);
+      const diffResult = diff(previousRaw, artifact);
 
-      process.stdout.write(formatOutput(diffResult, options.format as "terminal" | "json") + "\n");
+      if (diffResult.summary.regressions === 0 && diffResult.summary.recoveries === 0 && diffResult.summary.added === 0 && diffResult.summary.removed === 0) {
+        process.stdout.write(formatOutput(artifact, options.format as "terminal" | "json") + "\n");
+        process.stdout.write(`${c(ANSI.green, "✓ No changes")} since last run\n`);
+      } else {
+        process.stdout.write(formatOutput(diffResult, options.format as "terminal" | "json") + "\n");
+      }
       process.stdout.write(`${c(ANSI.dim, `Artifact: ${outPath}`)}\n`);
 
       if (options.failOnRegression && diffResult.summary.regressions > 0) {
