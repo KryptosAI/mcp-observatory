@@ -38,21 +38,18 @@ const MENU_GROUPS: MenuGroup[] = [
   {
     heading: "",
     items: [
-      { command: ["scan"],    label: "scan",    outcome: "See which servers are healthy and what they expose",    recommended: true },
-      { command: ["record"],  label: "record",  outcome: "Capture a session so you can test offline or in CI" },
-      { command: ["verify"],  label: "verify",  outcome: "Confirm a server still returns the same responses" },
-      { command: ["diff"],    label: "diff",    outcome: "Find regressions between two runs" },
-      { command: ["suggest"], label: "suggest", outcome: "Discover MCP servers that match your project stack" },
+      { command: ["scan"],         label: "scan",      outcome: "Check all your MCP servers",                      recommended: true },
+      { command: ["scan", "deep"], label: "scan deep", outcome: "^ plus invoke tools to verify they actually work" },
+      { command: ["suggest"],      label: "suggest",   outcome: "Discover MCP servers for your stack" },
+      { command: ["score"],        label: "score",     outcome: "Health score (0-100) for a specific server" },
     ],
   },
   {
-    heading: "Advanced",
+    heading: "More",
     items: [
-      { command: ["scan", "deep"], label: "scan deep", outcome: "Scan + invoke every tool to verify it executes" },
-      { command: ["test"],         label: "test",      outcome: "Test one server by command (e.g. npx server-foo)" },
-      { command: ["replay"],       label: "replay",    outcome: "Re-run checks from a cassette — no server needed" },
-      { command: ["watch"],        label: "watch",     outcome: "Monitor a server on a loop, alert on changes" },
-      { command: ["serve"],        label: "serve",     outcome: "Expose Observatory as an MCP server for AI agents" },
+      { command: ["record"],  label: "record",  outcome: "Capture a session for offline replay or CI" },
+      { command: ["diff"],    label: "diff",    outcome: "Compare two runs for regressions" },
+      { command: ["test"],    label: "test",    outcome: "Test a single server by command" },
     ],
   },
 ];
@@ -213,24 +210,25 @@ async function main(): Promise<void> {
     .version(TOOL_VERSION)
     .addHelpText("before", useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n` : LOGO + `  v${TOOL_VERSION}\n`)
     .addHelpText("after", (() => {
-      const examples: [string, string][] = [
-        ["", "Interactive menu (pick a command)"],
-        [" scan deep", "Also invoke safe tools to verify they run"],
-        [" test npx server-foo", "Test a specific server by command"],
-        [" record npx server-foo", "Record a session to a cassette file"],
-        [" replay cassette.json", "Replay offline — no live server needed"],
-        [" verify cassette.json npx server-foo", "Verify server still matches cassette"],
-        [" diff run-a.json run-b.json", "Compare two runs for regressions"],
-        [" suggest", "Detect your stack and recommend MCP servers"],
-        [" score npx server-foo", "Score a server's health (0-100)"],
-        [" badge npx server-foo --output badge.svg", "Generate a health badge for README"],
+      const lines = [
+        "",
+        `  ${c(ANSI.bold, "Quick Start")}`,
+        "",
+        `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} scan`)}              Check all your MCP servers`,
+        `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} scan deep`)}         ^ plus invoke tools to verify they work`,
+        `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} suggest`)}           Discover MCP servers for your stack`,
+        `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} score`)} ${c(ANSI.dim, "<cmd>")}       Health score (0-100) for any server`,
+        "",
+        `  ${c(ANSI.bold, "CI / Regression Testing")}`,
+        "",
+        `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} record`)} ${c(ANSI.dim, "<cmd>")}      Capture a session for offline replay`,
+        `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} diff`)} ${c(ANSI.dim, "<a> <b>")}      Compare two runs for regressions`,
+        `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} badge`)} ${c(ANSI.dim, "<cmd>")}       Generate a health badge for README`,
+        "",
+        `  ${c(ANSI.dim, `Run ${bin} <command> --help for details on any command.`)}`,
+        "",
       ];
-      const maxCmd = Math.max(...examples.map(([cmd]) => (bin + cmd).length));
-      const pad = (cmd: string) => " ".repeat(Math.max(2, maxCmd - (bin + cmd).length + 3));
-      const lines = examples.map(([cmd, desc]) =>
-        `  ${c(ANSI.dim, "$")} ${bin}${cmd}${pad(cmd)}${desc}`
-      );
-      return ["", "Examples:", "", ...lines, ""].join("\n");
+      return lines.join("\n");
     })());
 
   // Register all command modules
