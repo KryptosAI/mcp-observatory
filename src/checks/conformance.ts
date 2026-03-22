@@ -1,5 +1,6 @@
 import { performance } from "node:perf_hooks";
 
+import { errorMessage } from "../utils/errors.js";
 import { isCapabilityAdvertised, makeCheckResult, type CheckContext, type ObservedCheck } from "./base.js";
 import type { EvidenceSummary } from "../types.js";
 
@@ -36,7 +37,7 @@ async function checkToolsEndpoint(context: CheckContext): Promise<ConformanceFin
     }
     return { rule: "tools-capability-match", passed: true, detail: `tools/list returned ${resp.tools.length} tool(s).` };
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
+    const msg = errorMessage(error);
     return { rule: "tools-capability-match", passed: false, detail: `Advertised tools but tools/list failed: ${msg}` };
   }
 }
@@ -52,7 +53,7 @@ async function checkPromptsEndpoint(context: CheckContext): Promise<ConformanceF
     }
     return { rule: "prompts-capability-match", passed: true, detail: `prompts/list returned ${resp.prompts.length} prompt(s).` };
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
+    const msg = errorMessage(error);
     return { rule: "prompts-capability-match", passed: false, detail: `Advertised prompts but prompts/list failed: ${msg}` };
   }
 }
@@ -68,7 +69,7 @@ async function checkResourcesEndpoint(context: CheckContext): Promise<Conformanc
     }
     return { rule: "resources-capability-match", passed: true, detail: `resources/list returned ${resp.resources.length} resource(s).` };
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
+    const msg = errorMessage(error);
     return { rule: "resources-capability-match", passed: false, detail: `Advertised resources but resources/list failed: ${msg}` };
   }
 }
@@ -100,7 +101,7 @@ async function checkToolResponseContent(context: CheckContext): Promise<Conforma
     }
     return { rule: "tool-response-content", passed: true, detail: `Tool "${safeTool.name}" response has valid content array.` };
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
+    const msg = errorMessage(error);
     return { rule: "tool-response-content", passed: false, detail: `Tool response content check failed: ${msg}` };
   }
 }

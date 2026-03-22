@@ -2,23 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { runConformanceCheck } from "../src/checks/conformance.js";
 import type { CheckContext } from "../src/checks/base.js";
-
-function makeContext(overrides: Partial<CheckContext> = {}): CheckContext {
-  return {
-    client: {
-      listTools: vi.fn().mockResolvedValue({ tools: [{ name: "echo", inputSchema: { type: "object" } }] }),
-      listPrompts: vi.fn().mockResolvedValue({ prompts: [] }),
-      listResources: vi.fn().mockResolvedValue({ resources: [] }),
-      callTool: vi.fn().mockResolvedValue({ content: [{ type: "text", text: "hello" }] }),
-      request: vi.fn().mockRejectedValue(Object.assign(new Error("Method not found"), { code: -32601 })),
-    } as unknown as CheckContext["client"],
-    serverCapabilities: { tools: {} },
-    target: { targetId: "test", adapter: "local-process" as const, command: "test", args: [] },
-    timeoutMs: 5000,
-    stderrLines: [],
-    ...overrides,
-  };
-}
+import { makeContext } from "./fixtures/test-helpers.js";
 
 describe("runConformanceCheck", () => {
   it("passes for a well-behaved server", async () => {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { renderSarif } from "../src/reporters/sarif.js";
-import type { RunArtifact } from "../src/types.js";
+import { makeArtifact } from "./fixtures/test-helpers.js";
 
 interface SarifOutput {
   version: string;
@@ -10,21 +10,6 @@ interface SarifOutput {
     tool: { driver: { name: string; rules: Array<{ id: string }> } };
     results: Array<{ level: string; ruleId: string }>;
   }>;
-}
-
-function makeArtifact(checks: RunArtifact["checks"] = []): RunArtifact {
-  return {
-    artifactType: "run",
-    schemaVersion: "1.0.0",
-    gate: "pass",
-    runId: "test-run-id",
-    createdAt: "2026-03-21T00:00:00Z",
-    toolVersion: "0.9.0",
-    target: { targetId: "test", adapter: "local-process", command: "test", args: [] },
-    environment: { platform: "darwin", nodeVersion: "v22.0.0" },
-    summary: { total: checks.length, pass: 0, fail: 0, partial: 0, unsupported: 0, flaky: 0, skipped: 0, gate: "pass" },
-    checks,
-  };
 }
 
 function parseSarif(json: string): SarifOutput {

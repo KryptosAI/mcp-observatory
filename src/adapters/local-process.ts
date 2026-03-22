@@ -7,7 +7,30 @@ import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
 import type { LocalProcessTargetConfig, TargetConfig } from "../types.js";
 import { RecordingTransport } from "../transport/recording-transport.js";
 import { formatConnectionFailureDiagnosis } from "../utils/failure-diagnosis.js";
+import { errorMessage } from "../utils/errors.js";
 import { TOOL_VERSION } from "../version.js";
+
+// ── Security: Strip env vars that could hijack the child process ─────────
+const DANGEROUS_ENV_VARS = new Set([
+  "LD_PRELOAD",
+  "LD_LIBRARY_PATH",
+  "DYLD_INSERT_LIBRARIES",
+  "DYLD_LIBRARY_PATH",
+  "NODE_OPTIONS",
+  "NODE_DEBUG",
+  "ELECTRON_RUN_AS_NODE",
+]);
+
+function sanitizeEnv(env: Record<string, string> | undefined): Record<string, string> | undefined {
+  if (!env) return undefined;
+  const cleaned: Record<string, string> = {};
+  for (const [key, value] of Object.entries(env)) {
+    if (!DANGEROUS_ENV_VARS.has(key)) {
+      cleaned[key] = value;
+    }
+  }
+  return cleaned;
+}
 
 export interface AdapterConnectOptions {
   record?: boolean;
@@ -42,7 +65,7 @@ export class LocalProcessAdapter {
       command: target.command,
       args: target.args,
       cwd: target.cwd,
-      env: target.env,
+      env: sanitizeEnv(target.env),
       stderr: "pipe"
     });
 
@@ -80,8 +103,8 @@ export class LocalProcessAdapter {
         timeout: target.timeoutMs ?? 10_000
       });
     } catch (error) {
-      const rawMessage = error instanceof Error ? error.message : String(error);
-      await client.close().catch(() => undefined);
+      const rawMessage = errorMessage(error);
+      await client.close().catch(() => undefined); // Cleanup errors are non-fatal
       throw new AdapterConnectError(target, rawMessage, stderrLines);
     }
 

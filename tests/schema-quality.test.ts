@@ -2,9 +2,10 @@ import { describe, expect, it, vi } from "vitest";
 
 import { runSchemaQualityCheck } from "../src/checks/schema-quality.js";
 import type { CheckContext } from "../src/checks/base.js";
+import { makeContext as makeBaseContext } from "./fixtures/test-helpers.js";
 
 function makeContext(tools: object[] = [], prompts: object[] = [], resources: object[] = []): CheckContext {
-  return {
+  return makeBaseContext({
     client: {
       listTools: vi.fn().mockResolvedValue({ tools }),
       listPrompts: vi.fn().mockResolvedValue({ prompts }),
@@ -15,10 +16,7 @@ function makeContext(tools: object[] = [], prompts: object[] = [], resources: ob
       prompts: prompts.length > 0 ? {} : undefined,
       resources: resources.length > 0 ? {} : undefined,
     },
-    target: { targetId: "test", adapter: "local-process", command: "test", args: [] },
-    timeoutMs: 5000,
-    stderrLines: [],
-  };
+  });
 }
 
 describe("runSchemaQualityCheck", () => {

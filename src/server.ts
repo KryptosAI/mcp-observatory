@@ -13,6 +13,7 @@ import { diffArtifacts } from "./diff.js";
 import { scanForTargets } from "./discovery.js";
 import { detectEnvironment } from "./environment.js";
 import { renderMarkdown } from "./reporters/markdown.js";
+import { errorMessage } from "./utils/errors.js";
 import { runTarget, runTargetRecording } from "./runner.js";
 import type { RunOptions } from "./runner.js";
 import { defaultRunsDirectory, readArtifact, writeRunArtifact } from "./storage.js";
@@ -36,7 +37,22 @@ const ALLOWED_COMMANDS = new Set([
   "bun",
 ]);
 
-function validateCommand(command: string): void {
+// ── Security: Argument Validation ──────────────────────────────────────────
+// Reject args containing shell metacharacters that could enable injection.
+const DANGEROUS_ARG_PATTERN = /[;|`]|\$\(|&&|\|\|/;
+
+function validateArgs(args: string[]): void {
+  for (const arg of args) {
+    if (DANGEROUS_ARG_PATTERN.test(arg)) {
+      throw new Error(
+        `Argument "${arg}" contains shell metacharacters and was rejected. ` +
+        `Remove characters like ; | && || $() or backticks.`
+      );
+    }
+  }
+}
+
+export function validateCommand(command: string): void {
   const base = path.basename(command.split(/\s+/)[0] ?? "");
   if (!ALLOWED_COMMANDS.has(base)) {
     throw new Error(
@@ -49,7 +65,7 @@ function validateCommand(command: string): void {
 
 // ── Security: Path Validation ──────────────────────────────────────────────
 // File-reading tools must not traverse outside expected directories.
-function validatePath(filePath: string, allowedRoot: string): string {
+export function validatePath(filePath: string, allowedRoot: string): string {
   const resolved = path.resolve(filePath);
   const root = path.resolve(allowedRoot);
   if (!resolved.startsWith(root + path.sep) && resolved !== root) {
@@ -124,7 +140,7 @@ export async function startServer(): Promise<void> {
           const artifact = await runTarget(t.config, opts);
           lines.push(formatRun(artifact));
         } catch (error) {
-          const msg = error instanceof Error ? error.message : String(error);
+          const msg = errorMessage(error);
           lines.push(`  Error: ${msg}`);
         }
         lines.push("");
@@ -147,6 +163,7 @@ export async function startServer(): Promise<void> {
       const startMs = Date.now();
       try {
         validateCommand(command);
+        validateArgs(args ?? []);
         const target = {
           targetId: command,
           adapter: "local-process" as const,
@@ -165,7 +182,7 @@ export async function startServer(): Promise<void> {
           content: [{ type: "text" as const, text: `${formatRun(artifact)}\n\nArtifact saved: ${outPath}` }],
         };
       } catch (error) {
-        const msg = error instanceof Error ? error.message : String(error);
+        const msg = errorMessage(error);
         logRequest("check_server", startMs, true);
         return { content: [{ type: "text" as const, text: `Error checking server: ${msg}` }], isError: true };
       }
@@ -183,6 +200,7 @@ export async function startServer(): Promise<void> {
       const startMs = Date.now();
       try {
         validateCommand(command);
+        validateArgs(args ?? []);
         const target = {
           targetId: command,
           adapter: "local-process" as const,
@@ -215,7 +233,7 @@ export async function startServer(): Promise<void> {
         logRequest("score_server", startMs);
         return { content: [{ type: "text" as const, text: lines.join("\n") }] };
       } catch (error) {
-        const msg = error instanceof Error ? error.message : String(error);
+        const msg = errorMessage(error);
         logRequest("score_server", startMs, true);
         return { content: [{ type: "text" as const, text: `Error scoring server: ${msg}` }], isError: true };
       }
@@ -251,7 +269,7 @@ export async function startServer(): Promise<void> {
         logRequest("diff_runs", startMs);
         return { content: [{ type: "text" as const, text: output }] };
       } catch (error) {
-        const msg = error instanceof Error ? error.message : String(error);
+        const msg = errorMessage(error);
         logRequest("diff_runs", startMs, true);
         return { content: [{ type: "text" as const, text: `Error diffing runs: ${msg}` }], isError: true };
       }
@@ -296,7 +314,7 @@ export async function startServer(): Promise<void> {
           content: [{ type: "text" as const, text: `${formatRun(artifact)}\n\nFile: ${path.join(dir, latest)}` }],
         };
       } catch (error) {
-        const msg = error instanceof Error ? error.message : String(error);
+        const msg = errorMessage(error);
         logRequest("get_last_run", startMs, true);
         return { content: [{ type: "text" as const, text: `Error reading last run: ${msg}` }], isError: true };
       }
@@ -337,7 +355,7 @@ export async function startServer(): Promise<void> {
           sections.push("## Currently Configured MCP Servers\nNone found.");
         }
       } catch (error) {
-        const msg = error instanceof Error ? error.message : String(error);
+        const msg = errorMessage(error);
         sections.push(`## Currently Configured MCP Servers\nError scanning: ${msg}`);
       }
 
@@ -357,7 +375,7 @@ export async function startServer(): Promise<void> {
           sections.push(`## Detected Environment (${workDir})\nNo recognizable project signals found.`);
         }
       } catch (error) {
-        const msg = error instanceof Error ? error.message : String(error);
+        const msg = errorMessage(error);
         sections.push(`## Detected Environment\nError: ${msg}`);
       }
 
@@ -401,7 +419,7 @@ export async function startServer(): Promise<void> {
           sections.push(`## MCP Registry\nRegistry returned HTTP ${String(response.status)}. The listing endpoint may not be publicly available.`);
         }
       } catch (error) {
-        const msg = error instanceof Error ? error.message : String(error);
+        const msg = errorMessage(error);
         sections.push(`## MCP Registry\nCould not reach registry: ${msg}`);
       }
 
@@ -421,6 +439,7 @@ export async function startServer(): Promise<void> {
       const startMs = Date.now();
       try {
         validateCommand(command);
+        validateArgs(args ?? []);
         const target = {
           targetId: command,
           adapter: "local-process" as const,
@@ -448,7 +467,7 @@ export async function startServer(): Promise<void> {
           content: [{ type: "text" as const, text: `${formatRun(artifact)}\n\nCassette saved: ${cassettePath}\n${cassetteEntries.length} entries recorded.\n\nReplay offline: replay({ cassette: "${cassettePath}" })\nVerify live: verify({ cassette: "${cassettePath}", command: "${command}" })` }],
         };
       } catch (error) {
-        const msg = error instanceof Error ? error.message : String(error);
+        const msg = errorMessage(error);
         logRequest("record", startMs, true);
         return { content: [{ type: "text" as const, text: `Error recording: ${msg}` }], isError: true };
       }
@@ -501,7 +520,7 @@ export async function startServer(): Promise<void> {
         logRequest("replay", startMs);
         return { content: [{ type: "text" as const, text: lines.join("\n") }] };
       } catch (error) {
-        const msg = error instanceof Error ? error.message : String(error);
+        const msg = errorMessage(error);
         logRequest("replay", startMs, true);
         return { content: [{ type: "text" as const, text: `Error replaying: ${msg}` }], isError: true };
       }
@@ -545,7 +564,7 @@ export async function startServer(): Promise<void> {
         logRequest("verify", startMs);
         return { content: [{ type: "text" as const, text: lines.join("\n") }] };
       } catch (error) {
-        const msg = error instanceof Error ? error.message : String(error);
+        const msg = errorMessage(error);
         logRequest("verify", startMs, true);
         return { content: [{ type: "text" as const, text: `Error verifying: ${msg}` }], isError: true };
       }
@@ -563,6 +582,7 @@ export async function startServer(): Promise<void> {
       const startMs = Date.now();
       try {
         validateCommand(command);
+        validateArgs(args ?? []);
         const target = {
           targetId: command,
           adapter: "local-process" as const,
@@ -606,7 +626,7 @@ export async function startServer(): Promise<void> {
           content: [{ type: "text" as const, text: `${formatRun(artifact)}\n\nArtifact saved: ${outPath}${diffText}` }],
         };
       } catch (error) {
-        const msg = error instanceof Error ? error.message : String(error);
+        const msg = errorMessage(error);
         logRequest("watch", startMs, true);
         return { content: [{ type: "text" as const, text: `Error watching: ${msg}` }], isError: true };
       }
