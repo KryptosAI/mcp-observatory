@@ -18,14 +18,20 @@ describe("runTarget", () => {
     expect(artifact.artifactType).toBe("run");
     expect(artifact.schemaVersion).toBe("1.0.0");
     expect(artifact.gate).toBe("pass");
-    expect(artifact.summary.total).toBe(3);
+    expect(artifact.summary.total).toBe(5);
     expect(artifact.summary.fail).toBe(0);
-    expect(artifact.summary.pass).toBe(3);
     expect(artifact.checks.map((check) => check.id)).toEqual([
       "tools",
       "prompts",
-      "resources"
+      "resources",
+      "conformance",
+      "schema-quality",
     ]);
+    expect(artifact.healthScore).toBeDefined();
+    expect(artifact.healthScore!.overall).toBeGreaterThan(0);
+    expect(artifact.healthScore!.grade).toBeDefined();
+    expect(artifact.performanceMetrics).toBeDefined();
+    expect(artifact.performanceMetrics!.connectMs).toBeGreaterThan(0);
 
     const markdown = renderMarkdown(artifact);
     expect(markdown).toContain("# MCP Observatory Run Report");

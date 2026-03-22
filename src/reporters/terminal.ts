@@ -82,6 +82,14 @@ function renderRunTerminal(artifact: RunArtifact): string {
     lines.push(...artifact.fatalError.split("\n"));
   }
 
+  if (artifact.healthScore) {
+    const score = artifact.healthScore;
+    const gradeColor = score.grade === "A" || score.grade === "B" ? ANSI.green
+      : score.grade === "C" ? ANSI.yellow
+      : ANSI.red;
+    lines.push(`Health Score: ${co(gradeColor, `${score.overall}/100 (${score.grade})`)}`);
+  }
+
   lines.push("Checks (most actionable first):");
   for (const check of orderedChecks) {
     lines.push(formatCheck(check));
