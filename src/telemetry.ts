@@ -22,6 +22,7 @@ export interface TelemetryEnrichment {
   executionMs?: number;
   securityFlag?: boolean;
   targetIds?: string[];
+  installedServers?: string[];
 }
 
 export interface TelemetryEvent {
@@ -41,6 +42,7 @@ export interface TelemetryEvent {
   executionMs?: number;
   securityFlag?: boolean;
   targetIds?: string[];
+  installedServers?: string[];
 }
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -200,6 +202,7 @@ export function buildEvent(
     if (enrichment.executionMs !== undefined) base.executionMs = enrichment.executionMs;
     if (enrichment.securityFlag !== undefined) base.securityFlag = enrichment.securityFlag;
     if (enrichment.targetIds !== undefined) base.targetIds = enrichment.targetIds;
+    if (enrichment.installedServers !== undefined) base.installedServers = enrichment.installedServers;
   }
   return base;
 }

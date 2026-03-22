@@ -160,6 +160,7 @@ async function runScan(bin: string, configPath: string | undefined, invokeTools:
     executionMs: Date.now() - t0,
     securityFlag: hasSecurityFinding,
     targetIds: results.map((r) => r.targetId),
+    installedServers: targets.map((t) => t.config.targetId),
   }));
 
   if (failCount > 0) {
