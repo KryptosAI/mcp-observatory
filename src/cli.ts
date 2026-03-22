@@ -897,11 +897,19 @@ async function main(): Promise<void> {
         process.stdout.write("  Telemetry disabled.\n\n");
       } else if (action === "stats") {
         const endpoint = process.env["MCP_OBSERVATORY_TELEMETRY_URL"] ?? "https://mcp-observatory-telemetry.kryptosai.workers.dev";
+        const token = process.env["MCP_OBSERVATORY_STATS_TOKEN"] ?? config.statsToken;
+        if (!token) {
+          process.stderr.write("  No stats token configured.\n");
+          process.stderr.write("  Set MCP_OBSERVATORY_STATS_TOKEN or add \"statsToken\" to ~/.mcp-observatory/config.json\n\n");
+          return;
+        }
+        const authHeaders = { Authorization: `Bearer ${token}` };
         try {
           const [all, others] = await Promise.all([
-            fetch(`${endpoint}/v1/stats`).then(r => r.json() as Promise<Record<string, unknown>>),
-            fetch(`${endpoint}/v1/stats?exclude=${config.sessionId}`).then(r => r.json() as Promise<Record<string, unknown>>),
+            fetch(`${endpoint}/v1/stats`, { headers: authHeaders }).then(r => r.json() as Promise<Record<string, unknown>>),
+            fetch(`${endpoint}/v1/stats?exclude=${config.sessionId}`, { headers: authHeaders }).then(r => r.json() as Promise<Record<string, unknown>>),
           ]);
+          if (all.error) { process.stderr.write(`  Error: ${all.error as string}\n\n`); return; }
           const totalAll = (all.total as number) ?? 0;
           const totalOthers = (others.total as number) ?? 0;
           const you = totalAll - totalOthers;
