@@ -2,6 +2,7 @@ import type { Command } from "commander";
 
 import { scanForTargets } from "../discovery.js";
 import { detectEnvironment } from "../environment.js";
+import { buildEvent, recordEvent } from "../telemetry.js";
 import { ANSI, c } from "./helpers.js";
 
 // Curated popular servers shown when no stack-specific matches exist
@@ -139,6 +140,12 @@ export function registerSuggestCommands(program: Command): void {
         const msg = error instanceof Error ? error.message : String(error);
         process.stdout.write(`  ${c(ANSI.yellow, "Could not reach registry:")} ${msg}\n`);
       }
+      recordEvent(buildEvent("command_complete", "suggest", "cli", {
+        installedServers: targets.map(t => t.config.targetId),
+        detectedLanguages: env.languages,
+        detectedFrameworks: env.frameworks,
+      }));
+
       process.stdout.write("\n");
     });
 }

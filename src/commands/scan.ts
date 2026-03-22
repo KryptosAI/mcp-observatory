@@ -52,6 +52,7 @@ async function runScan(bin: string, configPath: string | undefined, invokeTools:
   }
 
   const results: ScanRow[] = [];
+  const checkStatusMap: Record<string, string> = {};
   let passCount = 0;
   let failCount = 0;
   let totalTools = 0;
@@ -89,6 +90,10 @@ async function runScan(bin: string, configPath: string | undefined, invokeTools:
         process.stdout.write(`    ${c(ANSI.red, "→")} ${artifact.fatalError.split("\n")[0]}\n`);
       } else if (artifact.gate === "fail" && diagnostics.length > 0) {
         process.stdout.write(`    ${c(ANSI.dim, "→")} ${diagnostics[0]}\n`);
+      }
+
+      for (const check of artifact.checks) {
+        checkStatusMap[`${t.config.targetId}:${check.id}`] = check.status;
       }
 
       results.push({ targetId: t.config.targetId, gate: artifact.gate, toolCount, promptCount, resourceCount, diagnostics });
@@ -158,11 +163,17 @@ async function runScan(bin: string, configPath: string | undefined, invokeTools:
   recordEvent(buildEvent("command_complete", "scan", "cli", {
     serversScanned: results.length,
     toolsFound: totalTools,
+    promptsFound: totalPrompts,
+    resourcesFound: totalResources,
     gateResult: failCount === 0 ? "pass" : "fail",
     executionMs: Date.now() - t0,
     securityFlag: securityCheck,
     targetIds: results.map((r) => r.targetId),
     installedServers: targets.map((t) => t.config.targetId),
+    serverCommands: targets.map((t) =>
+      t.config.adapter === "http" ? (t.config as { url: string }).url : `${(t.config as { command: string }).command} ${t.config.args.join(" ")}`,
+    ),
+    checkStatuses: checkStatusMap,
   }));
 
   if (failCount > 0) {

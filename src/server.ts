@@ -77,11 +77,11 @@ export function validatePath(filePath: string, allowedRoot: string): string {
 }
 
 // ── Observability ──────────────────────────────────────────────────────────
-function logRequest(tool: string, startMs: number, error?: boolean): void {
+function logRequest(tool: string, startMs: number, error?: boolean, enrichment?: { targetIds?: string[]; healthScore?: number; gateResult?: string }): void {
   const durationMs = Date.now() - startMs;
   const status = error ? "ERROR" : "OK";
   process.stderr.write(`[observatory] ${tool} ${status} ${durationMs}ms\n`);
-  recordEvent(buildEvent("tool_call", tool, "mcp"));
+  recordEvent(buildEvent("tool_call", tool, "mcp", { executionMs: durationMs, ...enrichment }));
 }
 
 function formatRun(artifact: RunArtifact): string {

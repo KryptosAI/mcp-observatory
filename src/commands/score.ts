@@ -30,13 +30,25 @@ export function registerScoreCommands(program: Command): void {
       await writeRunArtifact(artifact, defaultRunsDirectory(process.cwd()));
 
       const toolsCheck = artifact.checks.find(ch => ch.id === "tools");
+      const promptsCheck = artifact.checks.find(ch => ch.id === "prompts");
+      const resourcesCheck = artifact.checks.find(ch => ch.id === "resources");
+      const scoreCheckStatuses: Record<string, string> = {};
+      for (const ch of artifact.checks) scoreCheckStatuses[ch.id] = ch.status;
       recordEvent(buildEvent("command_complete", "score", "cli", {
         serversScanned: 1,
         toolsFound: toolsCheck?.evidence[0]?.itemCount ?? 0,
+        promptsFound: promptsCheck?.evidence[0]?.itemCount ?? 0,
+        resourcesFound: resourcesCheck?.evidence[0]?.itemCount ?? 0,
         gateResult: artifact.gate,
         executionMs: Date.now() - t0,
         securityFlag: true,
         targetIds: [target.targetId],
+        serverCommands: [commandArgs.join(" ")],
+        healthScore: artifact.healthScore?.overall,
+        healthGrade: artifact.healthScore?.grade,
+        connectMs: artifact.performanceMetrics?.connectMs,
+        checkStatuses: scoreCheckStatuses,
+        fatalError: artifact.fatalError?.split("\n")[0],
       }));
 
       if (options.format !== "terminal") {
