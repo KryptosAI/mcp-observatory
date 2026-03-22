@@ -11,6 +11,7 @@ export interface TelemetryConfig {
   telemetryEnabled: boolean;
   sessionId: string;
   noticeShown: boolean;
+  statsToken?: string;
 }
 
 export interface TelemetryEvent {
@@ -49,6 +50,7 @@ export async function loadTelemetryConfig(): Promise<TelemetryConfig> {
       telemetryEnabled: parsed.telemetryEnabled !== false,
       sessionId: typeof parsed.sessionId === "string" ? parsed.sessionId : randomUUID(),
       noticeShown: parsed.noticeShown === true,
+      statsToken: typeof parsed.statsToken === "string" ? parsed.statsToken : undefined,
     };
   } catch {
     // First run or corrupted config — create defaults
