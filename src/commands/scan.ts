@@ -4,11 +4,7 @@ import type { Command } from "commander";
 import { scanForTargets } from "../discovery.js";
 import {
   runTarget,
-  renderTerminal,
-  writeRunArtifact,
-  type TargetConfig,
 } from "../index.js";
-import { defaultRunsDirectory } from "../storage.js";
 import { TOOL_VERSION } from "../version.js";
 import { ANSI, LOGO, c, useColor } from "./helpers.js";
 
