@@ -1,11 +1,11 @@
 import type { Command } from "commander";
 
 import {
-  renderTerminal,
   runTarget,
   writeRunArtifact,
   type TargetConfig,
 } from "../index.js";
+import { renderWatchFirstRun, renderWatchNoChanges, renderWatchChanges } from "../reporters/terminal.js";
 import { isCI } from "../ci.js";
 import { defaultRunsDirectory, findLatestArtifact, readArtifact } from "../storage.js";
 import { ANSI, c, formatOutput, targetFromCommand } from "./helpers.js";
@@ -22,6 +22,14 @@ async function runWatchOneShot(
   const artifact = await runTarget(target);
   const outPath = await writeRunArtifact(artifact, outDir);
 
+  // JSON mode bypasses compact rendering
+  if (options.format === "json") {
+    process.stdout.write(formatOutput(artifact, "json") + "\n");
+    process.stdout.write(`${c(ANSI.dim, `Artifact: ${outPath}`)}\n`);
+    if (artifact.gate === "fail") process.exitCode = 1;
+    return;
+  }
+
   // Find the PREVIOUS run for this target (excluding the one just written)
   const previousPath = await findLatestArtifact(outDir, target.targetId, outPath);
   if (previousPath) {
@@ -29,11 +37,15 @@ async function runWatchOneShot(
     if (previousRaw.artifactType === "run") {
       const diffResult = diff(previousRaw, artifact);
 
-      if (diffResult.summary.regressions === 0 && diffResult.summary.recoveries === 0 && diffResult.summary.added === 0 && diffResult.summary.removed === 0) {
-        process.stdout.write(formatOutput(artifact, options.format as "terminal" | "json") + "\n");
-        process.stdout.write(`${c(ANSI.green, "✓ No changes")} since last run\n`);
+      const hasChanges = diffResult.summary.regressions > 0
+        || diffResult.summary.recoveries > 0
+        || diffResult.summary.added > 0
+        || diffResult.summary.removed > 0;
+
+      if (!hasChanges) {
+        process.stdout.write(renderWatchNoChanges(artifact) + "\n");
       } else {
-        process.stdout.write(formatOutput(diffResult, options.format as "terminal" | "json") + "\n");
+        process.stdout.write(renderWatchChanges(artifact, diffResult) + "\n");
       }
       process.stdout.write(`${c(ANSI.dim, `Artifact: ${outPath}`)}\n`);
 
@@ -45,7 +57,7 @@ async function runWatchOneShot(
   }
 
   // First run — no previous artifact to diff against
-  process.stdout.write(formatOutput(artifact, options.format as "terminal" | "json") + "\n");
+  process.stdout.write(renderWatchFirstRun(artifact) + "\n");
   process.stdout.write(`${c(ANSI.dim, `Artifact: ${outPath}`)}\n`);
 
   if (artifact.gate === "fail") {
@@ -62,7 +74,7 @@ async function runWatchMode(target: TargetConfig, outDir: string, intervalSecond
 
   let previousArtifact = await runTarget(target);
   await writeRunArtifact(previousArtifact, outDir);
-  process.stdout.write(`${renderTerminal(previousArtifact)}\n\n`);
+  process.stdout.write(renderWatchFirstRun(previousArtifact) + "\n\n");
 
   const loop = async (): Promise<void> => {
     await new Promise((resolve) => setTimeout(resolve, intervalSeconds * 1000));
@@ -72,9 +84,9 @@ async function runWatchMode(target: TargetConfig, outDir: string, intervalSecond
 
     if (diffResult.summary.regressions > 0 || diffResult.summary.recoveries > 0 || diffResult.summary.added > 0 || diffResult.summary.removed > 0) {
       const outPath = await writeRunArtifact(currentArtifact, outDir);
-      process.stdout.write(`\n--- Change detected at ${currentArtifact.createdAt} ---\n`);
-      process.stdout.write(`${renderTerminal(diffResult)}\n`);
-      process.stdout.write(`Artifact: ${outPath}\n\n`);
+      process.stdout.write(`\n--- ${new Date().toLocaleTimeString()} ---\n`);
+      process.stdout.write(renderWatchChanges(currentArtifact, diffResult) + "\n");
+      process.stdout.write(`${c(ANSI.dim, `Artifact: ${outPath}`)}\n\n`);
     }
 
     previousArtifact = currentArtifact;
