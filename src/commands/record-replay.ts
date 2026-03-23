@@ -25,7 +25,7 @@ export function registerRecordReplayCommands(program: Command, bin: string): voi
   // ── record ─────────────────────────────────────────────────────────────
 
   program
-    .command("record")
+    .command("record", { hidden: true })
     .passThroughOptions()
     .description("Record a server session to a cassette file for replay.")
     .argument("[command...]", "Server command and arguments to run.")
@@ -71,7 +71,7 @@ export function registerRecordReplayCommands(program: Command, bin: string): voi
   // ── replay ─────────────────────────────────────────────────────────────
 
   program
-    .command("replay")
+    .command("replay", { hidden: true })
     .description("Replay a cassette file offline — no live server needed.")
     .argument("<cassette>", "Path to a cassette JSON file.")
     .option("--no-color", "Disable colored output.")

@@ -199,6 +199,22 @@ function renderRunTerminal(artifact: RunArtifact): string {
     lines.push(formatCheck(check));
   }
 
+  // Show security-lite findings prominently even without --security flag
+  const secLite = artifact.checks.find(ch => ch.id === "security-lite");
+  if (secLite && secLite.status !== "pass" && secLite.evidence.length > 0) {
+    const diagnostics = secLite.evidence[0]?.diagnostics ?? [];
+    if (diagnostics.length > 0) {
+      lines.push("");
+      lines.push(co(ANSI.red, "  Security:"));
+      for (const d of diagnostics.slice(0, 3)) {
+        lines.push(`    ${co(ANSI.dim, "→")} ${d}`);
+      }
+      if (diagnostics.length > 3) {
+        lines.push(`    ${co(ANSI.dim, `  ...and ${diagnostics.length - 3} more (run with --security for full scan)`)}`);
+      }
+    }
+  }
+
   return lines.join("\n");
 }
 
