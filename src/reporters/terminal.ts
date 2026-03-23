@@ -6,6 +6,110 @@ import {
   sortChecksByActionability
 } from "./common.js";
 
+// ── Watch-specific compact renderers ────────────────────────────────────────
+
+function watchStatusIcon(status: CheckStatus): string {
+  switch (status) {
+    case "pass": return co(ANSI.green, "✓");
+    case "fail": return co(ANSI.red, "✗");
+    case "partial":
+    case "flaky": return co(ANSI.yellow, "⚠");
+    case "unsupported":
+    case "skipped": return co(ANSI.dim, "–");
+  }
+}
+
+function scoreString(artifact: RunArtifact): string {
+  if (!artifact.healthScore) return "";
+  const s = artifact.healthScore;
+  const color = s.grade === "A" || s.grade === "B" ? ANSI.green
+    : s.grade === "C" ? ANSI.yellow : ANSI.red;
+  return co(color, `${s.overall}/100 (${s.grade})`);
+}
+
+function serverLabel(artifact: RunArtifact): string {
+  const name = artifact.target.serverName ?? artifact.target.targetId;
+  const version = artifact.target.serverVersion ?? "";
+  return version ? `${name} ${version}` : name;
+}
+
+/** Compact single-line header: server name — score — gate */
+function watchHeader(artifact: RunArtifact): string {
+  const parts = [co(ANSI.bold, serverLabel(artifact))];
+  const score = scoreString(artifact);
+  if (score) parts.push(score);
+  parts.push(artifact.gate === "pass" ? co(ANSI.green, "pass") : co(ANSI.red, "FAIL"));
+  return parts.join(" — ");
+}
+
+/** First run: header + one line per check + fatal error if any */
+export function renderWatchFirstRun(artifact: RunArtifact): string {
+  const lines = [watchHeader(artifact)];
+
+  if (artifact.fatalError !== undefined) {
+    lines.push("");
+    lines.push(co(ANSI.red, "Server failed to start:"));
+    // Show just the diagnosis, not the full multi-paragraph dump
+    const diagLines = artifact.fatalError.split("\n");
+    const diagIdx = diagLines.findIndex(l => l.startsWith("Diagnosis:"));
+    if (diagIdx >= 0) {
+      lines.push(`  ${diagLines[diagIdx]}`);
+    } else {
+      lines.push(`  ${diagLines[0]}`);
+    }
+    return lines.join("\n");
+  }
+
+  const orderedChecks = sortChecksByActionability(artifact.checks);
+  for (const check of orderedChecks) {
+    const icon = watchStatusIcon(check.status);
+    // Compact: only show detail for non-pass checks
+    if (check.status === "pass") {
+      lines.push(`  ${icon} ${check.id}`);
+    } else {
+      lines.push(`  ${icon} ${check.id}  ${co(ANSI.dim, check.message)}`);
+    }
+  }
+
+  return lines.join("\n");
+}
+
+/** No changes: header + ✓ */
+export function renderWatchNoChanges(artifact: RunArtifact): string {
+  return `${watchHeader(artifact)}\n${co(ANSI.green, "✓ No changes")}`;
+}
+
+/** Changes detected: header + only the changes */
+export function renderWatchChanges(artifact: RunArtifact, diff: DiffArtifact): string {
+  const lines = [watchHeader(artifact)];
+
+  if (diff.regressions.length > 0) {
+    lines.push("");
+    for (const e of diff.regressions) {
+      lines.push(co(ANSI.red, `  ✗ ${e.id}: ${e.fromStatus ?? "n/a"} → ${e.toStatus ?? "n/a"}  ${e.message}`));
+    }
+  }
+  if (diff.recoveries.length > 0) {
+    lines.push("");
+    for (const e of diff.recoveries) {
+      lines.push(co(ANSI.green, `  ✓ ${e.id}: ${e.fromStatus ?? "n/a"} → ${e.toStatus ?? "n/a"}  ${e.message}`));
+    }
+  }
+  if (diff.schemaDrift && diff.schemaDrift.length > 0) {
+    lines.push("");
+    for (const e of diff.schemaDrift) {
+      lines.push(co(ANSI.yellow, `  ⚠ ${e.name} (${e.capability}): ${e.changes.join(", ")}`));
+    }
+  }
+  if (diff.responseChanges && diff.responseChanges.length > 0) {
+    for (const e of diff.responseChanges) {
+      lines.push(co(ANSI.yellow, `  ⚠ ${e.name} (${e.capability}): ${e.change}`));
+    }
+  }
+
+  return lines.join("\n");
+}
+
 const ANSI = {
   red: "\x1b[31m",
   green: "\x1b[32m",
