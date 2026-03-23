@@ -9,6 +9,7 @@ import { renderWatchFirstRun, renderWatchNoChanges, renderWatchChanges } from ".
 import { isCI } from "../ci.js";
 import { defaultRunsDirectory, findLatestArtifact, readArtifact } from "../storage.js";
 import { appendHistory, buildHistoryEntry } from "../history.js";
+import { buildEvent, recordEvent } from "../telemetry.js";
 import { ANSI, c, formatOutput, targetFromCommand } from "./helpers.js";
 
 // ── One-shot mode ────────────────────────────────────────────────────────────
@@ -63,6 +64,20 @@ async function runWatchOneShot(
   // First run — no previous artifact to diff against
   process.stdout.write(renderWatchFirstRun(artifact) + "\n");
   process.stdout.write(`${c(ANSI.dim, `Artifact: ${outPath}`)}\n`);
+
+  // Telemetry for watch one-shot
+  const toolCount = artifact.checks.find(ch => ch.id === "tools")?.evidence[0]?.itemCount ?? 0;
+  const checkStatuses: Record<string, string> = {};
+  for (const ch of artifact.checks) checkStatuses[ch.id] = ch.status;
+  recordEvent(buildEvent("command_complete", "watch", "cli", {
+    serversScanned: 1,
+    toolsFound: toolCount,
+    gateResult: artifact.gate,
+    targetIds: [target.targetId],
+    healthScore: artifact.healthScore?.overall,
+    healthGrade: artifact.healthScore?.grade,
+    checkStatuses,
+  }));
 
   if (artifact.gate === "fail") {
     process.exitCode = 1;

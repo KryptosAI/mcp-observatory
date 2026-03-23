@@ -6,7 +6,9 @@ import {
   runTarget,
   writeRunArtifact,
 } from "../index.js";
+import { appendHistory, buildHistoryEntry } from "../history.js";
 import { defaultRunsDirectory } from "../storage.js";
+import { buildEvent, recordEvent } from "../telemetry.js";
 import { ANSI, c, colorStatus, formatOutput, resolveTarget, writeOutput } from "./helpers.js";
 import { runWatchMode } from "./watch.js";
 
@@ -26,10 +28,34 @@ export function registerLegacyCommands(program: Command): void {
         await runWatchMode(target, options.outDir, parseInt(options.interval, 10) || 30);
         return;
       }
+      const t0 = Date.now();
       const artifact = await runTarget(target, { invokeTools: options.invokeTools });
       const outPath = await writeRunArtifact(artifact, options.outDir);
       const summary = renderTerminal(artifact);
       process.stdout.write(`${summary}\nArtifact: ${outPath}\n`);
+
+      // Track history + telemetry
+      await appendHistory(buildHistoryEntry(artifact)).catch(() => {});
+      const toolCount = artifact.checks.find(ch => ch.id === "tools")?.evidence[0]?.itemCount ?? 0;
+      const promptCount = artifact.checks.find(ch => ch.id === "prompts")?.evidence[0]?.itemCount ?? 0;
+      const resourceCount = artifact.checks.find(ch => ch.id === "resources")?.evidence[0]?.itemCount ?? 0;
+      const checkStatuses: Record<string, string> = {};
+      for (const ch of artifact.checks) checkStatuses[ch.id] = ch.status;
+      recordEvent(buildEvent("command_complete", "run", "cli", {
+        serversScanned: 1,
+        toolsFound: toolCount,
+        promptsFound: promptCount,
+        resourcesFound: resourceCount,
+        gateResult: artifact.gate,
+        executionMs: Date.now() - t0,
+        targetIds: [target.targetId],
+        healthScore: artifact.healthScore?.overall,
+        healthGrade: artifact.healthScore?.grade,
+        connectMs: artifact.performanceMetrics?.connectMs,
+        checkStatuses,
+        fatalError: artifact.fatalError?.split("\n")[0],
+      }));
+
       if (artifact.gate === "fail") {
         process.exitCode = 1;
       }
