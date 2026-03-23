@@ -1,4 +1,4 @@
-import type { RunArtifact, CheckResult } from "./types.js";
+import type { RunArtifact } from "./types.js";
 
 function getToolCount(artifact: RunArtifact): number {
   return artifact.checks.find(c => c.id === "tools")?.evidence[0]?.itemCount ?? 0;

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 // Mock fs/promises to avoid real file writes
 vi.mock("node:fs/promises", () => ({
@@ -20,12 +20,12 @@ function createMockExec(): CommandExecutor & {
   > = [];
   const calls: Array<{ cmd: string; args: string[] }> = [];
 
-  const fn = async (cmd: string, args: string[]) => {
+  const fn = (cmd: string, args: string[]): Promise<{ stdout: string; stderr: string }> => {
     calls.push({ cmd, args });
     const next = queue.shift();
-    if (!next) throw new Error("No more mock values queued");
-    if (next.type === "reject") throw next.error;
-    return next.value;
+    if (!next) return Promise.reject(new Error("No more mock values queued"));
+    if (next.type === "reject") return Promise.reject(next.error);
+    return Promise.resolve(next.value);
   };
 
   fn.calls = calls;

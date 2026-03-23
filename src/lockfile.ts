@@ -88,7 +88,7 @@ export function buildServerLockEntry(artifact: RunArtifact): LockFileServerEntry
   const tools: LockFileToolEntry[] = [];
   if (toolsCheck && toolsCheck.evidence.length > 0) {
     const ev = toolsCheck.evidence[0]!;
-    const schemas = ev.schemas as Record<string, object> | undefined;
+    const schemas = ev.schemas;
     const identifiers = ev.identifiers ?? [];
 
     if (schemas && Object.keys(schemas).length > 0) {

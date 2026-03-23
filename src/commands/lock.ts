@@ -7,7 +7,6 @@ import {
   buildServerLockEntry,
   verifyAgainstLock,
   mergeLockFile,
-  defaultLockPath,
 } from "../lockfile.js";
 import type { LockFileServerEntry } from "../lockfile.js";
 import { runTarget } from "../runner.js";
