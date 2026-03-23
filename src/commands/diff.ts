@@ -4,6 +4,7 @@ import {
   diffArtifacts,
   readArtifact,
 } from "../index.js";
+import { buildEvent, recordEvent } from "../telemetry.js";
 import { formatOutput, writeOutput } from "./helpers.js";
 
 export function registerDiffCommands(program: Command): void {
@@ -29,9 +30,18 @@ export function registerDiffCommands(program: Command): void {
           throw new Error("The diff command only accepts run artifacts.");
         }
 
+        const t0 = Date.now();
         const artifact = diffArtifacts(baseArtifact, headArtifact);
         const output = formatOutput(artifact, options.format);
         await writeOutput(output, options.format, options.output);
+
+        recordEvent(buildEvent("command_complete", "diff", "cli", {
+          gateResult: artifact.gate,
+          executionMs: Date.now() - t0,
+          targetIds: [headArtifact.target.targetId],
+          healthScore: headArtifact.healthScore?.overall,
+          healthGrade: headArtifact.healthScore?.grade,
+        }));
 
         if (options.failOnRegression && artifact.gate === "fail") {
           process.exitCode = 1;
