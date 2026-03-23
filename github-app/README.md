@@ -1,5 +1,7 @@
 # MCP Observatory GitHub App
 
+> **Status**: Planned feature — not yet deployed. This is the future hosted Observatory GitHub App.
+
 A GitHub App that automatically analyzes MCP server configurations in pull requests and posts health score reports as PR comments.
 
 ## Setup

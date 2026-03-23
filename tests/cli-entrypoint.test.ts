@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { execFileSync } from "node:child_process";
+import os from "node:os";
+import fs from "node:fs";
 import path from "node:path";
 
 const CLI = path.resolve("src/cli.ts");
@@ -150,5 +152,45 @@ describe("CLI entrypoint", () => {
   it("exits non-zero for unknown command", () => {
     const { exitCode } = runCli(["nonexistent-command"]);
     expect(exitCode).not.toBe(0);
+  });
+
+  // ── Lock commands ───────────────────────────────────────────────
+  it("lock subcommand shows help", () => {
+    const { stdout, exitCode } = runCli(["lock", "--help"]);
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("lock");
+  });
+
+  // ── History commands ────────────────────────────────────────────
+  it("history subcommand shows help", () => {
+    const { stdout, exitCode } = runCli(["history", "--help"]);
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("history");
+  });
+
+  it("history with no data shows empty message", () => {
+    const tmpDir = path.join(os.tmpdir(), `obs-test-${Date.now()}`);
+    fs.mkdirSync(tmpDir, { recursive: true });
+    const { stdout, exitCode } = runCli(["history"], { cwd: tmpDir });
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("No history");
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  // ── CI Report commands ──────────────────────────────────────────
+  it("ci-report subcommand shows help", () => {
+    const { stdout, exitCode } = runCli(["ci-report", "--help"]);
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("ci-report");
+  });
+
+  it("ci-report with empty dir outputs valid JSON", () => {
+    const tmpDir = path.join(os.tmpdir(), `obs-test-${Date.now()}`);
+    fs.mkdirSync(tmpDir, { recursive: true });
+    const { stdout, exitCode } = runCli(["ci-report", "--artifacts-dir", tmpDir]);
+    expect(exitCode).toBe(0);
+    const parsed = JSON.parse(stdout) as Record<string, unknown>;
+    expect(parsed).toHaveProperty("hasRegressions", false);
+    fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 });
