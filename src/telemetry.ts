@@ -42,6 +42,26 @@ export interface TelemetryEnrichment {
   suggestedServers?: string[];
   detectedLanguages?: string[];
   detectedFrameworks?: string[];
+  // Trend tracking
+  historyEntryCount?: number;
+  trendDirection?: string;
+  previousGrade?: string;
+  // Lock files
+  lockFileExists?: boolean;
+  lockServerCount?: number;
+  lockDriftDetected?: boolean;
+  lockDriftCount?: number;
+  // Matrix scanning
+  matrixServerCount?: number;
+  matrixFailCount?: number;
+  matrixPassCount?: number;
+  // Commit status
+  commitStatusSet?: boolean;
+  commitStatusState?: string;
+  // Nightly scans
+  nightlyScan?: boolean;
+  issueCreated?: boolean;
+  issueNumber?: number;
 }
 
 export interface TelemetryEvent extends TelemetryEnrichment {

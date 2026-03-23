@@ -15,6 +15,9 @@ import { registerSuggestCommands } from "./commands/suggest.js";
 import { registerTelemetryCommands } from "./commands/telemetry.js";
 import { registerTestCommands } from "./commands/test.js";
 import { registerWatchCommands } from "./commands/watch.js";
+import { registerHistoryCommands } from "./commands/history.js";
+import { registerCiReportCommands } from "./commands/ci-report.js";
+import { registerLockCommands } from "./commands/lock.js";
 import { runTarget } from "./index.js";
 import type { RunArtifact, TargetConfig } from "./types.js";
 import { loadTelemetryConfig, collectUserIdentity, recordEvent, buildEvent } from "./telemetry.js";
@@ -245,6 +248,9 @@ async function main(): Promise<void> {
   registerScoreCommands(program);
   registerLegacyCommands(program);
   registerTelemetryCommands(program);
+  registerHistoryCommands(program);
+  registerCiReportCommands(program);
+  registerLockCommands(program);
 
   // ── smithery ─────────────────────────────────────────────────────────
 

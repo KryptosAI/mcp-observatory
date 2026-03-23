@@ -180,3 +180,78 @@ export interface DiffArtifact {
   schemaDrift?: SchemaDriftEntry[];
   responseChanges?: ResponseChangeEntry[];
 }
+
+// ── History / Trend Types ───────────────────────────────────────────────────
+
+export interface HistoryEntry {
+  date: string;
+  targetId: string;
+  healthScore: number;
+  grade: HealthGrade;
+  toolCount: number;
+  promptCount: number;
+  resourceCount: number;
+  gate: Gate;
+}
+
+export interface HistoryFile {
+  version: 1;
+  entries: HistoryEntry[];
+}
+
+export interface TrendInfo {
+  current: HistoryEntry;
+  previous?: HistoryEntry;
+  direction: "up" | "down" | "stable" | "new";
+  delta: number;
+}
+
+// ── Lock File Types ─────────────────────────────────────────────────────────
+
+export interface LockFileToolEntry {
+  name: string;
+  description?: string;
+  inputSchema: object;
+}
+
+export interface LockFilePromptEntry {
+  name: string;
+  description?: string;
+  arguments?: object[];
+}
+
+export interface LockFileResourceEntry {
+  uri: string;
+  name: string;
+  description?: string;
+  mimeType?: string;
+}
+
+export interface LockFileServerEntry {
+  targetId: string;
+  lockedAt: string;
+  serverName?: string;
+  serverVersion?: string;
+  tools: LockFileToolEntry[];
+  prompts: LockFilePromptEntry[];
+  resources: LockFileResourceEntry[];
+}
+
+export interface LockFile {
+  version: 1;
+  lockedAt: string;
+  servers: LockFileServerEntry[];
+}
+
+export interface LockDriftEntry {
+  targetId: string;
+  category: "tools" | "prompts" | "resources";
+  name: string;
+  change: string;
+}
+
+export interface LockVerifyResult {
+  targetId: string;
+  passed: boolean;
+  drift: LockDriftEntry[];
+}
