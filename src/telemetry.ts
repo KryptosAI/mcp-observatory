@@ -192,6 +192,7 @@ export function recordEvent(event: TelemetryEvent): void {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body,
+    // 3s timeout — telemetry is fire-and-forget to avoid blocking user workflows
     signal: AbortSignal.timeout(3_000),
   }).catch(() => {
     // Silently ignore — telemetry must never block or fail visibly

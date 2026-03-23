@@ -134,9 +134,9 @@ interface RunArtifact {
   fatalError?: string;
 }
 
-// ---------------------------------------------------------------------------
-// Score computation (ported from src/score.ts)
-// ---------------------------------------------------------------------------
+// ── Score computation (duplicated from src/score.ts) ────────────────────────
+// IMPORTANT: This logic is duplicated from src/score.ts because the Worker
+// can't import from the main package. Keep both files in sync when making changes.
 
 const STATUS_SCORES: Record<string, number> = {
   pass: 100,
@@ -214,6 +214,8 @@ function scorePerformance(
   );
   const p95 = sorted[p95Index] ?? 0;
 
+  // p95 latency thresholds for performance scoring
+  // <500ms = excellent (100), <1s = good (80), <2s = acceptable (60), <5s = slow (40), >5s = poor (20)
   let score: number;
   if (p95 < 500) score = 100;
   else if (p95 < 1000) score = 80;
@@ -237,11 +239,11 @@ function computeHealthScore(
   performanceMetrics?: PerformanceMetrics,
 ): HealthScore {
   const w = {
-    protocolCompliance: 0.3,
-    schemaQuality: 0.2,
-    security: 0.2,
-    reliability: 0.2,
-    performance: 0.1,
+    protocolCompliance: 0.3,  // Highest — spec compliance is foundational for interop
+    schemaQuality: 0.2,       // Good schemas enable AI agents to use tools correctly
+    security: 0.2,            // Parity with quality — both critical for production use
+    reliability: 0.2,         // Tools/prompts/resources actually responding as expected
+    performance: 0.1,         // Lowest — latency matters less than correctness
   };
 
   const dimensions: ScoreDimension[] = [

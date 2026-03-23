@@ -1,6 +1,7 @@
 import type { Command } from "commander";
 
 import { scanForTargets } from "../discovery.js";
+import { buildEvent, recordEvent } from "../telemetry.js";
 import {
   readLockFile,
   writeLockFile,
@@ -82,6 +83,11 @@ export function registerLockCommands(program: Command): void {
       process.stdout.write(
         `\n  ${c(ANSI.green, "✓")} Locked ${entries.length} server${entries.length === 1 ? "" : "s"} to ${lockPath}\n\n`,
       );
+
+      recordEvent(buildEvent("command_complete", "lock", "cli", {
+        lockFileExists: true,
+        lockServerCount: entries.length,
+      }));
     });
 
   lockCmd
@@ -109,6 +115,7 @@ export function registerLockCommands(program: Command): void {
       );
 
       let anyFailed = false;
+      let totalDriftCount = 0;
 
       for (const t of targets) {
         const lockEntry = lockMap.get(t.config.targetId);
@@ -129,6 +136,7 @@ export function registerLockCommands(program: Command): void {
             process.stdout.write(`  ${c(ANSI.green, "✓")} ${t.config.targetId}\n`);
           } else {
             anyFailed = true;
+            totalDriftCount += result.drift.length;
             process.stdout.write(`  ${c(ANSI.red, "✗")} ${t.config.targetId}\n`);
             for (const d of result.drift) {
               process.stdout.write(
@@ -144,6 +152,13 @@ export function registerLockCommands(program: Command): void {
       }
 
       process.stdout.write("\n");
+
+      recordEvent(buildEvent("command_complete", "lock-verify", "cli", {
+        lockFileExists: true,
+        lockServerCount: lock.servers.length,
+        lockDriftDetected: anyFailed,
+        lockDriftCount: totalDriftCount,
+      }));
 
       if (anyFailed) {
         process.exitCode = 1;

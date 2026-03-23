@@ -81,6 +81,12 @@ Or add it manually to your config:
 | `watch <config>` | Watch a server for changes, alert on regressions |
 | `suggest` | Detect your stack and recommend MCP servers from the registry |
 | `serve` | Start as an MCP server for AI agents |
+| `lock` | Snapshot MCP server schemas into a lock file |
+| `lock verify` | Verify live servers match the lock file |
+| `history` | Show health score trends for your MCP servers |
+| `ci-report` | Generate CI report for GitHub issue creation |
+| `score <cmd>` | Score an MCP server's health (0-100) |
+| `badge <cmd>` | Generate an SVG health score badge for README |
 
 Run with no arguments for an interactive menu:
 
@@ -162,7 +168,40 @@ jobs:
           security: true
 ```
 
+Action inputs:
+
+| Input | Description | Default |
+|-------|-------------|---------|
+| `command` | Server command to test | (required if no `target`) |
+| `target` | Path to target config JSON | |
+| `targets` | Path to MCP config file for multi-server matrix scan | |
+| `deep` | Also invoke safe tools | `false` |
+| `security` | Run security analysis | `false` |
+| `fail-on-regression` | Fail the action on issues | `true` |
+| `comment-on-pr` | Post report as PR comment | `true` |
+| `set-status` | Set a commit status check (green/red) on the HEAD SHA | `true` |
+| `github-token` | Token for PR comments and commit statuses | `${{ github.token }}` |
+
 The action runs checks on every PR, comments a markdown report, and blocks merge on regressions. See [`action/README.md`](./action/README.md) for all options.
+
+### Lock Files
+
+```bash
+$ npx @kryptosai/mcp-observatory lock              # Snapshot all server schemas
+$ npx @kryptosai/mcp-observatory lock verify        # Verify no drift since last lock
+```
+
+### Trend Tracking
+
+```bash
+$ npx @kryptosai/mcp-observatory history            # Show health trends over time
+```
+
+### Nightly Scans
+
+```bash
+$ npx @kryptosai/mcp-observatory ci-report          # Generate regression report for CI
+```
 
 ## MCP Server Mode
 

@@ -7,12 +7,13 @@ import {
 } from "../index.js";
 import { appendHistory, buildHistoryEntry } from "../history.js";
 import { buildEvent, recordEvent } from "../telemetry.js";
+import type { RunArtifact } from "../types.js";
 import { TOOL_VERSION } from "../version.js";
 import { ANSI, LOGO, c, useColor } from "./helpers.js";
 
 // ── Scan implementation ─────────────────────────────────────────────────────
 
-async function runScan(bin: string, configPath: string | undefined, invokeTools: boolean, securityCheck?: boolean): Promise<void> {
+async function runScan(bin: string, configPath: string | undefined, invokeTools: boolean, securityCheck?: boolean, format?: string): Promise<void> {
   const t0 = Date.now();
   process.stdout.write(useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n\n` : LOGO + `  v${TOOL_VERSION}\n\n`);
 
@@ -53,6 +54,7 @@ async function runScan(bin: string, configPath: string | undefined, invokeTools:
   }
 
   const results: ScanRow[] = [];
+  const artifacts: RunArtifact[] = [];
   const checkStatusMap: Record<string, string> = {};
   let passCount = 0;
   let failCount = 0;
@@ -64,6 +66,7 @@ async function runScan(bin: string, configPath: string | undefined, invokeTools:
     process.stdout.write(`  ${c(ANSI.dim, "⟳")} Checking ${c(ANSI.bold, t.config.targetId)}...`);
     try {
       const artifact = await runTarget(t.config, { invokeTools, securityCheck });
+      artifacts.push(artifact);
       const toolsCheck = artifact.checks.find((ch) => ch.id === "tools");
       const promptsCheck = artifact.checks.find((ch) => ch.id === "prompts");
       const resourcesCheck = artifact.checks.find((ch) => ch.id === "resources");
@@ -164,6 +167,12 @@ async function runScan(bin: string, configPath: string | undefined, invokeTools:
   }
   process.stdout.write("\n");
 
+  if (format === "pr-comment-matrix" && artifacts.length > 0) {
+    const { renderMatrixComment } = await import("../reporters/pr-comment-matrix.js");
+    const rows = artifacts.map(a => ({ artifact: a }));
+    process.stdout.write(renderMatrixComment(rows) + "\n");
+  }
+
   recordEvent(buildEvent("command_complete", "scan", "cli", {
     serversScanned: results.length,
     toolsFound: totalTools,
@@ -178,6 +187,9 @@ async function runScan(bin: string, configPath: string | undefined, invokeTools:
       t.config.adapter === "http" ? (t.config as { url: string }).url : `${(t.config as { command: string }).command} ${t.config.args.join(" ")}`,
     ),
     checkStatuses: checkStatusMap,
+    matrixServerCount: results.length,
+    matrixPassCount: passCount,
+    matrixFailCount: failCount,
   }));
 
   if (failCount > 0) {
@@ -193,11 +205,12 @@ export function registerScanCommands(program: Command, bin: string): void {
     .description("Check all MCP servers in your Claude configs.")
     .option("--config <path>", "Path to a specific MCP config file.")
     .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
+    .option("--format <format>", "Output format: terminal or pr-comment-matrix.", "terminal")
     .option("--no-color", "Disable colored output.");
 
   // `scan` with no subcommand — basic scan
-  scanCmd.action(async (options: { config?: string; security?: boolean }) => {
-    await runScan(bin, options.config, false, options.security);
+  scanCmd.action(async (options: { config?: string; security?: boolean; format: string }) => {
+    await runScan(bin, options.config, false, options.security, options.format);
   });
 
   // `scan deep` — scan + invoke tools
@@ -206,10 +219,12 @@ export function registerScanCommands(program: Command, bin: string): void {
     .description("Scan and also invoke safe tools to verify they execute.")
     .option("--config <path>", "Path to a specific MCP config file.")
     .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
-    .action(async (options: { config?: string; security?: boolean }) => {
+    .option("--format <format>", "Output format: terminal or pr-comment-matrix.", "terminal")
+    .action(async (options: { config?: string; security?: boolean; format: string }) => {
       // Inherit parent config option if set
       const parentConfig = scanCmd.opts().config as string | undefined;
       const parentSecurity = scanCmd.opts().security as boolean | undefined;
-      await runScan(bin, options.config ?? parentConfig, true, options.security ?? parentSecurity ?? true);
+      const parentFormat = scanCmd.opts().format as string;
+      await runScan(bin, options.config ?? parentConfig, true, options.security ?? parentSecurity ?? true, options.format ?? parentFormat);
     });
 }

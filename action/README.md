@@ -29,7 +29,9 @@ jobs:
 | `security` | Run security analysis | `false` |
 | `fail-on-regression` | Fail the action on issues | `true` |
 | `comment-on-pr` | Post report as PR comment | `true` |
-| `github-token` | Token for PR comments | `${{ github.token }}` |
+| `set-status` | Set a commit status check (green/red) on the HEAD SHA | `true` |
+| `targets` | Path to MCP config file for multi-server matrix scan | |
+| `github-token` | Token for PR comments and commit statuses | `${{ github.token }}` |
 | `node-version` | Node.js version | `22` |
 
 ## Outputs

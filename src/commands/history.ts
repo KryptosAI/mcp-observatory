@@ -1,5 +1,6 @@
 import type { Command } from "commander";
 import { readHistory, getTrend, renderTrendLabel } from "../history.js";
+import { buildEvent, recordEvent } from "../telemetry.js";
 import { ANSI, c } from "./helpers.js";
 
 export function registerHistoryCommands(program: Command): void {
@@ -58,5 +59,9 @@ export function registerHistoryCommands(program: Command): void {
           `  ${paddedId} ${c(gradeColor, current.grade)} (${current.healthScore})  ${label}\n`,
         );
       }
+
+      recordEvent(buildEvent("command_complete", "history", "cli", {
+        historyEntryCount: history.entries.length,
+      }));
     });
 }

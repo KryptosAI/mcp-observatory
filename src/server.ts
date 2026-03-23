@@ -21,6 +21,9 @@ import type { RunArtifact } from "./types.js";
 import { compareResponses } from "./verify.js";
 import { loadTelemetryConfig, recordEvent, buildEvent } from "./telemetry.js";
 import { TOOL_VERSION } from "./version.js";
+import { readLockFile, verifyAgainstLock } from "./lockfile.js";
+import { readHistory, getTrend, renderTrendLabel } from "./history.js";
+import { buildCiReport } from "./commands/ci-report.js";
 
 // ── Security: Command Allowlist ────────────────────────────────────────────
 // MCP server mode is invoked by an LLM, not an operator. Arbitrary command
@@ -41,7 +44,7 @@ const ALLOWED_COMMANDS = new Set([
 // Reject args containing shell metacharacters that could enable injection.
 const DANGEROUS_ARG_PATTERN = /[;|`]|\$\(|&&|\|\|/;
 
-function validateArgs(args: string[]): void {
+export function validateArgs(args: string[]): void {
   for (const arg of args) {
     if (DANGEROUS_ARG_PATTERN.test(arg)) {
       throw new Error(
@@ -629,6 +632,121 @@ export async function startServer(): Promise<void> {
         const msg = errorMessage(error);
         logRequest("watch", startMs, true);
         return { content: [{ type: "text" as const, text: `Error watching: ${msg}` }], isError: true };
+      }
+    },
+  );
+
+  server.tool(
+    "lock_verify",
+    "Verify that live MCP servers still match a previously saved lock file. Detects schema drift, added/removed tools, and breaking changes.",
+    {
+      config: z.string().optional().describe("Path to MCP config file."),
+    },
+    async ({ config }) => {
+      const startMs = Date.now();
+      try {
+        const lockFile = await readLockFile();
+        const targets = await scanForTargets(config);
+        const results: string[] = [];
+        let anyFailed = false;
+
+        for (const t of targets) {
+          const lockEntry = lockFile.servers.find(s => s.targetId === t.config.targetId);
+          if (!lockEntry) continue;
+
+          const artifact = await runTarget(t.config);
+          const result = verifyAgainstLock(lockEntry, artifact);
+          if (result.passed) {
+            results.push(`✓ ${t.config.targetId}: no drift`);
+          } else {
+            anyFailed = true;
+            results.push(`✗ ${t.config.targetId}: ${result.drift.length} changes`);
+            for (const d of result.drift) {
+              results.push(`  - ${d.category}: ${d.name} — ${d.change}`);
+            }
+          }
+        }
+
+        if (results.length === 0) {
+          results.push("No servers in lock file match discovered targets.");
+        }
+
+        logRequest("lock_verify", startMs, anyFailed);
+        return { content: [{ type: "text", text: results.join("\n") }] };
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : String(error);
+        logRequest("lock_verify", startMs, true);
+        return { content: [{ type: "text", text: `Lock verify failed: ${msg}` }], isError: true };
+      }
+    },
+  );
+
+  server.tool(
+    "get_history",
+    "Get health score trends for MCP servers from run history.",
+    {
+      target: z.string().optional().describe("Filter to a specific target ID."),
+    },
+    async ({ target }) => {
+      const startMs = Date.now();
+      try {
+        const history = await readHistory();
+        let targetIds = [...new Set(history.entries.map(e => e.targetId))];
+        if (target) targetIds = targetIds.filter(id => id === target);
+
+        if (targetIds.length === 0) {
+          logRequest("get_history", startMs);
+          return { content: [{ type: "text", text: "No history found. Run a scan or test first." }] };
+        }
+
+        const lines: string[] = [];
+        for (const id of targetIds) {
+          const trend = getTrend(id, history);
+          if (!trend) continue;
+          const { current } = trend;
+          const label = renderTrendLabel(trend);
+          lines.push(`${id}: ${current.grade} (${current.healthScore}) ${label}`);
+        }
+
+        logRequest("get_history", startMs);
+        return { content: [{ type: "text", text: lines.join("\n") }] };
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : String(error);
+        logRequest("get_history", startMs, true);
+        return { content: [{ type: "text", text: `History failed: ${msg}` }], isError: true };
+      }
+    },
+  );
+
+  server.tool(
+    "ci_report",
+    "Generate a CI regression report from run artifacts.",
+    {
+      artifactsDir: z.string().optional().describe("Directory containing run artifacts. Defaults to .mcp-observatory/runs/"),
+    },
+    async ({ artifactsDir }) => {
+      const startMs = Date.now();
+      try {
+        const { readdir, readFile } = await import("node:fs/promises");
+        const dir = artifactsDir ?? path.join(process.cwd(), ".mcp-observatory", "runs");
+        const files = await readdir(dir);
+        const artifacts: RunArtifact[] = [];
+        for (const f of files) {
+          if (!f.endsWith(".json")) continue;
+          try {
+            const raw = await readFile(path.join(dir, f), "utf8");
+            const parsed = JSON.parse(raw) as Record<string, unknown>;
+            if (parsed["artifactType"] === "run") artifacts.push(parsed as unknown as RunArtifact);
+          } catch { /* skip invalid */ }
+        }
+
+        const report = buildCiReport(artifacts);
+        logRequest("ci_report", startMs);
+        return { content: [{ type: "text", text: JSON.stringify(report, null, 2) }] };
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : String(error);
+        logRequest("ci_report", startMs, true);
+        return { content: [{ type: "text", text: `CI report failed: ${msg}` }], isError: true };
       }
     },
   );

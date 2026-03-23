@@ -2,6 +2,7 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import type { Command } from "commander";
 import type { RunArtifact } from "../types.js";
+import { buildEvent, recordEvent } from "../telemetry.js";
 import { validateRunArtifact } from "../validate.js";
 import { defaultRunsDirectory } from "../storage.js";
 
@@ -95,6 +96,13 @@ export function registerCiReportCommands(program: Command): void {
         } else {
           process.stdout.write(JSON.stringify(report, null, 2) + "\n");
         }
+
+        recordEvent(buildEvent("command_complete", "ci-report", "cli", {
+          nightlyScan: true,
+          issueCreated: report.hasRegressions,
+          matrixServerCount: report.serverCount,
+          matrixFailCount: report.failCount,
+        }));
 
         if (report.hasRegressions) {
           process.exitCode = 1;

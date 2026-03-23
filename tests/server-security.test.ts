@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { validateCommand, validatePath } from "../src/server.js";
+import { validateArgs, validateCommand, validatePath } from "../src/server.js";
 
 describe("MCP Server Command Allowlist", () => {
   it("allows npx commands", () => {
@@ -77,5 +77,49 @@ describe("Path Validation", () => {
   it("rejects prefix-matching attacks", () => {
     // "/tmp/runs-evil" starts with "/tmp/runs" but is not a subdirectory
     expect(() => validatePath("/tmp/runs-evil/file.json", "/tmp/runs")).toThrow(/resolves outside/);
+  });
+});
+
+describe("validateArgs", () => {
+  it("rejects semicolon injection", () => {
+    expect(() => validateArgs(["; rm -rf /"])).toThrow();
+  });
+
+  it("rejects backtick injection", () => {
+    expect(() => validateArgs(["`whoami`"])).toThrow();
+  });
+
+  it("rejects command substitution", () => {
+    expect(() => validateArgs(["$(cat /etc/passwd)"])).toThrow();
+  });
+
+  it("rejects && chaining", () => {
+    expect(() => validateArgs(["foo && bar"])).toThrow();
+  });
+
+  it("rejects || chaining", () => {
+    expect(() => validateArgs(["foo || bar"])).toThrow();
+  });
+
+  it("rejects pipe", () => {
+    expect(() => validateArgs(["foo | bar"])).toThrow();
+  });
+
+  it("accepts normal arguments", () => {
+    expect(() => validateArgs(["--verbose", "/path/to/file", "hello world"])).not.toThrow();
+  });
+});
+
+describe("validatePath", () => {
+  it("rejects path traversal", () => {
+    expect(() => validatePath("../../../etc/passwd", "/home/user")).toThrow();
+  });
+
+  it("rejects absolute escape", () => {
+    expect(() => validatePath("/etc/passwd", "/home/user")).toThrow();
+  });
+
+  it("accepts paths within allowed root", () => {
+    expect(() => validatePath("/home/user/subdir/file.txt", "/home/user")).not.toThrow();
   });
 });

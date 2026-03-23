@@ -1,3 +1,6 @@
+// IMPORTANT: Scoring logic is duplicated in api/src/worker.ts for the Cloudflare Worker
+// deployment (which can't import from src/). Keep both files in sync when making changes.
+
 import type { CheckResult, HealthGrade, HealthScore, PerformanceMetrics, ScoreDimension } from "./types.js";
 
 export interface ScoreWeights {
@@ -9,11 +12,11 @@ export interface ScoreWeights {
 }
 
 export const DEFAULT_WEIGHTS: ScoreWeights = {
-  protocolCompliance: 0.30,
-  schemaQuality: 0.20,
-  security: 0.20,
-  reliability: 0.20,
-  performance: 0.10,
+  protocolCompliance: 0.30, // Highest — spec compliance is foundational for interop
+  schemaQuality: 0.20,      // Good schemas enable AI agents to use tools correctly
+  security: 0.20,           // Parity with quality — both critical for production use
+  reliability: 0.20,        // Tools/prompts/resources actually responding as expected
+  performance: 0.10,        // Lowest — latency matters less than correctness
 };
 
 const STATUS_SCORES: Record<string, number> = {
@@ -80,6 +83,8 @@ function scorePerformance(
   const p95Index = Math.min(Math.ceil(sorted.length * 0.95) - 1, sorted.length - 1);
   const p95 = sorted[p95Index] ?? 0;
 
+  // p95 latency thresholds for performance scoring
+  // <500ms = excellent (100), <1s = good (80), <2s = acceptable (60), <5s = slow (40), >5s = poor (20)
   let score: number;
   if (p95 < 500) score = 100;
   else if (p95 < 1000) score = 80;
