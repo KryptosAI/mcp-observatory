@@ -5,6 +5,7 @@ import {
   writeRunArtifact,
 } from "../index.js";
 import { defaultRunsDirectory } from "../storage.js";
+import { appendHistory, buildHistoryEntry, getTrend, readHistory } from "../history.js";
 import { buildEvent, recordEvent } from "../telemetry.js";
 import { ANSI, c, targetFromCommand } from "./helpers.js";
 
@@ -42,9 +43,18 @@ export function registerTestCommands(program: Command): void {
 
       process.stdout.write(`\n  ${c(ANSI.dim, `Artifact: ${outPath}`)}\n\n`);
 
+      // Track history
+      const historyEntry = buildHistoryEntry(artifact);
+      await appendHistory(historyEntry).catch(() => {});
+      const history = await readHistory().catch(() => ({ version: 1 as const, entries: [] }));
+      const trend = getTrend(target.targetId, history);
+
       const testCheckStatuses: Record<string, string> = {};
       for (const ch of artifact.checks) testCheckStatuses[ch.id] = ch.status;
       recordEvent(buildEvent("command_complete", "test", "cli", {
+        historyEntryCount: history.entries.length,
+        trendDirection: trend?.direction,
+        previousGrade: trend?.previous?.grade,
         serversScanned: 1,
         toolsFound: toolCount,
         promptsFound: promptCount,

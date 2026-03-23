@@ -8,6 +8,7 @@ import {
 import { renderWatchFirstRun, renderWatchNoChanges, renderWatchChanges } from "../reporters/terminal.js";
 import { isCI } from "../ci.js";
 import { defaultRunsDirectory, findLatestArtifact, readArtifact } from "../storage.js";
+import { appendHistory, buildHistoryEntry } from "../history.js";
 import { ANSI, c, formatOutput, targetFromCommand } from "./helpers.js";
 
 // ── One-shot mode ────────────────────────────────────────────────────────────
@@ -21,6 +22,9 @@ async function runWatchOneShot(
 
   const artifact = await runTarget(target);
   const outPath = await writeRunArtifact(artifact, outDir);
+
+  // Track history
+  await appendHistory(buildHistoryEntry(artifact)).catch(() => {});
 
   // JSON mode bypasses compact rendering
   if (options.format === "json") {

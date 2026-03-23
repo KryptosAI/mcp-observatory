@@ -1,9 +1,9 @@
-import type { CheckResult, DiffArtifact, RunArtifact, SchemaDriftEntry } from "../types.js";
+import type { CheckResult, DiffArtifact, RunArtifact, SchemaDriftEntry, TrendInfo } from "../types.js";
 import { findChecksByStatus } from "./common.js";
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
-interface ParsedFinding {
+export interface ParsedFinding {
   severity: string;
   message: string;
 }
@@ -13,9 +13,9 @@ interface ParsedFinding {
 const MAX_ITEMS_PER_SECTION = 5;
 const REPO_URL = "https://github.com/KryptosAI/mcp-observatory";
 
-// ── Extraction helpers ──────────────────────────────────────────────────────
+// ── Extraction helpers (exported for matrix comment reuse) ──────────────────
 
-function extractSecurityFindings(checks: CheckResult[]): ParsedFinding[] {
+export function extractSecurityFindings(checks: CheckResult[]): ParsedFinding[] {
   const securityChecks = checks.filter(c => c.id === "security" || c.id === "security-lite");
   const findings: ParsedFinding[] = [];
   for (const check of securityChecks) {
@@ -31,7 +31,7 @@ function extractSecurityFindings(checks: CheckResult[]): ParsedFinding[] {
   return findings;
 }
 
-function extractQualityFindings(checks: CheckResult[]): ParsedFinding[] {
+export function extractQualityFindings(checks: CheckResult[]): ParsedFinding[] {
   const qualityChecks = checks.filter(c => c.id === "schema-quality");
   const findings: ParsedFinding[] = [];
   for (const check of qualityChecks) {
@@ -47,7 +47,7 @@ function extractQualityFindings(checks: CheckResult[]): ParsedFinding[] {
   return findings;
 }
 
-function countCapabilities(checks: CheckResult[]): { tools: number; prompts: number; resources: number } {
+export function countCapabilities(checks: CheckResult[]): { tools: number; prompts: number; resources: number } {
   const get = (id: string) => {
     const check = checks.find(c => c.id === id);
     return check?.evidence[0]?.itemCount ?? 0;
@@ -63,7 +63,7 @@ function conformanceSummary(checks: CheckResult[]): string | undefined {
 
 // ── Formatting helpers ──────────────────────────────────────────────────────
 
-function blockquoteList(items: string[], max = MAX_ITEMS_PER_SECTION): string {
+export function blockquoteList(items: string[], max = MAX_ITEMS_PER_SECTION): string {
   const shown = items.slice(0, max);
   const lines = shown.map(item => `> ${item}`);
   const remaining = items.length - max;
@@ -73,7 +73,7 @@ function blockquoteList(items: string[], max = MAX_ITEMS_PER_SECTION): string {
   return lines.join("\n");
 }
 
-function footer(): string {
+export function prCommentFooter(): string {
   return [
     "",
     "---",
@@ -83,7 +83,7 @@ function footer(): string {
 
 // ── Run artifact rendering ──────────────────────────────────────────────────
 
-function renderRunComment(artifact: RunArtifact): string {
+function renderRunComment(artifact: RunArtifact, trend?: TrendInfo): string {
   const sections: string[] = [];
   const security = extractSecurityFindings(artifact.checks);
   const quality = extractQualityFindings(artifact.checks);
@@ -138,10 +138,16 @@ function renderRunComment(artifact: RunArtifact): string {
 
   // Summary stats
   const caps = countCapabilities(artifact.checks);
+  const healthPart = artifact.healthScore
+    ? `Health: **${artifact.healthScore.grade}** (${artifact.healthScore.overall})`
+    : `Gate: **${artifact.gate}**`;
+
+  const trendPart = trend && trend.direction !== "new" && trend.previous
+    ? ` ${trend.direction === "up" ? "↗" : trend.direction === "down" ? "↘" : "→"} was ${trend.previous.grade} (${trend.previous.healthScore})`
+    : "";
+
   const statsLine = [
-    artifact.healthScore
-      ? `Health: **${artifact.healthScore.grade}** (${artifact.healthScore.overall})`
-      : `Gate: **${artifact.gate}**`,
+    healthPart + trendPart,
     `${caps.tools} tools`,
     `${caps.prompts} prompts`,
     `${caps.resources} resources`,
@@ -151,7 +157,7 @@ function renderRunComment(artifact: RunArtifact): string {
   sections.push(`### 📊 Summary`);
   sections.push(`> ${statsLine}`);
 
-  sections.push(footer());
+  sections.push(prCommentFooter());
   return sections.join("\n");
 }
 
@@ -216,7 +222,7 @@ function renderDiffComment(artifact: DiffArtifact): string {
   sections.push(`### 📊 Summary`);
   sections.push(`> ${statsLine}`);
 
-  sections.push(footer());
+  sections.push(prCommentFooter());
   return sections.join("\n");
 }
 
@@ -232,8 +238,8 @@ function flattenDrift(drift: SchemaDriftEntry[]): string[] {
 
 // ── Public API ──────────────────────────────────────────────────────────────
 
-export function renderPrComment(artifact: RunArtifact | DiffArtifact): string {
+export function renderPrComment(artifact: RunArtifact | DiffArtifact, trend?: TrendInfo): string {
   return artifact.artifactType === "run"
-    ? renderRunComment(artifact)
+    ? renderRunComment(artifact, trend)
     : renderDiffComment(artifact);
 }

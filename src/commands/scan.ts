@@ -5,6 +5,7 @@ import { scanForTargets } from "../discovery.js";
 import {
   runTarget,
 } from "../index.js";
+import { appendHistory, buildHistoryEntry } from "../history.js";
 import { buildEvent, recordEvent } from "../telemetry.js";
 import { TOOL_VERSION } from "../version.js";
 import { ANSI, LOGO, c, useColor } from "./helpers.js";
@@ -95,6 +96,9 @@ async function runScan(bin: string, configPath: string | undefined, invokeTools:
       for (const check of artifact.checks) {
         checkStatusMap[`${t.config.targetId}:${check.id}`] = check.status;
       }
+
+      // Track history
+      await appendHistory(buildHistoryEntry(artifact)).catch(() => {});
 
       results.push({ targetId: t.config.targetId, gate: artifact.gate, toolCount, promptCount, resourceCount, diagnostics });
       if (artifact.gate === "pass") passCount++; else failCount++;

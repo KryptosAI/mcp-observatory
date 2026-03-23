@@ -11,6 +11,9 @@ inputs:
   target:
     description: "Path to a target config JSON file (alternative to command)"
     required: false
+  targets:
+    description: "Path to MCP config file for multi-server matrix scan (scans all servers, generates matrix comment)"
+    required: false
   baseline:
     description: "Path to a baseline cassette file for regression verification"
     required: false
@@ -27,11 +30,15 @@ inputs:
     required: false
     default: "true"
   comment-on-pr:
-    description: "Post a markdown report as a PR comment"
+    description: "Post a report as a PR comment"
+    required: false
+    default: "true"
+  set-status:
+    description: "Set a commit status check (green/red) on the HEAD SHA"
     required: false
     default: "true"
   github-token:
-    description: "GitHub token for PR comments"
+    description: "GitHub token for PR comments and commit statuses"
     required: false
     default: ${{ github.token }}
   node-version:
@@ -65,57 +72,79 @@ runs:
       env:
         INPUT_COMMAND: ${{ inputs.command }}
         INPUT_TARGET: ${{ inputs.target }}
+        INPUT_TARGETS: ${{ inputs.targets }}
         INPUT_DEEP: ${{ inputs.deep }}
         INPUT_SECURITY: ${{ inputs.security }}
       run: |
-        # Build command as a bash array to prevent injection
-        CMD_ARRAY=()
-
-        if [ -n "$INPUT_TARGET" ]; then
-          CMD_ARRAY=(mcp-observatory run --target "$INPUT_TARGET")
-          if [ "$INPUT_DEEP" = "true" ]; then
-            CMD_ARRAY+=(--invoke)
-          fi
-        elif [ -n "$INPUT_COMMAND" ]; then
-          CMD_ARRAY=(mcp-observatory test "$INPUT_COMMAND")
-        else
-          echo "::error::Either 'command' or 'target' input is required"
-          exit 1
-        fi
-
-        if [ "$INPUT_SECURITY" = "true" ]; then
-          CMD_ARRAY+=(--security)
-        fi
-
-        CMD_ARRAY+=(--no-color)
-
-        # Run and capture output
         ARTIFACT_DIR="${RUNNER_TEMP}/observatory"
         mkdir -p "$ARTIFACT_DIR"
 
-        set +e
-        "${CMD_ARRAY[@]}" 2>&1 | tee "${ARTIFACT_DIR}/output.txt"
-        EXIT_CODE=$?
-        set -e
+        # Multi-server matrix scan
+        if [ -n "$INPUT_TARGETS" ]; then
+          SCAN_ARRAY=(mcp-observatory scan --config "$INPUT_TARGETS")
+          if [ "$INPUT_SECURITY" = "true" ]; then
+            SCAN_ARRAY+=(--security)
+          fi
+          SCAN_ARRAY+=(--no-color)
 
-        # Find the artifact file
-        ARTIFACT_PATH=$(find .mcp-observatory/runs -name "*.json" -type f 2>/dev/null | sort | tail -1)
+          set +e
+          "${SCAN_ARRAY[@]}" 2>&1 | tee "${ARTIFACT_DIR}/output.txt"
+          set -e
 
-        if [ -n "$ARTIFACT_PATH" ]; then
-          cp "$ARTIFACT_PATH" "${ARTIFACT_DIR}/run.json"
-          echo "artifact_path=${ARTIFACT_DIR}/run.json" >> "$GITHUB_OUTPUT"
-
-          # Extract gate from artifact using node (avoid python dependency)
-          GATE=$(node -e "const fs=require('fs'); const d=JSON.parse(fs.readFileSync('${ARTIFACT_DIR}/run.json','utf8')); console.log(d.gate)" 2>/dev/null || echo "unknown")
+          # Collect all artifacts and determine gate
+          GATE="pass"
+          for f in .mcp-observatory/runs/*.json; do
+            [ -f "$f" ] || continue
+            FILE_GATE=$(node -e "console.log(JSON.parse(require('fs').readFileSync('$f','utf8')).gate)" 2>/dev/null || echo "unknown")
+            if [ "$FILE_GATE" = "fail" ]; then
+              GATE="fail"
+            fi
+          done
           echo "gate=${GATE}" >> "$GITHUB_OUTPUT"
-        else
-          echo "gate=fail" >> "$GITHUB_OUTPUT"
-          echo "artifact_path=" >> "$GITHUB_OUTPUT"
-        fi
+          echo "artifact_path=${ARTIFACT_DIR}" >> "$GITHUB_OUTPUT"
 
-        # Generate PR comment report
-        if [ -n "$ARTIFACT_PATH" ]; then
-          mcp-observatory report "$ARTIFACT_PATH" --format pr-comment --no-color > "${ARTIFACT_DIR}/report.md" 2>/dev/null || true
+          # Generate CI report for PR comment
+          mcp-observatory ci-report --format markdown --no-color > "${ARTIFACT_DIR}/report.md" 2>/dev/null || true
+
+        # Single-server scan
+        else
+          CMD_ARRAY=()
+          if [ -n "$INPUT_TARGET" ]; then
+            CMD_ARRAY=(mcp-observatory run --target "$INPUT_TARGET")
+            if [ "$INPUT_DEEP" = "true" ]; then
+              CMD_ARRAY+=(--invoke)
+            fi
+          elif [ -n "$INPUT_COMMAND" ]; then
+            CMD_ARRAY=(mcp-observatory test "$INPUT_COMMAND")
+          else
+            echo "::error::Either 'command', 'target', or 'targets' input is required"
+            exit 1
+          fi
+
+          if [ "$INPUT_SECURITY" = "true" ]; then
+            CMD_ARRAY+=(--security)
+          fi
+          CMD_ARRAY+=(--no-color)
+
+          set +e
+          "${CMD_ARRAY[@]}" 2>&1 | tee "${ARTIFACT_DIR}/output.txt"
+          set -e
+
+          ARTIFACT_PATH=$(find .mcp-observatory/runs -name "*.json" -type f 2>/dev/null | sort | tail -1)
+          if [ -n "$ARTIFACT_PATH" ]; then
+            cp "$ARTIFACT_PATH" "${ARTIFACT_DIR}/run.json"
+            echo "artifact_path=${ARTIFACT_DIR}/run.json" >> "$GITHUB_OUTPUT"
+            GATE=$(node -e "const fs=require('fs'); const d=JSON.parse(fs.readFileSync('${ARTIFACT_DIR}/run.json','utf8')); console.log(d.gate)" 2>/dev/null || echo "unknown")
+            echo "gate=${GATE}" >> "$GITHUB_OUTPUT"
+          else
+            echo "gate=fail" >> "$GITHUB_OUTPUT"
+            echo "artifact_path=" >> "$GITHUB_OUTPUT"
+          fi
+
+          # Generate PR comment report
+          if [ -n "$ARTIFACT_PATH" ]; then
+            mcp-observatory report "$ARTIFACT_PATH" --format pr-comment --no-color > "${ARTIFACT_DIR}/report.md" 2>/dev/null || true
+          fi
         fi
 
     - name: Verify against baseline
@@ -126,15 +155,12 @@ runs:
         INPUT_COMMAND: ${{ inputs.command }}
         INPUT_TARGET: ${{ inputs.target }}
       run: |
-        # Build verify command as a bash array
         VERIFY_ARRAY=(mcp-observatory verify "$INPUT_BASELINE")
-
         if [ -n "$INPUT_TARGET" ]; then
           VERIFY_ARRAY+=(--target "$INPUT_TARGET")
         elif [ -n "$INPUT_COMMAND" ]; then
           VERIFY_ARRAY+=("$INPUT_COMMAND")
         fi
-
         VERIFY_ARRAY+=(--no-color)
 
         set +e
@@ -145,6 +171,26 @@ runs:
         if [ $VERIFY_EXIT -ne 0 ]; then
           echo "::warning::Baseline verification detected changes"
         fi
+
+    - name: Set commit status
+      if: inputs.set-status == 'true' && github.event_name == 'pull_request'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        GATE: ${{ steps.run.outputs.gate }}
+      run: |
+        STATE="success"
+        DESC="All clear"
+        if [ "$GATE" = "fail" ]; then
+          STATE="failure"
+          DESC="Issues detected"
+        fi
+        gh api "repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha }}" \
+          -f state="$STATE" \
+          -f description="$DESC" \
+          -f context="MCP Observatory" \
+          -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+          2>/dev/null || echo "::warning::Could not set commit status"
 
     - name: Comment on PR
       if: inputs.comment-on-pr == 'true' && github.event_name == 'pull_request'
@@ -161,7 +207,6 @@ runs:
           exit 0
         fi
 
-        # pr-comment format already includes header and footer
         COMMENT_FILE="${RUNNER_TEMP}/observatory/comment.md"
         cp "$REPORT_FILE" "$COMMENT_FILE"
 
