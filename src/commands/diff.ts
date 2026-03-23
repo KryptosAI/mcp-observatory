@@ -12,14 +12,14 @@ export function registerDiffCommands(program: Command): void {
     .description("Compare two runs and show regressions and schema drift.")
     .argument("<base>", "Base run artifact JSON file.")
     .argument("<head>", "Head run artifact JSON file.")
-    .option("--format <format>", "terminal, json, markdown, html, junit, or sarif", "terminal")
+    .option("--format <format>", "terminal, json, markdown, pr-comment, html, junit, or sarif", "terminal")
     .option("--output <file>", "Write to file instead of stdout.")
     .option("--no-color", "Disable colored output.")
     .option("--fail-on-regression", "Exit with code 1 when regressions are present.", false)
     .action(
       async (base: string, head: string, options: {
         failOnRegression?: boolean;
-        format: "html" | "json" | "junit" | "markdown" | "sarif" | "terminal";
+        format: "html" | "json" | "junit" | "markdown" | "pr-comment" | "sarif" | "terminal";
         output?: string;
       }) => {
         const baseArtifact = await readArtifact(base);

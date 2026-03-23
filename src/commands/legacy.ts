@@ -72,12 +72,12 @@ export function registerLegacyCommands(program: Command): void {
     .command("report", { hidden: true })
     .description("Render a run artifact.")
     .requiredOption("--run <artifact>", "Run artifact JSON.")
-    .option("--format <format>", "terminal, markdown, json, or html", "terminal")
+    .option("--format <format>", "terminal, markdown, pr-comment, json, or html", "terminal")
     .option("--output <file>", "Write to file instead of stdout.")
     .option("--no-color", "Disable colored output.")
     .action(
       async (options: {
-        format: "html" | "json" | "junit" | "markdown" | "sarif" | "terminal";
+        format: "html" | "json" | "junit" | "markdown" | "pr-comment" | "sarif" | "terminal";
         output?: string;
         run: string;
       }) => {

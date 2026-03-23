@@ -15,6 +15,7 @@ export { scanForTargets } from "./discovery.js";
 export { renderHtml } from "./reporters/html.js";
 export { renderJUnit } from "./reporters/junit.js";
 export { renderMarkdown } from "./reporters/markdown.js";
+export { renderPrComment } from "./reporters/pr-comment.js";
 export { renderSarif } from "./reporters/sarif.js";
 export { renderTerminal, renderWatchFirstRun, renderWatchNoChanges, renderWatchChanges } from "./reporters/terminal.js";
 export { runTarget, runTargetRecording, type RunOptions, type RunResult } from "./runner.js";

@@ -8,6 +8,7 @@ import {
   type TargetConfig,
 } from "../index.js";
 import { renderJUnit } from "../reporters/junit.js";
+import { renderPrComment } from "../reporters/pr-comment.js";
 import { renderSarif } from "../reporters/sarif.js";
 import { validateTargetConfig } from "../validate.js";
 
@@ -121,10 +122,11 @@ export async function resolveTarget(options: { target?: string }): Promise<Targe
 
 export function formatOutput(
   artifact: Parameters<typeof renderTerminal>[0],
-  format: "html" | "json" | "junit" | "markdown" | "sarif" | "terminal",
+  format: "html" | "json" | "junit" | "markdown" | "pr-comment" | "sarif" | "terminal",
 ): string {
   if (format === "json") return JSON.stringify(artifact, null, 2);
   if (format === "markdown") return renderMarkdown(artifact);
+  if (format === "pr-comment") return renderPrComment(artifact);
   if (format === "html") return renderHtml(artifact);
   if (format === "junit" && artifact.artifactType === "run") return renderJUnit(artifact);
   if (format === "sarif" && artifact.artifactType === "run") return renderSarif(artifact);
