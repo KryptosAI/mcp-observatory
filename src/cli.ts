@@ -195,7 +195,7 @@ async function main(): Promise<void> {
 
   // Telemetry: load config and warm identity cache in background
   await loadTelemetryConfig();
-  collectUserIdentity().catch(() => {});
+  await collectUserIdentity().catch(() => {});
 
   // Update check (CLI only, not MCP server mode)
   if (process.argv[2] !== "serve") {
