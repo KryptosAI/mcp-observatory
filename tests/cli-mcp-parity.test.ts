@@ -168,10 +168,11 @@ describe("CLI/MCP Parity", () => {
       "watch",
       "report",    // no MCP equivalent (intentional)
       "serve",     // starts the MCP server itself
+      "cloud",     // CLI-only commercial pilot info
     ];
 
     // Intentional CLI-only commands:
-    const intentionalCliOnly = ["run", "report", "serve", "badge"];
+    const intentionalCliOnly = ["run", "report", "serve", "badge", "cloud"];
     // Intentional MCP-only tools:
     const intentionalMcpOnly = ["get_last_run"];
     // Name mappings:
@@ -216,6 +217,7 @@ describe("CLI/MCP Parity", () => {
       "run": "CLI-only command that reads target config files; MCP tools accept inline params",
       "get_last_run": "MCP-only convenience tool; CLI users use ls + diff manually",
       "badge": "CLI-only command that generates SVG badge from health score",
+      "cloud": "CLI-only command that explains hosted reporting and paid pilot options",
     };
 
     expect(Object.keys(intentionalDifferences).length).toBeGreaterThanOrEqual(5);

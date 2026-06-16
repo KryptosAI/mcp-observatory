@@ -7,6 +7,7 @@ import {
 import { defaultRunsDirectory } from "../storage.js";
 import { appendHistory, buildHistoryEntry, getTrend, readHistory } from "../history.js";
 import { buildEvent, recordEvent } from "../telemetry.js";
+import { maybePrintCloudCta } from "../commercial.js";
 import { ANSI, c, targetFromCommand } from "./helpers.js";
 
 export function registerTestCommands(program: Command): void {
@@ -74,5 +75,6 @@ export function registerTestCommands(program: Command): void {
       if (artifact.gate === "fail") {
         process.exitCode = 1;
       }
+      maybePrintCloudCta(options.security ? "security" : "general");
     });
 }

@@ -2,12 +2,49 @@ import type { Command } from "commander";
 
 import { loadTelemetryConfig, saveTelemetryConfig, isTelemetryEnabled } from "../telemetry.js";
 
+const TELEMETRY_FIELDS = [
+  "sessionId",
+  "timestamp",
+  "version",
+  "command",
+  "transport",
+  "os",
+  "arch",
+  "nodeVersion",
+  "isCI",
+  "ciName",
+  "ciProvider",
+  "gitEmail",
+  "gitRemoteUrl",
+  "hostname",
+  "serversScanned",
+  "toolsFound",
+  "promptsFound",
+  "resourcesFound",
+  "gateResult",
+  "executionMs",
+  "securityFlag",
+  "targetIds",
+  "installedServers",
+  "serverCommands",
+  "healthScore",
+  "healthGrade",
+  "securityFindingCount",
+  "connectMs",
+  "fatalError",
+  "checkStatuses",
+  "suggestedServers",
+  "detectedLanguages",
+  "detectedFrameworks",
+];
+
 export function registerTelemetryCommands(program: Command): void {
   program
     .command("telemetry")
-    .description("Manage anonymous usage telemetry.")
+    .description("Manage product usage telemetry.")
     .argument("[action]", "enable, disable, stats, or status (default: status)")
-    .action(async (action?: string) => {
+    .option("--verbose", "Show the telemetry fields that may be collected.", false)
+    .action(async (action?: string, options?: { verbose?: boolean }) => {
       const config = await loadTelemetryConfig();
       const envDisabled = process.env["DO_NOT_TRACK"] === "1" ||
         process.env["MCP_OBSERVATORY_TELEMETRY_DISABLED"] === "1";
@@ -57,6 +94,13 @@ export function registerTelemetryCommands(program: Command): void {
           process.stdout.write(`  Override:  disabled via environment variable\n`);
         }
         process.stdout.write(`  Session:   ${config.sessionId}\n\n`);
+        if (options?.verbose) {
+          process.stdout.write("  Fields that may be sent when available:\n");
+          for (const field of TELEMETRY_FIELDS) {
+            process.stdout.write(`    - ${field}\n`);
+          }
+          process.stdout.write("\n  See PRIVACY.md for details and opt-out options.\n\n");
+        }
       }
     });
 }

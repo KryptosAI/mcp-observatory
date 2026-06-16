@@ -1,7 +1,7 @@
 {
   "name": "@kryptosai/mcp-observatory",
   "version": "0.20.3",
-  "description": "Test your MCP servers for breaking changes. Checks capabilities, invokes tools, detects schema drift between versions.",
+  "description": "Test, secure, and monitor MCP servers before agents depend on them.",
   "mcpName": "io.github.KryptosAI/mcp-observatory",
   "license": "MIT",
   "type": "module",
@@ -31,7 +31,11 @@
   "files": [
     "dist/src",
     "README.md",
+    "COMMERCIAL.md",
+    "PRIVACY.md",
+    "TERMS.md",
     "LICENSE",
+    "docs",
     "schemas"
   ],
   "scripts": {
@@ -47,7 +51,8 @@
     "test": "vitest run",
     "validate:artifacts": "tsx scripts/validate-artifacts.ts",
     "verify:packed-install": "node scripts/verify-packed-install.mjs",
-    "smoke": "npm run cli -- run --target tests/fixtures/sample-target-config.json && npm run cli -- diff tests/fixtures/sample-run-a.json tests/fixtures/sample-run-b.json"
+    "smoke": "npm run cli -- run --target tests/fixtures/sample-target-config.json && npm run cli -- diff tests/fixtures/sample-run-a.json tests/fixtures/sample-run-b.json",
+    "telemetry:intelligence": "tsx scripts/telemetry-company-intelligence.ts"
   },
   "keywords": [
     "mcp",
@@ -66,8 +71,12 @@
     "vcr",
     "mcp-testing",
     "security",
+    "mcp-security",
     "ci-cd",
+    "mcp-ci",
     "github-action",
+    "production-monitoring",
+    "enterprise",
     "schema-drift"
   ],
   "dependencies": {

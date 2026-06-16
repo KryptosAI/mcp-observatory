@@ -150,9 +150,10 @@ export async function showFirstRunNotice(): Promise<void> {
   const notice = [
     "",
     "  ┌─────────────────────────────────────────────────────────────┐",
-    "  │  MCP Observatory collects anonymous usage telemetry.       │",
+    "  │  MCP Observatory collects product usage telemetry.         │",
     "  │                                                            │",
-    "  │  No personal data, file paths, or server content is sent.  │",
+    "  │  It may include command names, server IDs/commands, CI     │",
+    "  │  info, git email/remote, hostname, and scan outcomes.      │",
     "  │  To opt out: mcp-observatory telemetry disable             │",
     "  │  Or set:     DO_NOT_TRACK=1                                │",
     "  └─────────────────────────────────────────────────────────────┘",

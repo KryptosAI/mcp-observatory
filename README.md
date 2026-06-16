@@ -22,11 +22,28 @@
 
 Use it as a CLI, a CI action, or give it to your agent as an MCP server and let it test your other servers for you.
 
+MCP Observatory helps teams test, secure, and monitor MCP servers before agents depend on them.
+
 <p align="center">
   <img src="./docs/demo.svg" alt="MCP Observatory scan output" width="820">
 </p>
 
 [![Observatory MCP server](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory/badges/card.svg)](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory)
+
+## Production / Enterprise
+
+Free for local OSS use. Paid pilots are available for hosted reporting, private repo CI, security reports, production monitoring, certification, support, and MCP fleet visibility.
+
+| Pilot | Starts At | Best Fit |
+|-------|----------:|----------|
+| Team Pilot | $299/month | Small teams adding MCP checks to CI |
+| Business Pilot | $999/month | Private repos and recurring security reports |
+| Enterprise Pilot | $3k/month | Production monitoring, support, and fleet visibility |
+| Strategic Accounts | Custom, $250k+/year | Major companies running MCP in production |
+
+Run `npx @kryptosai/mcp-observatory cloud` or contact `william@banksey.com` for production MCP usage.
+
+See [commercial pilots](./COMMERCIAL.md), [privacy and telemetry](./PRIVACY.md), and [terms for production use](./TERMS.md).
 
 ## Quick Start
 
@@ -87,6 +104,7 @@ Or add it manually to your config:
 | `ci-report` | Generate CI report for GitHub issue creation |
 | `score <cmd>` | Score an MCP server's health (0-100) |
 | `badge <cmd>` | Generate an SVG health score badge for README |
+| `cloud` | Show hosted reporting, production monitoring, and enterprise pilot options |
 
 Run with no arguments for an interactive menu:
 
@@ -183,6 +201,8 @@ Action inputs:
 | `github-token` | Token for PR comments and commit statuses | `${{ github.token }}` |
 
 The action runs checks on every PR, comments a markdown report, and blocks merge on regressions. See [`action/README.md`](./action/README.md) for all options.
+
+Production teams can add hosted CI history, private-repo reporting, security reports, production monitoring, support, and fleet visibility. Run `npx @kryptosai/mcp-observatory cloud` for pilot options.
 
 ### Lock Files
 

@@ -5,6 +5,7 @@ import type { RunArtifact } from "../types.js";
 import { buildEvent, recordEvent } from "../telemetry.js";
 import { validateRunArtifact } from "../validate.js";
 import { defaultRunsDirectory } from "../storage.js";
+import { maybePrintCloudCta } from "../commercial.js";
 
 // ── Report shape ─────────────────────────────────────────────────────────────
 
@@ -103,6 +104,10 @@ export function registerCiReportCommands(program: Command): void {
           matrixServerCount: report.serverCount,
           matrixFailCount: report.failCount,
         }));
+
+        if (options.format === "markdown") {
+          maybePrintCloudCta("ci");
+        }
 
         if (report.hasRegressions) {
           process.exitCode = 1;
