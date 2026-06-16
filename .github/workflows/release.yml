@@ -51,9 +51,22 @@ jobs:
       - name: README smoke test
         run: npm run smoke
 
+      - name: Verify npm auth
+        id: npm-auth
+        continue-on-error: true
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm whoami
+
       - name: Release
+        if: steps.npm-auth.outcome == 'success'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx semantic-release
+
+      - name: Skip release when npm auth is invalid
+        if: steps.npm-auth.outcome != 'success'
+        run: |
+          echo "::warning::Skipping semantic-release because NPM_TOKEN is missing or invalid. Replace the repository secret, then rerun this workflow or push a conventional release commit."

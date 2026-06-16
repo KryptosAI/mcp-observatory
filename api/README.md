@@ -8,6 +8,8 @@ Cloudflare Worker that provides a hosted HTTP API for scanning MCP servers.
 |--------|------|-------------|
 | `POST` | `/api/v1/scan` | Scan an HTTP MCP server |
 | `GET` | `/api/v1/scan/:runId` | Retrieve a cached scan result |
+| `POST` | `/api/v1/artifacts` | Upload a run artifact for a hosted pilot report |
+| `GET` | `/api/v1/artifacts/:org` | List uploaded artifacts for an org |
 | `GET` | `/api/v1/badge/:runId` | Get an SVG health badge |
 | `GET` | `/api/v1/health` | Health check |
 
@@ -26,6 +28,24 @@ Rate limit: 10 requests per minute per IP.
 
 > **Note:** Local process targets (`{ "command": "..." }`) are rejected.
 > Use the CLI for local servers.
+
+### POST /api/v1/artifacts
+
+Uploads an existing CLI run artifact for a hosted pilot report. This endpoint
+requires `Authorization: Bearer <CLOUD_UPLOAD_TOKEN>`.
+
+```bash
+curl -X POST "https://mcp-observatory-api.kryptosai.workers.dev/api/v1/artifacts" \
+  -H "Authorization: Bearer $MCP_OBSERVATORY_CLOUD_TOKEN" \
+  -H "Content-Type: application/json" \
+  -H "X-MCP-Observatory-Org: customer.com" \
+  --data-binary @.mcp-observatory/runs/latest.json
+```
+
+### GET /api/v1/artifacts/:org
+
+Lists the most recent uploaded artifact summaries for an org. This endpoint uses
+the same bearer token as upload.
 
 ### GET /api/v1/badge/:runId
 
@@ -69,6 +89,12 @@ Wrangler will create a local KV store automatically.
 
 ```bash
 npm run deploy
+```
+
+The current production Worker is deployed at:
+
+```text
+https://mcp-observatory-api.kryptosai.workers.dev
 ```
 
 ## Architecture
