@@ -6,16 +6,18 @@
     "url": "https://github.com/KryptosAI/mcp-observatory",
     "source": "github"
   },
-  "version": "0.14.7",
+  "version": "0.20.3",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@kryptosai/mcp-observatory",
-      "version": "0.14.7",
+      "version": "0.20.3",
       "transport": {
         "type": "stdio"
       },
-      "arguments": ["serve"],
+      "arguments": [
+        "serve"
+      ],
       "environmentVariables": []
     }
   ]
