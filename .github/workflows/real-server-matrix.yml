@@ -12,6 +12,7 @@ permissions:
 jobs:
   matrix:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,6 +28,10 @@ jobs:
 
       - name: Run real-server matrix
         id: matrix
+        continue-on-error: true
+        timeout-minutes: 10
+        env:
+          MCP_OBSERVATORY_MATRIX_TIMEOUT_MS: "300000"
         run: npm run integration:real
 
       - name: Build dashboard
@@ -56,3 +61,9 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dashboard
           publish_branch: gh-pages
+
+      - name: Fail if matrix found issues
+        if: steps.matrix.outcome == 'failure'
+        run: |
+          echo "::error::Real-server matrix completed with failing target(s). See uploaded artifacts and dashboard output for details."
+          exit 1

@@ -7,26 +7,12 @@
  */
 
 // ---------------------------------------------------------------------------
-// Cloudflare Worker type stubs (provided by @cloudflare/workers-types at build)
-// ---------------------------------------------------------------------------
-
-/* eslint-disable @typescript-eslint/no-empty-interface */
-declare global {
-  interface KVNamespace {
-    get(key: string): Promise<string | null>;
-    put(key: string, value: string, options?: { expirationTtl?: number }): Promise<void>;
-  }
-  interface ExportedHandler<E = unknown> {
-    fetch(request: Request, env: E, ctx?: unknown): Promise<Response>;
-  }
-}
-
-// ---------------------------------------------------------------------------
 // Environment bindings
 // ---------------------------------------------------------------------------
 
 export interface Env {
   SCAN_CACHE: KVNamespace;
+  CLOUD_UPLOAD_TOKEN?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -334,7 +320,7 @@ function corsHeaders(): Record<string, string> {
   return {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Headers": "Authorization, Content-Type, X-MCP-Observatory-Org",
     "Access-Control-Max-Age": "86400",
   };
 }
@@ -351,6 +337,51 @@ function jsonResponse(body: unknown, status = 200): Response {
 
 function errorResponse(message: string, status: number): Response {
   return jsonResponse({ error: message }, status);
+}
+
+function isBlockedHostedHostname(hostname: string): boolean {
+  const host = hostname.toLowerCase().replace(/^\[|\]$/g, "");
+  if (
+    host === "localhost" ||
+    host === "0.0.0.0" ||
+    host === "::1" ||
+    host.endsWith(".localhost") ||
+    host.endsWith(".local")
+  ) {
+    return true;
+  }
+  const parts = host.split(".").map((part) => Number(part));
+  if (parts.length === 4 && parts.every((part) => Number.isInteger(part) && part >= 0 && part <= 255)) {
+    const [a, b] = parts as [number, number, number, number];
+    return (
+      a === 10 ||
+      a === 127 ||
+      (a === 169 && b === 254) ||
+      (a === 172 && b >= 16 && b <= 31) ||
+      (a === 192 && b === 168)
+    );
+  }
+  return false;
+}
+
+function requireUploadAuth(request: Request, env: Env): Response | null {
+  if (!env.CLOUD_UPLOAD_TOKEN) {
+    return errorResponse("Cloud artifact upload is not configured.", 501);
+  }
+  const expected = `Bearer ${env.CLOUD_UPLOAD_TOKEN}`;
+  if (request.headers.get("Authorization") !== expected) {
+    return errorResponse("Unauthorized", 401);
+  }
+  return null;
+}
+
+function slugifyOrg(raw: string | null | undefined): string {
+  const slug = (raw ?? "unknown")
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+  return slug || "unknown";
 }
 
 // ---------------------------------------------------------------------------
@@ -739,6 +770,12 @@ async function handlePostScan(
   if (!["http:", "https:"].includes(parsedUrl.protocol)) {
     return errorResponse("Only http:// and https:// URLs are supported", 400);
   }
+  if (isBlockedHostedHostname(parsedUrl.hostname)) {
+    return errorResponse(
+      "Hosted scans cannot target localhost or private network addresses. Run the CLI locally for internal MCP servers.",
+      400,
+    );
+  }
 
   const artifact = await scanHttpTarget(body.url);
 
@@ -750,6 +787,86 @@ async function handlePostScan(
   );
 
   return jsonResponse(artifact);
+}
+
+interface ArtifactUploadRecord {
+  org: string;
+  runId: string;
+  uploadedAt: string;
+  targetId?: string;
+  gate?: Gate;
+  healthScore?: number;
+}
+
+async function handlePostArtifact(
+  request: Request,
+  env: Env,
+): Promise<Response> {
+  const authError = requireUploadAuth(request, env);
+  if (authError) return authError;
+
+  let artifact: RunArtifact & { org?: string };
+  try {
+    artifact = (await request.json()) as RunArtifact & { org?: string };
+  } catch {
+    return errorResponse("Invalid JSON body", 400);
+  }
+
+  if (artifact.artifactType !== "run" || typeof artifact.runId !== "string" || !artifact.target) {
+    return errorResponse("Expected a MCP Observatory run artifact.", 400);
+  }
+
+  const org = slugifyOrg(
+    request.headers.get("X-MCP-Observatory-Org") ??
+    artifact.org ??
+    artifact.target.metadata?.["org"] ??
+    artifact.target.metadata?.["company"],
+  );
+  const uploadedAt = new Date().toISOString();
+  const key = `artifact:${org}:${artifact.runId}`;
+  const record: ArtifactUploadRecord = {
+    org,
+    runId: artifact.runId,
+    uploadedAt,
+    targetId: artifact.target.targetId,
+    gate: artifact.gate,
+    healthScore: artifact.healthScore?.overall,
+  };
+
+  await env.SCAN_CACHE.put(
+    key,
+    JSON.stringify({ ...record, artifact }),
+    { expirationTtl: KV_TTL_SECONDS * 30 },
+  );
+
+  const indexKey = `artifact-index:${org}`;
+  const existing = await env.SCAN_CACHE.get(indexKey);
+  const index = existing ? JSON.parse(existing) as ArtifactUploadRecord[] : [];
+  const nextIndex = [record, ...index.filter((entry) => entry.runId !== artifact.runId)].slice(0, 200);
+  await env.SCAN_CACHE.put(indexKey, JSON.stringify(nextIndex), { expirationTtl: KV_TTL_SECONDS * 30 });
+
+  return jsonResponse({
+    ok: true,
+    org,
+    runId: artifact.runId,
+    key,
+    uploadedAt,
+  });
+}
+
+async function handleGetArtifacts(
+  request: Request,
+  env: Env,
+  orgParam: string,
+): Promise<Response> {
+  const authError = requireUploadAuth(request, env);
+  if (authError) return authError;
+  const org = slugifyOrg(orgParam);
+  const raw = await env.SCAN_CACHE.get(`artifact-index:${org}`);
+  return jsonResponse({
+    org,
+    artifacts: raw ? JSON.parse(raw) : [],
+  });
 }
 
 async function handleGetScan(
@@ -817,6 +934,15 @@ function matchRoute(
   if (method === "POST" && pathname === "/api/v1/scan") {
     return { handler: "postScan", params: {} };
   }
+  if (method === "POST" && pathname === "/api/v1/artifacts") {
+    return { handler: "postArtifact", params: {} };
+  }
+
+  // GET /api/v1/artifacts/:org
+  const artifactMatch = pathname.match(/^\/api\/v1\/artifacts\/([a-zA-Z0-9._-]+)$/);
+  if (method === "GET" && artifactMatch?.[1]) {
+    return { handler: "getArtifacts", params: { org: artifactMatch[1] } };
+  }
 
   // GET /api/v1/scan/:runId
   const scanMatch = pathname.match(/^\/api\/v1\/scan\/([a-z0-9_]+)$/);
@@ -857,6 +983,10 @@ export default {
           return handleHealth();
         case "postScan":
           return await handlePostScan(request, env);
+        case "postArtifact":
+          return await handlePostArtifact(request, env);
+        case "getArtifacts":
+          return await handleGetArtifacts(request, env, route.params.org!);
         case "getScan":
           return await handleGetScan(route.params.runId!, env);
         case "getBadge":

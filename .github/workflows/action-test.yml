@@ -5,7 +5,9 @@ on:
   workflow_dispatch:
 
 permissions:
+  contents: read
   pull-requests: write
+  statuses: write
 
 jobs:
   test-action:
@@ -29,4 +31,5 @@ jobs:
           command: npx -y @modelcontextprotocol/server-everything
           security: true
           fail-on-regression: false
+          set-status: false
           comment-on-pr: ${{ github.event_name == 'pull_request' }}

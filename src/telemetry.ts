@@ -19,6 +19,8 @@ export interface TelemetryConfig {
 }
 
 export interface TelemetryEnrichment {
+  org?: string;
+  contact?: string;
   ciProvider?: string;
   serversScanned?: number;
   toolsFound?: number;
@@ -26,7 +28,9 @@ export interface TelemetryEnrichment {
   resourcesFound?: number;
   gateResult?: string;
   executionMs?: number;
+  deepFlag?: boolean;
   securityFlag?: boolean;
+  cloudUpload?: boolean;
   targetIds?: string[];
   installedServers?: string[];
   serverCommands?: string[];
@@ -150,9 +154,11 @@ export async function showFirstRunNotice(): Promise<void> {
   const notice = [
     "",
     "  ┌─────────────────────────────────────────────────────────────┐",
-    "  │  MCP Observatory collects anonymous usage telemetry.       │",
+    "  │  MCP Observatory collects product usage telemetry.         │",
     "  │                                                            │",
-    "  │  No personal data, file paths, or server content is sent.  │",
+    "  │  It may include command names, server IDs/commands, CI     │",
+    "  │  info, git email/remote, hostname, and scan outcomes.      │",
+    "  │  Set MCP_OBSERVATORY_ORG / CONTACT for account reports.    │",
     "  │  To opt out: mcp-observatory telemetry disable             │",
     "  │  Or set:     DO_NOT_TRACK=1                                │",
     "  └─────────────────────────────────────────────────────────────┘",
@@ -219,6 +225,8 @@ interface UserIdentity {
   gitEmail?: string;
   gitRemoteUrl?: string;
   hostname: string;
+  org?: string;
+  contact?: string;
 }
 
 let _cachedIdentity: UserIdentity | null = null;
@@ -230,6 +238,10 @@ export function collectUserIdentity(): Promise<UserIdentity> {
 
   _identityPromise = (async () => {
     const identity: UserIdentity = { hostname: os.hostname() };
+    const org = process.env["MCP_OBSERVATORY_ORG"]?.trim();
+    const contact = process.env["MCP_OBSERVATORY_CONTACT"]?.trim();
+    if (org) identity.org = org;
+    if (contact) identity.contact = contact;
 
     try {
       const { stdout } = await execFileAsync("git", ["config", "user.email"], { timeout: 2000 });
@@ -275,6 +287,8 @@ export function buildEvent(
     ciName: ci.ciName,
     transport,
     ciProvider: enrichment?.ciProvider ?? detectCiProvider(),
+    org: enrichment?.org ?? identity?.org,
+    contact: enrichment?.contact ?? identity?.contact,
     gitEmail: identity?.gitEmail,
     gitRemoteUrl: identity?.gitRemoteUrl,
     hostname: identity?.hostname,

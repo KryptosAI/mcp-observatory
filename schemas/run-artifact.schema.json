@@ -17,92 +17,73 @@
     "checks"
   ],
   "properties": {
-    "artifactType": {
-      "const": "run"
-    },
-    "schemaVersion": {
-      "const": "1.0.0"
-    },
-    "gate": {
-      "$ref": "#/definitions/gate"
-    },
-    "runId": {
-      "type": "string"
-    },
-    "createdAt": {
-      "type": "string"
-    },
-    "toolVersion": {
-      "type": "string"
-    },
-    "target": {
-      "$ref": "#/definitions/targetSnapshot"
-    },
-    "environment": {
-      "$ref": "#/definitions/environmentSnapshot"
-    },
-    "summary": {
-      "$ref": "#/definitions/runSummary"
-    },
+    "artifactType": { "const": "run" },
+    "schemaVersion": { "const": "1.0.0" },
+    "gate": { "$ref": "#/definitions/gate" },
+    "runId": { "type": "string" },
+    "createdAt": { "type": "string" },
+    "toolVersion": { "type": "string" },
+    "target": { "$ref": "#/definitions/targetSnapshot" },
+    "environment": { "$ref": "#/definitions/environmentSnapshot" },
+    "summary": { "$ref": "#/definitions/runSummary" },
     "checks": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/checkResult"
-      }
+      "items": { "$ref": "#/definitions/checkResult" }
     },
-    "fatalError": {
-      "type": "string"
-    }
+    "healthScore": { "$ref": "#/definitions/healthScore" },
+    "performanceMetrics": { "$ref": "#/definitions/performanceMetrics" },
+    "fatalError": { "type": "string" }
   },
   "definitions": {
-    "gate": {
-      "type": "string",
-      "enum": ["pass", "fail"]
-    },
+    "gate": { "type": "string", "enum": ["pass", "fail"] },
     "checkStatus": {
       "type": "string",
       "enum": ["pass", "fail", "partial", "unsupported", "flaky", "skipped"]
     },
     "checkId": {
       "type": "string",
-      "enum": ["tools", "prompts", "resources"]
+      "enum": [
+        "tools",
+        "prompts",
+        "resources",
+        "tools-invoke",
+        "security",
+        "security-lite",
+        "conformance",
+        "schema-quality"
+      ]
     },
     "evidenceSummary": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "endpoint",
-        "advertised",
-        "responded",
-        "minimalShapePresent"
-      ],
+      "required": ["endpoint", "advertised", "responded", "minimalShapePresent"],
       "properties": {
-        "endpoint": {
-          "type": "string"
-        },
-        "advertised": {
-          "type": "boolean"
-        },
-        "responded": {
-          "type": "boolean"
-        },
-        "minimalShapePresent": {
-          "type": "boolean"
-        },
-        "itemCount": {
-          "type": "integer",
-          "minimum": 0
-        },
+        "endpoint": { "type": "string" },
+        "advertised": { "type": "boolean" },
+        "responded": { "type": "boolean" },
+        "minimalShapePresent": { "type": "boolean" },
+        "itemCount": { "type": "integer", "minimum": 0 },
         "identifiers": {
           "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "items": { "type": "string" }
         },
         "diagnostics": {
           "type": "array",
+          "items": { "type": "string" }
+        },
+        "schemas": {
+          "type": "object",
+          "additionalProperties": { "type": "object" }
+        },
+        "responseSnapshots": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "findings": {
+          "type": "array",
           "items": {
-            "type": "string"
+            "type": "object",
+            "additionalProperties": true
           }
         }
       }
@@ -110,51 +91,23 @@
     "checkResult": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "id",
-        "capability",
-        "status",
-        "durationMs",
-        "message",
-        "evidence"
-      ],
+      "required": ["id", "capability", "status", "durationMs", "message", "evidence"],
       "properties": {
-        "id": {
-          "$ref": "#/definitions/checkId"
-        },
-        "capability": {
-          "$ref": "#/definitions/checkId"
-        },
-        "status": {
-          "$ref": "#/definitions/checkStatus"
-        },
-        "durationMs": {
-          "type": "number",
-          "minimum": 0
-        },
-        "message": {
-          "type": "string"
-        },
+        "id": { "$ref": "#/definitions/checkId" },
+        "capability": { "$ref": "#/definitions/checkId" },
+        "status": { "$ref": "#/definitions/checkStatus" },
+        "durationMs": { "type": "number", "minimum": 0 },
+        "message": { "type": "string" },
         "evidence": {
           "type": "array",
-          "items": {
-            "$ref": "#/definitions/evidenceSummary"
-          }
+          "items": { "$ref": "#/definitions/evidenceSummary" }
         }
       }
     },
     "statusCounts": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "total",
-        "pass",
-        "fail",
-        "partial",
-        "unsupported",
-        "flaky",
-        "skipped"
-      ],
+      "required": ["total", "pass", "fail", "partial", "unsupported", "flaky", "skipped"],
       "properties": {
         "total": { "type": "integer", "minimum": 0 },
         "pass": { "type": "integer", "minimum": 0 },
@@ -168,16 +121,7 @@
     "runSummary": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "total",
-        "pass",
-        "fail",
-        "partial",
-        "unsupported",
-        "flaky",
-        "skipped",
-        "gate"
-      ],
+      "required": ["total", "pass", "fail", "partial", "unsupported", "flaky", "skipped", "gate"],
       "properties": {
         "total": { "type": "integer", "minimum": 0 },
         "pass": { "type": "integer", "minimum": 0 },
@@ -186,9 +130,7 @@
         "unsupported": { "type": "integer", "minimum": 0 },
         "flaky": { "type": "integer", "minimum": 0 },
         "skipped": { "type": "integer", "minimum": 0 },
-        "gate": {
-          "$ref": "#/definitions/gate"
-        }
+        "gate": { "$ref": "#/definitions/gate" }
       }
     },
     "targetSnapshot": {
@@ -196,36 +138,21 @@
       "additionalProperties": false,
       "required": ["targetId", "adapter", "command", "args"],
       "properties": {
-        "targetId": {
-          "type": "string"
-        },
-        "adapter": {
-          "const": "local-process"
-        },
-        "command": {
-          "type": "string"
-        },
+        "targetId": { "type": "string" },
+        "adapter": { "type": "string", "enum": ["local-process", "http"] },
+        "command": { "type": "string" },
         "args": {
           "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "items": { "type": "string" }
         },
-        "cwd": {
-          "type": "string"
-        },
+        "url": { "type": "string" },
+        "cwd": { "type": "string" },
         "metadata": {
           "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
+          "additionalProperties": { "type": "string" }
         },
-        "serverVersion": {
-          "type": "string"
-        },
-        "serverName": {
-          "type": "string"
-        }
+        "serverVersion": { "type": "string" },
+        "serverName": { "type": "string" }
       }
     },
     "environmentSnapshot": {
@@ -233,11 +160,49 @@
       "additionalProperties": false,
       "required": ["platform", "nodeVersion"],
       "properties": {
-        "platform": {
-          "type": "string"
-        },
-        "nodeVersion": {
-          "type": "string"
+        "platform": { "type": "string" },
+        "nodeVersion": { "type": "string" }
+      }
+    },
+    "scoreDimension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "weight", "score", "details"],
+      "properties": {
+        "name": { "type": "string" },
+        "weight": { "type": "number" },
+        "score": { "type": "number" },
+        "details": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "healthScore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["overall", "grade", "dimensions"],
+      "properties": {
+        "overall": { "type": "number" },
+        "grade": { "type": "string", "enum": ["A", "B", "C", "D", "F"] },
+        "dimensions": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/scoreDimension" }
+        }
+      }
+    },
+    "performanceMetrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["connectMs"],
+      "properties": {
+        "connectMs": { "type": "number", "minimum": 0 },
+        "toolsListMs": { "type": "number", "minimum": 0 },
+        "promptsListMs": { "type": "number", "minimum": 0 },
+        "resourcesListMs": { "type": "number", "minimum": 0 },
+        "toolInvokeMs": {
+          "type": "object",
+          "additionalProperties": { "type": "number", "minimum": 0 }
         }
       }
     }

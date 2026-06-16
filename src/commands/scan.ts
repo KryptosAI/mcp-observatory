@@ -9,6 +9,7 @@ import { appendHistory, buildHistoryEntry } from "../history.js";
 import { buildEvent, recordEvent } from "../telemetry.js";
 import type { RunArtifact } from "../types.js";
 import { TOOL_VERSION } from "../version.js";
+import { maybePrintCloudCta } from "../commercial.js";
 import { ANSI, LOGO, c, useColor } from "./helpers.js";
 
 // ── Scan implementation ─────────────────────────────────────────────────────
@@ -171,6 +172,10 @@ async function runScan(bin: string, configPath: string | undefined, invokeTools:
     const { renderMatrixComment } = await import("../reporters/pr-comment-matrix.js");
     const rows = artifacts.map(a => ({ artifact: a }));
     process.stdout.write(renderMatrixComment(rows) + "\n");
+  }
+
+  if (format === "terminal") {
+    maybePrintCloudCta(results.length > 1 ? "fleet" : securityCheck ? "security" : "general");
   }
 
   recordEvent(buildEvent("command_complete", "scan", "cli", {

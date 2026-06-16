@@ -9,6 +9,7 @@ import {
 } from "../index.js";
 import { defaultRunsDirectory } from "../storage.js";
 import { buildEvent, recordEvent } from "../telemetry.js";
+import { maybePrintCloudCta } from "../commercial.js";
 import { ANSI, c, formatOutput, targetFromCommand, writeOutput } from "./helpers.js";
 
 export function registerScoreCommands(program: Command): void {
@@ -99,6 +100,7 @@ export function registerScoreCommands(program: Command): void {
         }
       }
       process.stdout.write("\n");
+      maybePrintCloudCta("security");
 
       if (artifact.gate === "fail") {
         process.exitCode = 1;

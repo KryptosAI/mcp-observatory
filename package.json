@@ -1,7 +1,7 @@
 {
   "name": "@kryptosai/mcp-observatory",
-  "version": "0.13.0",
-  "description": "Test your MCP servers for breaking changes. Checks capabilities, invokes tools, detects schema drift between versions.",
+  "version": "0.20.3",
+  "description": "Test, secure, and monitor MCP servers before agents depend on them.",
   "mcpName": "io.github.KryptosAI/mcp-observatory",
   "license": "MIT",
   "type": "module",
@@ -31,7 +31,11 @@
   "files": [
     "dist/src",
     "README.md",
+    "COMMERCIAL.md",
+    "PRIVACY.md",
+    "TERMS.md",
     "LICENSE",
+    "docs",
     "schemas"
   ],
   "scripts": {
@@ -47,7 +51,8 @@
     "test": "vitest run",
     "validate:artifacts": "tsx scripts/validate-artifacts.ts",
     "verify:packed-install": "node scripts/verify-packed-install.mjs",
-    "smoke": "npm run cli -- run --target tests/fixtures/sample-target-config.json && npm run cli -- diff tests/fixtures/sample-run-a.json tests/fixtures/sample-run-b.json"
+    "smoke": "npm run cli -- run --target tests/fixtures/sample-target-config.json && npm run cli -- diff tests/fixtures/sample-run-a.json tests/fixtures/sample-run-b.json",
+    "telemetry:intelligence": "tsx scripts/telemetry-company-intelligence.ts"
   },
   "keywords": [
     "mcp",
@@ -66,8 +71,15 @@
     "vcr",
     "mcp-testing",
     "security",
+    "mcp-security",
     "ci-cd",
+    "mcp-ci",
     "github-action",
+    "production-monitoring",
+    "enterprise",
+    "enterprise-report",
+    "feishu",
+    "lark",
     "schema-drift"
   ],
   "dependencies": {
@@ -84,13 +96,13 @@
     "@types/node": "24.10.1",
     "@typescript-eslint/eslint-plugin": "8.46.3",
     "@typescript-eslint/parser": "8.46.3",
-    "ajv": "8.17.1",
+    "ajv": "8.20.0",
     "eslint": "9.39.1",
     "globals": "16.5.0",
     "semantic-release": "^25.0.3",
-    "tsx": "4.20.6",
+    "tsx": "4.22.4",
     "typescript": "5.9.3",
     "typescript-eslint": "8.46.3",
-    "vitest": "4.0.8"
+    "vitest": "4.1.9"
   }
 }

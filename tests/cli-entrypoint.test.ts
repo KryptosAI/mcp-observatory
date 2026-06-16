@@ -104,6 +104,13 @@ describe("CLI entrypoint", () => {
     expect(stdout).toContain("report");
   });
 
+  it("cloud subcommand prints pilot info", () => {
+    const { stdout, exitCode } = runCli(["cloud"]);
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("MCP Observatory Cloud");
+    expect(stdout).toContain("Enterprise Pilot");
+  });
+
   it("diff runs two sample artifacts", () => {
     const { stdout, exitCode } = runCli([
       "diff",

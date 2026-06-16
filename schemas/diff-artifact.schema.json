@@ -19,113 +19,109 @@
     "removed"
   ],
   "properties": {
-    "artifactType": {
-      "const": "diff"
-    },
-    "schemaVersion": {
-      "const": "1.0.0"
-    },
-    "gate": {
-      "$ref": "#/definitions/gate"
-    },
-    "baseRunId": {
-      "type": "string"
-    },
-    "headRunId": {
-      "type": "string"
-    },
-    "createdAt": {
-      "type": "string"
-    },
-    "summary": {
-      "$ref": "#/definitions/diffSummary"
-    },
+    "artifactType": { "const": "diff" },
+    "schemaVersion": { "const": "1.0.0" },
+    "gate": { "$ref": "#/definitions/gate" },
+    "baseRunId": { "type": "string" },
+    "headRunId": { "type": "string" },
+    "createdAt": { "type": "string" },
+    "summary": { "$ref": "#/definitions/diffSummary" },
     "regressions": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/diffEntry"
-      }
+      "items": { "$ref": "#/definitions/diffEntry" }
     },
     "recoveries": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/diffEntry"
-      }
+      "items": { "$ref": "#/definitions/diffEntry" }
     },
     "unchanged": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/diffEntry"
-      }
+      "items": { "$ref": "#/definitions/diffEntry" }
     },
     "added": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/diffEntry"
-      }
+      "items": { "$ref": "#/definitions/diffEntry" }
     },
     "removed": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/diffEntry"
-      }
+      "items": { "$ref": "#/definitions/diffEntry" }
+    },
+    "schemaDrift": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/schemaDriftEntry" }
+    },
+    "responseChanges": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/responseChangeEntry" }
     }
   },
   "definitions": {
-    "gate": {
-      "type": "string",
-      "enum": ["pass", "fail"]
-    },
+    "gate": { "type": "string", "enum": ["pass", "fail"] },
     "checkStatus": {
       "type": "string",
       "enum": ["pass", "fail", "partial", "unsupported", "flaky", "skipped"]
     },
     "checkId": {
       "type": "string",
-      "enum": ["tools", "prompts", "resources"]
+      "enum": [
+        "tools",
+        "prompts",
+        "resources",
+        "tools-invoke",
+        "security",
+        "security-lite",
+        "conformance",
+        "schema-quality"
+      ]
     },
     "diffEntry": {
       "type": "object",
       "additionalProperties": false,
       "required": ["id", "capability", "message"],
       "properties": {
-        "id": {
-          "$ref": "#/definitions/checkId"
-        },
-        "capability": {
-          "$ref": "#/definitions/checkId"
-        },
-        "fromStatus": {
-          "$ref": "#/definitions/checkStatus"
-        },
-        "toStatus": {
-          "$ref": "#/definitions/checkStatus"
-        },
-        "message": {
-          "type": "string"
+        "id": { "$ref": "#/definitions/checkId" },
+        "capability": { "$ref": "#/definitions/checkId" },
+        "fromStatus": { "$ref": "#/definitions/checkStatus" },
+        "toStatus": { "$ref": "#/definitions/checkStatus" },
+        "message": { "type": "string" }
+      }
+    },
+    "schemaDriftEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capability", "name", "changes"],
+      "properties": {
+        "capability": { "$ref": "#/definitions/checkId" },
+        "name": { "type": "string" },
+        "changes": {
+          "type": "array",
+          "items": { "type": "string" }
         }
+      }
+    },
+    "responseChangeEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capability", "name", "change"],
+      "properties": {
+        "capability": { "$ref": "#/definitions/checkId" },
+        "name": { "type": "string" },
+        "change": { "type": "string" }
       }
     },
     "diffSummary": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "regressions",
-        "recoveries",
-        "unchanged",
-        "added",
-        "removed",
-        "gate"
-      ],
+      "required": ["regressions", "recoveries", "unchanged", "added", "removed", "gate"],
       "properties": {
         "regressions": { "type": "integer", "minimum": 0 },
         "recoveries": { "type": "integer", "minimum": 0 },
         "unchanged": { "type": "integer", "minimum": 0 },
         "added": { "type": "integer", "minimum": 0 },
         "removed": { "type": "integer", "minimum": 0 },
-        "gate": {
-          "$ref": "#/definitions/gate"
-        }
+        "schemaDriftCount": { "type": "integer", "minimum": 0 },
+        "responseChangeCount": { "type": "integer", "minimum": 0 },
+        "gate": { "$ref": "#/definitions/gate" }
       }
     }
   }

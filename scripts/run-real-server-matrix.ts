@@ -14,6 +14,26 @@ const artifactsDir = path.join(root, "examples", "artifacts");
 const matrixSummaryPath = path.join(root, "examples", "matrix-summary.json");
 const matrixHistoryPath = path.join(root, "examples", "matrix-history.json");
 const proofIndexPath = path.join(root, "examples", "INDEX.md");
+const DEFAULT_MATRIX_TIMEOUT_MS = 5 * 60_000;
+
+function readMatrixTimeoutMs(): number {
+  const raw = process.env["MCP_OBSERVATORY_MATRIX_TIMEOUT_MS"];
+  if (raw === undefined) return DEFAULT_MATRIX_TIMEOUT_MS;
+
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return DEFAULT_MATRIX_TIMEOUT_MS;
+  }
+  return parsed;
+}
+
+const matrixTimeoutMs = readMatrixTimeoutMs();
+const matrixWatchdog = setTimeout(() => {
+  process.stderr.write(
+    `Real-server matrix exceeded ${matrixTimeoutMs}ms; forcing exit before GitHub Actions' job limit.\n`,
+  );
+  process.exit(124);
+}, matrixTimeoutMs);
 
 interface MatrixSummaryEntry {
   targetId: string;
@@ -93,6 +113,7 @@ async function main(): Promise<void> {
     const target = JSON.parse(
       await readFile(targetPath, "utf8"),
     ) as TargetConfig;
+    process.stdout.write(`${target.targetId}: starting\n`);
     const artifact = await runTarget(target);
     const artifactPath = path.join(
       artifactsDir,
@@ -149,6 +170,9 @@ async function main(): Promise<void> {
   await writeFile(matrixHistoryPath, JSON.stringify(history, null, 2) + "\n", "utf8");
 
   if (sawFailure) {
+    process.stderr.write(
+      "Real-server matrix completed with failing target(s). See uploaded artifacts for details.\n",
+    );
     process.exitCode = 1;
   }
 }
@@ -156,5 +180,10 @@ async function main(): Promise<void> {
 void main().catch((error: unknown) => {
   const message = error instanceof Error ? error.message : String(error);
   process.stderr.write(`${message}\n`);
-  process.exitCode = 1;
+  process.exit(1);
+}).then(() => {
+  clearTimeout(matrixWatchdog);
+  // Some third-party MCP servers leave handles open after the SDK transport
+  // closes; force the script to end once all matrix artifacts are written.
+  process.exit(process.exitCode ?? 0);
 });
