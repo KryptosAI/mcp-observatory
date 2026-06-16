@@ -292,6 +292,98 @@ function renderCsv(rows: AccountOutput[]): string {
   ].join("\n") + "\n";
 }
 
+function htmlEscape(value: string | number): string {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll("\"", "&quot;");
+}
+
+function renderHtml(rows: AccountOutput[]): string {
+  const strategic = rows.filter((row) => row.tier_recommendation === "Strategic").length;
+  const enterprise = rows.filter((row) => row.tier_recommendation === "Enterprise").length;
+  const highConfidence = rows.filter((row) => row.confidence === "high").length;
+  const generatedAt = new Date().toISOString();
+  const cells = (row: AccountOutput): string => [
+    row.company_domain,
+    row.tier_recommendation,
+    row.confidence,
+    row.event_count,
+    row.unique_sessions,
+    row.ci_events,
+    row.production_signals,
+    row.commands_used,
+    row.targets_seen,
+    row.evidence,
+    row.first_seen,
+    row.last_seen,
+  ].map((value) => `<td>${htmlEscape(value)}</td>`).join("");
+
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MCP Observatory Telemetry Intelligence</title>
+  <style>
+    :root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { margin: 0; color: #17202a; background: #f7f8fb; }
+    main { max-width: 1320px; margin: 0 auto; padding: 32px 20px 48px; }
+    h1 { margin: 0 0 8px; font-size: 28px; letter-spacing: 0; }
+    .meta { color: #5a6675; margin-bottom: 24px; }
+    .summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 24px; }
+    .metric { background: #fff; border: 1px solid #dfe5ee; border-radius: 8px; padding: 14px 16px; }
+    .metric strong { display: block; font-size: 24px; }
+    .metric span { color: #5a6675; font-size: 13px; }
+    .table-wrap { overflow-x: auto; background: #fff; border: 1px solid #dfe5ee; border-radius: 8px; }
+    table { border-collapse: collapse; width: 100%; min-width: 1180px; font-size: 13px; }
+    th, td { border-bottom: 1px solid #edf1f6; padding: 10px 12px; text-align: left; vertical-align: top; }
+    th { position: sticky; top: 0; background: #eef3f8; font-size: 12px; text-transform: uppercase; color: #425166; }
+    td:nth-child(1), td:nth-child(2), td:nth-child(3) { white-space: nowrap; }
+    tr:last-child td { border-bottom: 0; }
+    @media (max-width: 760px) { .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding: 20px 12px 36px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>MCP Observatory Telemetry Intelligence</h1>
+    <div class="meta">Generated ${htmlEscape(generatedAt)}. Raw emails are excluded from this report.</div>
+    <section class="summary" aria-label="Summary">
+      <div class="metric"><strong>${rows.length}</strong><span>company/org candidates</span></div>
+      <div class="metric"><strong>${strategic}</strong><span>strategic accounts</span></div>
+      <div class="metric"><strong>${enterprise}</strong><span>enterprise accounts</span></div>
+      <div class="metric"><strong>${highConfidence}</strong><span>high-confidence accounts</span></div>
+    </section>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Company/Org</th>
+            <th>Tier</th>
+            <th>Confidence</th>
+            <th>Events</th>
+            <th>Sessions</th>
+            <th>CI</th>
+            <th>Production Signals</th>
+            <th>Commands</th>
+            <th>Targets</th>
+            <th>Evidence</th>
+            <th>First Seen</th>
+            <th>Last Seen</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map((row) => `<tr>${cells(row)}</tr>`).join("\n          ")}
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>
+`;
+}
+
 function rank(row: AccountOutput): number {
   const confidenceScore = row.confidence === "high" ? 1000 : row.confidence === "medium" ? 500 : 0;
   const tierScore = row.tier_recommendation === "Strategic"
@@ -375,13 +467,16 @@ async function main(): Promise<void> {
   await mkdir(outDir, { recursive: true });
   const jsonPath = path.join(outDir, "telemetry-company-intelligence.json");
   const csvPath = path.join(outDir, "telemetry-company-intelligence.csv");
+  const htmlPath = path.join(outDir, "telemetry-company-intelligence.html");
   await writeFile(jsonPath, JSON.stringify(outputs, null, 2) + "\n", "utf8");
   await writeFile(csvPath, renderCsv(outputs), "utf8");
+  await writeFile(htmlPath, renderHtml(outputs), "utf8");
 
   process.stdout.write(`Analyzed ${rows.length} telemetry rows.\n`);
   process.stdout.write(`Identified ${outputs.length} company/org candidates.\n`);
   process.stdout.write(`Wrote ${jsonPath}\n`);
   process.stdout.write(`Wrote ${csvPath}\n`);
+  process.stdout.write(`Wrote ${htmlPath}\n`);
 }
 
 void main().catch((error: unknown) => {

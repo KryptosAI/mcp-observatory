@@ -1,8 +1,8 @@
 # MCP Observatory GitHub App
 
-> **Status**: Planned feature — not yet deployed. This is the future hosted Observatory GitHub App.
+> **Status**: Config-lint prototype. It is not the production monitoring surface yet.
 
-A GitHub App that automatically analyzes MCP server configurations in pull requests and posts health score reports as PR comments.
+This app detects MCP configuration changes in pull requests and posts lightweight config review comments. For production MCP testing today, use the GitHub Action, CLI artifacts, enterprise reports, or hosted artifact upload.
 
 ## Setup
 
@@ -47,7 +47,7 @@ Use a tunnel (e.g. ngrok, cloudflared) to expose your local server for webhook d
 ngrok http 3000
 ```
 
-## What It Checks
+## What It Checks Today
 
 The app detects MCP config files (`.mcp.json`, `mcp-config.json`, etc.) in PR diffs and runs:
 
@@ -55,6 +55,15 @@ The app detects MCP config files (`.mcp.json`, `mcp-config.json`, etc.) in PR di
 - **Schema**: Presence of `mcpServers` key, valid server entries
 - **Transport**: Each server has a `command` (stdio) or `url` (http)
 - **Security**: Detects potential hardcoded secrets in environment variables
+
+It does not currently execute MCP servers, invoke tools, generate Observatory run artifacts, or perform hosted fleet monitoring.
+
+## Production Path
+
+- Use `KryptosAI/mcp-observatory/action` for CI enforcement.
+- Use `mcp-observatory enterprise-report` for pilot-ready reports.
+- Use `mcp-observatory cloud upload <artifact>` after a pilot token is issued.
+- Treat this GitHub App as a future distribution channel once it can run or ingest real Observatory artifacts.
 
 ## Comment Behavior
 

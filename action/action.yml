@@ -29,6 +29,10 @@ inputs:
     description: "Fail the action if the server has issues"
     required: false
     default: "true"
+  fail-on-baseline-drift:
+    description: "Fail the action if baseline verification detects drift"
+    required: false
+    default: "true"
   comment-on-pr:
     description: "Post a report as a PR comment"
     required: false
@@ -81,7 +85,11 @@ runs:
 
         # Multi-server matrix scan
         if [ -n "$INPUT_TARGETS" ]; then
-          SCAN_ARRAY=(mcp-observatory scan --config "$INPUT_TARGETS")
+          if [ "$INPUT_DEEP" = "true" ]; then
+            SCAN_ARRAY=(mcp-observatory scan deep --config "$INPUT_TARGETS")
+          else
+            SCAN_ARRAY=(mcp-observatory scan --config "$INPUT_TARGETS")
+          fi
           if [ "$INPUT_SECURITY" = "true" ]; then
             SCAN_ARRAY+=(--security)
           fi
@@ -110,10 +118,7 @@ runs:
         else
           CMD_ARRAY=()
           if [ -n "$INPUT_TARGET" ]; then
-            CMD_ARRAY=(mcp-observatory run --target "$INPUT_TARGET")
-            if [ "$INPUT_DEEP" = "true" ]; then
-              CMD_ARRAY+=(--invoke)
-            fi
+            CMD_ARRAY=(mcp-observatory test --target "$INPUT_TARGET")
           elif [ -n "$INPUT_COMMAND" ]; then
             read -r -a COMMAND_PARTS <<< "$INPUT_COMMAND"
             CMD_ARRAY=(mcp-observatory test "${COMMAND_PARTS[@]}")
@@ -122,6 +127,9 @@ runs:
             exit 1
           fi
 
+          if [ "$INPUT_DEEP" = "true" ]; then
+            CMD_ARRAY+=(--deep)
+          fi
           if [ "$INPUT_SECURITY" = "true" ]; then
             CMD_ARRAY+=(--security)
           fi
@@ -155,6 +163,7 @@ runs:
         INPUT_BASELINE: ${{ inputs.baseline }}
         INPUT_COMMAND: ${{ inputs.command }}
         INPUT_TARGET: ${{ inputs.target }}
+        INPUT_FAIL_ON_BASELINE_DRIFT: ${{ inputs.fail-on-baseline-drift }}
       run: |
         VERIFY_ARRAY=(mcp-observatory verify "$INPUT_BASELINE")
         if [ -n "$INPUT_TARGET" ]; then
@@ -172,6 +181,10 @@ runs:
 
         if [ $VERIFY_EXIT -ne 0 ]; then
           echo "::warning::Baseline verification detected changes"
+          if [ "$INPUT_FAIL_ON_BASELINE_DRIFT" = "true" ]; then
+            echo "::error::Baseline verification failed"
+            exit $VERIFY_EXIT
+          fi
         fi
 
     - name: Set commit status

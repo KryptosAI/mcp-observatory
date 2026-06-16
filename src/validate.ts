@@ -20,6 +20,48 @@ function requireArray(obj: Record<string, unknown>, field: string, label: string
   return value;
 }
 
+function expandEnvValue(value: string, label: string): string {
+  const match =
+    value.match(/^\$\{([A-Za-z_][A-Za-z0-9_]*)\}$/) ??
+    value.match(/^\$([A-Za-z_][A-Za-z0-9_]*)$/) ??
+    value.match(/^env:([A-Za-z_][A-Za-z0-9_]*)$/);
+  if (!match) return value;
+  const name = match[1]!;
+  const envValue = process.env[name];
+  if (envValue === undefined) {
+    throw new Error(`${label} references missing environment variable '${name}'.`);
+  }
+  return envValue;
+}
+
+function optionalStringRecord(value: unknown, label: string, expand = false): Record<string, string> | undefined {
+  if (value === undefined) return undefined;
+  if (!isObject(value)) {
+    throw new Error(`${label} must be an object with string values.`);
+  }
+  const result: Record<string, string> = {};
+  for (const [key, raw] of Object.entries(value)) {
+    if (typeof raw !== "string") {
+      throw new Error(`${label}.${key} must be a string.`);
+    }
+    result[key] = expand ? expandEnvValue(raw, `${label}.${key}`) : raw;
+  }
+  return result;
+}
+
+function optionalStringArray(value: unknown, label: string): string[] | undefined {
+  if (value === undefined) return undefined;
+  if (!Array.isArray(value)) {
+    throw new Error(`${label} must be an array of strings.`);
+  }
+  return value.map((entry, i) => {
+    if (typeof entry !== "string" || entry.length === 0) {
+      throw new Error(`${label}[${i}] must be a non-empty string.`);
+    }
+    return entry;
+  });
+}
+
 export function validateTargetConfig(data: unknown): TargetConfig {
   if (!isObject(data)) {
     throw new Error("Target config must be a JSON object.");
@@ -34,10 +76,11 @@ export function validateTargetConfig(data: unknown): TargetConfig {
       targetId,
       adapter: "http",
       url,
-      authToken: typeof data["authToken"] === "string" ? data["authToken"] : undefined,
-      headers: isObject(data["headers"]) ? data["headers"] as Record<string, string> : undefined,
+      authToken: typeof data["authToken"] === "string" ? expandEnvValue(data["authToken"], "Target config authToken") : undefined,
+      headers: optionalStringRecord(data["headers"], "Target config headers", true),
       timeoutMs: typeof data["timeoutMs"] === "number" ? data["timeoutMs"] : undefined,
-      metadata: isObject(data["metadata"]) ? data["metadata"] as Record<string, string> : undefined,
+      metadata: optionalStringRecord(data["metadata"], "Target config metadata"),
+      securitySuppressions: optionalStringArray(data["securitySuppressions"], "Target config securitySuppressions"),
       skipInvoke: data["skipInvoke"] === true ? true : undefined,
     };
   }
@@ -61,9 +104,10 @@ export function validateTargetConfig(data: unknown): TargetConfig {
     command,
     args,
     cwd: typeof data["cwd"] === "string" ? data["cwd"] : undefined,
-    env: isObject(data["env"]) ? data["env"] as Record<string, string> : undefined,
+    env: optionalStringRecord(data["env"], "Target config env", true),
     timeoutMs: typeof data["timeoutMs"] === "number" ? data["timeoutMs"] : undefined,
-    metadata: isObject(data["metadata"]) ? data["metadata"] as Record<string, string> : undefined,
+    metadata: optionalStringRecord(data["metadata"], "Target config metadata"),
+    securitySuppressions: optionalStringArray(data["securitySuppressions"], "Target config securitySuppressions"),
     skipInvoke: data["skipInvoke"] === true ? true : undefined,
   };
 }

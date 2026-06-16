@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { Command } from "commander";
 
 import { isCI } from "./ci.js";
@@ -19,7 +19,7 @@ import { registerHistoryCommands } from "./commands/history.js";
 import { registerCiReportCommands } from "./commands/ci-report.js";
 import { registerEnterpriseReportCommands } from "./commands/enterprise-report.js";
 import { registerLockCommands } from "./commands/lock.js";
-import { printCloudInfo } from "./commercial.js";
+import { DEFAULT_CLOUD_UPLOAD_ENDPOINT, printCloudInfo } from "./commercial.js";
 import { runTarget } from "./index.js";
 import type { RunArtifact, TargetConfig } from "./types.js";
 import { loadTelemetryConfig, collectUserIdentity, recordEvent, buildEvent } from "./telemetry.js";
@@ -263,11 +263,44 @@ async function main(): Promise<void> {
   registerEnterpriseReportCommands(program);
   registerLockCommands(program);
 
-  program
+  const cloudCmd = program
     .command("cloud")
     .description("Show hosted reporting, production monitoring, and enterprise pilot options.")
     .action(() => {
       printCloudInfo();
+    });
+
+  cloudCmd
+    .command("upload")
+    .description("Upload a run artifact to MCP Observatory Cloud for a hosted pilot report.")
+    .argument("<artifact>", "Path to a run artifact JSON file.")
+    .option("--org <org>", "Customer or organization slug. Defaults to MCP_OBSERVATORY_ORG.")
+    .option("--endpoint <url>", "Hosted upload endpoint.", DEFAULT_CLOUD_UPLOAD_ENDPOINT)
+    .action(async (artifactPath: string, options: { org?: string; endpoint: string }) => {
+      const token = process.env["MCP_OBSERVATORY_CLOUD_TOKEN"];
+      if (!token) {
+        throw new Error("MCP_OBSERVATORY_CLOUD_TOKEN is required for cloud uploads.");
+      }
+      const org = options.org ?? process.env["MCP_OBSERVATORY_ORG"];
+      const raw = await readFile(artifactPath, "utf8");
+      const response = await fetch(options.endpoint, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+          ...(org ? { "X-MCP-Observatory-Org": org } : {}),
+        },
+        body: raw,
+      });
+      const text = await response.text();
+      if (!response.ok) {
+        throw new Error(`Cloud upload failed (${response.status}): ${text}`);
+      }
+      process.stdout.write(`${text}\n`);
+      recordEvent(buildEvent("command_complete", "cloud-upload", "cli", {
+        cloudUpload: true,
+        org,
+      }));
     });
 
   // ── smithery ─────────────────────────────────────────────────────────

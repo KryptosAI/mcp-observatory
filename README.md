@@ -197,6 +197,7 @@ Action inputs:
 | `deep` | Also invoke safe tools | `false` |
 | `security` | Run security analysis | `false` |
 | `fail-on-regression` | Fail the action on issues | `true` |
+| `fail-on-baseline-drift` | Fail the action when baseline verification detects drift | `true` |
 | `comment-on-pr` | Post report as PR comment | `true` |
 | `set-status` | Set a commit status check (green/red) on the HEAD SHA | `true` |
 | `github-token` | Token for PR comments and commit statuses | `${{ github.token }}` |
@@ -326,10 +327,15 @@ npx @kryptosai/mcp-observatory run --target ./target.json
   "targetId": "my-remote-server",
   "adapter": "http",
   "url": "http://localhost:3000/mcp",
-  "authToken": "optional-bearer-token",
+  "authToken": "${MCP_SERVER_TOKEN}",
+  "headers": {
+    "X-Api-Key": "$MCP_SERVER_API_KEY"
+  },
   "timeoutMs": 15000
 }
 ```
+
+Target configs support `${VAR}`, `$VAR`, and `env:VAR` references in `authToken`, `headers`, and local-process `env` values.
 
 ## How It Compares
 

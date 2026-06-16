@@ -2,6 +2,8 @@
 
 Use this as the reversible launch motion for MCP Observatory commercialization.
 
+For the release gate and publication checklist, see [Publish And Distribution Readiness](./publish-readiness.md).
+
 ## Positioning
 
 MCP Observatory helps teams test, secure, and monitor MCP servers before agents depend on them.

@@ -1,6 +1,7 @@
 import { ANSI, c, getBinName } from "./commands/helpers.js";
 
 const CONTACT = "william@banksey.com";
+export const DEFAULT_CLOUD_UPLOAD_ENDPOINT = "https://mcp-observatory-api.kryptosai.workers.dev/api/v1/artifacts";
 
 export function hasCloudToken(): boolean {
   return Boolean(process.env["MCP_OBSERVATORY_CLOUD_TOKEN"]);
@@ -44,6 +45,7 @@ export function printCloudInfo(): void {
       "  Strategic:        custom, $250k+/year",
       "",
       "To enable hosted uploads, set MCP_OBSERVATORY_CLOUD_TOKEN after receiving a pilot token.",
+      `Upload an artifact: ${getBinName()} cloud upload .mcp-observatory/runs/<run>.json`,
       `Contact: ${CONTACT}`,
       "",
     ].join("\n"),

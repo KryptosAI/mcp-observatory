@@ -28,6 +28,7 @@ jobs:
 | `deep` | Also invoke safe tools | `false` |
 | `security` | Run security analysis | `false` |
 | `fail-on-regression` | Fail the action on issues | `true` |
+| `fail-on-baseline-drift` | Fail the action when baseline verification detects drift | `true` |
 | `comment-on-pr` | Post report as PR comment | `true` |
 | `set-status` | Set a commit status check (green/red) on the HEAD SHA | `true` |
 | `targets` | Path to MCP config file for multi-server matrix scan | |
@@ -68,6 +69,7 @@ jobs:
   with:
     command: npx -y my-mcp-server
     baseline: .mcp-observatory/cassettes/baseline.cassette.json
+    fail-on-baseline-drift: true
 ```
 
 ### Using target config

@@ -19,7 +19,7 @@ For an internal HTTP MCP endpoint, create a target file:
   "targetId": "feishu-doc-mcp",
   "adapter": "http",
   "url": "https://internal.example.com/mcp",
-  "authToken": "redacted-bearer-token",
+  "authToken": "${FEISHU_MCP_TOKEN}",
   "timeoutMs": 30000
 }
 ```
@@ -27,6 +27,7 @@ For an internal HTTP MCP endpoint, create a target file:
 Then run:
 
 ```bash
+export FEISHU_MCP_TOKEN="..."
 npx @kryptosai/mcp-observatory test --target feishu-target.json --security
 ```
 

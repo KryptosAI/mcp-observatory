@@ -17,13 +17,15 @@ export function registerTestCommands(program: Command): void {
     .description("Test a specific server by command.")
     .argument("[command...]", "Server command and arguments to run.")
     .option("--target <config>", "Path to a target config JSON file.")
+    .option("--deep", "Also invoke safe tools to verify they execute.")
+    .option("--invoke-tools", "Alias for --deep.")
     .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
     .option("--no-color", "Disable colored output.")
-    .action(async (commandArgs: string[], options: { security?: boolean; target?: string }) => {
+    .action(async (commandArgs: string[], options: { deep?: boolean; invokeTools?: boolean; security?: boolean; target?: string }) => {
       const t0 = Date.now();
       const target = options.target ? await resolveTarget({ target: options.target }) : targetFromCommand(commandArgs);
       process.stdout.write(`  ${c(ANSI.dim, "⟳")} Checking ${c(ANSI.bold, target.targetId)}...`);
-      const artifact = await runTarget(target, { securityCheck: options.security });
+      const artifact = await runTarget(target, { invokeTools: options.deep || options.invokeTools, securityCheck: options.security });
       const outPath = await writeRunArtifact(artifact, defaultRunsDirectory(process.cwd()));
 
       const toolsEvidence = artifact.checks.find(ch => ch.id === "tools");
@@ -63,6 +65,7 @@ export function registerTestCommands(program: Command): void {
         resourcesFound: resourceCount,
         gateResult: artifact.gate,
         executionMs: Date.now() - t0,
+        deepFlag: options.deep || options.invokeTools,
         securityFlag: options.security,
         targetIds: [target.targetId],
         serverCommands: [target.adapter === "http" ? target.url : `${target.command} ${target.args.join(" ")}`],

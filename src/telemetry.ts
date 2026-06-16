@@ -28,7 +28,9 @@ export interface TelemetryEnrichment {
   resourcesFound?: number;
   gateResult?: string;
   executionMs?: number;
+  deepFlag?: boolean;
   securityFlag?: boolean;
+  cloudUpload?: boolean;
   targetIds?: string[];
   installedServers?: string[];
   serverCommands?: string[];

@@ -24,6 +24,8 @@ export interface LocalProcessTargetConfig {
   env?: Record<string, string>;
   timeoutMs?: number;
   metadata?: Record<string, string>;
+  /** Suppress known security findings by rule id, tool name, or toolName:ruleId. */
+  securitySuppressions?: string[];
   /** Skip tool invocation checks for this target even with `scan deep`. */
   skipInvoke?: boolean;
 }
@@ -36,6 +38,8 @@ export interface HttpTargetConfig {
   headers?: Record<string, string>;
   timeoutMs?: number;
   metadata?: Record<string, string>;
+  /** Suppress known security findings by rule id, tool name, or toolName:ruleId. */
+  securitySuppressions?: string[];
   /** Skip tool invocation checks for this target even with `scan deep`. */
   skipInvoke?: boolean;
 }
@@ -69,6 +73,7 @@ export interface EvidenceSummary {
   diagnostics?: string[];
   schemas?: Record<string, object>;
   responseSnapshots?: Record<string, unknown>;
+  findings?: Array<Record<string, unknown>>;
 }
 
 export interface CheckResult {

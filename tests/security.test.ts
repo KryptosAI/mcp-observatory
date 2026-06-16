@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { runLightweightSecurityCheck } from "../src/checks/security.js";
 import { SECURITY_RULES, CREDENTIAL_PATTERNS, type ToolInfo } from "../src/checks/security-rules.js";
 
 function findRule(id: string) {
@@ -138,5 +139,45 @@ describe("credential patterns", () => {
   it("does not false-positive on normal text", () => {
     const text = "The weather is sunny and 72 degrees.";
     expect(CREDENTIAL_PATTERNS.some(p => p.pattern.test(text))).toBe(false);
+  });
+});
+
+describe("security check evidence", () => {
+  it("emits structured findings", () => {
+    const check = runLightweightSecurityCheck([
+      {
+        name: "exec_query",
+        inputSchema: { type: "object", properties: { command: { type: "string" } } },
+      },
+    ], {
+      targetId: "test",
+      adapter: "local-process",
+      command: "node",
+      args: ["server.js"],
+    });
+
+    const evidence = check.result.evidence[0]!;
+    expect(evidence.findings?.[0]?.["ruleId"]).toBe("shell-injection");
+    expect(check.result.status).toBe("fail");
+  });
+
+  it("honors security suppressions by rule id and tool name", () => {
+    const check = runLightweightSecurityCheck([
+      {
+        name: "exec_query",
+        inputSchema: { type: "object", properties: { command: { type: "string" } } },
+      },
+    ], {
+      targetId: "test",
+      adapter: "local-process",
+      command: "node",
+      args: ["server.js"],
+      securitySuppressions: ["shell-injection"],
+    });
+
+    const evidence = check.result.evidence[0]!;
+    expect(evidence.findings).toBeUndefined();
+    expect(evidence.itemCount).toBe(0);
+    expect(check.result.status).toBe("pass");
   });
 });
