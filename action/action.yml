@@ -115,7 +115,8 @@ runs:
               CMD_ARRAY+=(--invoke)
             fi
           elif [ -n "$INPUT_COMMAND" ]; then
-            CMD_ARRAY=(mcp-observatory test "$INPUT_COMMAND")
+            read -r -a COMMAND_PARTS <<< "$INPUT_COMMAND"
+            CMD_ARRAY=(mcp-observatory test "${COMMAND_PARTS[@]}")
           else
             echo "::error::Either 'command', 'target', or 'targets' input is required"
             exit 1
@@ -143,7 +144,7 @@ runs:
 
           # Generate PR comment report
           if [ -n "$ARTIFACT_PATH" ]; then
-            mcp-observatory report "$ARTIFACT_PATH" --format pr-comment --no-color > "${ARTIFACT_DIR}/report.md" 2>/dev/null || true
+            mcp-observatory report --run "$ARTIFACT_PATH" --format pr-comment --no-color > "${ARTIFACT_DIR}/report.md" 2>/dev/null || true
           fi
         fi
 
@@ -159,7 +160,8 @@ runs:
         if [ -n "$INPUT_TARGET" ]; then
           VERIFY_ARRAY+=(--target "$INPUT_TARGET")
         elif [ -n "$INPUT_COMMAND" ]; then
-          VERIFY_ARRAY+=("$INPUT_COMMAND")
+          read -r -a COMMAND_PARTS <<< "$INPUT_COMMAND"
+          VERIFY_ARRAY+=("${COMMAND_PARTS[@]}")
         fi
         VERIFY_ARRAY+=(--no-color)
 
@@ -204,6 +206,10 @@ runs:
 
         if [ ! -f "$REPORT_FILE" ]; then
           echo "No report file found, skipping PR comment"
+          exit 0
+        fi
+        if [ ! -s "$REPORT_FILE" ]; then
+          echo "Report file is empty, skipping PR comment"
           exit 0
         fi
 
