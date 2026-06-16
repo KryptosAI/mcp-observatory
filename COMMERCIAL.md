@@ -59,6 +59,8 @@ MCP_OBSERVATORY_ORG=customer.com
 MCP_OBSERVATORY_CONTACT=mcp-owner@customer.com
 ```
 
+Use the [enterprise outreach playbook](./docs/enterprise-outreach-playbook.md) to route high-confidence company usage to manual pilots without sending generic low-tier pricing to major accounts.
+
 ## Enterprise Framing
 
 For production MCP usage, private repo CI, compliance/security reporting, or large company deployments, contact us before selecting a plan. Major company usage is routed to Enterprise or Strategic pricing rather than Team or Business pilots.
