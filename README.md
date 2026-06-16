@@ -90,7 +90,7 @@ Or add it manually to your config:
 |---------|-------------|
 | `scan` | Auto-discover servers from config files and check them all (default) |
 | `scan deep` | Scan and also invoke safe tools to verify they execute |
-| `test <cmd>` | Test a specific server by command |
+| `test <cmd>` / `test --target <file>` | Test a specific server by command or target config |
 | `record <cmd>` | Record a server session to a cassette file for offline replay |
 | `replay <cassette>` | Replay a cassette offline — no live server needed |
 | `verify <cassette> <cmd>` | Verify a live server still matches a recorded cassette |
@@ -102,6 +102,7 @@ Or add it manually to your config:
 | `lock verify` | Verify live servers match the lock file |
 | `history` | Show health score trends for your MCP servers |
 | `ci-report` | Generate CI report for GitHub issue creation |
+| `enterprise-report` | Generate a static production/security report from run artifacts |
 | `score <cmd>` | Score an MCP server's health (0-100) |
 | `badge <cmd>` | Generate an SVG health score badge for README |
 | `cloud` | Show hosted reporting, production monitoring, and enterprise pilot options |
@@ -203,6 +204,24 @@ Action inputs:
 The action runs checks on every PR, comments a markdown report, and blocks merge on regressions. See [`action/README.md`](./action/README.md) for all options.
 
 Production teams can add hosted CI history, private-repo reporting, security reports, production monitoring, support, and fleet visibility. Run `npx @kryptosai/mcp-observatory cloud` for pilot options.
+
+Generate a pilot-ready production/security report from local run artifacts:
+
+```bash
+npx @kryptosai/mcp-observatory enterprise-report \
+  --account "Your Company" \
+  --format html \
+  --output observatory-enterprise-report.html
+```
+
+For clearer internal account attribution in CI, set:
+
+```bash
+MCP_OBSERVATORY_ORG=your-company.com
+MCP_OBSERVATORY_CONTACT=mcp-owner@your-company.com
+```
+
+Testing Feishu/Lark integrations? See the [Feishu/Lark MCP guide](./docs/feishu-lark-mcp.md).
 
 ### Lock Files
 

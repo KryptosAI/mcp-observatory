@@ -14,6 +14,8 @@ const TELEMETRY_FIELDS = [
   "isCI",
   "ciName",
   "ciProvider",
+  "org",
+  "contact",
   "gitEmail",
   "gitRemoteUrl",
   "hostname",

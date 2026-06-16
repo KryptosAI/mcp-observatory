@@ -8,19 +8,20 @@ import { defaultRunsDirectory } from "../storage.js";
 import { appendHistory, buildHistoryEntry, getTrend, readHistory } from "../history.js";
 import { buildEvent, recordEvent } from "../telemetry.js";
 import { maybePrintCloudCta } from "../commercial.js";
-import { ANSI, c, targetFromCommand } from "./helpers.js";
+import { ANSI, c, resolveTarget, targetFromCommand } from "./helpers.js";
 
 export function registerTestCommands(program: Command): void {
   program
     .command("test")
     .passThroughOptions()
     .description("Test a specific server by command.")
-    .argument("<command...>", "Server command and arguments to run.")
+    .argument("[command...]", "Server command and arguments to run.")
+    .option("--target <config>", "Path to a target config JSON file.")
     .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
     .option("--no-color", "Disable colored output.")
-    .action(async (commandArgs: string[], options: { security?: boolean }) => {
+    .action(async (commandArgs: string[], options: { security?: boolean; target?: string }) => {
       const t0 = Date.now();
-      const target = targetFromCommand(commandArgs);
+      const target = options.target ? await resolveTarget({ target: options.target }) : targetFromCommand(commandArgs);
       process.stdout.write(`  ${c(ANSI.dim, "⟳")} Checking ${c(ANSI.bold, target.targetId)}...`);
       const artifact = await runTarget(target, { securityCheck: options.security });
       const outPath = await writeRunArtifact(artifact, defaultRunsDirectory(process.cwd()));
@@ -64,7 +65,7 @@ export function registerTestCommands(program: Command): void {
         executionMs: Date.now() - t0,
         securityFlag: options.security,
         targetIds: [target.targetId],
-        serverCommands: [commandArgs.join(" ")],
+        serverCommands: [target.adapter === "http" ? target.url : `${target.command} ${target.args.join(" ")}`],
         healthScore: artifact.healthScore?.overall,
         healthGrade: artifact.healthScore?.grade,
         connectMs: artifact.performanceMetrics?.connectMs,

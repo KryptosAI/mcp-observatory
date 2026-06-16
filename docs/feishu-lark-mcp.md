@@ -1,0 +1,64 @@
+# Testing Feishu/Lark MCP Servers
+
+Feishu and Lark workflows often put documents, approvals, project data, and internal knowledge behind MCP servers. MCP Observatory helps teams test those servers before agents depend on them.
+
+## Local Server Check
+
+```bash
+npx @kryptosai/mcp-observatory test --security npx -y feishu-doc-mcp
+```
+
+Use `--security` when the server exposes document search, write actions, internal URLs, or credential-backed tools.
+
+## Internal HTTP MCP Check
+
+For an internal HTTP MCP endpoint, create a target file:
+
+```json
+{
+  "targetId": "feishu-doc-mcp",
+  "adapter": "http",
+  "url": "https://internal.example.com/mcp",
+  "authToken": "redacted-bearer-token",
+  "timeoutMs": 30000
+}
+```
+
+Then run:
+
+```bash
+npx @kryptosai/mcp-observatory test --target feishu-target.json --security
+```
+
+## CI Report
+
+```yaml
+name: Feishu MCP Check
+on: [pull_request]
+
+jobs:
+  observatory:
+    runs-on: ubuntu-latest
+    env:
+      MCP_OBSERVATORY_ORG: your-company.com
+      MCP_OBSERVATORY_CONTACT: mcp-owner@your-company.com
+    steps:
+      - uses: actions/checkout@v4
+      - uses: KryptosAI/mcp-observatory/action@main
+        with:
+          target: feishu-target.json
+          security: true
+```
+
+## Enterprise Report
+
+```bash
+npx @kryptosai/mcp-observatory enterprise-report \
+  --account "Feishu MCP production fleet" \
+  --format html \
+  --output feishu-mcp-report.html
+```
+
+Production teams can use the report for MCP owner reviews, private-repo CI history, security review, and certification conversations.
+
+Contact `william@banksey.com` for production Feishu/Lark MCP usage, hosted reporting, private deployment, or fleet visibility.

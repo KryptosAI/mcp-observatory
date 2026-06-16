@@ -24,6 +24,7 @@ Paid pilots can include:
 - Hosted CI history and private-repo reporting
 - MCP security reports and production monitoring
 - Fleet inventory across teams, repos, and environments
+- Static enterprise reports generated from existing run artifacts
 - Certification language for MCP servers that pass agreed checks
 - Support for production incidents and rollout planning
 - Manual account review and implementation guidance
@@ -43,6 +44,19 @@ Run:
 
 ```bash
 npx @kryptosai/mcp-observatory cloud
+```
+
+Generate the first report before a hosted dashboard exists:
+
+```bash
+npx @kryptosai/mcp-observatory enterprise-report --account "Customer Name" --format html --output observatory-report.html
+```
+
+For account-level pilot reporting in CI:
+
+```bash
+MCP_OBSERVATORY_ORG=customer.com
+MCP_OBSERVATORY_CONTACT=mcp-owner@customer.com
 ```
 
 ## Enterprise Framing

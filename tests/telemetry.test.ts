@@ -99,5 +99,16 @@ describe("telemetry", () => {
       expect(event.nodeVersion).toBe(process.version);
       expect(event.version).toBeDefined();
     });
+
+    it("includes declared org and contact when provided", async () => {
+      vi.stubEnv("MCP_OBSERVATORY_ORG", "example.com");
+      vi.stubEnv("MCP_OBSERVATORY_CONTACT", "ops@example.com");
+      const { buildEvent, collectUserIdentity, _resetIdentityCache } = await import("../src/telemetry.js");
+      _resetIdentityCache();
+      await collectUserIdentity();
+      const event = buildEvent("command_run", "scan", "cli");
+      expect(event.org).toBe("example.com");
+      expect(event.contact).toBe("ops@example.com");
+    });
   });
 });

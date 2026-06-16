@@ -17,6 +17,7 @@ import { registerTestCommands } from "./commands/test.js";
 import { registerWatchCommands } from "./commands/watch.js";
 import { registerHistoryCommands } from "./commands/history.js";
 import { registerCiReportCommands } from "./commands/ci-report.js";
+import { registerEnterpriseReportCommands } from "./commands/enterprise-report.js";
 import { registerLockCommands } from "./commands/lock.js";
 import { printCloudInfo } from "./commercial.js";
 import { runTarget } from "./index.js";
@@ -55,6 +56,7 @@ const MENU_GROUPS: MenuGroup[] = [
       { command: ["lock", "verify"], label: "lock verify",  outcome: "Verify servers match the lock file" },
       { command: ["diff"],           label: "diff",         outcome: "Compare two run artifacts for regressions" },
       { command: ["history"],        label: "history",      outcome: "Show health score trends over time" },
+      { command: ["enterprise-report"], label: "enterprise-report", outcome: "Generate a production/security report" },
     ],
   },
   {
@@ -228,6 +230,7 @@ async function main(): Promise<void> {
         `  ${c(ANSI.bold, "Quick Start")}`,
         "",
         `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} test`)} ${c(ANSI.dim, "<cmd>")}         Test a specific MCP server`,
+        `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} test --target`)} ${c(ANSI.dim, "<file>")} Test an HTTP or local target config`,
         `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} scan`)}               Check all your configured servers`,
         `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} scan deep`)}          ^ plus invoke tools to verify they work`,
         "",
@@ -257,6 +260,7 @@ async function main(): Promise<void> {
   registerTelemetryCommands(program);
   registerHistoryCommands(program);
   registerCiReportCommands(program);
+  registerEnterpriseReportCommands(program);
   registerLockCommands(program);
 
   program

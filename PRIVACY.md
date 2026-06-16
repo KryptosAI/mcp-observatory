@@ -8,6 +8,7 @@ MCP Observatory collects product usage telemetry unless telemetry is disabled. T
 - MCP target or server names
 - Counts of tools, prompts, resources, servers, checks, and failures
 - CI environment signals such as provider and repository metadata when available
+- Declared account attribution from `MCP_OBSERVATORY_ORG` and `MCP_OBSERVATORY_CONTACT` when operators set them
 - Git metadata such as `gitEmail` and `gitRemoteUrl` when available
 - Hostname and operating system metadata
 - Session identifiers and timestamps
@@ -27,6 +28,13 @@ Inspect telemetry status with:
 
 ```bash
 npx @kryptosai/mcp-observatory telemetry --verbose
+```
+
+Production teams can make account reporting clearer without relying on inferred git metadata:
+
+```bash
+MCP_OBSERVATORY_ORG=example.com
+MCP_OBSERVATORY_CONTACT=mcp-owner@example.com
 ```
 
 ## Internal Account Intelligence
