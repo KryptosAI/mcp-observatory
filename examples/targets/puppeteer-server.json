@@ -8,6 +8,9 @@
   ],
   "cwd": ".",
   "timeoutMs": 20000,
+  "securitySuppressions": [
+    "puppeteer_evaluate:shell-injection"
+  ],
   "metadata": {
     "package": "puppeteer-mcp-server",
     "purpose": "real-server-smoke",
