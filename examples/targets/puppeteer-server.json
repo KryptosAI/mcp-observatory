@@ -7,7 +7,7 @@
     "puppeteer-mcp-server"
   ],
   "cwd": ".",
-  "timeoutMs": 20000,
+  "timeoutMs": 60000,
   "securitySuppressions": [
     "puppeteer_evaluate:shell-injection"
   ],
