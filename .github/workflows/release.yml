@@ -25,7 +25,6 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          registry-url: https://registry.npmjs.org
 
       - name: Install
         run: npm install
@@ -62,7 +61,7 @@ jobs:
             echo "valid=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Release
+      - name: Release with npm token
         if: steps.npm-auth.outputs.valid == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -70,7 +69,10 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx semantic-release
 
-      - name: Skip release when npm auth is invalid
+      - name: Release with npm trusted publishing
         if: steps.npm-auth.outputs.valid != 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "::warning::Skipping semantic-release because NPM_TOKEN is missing or invalid. Replace the repository secret, then rerun this workflow or push a conventional release commit."
+          echo "::notice::NPM_TOKEN is missing or invalid; attempting npm trusted publishing via GitHub OIDC."
+          npx semantic-release
