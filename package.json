@@ -52,7 +52,8 @@
     "validate:artifacts": "tsx scripts/validate-artifacts.ts",
     "verify:packed-install": "node scripts/verify-packed-install.mjs",
     "smoke": "npm run cli -- run --target tests/fixtures/sample-target-config.json && npm run cli -- diff tests/fixtures/sample-run-a.json tests/fixtures/sample-run-b.json",
-    "telemetry:intelligence": "tsx scripts/telemetry-company-intelligence.ts"
+    "telemetry:export": "tsx scripts/export-telemetry-d1.ts",
+    "telemetry:intelligence": "tsx scripts/telemetry-company-intelligence.ts --input telemetry-exports/events-flat-full.json --out-dir reports"
   },
   "keywords": [
     "mcp",

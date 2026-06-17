@@ -128,9 +128,27 @@ function splitList(value: string[] | string | null | undefined): string[] {
   return trimmed.split(",").map((entry) => entry.trim()).filter(Boolean);
 }
 
+function sanitizeTarget(value: string): string {
+  const trimmed = value.trim();
+  if (!trimmed) return trimmed;
+  if (/^https?:\/\/(10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.|localhost|127\.)/i.test(trimmed)) {
+    return "[private-network-target]";
+  }
+  if (/^https?:\/\//i.test(trimmed)) {
+    try {
+      const url = new URL(trimmed);
+      return `${url.protocol}//${url.hostname}/...`;
+    } catch {
+      return "[url-target]";
+    }
+  }
+  return trimmed;
+}
+
 function normalizeDomain(raw: string): string | undefined {
   const domain = raw.trim().toLowerCase().replace(/^www\./, "");
   if (!domain.includes(".")) return undefined;
+  if (domain.split(".").every((part) => /^\d+$/.test(part))) return undefined;
   if (FREE_EMAIL_DOMAINS.has(domain)) return undefined;
   if (domain.endsWith(".local") || domain.endsWith(".localhost")) return undefined;
   return domain;
@@ -197,8 +215,8 @@ function touch(account: Account, row: TelemetryRow, evidence: string[]): void {
   const session = row.session_id ?? row.sessionId;
   if (session) account.sessions.add(session);
   if (row.command) account.commands.add(row.command);
-  for (const target of splitList(row.target_ids ?? row.targetIds)) account.targets.add(target);
-  for (const server of splitList(row.installed_servers ?? row.installedServers)) account.targets.add(server);
+  for (const target of splitList(row.target_ids ?? row.targetIds)) account.targets.add(sanitizeTarget(target));
+  for (const server of splitList(row.installed_servers ?? row.installedServers)) account.targets.add(sanitizeTarget(server));
   const ciProvider = row.ci_provider ?? row.ciProvider;
   const isCi = row.is_ci === 1 || row.is_ci === true || row.isCI === true || Boolean(ciProvider);
   if (isCi) {
