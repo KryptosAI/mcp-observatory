@@ -7,7 +7,7 @@
     "@upstash/context7-mcp"
   ],
   "cwd": ".",
-  "timeoutMs": 20000,
+  "timeoutMs": 60000,
   "metadata": {
     "package": "@upstash/context7-mcp",
     "purpose": "real-server-smoke",

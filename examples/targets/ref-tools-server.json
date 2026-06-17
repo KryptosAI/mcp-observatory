@@ -7,7 +7,7 @@
     "ref-tools-mcp"
   ],
   "cwd": ".",
-  "timeoutMs": 15000,
+  "timeoutMs": 60000,
   "metadata": {
     "package": "ref-tools-mcp",
     "purpose": "real-server-smoke",
