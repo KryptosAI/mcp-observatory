@@ -53,13 +53,17 @@ jobs:
 
       - name: Verify npm auth
         id: npm-auth
-        continue-on-error: true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm whoami
+        run: |
+          if npm whoami; then
+            echo "valid=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "valid=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Release
-        if: steps.npm-auth.outcome == 'success'
+        if: steps.npm-auth.outputs.valid == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -67,6 +71,6 @@ jobs:
         run: npx semantic-release
 
       - name: Skip release when npm auth is invalid
-        if: steps.npm-auth.outcome != 'success'
+        if: steps.npm-auth.outputs.valid != 'true'
         run: |
           echo "::warning::Skipping semantic-release because NPM_TOKEN is missing or invalid. Replace the repository secret, then rerun this workflow or push a conventional release commit."
