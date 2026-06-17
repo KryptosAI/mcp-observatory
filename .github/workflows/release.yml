@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
 
       - name: Install
@@ -69,10 +69,35 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx semantic-release
 
-      - name: Release with npm trusted publishing
+      - name: Check npm trusted publishing
+        id: npm-oidc
         if: steps.npm-auth.outputs.valid != 'true'
+        run: |
+          oidc_response="$(curl -sSf \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=npm:registry.npmjs.org")"
+          id_token="$(node -e 'const fs = require("node:fs"); process.stdout.write(JSON.parse(fs.readFileSync(0, "utf8")).value)' <<< "$oidc_response")"
+          status="$(curl -sS \
+            -o /tmp/npm-oidc-response.json \
+            -w "%{http_code}" \
+            -X POST \
+            -H "Authorization: Bearer ${id_token}" \
+            "https://registry.npmjs.org/-/npm/v1/oidc/token/exchange/package/%40kryptosai%2Fmcp-observatory")"
+          if [ "$status" = "200" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            message="$(node -e 'const fs = require("node:fs"); try { process.stdout.write(JSON.parse(fs.readFileSync("/tmp/npm-oidc-response.json", "utf8")).message || "unknown error") } catch { process.stdout.write("unknown error") }')"
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::npm trusted publishing is not ready for @kryptosai/mcp-observatory: ${status} ${message}"
+          fi
+
+      - name: Release with npm trusted publishing
+        if: steps.npm-auth.outputs.valid != 'true' && steps.npm-oidc.outputs.configured == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+
+      - name: Skip release until npm trusted publishing is configured
+        if: steps.npm-auth.outputs.valid != 'true' && steps.npm-oidc.outputs.configured != 'true'
         run: |
-          echo "::notice::NPM_TOKEN is missing or invalid; attempting npm trusted publishing via GitHub OIDC."
-          npx semantic-release
+          echo "::warning::Skipping semantic-release because NPM_TOKEN is invalid and npm trusted publishing is not configured. Add GitHub Actions trusted publisher KryptosAI/mcp-observatory with workflow release.yml in npm package settings, then rerun this workflow."
