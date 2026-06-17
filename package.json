@@ -84,11 +84,11 @@
     "schema-drift"
   ],
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.27.1",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "ci-info": "^4.4.0",
-    "commander": "14.0.2",
+    "commander": "15.0.0",
     "update-notifier": "^7.3.1",
-    "zod": "4.1.12"
+    "zod": "4.4.3"
   },
   "devDependencies": {
     "@eslint/js": "9.39.1",
