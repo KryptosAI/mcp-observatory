@@ -67,8 +67,8 @@ export async function runToolsInvokeCheck(context: CheckContext): Promise<Observ
 
   const safeTools = tools.filter((t) =>
     isSafeToInvoke({
-      inputSchema: t.inputSchema as Record<string, unknown> | undefined,
-      annotations: t.annotations as Record<string, unknown> | undefined,
+      inputSchema: t.inputSchema,
+      annotations: t.annotations,
     })
   );
 
@@ -94,7 +94,7 @@ export async function runToolsInvokeCheck(context: CheckContext): Promise<Observ
 
   const results: InvokeResult[] = [];
   for (const tool of safeTools) {
-    const args = stubFromSchema(tool.inputSchema as Record<string, unknown> | undefined);
+    const args = stubFromSchema(tool.inputSchema);
     try {
       const response = await context.client.callTool(
         { name: tool.name, arguments: args },

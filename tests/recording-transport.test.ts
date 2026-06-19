@@ -29,7 +29,7 @@ describe("RecordingTransport", () => {
     await recorder.start();
 
     // Send a request
-    await recorder.send({ jsonrpc: "2.0", id: 1, method: "tools/list", params: {} } as JSONRPCMessage);
+    await recorder.send({ jsonrpc: "2.0", id: 1, method: "tools/list", params: {} });
 
     // Simulate response from inner transport
     inner.simulateResponse({ jsonrpc: "2.0", id: 1, result: { tools: [] } } as unknown as JSONRPCMessage);
@@ -53,7 +53,7 @@ describe("RecordingTransport", () => {
     await recorder.start();
 
     // Send a notification (no id)
-    await recorder.send({ jsonrpc: "2.0", method: "notifications/initialized" } as JSONRPCMessage);
+    await recorder.send({ jsonrpc: "2.0", method: "notifications/initialized" });
 
     const entries = recorder.getEntries();
     expect(entries).toHaveLength(1);
@@ -68,8 +68,8 @@ describe("RecordingTransport", () => {
     await recorder.start();
 
     // Send two requests
-    await recorder.send({ jsonrpc: "2.0", id: 1, method: "tools/list" } as JSONRPCMessage);
-    await recorder.send({ jsonrpc: "2.0", id: 2, method: "prompts/list" } as JSONRPCMessage);
+    await recorder.send({ jsonrpc: "2.0", id: 1, method: "tools/list" });
+    await recorder.send({ jsonrpc: "2.0", id: 2, method: "prompts/list" });
 
     // Responses arrive in order
     inner.simulateResponse({ jsonrpc: "2.0", id: 1, result: { tools: [] } } as unknown as JSONRPCMessage);
@@ -89,9 +89,9 @@ describe("RecordingTransport", () => {
     await recorder.start();
 
     // Send three concurrent requests
-    await recorder.send({ jsonrpc: "2.0", id: 10, method: "tools/list" } as JSONRPCMessage);
-    await recorder.send({ jsonrpc: "2.0", id: 20, method: "prompts/list" } as JSONRPCMessage);
-    await recorder.send({ jsonrpc: "2.0", id: 30, method: "resources/list" } as JSONRPCMessage);
+    await recorder.send({ jsonrpc: "2.0", id: 10, method: "tools/list" });
+    await recorder.send({ jsonrpc: "2.0", id: 20, method: "prompts/list" });
+    await recorder.send({ jsonrpc: "2.0", id: 30, method: "resources/list" });
 
     // Responses arrive out of order: 20, 30, 10
     inner.simulateResponse({ jsonrpc: "2.0", id: 20, result: { prompts: [] } } as unknown as JSONRPCMessage);

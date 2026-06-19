@@ -10,6 +10,6 @@ export async function runToolsCheck(context: CheckContext): Promise<ObservedChec
     listItems: async (ctx) => (await ctx.client.listTools(undefined, { timeout: ctx.timeoutMs })).tools,
     hasMinimalShape: (tool) => typeof tool.name === "string" && tool.name.trim().length > 0,
     getItemName: (tool) => tool.name,
-    getItemSchema: (tool) => tool.inputSchema as object | undefined,
+    getItemSchema: (tool) => tool.inputSchema,
   }, context);
 }

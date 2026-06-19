@@ -84,26 +84,26 @@
     "schema-drift"
   ],
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.27.1",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "ci-info": "^4.4.0",
-    "commander": "14.0.2",
+    "commander": "15.0.0",
     "update-notifier": "^7.3.1",
-    "zod": "4.1.12"
+    "zod": "4.4.3"
   },
   "devDependencies": {
-    "@eslint/js": "9.39.1",
+    "@eslint/js": "10.0.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "@types/node": "24.10.1",
-    "@typescript-eslint/eslint-plugin": "8.46.3",
-    "@typescript-eslint/parser": "8.46.3",
+    "@types/node": "25.9.3",
+    "@typescript-eslint/eslint-plugin": "8.61.1",
+    "@typescript-eslint/parser": "8.61.1",
     "ajv": "8.20.0",
-    "eslint": "9.39.1",
-    "globals": "16.5.0",
-    "semantic-release": "^25.0.3",
+    "eslint": "10.5.0",
+    "globals": "17.6.0",
+    "semantic-release": "^25.0.5",
     "tsx": "4.22.4",
-    "typescript": "5.9.3",
-    "typescript-eslint": "8.46.3",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.61.1",
     "vitest": "4.1.9"
   }
 }

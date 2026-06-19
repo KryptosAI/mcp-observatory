@@ -192,21 +192,15 @@ export async function runResourcesCheck(context: CheckContext): Promise<Observed
       ? "partial"
       : "pass";
 
-  let message = "Advertised capability responded with the minimal expected shape.";
-  if (!responded) {
-    message = "Advertised capability did not respond successfully.";
-  } else if (hardEndpointFailures > 0) {
-    message =
-      "Advertised capability responded, but at least one resource endpoint failed unexpectedly.";
-  } else if (shapeProblems > 0) {
-    message =
-      "Advertised capability responded, but at least one resource endpoint missed the minimal expected shape.";
-  } else if (diagnostics.length > 0) {
-    message =
-      "Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported.";
-  } else {
-    message = `Advertised capability responded with the minimal expected shape (${itemCount} items).`;
-  }
+  const message = !responded
+    ? "Advertised capability did not respond successfully."
+    : hardEndpointFailures > 0
+      ? "Advertised capability responded, but at least one resource endpoint failed unexpectedly."
+      : shapeProblems > 0
+        ? "Advertised capability responded, but at least one resource endpoint missed the minimal expected shape."
+        : diagnostics.length > 0
+          ? "Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported."
+          : `Advertised capability responded with the minimal expected shape (${itemCount} items).`;
 
   return {
     observation,

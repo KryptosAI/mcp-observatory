@@ -17,7 +17,7 @@ function makeToolListConfig(
     endpoint: "tools/list",
     listItems: async (ctx) => {
       const result = await ctx.client.listTools();
-      return result.tools as unknown as MockTool[];
+      return result.tools;
     },
     hasMinimalShape: (item) => typeof item.name === "string" && item.name.length > 0,
     getItemName: (item) => item.name,

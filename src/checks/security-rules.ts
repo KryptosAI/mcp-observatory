@@ -41,7 +41,7 @@ const SHELL_NAME_PATTERNS = [
 function getPropertyNames(schema?: Record<string, unknown>): string[] {
   const props = schema?.["properties"];
   if (typeof props === "object" && props !== null && !Array.isArray(props)) {
-    return Object.keys(props as Record<string, unknown>);
+    return Object.keys(props);
   }
   return [];
 }
@@ -152,7 +152,7 @@ export const SECURITY_RULES: SecurityRule[] = [
       }
 
       const props = schema?.["properties"];
-      if (schema && (!props || (typeof props === "object" && Object.keys(props as Record<string, unknown>).length === 0)) && isDangerous) {
+      if (schema && (!props || (typeof props === "object" && Object.keys(props).length === 0)) && isDangerous) {
         return {
           ruleId: this.id,
           severity: this.severity,

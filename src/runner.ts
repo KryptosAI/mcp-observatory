@@ -88,7 +88,7 @@ async function runTargetWithRecording(target: TargetConfig, options?: RunOptions
   const runId = buildRunId();
   const createdAt = new Date().toISOString();
 
-  let checks: CheckResult[] = [];
+  let checks: CheckResult[];
   let fatalError: string | undefined;
   let serverName: string | undefined;
   let serverVersion: string | undefined;

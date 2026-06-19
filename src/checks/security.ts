@@ -10,8 +10,8 @@ function toolToInfo(tool: Tool): ToolInfo {
   return {
     name: tool.name,
     description: tool.description,
-    inputSchema: tool.inputSchema as Record<string, unknown> | undefined,
-    annotations: tool.annotations as Record<string, unknown> | undefined,
+    inputSchema: tool.inputSchema,
+    annotations: tool.annotations,
   };
 }
 

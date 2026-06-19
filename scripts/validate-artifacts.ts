@@ -10,8 +10,6 @@ interface ArtifactFile {
   content: { artifactType?: string };
 }
 
-type JsonObject = { [key: string]: JsonValue };
-
 async function readJson(filePath: string): Promise<JsonValue> {
   return JSON.parse(await readFile(filePath, "utf8")) as JsonValue;
 }
@@ -37,7 +35,7 @@ async function collectArtifactFiles(root: string): Promise<ArtifactFile[]> {
     }
     results.push({
       path: filePath,
-      content: content as ArtifactFile["content"]
+      content: content
     });
   }
   return results;
@@ -60,8 +58,8 @@ async function main(): Promise<void> {
     throw new Error("Diff artifact schema must be a JSON object.");
   }
 
-  const validateRun = ajv.compile(runSchema as JsonObject) as ValidateFunction<ArtifactFile["content"]>;
-  const validateDiff = ajv.compile(diffSchema as JsonObject) as ValidateFunction<ArtifactFile["content"]>;
+  const validateRun = ajv.compile(runSchema) as ValidateFunction<ArtifactFile["content"]>;
+  const validateDiff = ajv.compile(diffSchema) as ValidateFunction<ArtifactFile["content"]>;
 
   const artifactFiles = await collectArtifactFiles(root);
   let hasErrors = false;
