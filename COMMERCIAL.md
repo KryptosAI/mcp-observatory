@@ -60,6 +60,7 @@ MCP_OBSERVATORY_CONTACT=mcp-owner@customer.com
 ```
 
 Use the [enterprise outreach playbook](./docs/enterprise-outreach-playbook.md) to route high-confidence company usage to manual pilots without sending generic low-tier pricing to major accounts.
+Use [public proof](./docs/proof.md) and the [project case study](./docs/project-case-study.md) for customer-safe credibility. Do not expose private telemetry rows in outreach.
 
 ## Enterprise Framing
 

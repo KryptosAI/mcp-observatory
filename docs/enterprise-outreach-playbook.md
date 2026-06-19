@@ -6,6 +6,8 @@ Use this playbook after running:
 npm run telemetry:intelligence -- --input telemetry-exports/events-flat-full.json --out-dir reports
 ```
 
+Start from `reports/telemetry-usage-summary.html` to confirm external usage before reading account rankings. Do not treat first-party CI, release workflows, or internal/personal sessions as market traction.
+
 Do not include raw personal emails in public issues, posts, or docs. Use account domains, GitHub orgs, and aggregate telemetry evidence.
 
 ## Priority Accounts
@@ -68,12 +70,14 @@ npx @kryptosai/mcp-observatory enterprise-report \
 
 Include only aggregate facts:
 
+- company or GitHub organization domain
 - event count
 - unique sessions
 - first seen / last seen
 - commands used
 - targets seen
 - CI/private-network/security signals
+- confidence
 - recommended pilot tier
 
 Do not include raw hostnames, personal emails, tokens, or private URLs in external outreach.

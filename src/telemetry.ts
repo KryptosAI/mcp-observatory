@@ -66,7 +66,19 @@ export interface TelemetryEnrichment {
   nightlyScan?: boolean;
   issueCreated?: boolean;
   issueNumber?: number;
+  // GitHub Actions attribution
+  githubRepository?: string;
+  githubWorkflow?: string;
+  githubRunId?: string;
+  githubRunNumber?: string;
+  githubEventName?: string;
+  githubRef?: string;
+  githubActor?: string;
+  isFirstParty?: boolean;
+  telemetrySource?: TelemetrySource;
 }
+
+export type TelemetrySource = "first_party_ci" | "external_ci" | "local" | "mcp" | "unknown";
 
 export interface TelemetryEvent extends TelemetryEnrichment {
   event: string;
@@ -85,6 +97,7 @@ export interface TelemetryEvent extends TelemetryEnrichment {
 const CONFIG_DIR = path.join(os.homedir(), ".mcp-observatory");
 const CONFIG_PATH = path.join(CONFIG_DIR, "config.json");
 const DEFAULT_ENDPOINT = "https://mcp-observatory-telemetry.kryptosai.workers.dev/v1/events";
+const FIRST_PARTY_GITHUB_REPOSITORY = "kryptosai/mcp-observatory";
 
 // ── Config cache ─────────────────────────────────────────────────────────────
 
@@ -219,6 +232,44 @@ export function detectCiProvider(): string | undefined {
   return undefined;
 }
 
+function envValue(name: string): string | undefined {
+  const value = process.env[name]?.trim();
+  return value || undefined;
+}
+
+export function collectGitHubActionsMetadata(): Pick<
+  TelemetryEnrichment,
+  "githubRepository" | "githubWorkflow" | "githubRunId" | "githubRunNumber" | "githubEventName" | "githubRef" | "githubActor"
+> {
+  return {
+    githubRepository: envValue("GITHUB_REPOSITORY"),
+    githubWorkflow: envValue("GITHUB_WORKFLOW"),
+    githubRunId: envValue("GITHUB_RUN_ID"),
+    githubRunNumber: envValue("GITHUB_RUN_NUMBER"),
+    githubEventName: envValue("GITHUB_EVENT_NAME"),
+    githubRef: envValue("GITHUB_REF"),
+    githubActor: envValue("GITHUB_ACTOR"),
+  };
+}
+
+export function isFirstPartyGitHubRepository(repository: string | undefined): boolean {
+  return repository?.trim().toLowerCase() === FIRST_PARTY_GITHUB_REPOSITORY;
+}
+
+export function classifyTelemetrySource(options: {
+  transport: "cli" | "mcp";
+  isCI: boolean;
+  ciProvider?: string;
+  githubRepository?: string;
+}): { isFirstParty: boolean; telemetrySource: TelemetrySource } {
+  const isFirstParty = options.ciProvider === "github-actions" && isFirstPartyGitHubRepository(options.githubRepository);
+  if (isFirstParty) return { isFirstParty, telemetrySource: "first_party_ci" };
+  if (options.isCI || options.ciProvider) return { isFirstParty, telemetrySource: "external_ci" };
+  if (options.transport === "mcp") return { isFirstParty, telemetrySource: "mcp" };
+  if (options.transport === "cli") return { isFirstParty, telemetrySource: "local" };
+  return { isFirstParty, telemetrySource: "unknown" };
+}
+
 // ── User identity collection ─────────────────────────────────────────────────
 
 interface UserIdentity {
@@ -276,6 +327,15 @@ export function buildEvent(
 ): TelemetryEvent {
   const ci = detectCI();
   const identity = _cachedIdentity;
+  const ciProvider = enrichment?.ciProvider ?? detectCiProvider();
+  const github = ciProvider === "github-actions" ? collectGitHubActionsMetadata() : {};
+  const githubRepository = enrichment?.githubRepository ?? github.githubRepository;
+  const classification = classifyTelemetrySource({
+    transport,
+    isCI: ci.isCI,
+    ciProvider,
+    githubRepository,
+  });
   return {
     event,
     version: TOOL_VERSION,
@@ -286,12 +346,16 @@ export function buildEvent(
     isCI: ci.isCI,
     ciName: ci.ciName,
     transport,
-    ciProvider: enrichment?.ciProvider ?? detectCiProvider(),
+    ciProvider,
     org: enrichment?.org ?? identity?.org,
     contact: enrichment?.contact ?? identity?.contact,
     gitEmail: identity?.gitEmail,
     gitRemoteUrl: identity?.gitRemoteUrl,
     hostname: identity?.hostname,
+    ...github,
+    githubRepository,
+    isFirstParty: enrichment?.isFirstParty ?? classification.isFirstParty,
+    telemetrySource: enrichment?.telemetrySource ?? classification.telemetrySource,
     ...enrichment,
   };
 }

@@ -110,5 +110,44 @@ describe("telemetry", () => {
       expect(event.org).toBe("example.com");
       expect(event.contact).toBe("ops@example.com");
     });
+
+    it("classifies MCP Observatory GitHub Actions as first-party CI", async () => {
+      vi.stubEnv("GITHUB_ACTIONS", "true");
+      vi.stubEnv("GITHUB_REPOSITORY", "KryptosAI/mcp-observatory");
+      vi.stubEnv("GITHUB_WORKFLOW", "Release");
+      vi.stubEnv("GITHUB_RUN_ID", "123");
+      vi.stubEnv("GITHUB_RUN_NUMBER", "74");
+      vi.stubEnv("GITHUB_EVENT_NAME", "workflow_dispatch");
+      vi.stubEnv("GITHUB_REF", "refs/heads/main");
+      vi.stubEnv("GITHUB_ACTOR", "KryptosAI");
+      const { buildEvent } = await import("../src/telemetry.js");
+      const event = buildEvent("command_run", "run", "cli");
+      expect(event.githubRepository).toBe("KryptosAI/mcp-observatory");
+      expect(event.githubWorkflow).toBe("Release");
+      expect(event.githubRunId).toBe("123");
+      expect(event.githubRunNumber).toBe("74");
+      expect(event.githubEventName).toBe("workflow_dispatch");
+      expect(event.githubRef).toBe("refs/heads/main");
+      expect(event.githubActor).toBe("KryptosAI");
+      expect(event.isFirstParty).toBe(true);
+      expect(event.telemetrySource).toBe("first_party_ci");
+    });
+
+    it("classifies other GitHub Actions repositories as external CI", async () => {
+      vi.stubEnv("GITHUB_ACTIONS", "true");
+      vi.stubEnv("GITHUB_REPOSITORY", "Acme/private-mcp");
+      const { buildEvent } = await import("../src/telemetry.js");
+      const event = buildEvent("command_run", "ci-report", "cli");
+      expect(event.githubRepository).toBe("Acme/private-mcp");
+      expect(event.isFirstParty).toBe(false);
+      expect(event.telemetrySource).toBe("external_ci");
+    });
+
+    it("classifies local CLI and MCP transport usage separately", async () => {
+      vi.stubEnv("GITHUB_ACTIONS", "");
+      const { buildEvent } = await import("../src/telemetry.js");
+      expect(buildEvent("command_run", "scan", "cli").telemetrySource).toBe("local");
+      expect(buildEvent("command_run", "serve", "mcp").telemetrySource).toBe("mcp");
+    });
   });
 });

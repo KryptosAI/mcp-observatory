@@ -3,6 +3,8 @@
 Use this as the reversible launch motion for MCP Observatory commercialization.
 
 For the release gate and publication checklist, see [Publish And Distribution Readiness](./publish-readiness.md).
+For listing copy, use [Directory And Marketplace Listing Copy](./directory-listing-copy.md).
+For public proof, use [MCP Observatory Proof](./proof.md).
 
 ## Positioning
 
@@ -16,6 +18,7 @@ MCP Observatory helps teams test, secure, and monitor MCP servers before agents 
 - MCP directory listings updated with production/security language
 - Launch post published
 - Badge or certification language available for passing servers
+- Certification distribution loop published at [`docs/certification-distribution.md`](./certification-distribution.md)
 
 ## Launch Post Draft
 
@@ -40,6 +43,22 @@ We are running a small number of production pilots for hosted reports, private r
 Would it be useful to compare what your MCP servers look like today and where regressions or production risk could show up?
 
 William
+
+## Helpful Maintainer PR Motion
+
+For popular MCP server repositories, open small PRs that add:
+
+- `.github/workflows/mcp-observatory.yml`
+- optional README badge
+- a short PR body explaining the security/compatibility benefit
+
+Frame this as free OSS safety infrastructure:
+
+> I added a lightweight MCP Observatory check so users can see this server is tested for compatibility, schema drift, and common security issues. It runs in GitHub Actions, comments a readable report on PRs, and does not require an account.
+
+Use the full template in [`certification-distribution.md`](./certification-distribution.md).
+
+Track each outbound wave with [`certification-campaign-template.md`](./certification-campaign-template.md).
 
 ## Account Ranking Inputs
 

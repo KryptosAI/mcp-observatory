@@ -49,6 +49,15 @@ interface TelemetryRow {
   detected_frameworks: string | null;
   org: string | null;
   contact: string | null;
+  github_repository: string | null;
+  github_workflow: string | null;
+  github_run_id: string | null;
+  github_run_number: string | null;
+  github_event_name: string | null;
+  github_ref: string | null;
+  github_actor: string | null;
+  is_first_party: number | null;
+  telemetry_source: string | null;
 }
 
 function argValue(name: string): string | undefined {
@@ -149,7 +158,9 @@ SELECT
   git_email, git_remote_url, hostname, health_score, health_grade, prompts_found,
   resources_found, security_finding_count, connect_ms, fatal_error,
   server_commands, check_statuses, suggested_servers, detected_languages,
-  detected_frameworks, org, contact
+  detected_frameworks, org, contact,
+  github_repository, github_workflow, github_run_id, github_run_number,
+  github_event_name, github_ref, github_actor, is_first_party, telemetry_source
 FROM events
 ${where}
 ORDER BY id ASC`;
