@@ -34,6 +34,8 @@ describe("init-ci", () => {
 
     const workflowText = await readFile(workflow, "utf8");
     expect(workflowText).toContain("uses: KryptosAI/mcp-observatory/action@main");
+    expect(workflowText).toContain("pull-requests: write");
+    expect(workflowText).toContain("statuses: write");
     expect(workflowText).toContain("command: npx -y @example/mcp-server");
     expect(workflowText).toContain("deep: true");
     expect(workflowText).toContain("security: true");

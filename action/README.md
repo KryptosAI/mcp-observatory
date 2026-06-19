@@ -8,6 +8,11 @@ Test your MCP servers for breaking changes, security issues, and schema drift â€
 name: MCP Server Check
 on: [pull_request]
 
+permissions:
+  contents: read
+  pull-requests: write
+  statuses: write
+
 jobs:
   observatory:
     runs-on: ubuntu-latest
@@ -34,6 +39,8 @@ jobs:
 | `targets` | Path to MCP config file for multi-server matrix scan | |
 | `github-token` | Token for PR comments and commit statuses | `${{ github.token }}` |
 | `node-version` | Node.js version | `22` |
+
+GitHub may downgrade `GITHUB_TOKEN` to read-only on forked pull requests. In that case Observatory still runs the check and warns if it cannot post a PR comment or commit status.
 
 ## Outputs
 

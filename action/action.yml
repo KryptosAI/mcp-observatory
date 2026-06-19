@@ -236,7 +236,8 @@ runs:
           --edit-last 2>/dev/null || \
         gh pr comment "$PR_NUMBER" \
           --repo "$GH_REPO" \
-          --body-file "$COMMENT_FILE"
+          --body-file "$COMMENT_FILE" || \
+        echo "::warning::Could not post PR comment; GitHub token may be read-only for forked pull requests"
 
     - name: Check gate
       if: inputs.fail-on-regression == 'true' && steps.run.outputs.gate == 'fail'

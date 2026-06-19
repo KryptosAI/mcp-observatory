@@ -57,6 +57,11 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+  pull-requests: write
+  statuses: write
+
 jobs:
   mcp-observatory:
     runs-on: ubuntu-latest

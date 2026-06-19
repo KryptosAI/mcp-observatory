@@ -211,6 +211,11 @@ Or create the workflow manually:
 name: MCP Server Check
 on: [pull_request]
 
+permissions:
+  contents: read
+  pull-requests: write
+  statuses: write
+
 jobs:
   observatory:
     runs-on: ubuntu-latest
@@ -237,7 +242,7 @@ Action inputs:
 | `set-status` | Set a commit status check (green/red) on the HEAD SHA | `true` |
 | `github-token` | Token for PR comments and commit statuses | `${{ github.token }}` |
 
-The action runs checks on every PR, comments a markdown report, and blocks merge on regressions. See [`action/README.md`](./action/README.md) for all options.
+The action runs checks on every PR, comments a markdown report when GitHub grants write permissions, and blocks merge on regressions. See [`action/README.md`](./action/README.md) for all options.
 
 Production teams can add hosted CI history, private-repo reporting, security reports, production monitoring, support, and fleet visibility. Run `npx @kryptosai/mcp-observatory cloud` for pilot options.
 
