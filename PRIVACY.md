@@ -7,7 +7,7 @@ MCP Observatory collects product usage telemetry unless telemetry is disabled. T
 - Command names and feature flags
 - MCP target or server names
 - Counts of tools, prompts, resources, servers, checks, and failures
-- CI environment signals such as provider and repository metadata when available
+- CI environment signals such as provider and GitHub Actions metadata when available, including repository, workflow, run ID, run number, event name, ref, and actor
 - Declared account attribution from `MCP_OBSERVATORY_ORG` and `MCP_OBSERVATORY_CONTACT` when operators set them
 - Git metadata such as `gitEmail` and `gitRemoteUrl` when available
 - Hostname and operating system metadata
@@ -42,6 +42,8 @@ MCP_OBSERVATORY_CONTACT=mcp-owner@example.com
 We may use telemetry internally to identify likely company or organization usage, including by deriving company domains from git email domains, git remote URLs, CI usage, target names, repeated sessions, and production-looking command patterns.
 
 Raw emails are not intended for public reporting. Account intelligence outputs should use company domains, GitHub organizations, aggregate counts, confidence levels, and outreach status rather than raw personal identifiers.
+
+Internal usage reports separate first-party MCP Observatory project activity from external usage. Events from `KryptosAI/mcp-observatory` GitHub Actions are treated as first-party CI so release and test workflows are not counted as external traction.
 
 ## Enterprise Controls
 

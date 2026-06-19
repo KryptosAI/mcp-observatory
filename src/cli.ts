@@ -18,6 +18,7 @@ import { registerWatchCommands } from "./commands/watch.js";
 import { registerHistoryCommands } from "./commands/history.js";
 import { registerCiReportCommands } from "./commands/ci-report.js";
 import { registerEnterpriseReportCommands } from "./commands/enterprise-report.js";
+import { registerInitCiCommands } from "./commands/init-ci.js";
 import { registerLockCommands } from "./commands/lock.js";
 import { DEFAULT_CLOUD_UPLOAD_ENDPOINT, printCloudInfo } from "./commercial.js";
 import { runTarget } from "./index.js";
@@ -56,6 +57,7 @@ const MENU_GROUPS: MenuGroup[] = [
       { command: ["lock", "verify"], label: "lock verify",  outcome: "Verify servers match the lock file" },
       { command: ["diff"],           label: "diff",         outcome: "Compare two run artifacts for regressions" },
       { command: ["history"],        label: "history",      outcome: "Show health score trends over time" },
+      { command: ["init-ci"],        label: "init-ci",      outcome: "Create GitHub Action and badge snippets" },
       { command: ["enterprise-report"], label: "enterprise-report", outcome: "Generate a production/security report" },
     ],
   },
@@ -240,6 +242,7 @@ async function main(): Promise<void> {
         `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} lock`)}               Snapshot server schemas (like package-lock)`,
         `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} lock verify`)}        Verify no schema drift since last lock`,
         `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} diff`)} ${c(ANSI.dim, "<a> <b>")}       Compare two runs for regressions`,
+        `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} init-ci`)}            Add GitHub Action and badge snippets`,
         "",
         `  ${c(ANSI.dim, `Run ${bin} <command> --help for details on any command.`)}`,
         "",
@@ -261,6 +264,7 @@ async function main(): Promise<void> {
   registerHistoryCommands(program);
   registerCiReportCommands(program);
   registerEnterpriseReportCommands(program);
+  registerInitCiCommands(program);
   registerLockCommands(program);
 
   const cloudCmd = program

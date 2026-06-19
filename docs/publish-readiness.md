@@ -31,6 +31,9 @@ Confirm:
 - Refresh MCP directory listings with: “MCP Observatory helps teams test, secure, and monitor MCP servers before agents depend on them.”
 - Include “free for local OSS use; paid for hosted reporting, private repo CI, security reports, production monitoring, certification, support, and fleet visibility.”
 - Link production users to `COMMERCIAL.md` and `william@banksey.com`.
+- Submit or refresh listings on Glama, PulseMCP, Smithery, and relevant awesome-MCP lists with the tags: security, developer tools, CI/CD, testing, observability, schema drift.
+- Use the certification distribution loop to open helpful PRs against popular MCP server repos and convert accepted PRs into proof points.
+- Link public proof, the safety report, and directory listing copy from launch/outreach materials.
 
 ## Sales Operating Loop
 

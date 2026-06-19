@@ -175,6 +175,12 @@ describe("CLI entrypoint", () => {
     expect(stdout).toContain("history");
   });
 
+  it("init-ci subcommand shows help", () => {
+    const { stdout, exitCode } = runCli(["init-ci", "--help"]);
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("init-ci");
+  });
+
   it("history with no data shows empty message", () => {
     const tmpDir = path.join(os.tmpdir(), `obs-test-${Date.now()}`);
     fs.mkdirSync(tmpDir, { recursive: true });

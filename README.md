@@ -18,17 +18,44 @@
 [![Smithery](https://smithery.ai/badge/@kryptosai/mcp-observatory)](https://smithery.ai/server/@kryptosai/mcp-observatory)
 [![mcp-observatory MCP server](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory/badges/score.svg)](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory)
 
-**The first testing tool that is itself an MCP server.** Your AI agent can scan, test, record, replay, and verify other MCP servers autonomously — catching regressions, schema drift, and security issues without human intervention.
+**Test, secure, and monitor MCP servers before agents depend on them.**
 
-Use it as a CLI, a CI action, or give it to your agent as an MCP server and let it test your other servers for you.
+MCP Observatory gives MCP servers the production safety rails every dependency eventually needs: CI checks, security scans, schema drift detection, PR reports, score badges, and agent-accessible diagnostics.
 
-MCP Observatory helps teams test, secure, and monitor MCP servers before agents depend on them.
+Add MCP CI in one command:
+
+```bash
+npx @kryptosai/mcp-observatory init-ci --command "npx -y my-mcp-server" --badge
+```
+
+Or test a server immediately:
+
+```bash
+npx @kryptosai/mcp-observatory test npx -y @modelcontextprotocol/server-everything
+```
+
+Use it as a CLI, a GitHub Action, or an MCP server that lets your AI agent scan, test, record, replay, and verify other MCP servers autonomously.
 
 <p align="center">
   <img src="./docs/demo.svg" alt="MCP Observatory scan output" width="820">
 </p>
 
 [![Observatory MCP server](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory/badges/card.svg)](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory)
+
+## Why MCP Observatory
+
+MCP servers are becoming production dependencies. If agents rely on them, teams need a way to catch broken tools, unsafe schemas, schema drift, slow responses, and security footguns before those failures reach users.
+
+Observatory gives maintainers and teams:
+
+- **One-command CI setup** with `init-ci`
+- **GitHub PR comments** for compatibility, drift, and security findings
+- **Health score badges** for public trust signals
+- **Record/replay/verify** workflows for regression testing
+- **MCP server mode** so agents can inspect other MCP servers directly
+- **Production pilot path** for hosted history, private repo reporting, certification, support, and fleet visibility
+
+See [public proof](./docs/proof.md), the [MCP safety report](./docs/mcp-safety-report-latest.md), the [certification distribution loop](./docs/certification-distribution.md), and [commercial pilots](./COMMERCIAL.md).
 
 ## Production / Enterprise
 
@@ -44,6 +71,7 @@ Free for local OSS use. Paid pilots are available for hosted reporting, private 
 Run `npx @kryptosai/mcp-observatory cloud` or contact `william@banksey.com` for production MCP usage.
 
 See [commercial pilots](./COMMERCIAL.md), [privacy and telemetry](./PRIVACY.md), and [terms for production use](./TERMS.md).
+For a fuller narrative, see the [project case study](./docs/project-case-study.md).
 
 ## Quick Start
 
@@ -101,6 +129,7 @@ Or add it manually to your config:
 | `lock` | Snapshot MCP server schemas into a lock file |
 | `lock verify` | Verify live servers match the lock file |
 | `history` | Show health score trends for your MCP servers |
+| `init-ci` | Create a GitHub Action and badge snippet for MCP compatibility/security checks |
 | `ci-report` | Generate CI report for GitHub issue creation |
 | `enterprise-report` | Generate a static production/security report from run artifacts |
 | `score <cmd>` | Score an MCP server's health (0-100) |
@@ -171,6 +200,12 @@ When you run `scan`, it looks for MCP configs in:
 
 Add Observatory to your MCP server's CI pipeline:
 
+```bash
+npx @kryptosai/mcp-observatory init-ci --command "npx -y my-mcp-server" --badge
+```
+
+Or create the workflow manually:
+
 ```yaml
 # .github/workflows/observatory.yml
 name: MCP Server Check
@@ -205,6 +240,22 @@ Action inputs:
 The action runs checks on every PR, comments a markdown report, and blocks merge on regressions. See [`action/README.md`](./action/README.md) for all options.
 
 Production teams can add hosted CI history, private-repo reporting, security reports, production monitoring, support, and fleet visibility. Run `npx @kryptosai/mcp-observatory cloud` for pilot options.
+
+### Certified by MCP Observatory
+
+MCP server maintainers can add a public compatibility/security signal to their README:
+
+```md
+[![MCP Observatory](https://img.shields.io/badge/MCP%20Observatory-enabled-2563eb)](https://github.com/KryptosAI/mcp-observatory)
+```
+
+Or generate a score badge from a live check:
+
+```bash
+npx @kryptosai/mcp-observatory badge npx -y my-mcp-server --output docs/mcp-health.svg
+```
+
+See the [certification distribution loop](./docs/certification-distribution.md) for the GitHub Action template, maintainer PR body, and badge rollout playbook.
 
 Generate a pilot-ready production/security report from local run artifacts:
 
