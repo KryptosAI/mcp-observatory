@@ -144,10 +144,9 @@ describe("telemetry", () => {
     });
 
     it("classifies local CLI and MCP transport usage separately", async () => {
-      vi.stubEnv("GITHUB_ACTIONS", "");
-      const { buildEvent } = await import("../src/telemetry.js");
-      expect(buildEvent("command_run", "scan", "cli").telemetrySource).toBe("local");
-      expect(buildEvent("command_run", "serve", "mcp").telemetrySource).toBe("mcp");
+      const { classifyTelemetrySource } = await import("../src/telemetry.js");
+      expect(classifyTelemetrySource({ transport: "cli", isCI: false }).telemetrySource).toBe("local");
+      expect(classifyTelemetrySource({ transport: "mcp", isCI: false }).telemetrySource).toBe("mcp");
     });
   });
 });
