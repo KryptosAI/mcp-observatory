@@ -13,7 +13,11 @@ function execCommand(
   return new Promise((resolve, reject) => {
     execFile(cmd, args, (error, stdout, stderr) => {
       if (error) {
-        reject(error as Error);
+        reject(
+          error instanceof Error
+            ? error
+            : new Error(typeof error === "string" ? error : "Command failed."),
+        );
       } else {
         resolve({ stdout: stdout ?? "", stderr: stderr ?? "" });
       }

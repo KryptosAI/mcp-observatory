@@ -23,7 +23,7 @@ describe("ReplayTransport", () => {
     await transport.start();
 
     // Send initialize request
-    await transport.send({ jsonrpc: "2.0", id: 42, method: "initialize", params: {} } as JSONRPCMessage);
+    await transport.send({ jsonrpc: "2.0", id: 42, method: "initialize", params: {} });
 
     // Wait for microtask
     await new Promise((r) => setTimeout(r, 0));
@@ -45,10 +45,10 @@ describe("ReplayTransport", () => {
     transport.onmessage = (msg) => responses.push(msg);
     await transport.start();
 
-    await transport.send({ jsonrpc: "2.0", id: 1, method: "tools/list" } as JSONRPCMessage);
+    await transport.send({ jsonrpc: "2.0", id: 1, method: "tools/list" });
     await new Promise((r) => setTimeout(r, 0));
 
-    await transport.send({ jsonrpc: "2.0", id: 2, method: "tools/list" } as JSONRPCMessage);
+    await transport.send({ jsonrpc: "2.0", id: 2, method: "tools/list" });
     await new Promise((r) => setTimeout(r, 0));
 
     expect(responses).toHaveLength(2);
@@ -62,7 +62,7 @@ describe("ReplayTransport", () => {
     await transport.start();
 
     await expect(
-      transport.send({ jsonrpc: "2.0", id: 1, method: "unknown/method" } as JSONRPCMessage),
+      transport.send({ jsonrpc: "2.0", id: 1, method: "unknown/method" }),
     ).rejects.toThrow("no recorded response");
   });
 
@@ -72,6 +72,6 @@ describe("ReplayTransport", () => {
     await transport.start();
 
     // Should not throw — notifications don't expect responses
-    await transport.send({ jsonrpc: "2.0", method: "notifications/initialized" } as JSONRPCMessage);
+    await transport.send({ jsonrpc: "2.0", method: "notifications/initialized" });
   });
 });
