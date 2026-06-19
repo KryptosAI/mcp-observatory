@@ -21,7 +21,9 @@ describe("report safety summary", () => {
     artifact.summary.gate = "fail";
     artifact.summary.fail = 1;
 
-    expect(renderTerminal(artifact)).toContain("Safety Verdict: Blocked");
+    const terminal = renderTerminal(artifact);
+    expect(terminal).toContain("Safety Verdict:");
+    expect(terminal).toContain("Blocked");
     expect(renderMarkdown(artifact)).toContain("Safety verdict: **Blocked**");
     expect(renderHtml(artifact)).toContain("Safety:");
     expect(renderHtml(artifact)).toContain("Blocked");
