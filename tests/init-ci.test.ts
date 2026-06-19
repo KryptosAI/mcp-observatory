@@ -53,6 +53,43 @@ describe("init-ci", () => {
     expect(workflowText).not.toContain("command:");
   });
 
+  it("creates the full adoption kit with --all", async () => {
+    const dir = await tempDir();
+    const workflow = path.join(dir, ".github/workflows/mcp-observatory.yml");
+    const badgeFile = path.join(dir, "docs/mcp-observatory-badge.md");
+    const targetConfig = path.join(dir, "mcp-observatory.target.json");
+    const prBody = path.join(dir, "docs/mcp-observatory-pr-body.md");
+    const issueBody = path.join(dir, "docs/mcp-observatory-issue.md");
+    const scoreBadge = path.join(dir, "docs/mcp-observatory-score-badge.md");
+
+    const result = await initCi({
+      command: "npx -y @example/mcp-server",
+      workflow,
+      badgeFile,
+      targetConfig,
+      prBody,
+      issueBody,
+      scoreBadge,
+      all: true,
+    });
+
+    expect(result.workflowStatus).toBe("created");
+    expect(result.badgeStatus).toBe("created");
+    expect(result.targetConfigStatus).toBe("created");
+    expect(result.prBodyStatus).toBe("created");
+    expect(result.issueBodyStatus).toBe("created");
+    expect(result.scoreBadgeStatus).toBe("created");
+
+    expect(await readFile(workflow, "utf8")).toContain(`target: ${targetConfig}`);
+    expect(await readFile(badgeFile, "utf8")).toContain("MCP Observatory");
+    const targetJson = JSON.parse(await readFile(targetConfig, "utf8")) as { command: string; args: string[] };
+    expect(targetJson.command).toBe("npx");
+    expect(targetJson.args).toEqual(["-y", "@example/mcp-server"]);
+    expect(await readFile(prBody, "utf8")).toContain("Add MCP Observatory CI");
+    expect(await readFile(issueBody, "utf8")).toContain("compatibility/security checks");
+    expect(await readFile(scoreBadge, "utf8")).toContain("mcp-observatory badge");
+  });
+
   it("skips existing files unless force is set", async () => {
     const dir = await tempDir();
     const workflow = path.join(dir, ".github/workflows/mcp-observatory.yml");
@@ -68,5 +105,9 @@ describe("init-ci", () => {
 
   it("rejects command and target together", async () => {
     await expect(initCi({ command: "npx -y server", target: "./target.json" })).rejects.toThrow("Use either --command or --target");
+  });
+
+  it("rejects target config generation when an existing target is supplied", async () => {
+    await expect(initCi({ target: "./target.json", targetConfig: true })).rejects.toThrow("Use either --target or --target-config");
   });
 });

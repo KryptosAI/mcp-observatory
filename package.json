@@ -1,6 +1,6 @@
 {
   "name": "@kryptosai/mcp-observatory",
-  "version": "0.21.0",
+  "version": "0.22.0",
   "description": "Test, secure, and monitor MCP servers before agents depend on them.",
   "mcpName": "io.github.KryptosAI/mcp-observatory",
   "license": "MIT",
@@ -47,13 +47,15 @@
     "prepack": "npm run build",
     "proof:refresh": "tsx scripts/refresh-proof-artifacts.ts",
     "release:prep": "node scripts/release.mjs",
+    "certification:pr-body": "tsx scripts/print-certification-pr-body.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "validate:artifacts": "tsx scripts/validate-artifacts.ts",
     "verify:packed-install": "node scripts/verify-packed-install.mjs",
     "smoke": "npm run cli -- run --target tests/fixtures/sample-target-config.json && npm run cli -- diff tests/fixtures/sample-run-a.json tests/fixtures/sample-run-b.json",
     "telemetry:export": "tsx scripts/export-telemetry-d1.ts",
-    "telemetry:intelligence": "tsx scripts/telemetry-company-intelligence.ts --input telemetry-exports/events-flat-full.json --out-dir reports"
+    "telemetry:intelligence": "tsx scripts/telemetry-company-intelligence.ts --input telemetry-exports/events-flat-full.json --out-dir reports",
+    "telemetry:external": "tsx scripts/telemetry-company-intelligence.ts --input telemetry-exports/events-flat-full.json --out-dir reports"
   },
   "keywords": [
     "mcp",

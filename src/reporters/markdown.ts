@@ -5,6 +5,8 @@ import {
   focusLabel,
   previewList,
   recommendRunNextStep,
+  summarizeDiffSafety,
+  summarizeRunSafety,
   sortChecksByActionability
 } from "./common.js";
 
@@ -40,6 +42,7 @@ function renderEvidence(evidence: EvidenceSummary[]): string {
 }
 
 function renderRunAtAGlance(artifact: RunArtifact): string {
+  const safety = summarizeRunSafety(artifact);
   const failingChecks = findChecksByStatus(artifact.checks, "fail");
   const partialChecks = [
     ...findChecksByStatus(artifact.checks, "partial"),
@@ -51,11 +54,15 @@ function renderRunAtAGlance(artifact: RunArtifact): string {
   return [
     `## At a Glance`,
     ``,
+    `- Safety verdict: **${safety.verdict}** — ${safety.reason}`,
+    `- Top risks: ${safety.topRisks.join("; ")}`,
+    `- Regression/schema drift: ${safety.regressionSummary}`,
     `- Failing checks: ${describeCheckList(failingChecks)}`,
     `- Partial or flaky checks: ${describeCheckList(partialChecks)}`,
     `- Skipped checks: ${describeCheckList(skippedChecks)}`,
     `- Unsupported checks: ${describeCheckList(unsupportedChecks)}`,
-    `- Suggested next step: ${recommendRunNextStep(artifact)}`
+    `- Suggested next step: ${recommendRunNextStep(artifact)}`,
+    `- CI next step: \`${safety.ciCta}\``
   ].join("\n");
 }
 
@@ -166,6 +173,7 @@ function renderRunMarkdown(artifact: RunArtifact): string {
 }
 
 function renderDiffMarkdown(artifact: DiffArtifact): string {
+  const safety = summarizeDiffSafety(artifact);
   const regressionList =
     artifact.regressions.length > 0
       ? artifact.regressions.map((entry) => `- ${entry.id}: ${entry.message}`).join("\n")
@@ -192,6 +200,10 @@ function renderDiffMarkdown(artifact: DiffArtifact): string {
     ``,
     `## Executive Summary`,
     ``,
+    `**Safety verdict: ${safety.verdict}.** ${safety.reason}`,
+    ``,
+    `Top risks: ${safety.topRisks.join("; ")}`,
+    ``,
     table([
       ["Gate", "Regressions", "Recoveries", "Unchanged", "Added", "Removed"],
       [
@@ -206,9 +218,11 @@ function renderDiffMarkdown(artifact: DiffArtifact): string {
     ``,
     `## At a Glance`,
     ``,
+    `- Regression/schema drift: ${safety.regressionSummary}`,
     `- Regressions: ${artifact.regressions.map((entry) => entry.id).join(", ") || "none"}`,
     `- Recoveries: ${artifact.recoveries.map((entry) => entry.id).join(", ") || "none"}`,
     `- Suggested next step: ${suggestedNextStep}`,
+    `- CI next step: \`${safety.ciCta}\``,
     ``,
     `## Regressions`,
     ``,

@@ -35,13 +35,17 @@ npx @kryptosai/mcp-observatory badge npx -y <server-package> --output docs/mcp-h
 Fast path:
 
 ```bash
-npx @kryptosai/mcp-observatory init-ci --command "npx -y <server-package>" --badge
+npx @kryptosai/mcp-observatory init-ci --all --command "npx -y <server-package>"
 ```
 
 That creates:
 
 - `.github/workflows/mcp-observatory.yml`
 - `docs/mcp-observatory-badge.md`
+- `mcp-observatory.target.json`
+- `docs/mcp-observatory-pr-body.md`
+- `docs/mcp-observatory-issue.md`
+- `docs/mcp-observatory-score-badge.md`
 
 Manual template:
 
