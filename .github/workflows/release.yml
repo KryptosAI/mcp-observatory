@@ -102,3 +102,51 @@ jobs:
         if: steps.npm-auth.outputs.valid != 'true' && steps.npm-oidc.outputs.configured != 'true'
         run: |
           echo "::warning::Skipping semantic-release because NPM_TOKEN is invalid and npm trusted publishing is not configured. Add GitHub Actions trusted publisher KryptosAI/mcp-observatory with workflow release.yml in npm package settings, then rerun this workflow."
+
+      - name: Prepare GitHub fallback package
+        id: fallback-package
+        if: steps.npm-auth.outputs.valid != 'true' && steps.npm-oidc.outputs.configured != 'true'
+        run: |
+          base_version="$(node -p 'require("./package.json").version')"
+          fallback_version="${base_version}-github.${GITHUB_RUN_NUMBER}"
+          npm version "$fallback_version" --no-git-tag-version
+          package_file="$(npm pack --json | node -e 'const fs = require("node:fs"); const pack = JSON.parse(fs.readFileSync(0, "utf8")); process.stdout.write(pack[0].filename)')"
+          echo "version=${fallback_version}" >> "$GITHUB_OUTPUT"
+          echo "file=${package_file}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload GitHub fallback package artifact
+        if: steps.npm-auth.outputs.valid != 'true' && steps.npm-oidc.outputs.configured != 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: mcp-observatory-${{ steps.fallback-package.outputs.version }}
+          path: ${{ steps.fallback-package.outputs.file }}
+          retention-days: 30
+
+      - name: Publish GitHub fallback prerelease
+        if: steps.npm-auth.outputs.valid != 'true' && steps.npm-oidc.outputs.configured != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: github-build-${{ github.run_number }}
+          PACKAGE_FILE: ${{ steps.fallback-package.outputs.file }}
+          FALLBACK_VERSION: ${{ steps.fallback-package.outputs.version }}
+        run: |
+          body_file="$(mktemp)"
+          cat > "$body_file" <<EOF
+          npm publishing is blocked because npm Trusted Publishing is not configured and NPM_TOKEN is invalid.
+
+          This fallback prerelease contains an installable npm tarball for commit ${GITHUB_SHA}.
+
+          Install directly:
+
+          \`\`\`sh
+          npm install "https://github.com/${GITHUB_REPOSITORY}/releases/download/${RELEASE_TAG}/${PACKAGE_FILE}"
+          \`\`\`
+
+          This does not update the npm \`latest\` dist-tag. Configure npm Trusted Publishing for package \`@kryptosai/mcp-observatory\`, repository \`${GITHUB_REPOSITORY}\`, workflow \`release.yml\`, then rerun the release workflow for the canonical npm release.
+          EOF
+          gh release delete "$RELEASE_TAG" --yes --cleanup-tag || true
+          gh release create "$RELEASE_TAG" "$PACKAGE_FILE" \
+            --title "MCP Observatory fallback package ${FALLBACK_VERSION}" \
+            --notes-file "$body_file" \
+            --target "$GITHUB_SHA" \
+            --prerelease
