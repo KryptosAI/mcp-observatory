@@ -3,6 +3,8 @@ import {
   describeCheckList,
   findChecksByStatus,
   recommendRunNextStep,
+  summarizeDiffSafety,
+  summarizeRunSafety,
   sortChecksByActionability
 } from "./common.js";
 
@@ -158,6 +160,7 @@ function formatEntry(entry: DiffEntry): string {
 
 function renderRunTerminal(artifact: RunArtifact): string {
   const orderedChecks = sortChecksByActionability(artifact.checks);
+  const safety = summarizeRunSafety(artifact);
   const failingChecks = findChecksByStatus(artifact.checks, "fail");
   const partialChecks = [
     ...findChecksByStatus(artifact.checks, "partial"),
@@ -167,6 +170,7 @@ function renderRunTerminal(artifact: RunArtifact): string {
   const skippedChecks = findChecksByStatus(artifact.checks, "skipped");
   const lines = [
     co(ANSI.bold, `MCP Observatory Run`),
+    `Safety Verdict: ${co(safety.verdict === "Ready" ? ANSI.green : safety.verdict === "Needs review" ? ANSI.yellow : ANSI.red, safety.verdict)} — ${safety.reason}`,
     `Run ID: ${artifact.runId}`,
     `Gate: ${co(ANSI.bold, colorGate(artifact.gate))}`,
     `Target: ${artifact.target.targetId} (${artifact.target.adapter})`,
@@ -175,11 +179,13 @@ function renderRunTerminal(artifact: RunArtifact): string {
   ];
 
   lines.push(`Actionable now:`);
+  lines.push(`- top risks: ${safety.topRisks.join("; ")}`);
   lines.push(`- failing checks: ${describeCheckList(failingChecks)}`);
   lines.push(`- partial checks: ${describeCheckList(partialChecks)}`);
   lines.push(`- skipped checks: ${describeCheckList(skippedChecks)}`);
   lines.push(`- unsupported checks: ${describeCheckList(unsupportedChecks)}`);
   lines.push(`Next step: ${recommendRunNextStep(artifact)}`);
+  lines.push(`CI: ${safety.ciCta}`);
 
   if (artifact.fatalError !== undefined) {
     lines.push("Failure diagnosis:");
@@ -219,13 +225,17 @@ function renderRunTerminal(artifact: RunArtifact): string {
 }
 
 function renderDiffTerminal(artifact: DiffArtifact): string {
+  const safety = summarizeDiffSafety(artifact);
   const lines = [
     co(ANSI.bold, `MCP Observatory Diff`),
+    `Safety Verdict: ${co(safety.verdict === "Ready" ? ANSI.green : safety.verdict === "Needs review" ? ANSI.yellow : ANSI.red, safety.verdict)} — ${safety.reason}`,
     `Base: ${artifact.baseRunId}`,
     `Head: ${artifact.headRunId}`,
     `Gate: ${co(ANSI.bold, colorGate(artifact.gate))}`,
     `Counts: regressions=${artifact.summary.regressions}, recoveries=${artifact.summary.recoveries}, unchanged=${artifact.summary.unchanged}, added=${artifact.summary.added}, removed=${artifact.summary.removed}`
   ];
+  lines.push(`Top risks: ${safety.topRisks.join("; ")}`);
+  lines.push(`Next step: ${safety.nextActions[0]}`);
 
   if (artifact.regressions.length > 0) {
     lines.push(co(ANSI.red, "Regressions:"));

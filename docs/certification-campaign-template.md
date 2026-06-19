@@ -35,31 +35,31 @@ Skip:
 
 | Priority | Repo | Package/Command | Category | Stars/Downloads/Listing Signal | Activity Signal | Risk Notes | Status | PR URL | Accepted/Badge/Proof |
 | ---: | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | `owner/repo` | `npx -y package` | Security | | | | researched | | |
-| 2 | `owner/repo` | `npx -y package` | Developer Tools | | | | researched | | |
-| 3 | `owner/repo` | `uvx package` | Browser Automation | | | | researched | | |
-| 4 | `owner/repo` | `docker run image` | Database | | | | researched | | |
-| 5 | `owner/repo` | `npx -y package` | Cloud | | | | researched | | |
-| 6 | `owner/repo` | `npx -y package` | SaaS | | | | researched | | |
-| 7 | `owner/repo` | `uvx package` | Finance | | | | researched | | |
-| 8 | `owner/repo` | `npx -y package` | Developer Tools | | | | researched | | |
-| 9 | `owner/repo` | `npx -y package` | Security | | | | researched | | |
-| 10 | `owner/repo` | `docker run image` | Infrastructure | | | | researched | | |
-| 11 | `owner/repo` | `npx -y package` | Developer Tools | | | | researched | | |
-| 12 | `owner/repo` | `uvx package` | Data | | | | researched | | |
-| 13 | `owner/repo` | `npx -y package` | Search | | | | researched | | |
-| 14 | `owner/repo` | `npx -y package` | Filesystem | | | | researched | | |
-| 15 | `owner/repo` | `docker run image` | Browser Automation | | | | researched | | |
-| 16 | `owner/repo` | `npx -y package` | API | | | | researched | | |
-| 17 | `owner/repo` | `uvx package` | Security | | | | researched | | |
-| 18 | `owner/repo` | `npx -y package` | Database | | | | researched | | |
-| 19 | `owner/repo` | `npx -y package` | Developer Tools | | | | researched | | |
-| 20 | `owner/repo` | `docker run image` | Cloud | | | | researched | | |
-| 21 | `owner/repo` | `npx -y package` | SaaS | | | | researched | | |
-| 22 | `owner/repo` | `uvx package` | Data | | | | researched | | |
-| 23 | `owner/repo` | `npx -y package` | Security | | | | researched | | |
-| 24 | `owner/repo` | `npx -y package` | Developer Tools | | | | researched | | |
-| 25 | `owner/repo` | `docker run image` | Infrastructure | | | | researched | | |
+| 1 | `modelcontextprotocol/servers` | `npx -y @modelcontextprotocol/server-everything` | Reference | Official/reference signal | verify active package path | Safe reference target; PR may need package-specific scope | researched | | |
+| 2 | `modelcontextprotocol/servers` | `npx -y @modelcontextprotocol/server-filesystem .` | Filesystem | Official/reference signal | verify package location | Needs harmless temp directory target | researched | | |
+| 3 | `upstash/context7` | `npx -y @upstash/context7-mcp` | Developer Tools | Directory/listing signal | verify current package name | Network behavior should be reviewed before fail gate | researched | | |
+| 4 | `executeautomation/mcp-playwright` | `npx -y @executeautomation/playwright-mcp-server` | Browser Automation | High-interest browser MCP category | verify current package name | Browser install may be slow; start workflow-only | researched | | |
+| 5 | `browserbase/mcp-server-browserbase` | `npx -y @browserbasehq/mcp-server-browserbase` | Browser Automation | Hosted browser MCP category | verify auth-free startup | May require API key; issue-only if startup requires credentials | researched | | |
+| 6 | `smithery-ai/server-sequential-thinking` | `npx -y @smithery-ai/server-sequential-thinking` | Developer Tools | MCP directory ecosystem | verify package/repo naming | Good low-risk simple server if public package starts cleanly | researched | | |
+| 7 | `kazuph/mcp-taskmanager` | `npx -y mcp-taskmanager` | Developer Tools | Task/project MCP category | verify package | Confirm no destructive default actions | researched | | |
+| 8 | `cyanheads/filesystem-mcp-server` | `npx -y filesystem-mcp-server .` | Filesystem | Popular category | verify command | Needs harmless temp directory target | researched | | |
+| 9 | `redis/mcp-redis` | `uvx mcp-redis` | Database | Enterprise database category | verify auth-free startup | Database target may require service; issue-only if credentials needed | researched | | |
+| 10 | `mongodb-js/mongodb-mcp-server` | `npx -y mongodb-mcp-server` | Database | Enterprise database category | verify auth-free startup | Likely needs connection string; issue-only first | researched | | |
+| 11 | `supabase-community/supabase-mcp` | `npx -y supabase-mcp` | Database | Enterprise/SaaS category | verify current package | Likely requires token; issue-only first | researched | | |
+| 12 | `cloudflare/mcp-server-cloudflare` | `npx -y @cloudflare/mcp-server-cloudflare` | Cloud | Enterprise cloud category | verify package | Likely requires auth; issue-only first | researched | | |
+| 13 | `stripe/agent-toolkit` | `npx -y @stripe/agent-toolkit` | Payments | Enterprise payments category | verify MCP mode | Likely requires API key; issue-only first | researched | | |
+| 14 | `github/github-mcp-server` | `docker run ghcr.io/github/github-mcp-server` | Developer Tools | Major platform category | verify image/startup | Auth required for useful checks; issue-only first | researched | | |
+| 15 | `microsoft/playwright-mcp` | `npx -y @playwright/mcp` | Browser Automation | Major platform category | verify package | Browser dependencies may be slow; workflow-only first | researched | | |
+| 16 | `jetbrains/mcpProxy` | `npx -y @jetbrains/mcp-proxy` | Developer Tools | IDE platform category | verify package | May depend on IDE process; issue-only first | researched | | |
+| 17 | `pydantic/pydantic-ai` | `uvx pydantic-ai-mcp` | AI Framework | Framework ecosystem | verify MCP server package | May be docs/example rather than standalone server | researched | | |
+| 18 | `langchain-ai/langchain-mcp-adapters` | `npx -y <example-server>` | AI Framework | Framework ecosystem | choose example server | Adapter repo may not expose standalone server | researched | | |
+| 19 | `apify/actors-mcp-server` | `npx -y @apify/actors-mcp-server` | SaaS/API | Automation platform category | verify auth-free startup | Likely requires token; issue-only first | researched | | |
+| 20 | `notionhq/notion-mcp-server` | `npx -y @notionhq/notion-mcp-server` | SaaS/API | Major SaaS category | verify package | Likely requires token; issue-only first | researched | | |
+| 21 | `linear/linear-mcp` | `npx -y @linear/mcp-server` | SaaS/API | Developer SaaS category | verify package | Likely requires token; issue-only first | researched | | |
+| 22 | `sentry/sentry-mcp` | `npx -y @sentry/mcp-server` | Observability | Developer SaaS category | verify package | Likely requires token; issue-only first | researched | | |
+| 23 | `elastic/mcp-server-elasticsearch` | `npx -y @elastic/mcp-server-elasticsearch` | Search | Enterprise search category | verify package | Likely requires service; issue-only first | researched | | |
+| 24 | `qdrant/mcp-server-qdrant` | `uvx mcp-server-qdrant` | Vector Database | AI infra category | verify package | May require service URL; issue-only first | researched | | |
+| 25 | `weaviate/mcp-server-weaviate` | `uvx mcp-server-weaviate` | Vector Database | AI infra category | verify package | May require service URL; issue-only first | researched | | |
 | 26 | `owner/repo` | `npx -y package` | Browser Automation | | | | researched | | |
 | 27 | `owner/repo` | `uvx package` | API | | | | researched | | |
 | 28 | `owner/repo` | `npx -y package` | Database | | | | researched | | |
@@ -99,12 +99,16 @@ Statuses:
 
 ## PR Checklist
 
+- Generate the local kit first:
+  `npx @kryptosai/mcp-observatory init-ci --all --command "<safe startup command>"`
 - Add `.github/workflows/mcp-observatory.yml`
+- Add `mcp-observatory.target.json` when the startup command needs args, cwd, or env placeholders
 - Use `deep: true` and `security: true`
 - Keep `fail-on-regression: true` unless the repo is noisy
 - Add README badge only when it fits the repo style
-- Include the maintainer PR body from `certification-distribution.md`
+- Include the generated maintainer PR body from `docs/mcp-observatory-pr-body.md`
 - Do not include raw telemetry, private evidence, or sales pricing
+- Prefer issue-only fallback when the server requires credentials, paid services, destructive tools, or unclear startup
 
 ## PR Templates
 
@@ -133,7 +137,7 @@ The workflow runs on PRs and pushes to `main`. The badge links back to MCP Obser
 
 ### Issue-Only Fallback
 
-```md
+~~~md
 I tried preparing a small MCP Observatory CI check for this server, but did not want to open a PR without confirming the safest startup command.
 
 Would you accept a workflow that runs:
@@ -143,7 +147,17 @@ npx @kryptosai/mcp-observatory test <server command> --security --deep
 ```
 
 The goal is to give users a visible compatibility/security signal and catch schema drift before releases.
+~~~
+
+## Generated PR Body Printer
+
+After running `init-ci --all`, print the generated maintainer copy with:
+
+```bash
+npm run certification:pr-body -- docs/mcp-observatory-pr-body.md
 ```
+
+For a repo-specific body, run the command from the target branch after generating the local adoption kit.
 
 ## Proof Capture
 

@@ -54,6 +54,17 @@ export function previewList(values: string[] | undefined, limit = 5): string {
   return `${values.slice(0, limit).join(", ")} (+${values.length - limit} more)`;
 }
 
+export type SafetyVerdict = "Ready" | "Needs review" | "Blocked";
+
+export interface SafetySummary {
+  verdict: SafetyVerdict;
+  reason: string;
+  topRisks: string[];
+  regressionSummary: string;
+  nextActions: string[];
+  ciCta: string;
+}
+
 export function recommendRunNextStep(artifact: RunArtifact): string {
   if (artifact.fatalError !== undefined) {
     return "Run the target command manually, compare stderr with the diagnosis below, and only raise timeoutMs if startup is genuinely slow.";
@@ -78,4 +89,84 @@ export function recommendRunNextStep(artifact: RunArtifact): string {
   }
 
   return "Save this run artifact and diff it against the next meaningful server or package change.";
+}
+
+function checkRiskLabel(check: CheckResult): string {
+  return `${check.id}: ${check.message}`;
+}
+
+function riskList(artifact: RunArtifact): string[] {
+  const risks: string[] = [];
+  if (artifact.fatalError) {
+    risks.push("startup: server failed to start");
+  }
+  for (const check of sortChecksByActionability(artifact.checks)) {
+    if (check.status === "fail" || check.status === "partial" || check.status === "flaky") {
+      risks.push(checkRiskLabel(check));
+    }
+  }
+  return risks.slice(0, 3);
+}
+
+export function summarizeRunSafety(artifact: RunArtifact): SafetySummary {
+  const failingChecks = findChecksByStatus(artifact.checks, "fail");
+  const partialChecks = [
+    ...findChecksByStatus(artifact.checks, "partial"),
+    ...findChecksByStatus(artifact.checks, "flaky"),
+  ];
+  const unsupportedChecks = findChecksByStatus(artifact.checks, "unsupported");
+  const score = artifact.healthScore?.overall;
+  const verdict: SafetyVerdict = artifact.fatalError || artifact.gate === "fail" || failingChecks.length > 0 || (typeof score === "number" && score < 60)
+    ? "Blocked"
+    : partialChecks.length > 0 || unsupportedChecks.length > 0 || (typeof score === "number" && score < 80)
+      ? "Needs review"
+      : "Ready";
+  const reason = verdict === "Ready"
+    ? "No blocking MCP compatibility or security issues were detected."
+    : verdict === "Blocked"
+      ? "One or more checks can break agent dependence and should be fixed before production use."
+      : "The server is usable, but caveated checks should be reviewed before agents depend on it.";
+  const topRisks = riskList(artifact);
+  return {
+    verdict,
+    reason,
+    topRisks: topRisks.length > 0 ? topRisks : ["No high-priority risks detected."],
+    regressionSummary: "Run `mcp-observatory diff <previous-run.json> <current-run.json>` to classify regressions and schema drift.",
+    nextActions: [
+      recommendRunNextStep(artifact),
+      "Add MCP Observatory to CI so every server change gets the same check.",
+    ],
+    ciCta: "Add CI: npx @kryptosai/mcp-observatory init-ci --all --command \"npx -y <server-package>\"",
+  };
+}
+
+export function summarizeDiffSafety(artifact: { gate: string; regressions: unknown[]; schemaDrift?: unknown[]; responseChanges?: unknown[] }): SafetySummary {
+  const driftCount = artifact.schemaDrift?.length ?? 0;
+  const responseChangeCount = artifact.responseChanges?.length ?? 0;
+  const regressionCount = artifact.regressions.length;
+  const verdict: SafetyVerdict = artifact.gate === "fail" || regressionCount > 0
+    ? "Blocked"
+    : driftCount > 0 || responseChangeCount > 0
+      ? "Needs review"
+      : "Ready";
+  const topRisks = [
+    regressionCount > 0 ? `${regressionCount} regression${regressionCount === 1 ? "" : "s"} detected` : undefined,
+    driftCount > 0 ? `${driftCount} schema drift item${driftCount === 1 ? "" : "s"} detected` : undefined,
+    responseChangeCount > 0 ? `${responseChangeCount} response change${responseChangeCount === 1 ? "" : "s"} detected` : undefined,
+  ].filter((entry): entry is string => Boolean(entry));
+  return {
+    verdict,
+    reason: verdict === "Ready"
+      ? "No regressions, schema drift, or response changes were detected."
+      : verdict === "Blocked"
+        ? "Regressions can break dependent agents and should be fixed or intentionally accepted."
+        : "Schema or response changes were detected and should be reviewed before release.",
+    topRisks: topRisks.length > 0 ? topRisks.slice(0, 3) : ["No high-priority risks detected."],
+    regressionSummary: `Regressions: ${regressionCount}; schema drift: ${driftCount}; response changes: ${responseChangeCount}.`,
+    nextActions: [
+      regressionCount > 0 ? "Fix or explicitly accept the listed regressions before release." : "Save this diff as release evidence.",
+      "Keep this comparison running in CI for future MCP server changes.",
+    ],
+    ciCta: "Add CI: npx @kryptosai/mcp-observatory init-ci --all --command \"npx -y <server-package>\"",
+  };
 }

@@ -1,5 +1,5 @@
 import type { CheckResult, DiffArtifact, RunArtifact, SchemaDriftEntry, TrendInfo } from "../types.js";
-import { findChecksByStatus } from "./common.js";
+import { findChecksByStatus, summarizeDiffSafety, summarizeRunSafety } from "./common.js";
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
@@ -85,6 +85,7 @@ export function prCommentFooter(): string {
 
 function renderRunComment(artifact: RunArtifact, trend?: TrendInfo): string {
   const sections: string[] = [];
+  const safety = summarizeRunSafety(artifact);
   const security = extractSecurityFindings(artifact.checks);
   const quality = extractQualityFindings(artifact.checks);
   const failingChecks = findChecksByStatus(artifact.checks, "fail")
@@ -154,8 +155,17 @@ function renderRunComment(artifact: RunArtifact, trend?: TrendInfo): string {
   ].join(" · ");
 
   sections.push("");
+  sections.push(`### Safety verdict`);
+  sections.push(`> **${safety.verdict}** — ${safety.reason}`);
+  sections.push(`> Top risks: ${safety.topRisks.join("; ")}`);
+
+  sections.push("");
   sections.push(`### 📊 Summary`);
   sections.push(`> ${statsLine}`);
+  sections.push("");
+  sections.push(`### Next action`);
+  sections.push(`> ${safety.nextActions[0]}`);
+  sections.push(`> ${safety.ciCta}`);
 
   sections.push(prCommentFooter());
   return sections.join("\n");
@@ -165,6 +175,7 @@ function renderRunComment(artifact: RunArtifact, trend?: TrendInfo): string {
 
 function renderDiffComment(artifact: DiffArtifact): string {
   const sections: string[] = [];
+  const safety = summarizeDiffSafety(artifact);
   const { regressions, recoveries, schemaDrift } = artifact;
   const driftCount = schemaDrift?.length ?? 0;
   const totalIssues = regressions.length + driftCount;
@@ -219,8 +230,16 @@ function renderDiffComment(artifact: DiffArtifact): string {
   ].join(" · ");
 
   sections.push("");
+  sections.push(`### Safety verdict`);
+  sections.push(`> **${safety.verdict}** — ${safety.reason}`);
+  sections.push(`> ${safety.regressionSummary}`);
+
+  sections.push("");
   sections.push(`### 📊 Summary`);
   sections.push(`> ${statsLine}`);
+  sections.push("");
+  sections.push(`### Next action`);
+  sections.push(`> ${safety.nextActions[0]}`);
 
   sections.push(prCommentFooter());
   return sections.join("\n");

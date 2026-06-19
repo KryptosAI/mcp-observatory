@@ -772,11 +772,15 @@ async function main(): Promise<void> {
   const htmlPath = path.join(outDir, "telemetry-company-intelligence.html");
   const summaryJsonPath = path.join(outDir, "telemetry-usage-summary.json");
   const summaryHtmlPath = path.join(outDir, "telemetry-usage-summary.html");
+  const externalJsonPath = path.join(outDir, "telemetry-external-usage-intelligence.json");
+  const externalHtmlPath = path.join(outDir, "telemetry-external-usage-intelligence.html");
   await writeFile(jsonPath, JSON.stringify(outputs, null, 2) + "\n", "utf8");
   await writeFile(csvPath, renderCsv(outputs), "utf8");
   await writeFile(htmlPath, renderHtml(outputs, summary), "utf8");
   await writeFile(summaryJsonPath, JSON.stringify(summary, null, 2) + "\n", "utf8");
   await writeFile(summaryHtmlPath, renderUsageSummaryHtml(summary), "utf8");
+  await writeFile(externalJsonPath, JSON.stringify(summary, null, 2) + "\n", "utf8");
+  await writeFile(externalHtmlPath, renderUsageSummaryHtml(summary), "utf8");
 
   process.stdout.write(`Analyzed ${rows.length} telemetry rows.\n`);
   process.stdout.write(`Identified ${outputs.length} company/org candidates.\n`);
@@ -786,6 +790,8 @@ async function main(): Promise<void> {
   process.stdout.write(`Wrote ${htmlPath}\n`);
   process.stdout.write(`Wrote ${summaryJsonPath}\n`);
   process.stdout.write(`Wrote ${summaryHtmlPath}\n`);
+  process.stdout.write(`Wrote ${externalJsonPath}\n`);
+  process.stdout.write(`Wrote ${externalHtmlPath}\n`);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

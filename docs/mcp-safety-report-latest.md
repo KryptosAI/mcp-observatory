@@ -54,7 +54,7 @@ From public sample artifacts and Observatory check categories, the most importan
 ## How Maintainers Add The Check
 
 ```bash
-npx @kryptosai/mcp-observatory init-ci --command "npx -y my-mcp-server" --badge
+npx @kryptosai/mcp-observatory init-ci --all --command "npx -y my-mcp-server"
 ```
 
 That creates a GitHub Action and a README badge snippet. The action can comment on PRs and fail when MCP compatibility or security checks regress.
@@ -79,7 +79,7 @@ MCP servers are becoming production dependencies.
 I built MCP Observatory so MCP maintainers can add CI, security checks, schema drift detection, PR reports, and trust badges in one command:
 
 ```bash
-npx @kryptosai/mcp-observatory init-ci --command "npx -y my-mcp-server" --badge
+npx @kryptosai/mcp-observatory init-ci --all --command "npx -y my-mcp-server"
 ```
 
 Free for local OSS use. Paid pilots are available for hosted reporting, private repo CI, certification, support, and fleet visibility.

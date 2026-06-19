@@ -25,7 +25,7 @@ MCP Observatory gives MCP servers the production safety rails every dependency e
 Add MCP CI in one command:
 
 ```bash
-npx @kryptosai/mcp-observatory init-ci --command "npx -y my-mcp-server" --badge
+npx @kryptosai/mcp-observatory init-ci --all --command "npx -y my-mcp-server"
 ```
 
 Or test a server immediately:
@@ -48,7 +48,7 @@ MCP servers are becoming production dependencies. If agents rely on them, teams 
 
 Observatory gives maintainers and teams:
 
-- **One-command CI setup** with `init-ci`
+- **One-command CI setup** with `init-ci --all`
 - **GitHub PR comments** for compatibility, drift, and security findings
 - **Health score badges** for public trust signals
 - **Record/replay/verify** workflows for regression testing
@@ -201,7 +201,7 @@ When you run `scan`, it looks for MCP configs in:
 Add Observatory to your MCP server's CI pipeline:
 
 ```bash
-npx @kryptosai/mcp-observatory init-ci --command "npx -y my-mcp-server" --badge
+npx @kryptosai/mcp-observatory init-ci --all --command "npx -y my-mcp-server"
 ```
 
 Or create the workflow manually:

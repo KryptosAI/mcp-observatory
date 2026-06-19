@@ -23,6 +23,10 @@ Confirm:
 - Security findings appear in artifact evidence as structured `findings`.
 - Hosted upload is available through `mcp-observatory cloud upload <artifact>` when `MCP_OBSERVATORY_CLOUD_TOKEN` is set.
 
+Known audit note:
+
+- `npm audit` may report `undici <=6.26.0` through the `npm@11.17.0` package bundled under `@semantic-release/npm`. `npm audit fix` updates the fixable `@actions/http-client` path, but the remaining `undici` copy is bundled inside npm release tooling and is not part of MCP Observatory runtime dependencies or the packed npm artifact. Recheck after npm publishes a newer package.
+
 ## Public Distribution
 
 - Merge the health/commercialization PR.

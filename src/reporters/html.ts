@@ -1,4 +1,5 @@
 import type { CheckResult, DiffArtifact, DiffEntry, RunArtifact, SchemaDriftEntry } from "../types.js";
+import { summarizeDiffSafety, summarizeRunSafety } from "./common.js";
 
 function esc(text: string): string {
   return text
@@ -24,6 +25,11 @@ function statusBadge(status: string): string {
 function gateBadge(gate: string): string {
   const bg = gate === "pass" ? "#22c55e" : "#ef4444";
   return `<span style="display:inline-block;padding:4px 12px;border-radius:6px;background:${bg};color:#fff;font-size:14px;font-weight:700">${esc(gate).toUpperCase()}</span>`;
+}
+
+function verdictBadge(verdict: string): string {
+  const bg = verdict === "Ready" ? "#22c55e" : verdict === "Needs review" ? "#eab308" : "#ef4444";
+  return `<span style="display:inline-block;padding:4px 12px;border-radius:6px;background:${bg};color:#fff;font-size:14px;font-weight:700">${esc(verdict)}</span>`;
 }
 
 function checksTable(checks: CheckResult[]): string {
@@ -124,6 +130,7 @@ function schemaDriftSection(drift: SchemaDriftEntry[] | undefined): string {
 
 function renderRunHtml(artifact: RunArtifact): string {
   const serverLabel = [artifact.target.serverName, artifact.target.serverVersion].filter(Boolean).join(" ") || "unknown";
+  const safety = summarizeRunSafety(artifact);
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -153,6 +160,13 @@ function renderRunHtml(artifact: RunArtifact): string {
   <div class="card">
     <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px">
       <div style="font-size:16px;font-weight:600">Gate: ${gateBadge(artifact.gate)}</div>
+      <div style="font-size:16px;font-weight:600">Safety: ${verdictBadge(safety.verdict)}</div>
+    </div>
+    <p style="margin:0 0 12px;color:#374151">${esc(safety.reason)}</p>
+    <div style="font-size:13px;margin-bottom:12px">
+      <strong>Top risks:</strong> ${esc(safety.topRisks.join("; "))}<br>
+      <strong>Next action:</strong> ${esc(safety.nextActions[0] ?? "")}<br>
+      <strong>CI:</strong> <code>${esc(safety.ciCta)}</code>
     </div>
     <div style="font-size:13px;color:#6b7280">
       <div><strong>Target:</strong> ${esc(artifact.target.targetId)} (${esc(artifact.target.adapter)})</div>
@@ -178,6 +192,7 @@ function renderRunHtml(artifact: RunArtifact): string {
 }
 
 function renderDiffHtml(artifact: DiffArtifact): string {
+  const safety = summarizeDiffSafety(artifact);
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -208,6 +223,12 @@ function renderDiffHtml(artifact: DiffArtifact): string {
   <div class="card">
     <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
       <div style="font-size:16px;font-weight:600">Gate: ${gateBadge(artifact.gate)}</div>
+      <div style="font-size:16px;font-weight:600">Safety: ${verdictBadge(safety.verdict)}</div>
+    </div>
+    <p style="margin:0 0 12px;color:#374151">${esc(safety.reason)}</p>
+    <div style="font-size:13px;margin-bottom:16px">
+      <strong>Top risks:</strong> ${esc(safety.topRisks.join("; "))}<br>
+      <strong>Next action:</strong> ${esc(safety.nextActions[0] ?? "")}
     </div>
     <div>
       <div class="stat"><div class="stat-num" style="color:#ef4444">${artifact.summary.regressions}</div><div class="stat-label">Regressions</div></div>

@@ -23,7 +23,7 @@ Free for local OSS use. Paid pilots are available for hosted reporting, private 
 Add MCP CI in one command:
 
 ```bash
-npx @kryptosai/mcp-observatory init-ci --command "npx -y my-mcp-server" --badge
+npx @kryptosai/mcp-observatory init-ci --all --command "npx -y my-mcp-server"
 ```
 
 ## Tags

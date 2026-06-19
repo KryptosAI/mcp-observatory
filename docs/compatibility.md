@@ -43,7 +43,7 @@ These servers use standard stdio transport and should work with MCP Observatory.
 | HubSpot | [`@hubspot/mcp-server`](https://www.npmjs.com/package/@hubspot/mcp-server) | API key | `npx -y @hubspot/mcp-server` |
 | LaunchDarkly | [`@launchdarkly/mcp-server`](https://www.npmjs.com/package/@launchdarkly/mcp-server) | API key | `npx -y @launchdarkly/mcp-server` |
 | Notion | [`@notionhq/notion-mcp-server`](https://www.npmjs.com/package/@notionhq/notion-mcp-server) | `OPENAPI_MCP_HEADERS` | `npx -y @notionhq/notion-mcp-server` |
-| Stripe | [`@stripe/mcp`](https://www.npmjs.com/package/@stripe/mcp) | `--api-key` arg | `npx -y @stripe/mcp --api-key sk-...` |
+| Stripe | [`@stripe/mcp`](https://www.npmjs.com/package/@stripe/mcp) | `--api-key` arg | `npx -y @stripe/mcp --api-key ${STRIPE_API_KEY}` |
 
 Target config example with env vars:
 
@@ -116,7 +116,7 @@ Many MCP servers ship Docker images. These work with the `local-process` adapter
   "adapter": "local-process",
   "command": "docker",
   "args": ["run", "-i", "--rm",
-    "-e", "GITHUB_PERSONAL_ACCESS_TOKEN=ghp_...",
+    "-e", "GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_PERSONAL_ACCESS_TOKEN}",
     "ghcr.io/github/github-mcp-server"],
   "timeoutMs": 30000
 }
