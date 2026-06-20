@@ -6,22 +6,26 @@ MCP Observatory is early, but it is already a working MCP testing/security stack
 
 - npm package: `@kryptosai/mcp-observatory`
 - GitHub Action: `KryptosAI/mcp-observatory/action@main`
+- Latest release: `v0.22.0`
 - CLI command count: scan, test, record, replay, verify, diff, watch, suggest, serve, lock, history, init-ci, ci-report, enterprise-report, score, badge, cloud
 - Test suite: 321 passing tests across 40 test files as of June 19, 2026
-- GitHub traffic snapshot: 582 clones and 175 unique cloners in the visible June 2026 traffic window
+- GitHub traffic snapshot: 721 clones and 221 unique cloners in the visible June 2026 traffic window
 - npm downloads snapshot: 104 downloads for June 11-17, 2026
+- Security guide: [MCP Server Security Field Guide](./mcp-security-field-guide.md)
+- Public examples: [Reference Evaluations](./reference-evaluations.md)
 
 ## Safe Aggregate Telemetry Snapshot
 
 Internal telemetry is used for product analytics and account-level outreach. Public reporting uses only aggregate or sanitized data.
 
-As of the latest local export on June 19, 2026:
+As of the latest local export on June 20, 2026:
 
-- 10,278 telemetry events
-- 7,211 unique sessions
-- 5,368 external sessions after separating internal/personal activity
-- 2,434 external CI sessions
-- 128 attributed company/org sessions
+- 10,918 telemetry events
+- 7,380 total sessions
+- 5,379 external sessions after separating internal/personal activity
+- 2,446 external CI sessions
+- 138 attributed company/org sessions
+- 11 attributed company/org candidates
 - top external commands: `serve`, `run`, `diff`, `test`, `scan`, `history`
 
 Raw emails, hostnames, private URLs, tokens, and response bodies are not published.
@@ -50,7 +54,11 @@ Accepted third-party integrations will be tracked here:
 
 | Repo | PR | Check Added | Badge Added | Status |
 | --- | --- | --- | --- | --- |
-| _pending_ | | | | |
+| `modelcontextprotocol/servers` | [#4392](https://github.com/modelcontextprotocol/servers/pull/4392) | Yes | No | Open, mergeable, MCP Observatory check passing |
+| `microsoft/playwright-mcp` | [#1657](https://github.com/microsoft/playwright-mcp/pull/1657) | Yes | No | Open |
+| `upstash/context7` | [#2800](https://github.com/upstash/context7/pull/2800) | Yes | No | Open |
+| `executeautomation/mcp-playwright` | [#225](https://github.com/executeautomation/mcp-playwright/pull/225) | Yes | No | Open |
+| `kazuph/mcp-taskmanager` | [#11](https://github.com/kazuph/mcp-taskmanager/pull/11) | Yes | No | Open |
 
 ## Commercial Proof
 

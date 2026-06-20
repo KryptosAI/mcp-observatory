@@ -55,7 +55,13 @@ Observatory gives maintainers and teams:
 - **MCP server mode** so agents can inspect other MCP servers directly
 - **Production pilot path** for hosted history, private repo reporting, certification, support, and fleet visibility
 
-See [public proof](./docs/proof.md), the [MCP safety report](./docs/mcp-safety-report-latest.md), the [certification distribution loop](./docs/certification-distribution.md), and [commercial pilots](./COMMERCIAL.md).
+See the [MCP server security field guide](./docs/mcp-security-field-guide.md), [reference evaluations](./docs/reference-evaluations.md), [public proof](./docs/proof.md), the [MCP safety report](./docs/mcp-safety-report-latest.md), the [certification distribution loop](./docs/certification-distribution.md), and [commercial pilots](./COMMERCIAL.md).
+
+## For Security And Platform Teams
+
+MCP servers are becoming part of the AI software supply chain. Agents need reliable, testable, auditable tools before those tools become dependencies in mission-critical workflows.
+
+MCP Observatory gives security and platform teams MCP server CI, schema drift detection, security findings, SARIF/HTML/Markdown reports, and a path toward certification or fleet visibility. Local OSS use stays free; production, private repo, and fleet usage can move through a paid pilot.
 
 ## Production / Enterprise
 

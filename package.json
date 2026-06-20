@@ -62,6 +62,8 @@
     "mcp-server",
     "model-context-protocol",
     "ai-agent",
+    "agent-security",
+    "ai-supply-chain",
     "ai-tools",
     "developer-tools",
     "cli",

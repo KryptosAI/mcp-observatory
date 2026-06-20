@@ -18,6 +18,8 @@ MCP Observatory gives MCP servers production safety rails: one-command CI setup,
 
 Free for local OSS use. Paid pilots are available for hosted reporting, private repo CI history, recurring security reports, certification, support, and fleet visibility.
 
+For security and platform teams, see the MCP Server Security Field Guide for agent security, AI supply chain security, and production MCP server review guidance.
+
 ## Primary CTA
 
 Add MCP CI in one command:
@@ -66,6 +68,8 @@ npx @kryptosai/mcp-observatory init-ci --all --command "npx -y my-mcp-server"
 - `github-action`
 - `developer-tools`
 - `security`
+- `agent-security`
+- `ai-supply-chain`
 - `production-monitoring`
 - `enterprise-report`
 
@@ -73,6 +77,8 @@ npx @kryptosai/mcp-observatory init-ci --all --command "npx -y my-mcp-server"
 
 - README: `https://github.com/KryptosAI/mcp-observatory#readme`
 - GitHub Action: `https://github.com/KryptosAI/mcp-observatory/tree/main/action`
+- Security field guide: `https://github.com/KryptosAI/mcp-observatory/blob/main/docs/mcp-security-field-guide.md`
+- Reference evaluations: `https://github.com/KryptosAI/mcp-observatory/blob/main/docs/reference-evaluations.md`
 - Certification guide: `https://github.com/KryptosAI/mcp-observatory/blob/main/docs/certification-distribution.md`
 - Proof: `https://github.com/KryptosAI/mcp-observatory/blob/main/docs/proof.md`
 - Commercial pilots: `https://github.com/KryptosAI/mcp-observatory/blob/main/COMMERCIAL.md`

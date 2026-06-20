@@ -4,9 +4,17 @@
 
 MCP Observatory is CI/security infrastructure for production MCP servers.
 
-## Problem
+## Project Narrative
 
-MCP servers are becoming dependencies for AI agents. Teams need to know whether those servers still start, expose usable tools, keep schemas stable, avoid obvious security footguns, and behave consistently as agents depend on them.
+MCP Observatory identifies an emerging risk in AI agent infrastructure and turns it into a practical OSS control: CI checks, security reports, drift detection, telemetry intelligence, and certification workflows for production MCP servers.
+
+The project is strongest as a signal because it connects product intuition with implementation depth. It starts from a real infrastructure shift, builds a working developer tool around that shift, instruments usage, and creates a credible path from open source adoption to production security workflows.
+
+## Problem Discovery
+
+MCP servers are becoming dependencies for AI agents. They expose tools, prompts, resources, and data access that agents can call directly. When those servers drift, fail to start, expose broad capabilities, or return ambiguous schemas, the failure can propagate into agent workflows.
+
+The control gap is simple: teams need a way to test MCP servers before agents depend on them. They also need artifacts that maintainers, platform engineers, and security reviewers can understand.
 
 ## Product
 
@@ -23,46 +31,57 @@ MCP Observatory provides:
 - static enterprise reports
 - telemetry intelligence for product and account-level learning
 
-## Architecture
+## System Design
 
-The project is a TypeScript/Node CLI with modular command handlers, MCP adapters, check runners, reporters, artifact schemas, and a GitHub Action wrapper. A Cloudflare Worker handles hosted artifact upload pilots, and a separate telemetry Worker stores private aggregate usage events in D1.
+The project is a TypeScript/Node CLI with modular command handlers, MCP adapters, check runners, reporters, artifact schemas, and a GitHub Action wrapper.
 
-## Technical Proof
+The system supports local-process and HTTP MCP targets, stores run artifacts, compares runs for regressions, generates reports for humans and CI systems, and can run as an MCP server itself. A Cloudflare Worker handles hosted artifact upload pilots. A separate telemetry Worker stores private aggregate usage events in D1 for product and account intelligence.
 
-As of June 19, 2026:
+## Security Model
 
-- 10k+ source lines in `src`
-- 40 test files
-- 321 passing tests
-- npm package published
-- GitHub Action available
-- MCP server mode available
-- telemetry export and company intelligence tooling available
+MCP Observatory treats MCP servers as agent-facing infrastructure. The goal is not to claim formal semantic safety. The goal is to make compatibility, drift, and obvious security risk visible before deployment.
 
-## Traction Snapshot
+Current controls include:
 
-Safe public and aggregate signals:
-
-- 10,278 telemetry events
-- 7,211 telemetry sessions
-- 5,368 external sessions after separating internal activity
-- 582 GitHub clones and 175 unique cloners in the visible June 2026 traffic window
-- 104 npm downloads during June 11-17, 2026
-
-These are early signals. Public social proof is still limited and should be improved through the certification campaign.
-
-## Security And Privacy Posture
-
-The project includes:
-
-- telemetry opt-out controls
-- privacy disclosure
-- security policy
-- token-based hosted artifact upload
+- lightweight security checks for risky schema patterns
+- schema quality analysis for agent usability
+- SARIF output for security review workflows
+- support for security suppressions when broad tools are intentional
 - private-network rejection for hosted scans
+- privacy disclosure and telemetry opt-out controls
 - sanitized public reporting policy
 
-Public claims should use aggregate metrics and accepted public integrations, not raw telemetry.
+For deeper context, see the [MCP Server Security Field Guide](./mcp-security-field-guide.md).
+
+## Telemetry Intelligence
+
+Telemetry is used privately to understand product usage and identify account-level signals without publishing raw personal data.
+
+As of the latest local export on June 20, 2026:
+
+- 10,918 telemetry events
+- 7,380 total sessions
+- 5,379 external sessions after separating internal activity
+- 2,446 external CI sessions
+- 138 attributed company/org sessions
+- 11 attributed company/org candidates
+
+Public claims use aggregate or sanitized data only. Raw emails, hostnames, private URLs, tokens, and response bodies are not published.
+
+## Distribution Strategy
+
+The distribution wedge is useful CI for other MCP repositories. The certification campaign opens small, helpful PRs that add MCP compatibility/security checks and leave maintainers with a public trust signal.
+
+Current public distribution proof includes:
+
+- latest release: `v0.22.0`
+- npm package: `@kryptosai/mcp-observatory`
+- GitHub Action: `KryptosAI/mcp-observatory/action@main`
+- visible GitHub traffic window: 721 clones and 221 unique cloners
+- official MCP reference PR open and green: [`modelcontextprotocol/servers#4392`](https://github.com/modelcontextprotocol/servers/pull/4392)
+- open certification PRs for Microsoft Playwright MCP, Upstash Context7, ExecuteAutomation Playwright MCP, and other MCP projects
+
+See [reference evaluations](./reference-evaluations.md) and [public proof](./proof.md).
 
 ## Commercial Path
 
@@ -83,24 +102,35 @@ Current pilot anchors:
 - Enterprise: starts at `$3k/month`
 - Strategic: `$250k+/year`
 
-## Job-Opportunity Value
+## Professional Signal
 
-This project demonstrates ability across:
+MCP Observatory demonstrates applied work across:
 
-- AI infrastructure
+- AI agent infrastructure
 - developer tooling
-- security tooling
-- MCP ecosystem work
+- secure tool invocation
+- software supply chain thinking
 - CI/CD integrations
 - telemetry and product analytics
-- commercialization and enterprise packaging
+- open source distribution
+- enterprise packaging
 
-It is strongest as a portfolio asset when paired with public proof: accepted external PRs, badges in other repos, directory listings, and a short demo.
+It is designed to be evaluated through public work: code, docs, CI integrations, reference evaluations, proof surfaces, and real maintainer PRs.
 
-## Next Milestones
+## Future Roadmap
 
-1. Publish latest package with `init-ci`.
-2. Open first certification PR wave.
-3. Capture accepted PRs as public proof.
-4. Publish recurring MCP safety reports.
-5. Convert serious users into paid pilots.
+Near-term milestones:
+
+1. Convert certification PRs into accepted public integrations.
+2. Publish recurring MCP safety reports.
+3. Add stronger policy/provenance language for production MCP adoption.
+4. Improve hosted artifact upload into a simple pilot workflow.
+5. Convert serious production users into paid pilots.
+
+Longer-term opportunities:
+
+- policy controls for agent tool use
+- provenance for MCP packages and configurations
+- schema locks and controlled drift review
+- runtime monitoring for production agent tool calls
+- fleet inventory across teams, repositories, and hosts
