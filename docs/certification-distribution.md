@@ -75,6 +75,17 @@ jobs:
           comment-on-pr: true
 ```
 
+For production CI, pin the package version:
+
+```yaml
+- uses: KryptosAI/mcp-observatory/action@main
+  with:
+    command: npx -y <server-package>
+    package-version: 0.23.0
+    deep: true
+    security: true
+```
+
 For repos with a local target config:
 
 ```yaml

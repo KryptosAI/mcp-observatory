@@ -6,13 +6,17 @@ MCP Observatory is early, but it is already a working MCP testing/security stack
 
 - npm package: `@kryptosai/mcp-observatory`
 - GitHub Action: `KryptosAI/mcp-observatory/action@main`
-- Latest release: `v0.22.0`
+- Latest release: `v0.23.0`
 - CLI command count: scan, test, record, replay, verify, diff, watch, suggest, serve, lock, history, init-ci, ci-report, enterprise-report, score, badge, cloud
-- Test suite: 321 passing tests across 40 test files as of June 19, 2026
+- Test suite: 334 passing tests across 43 test files as of June 20, 2026
 - GitHub traffic snapshot: 721 clones and 221 unique cloners in the visible June 2026 traffic window
 - npm downloads snapshot: 104 downloads for June 11-17, 2026
 - Security guide: [MCP Server Security Field Guide](./mcp-security-field-guide.md)
+- Safety index: [MCP Server Safety Index](./mcp-server-safety-index.md)
 - Public examples: [Reference Evaluations](./reference-evaluations.md)
+- Lock-file CI primitive: [MCP Lock Files](./mcp-lock-files.md)
+- Public post drafts: [Launch Post Drafts](./public-post-drafts.md)
+- Pilot offer: [Private MCP Readiness Review](./paid-pilot-offer.md)
 
 ## Safe Aggregate Telemetry Snapshot
 

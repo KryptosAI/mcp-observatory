@@ -1,6 +1,6 @@
 # MCP Observatory Commercial Pilots
 
-MCP Observatory helps teams test, secure, and monitor MCP servers before agents depend on them.
+MCP Observatory is the CI and security gate for MCP servers before agents depend on them.
 
 The open source CLI and MCP server remain free for local OSS use under the MIT license. Paid pilots are for production use cases where a team needs hosted reporting, private repository CI, security reports, certification, support, or fleet visibility.
 
@@ -12,17 +12,19 @@ These are starting points for current pilots, not permanent fixed plans.
 | --- | ---: | --- |
 | Team Pilot | $299/month | Small teams adding MCP regression checks to CI |
 | Business Pilot | $999/month | Private repos, recurring security reports, and shared reporting |
-| Enterprise Pilot | $3k/month | Production MCP monitoring, support, and fleet visibility |
+| Enterprise Pilot | $3k/month | Private MCP readiness reports, support, and fleet visibility |
 | Strategic Accounts | Custom, $250k+/year | Major platforms, AI labs, and companies running MCP in production at scale |
 
 Contact: william@banksey.com
+
+Primary pilot offer: [Private MCP readiness review + CI rollout + drift/security report](./docs/paid-pilot-offer.md).
 
 ## Paid Production Use
 
 Paid pilots can include:
 
 - Hosted CI history and private-repo reporting
-- MCP security reports and production monitoring
+- MCP security reports and controlled drift review
 - Fleet inventory across teams, repos, and environments
 - Static enterprise reports generated from existing run artifacts
 - Certification language for MCP servers that pass agreed checks

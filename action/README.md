@@ -39,6 +39,7 @@ jobs:
 | `targets` | Path to MCP config file for multi-server matrix scan | |
 | `github-token` | Token for PR comments and commit statuses | `${{ github.token }}` |
 | `node-version` | Node.js version | `22` |
+| `package-version` | npm package version to install; pin this for reproducible CI | `latest` |
 
 GitHub may downgrade `GITHUB_TOKEN` to read-only on forked pull requests. In that case Observatory still runs the check and warns if it cannot post a PR comment or commit status.
 
@@ -68,6 +69,17 @@ GitHub may downgrade `GITHUB_TOKEN` to read-only on forked pull requests. In tha
     deep: true
     security: true
 ```
+
+### Pinned package version for production CI
+
+```yaml
+- uses: KryptosAI/mcp-observatory/action@main
+  with:
+    command: npx -y my-mcp-server
+    package-version: 0.23.0
+```
+
+For stricter reproducibility, pin both the Action ref and the npm package version, for example `uses: KryptosAI/mcp-observatory/action@v0.23.0` plus `package-version: 0.23.0`.
 
 ### Verify against baseline
 

@@ -13,10 +13,10 @@ export function cloudUpgradeLine(context: "ci" | "security" | "fleet" | "general
     context === "ci"
       ? "hosted CI history, private-repo reporting, and production badges"
       : context === "security"
-        ? "hosted security reports, certification, and production monitoring"
+        ? "hosted security reports, certification, and controlled drift review"
         : context === "fleet"
           ? "MCP fleet visibility, drift reports, and production support"
-          : "hosted reporting, production monitoring, and enterprise support";
+          : "hosted reporting, security review, and enterprise support";
 
   return [
     c(ANSI.dim, `  Production MCP teams: ${value}.`),

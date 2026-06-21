@@ -8,7 +8,7 @@ npm run telemetry:intelligence -- --input telemetry-exports/events-flat-full.jso
 
 Start from `reports/telemetry-usage-summary.html` to confirm external usage before reading account rankings. Do not treat first-party CI, release workflows, or internal/personal sessions as market traction.
 
-Do not include raw personal emails in public issues, posts, or docs. Use account domains, GitHub orgs, and aggregate telemetry evidence.
+Raw telemetry is allowed for internal account intelligence and may include git email, git remote URL, hostname, target command or URL, CI metadata, target IDs, and command outcomes. Do not include raw personal emails, hostnames, private URLs, target commands, tokens, or private telemetry exports in public issues, posts, docs, or customer-facing outreach. Use account domains, GitHub orgs, and aggregate telemetry evidence.
 
 ## Priority Accounts
 
@@ -35,7 +35,7 @@ If your team is running MCP servers in production, I can prepare a short evidenc
 - Feishu/Lark MCP compatibility
 - private HTTP MCP health checks
 - security findings and schema drift
-- CI history and production monitoring
+- CI history and controlled drift review
 - MCP fleet visibility across teams
 
 Would it be useful to compare notes this week?

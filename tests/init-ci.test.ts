@@ -92,6 +92,31 @@ describe("init-ci", () => {
     expect(await readFile(scoreBadge, "utf8")).toContain("mcp-observatory badge");
   });
 
+  it("preserves quoted command arguments in generated target config", async () => {
+    const dir = await tempDir();
+    const workflow = path.join(dir, ".github/workflows/mcp-observatory.yml");
+    const badgeFile = path.join(dir, "docs/mcp-observatory-badge.md");
+    const targetConfig = path.join(dir, "mcp-observatory.target.json");
+    const prBody = path.join(dir, "docs/mcp-observatory-pr-body.md");
+    const issueBody = path.join(dir, "docs/mcp-observatory-issue.md");
+    const scoreBadge = path.join(dir, "docs/mcp-observatory-score-badge.md");
+
+    await initCi({
+      command: "node server.js --name \"Acme MCP\" --flag 'two words'",
+      workflow,
+      badgeFile,
+      targetConfig,
+      prBody,
+      issueBody,
+      scoreBadge,
+      all: true,
+    });
+
+    const targetJson = JSON.parse(await readFile(targetConfig, "utf8")) as { command: string; args: string[] };
+    expect(targetJson.command).toBe("node");
+    expect(targetJson.args).toEqual(["server.js", "--name", "Acme MCP", "--flag", "two words"]);
+  });
+
   it("skips existing files unless force is set", async () => {
     const dir = await tempDir();
     const workflow = path.join(dir, ".github/workflows/mcp-observatory.yml");
