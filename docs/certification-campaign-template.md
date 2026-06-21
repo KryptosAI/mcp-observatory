@@ -51,16 +51,16 @@ Skip:
 | 14 | `github/github-mcp-server` | `docker run ghcr.io/github/github-mcp-server` | Developer Tools | Major platform category | verify image/startup | Auth required for useful checks; issue-only first | researched | | |
 | 15 | `microsoft/playwright-mcp` | `npx -y @playwright/mcp@latest` | Browser Automation | 34k+ stars / major platform category | Local validation passed: 23 tools | Uses `skipInvoke` and explicit suppressions for intentional browser-code tools | pr-opened | https://github.com/microsoft/playwright-mcp/pull/1657 | Waiting for maintainer review |
 | 16 | `jetbrains/mcpProxy` | `npx -y @jetbrains/mcp-proxy` | Developer Tools | IDE platform category | verify package | May depend on IDE process; issue-only first | researched | | |
-| 17 | `pydantic/pydantic-ai` | `uvx pydantic-ai-mcp` | AI Framework | Framework ecosystem | verify MCP server package | May be docs/example rather than standalone server | researched | | |
-| 18 | `langchain-ai/langchain-mcp-adapters` | `npx -y <example-server>` | AI Framework | Framework ecosystem | choose example server | Adapter repo may not expose standalone server | researched | | |
+| 17 | `BrowserMCP/mcp` | `npx -y @browsermcp/mcp` | Browser Automation | 6k+ stars / browser-control MCP category | Local validation passed: 12 tools | Browser automation trust boundary; workflow is inventory/security only | pr-opened | https://github.com/BrowserMCP/mcp/pull/189 | Waiting for maintainer review |
+| 18 | `UI5/mcp-server` | `npx -y @ui5/mcp-server` | Developer Tools | SAP/UI5 ecosystem MCP package | Local validation passed: 10 tools | Developer tooling surface; no credentials required for inventory | pr-opened | https://github.com/UI5/mcp-server/pull/348 | Waiting for maintainer review |
 | 19 | `apify/actors-mcp-server` | `npx -y @apify/actors-mcp-server` | SaaS/API | Automation platform category | verify auth-free startup | Likely requires token; issue-only first | researched | | |
-| 20 | `notionhq/notion-mcp-server` | `npx -y @notionhq/notion-mcp-server` | SaaS/API | Major SaaS category | verify package | Likely requires token; issue-only first | researched | | |
+| 20 | `makenotion/notion-mcp-server` | `npx -y @notionhq/notion-mcp-server` | SaaS/API | Major SaaS category | Local validation passed: 24 tools | Workspace-data MCP; PR is compatibility/schema/security inventory only | pr-opened | https://github.com/makenotion/notion-mcp-server/pull/324 | Waiting for maintainer review |
 | 21 | `linear/linear-mcp` | `npx -y @linear/mcp-server` | SaaS/API | Developer SaaS category | verify package | Likely requires token; issue-only first | researched | | |
 | 22 | `sentry/sentry-mcp` | `npx -y @sentry/mcp-server` | Observability | Developer SaaS category | verify package | Likely requires token; issue-only first | researched | | |
 | 23 | `elastic/mcp-server-elasticsearch` | `npx -y @elastic/mcp-server-elasticsearch` | Search | Enterprise search category | verify package | Likely requires service; issue-only first | researched | | |
 | 24 | `qdrant/mcp-server-qdrant` | `uvx mcp-server-qdrant` | Vector Database | AI infra category | verify package | May require service URL; issue-only first | researched | | |
 | 25 | `weaviate/mcp-server-weaviate` | `uvx mcp-server-weaviate` | Vector Database | AI infra category | verify package | May require service URL; issue-only first | researched | | |
-| 26 | `owner/repo` | `npx -y package` | Browser Automation | | | | researched | | |
+| 26 | `antvis/mcp-server-chart` | `npx -y @antv/mcp-server-chart` | Visualization/Data | 4k+ stars / chart-generation MCP category | Local validation passed: 27 tools | Generated chart artifacts; no credentials required for inventory | pr-opened | https://github.com/antvis/mcp-server-chart/pull/312 | Waiting for maintainer review |
 | 27 | `owner/repo` | `uvx package` | API | | | | researched | | |
 | 28 | `owner/repo` | `npx -y package` | Database | | | | researched | | |
 | 29 | `owner/repo` | `npx -y package` | Search | | | | researched | | |
