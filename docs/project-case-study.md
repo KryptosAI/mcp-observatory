@@ -57,14 +57,15 @@ For deeper context, see the [MCP Server Security Field Guide](./mcp-security-fie
 
 Telemetry is used privately to understand product usage and identify account-level signals without publishing raw personal data.
 
-As of the latest local export on June 20, 2026:
+As of the latest local export on June 21, 2026:
 
-- 10,918 telemetry events
-- 7,380 total sessions
-- 5,379 external sessions after separating internal activity
+- 11,481 telemetry events
+- 7,571 total sessions
+- 5,389 external sessions after separating internal activity
 - 2,446 external CI sessions
-- 138 attributed company/org sessions
-- 11 attributed company/org candidates
+- 148 attributed company/org sessions
+- 12 attributed company/org candidates
+- latest external activity: June 21, 2026
 
 Public claims use aggregate or sanitized data only. Raw emails, hostnames, private URLs, tokens, and response bodies are not published.
 
