@@ -63,6 +63,11 @@ Accepted third-party integrations will be tracked here:
 | `upstash/context7` | [#2800](https://github.com/upstash/context7/pull/2800) | Yes | No | Open |
 | `executeautomation/mcp-playwright` | [#225](https://github.com/executeautomation/mcp-playwright/pull/225) | Yes | No | Open |
 | `kazuph/mcp-taskmanager` | [#11](https://github.com/kazuph/mcp-taskmanager/pull/11) | Yes | No | Open |
+| `cyanheads/filesystem-mcp-server` | [#19](https://github.com/cyanheads/filesystem-mcp-server/pull/19) | Yes | No | Open |
+| `antvis/mcp-server-chart` | [#312](https://github.com/antvis/mcp-server-chart/pull/312) | Yes | No | Open |
+| `BrowserMCP/mcp` | [#189](https://github.com/BrowserMCP/mcp/pull/189) | Yes | No | Open |
+| `UI5/mcp-server` | [#348](https://github.com/UI5/mcp-server/pull/348) | Yes | No | Open |
+| `makenotion/notion-mcp-server` | [#324](https://github.com/makenotion/notion-mcp-server/pull/324) | Yes | No | Open |
 
 ## Commercial Proof
 
