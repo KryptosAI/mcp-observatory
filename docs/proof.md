@@ -23,14 +23,15 @@ MCP Observatory is early, but it is already a working MCP testing/security stack
 
 Internal telemetry is used for product analytics and account-level outreach. Public reporting uses only aggregate or sanitized data.
 
-As of the latest local export on June 20, 2026:
+As of the latest local export on June 21, 2026:
 
-- 10,918 telemetry events
-- 7,380 total sessions
-- 5,379 external sessions after separating internal/personal activity
+- 11,481 telemetry events
+- 7,571 total sessions
+- 5,389 external sessions after separating internal/personal activity
 - 2,446 external CI sessions
-- 138 attributed company/org sessions
-- 11 attributed company/org candidates
+- 148 attributed company/org sessions
+- 12 attributed company/org candidates
+- latest external activity: June 21, 2026
 - top external commands: `serve`, `run`, `diff`, `test`, `scan`, `history`
 
 Raw emails, hostnames, private URLs, tokens, and response bodies are not published.

@@ -24,11 +24,13 @@ Safe aggregate telemetry from the latest local export:
 
 | Metric | Value |
 | --- | ---: |
-| Total telemetry events | 10,918 |
-| Total sessions | 7,380 |
-| External sessions | 5,379 |
+| Total telemetry events | 11,481 |
+| Total sessions | 7,571 |
+| External sessions | 5,389 |
 | External CI sessions | 2,446 |
-| Attributed company/org sessions | 138 |
+| Attributed company/org sessions | 148 |
+| Attributed company/org candidates | 12 |
+| Latest external activity | June 21, 2026 |
 | npm downloads snapshot | 511 downloads, June 11-20, 2026 |
 | GitHub clones in visible traffic window | 745 |
 | Unique cloners in visible traffic window | 232 |

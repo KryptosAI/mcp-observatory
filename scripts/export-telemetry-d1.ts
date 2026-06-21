@@ -1,6 +1,7 @@
 import { execFile } from "node:child_process";
 import { access, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { setTimeout as sleep } from "node:timers/promises";
 import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
@@ -58,6 +59,11 @@ interface TelemetryRow {
   github_actor: string | null;
   is_first_party: number | null;
   telemetry_source: string | null;
+}
+
+interface ExecFailure extends Error {
+  stdout?: string;
+  stderr?: string;
 }
 
 function argValue(name: string): string | undefined {
@@ -119,25 +125,43 @@ async function d1Query<T>(
   databaseName: string,
   sql: string,
 ): Promise<T[]> {
-  const { stdout } = await execFileAsync(
-    "npx",
-    [
-      "wrangler",
-      "d1",
-      "execute",
-      databaseName,
-      "--remote",
-      "--config",
-      wranglerConfig,
-      "--json",
-      "--command",
-      sql,
-    ],
-    {
-      maxBuffer: 1024 * 1024 * 64,
-    },
-  );
-  return parseWranglerJson<T>(stdout);
+  const args = [
+    "wrangler",
+    "d1",
+    "execute",
+    databaseName,
+    "--remote",
+    "--config",
+    wranglerConfig,
+    "--json",
+    "--command",
+    sql,
+  ];
+  const maxAttempts = 3;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      const { stdout } = await execFileAsync("npx", args, {
+        maxBuffer: 1024 * 1024 * 64,
+      });
+      return parseWranglerJson<T>(stdout);
+    } catch (error) {
+      if (attempt < maxAttempts) {
+        await sleep(1000 * attempt);
+        continue;
+      }
+
+      const failure = error as ExecFailure;
+      const details = [
+        failure.message,
+        failure.stderr ? `stderr:\n${failure.stderr.trim()}` : undefined,
+        failure.stdout ? `stdout:\n${failure.stdout.trim()}` : undefined,
+      ].filter(Boolean);
+      throw new Error(details.join("\n\n"), { cause: error });
+    }
+  }
+
+  throw new Error("Wrangler D1 query failed without returning a result.");
 }
 
 async function main(): Promise<void> {
