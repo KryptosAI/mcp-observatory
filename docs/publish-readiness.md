@@ -28,6 +28,10 @@ Known audit note:
 
 - `npm audit` may report `undici <=6.26.0` through the `npm@11.17.0` package bundled under `@semantic-release/npm`. As of June 20, 2026, `npm audit fix` cannot update this bundled copy and `npm@11.17.0` is the current published npm package. The remaining vulnerable `undici` copy is release tooling only and is not part of MCP Observatory runtime dependencies or the packed npm artifact. Recheck after npm publishes a newer package.
 
+Known audit note:
+
+- `npm audit` may report `undici <=6.26.0` through the `npm@11.17.0` package bundled under `@semantic-release/npm`. `npm audit fix` updates the fixable `@actions/http-client` path, but the remaining `undici` copy is bundled inside npm release tooling and is not part of MCP Observatory runtime dependencies or the packed npm artifact. Recheck after npm publishes a newer package.
+
 ## Public Distribution
 
 - Merge the health/commercialization PR.
