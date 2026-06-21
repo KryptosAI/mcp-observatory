@@ -70,7 +70,7 @@ Representative public category: filesystem-backed MCP servers.
 
 Public proof:
 
-- PR: [`cyanheads/filesystem-mcp-server#19`](https://github.com/cyanheads/filesystem-mcp-server/pull/19)
+- PR: [`cyanheads/filesystem-mcp-server#19`](https://github.com/cyanheads/filesystem-mcp-server/pull/19), closed unmerged by maintainer
 
 What this represents:
 

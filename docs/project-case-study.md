@@ -77,9 +77,12 @@ Current public distribution proof includes:
 - latest release: `v0.23.0`
 - npm package: `@kryptosai/mcp-observatory`
 - GitHub Action: `KryptosAI/mcp-observatory/action@main`
-- visible GitHub traffic window: 721 clones and 221 unique cloners
+- npm downloads snapshot: 511 downloads for June 11-20, 2026
+- visible GitHub traffic window: 745 clones and 232 unique cloners
+- visible GitHub page-view window: 12 views and 9 unique visitors
+- public code-search references in MCP indexes, listing mirrors, and external experiment repos
 - official MCP reference PR open and green: [`modelcontextprotocol/servers#4392`](https://github.com/modelcontextprotocol/servers/pull/4392)
-- open certification PRs for Microsoft Playwright MCP, Upstash Context7, ExecuteAutomation Playwright MCP, and other MCP projects
+- open certification PRs for Microsoft Playwright MCP, Upstash Context7, ExecuteAutomation Playwright MCP, AntV, BrowserMCP, UI5, Notion, and other MCP projects
 
 See [reference evaluations](./reference-evaluations.md) and [public proof](./proof.md).
 

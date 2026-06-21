@@ -29,8 +29,11 @@ Safe aggregate telemetry from the latest local export:
 | External sessions | 5,379 |
 | External CI sessions | 2,446 |
 | Attributed company/org sessions | 138 |
-| GitHub clones in visible traffic window | 721 |
-| Unique cloners in visible traffic window | 221 |
+| npm downloads snapshot | 511 downloads, June 11-20, 2026 |
+| GitHub clones in visible traffic window | 745 |
+| Unique cloners in visible traffic window | 232 |
+| GitHub page views in visible traffic window | 12 |
+| Unique GitHub viewers in visible traffic window | 9 |
 
 Top external commands:
 
