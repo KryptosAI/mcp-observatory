@@ -48,7 +48,7 @@
     "proof:refresh": "tsx scripts/refresh-proof-artifacts.ts",
     "release:prep": "node scripts/release.mjs",
     "certification:pr-body": "tsx scripts/print-certification-pr-body.ts",
-    "typecheck": "tsc --noEmit -p tsconfig.json && npm --prefix api run typecheck",
+    "typecheck": "tsc --noEmit -p tsconfig.json && npm --prefix api install && npm --prefix api run typecheck",
     "test": "vitest run",
     "validate:artifacts": "tsx scripts/validate-artifacts.ts",
     "verify:packed-install": "node scripts/verify-packed-install.mjs",
