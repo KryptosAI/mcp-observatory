@@ -1,8 +1,10 @@
 # MCP Safety Report
 
-Latest generated baseline: June 19, 2026.
+Latest generated baseline: June 20, 2026.
 
 MCP servers are becoming production dependencies. When agents depend on a server, that server needs repeatable compatibility checks, security review, schema drift detection, and visible trust signals.
+
+For a broader security framing, see the [MCP Server Security Field Guide](./mcp-security-field-guide.md). For public examples, see [Reference Evaluations](./reference-evaluations.md).
 
 ## What Observatory Checks
 
@@ -22,11 +24,13 @@ Safe aggregate telemetry from the latest local export:
 
 | Metric | Value |
 | --- | ---: |
-| Total telemetry events | 10,278 |
-| Unique sessions | 7,211 |
-| External sessions | 5,368 |
-| External CI sessions | 2,434 |
-| Attributed company/org sessions | 128 |
+| Total telemetry events | 10,918 |
+| Total sessions | 7,380 |
+| External sessions | 5,379 |
+| External CI sessions | 2,446 |
+| Attributed company/org sessions | 138 |
+| GitHub clones in visible traffic window | 721 |
+| Unique cloners in visible traffic window | 221 |
 
 Top external commands:
 

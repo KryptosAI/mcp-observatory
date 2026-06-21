@@ -6,7 +6,7 @@ Cloudflare Worker that provides a hosted HTTP API for scanning MCP servers.
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `POST` | `/api/v1/scan` | Scan an HTTP MCP server |
+| `POST` | `/api/v1/scan` | Scan an HTTP MCP server with pilot auth |
 | `GET` | `/api/v1/scan/:runId` | Retrieve a cached scan result |
 | `POST` | `/api/v1/artifacts` | Upload a run artifact for a hosted pilot report |
 | `GET` | `/api/v1/artifacts/:org` | List uploaded artifacts for an org |
@@ -14,6 +14,10 @@ Cloudflare Worker that provides a hosted HTTP API for scanning MCP servers.
 | `GET` | `/api/v1/health` | Health check |
 
 ### POST /api/v1/scan
+
+Requires `Authorization: Bearer <HOSTED_SCAN_TOKEN>`. Hosted scans are an
+authenticated pilot surface so the Worker cannot be used as an anonymous public
+scanner.
 
 Request body:
 
@@ -24,7 +28,7 @@ Request body:
 Returns a `RunArtifact` JSON object with health score, check results, and
 performance metrics. Results are cached in KV for 24 hours.
 
-Rate limit: 10 requests per minute per IP.
+Rate limit: 10 requests per minute per IP after authentication.
 
 > **Note:** Local process targets (`{ "command": "..." }`) are rejected.
 > Use the CLI for local servers.
@@ -61,6 +65,13 @@ Suitable for embedding in README files:
 ```bash
 cd api
 npm install
+```
+
+Hosted scans and artifact uploads use separate pilot tokens:
+
+```bash
+npx wrangler secret put HOSTED_SCAN_TOKEN
+npx wrangler secret put CLOUD_UPLOAD_TOKEN
 ```
 
 ### Create the KV namespace

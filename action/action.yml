@@ -49,6 +49,10 @@ inputs:
     description: "Node.js version to use"
     required: false
     default: "22"
+  package-version:
+    description: "MCP Observatory npm version to install. Use 'latest' for the newest release or pin a version for reproducible CI."
+    required: false
+    default: "latest"
 
 outputs:
   gate:
@@ -68,7 +72,7 @@ runs:
 
     - name: Install MCP Observatory
       shell: bash
-      run: npm install -g @kryptosai/mcp-observatory
+      run: npm install -g "@kryptosai/mcp-observatory@${{ inputs.package-version }}"
 
     - name: Run Observatory checks
       id: run
@@ -120,7 +124,7 @@ runs:
           if [ -n "$INPUT_TARGET" ]; then
             CMD_ARRAY=(mcp-observatory test --target "$INPUT_TARGET")
           elif [ -n "$INPUT_COMMAND" ]; then
-            read -r -a COMMAND_PARTS <<< "$INPUT_COMMAND"
+            mapfile -t COMMAND_PARTS < <(node -e 'const input=process.env.INPUT_COMMAND||"";const parts=[];let current="",quote=null,escaping=false;for(const char of input){if(escaping){current+=char;escaping=false;continue}if(char==="\\"){escaping=true;continue}if(quote){if(char===quote)quote=null;else current+=char;continue}if(char==="\""||char===String.fromCharCode(39)){quote=char;continue}if(/\s/.test(char)){if(current.length>0){parts.push(current);current=""}continue}current+=char}if(escaping)current+="\\";if(current.length>0)parts.push(current);for(const part of parts)console.log(part)')
             CMD_ARRAY=(mcp-observatory test "${COMMAND_PARTS[@]}")
           else
             echo "::error::Either 'command', 'target', or 'targets' input is required"
@@ -236,7 +240,8 @@ runs:
           --edit-last 2>/dev/null || \
         gh pr comment "$PR_NUMBER" \
           --repo "$GH_REPO" \
-          --body-file "$COMMENT_FILE"
+          --body-file "$COMMENT_FILE" || \
+        echo "::warning::Could not post PR comment; GitHub token may be read-only for forked pull requests"
 
     - name: Check gate
       if: inputs.fail-on-regression == 'true' && steps.run.outputs.gate == 'fail'

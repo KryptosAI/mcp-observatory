@@ -269,7 +269,7 @@ async function main(): Promise<void> {
 
   const cloudCmd = program
     .command("cloud")
-    .description("Show hosted reporting, production monitoring, and enterprise pilot options.")
+    .description("Show hosted reporting, security review, and enterprise pilot options.")
     .action(() => {
       printCloudInfo();
     });

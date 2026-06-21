@@ -20,6 +20,61 @@ function requireArray(obj: Record<string, unknown>, field: string, label: string
   return value;
 }
 
+function optionalNumber(obj: Record<string, unknown>, field: string, label: string): number | undefined {
+  const value = obj[field];
+  if (value === undefined) return undefined;
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    throw new Error(`${label}.${field} must be a finite number.`);
+  }
+  return value;
+}
+
+function requireNumber(obj: Record<string, unknown>, field: string, label: string): number {
+  const value = optionalNumber(obj, field, label);
+  if (value === undefined) {
+    throw new Error(`${label} is missing required field '${field}'.`);
+  }
+  return value;
+}
+
+function requireStatus(value: unknown, label: string): void {
+  const statuses = new Set(["pass", "fail", "partial", "unsupported", "flaky", "skipped"]);
+  if (typeof value !== "string" || !statuses.has(value)) {
+    throw new Error(`${label} has invalid status '${String(value)}'.`);
+  }
+}
+
+function requireCheckId(value: unknown, label: string): void {
+  const ids = new Set(["tools", "prompts", "resources", "tools-invoke", "security", "security-lite", "conformance", "schema-quality"]);
+  if (typeof value !== "string" || !ids.has(value)) {
+    throw new Error(`${label} has invalid check id '${String(value)}'.`);
+  }
+}
+
+function validateRunSummary(value: unknown): void {
+  if (!isObject(value)) {
+    throw new Error("Run artifact is missing required field 'summary'.");
+  }
+  if (value["gate"] !== "pass" && value["gate"] !== "fail") {
+    throw new Error("Run artifact summary has invalid gate.");
+  }
+  for (const field of ["total", "pass", "fail", "partial", "unsupported", "flaky", "skipped"]) {
+    requireNumber(value, field, "Run artifact summary");
+  }
+}
+
+function validateCheck(value: unknown, index: number): void {
+  if (!isObject(value)) {
+    throw new Error(`Run artifact checks[${index}] must be an object.`);
+  }
+  requireCheckId(value["id"], `Run artifact checks[${index}]`);
+  requireCheckId(value["capability"], `Run artifact checks[${index}] capability`);
+  requireStatus(value["status"], `Run artifact checks[${index}]`);
+  requireNumber(value, "durationMs", `Run artifact checks[${index}]`);
+  requireString(value, "message", `Run artifact checks[${index}]`);
+  requireArray(value, "evidence", `Run artifact checks[${index}]`);
+}
+
 function expandEnvValue(value: string, label: string): string {
   const match =
     value.match(/^\$\{([A-Za-z_][A-Za-z0-9_]*)\}$/) ??
@@ -123,16 +178,21 @@ export function validateRunArtifact(data: unknown): RunArtifact {
   requireString(data, "createdAt", "Run artifact");
   requireString(data, "schemaVersion", "Run artifact");
   requireString(data, "toolVersion", "Run artifact");
-  requireArray(data, "checks", "Run artifact");
+  const checks = requireArray(data, "checks", "Run artifact");
 
   if (!isObject(data["target"])) {
     throw new Error("Run artifact is missing required field 'target'.");
   }
+  requireString(data["target"], "targetId", "Run artifact target");
+  requireString(data["target"], "adapter", "Run artifact target");
   if (!isObject(data["environment"])) {
     throw new Error("Run artifact is missing required field 'environment'.");
   }
-  if (!isObject(data["summary"])) {
-    throw new Error("Run artifact is missing required field 'summary'.");
+  requireString(data["environment"], "platform", "Run artifact environment");
+  requireString(data["environment"], "nodeVersion", "Run artifact environment");
+  validateRunSummary(data["summary"]);
+  for (const [index, check] of checks.entries()) {
+    validateCheck(check, index);
   }
 
   // Structure validated above. The intermediate unknown cast is required because

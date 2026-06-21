@@ -13,6 +13,7 @@
 export interface Env {
   SCAN_CACHE: KVNamespace;
   CLOUD_UPLOAD_TOKEN?: string;
+  HOSTED_SCAN_TOKEN?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -29,6 +30,7 @@ type CheckId =
   | "resources"
   | "tools-invoke"
   | "security"
+  | "security-lite"
   | "conformance"
   | "schema-quality";
 
@@ -181,6 +183,9 @@ function scorePerformance(
     latencies.push(metrics.promptsListMs);
   if (metrics.resourcesListMs !== undefined)
     latencies.push(metrics.resourcesListMs);
+  if (metrics.toolInvokeMs) {
+    latencies.push(...Object.values(metrics.toolInvokeMs));
+  }
 
   if (latencies.length === 0) {
     const connScore =
@@ -239,7 +244,7 @@ function computeHealthScore(
     scoreDimension("Schema Quality", w.schemaQuality, checks, [
       "schema-quality",
     ]),
-    scoreDimension("Security", w.security, checks, ["security"]),
+    scoreDimension("Security", w.security, checks, ["security", "security-lite"]),
     scoreDimension("Reliability", w.reliability, checks, [
       "tools",
       "prompts",
@@ -302,7 +307,7 @@ function generateBadgeSvg(score: number, grade: HealthGrade): string {
 // Helpers
 // ---------------------------------------------------------------------------
 
-const TOOL_VERSION = "0.8.2-hosted";
+const TOOL_VERSION = "0.23.0-hosted";
 const KV_TTL_SECONDS = 86400; // 24 hours
 const RATE_LIMIT_WINDOW_SECONDS = 60;
 const RATE_LIMIT_MAX_REQUESTS = 10;
@@ -369,6 +374,17 @@ function requireUploadAuth(request: Request, env: Env): Response | null {
     return errorResponse("Cloud artifact upload is not configured.", 501);
   }
   const expected = `Bearer ${env.CLOUD_UPLOAD_TOKEN}`;
+  if (request.headers.get("Authorization") !== expected) {
+    return errorResponse("Unauthorized", 401);
+  }
+  return null;
+}
+
+function requireHostedScanAuth(request: Request, env: Env): Response | null {
+  if (!env.HOSTED_SCAN_TOKEN) {
+    return errorResponse("Hosted scan is not configured.", 501);
+  }
+  const expected = `Bearer ${env.HOSTED_SCAN_TOKEN}`;
   if (request.headers.get("Authorization") !== expected) {
     return errorResponse("Unauthorized", 401);
   }
@@ -728,6 +744,9 @@ async function handlePostScan(
   request: Request,
   env: Env,
 ): Promise<Response> {
+  const authError = requireHostedScanAuth(request, env);
+  if (authError) return authError;
+
   const ip = request.headers.get("CF-Connecting-IP") ?? "unknown";
   const allowed = await checkRateLimit(ip, env.SCAN_CACHE);
   if (!allowed) {

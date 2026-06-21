@@ -18,9 +18,9 @@
 [![Smithery](https://smithery.ai/badge/@kryptosai/mcp-observatory)](https://smithery.ai/server/@kryptosai/mcp-observatory)
 [![mcp-observatory MCP server](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory/badges/score.svg)](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory)
 
-**Test, secure, and monitor MCP servers before agents depend on them.**
+**The CI and security gate for MCP servers before agents depend on them.**
 
-MCP Observatory gives MCP servers the production safety rails every dependency eventually needs: CI checks, security scans, schema drift detection, PR reports, score badges, and agent-accessible diagnostics.
+Agents should not depend on tools nobody tests. MCP Observatory gives MCP servers the production safety rails every dependency eventually needs: CI checks, security scans, schema drift detection, PR reports, score badges, and agent-accessible diagnostics.
 
 Add MCP CI in one command:
 
@@ -55,20 +55,26 @@ Observatory gives maintainers and teams:
 - **MCP server mode** so agents can inspect other MCP servers directly
 - **Production pilot path** for hosted history, private repo reporting, certification, support, and fleet visibility
 
-See [public proof](./docs/proof.md), the [MCP safety report](./docs/mcp-safety-report-latest.md), the [certification distribution loop](./docs/certification-distribution.md), and [commercial pilots](./COMMERCIAL.md).
+See the [MCP server security field guide](./docs/mcp-security-field-guide.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), the [certification distribution loop](./docs/certification-distribution.md), and [commercial pilots](./COMMERCIAL.md).
+
+## For Security And Platform Teams
+
+MCP servers are becoming part of the AI software supply chain. Agents need reliable, testable, auditable tools before those tools become dependencies in mission-critical workflows.
+
+MCP Observatory gives security and platform teams MCP server CI, schema drift detection, security findings, SARIF/HTML/Markdown reports, and a path toward certification or fleet visibility. Local OSS use stays free; production, private repo, and fleet usage can move through a paid pilot.
 
 ## Production / Enterprise
 
-Free for local OSS use. Paid pilots are available for hosted reporting, private repo CI, security reports, production monitoring, certification, support, and MCP fleet visibility.
+Free for local OSS use. Paid pilots are available for hosted reporting, private repo CI, recurring security reports, certification, support, and MCP fleet visibility.
 
 | Pilot | Starts At | Best Fit |
 |-------|----------:|----------|
 | Team Pilot | $299/month | Small teams adding MCP checks to CI |
 | Business Pilot | $999/month | Private repos and recurring security reports |
-| Enterprise Pilot | $3k/month | Production monitoring, support, and fleet visibility |
+| Enterprise Pilot | $3k/month | Private MCP readiness reports, support, and fleet visibility |
 | Strategic Accounts | Custom, $250k+/year | Major companies running MCP in production |
 
-Run `npx @kryptosai/mcp-observatory cloud` or contact `william@banksey.com` for production MCP usage.
+Run `npx @kryptosai/mcp-observatory cloud` or contact `william@banksey.com` for production MCP usage. The primary paid pilot is a [private MCP readiness review](./docs/paid-pilot-offer.md).
 
 See [commercial pilots](./COMMERCIAL.md), [privacy and telemetry](./PRIVACY.md), and [terms for production use](./TERMS.md).
 For a fuller narrative, see the [project case study](./docs/project-case-study.md).
@@ -134,7 +140,7 @@ Or add it manually to your config:
 | `enterprise-report` | Generate a static production/security report from run artifacts |
 | `score <cmd>` | Score an MCP server's health (0-100) |
 | `badge <cmd>` | Generate an SVG health score badge for README |
-| `cloud` | Show hosted reporting, production monitoring, and enterprise pilot options |
+| `cloud` | Show hosted reporting, security review, and enterprise pilot options |
 
 Run with no arguments for an interactive menu:
 
@@ -211,6 +217,11 @@ Or create the workflow manually:
 name: MCP Server Check
 on: [pull_request]
 
+permissions:
+  contents: read
+  pull-requests: write
+  statuses: write
+
 jobs:
   observatory:
     runs-on: ubuntu-latest
@@ -237,9 +248,9 @@ Action inputs:
 | `set-status` | Set a commit status check (green/red) on the HEAD SHA | `true` |
 | `github-token` | Token for PR comments and commit statuses | `${{ github.token }}` |
 
-The action runs checks on every PR, comments a markdown report, and blocks merge on regressions. See [`action/README.md`](./action/README.md) for all options.
+The action runs checks on every PR, comments a markdown report when GitHub grants write permissions, and blocks merge on regressions. See [`action/README.md`](./action/README.md) for all options.
 
-Production teams can add hosted CI history, private-repo reporting, security reports, production monitoring, support, and fleet visibility. Run `npx @kryptosai/mcp-observatory cloud` for pilot options.
+Production teams can add hosted CI history, private-repo reporting, recurring security reports, certification review, support, and fleet visibility. Run `npx @kryptosai/mcp-observatory cloud` for pilot options.
 
 ### Certified by MCP Observatory
 
@@ -282,6 +293,8 @@ $ npx @kryptosai/mcp-observatory lock              # Snapshot all server schemas
 $ npx @kryptosai/mcp-observatory lock verify        # Verify no drift since last lock
 ```
 
+Lock files are the package-lock for AI tools: commit the MCP contract, then make every tool, schema, prompt, or resource drift visible in CI. See [MCP lock files](./docs/mcp-lock-files.md).
+
 ### Trend Tracking
 
 ```bash
@@ -302,12 +315,13 @@ $ npx @kryptosai/mcp-observatory ci-report          # Generate regression report
 claude mcp add mcp-observatory -- npx -y @kryptosai/mcp-observatory serve
 ```
 
-Your agent gets 9 tools:
+Your agent gets 10 tools:
 
 | Tool | When to use it |
 |------|---------------|
 | `scan` | Check if all your configured MCP servers are healthy |
 | `check_server` | Test a specific server before installing or after updating |
+| `score_server` | Get a quick health score and grade for a server |
 | `record` | Capture a baseline of a working server for future comparison |
 | `replay` | Test against a recorded session — no live server needed |
 | `verify` | Confirm a server update didn't break anything |

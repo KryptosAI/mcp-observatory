@@ -19,3 +19,5 @@ id = "0318a3fd6f08482f9194b7e22ccd7b24"
 #
 # Hosted artifact uploads require a pilot token:
 #   wrangler secret put CLOUD_UPLOAD_TOKEN
+# Hosted scans require a separate pilot token:
+#   wrangler secret put HOSTED_SCAN_TOKEN

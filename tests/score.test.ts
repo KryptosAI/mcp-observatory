@@ -72,6 +72,49 @@ describe("computeHealthScore", () => {
     expect(score.overall).toBeLessThan(90);
   });
 
+  it("counts security-lite as a security signal", () => {
+    const checks = [
+      makeCheck("tools", "pass"),
+      makeCheck("prompts", "pass"),
+      makeCheck("resources", "pass"),
+      makeCheck("conformance", "pass"),
+      makeCheck("schema-quality", "pass"),
+      makeCheck("security-lite", "pass"),
+    ];
+    const score = computeHealthScore(checks);
+    const security = score.dimensions.find((dimension) => dimension.name === "Security");
+    expect(security?.score).toBe(100);
+    expect(security?.details).toContain("security-lite: pass (100/100)");
+  });
+
+  it("lowers the security dimension when security-lite fails", () => {
+    const checks = [
+      makeCheck("tools", "pass"),
+      makeCheck("prompts", "pass"),
+      makeCheck("resources", "pass"),
+      makeCheck("conformance", "pass"),
+      makeCheck("schema-quality", "pass"),
+      makeCheck("security-lite", "fail"),
+    ];
+    const score = computeHealthScore(checks);
+    const security = score.dimensions.find((dimension) => dimension.name === "Security");
+    expect(security?.score).toBe(0);
+    expect(score.overall).toBeLessThan(90);
+  });
+
+  it("averages deep security and security-lite when both run", () => {
+    const checks = [
+      makeCheck("security", "pass"),
+      makeCheck("security-lite", "partial"),
+      makeCheck("conformance", "pass"),
+      makeCheck("schema-quality", "pass"),
+      makeCheck("tools", "pass"),
+    ];
+    const score = computeHealthScore(checks);
+    const security = score.dimensions.find((dimension) => dimension.name === "Security");
+    expect(security?.score).toBe(80);
+  });
+
   it("handles missing checks gracefully", () => {
     const checks = [
       makeCheck("tools", "pass"),

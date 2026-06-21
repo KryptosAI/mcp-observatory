@@ -8,7 +8,7 @@ For public proof, use [MCP Observatory Proof](./proof.md).
 
 ## Positioning
 
-MCP Observatory helps teams test, secure, and monitor MCP servers before agents depend on them.
+MCP Observatory is the CI and security gate for MCP servers before agents depend on them.
 
 ## Public Surface Checklist
 
@@ -22,11 +22,11 @@ MCP Observatory helps teams test, secure, and monitor MCP servers before agents 
 
 ## Launch Post Draft
 
-MCP servers are becoming production dependencies. If an agent depends on a server, that server needs regression tests, security checks, and monitoring before it breaks workflows.
+MCP servers are becoming production dependencies. If an agent depends on a server, that server needs regression tests, security checks, and drift gates before it breaks workflows.
 
 MCP Observatory scans MCP servers, verifies capabilities, detects schema drift, records/replays sessions, and can run in CI or as an MCP server itself.
 
-Free for local OSS use. Paid pilots are available for hosted reporting, private repo CI, security reports, production monitoring, certification, support, and fleet visibility.
+Free for local OSS use. Paid pilots are available for hosted reporting, private repo CI, recurring security reports, certification, support, and fleet visibility.
 
 Production MCP usage? Contact william@banksey.com.
 
@@ -36,9 +36,9 @@ Subject: MCP production testing and security checks
 
 Hi,
 
-I noticed signals that your team may be evaluating or using MCP servers. MCP Observatory helps teams test, secure, and monitor MCP servers before agents depend on them.
+I noticed signals that your team may be evaluating or using MCP servers. MCP Observatory is the CI and security gate for MCP servers before agents depend on them.
 
-We are running a small number of production pilots for hosted reports, private repo CI, security monitoring, certification, support, and fleet visibility.
+We are running a small number of production pilots for hosted reports, private repo CI, recurring security reviews, certification, support, and fleet visibility.
 
 Would it be useful to compare what your MCP servers look like today and where regressions or production risk could show up?
 

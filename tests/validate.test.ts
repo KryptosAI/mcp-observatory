@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { validateTargetConfig } from "../src/validate.js";
+import { validateRunArtifact, validateTargetConfig } from "../src/validate.js";
 
 describe("validateTargetConfig", () => {
   afterEach(() => {
@@ -76,5 +76,62 @@ describe("validateTargetConfig", () => {
       url: "https://mcp.example.com",
       authToken: "${MCP_TEST_TOKEN}",
     })).toThrow("MCP_TEST_TOKEN");
+  });
+});
+
+describe("validateRunArtifact", () => {
+  const validRun = {
+    artifactType: "run",
+    schemaVersion: "1.0.0",
+    gate: "pass",
+    runId: "run_test",
+    createdAt: "2026-06-21T00:00:00.000Z",
+    toolVersion: "0.22.0",
+    target: {
+      targetId: "example",
+      adapter: "local-process",
+      command: "node",
+      args: ["server.js"],
+    },
+    environment: {
+      platform: "darwin",
+      nodeVersion: "v24.0.0",
+    },
+    summary: {
+      gate: "pass",
+      total: 1,
+      pass: 1,
+      fail: 0,
+      partial: 0,
+      unsupported: 0,
+      flaky: 0,
+      skipped: 0,
+    },
+    checks: [
+      {
+        id: "security-lite",
+        capability: "security-lite",
+        status: "pass",
+        durationMs: 1,
+        message: "ok",
+        evidence: [],
+      },
+    ],
+  };
+
+  it("validates nested run artifact fields", () => {
+    expect(validateRunArtifact(validRun).runId).toBe("run_test");
+  });
+
+  it("rejects invalid nested check statuses", () => {
+    const invalid = structuredClone(validRun);
+    invalid.checks[0]!.status = "danger";
+    expect(() => validateRunArtifact(invalid)).toThrow("invalid status");
+  });
+
+  it("rejects missing summary counts", () => {
+    const invalid = structuredClone(validRun);
+    delete (invalid.summary as Partial<typeof invalid.summary>).total;
+    expect(() => validateRunArtifact(invalid)).toThrow("summary");
   });
 });

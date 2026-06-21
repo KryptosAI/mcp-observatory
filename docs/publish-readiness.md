@@ -22,6 +22,11 @@ Confirm:
 - HTTP target examples use env references instead of inline tokens.
 - Security findings appear in artifact evidence as structured `findings`.
 - Hosted upload is available through `mcp-observatory cloud upload <artifact>` when `MCP_OBSERVATORY_CLOUD_TOKEN` is set.
+- Hosted HTTP scans require `Authorization: Bearer <HOSTED_SCAN_TOKEN>` and are treated as an authenticated pilot surface.
+
+Known audit note:
+
+- `npm audit` may report `undici <=6.26.0` through the `npm@11.17.0` package bundled under `@semantic-release/npm`. As of June 20, 2026, `npm audit fix` cannot update this bundled copy and `npm@11.17.0` is the current published npm package. The remaining vulnerable `undici` copy is release tooling only and is not part of MCP Observatory runtime dependencies or the packed npm artifact. Recheck after npm publishes a newer package.
 
 Known audit note:
 
@@ -32,10 +37,10 @@ Known audit note:
 - Merge the health/commercialization PR.
 - Update the GitHub repo homepage to the README or commercial page.
 - Publish npm only after the release gate is green.
-- Refresh MCP directory listings with: “MCP Observatory helps teams test, secure, and monitor MCP servers before agents depend on them.”
-- Include “free for local OSS use; paid for hosted reporting, private repo CI, security reports, production monitoring, certification, support, and fleet visibility.”
+- Refresh MCP directory listings with: “MCP Observatory is the CI and security gate for MCP servers before agents depend on them.”
+- Include “free for local OSS use; paid for hosted reporting, private repo CI, recurring security reports, certification, support, and fleet visibility.”
 - Link production users to `COMMERCIAL.md` and `william@banksey.com`.
-- Submit or refresh listings on Glama, PulseMCP, Smithery, and relevant awesome-MCP lists with the tags: security, developer tools, CI/CD, testing, observability, schema drift.
+- Submit or refresh listings on Glama, PulseMCP, Smithery, and relevant awesome-MCP lists with the tags: security, developer tools, CI/CD, testing, MCP security, schema drift.
 - Use the certification distribution loop to open helpful PRs against popular MCP server repos and convert accepted PRs into proof points.
 - Link public proof, the safety report, and directory listing copy from launch/outreach materials.
 
@@ -67,6 +72,7 @@ Worker:
 
 - `POST /api/v1/artifacts` stores a run artifact behind bearer-token auth.
 - `GET /api/v1/artifacts/:org` returns the org artifact index behind the same auth.
+- `POST /api/v1/scan` requires `Authorization: Bearer <HOSTED_SCAN_TOKEN>`.
 - Hosted scans reject localhost/private-network targets; use local CLI for internal MCP servers.
 
 ## What Not To Do Yet
