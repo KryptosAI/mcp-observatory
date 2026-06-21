@@ -68,7 +68,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release
+        run: npx -y --package semantic-release@25.0.5 --package @semantic-release/changelog@6.0.3 --package @semantic-release/git@10.0.1 semantic-release
 
       - name: Check npm trusted publishing
         id: npm-oidc
@@ -96,7 +96,7 @@ jobs:
         if: steps.npm-auth.outputs.valid != 'true' && steps.npm-oidc.outputs.configured == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+        run: npx -y --package semantic-release@25.0.5 --package @semantic-release/changelog@6.0.3 --package @semantic-release/git@10.0.1 semantic-release
 
       - name: Skip release until npm trusted publishing is configured
         if: steps.npm-auth.outputs.valid != 'true' && steps.npm-oidc.outputs.configured != 'true'
