@@ -84,7 +84,7 @@ jobs:
             -X POST \
             -H "Authorization: Bearer ${id_token}" \
             "https://registry.npmjs.org/-/npm/v1/oidc/token/exchange/package/%40kryptosai%2Fmcp-observatory")"
-          if [ "$status" = "200" ]; then
+          if [[ "$status" =~ ^2 ]]; then
             echo "configured=true" >> "$GITHUB_OUTPUT"
           else
             message="$(node -e 'const fs = require("node:fs"); try { process.stdout.write(JSON.parse(fs.readFileSync("/tmp/npm-oidc-response.json", "utf8")).message || "unknown error") } catch { process.stdout.write("unknown error") }')"
