@@ -33,6 +33,18 @@ describe("renderPrComment (RunArtifact)", () => {
     expect(out).toContain("Tools endpoint returned error");
   });
 
+  it("does not say all clear when the run is blocked without check findings", () => {
+    const artifact = makeArtifact([], "server failed to start");
+    artifact.gate = "fail";
+    artifact.summary.gate = "fail";
+
+    const out = renderPrComment(artifact);
+    expect(out).toContain("Action needed");
+    expect(out).toContain("run did not clear the gate");
+    expect(out).toContain("**Blocked**");
+    expect(out).not.toContain("All clear");
+  });
+
   it("shows quality warnings from schema-quality check", () => {
     const out = renderPrComment(makeArtifact([
       { id: "schema-quality", capability: "schema-quality", status: "partial", durationMs: 30, message: "2 issues", evidence: [{ endpoint: "schema-quality", advertised: true, responded: true, minimalShapePresent: true, diagnostics: ['[warning] tool "list_repos": Missing description', '[warning] tool "search": Property \'query\' missing description'] }] },

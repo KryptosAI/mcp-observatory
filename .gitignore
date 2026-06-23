@@ -7,4 +7,5 @@ coverage/
 logs/
 reports/
 telemetry-exports/
+.mcp-observatory-metrics/
 .mcpregistry_*

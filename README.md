@@ -55,7 +55,7 @@ Observatory gives maintainers and teams:
 - **MCP server mode** so agents can inspect other MCP servers directly
 - **Production pilot path** for hosted history, private repo reporting, certification, support, and fleet visibility
 
-See the [MCP server security field guide](./docs/mcp-security-field-guide.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), the [certification distribution loop](./docs/certification-distribution.md), and [commercial pilots](./COMMERCIAL.md).
+See the [MCP server security field guide](./docs/mcp-security-field-guide.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), the [certification distribution loop](./docs/certification-distribution.md), [local metrics dashboard](./docs/metrics-dashboard.md), and [commercial pilots](./COMMERCIAL.md).
 
 ## For Security And Platform Teams
 

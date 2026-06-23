@@ -33,16 +33,50 @@ describe("init-ci", () => {
     expect(result.badgeStatus).toBe("created");
 
     const workflowText = await readFile(workflow, "utf8");
-    expect(workflowText).toContain("uses: KryptosAI/mcp-observatory/action@main");
-    expect(workflowText).toContain("pull-requests: write");
-    expect(workflowText).toContain("statuses: write");
+    expect(workflowText).toContain("uses: KryptosAI/mcp-observatory/action@v0.22.0");
+    expect(workflowText).not.toContain("pull-requests: write");
+    expect(workflowText).not.toContain("statuses: write");
     expect(workflowText).toContain("command: npx -y @example/mcp-server");
     expect(workflowText).toContain("deep: true");
     expect(workflowText).toContain("security: true");
+    expect(workflowText).toContain("comment-on-pr: false");
+    expect(workflowText).toContain("set-status: false");
 
     const badgeText = await readFile(badgeFile, "utf8");
     expect(badgeText).toContain("MCP Observatory");
     expect(badgeText).toContain("github.com/KryptosAI/mcp-observatory");
+  });
+
+  it("can opt into PR comments and commit statuses", async () => {
+    const dir = await tempDir();
+    const workflow = path.join(dir, ".github/workflows/mcp-observatory.yml");
+
+    await initCi({
+      command: "npx -y @example/mcp-server",
+      workflow,
+      commentOnPr: true,
+      setStatus: true,
+    });
+
+    const workflowText = await readFile(workflow, "utf8");
+    expect(workflowText).toContain("pull-requests: write");
+    expect(workflowText).toContain("statuses: write");
+    expect(workflowText).toContain("comment-on-pr: true");
+    expect(workflowText).toContain("set-status: true");
+  });
+
+  it("can pin the generated workflow to a specific action ref", async () => {
+    const dir = await tempDir();
+    const workflow = path.join(dir, ".github/workflows/mcp-observatory.yml");
+
+    await initCi({
+      command: "npx -y @example/mcp-server",
+      workflow,
+      actionRef: "b73627146ff9f9d19b9f9c1d3d88696a67fd4a66",
+    });
+
+    const workflowText = await readFile(workflow, "utf8");
+    expect(workflowText).toContain("uses: KryptosAI/mcp-observatory/action@b73627146ff9f9d19b9f9c1d3d88696a67fd4a66");
   });
 
   it("uses a target config instead of a command when requested", async () => {
@@ -88,7 +122,11 @@ describe("init-ci", () => {
     expect(targetJson.command).toBe("npx");
     expect(targetJson.args).toEqual(["-y", "@example/mcp-server"]);
     expect(await readFile(prBody, "utf8")).toContain("Add MCP Observatory CI");
+    expect(await readFile(prBody, "utf8")).toContain("read-only by default");
+    expect(await readFile(prBody, "utf8")).toContain("full commit SHA");
+    expect(await readFile(prBody, "utf8")).toContain("local build/start command");
     expect(await readFile(issueBody, "utf8")).toContain("compatibility/security checks");
+    expect(await readFile(issueBody, "utf8")).toContain("validates the pull request code");
     expect(await readFile(scoreBadge, "utf8")).toContain("mcp-observatory badge");
   });
 
