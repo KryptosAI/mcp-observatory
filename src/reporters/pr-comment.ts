@@ -96,12 +96,16 @@ function renderRunComment(artifact: RunArtifact, trend?: TrendInfo): string {
   const issueCount = highMedSecurity.length + failingChecks.length + quality.length + (conformance ? 1 : 0);
 
   // Header
-  if (issueCount === 0) {
+  if (safety.verdict === "Ready" && issueCount === 0) {
     sections.push("## 🔭 MCP Observatory — All clear ✅");
     sections.push("");
     sections.push("All checks passed. No security issues, no schema quality warnings.");
   } else {
-    sections.push(`## 🔭 MCP Observatory — ${issueCount} issue${issueCount === 1 ? "" : "s"} found`);
+    const label = safety.verdict === "Blocked" ? "Action needed" : "Review recommended";
+    const issueLabel = issueCount > 0
+      ? `${issueCount} issue${issueCount === 1 ? "" : "s"} found`
+      : "run did not clear the gate";
+    sections.push(`## 🔭 MCP Observatory — ${label}: ${issueLabel}`);
   }
 
   // Security (red)
