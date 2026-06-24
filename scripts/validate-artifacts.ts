@@ -27,6 +27,13 @@ async function collectArtifactFiles(root: string): Promise<ArtifactFile[]> {
     }
   }
 
+  const safetyIndexDir = path.join(root, "docs", "safety-index", "artifacts");
+  for (const fileName of await readdir(safetyIndexDir)) {
+    if (fileName.endsWith(".json")) {
+      files.push(path.join(safetyIndexDir, fileName));
+    }
+  }
+
   const results: ArtifactFile[] = [];
   for (const filePath of files) {
     const content = await readJson(filePath);

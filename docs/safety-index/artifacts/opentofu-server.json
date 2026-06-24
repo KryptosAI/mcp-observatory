@@ -1,0 +1,387 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-06-24T020729328Z_2a54782d",
+  "createdAt": "2026-06-24T02:07:29.328Z",
+  "toolVersion": "0.24.0",
+  "target": {
+    "targetId": "opentofu-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@opentofu/opentofu-mcp-server"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "@opentofu/opentofu-mcp-server",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Infrastructure-as-code",
+      "failureClass": "Infrastructure tool surface",
+      "whyItMatters": "Infrastructure tools can influence production configuration and should have reviewable MCP surfaces."
+    },
+    "serverName": "opentofu",
+    "serverVersion": "0.1.0"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 7,
+    "pass": 5,
+    "fail": 0,
+    "partial": 1,
+    "unsupported": 1,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 2.47979099999975,
+      "message": "Advertised capability responded with the minimal expected shape (5 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 5,
+          "identifiers": [
+            "search-opentofu-registry",
+            "get-provider-details",
+            "get-module-details",
+            "get-resource-docs",
+            "get-datasource-docs"
+          ],
+          "diagnostics": [],
+          "schemas": {
+            "search-opentofu-registry": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "minLength": 2,
+                  "description": "Search query for finding OpenTofu components (e.g., 'aws', 'kubernetes', 'database', 's3')"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "provider",
+                    "module",
+                    "resource",
+                    "data-source",
+                    "all"
+                  ],
+                  "default": "all",
+                  "description": "Type of registry items to search for"
+                }
+              },
+              "required": [
+                "query"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get-provider-details": {
+              "type": "object",
+              "properties": {
+                "namespace": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Provider namespace (e.g., 'hashicorp', 'opentofu')"
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Provider name WITHOUT 'terraform-provider-' prefix (e.g., 'aws', 'kubernetes', 'azurerm')"
+                }
+              },
+              "required": [
+                "namespace",
+                "name"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get-module-details": {
+              "type": "object",
+              "properties": {
+                "namespace": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Module namespace without prefix (e.g., 'terraform-aws-modules')"
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Simple module name WITHOUT 'terraform-aws-' or similar prefix (e.g., 'vpc', 's3-bucket')"
+                },
+                "target": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Module target platform (e.g., 'aws', 'kubernetes', 'azurerm')"
+                }
+              },
+              "required": [
+                "namespace",
+                "name",
+                "target"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get-resource-docs": {
+              "type": "object",
+              "properties": {
+                "namespace": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Provider namespace (e.g., 'hashicorp', 'opentofu')"
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Provider name WITHOUT 'terraform-provider-' prefix (e.g., 'aws', 'kubernetes')"
+                },
+                "resource": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Resource name WITHOUT provider prefix (e.g., 's3_bucket', 'instance')"
+                },
+                "version": {
+                  "type": "string",
+                  "description": "Provider version (e.g., 'v4.0.0'). If not specified, latest version will be used"
+                }
+              },
+              "required": [
+                "namespace",
+                "name",
+                "resource"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get-datasource-docs": {
+              "type": "object",
+              "properties": {
+                "namespace": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Provider namespace (e.g., 'hashicorp', 'opentofu')"
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Provider name WITHOUT 'terraform-provider-' prefix (e.g., 'aws', 'kubernetes')"
+                },
+                "dataSource": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Data source name WITHOUT provider prefix (e.g., 'ami', 'vpc')"
+                },
+                "version": {
+                  "type": "string",
+                  "description": "Provider version (e.g., 'v4.0.0'). If not specified, latest version will be used"
+                }
+              },
+              "required": [
+                "namespace",
+                "name",
+                "dataSource"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.0038340000010066433,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "pass",
+      "durationMs": 1.4208330000001297,
+      "message": "Advertised capability responded with the minimal expected shape (1 items).",
+      "evidence": [
+        {
+          "endpoint": "resources/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "opentofu:registry-info"
+          ],
+          "diagnostics": []
+        },
+        {
+          "endpoint": "resources/templates/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": [],
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.03974999999991269,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 2.5802920000005543,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 5 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: resources/list returned 1 resource(s).",
+            "[pass] tool-response-content: No safe tool to invoke — content validation skipped.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "partial",
+      "durationMs": 0.7996249999996508,
+      "message": "Found 1 quality finding(s) across 6 item(s): 1 warnings, 0 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "opentofu-registry-info"
+          ],
+          "diagnostics": [
+            "[warning] resource \"opentofu-registry-info\": Missing description"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "pass",
+      "durationMs": 0.36629200000061246,
+      "message": "No security issues detected.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 89,
+    "grade": "B",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "schema-quality: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "security-lite: pass (100/100)",
+          "security: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 83,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 940ms",
+          "p95 latency: 2ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 940.4044579999991,
+    "toolsListMs": 2.47979099999975,
+    "promptsListMs": 0.0038340000010066433,
+    "resourcesListMs": 1.4208330000001297
+  }
+}

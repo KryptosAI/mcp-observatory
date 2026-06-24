@@ -26,7 +26,7 @@ const DEFAULT_TARGET_CONFIG_PATH = "mcp-observatory.target.json";
 const DEFAULT_PR_BODY_PATH = "docs/mcp-observatory-pr-body.md";
 const DEFAULT_ISSUE_BODY_PATH = "docs/mcp-observatory-issue.md";
 const DEFAULT_SCORE_BADGE_PATH = "docs/mcp-observatory-score-badge.md";
-const DEFAULT_ACTION_REF = "v0.22.0";
+const DEFAULT_ACTION_REF = "v0.24.0";
 
 async function exists(filePath: string): Promise<boolean> {
   try {

@@ -2,11 +2,21 @@
 
 Use these as launch posts, GitHub Discussion posts, LinkedIn posts, or short blog drafts. The framing is about MCP safety patterns, not “look at my tool.”
 
-## 1. I Tested 20 MCP Servers. The Pattern Was Not “Bad Servers”; It Was Missing Gates.
+## Flagship Post: I Tested Popular MCP Servers. The Failure Pattern Was Not What I Expected.
 
 MCP servers are becoming production dependencies for agents, but many of them still ship without the kind of CI gate we expect from normal software dependencies.
 
 The main pattern I saw while building the first MCP Server Safety Index was simple: the risky part is rarely that a server exists. The risky part is that agents may depend on a tool surface nobody is testing for startup reliability, schema quality, security posture, or drift.
+
+The industry does not need another vibes-based directory. It needs reproducible readiness evidence:
+
+- exact command/config
+- date and package version where available
+- JSON artifact
+- Markdown report
+- verdict
+- failure class
+- reproduction notes
 
 The checks that matter most:
 
@@ -18,7 +28,9 @@ The checks that matter most:
 
 My takeaway: MCP needs a package-lock moment. Commit the agent-facing contract, then make drift visible before agents depend on it.
 
-## 2. Browser MCP Servers Need A Different Security Bar
+I am publishing the Safety Methodology and the first MCP Server Safety Index as a small evidence standard, not a leaderboard. If your team is putting MCP into private or production agent workflows, I am doing a small number of private MCP readiness reviews: inventory, CI rollout, schema/tool drift baseline, security findings, and safe-for-agent-dependency verdicts.
+
+## Supporting Angle: Browser MCP Servers Need A Different Security Bar
 
 Browser automation MCP servers are powerful because agents can navigate pages, click, type, inspect state, and sometimes execute scripts.
 
@@ -32,9 +44,9 @@ For browser MCP servers, a useful review should separate:
 - network/navigation controls
 - tool schemas that are too broad for safe agent planning
 
-The goal is not to block browser MCP. The goal is to make the trust boundary visible before an agent gets a browser with hands.
+The goal is not to block browser MCP. The goal is to make the trust boundary visible before an agent gets browser-control powers.
 
-## 3. Filesystem MCP Servers Should Always Test In A Sandbox
+## Supporting Angle: Filesystem MCP Servers Should Always Test In A Sandbox
 
 Filesystem MCP servers are one of the clearest examples of why MCP CI needs context.
 
@@ -50,7 +62,7 @@ The minimum safety pattern:
 
 Agents need tools. They do not need accidental access to everything.
 
-## 4. Token-Backed SaaS MCP Servers Need Issue-First Certification
+## Supporting Angle: Token-Backed SaaS MCP Servers Need Issue-First Certification
 
 Many SaaS, cloud, payments, database, and developer-platform MCP servers cannot be safely checked with a drive-by PR because meaningful startup requires tokens or live services.
 
@@ -68,7 +80,7 @@ Once maintainers provide a token-safe target config, the useful checks are:
 
 Security adoption works better when it starts by respecting maintainer context.
 
-## 5. MCP Drift Is An AI Supply Chain Problem
+## Supporting Angle: MCP Drift Is An AI Supply Chain Problem
 
 When a package dependency changes, teams have lock files, diffs, review, and release notes.
 

@@ -33,7 +33,7 @@ describe("init-ci", () => {
     expect(result.badgeStatus).toBe("created");
 
     const workflowText = await readFile(workflow, "utf8");
-    expect(workflowText).toContain("uses: KryptosAI/mcp-observatory/action@v0.22.0");
+    expect(workflowText).toContain("uses: KryptosAI/mcp-observatory/action@v0.24.0");
     expect(workflowText).not.toContain("pull-requests: write");
     expect(workflowText).not.toContain("statuses: write");
     expect(workflowText).toContain("command: npx -y @example/mcp-server");
