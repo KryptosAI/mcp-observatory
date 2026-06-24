@@ -1,0 +1,286 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-06-24T020724758Z_bed6c073",
+  "createdAt": "2026-06-24T02:07:24.758Z",
+  "toolVersion": "0.24.0",
+  "target": {
+    "targetId": "context7-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@upstash/context7-mcp"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "@upstash/context7-mcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Untrusted content retrieval",
+      "failureClass": "Prompt-injection-sensitive retrieval",
+      "whyItMatters": "Documentation retrieval tools can return untrusted text into agent context."
+    },
+    "serverName": "Context7",
+    "serverVersion": "3.2.2"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 7,
+    "pass": 7,
+    "fail": 0,
+    "partial": 0,
+    "unsupported": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 1.5927080000001297,
+      "message": "Advertised capability responded with the minimal expected shape (2 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 2,
+          "identifiers": [
+            "resolve-library-id",
+            "query-docs"
+          ],
+          "diagnostics": [
+            "Context7 Documentation MCP Server v3.2.2 running on stdio"
+          ],
+          "schemas": {
+            "resolve-library-id": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "description": "The question or task you need help with. This is used to rank library results by relevance to what the user is trying to accomplish. The query is sent to the Context7 API for processing. Do not include any sensitive or confidential information such as API keys, passwords, credentials, personal data, or proprietary code in your query."
+                },
+                "libraryName": {
+                  "type": "string",
+                  "description": "Library name to search for and retrieve a Context7-compatible library ID. Use the official library name with proper punctuation — e.g., 'Next.js' instead of 'nextjs', 'Customer.io' instead of 'customerio', 'Three.js' instead of 'threejs'."
+                }
+              },
+              "required": [
+                "query",
+                "libraryName"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "query-docs": {
+              "type": "object",
+              "properties": {
+                "libraryId": {
+                  "type": "string",
+                  "description": "Exact Context7-compatible library ID (e.g., '/mongodb/docs', '/vercel/next.js', '/supabase/supabase', '/vercel/next.js/v14.3.0-canary.87') retrieved from 'resolve-library-id' or directly from user query in the format '/org/project' or '/org/project/version'."
+                },
+                "query": {
+                  "type": "string",
+                  "description": "The question or task you need help with. Be specific and include relevant details. Good: 'How to set up authentication with JWT in Express.js' or 'React useEffect cleanup function examples'. Bad: 'auth' or 'hooks'. The query is sent to the Context7 API for processing. Do not include any sensitive or confidential information such as API keys, passwords, credentials, personal data, or proprietary code in your query."
+                }
+              },
+              "required": [
+                "libraryId",
+                "query"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "pass",
+      "durationMs": 0.2917909999996482,
+      "message": "Advertised capability responded with the minimal expected shape (0 items).",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": [],
+          "diagnostics": [
+            "Context7 Documentation MCP Server v3.2.2 running on stdio"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "pass",
+      "durationMs": 0.5327499999993961,
+      "message": "Advertised capability responded with the minimal expected shape (0 items).",
+      "evidence": [
+        {
+          "endpoint": "resources/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": [],
+          "diagnostics": [
+            "Context7 Documentation MCP Server v3.2.2 running on stdio"
+          ]
+        },
+        {
+          "endpoint": "resources/templates/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": [],
+          "diagnostics": [
+            "Context7 Documentation MCP Server v3.2.2 running on stdio"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.024166000000150234,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 1.0839169999999285,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 2 tool(s).",
+            "[pass] prompts-capability-match: prompts/list returned 0 prompt(s).",
+            "[pass] resources-capability-match: resources/list returned 0 resource(s).",
+            "[pass] tool-response-content: No safe tool to invoke — content validation skipped.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "pass",
+      "durationMs": 0.6274169999996957,
+      "message": "All 2 item(s) have good schema quality.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "pass",
+      "durationMs": 0.2532499999997526,
+      "message": "No security issues detected.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 100,
+    "grade": "A",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "schema-quality: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "security-lite: pass (100/100)",
+          "security: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: pass (100/100)",
+          "resources: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 928ms",
+          "p95 latency: 2ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 927.7457919999997,
+    "toolsListMs": 1.5927080000001297,
+    "promptsListMs": 0.2917909999996482,
+    "resourcesListMs": 0.5327499999993961
+  }
+}

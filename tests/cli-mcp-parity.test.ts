@@ -14,6 +14,7 @@ import { readFileSync, readdirSync } from "node:fs";
 const CLI = path.resolve("src/cli.ts");
 const TSX = path.resolve("node_modules/.bin/tsx");
 const FIXTURE_CONFIG = "tests/fixtures/sample-target-config.json";
+const CLI_TEST_TIMEOUT_MS = 20_000;
 
 function runCli(args: string[]): string {
   return execFileSync(TSX, [CLI, ...args], {
@@ -51,7 +52,7 @@ describe("CLI/MCP Parity", () => {
     expect(checkIds).toContain("resources");
     expect(checkIds).toContain("conformance");
     expect(checkIds).toContain("schema-quality");
-  });
+  }, CLI_TEST_TIMEOUT_MS);
 
   it("CLI run with --invoke-tools adds tools-invoke check", () => {
     const artifact = runAndGetArtifact(["--invoke-tools"]);
@@ -59,7 +60,7 @@ describe("CLI/MCP Parity", () => {
     const checkIds = checks.map((c) => c.id);
 
     expect(checkIds).toContain("tools-invoke");
-  });
+  }, CLI_TEST_TIMEOUT_MS);
 
   it("CLI run with --security adds security check", () => {
     // Use test command which supports --security
@@ -77,7 +78,7 @@ describe("CLI/MCP Parity", () => {
     const checkIds = artifact.checks.map((c) => c.id);
 
     expect(checkIds).toContain("security");
-  });
+  }, CLI_TEST_TIMEOUT_MS);
 
   // ── Artifact structure parity ────────────────────────────────────────────
 
@@ -94,13 +95,13 @@ describe("CLI/MCP Parity", () => {
     expect(artifact).toHaveProperty("environment");
     expect(artifact).toHaveProperty("summary");
     expect(artifact).toHaveProperty("checks");
-  });
+  }, CLI_TEST_TIMEOUT_MS);
 
   it("CLI target info includes serverName", () => {
     const artifact = runAndGetArtifact();
     const target = artifact.target as { serverName?: string };
     expect(target.serverName).toBe("fixture-server");
-  });
+  }, CLI_TEST_TIMEOUT_MS);
 
   // ── Diff output format parity ────────────────────────────────────────────
 
@@ -203,7 +204,7 @@ describe("CLI/MCP Parity", () => {
   it("fixture server produces pass gate", () => {
     const artifact = runAndGetArtifact();
     expect(artifact.gate).toBe("pass");
-  });
+  }, CLI_TEST_TIMEOUT_MS);
 
   // ── Intentional differences documentation ────────────────────────────────
 

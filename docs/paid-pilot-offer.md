@@ -17,11 +17,13 @@ This is a manual pilot, not a self-serve SaaS promise.
 
 ## What The Pilot Includes
 
-- review of the customer’s MCP config, repo, or startup commands
-- MCP Observatory CI rollout for selected servers
+- MCP server inventory across selected repos, configs, or agent environments
+- reproducible test artifacts for each reviewed server
 - private readiness report covering startup, capabilities, schema quality, security findings, and drift risk
-- MCP lock-file setup for contract drift review
-- prioritized remediation notes
+- schema/tool drift baseline using MCP lock files
+- MCP Observatory CI rollout plan for selected servers
+- executive summary with “safe for agent dependency” verdicts
+- prioritized remediation notes and owner-ready next steps
 - optional certification language for servers that pass agreed checks
 
 ## Starting Prices
@@ -55,4 +57,18 @@ William
 
 ## Delivery Shape
 
-Start with static reports and CI setup. Do not build a dashboard until paid pilot feedback proves exactly what buyers need.
+Start with static reports and CI setup. The first deliverable should look like an internal security/readiness packet, not a SaaS login.
+
+## Evidence Standard
+
+The public [Safety Methodology](./methodology.md) and [MCP Server Safety Index](./mcp-server-safety-index.md) are the template for private work:
+
+- command/config used
+- date and tool version
+- JSON artifact
+- Markdown or HTML report
+- failure class
+- verdict
+- reproduction notes
+
+Private pilots can include customer-specific details, but public/customer-facing summaries should use sanitized evidence unless the customer approves otherwise.

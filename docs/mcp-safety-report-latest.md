@@ -79,7 +79,7 @@ Production teams can use MCP Observatory for:
 - support and rollout review
 - fleet visibility across teams and repos
 
-Contact `william@banksey.com` for pilots.
+See [Commercial Pilots](../COMMERCIAL.md) for production/private MCP usage.
 
 ## Launch Post
 

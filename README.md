@@ -55,7 +55,7 @@ Observatory gives maintainers and teams:
 - **MCP server mode** so agents can inspect other MCP servers directly
 - **Production pilot path** for hosted history, private repo reporting, certification, support, and fleet visibility
 
-See the [MCP server security field guide](./docs/mcp-security-field-guide.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), the [certification distribution loop](./docs/certification-distribution.md), [local metrics dashboard](./docs/metrics-dashboard.md), and [commercial pilots](./COMMERCIAL.md).
+See the [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), the [certification distribution loop](./docs/certification-distribution.md), [local metrics dashboard](./docs/metrics-dashboard.md), and [commercial pilots](./COMMERCIAL.md).
 
 ## For Security And Platform Teams
 
@@ -219,18 +219,19 @@ on: [pull_request]
 
 permissions:
   contents: read
-  pull-requests: write
-  statuses: write
 
 jobs:
   observatory:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: KryptosAI/mcp-observatory/action@main
+      - uses: KryptosAI/mcp-observatory/action@v0.24.0
         with:
           command: npx -y my-mcp-server
+          deep: true
           security: true
+          comment-on-pr: false
+          set-status: false
 ```
 
 Action inputs:
@@ -244,11 +245,11 @@ Action inputs:
 | `security` | Run security analysis | `false` |
 | `fail-on-regression` | Fail the action on issues | `true` |
 | `fail-on-baseline-drift` | Fail the action when baseline verification detects drift | `true` |
-| `comment-on-pr` | Post report as PR comment | `true` |
-| `set-status` | Set a commit status check (green/red) on the HEAD SHA | `true` |
+| `comment-on-pr` | Post report as PR comment. Requires `pull-requests: write`. | `true` |
+| `set-status` | Set a commit status check (green/red) on the HEAD SHA. Requires `statuses: write`. | `true` |
 | `github-token` | Token for PR comments and commit statuses | `${{ github.token }}` |
 
-The action runs checks on every PR, comments a markdown report when GitHub grants write permissions, and blocks merge on regressions. See [`action/README.md`](./action/README.md) for all options.
+The action can comment on PRs and set commit statuses when the workflow grants write permissions. `init-ci` generates read-only third-party-friendly workflows by default and lets maintainers opt into comments/statuses later. See [`action/README.md`](./action/README.md) for all options.
 
 Production teams can add hosted CI history, private-repo reporting, recurring security reports, certification review, support, and fleet visibility. Run `npx @kryptosai/mcp-observatory cloud` for pilot options.
 

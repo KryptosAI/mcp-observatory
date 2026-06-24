@@ -1,6 +1,6 @@
 {
   "name": "@kryptosai/mcp-observatory",
-  "version": "0.23.0",
+  "version": "0.24.0",
   "description": "The CI and security gate for MCP servers before agents depend on them.",
   "mcpName": "io.github.KryptosAI/mcp-observatory",
   "license": "MIT",
@@ -48,6 +48,7 @@
     "metrics:open": "tsx scripts/metrics-dashboard.ts open",
     "metrics:serve": "tsx scripts/metrics-dashboard.ts serve",
     "integration:real": "tsx scripts/run-real-server-matrix.ts",
+    "safety-index": "tsx scripts/run-safety-index.ts",
     "lint": "eslint .",
     "prepack": "npm run build",
     "proof:refresh": "tsx scripts/refresh-proof-artifacts.ts",

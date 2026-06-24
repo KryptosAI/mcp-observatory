@@ -1,0 +1,482 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-06-24T020721281Z_c337e720",
+  "createdAt": "2026-06-24T02:07:21.282Z",
+  "toolVersion": "0.24.0",
+  "target": {
+    "targetId": "everything-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-everything"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "@modelcontextprotocol/server-everything",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Reference compatibility",
+      "failureClass": "Broad protocol surface",
+      "whyItMatters": "Exercises tools, prompts, and resources in one official reference server."
+    },
+    "serverName": "mcp-servers/everything",
+    "serverVersion": "2.0.0"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 7,
+    "pass": 6,
+    "fail": 0,
+    "partial": 1,
+    "unsupported": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 7.354332999999997,
+      "message": "Advertised capability responded with the minimal expected shape (13 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 13,
+          "identifiers": [
+            "echo",
+            "get-annotated-message",
+            "get-env",
+            "get-resource-links",
+            "get-resource-reference",
+            "get-structured-content",
+            "get-sum",
+            "get-tiny-image",
+            "gzip-file-as-resource",
+            "toggle-simulated-logging",
+            "toggle-subscriber-updates",
+            "trigger-long-running-operation",
+            "simulate-research-query"
+          ],
+          "diagnostics": [
+            "Starting default (STDIO) server..."
+          ],
+          "schemas": {
+            "echo": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Message to echo"
+                }
+              },
+              "required": [
+                "message"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get-annotated-message": {
+              "type": "object",
+              "properties": {
+                "messageType": {
+                  "type": "string",
+                  "enum": [
+                    "error",
+                    "success",
+                    "debug"
+                  ],
+                  "description": "Type of message to demonstrate different annotation patterns"
+                },
+                "includeImage": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Whether to include an example image"
+                }
+              },
+              "required": [
+                "messageType"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get-env": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get-resource-links": {
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 10,
+                  "default": 3,
+                  "description": "Number of resource links to return (1-10)"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get-resource-reference": {
+              "type": "object",
+              "properties": {
+                "resourceType": {
+                  "type": "string",
+                  "enum": [
+                    "Text",
+                    "Blob"
+                  ],
+                  "default": "Text"
+                },
+                "resourceId": {
+                  "type": "number",
+                  "default": 1,
+                  "description": "ID of the text resource to fetch"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get-structured-content": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string",
+                  "enum": [
+                    "New York",
+                    "Chicago",
+                    "Los Angeles"
+                  ],
+                  "description": "Choose city"
+                }
+              },
+              "required": [
+                "location"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get-sum": {
+              "type": "object",
+              "properties": {
+                "a": {
+                  "type": "number",
+                  "description": "First number"
+                },
+                "b": {
+                  "type": "number",
+                  "description": "Second number"
+                }
+              },
+              "required": [
+                "a",
+                "b"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get-tiny-image": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "gzip-file-as-resource": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Name of the output file",
+                  "default": "README.md.gz"
+                },
+                "data": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "URL or data URI of the file content to compress",
+                  "default": "https://raw.githubusercontent.com/modelcontextprotocol/servers/refs/heads/main/README.md"
+                },
+                "outputType": {
+                  "type": "string",
+                  "enum": [
+                    "resourceLink",
+                    "resource"
+                  ],
+                  "default": "resourceLink",
+                  "description": "How the resulting gzipped file should be returned. 'resourceLink' returns a link to a resource that can be read later, 'resource' returns a full resource object."
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "toggle-simulated-logging": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "toggle-subscriber-updates": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "trigger-long-running-operation": {
+              "type": "object",
+              "properties": {
+                "duration": {
+                  "type": "number",
+                  "default": 10,
+                  "description": "Duration of the operation in seconds"
+                },
+                "steps": {
+                  "type": "number",
+                  "default": 5,
+                  "description": "Number of steps in the operation"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "simulate-research-query": {
+              "type": "object",
+              "properties": {
+                "topic": {
+                  "type": "string",
+                  "description": "The research topic to investigate"
+                },
+                "ambiguous": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Simulate an ambiguous query that requires clarification (triggers input_required status)"
+                }
+              },
+              "required": [
+                "topic"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "pass",
+      "durationMs": 0.74087499999996,
+      "message": "Advertised capability responded with the minimal expected shape (4 items).",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 4,
+          "identifiers": [
+            "simple-prompt",
+            "args-prompt",
+            "completable-prompt",
+            "resource-prompt"
+          ],
+          "diagnostics": [
+            "Starting default (STDIO) server..."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "pass",
+      "durationMs": 1.0068340000000262,
+      "message": "Advertised capability responded with the minimal expected shape (9 items).",
+      "evidence": [
+        {
+          "endpoint": "resources/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [
+            "demo://resource/static/document/architecture.md",
+            "demo://resource/static/document/extension.md",
+            "demo://resource/static/document/features.md",
+            "demo://resource/static/document/how-it-works.md",
+            "demo://resource/static/document/instructions.md",
+            "demo://resource/static/document/startup.md",
+            "demo://resource/static/document/structure.md"
+          ],
+          "diagnostics": [
+            "Starting default (STDIO) server..."
+          ]
+        },
+        {
+          "endpoint": "resources/templates/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 2,
+          "identifiers": [
+            "demo://resource/dynamic/text/{resourceId}",
+            "demo://resource/dynamic/blob/{resourceId}"
+          ],
+          "diagnostics": [
+            "Starting default (STDIO) server..."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.47954200000003766,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 3.849082999999837,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 13 tool(s).",
+            "[pass] prompts-capability-match: prompts/list returned 4 prompt(s).",
+            "[pass] resources-capability-match: resources/list returned 7 resource(s).",
+            "[pass] tool-response-content: Tool \"get-env\" response has valid content array.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "partial",
+      "durationMs": 1.885542000000214,
+      "message": "Found 5 quality finding(s) across 24 item(s): 0 warnings, 5 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 5,
+          "identifiers": [
+            "get-resource-links",
+            "get-resource-reference",
+            "gzip-file-as-resource",
+            "trigger-long-running-operation"
+          ],
+          "diagnostics": [
+            "[info] tool \"get-resource-links\": Has properties but no 'required' array declared",
+            "[info] tool \"get-resource-reference\": Has properties but no 'required' array declared",
+            "[info] tool \"get-resource-reference\": Property 'resourceType' missing description",
+            "[info] tool \"gzip-file-as-resource\": Has properties but no 'required' array declared",
+            "[info] tool \"trigger-long-running-operation\": Has properties but no 'required' array declared"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "pass",
+      "durationMs": 0.8814159999999447,
+      "message": "No security issues detected.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 92,
+    "grade": "A",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "schema-quality: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "security-lite: pass (100/100)",
+          "security: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: pass (100/100)",
+          "resources: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 846ms",
+          "p95 latency: 7ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 845.9128340000001,
+    "toolsListMs": 7.354332999999997,
+    "promptsListMs": 0.74087499999996,
+    "resourcesListMs": 1.0068340000000262
+  }
+}

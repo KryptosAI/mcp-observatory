@@ -5,7 +5,7 @@ MCP Observatory is early, but it is already a working MCP testing/security stack
 ## Current Public Surface
 
 - npm package: `@kryptosai/mcp-observatory`
-- GitHub Action: `KryptosAI/mcp-observatory/action@main`
+- GitHub Action: `KryptosAI/mcp-observatory/action@v0.24.0`
 - Latest release: `v0.23.0`
 - CLI command count: scan, test, record, replay, verify, diff, watch, suggest, serve, lock, history, init-ci, ci-report, enterprise-report, score, badge, cloud
 - Test suite: 334 passing tests across 43 test files as of June 20, 2026
@@ -13,6 +13,7 @@ MCP Observatory is early, but it is already a working MCP testing/security stack
 - GitHub page views snapshot: 12 views and 9 unique visitors in the visible June 2026 traffic window
 - npm downloads snapshot: 511 downloads for June 11-20, 2026
 - Security guide: [MCP Server Security Field Guide](./mcp-security-field-guide.md)
+- Safety methodology: [MCP Observatory Safety Methodology](./methodology.md)
 - Safety index: [MCP Server Safety Index](./mcp-server-safety-index.md)
 - Public examples: [Reference Evaluations](./reference-evaluations.md)
 - Lock-file CI primitive: [MCP Lock Files](./mcp-lock-files.md)
@@ -61,15 +62,15 @@ Open and accepted third-party integrations are tracked here:
 | Repo | PR | Check Added | Badge Added | Status |
 | --- | --- | --- | --- | --- |
 | `modelcontextprotocol/servers` | [#4392](https://github.com/modelcontextprotocol/servers/pull/4392) | Yes | No | Open, mergeable, MCP Observatory check passing |
-| `microsoft/playwright-mcp` | [#1657](https://github.com/microsoft/playwright-mcp/pull/1657) | Yes | No | Open |
-| `upstash/context7` | [#2800](https://github.com/upstash/context7/pull/2800) | Yes | No | Open |
+| `microsoft/playwright-mcp` | [#1657](https://github.com/microsoft/playwright-mcp/pull/1657) | Yes | No | Closed, unmerged |
+| `upstash/context7` | [#2800](https://github.com/upstash/context7/pull/2800) | Yes | No | Closed, maintainer declined third-party CI |
 | `executeautomation/mcp-playwright` | [#225](https://github.com/executeautomation/mcp-playwright/pull/225) | Yes | No | Open |
 | `kazuph/mcp-taskmanager` | [#11](https://github.com/kazuph/mcp-taskmanager/pull/11) | Yes | No | Open |
 | `cyanheads/filesystem-mcp-server` | [#19](https://github.com/cyanheads/filesystem-mcp-server/pull/19) | Yes | No | Closed, unmerged |
 | `antvis/mcp-server-chart` | [#312](https://github.com/antvis/mcp-server-chart/pull/312) | Yes | No | Open |
 | `BrowserMCP/mcp` | [#189](https://github.com/BrowserMCP/mcp/pull/189) | Yes | No | Open |
-| `UI5/mcp-server` | [#348](https://github.com/UI5/mcp-server/pull/348) | Yes | No | Open |
-| `makenotion/notion-mcp-server` | [#324](https://github.com/makenotion/notion-mcp-server/pull/324) | Yes | No | Open, Semgrep check failing |
+| `UI5/mcp-server` | [#348](https://github.com/UI5/mcp-server/pull/348) | Yes | No | Closed, maintainer declined third-party CI |
+| `makenotion/notion-mcp-server` | [#324](https://github.com/makenotion/notion-mcp-server/pull/324) | Yes | No | Closed after policy-style CI failure |
 
 ## Public Discovery Snapshot
 

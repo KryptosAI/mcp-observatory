@@ -1,0 +1,377 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-06-24T020730285Z_85ad0698",
+  "createdAt": "2026-06-24T02:07:30.285Z",
+  "toolVersion": "0.24.0",
+  "target": {
+    "targetId": "puppeteer-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "puppeteer-mcp-server"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "puppeteer-mcp-server",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Browser control",
+      "failureClass": "Browser/code execution boundary",
+      "whyItMatters": "Browser automation gives agents navigation, page state, and sometimes code-evaluation powers."
+    },
+    "serverName": "example-servers/puppeteer",
+    "serverVersion": "0.1.0"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 7,
+    "pass": 4,
+    "fail": 0,
+    "partial": 2,
+    "unsupported": 1,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 0.41391699999985576,
+      "message": "Advertised capability responded with the minimal expected shape (8 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 8,
+          "identifiers": [
+            "puppeteer_connect_active_tab",
+            "puppeteer_navigate",
+            "puppeteer_screenshot",
+            "puppeteer_click",
+            "puppeteer_fill",
+            "puppeteer_select",
+            "puppeteer_hover",
+            "puppeteer_evaluate"
+          ],
+          "diagnostics": [],
+          "schemas": {
+            "puppeteer_connect_active_tab": {
+              "type": "object",
+              "properties": {
+                "targetUrl": {
+                  "type": "string",
+                  "description": "Optional URL of the target tab to connect to. If not provided, connects to the first available tab."
+                },
+                "debugPort": {
+                  "type": "number",
+                  "description": "Optional Chrome debugging port (default: 9222)",
+                  "default": 9222
+                }
+              },
+              "required": []
+            },
+            "puppeteer_navigate": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "url"
+              ]
+            },
+            "puppeteer_screenshot": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Name for the screenshot"
+                },
+                "selector": {
+                  "type": "string",
+                  "description": "CSS selector for element to screenshot"
+                },
+                "width": {
+                  "type": "number",
+                  "description": "Width in pixels (default: 800)"
+                },
+                "height": {
+                  "type": "number",
+                  "description": "Height in pixels (default: 600)"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            },
+            "puppeteer_click": {
+              "type": "object",
+              "properties": {
+                "selector": {
+                  "type": "string",
+                  "description": "CSS selector for element to click"
+                }
+              },
+              "required": [
+                "selector"
+              ]
+            },
+            "puppeteer_fill": {
+              "type": "object",
+              "properties": {
+                "selector": {
+                  "type": "string",
+                  "description": "CSS selector for input field"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "Value to fill"
+                }
+              },
+              "required": [
+                "selector",
+                "value"
+              ]
+            },
+            "puppeteer_select": {
+              "type": "object",
+              "properties": {
+                "selector": {
+                  "type": "string",
+                  "description": "CSS selector for element to select"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "Value to select"
+                }
+              },
+              "required": [
+                "selector",
+                "value"
+              ]
+            },
+            "puppeteer_hover": {
+              "type": "object",
+              "properties": {
+                "selector": {
+                  "type": "string",
+                  "description": "CSS selector for element to hover"
+                }
+              },
+              "required": [
+                "selector"
+              ]
+            },
+            "puppeteer_evaluate": {
+              "type": "object",
+              "properties": {
+                "script": {
+                  "type": "string",
+                  "description": "JavaScript code to execute"
+                }
+              },
+              "required": [
+                "script"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.0010000000002037268,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "pass",
+      "durationMs": 0.864040999998906,
+      "message": "Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported.",
+      "evidence": [
+        {
+          "endpoint": "resources/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "console://logs"
+          ],
+          "diagnostics": []
+        },
+        {
+          "endpoint": "resources/templates/list",
+          "advertised": true,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": [
+            "MCP error -32601: Method not found"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.041500000001178705,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "partial",
+      "durationMs": 2.417708999999377,
+      "message": "6/7 conformance checks passed, 1 failed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": false,
+          "itemCount": 7,
+          "identifiers": [
+            "tool-response-content"
+          ],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 8 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: resources/list returned 1 resource(s).",
+            "[FAIL] tool-response-content: Tool response content check failed: MCP error -32603: Could not find Chrome (ver. 131.0.6778.204). This can occur if either\n 1. you did not perform an installation before running the script (e.g. `npx puppeteer browsers install chrome`) or\n 2. your cache path is incorrectly configured (which is: /Users/williamweishuhn/.cache/puppeteer).\nFor (2), check out our guide on configuring puppeteer at https://pptr.dev/guides/configuration.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "partial",
+      "durationMs": 0.33158299999922747,
+      "message": "Found 2 quality finding(s) across 9 item(s): 1 warnings, 1 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 2,
+          "identifiers": [
+            "puppeteer_navigate",
+            "Browser console logs"
+          ],
+          "diagnostics": [
+            "[info] tool \"puppeteer_navigate\": Property 'url' missing description",
+            "[warning] resource \"Browser console logs\": Missing description"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "pass",
+      "durationMs": 0.18262499999946158,
+      "message": "No security issues detected.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 77,
+    "grade": "C",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 60,
+        "details": [
+          "conformance: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "schema-quality: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "security-lite: pass (100/100)",
+          "security: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 83,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 812ms",
+          "p95 latency: 1ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 812.1966250000005,
+    "toolsListMs": 0.41391699999985576,
+    "promptsListMs": 0.0010000000002037268,
+    "resourcesListMs": 0.864040999998906
+  }
+}
