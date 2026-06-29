@@ -7,10 +7,13 @@ The dashboard is intentionally local. It stores raw telemetry in a SQLite databa
 The layout follows an App Store Connect-style breakdown:
 
 - Overview
+- Strategy
 - Acquisition
 - Downloads
 - Usage
 - Reliability
+
+The Strategy section turns raw telemetry into operator decisions: command funnel, version adoption, account/domain drilldown, CI/local source mix, and release-spike context.
 
 Daily rows are shown newest to oldest so the most recent project activity is always at the top.
 

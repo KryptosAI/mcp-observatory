@@ -1,0 +1,59 @@
+name: Private MCP readiness pilot
+description: Request a private MCP readiness review, CI rollout, or fleet visibility pilot.
+title: "[Pilot] Private MCP readiness review"
+labels: ["pilot", "commercial"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for production or pre-production MCP usage where you want private compatibility, security, drift, CI, or fleet review.
+
+        Do not paste secrets, private source code, customer data, private URLs, or proprietary MCP schemas into this public issue. If details are sensitive, keep this brief and email william@banksey.com.
+  - type: input
+    id: organization
+    attributes:
+      label: Organization
+      description: Company, team, or project name.
+      placeholder: example.com
+    validations:
+      required: true
+  - type: dropdown
+    id: pilot_type
+    attributes:
+      label: Pilot type
+      options:
+        - Private MCP readiness review
+        - Hosted CI history for private repos
+        - Recurring security/drift report
+        - MCP fleet visibility
+        - Certification/readiness badge
+        - Not sure yet
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What are you trying to make safe for agents to depend on?
+      placeholder: We operate internal MCP servers for...
+    validations:
+      required: true
+  - type: input
+    id: contact
+    attributes:
+      label: Contact
+      description: Email, GitHub handle, or preferred contact path.
+      placeholder: mcp-owner@example.com
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Likely scope
+      options:
+        - label: Private repositories
+        - label: Production MCP servers
+        - label: CI gate or PR reporting
+        - label: Security review
+        - label: Schema/tool drift baseline
+        - label: Fleet inventory across teams or agents

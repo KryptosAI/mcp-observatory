@@ -3,36 +3,36 @@
 Use this playbook after running:
 
 ```bash
-npm run telemetry:intelligence -- --input telemetry-exports/events-flat-full.json --out-dir reports
+npm run telemetry:intelligence -- --input <private-telemetry-export.jsonl> --out-dir reports
 ```
 
 Start from `reports/telemetry-usage-summary.html` to confirm external usage before reading account rankings. Do not treat first-party CI, release workflows, or internal/personal sessions as market traction.
 
-Raw telemetry is allowed for internal account intelligence and may include git email, git remote URL, hostname, target command or URL, CI metadata, target IDs, and command outcomes. Do not include raw personal emails, hostnames, private URLs, target commands, tokens, or private telemetry exports in public issues, posts, docs, or customer-facing outreach. Use account domains, GitHub orgs, and aggregate telemetry evidence.
+Raw telemetry is allowed for internal account intelligence only. Do not include personal emails, hostnames, private URLs, target commands, tokens, proprietary schemas, customer names, or private telemetry exports in public issues, posts, docs, or customer-facing outreach without explicit permission. Keep account-specific rankings in ignored `reports/` outputs or private notes.
 
 ## Priority Accounts
 
 | Priority | Account | Evidence | Motion |
 | ---: | --- | --- | --- |
-| 1 | `thinkingdata.cn` | High-confidence external usage, repeated sessions, private-network target signal, Feishu/Lark MCP targets | Enterprise pilot |
-| 2 | `kimquy.capital` | Recent light usage across multiple sessions | Business pilot / design partner |
-| 3 | `paperstreetdata.com` | Small usage cluster | Business pilot / testimonial ask |
-| 4 | `cyberneticsplus.com` | Single company signal | Team pilot / feedback ask |
+| 1 | Private account A | Repeated external sessions, CI usage, private-target signal, or security workflow evidence | Enterprise pilot |
+| 2 | Private account B | Recent usage across multiple sessions or repos | Business pilot / design partner |
+| 3 | Private account C | Small usage cluster with clear owner signal | Business pilot / testimonial ask |
+| 4 | Private account D | Single company or team signal | Team pilot / feedback ask |
 | 5 | GitHub org/user signals | CI or repo-based usage | Team pilot unless company identity is confirmed |
 
-## ThinkingData First Email
+## First Email Template
 
-Subject: MCP security reporting for Feishu/Lark production workflows
+Subject: MCP security reporting for production agent workflows
 
 Hi,
 
 I build MCP Observatory, an open source tool for testing, securing, and monitoring MCP servers before agents depend on them.
 
-We are seeing serious production-style usage patterns around Feishu/Lark MCP workflows and internal HTTP MCP targets. I am opening a small number of enterprise pilots for teams that want hosted MCP security reports, private-repo CI history, and fleet visibility across agent environments.
+I am opening a small number of enterprise pilots for teams that want hosted MCP security reports, private-repo CI history, and fleet visibility across agent environments.
 
 If your team is running MCP servers in production, I can prepare a short evidence-based report and a pilot proposal focused on:
 
-- Feishu/Lark MCP compatibility
+- MCP compatibility
 - private HTTP MCP health checks
 - security findings and schema drift
 - CI history and controlled drift review

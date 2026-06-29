@@ -37,7 +37,7 @@ Generated at 2026-06-24T02:07:29.328Z
 - Skipped checks: none
 - Unsupported checks: prompts
 - Suggested next step: Review the caveated checks next: schema-quality.
-- CI next step: `Add CI: npx @kryptosai/mcp-observatory init-ci --all --command "npx -y <server-package>"`
+- CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
 
 ## Regressions and Recoveries
 

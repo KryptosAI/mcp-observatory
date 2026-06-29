@@ -60,7 +60,7 @@ A useful MCP server CI gate should answer a few operational questions:
 MCP Observatory is designed to make that a one-command adoption path:
 
 ```bash
-npx @kryptosai/mcp-observatory init-ci --all --command "npx -y my-mcp-server"
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server"
 ```
 
 For a direct check:

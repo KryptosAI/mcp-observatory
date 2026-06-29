@@ -29,7 +29,7 @@ What Observatory checks:
 Adoption command:
 
 ```bash
-npx @kryptosai/mcp-observatory init-ci --all --command "npx -y @modelcontextprotocol/server-sequential-thinking"
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y @modelcontextprotocol/server-sequential-thinking"
 ```
 
 ## Browser Automation MCP Servers
@@ -118,7 +118,7 @@ What Observatory checks:
 Adoption command:
 
 ```bash
-npx @kryptosai/mcp-observatory init-ci --all --command "npx -y @upstash/context7-mcp"
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y @upstash/context7-mcp"
 ```
 
 ## How To Read These Evaluations

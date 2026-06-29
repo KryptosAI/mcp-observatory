@@ -37,7 +37,7 @@ Generated at 2026-06-24T02:07:41.323Z
 - Skipped checks: none
 - Unsupported checks: prompts, resources
 - Suggested next step: Confirm that unsupported capabilities are intentional for this target: prompts, resources.
-- CI next step: `Add CI: npx @kryptosai/mcp-observatory init-ci --all --command "npx -y <server-package>"`
+- CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
 
 ## Regressions and Recoveries
 

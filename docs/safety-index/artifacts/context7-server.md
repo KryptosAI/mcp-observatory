@@ -37,7 +37,7 @@ Generated at 2026-06-24T02:07:24.758Z
 - Skipped checks: none
 - Unsupported checks: none
 - Suggested next step: Save this run artifact and diff it against the next meaningful server or package change.
-- CI next step: `Add CI: npx @kryptosai/mcp-observatory init-ci --all --command "npx -y <server-package>"`
+- CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
 
 ## Regressions and Recoveries
 
