@@ -1,0 +1,43 @@
+name: MCP certification or badge request
+description: Request help adding MCP Observatory checks, badges, or certification language to an MCP server.
+title: "[Certification] MCP Observatory check"
+labels: ["certification", "mcp-server"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this to request MCP Observatory CI, a compatibility/security badge, or certification guidance for a public MCP server.
+
+        Do not paste secrets, private source code, customer data, private URLs, or proprietary MCP schemas into this public issue.
+  - type: input
+    id: server_repo
+    attributes:
+      label: MCP server repository
+      placeholder: owner/repo
+    validations:
+      required: true
+  - type: input
+    id: package_or_command
+    attributes:
+      label: Package or startup command
+      placeholder: npx -y my-mcp-server
+    validations:
+      required: true
+  - type: dropdown
+    id: request_type
+    attributes:
+      label: What do you want?
+      options:
+        - Add GitHub Action / PR check
+        - Add README badge
+        - Generate a health score badge
+        - Review a failing MCP Observatory report
+        - Discuss paid certification or hosted history
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Anything unusual about startup, credentials, safe tool invocation, or CI?
+      placeholder: The server needs...

@@ -160,6 +160,8 @@ describe("CLI/MCP Parity", () => {
       "test",      // maps to check_server
       "score",     // maps to score_server
       "badge",     // CLI-only (generates SVG)
+      "setup-ci",  // CLI-only CI adoption helper
+      "init-ci",   // CLI-only backward-compatible alias
       "diff",      // maps to diff_runs
       "run",       // no direct MCP equivalent (uses target config)
       "suggest",   // maps to suggest_servers
@@ -173,7 +175,7 @@ describe("CLI/MCP Parity", () => {
     ];
 
     // Intentional CLI-only commands:
-    const intentionalCliOnly = ["run", "report", "serve", "badge", "cloud"];
+    const intentionalCliOnly = ["run", "report", "serve", "badge", "cloud", "setup-ci", "init-ci"];
     // Intentional MCP-only tools:
     const intentionalMcpOnly = ["get_last_run"];
     // Name mappings:
@@ -218,6 +220,8 @@ describe("CLI/MCP Parity", () => {
       "run": "CLI-only command that reads target config files; MCP tools accept inline params",
       "get_last_run": "MCP-only convenience tool; CLI users use ls + diff manually",
       "badge": "CLI-only command that generates SVG badge from health score",
+      "setup-ci": "CLI-only command that generates GitHub Action adoption assets",
+      "init-ci": "CLI-only backward-compatible alias for setup-ci",
       "cloud": "CLI-only command that explains hosted reporting and paid pilot options",
     };
 

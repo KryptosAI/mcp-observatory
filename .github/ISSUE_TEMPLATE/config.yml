@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Private production or enterprise pilot
+    url: mailto:william@banksey.com
+    about: Email for private repo CI, readiness reviews, certification, fleet visibility, or sensitive security context.
+  - name: Commercial pilot details
+    url: https://github.com/KryptosAI/mcp-observatory/blob/main/COMMERCIAL.md
+    about: Pricing and pilot shapes for hosted reporting, security review, and fleet visibility.

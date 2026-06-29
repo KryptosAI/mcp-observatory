@@ -100,7 +100,7 @@ Statuses:
 ## PR Checklist
 
 - Generate the local kit first:
-  `npx @kryptosai/mcp-observatory init-ci --all --command "<safe startup command>"`
+  `npx @kryptosai/mcp-observatory setup-ci --all --command "<safe startup command>"`
 - Add `.github/workflows/mcp-observatory.yml`
 - Add `mcp-observatory.target.json` when the startup command needs args, cwd, or env placeholders
 - Use `deep: true` and `security: true`
@@ -151,7 +151,7 @@ The goal is to give users a visible compatibility/security signal and catch sche
 
 ## Generated PR Body Printer
 
-After running `init-ci --all`, print the generated maintainer copy with:
+After running `setup-ci --all`, print the generated maintainer copy with:
 
 ```bash
 npm run certification:pr-body -- docs/mcp-observatory-pr-body.md

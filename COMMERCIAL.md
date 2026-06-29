@@ -31,6 +31,20 @@ Paid pilots can include:
 - Support for production incidents and rollout planning
 - Manual account review and implementation guidance
 
+## Conversion Ladder
+
+The OSS product should make adoption useful before a buyer talks to us:
+
+1. **Local proof**: run `test`, `scan`, `diff`, `lock`, or `serve` with no account.
+2. **CI proof**: run `setup-ci --all` to add a GitHub Action, badge snippets, and maintainer copy.
+3. **Public trust**: add an MCP Observatory badge or health score badge to a public MCP server.
+4. **Private readiness**: request a private MCP readiness review for internal servers, schemas, or agent environments.
+5. **Hosted production**: use hosted history, drift/security reports, certification, support, and fleet visibility.
+
+Good paid-fit signals include private repos, production MCP usage, repeated CI runs, security review needs, schema drift concerns, multiple teams/agents, and requests for historical reporting or certification.
+
+Public issue templates exist for certification and pilot requests, but sensitive context should go by email rather than public issues.
+
 ## What Stays Free
 
 - Local OSS use of the CLI and MCP server

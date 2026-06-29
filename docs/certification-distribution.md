@@ -35,7 +35,7 @@ npx @kryptosai/mcp-observatory badge npx -y <server-package> --output docs/mcp-h
 Fast path:
 
 ```bash
-npx @kryptosai/mcp-observatory init-ci --all --command "npx -y <server-package>"
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"
 ```
 
 That creates:

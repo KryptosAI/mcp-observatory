@@ -10,6 +10,22 @@ import { buildEvent, recordEvent } from "../telemetry.js";
 import { maybePrintCloudCta } from "../commercial.js";
 import { ANSI, c, resolveTarget, targetFromCommand } from "./helpers.js";
 
+function quoteShell(value: string): string {
+  if (/^[A-Za-z0-9_./:@=-]+$/.test(value)) return value;
+  return `"${value.replaceAll("\\", "\\\\").replaceAll("\"", "\\\"")}"`;
+}
+
+function setupCiHint(target: Awaited<ReturnType<typeof resolveTarget>>, targetPath?: string): string {
+  if (targetPath) {
+    return `npx @kryptosai/mcp-observatory setup-ci --all --target ${quoteShell(targetPath)}`;
+  }
+  if (target.adapter === "local-process") {
+    const command = [target.command, ...target.args].map(quoteShell).join(" ");
+    return `npx @kryptosai/mcp-observatory setup-ci --all --command ${quoteShell(command)}`;
+  }
+  return "npx @kryptosai/mcp-observatory setup-ci --all --target mcp-observatory.target.json";
+}
+
 export function registerTestCommands(program: Command): void {
   program
     .command("test")
@@ -78,6 +94,10 @@ export function registerTestCommands(program: Command): void {
 
       if (artifact.gate === "fail") {
         process.exitCode = 1;
+      } else if (process.stdout.isTTY && process.env["CI"] !== "true") {
+        process.stdout.write(`  ${c(ANSI.bold, "Next:")} keep this passing in CI:\n`);
+        process.stdout.write(`  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, setupCiHint(target, options.target))}\n`);
+        process.stdout.write(`  ${c(ANSI.dim, "Public trust: add the badge, and star https://github.com/KryptosAI/mcp-observatory if it saved time.")}\n\n`);
       }
       maybePrintCloudCta(options.security ? "security" : "general");
     });

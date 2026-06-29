@@ -22,10 +22,18 @@
 
 Agents should not depend on tools nobody tests. MCP Observatory gives MCP servers the production safety rails every dependency eventually needs: CI checks, security scans, schema drift detection, PR reports, score badges, and agent-accessible diagnostics.
 
+Two fast paths:
+
 Add MCP CI in one command:
 
 ```bash
-npx @kryptosai/mcp-observatory init-ci --all --command "npx -y my-mcp-server"
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server"
+```
+
+Add Observatory as an agent-accessible MCP server:
+
+```bash
+claude mcp add mcp-observatory -- npx -y @kryptosai/mcp-observatory serve
 ```
 
 Or test a server immediately:
@@ -48,7 +56,7 @@ MCP servers are becoming production dependencies. If agents rely on them, teams 
 
 Observatory gives maintainers and teams:
 
-- **One-command CI setup** with `init-ci --all`
+- **One-command CI setup** with `setup-ci --all`
 - **GitHub PR comments** for compatibility, drift, and security findings
 - **Health score badges** for public trust signals
 - **Record/replay/verify** workflows for regression testing
@@ -135,7 +143,7 @@ Or add it manually to your config:
 | `lock` | Snapshot MCP server schemas into a lock file |
 | `lock verify` | Verify live servers match the lock file |
 | `history` | Show health score trends for your MCP servers |
-| `init-ci` | Create a GitHub Action and badge snippet for MCP compatibility/security checks |
+| `setup-ci` / `init-ci` | Create a GitHub Action and badge snippet for MCP compatibility/security checks |
 | `ci-report` | Generate CI report for GitHub issue creation |
 | `enterprise-report` | Generate a static production/security report from run artifacts |
 | `score <cmd>` | Score an MCP server's health (0-100) |
@@ -207,7 +215,7 @@ When you run `scan`, it looks for MCP configs in:
 Add Observatory to your MCP server's CI pipeline:
 
 ```bash
-npx @kryptosai/mcp-observatory init-ci --all --command "npx -y my-mcp-server"
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server"
 ```
 
 Or create the workflow manually:
@@ -249,9 +257,9 @@ Action inputs:
 | `set-status` | Set a commit status check (green/red) on the HEAD SHA. Requires `statuses: write`. | `true` |
 | `github-token` | Token for PR comments and commit statuses | `${{ github.token }}` |
 
-The action can comment on PRs and set commit statuses when the workflow grants write permissions. `init-ci` generates read-only third-party-friendly workflows by default and lets maintainers opt into comments/statuses later. See [`action/README.md`](./action/README.md) for all options.
+The action can comment on PRs and set commit statuses when the workflow grants write permissions. `setup-ci` generates read-only third-party-friendly workflows by default and lets maintainers opt into comments/statuses later. `init-ci` remains available as a backward-compatible alias. See [`action/README.md`](./action/README.md) for all options.
 
-Production teams can add hosted CI history, private-repo reporting, recurring security reports, certification review, support, and fleet visibility. Run `npx @kryptosai/mcp-observatory cloud` for pilot options.
+Production teams can add hosted CI history, private-repo reporting, recurring security reports, certification review, support, and fleet visibility. Run `npx @kryptosai/mcp-observatory cloud` for pilot options, email `william@banksey.com`, or open a pilot request from the issue chooser.
 
 ### Certified by MCP Observatory
 

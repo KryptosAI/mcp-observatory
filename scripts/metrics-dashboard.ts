@@ -128,8 +128,12 @@ interface TelemetrySummary {
   sessionsPrevious7: number;
   sourceCounts: Array<{ source: string; events: number; sessions: number }>;
   dailyEvents: Array<{ day: string; events: number; sessions: number }>;
+  dailySourceMix: Array<{ day: string; events: number; localSessions: number; externalCiSessions: number; firstPartyCiSessions: number; mcpSessions: number }>;
   topCommands: Array<{ command: string; events: number; sessions: number }>;
   topDomains: Array<{ domain: string; events: number; sessions: number }>;
+  topDomainDetails: Array<{ domain: string; events: number; sessions: number; topCommand: string; latestSeen: string }>;
+  versionAdoption: Array<{ version: string; events: number; sessions: number; sessionShare: number; isLatest: boolean }>;
+  commandFunnel: Array<{ stage: string; commands: string; events: number; sessions: number; recommendation: string }>;
 }
 
 interface GitHubSummary {
@@ -780,6 +784,17 @@ function telemetryRows(db: DatabaseSync): TelemetryRow[] {
   return db.prepare("SELECT raw_json FROM telemetry_events ORDER BY created_at ASC").all().map((row) => JSON.parse(getString(row, "raw_json")) as TelemetryRow);
 }
 
+function compareVersions(a: string, b: string): number {
+  const partsA = a.split(".").map((part) => Number.parseInt(part.replace(/\D.*$/, ""), 10) || 0);
+  const partsB = b.split(".").map((part) => Number.parseInt(part.replace(/\D.*$/, ""), 10) || 0);
+  const length = Math.max(partsA.length, partsB.length);
+  for (let index = 0; index < length; index += 1) {
+    const diff = (partsA[index] ?? 0) - (partsB[index] ?? 0);
+    if (diff !== 0) return diff;
+  }
+  return a.localeCompare(b);
+}
+
 function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
   const rows = telemetryRows(db);
   const totalSessions = new Set<string>();
@@ -787,8 +802,17 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
   const firstPartySessions = new Set<string>();
   const sourceCounts = new Map<string, { events: number; sessions: Set<string> }>();
   const dailyEvents = new Map<string, { events: number; sessions: Set<string> }>();
+  const dailySourceMix = new Map<string, {
+    events: number;
+    localSessions: Set<string>;
+    externalCiSessions: Set<string>;
+    firstPartyCiSessions: Set<string>;
+    mcpSessions: Set<string>;
+  }>();
   const commands = new Map<string, { events: number; sessions: Set<string> }>();
   const domains = new Map<string, { events: number; sessions: Set<string> }>();
+  const domainDetails = new Map<string, { events: number; sessions: Set<string>; commands: Map<string, number>; latestSeen: string }>();
+  const versions = new Map<string, { events: number; sessions: Set<string> }>();
   let latestExternalSeen = "";
 
   for (const row of rows) {
@@ -801,6 +825,14 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
     sourceCounts.set(category, sourceBucket);
     if (category === "first_party_ci" && session) firstPartySessions.add(session);
 
+    const rawVersion = (row as TelemetryRow & { version?: string | null }).version;
+    if (rawVersion) {
+      const versionBucket = versions.get(rawVersion) ?? { events: 0, sessions: new Set<string>() };
+      versionBucket.events += 1;
+      if (session) versionBucket.sessions.add(session);
+      versions.set(rawVersion, versionBucket);
+    }
+
     const seen = rowCreatedAt(row);
     if (seen) {
       const day = seen.slice(0, 10);
@@ -808,6 +840,22 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
       dayBucket.events += 1;
       if (session) dayBucket.sessions.add(session);
       dailyEvents.set(day, dayBucket);
+
+      const mixBucket = dailySourceMix.get(day) ?? {
+        events: 0,
+        localSessions: new Set<string>(),
+        externalCiSessions: new Set<string>(),
+        firstPartyCiSessions: new Set<string>(),
+        mcpSessions: new Set<string>(),
+      };
+      mixBucket.events += 1;
+      if (session) {
+        if (category === "external_ci") mixBucket.externalCiSessions.add(session);
+        else if (category === "first_party_ci") mixBucket.firstPartyCiSessions.add(session);
+        else if (category === "mcp") mixBucket.mcpSessions.add(session);
+        else mixBucket.localSessions.add(session);
+      }
+      dailySourceMix.set(day, mixBucket);
     }
 
     if (isExternalRow(row)) {
@@ -824,6 +872,14 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
         domainBucket.events += 1;
         if (session) domainBucket.sessions.add(session);
         domains.set(domain, domainBucket);
+
+        const detailBucket = domainDetails.get(domain) ?? { events: 0, sessions: new Set<string>(), commands: new Map<string, number>(), latestSeen: "" };
+        detailBucket.events += 1;
+        if (session) detailBucket.sessions.add(session);
+        const command = row.command ?? "unknown";
+        detailBucket.commands.set(command, (detailBucket.commands.get(command) ?? 0) + 1);
+        if (seen && seen > detailBucket.latestSeen) detailBucket.latestSeen = seen;
+        domainDetails.set(domain, detailBucket);
       }
     }
   }
@@ -833,6 +889,57 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
     .sort((a, b) => a.day.localeCompare(b.day));
   const recent7 = sortedDaily.slice(-7);
   const previous7 = sortedDaily.slice(-14, -7);
+  const sortedSourceMix = [...dailySourceMix.entries()]
+    .map(([day, stats]) => ({
+      day,
+      events: stats.events,
+      localSessions: stats.localSessions.size,
+      externalCiSessions: stats.externalCiSessions.size,
+      firstPartyCiSessions: stats.firstPartyCiSessions.size,
+      mcpSessions: stats.mcpSessions.size,
+    }))
+    .sort((a, b) => a.day.localeCompare(b.day));
+  const versionRows = [...versions.entries()]
+    .map(([version, stats]) => ({ version, events: stats.events, sessions: stats.sessions.size }))
+    .sort((a, b) => compareVersions(b.version, a.version));
+  const latestVersion = versionRows[0]?.version ?? "";
+  const commandStats = (names: string[]): { events: number; sessions: number } => {
+    const sessions = new Set<string>();
+    let events = 0;
+    for (const name of names) {
+      const stats = commands.get(name);
+      if (!stats) continue;
+      events += stats.events;
+      for (const session of stats.sessions) sessions.add(session);
+    }
+    return { events, sessions: sessions.size };
+  };
+  const commandFunnel = [
+    {
+      stage: "Agent install",
+      commands: "serve",
+      ...commandStats(["serve"]),
+      recommendation: "Scale agent setup docs and one-line install snippets.",
+    },
+    {
+      stage: "Local validation",
+      commands: "test, scan, run",
+      ...commandStats(["test", "scan", "run"]),
+      recommendation: "Keep quick checks prominent; they are the path into trust.",
+    },
+    {
+      stage: "Regression workflow",
+      commands: "diff, history, watch, lock",
+      ...commandStats(["diff", "history", "watch", "lock"]),
+      recommendation: "Package these as CI drift prevention, not separate utilities.",
+    },
+    {
+      stage: "CI setup",
+      commands: "init-ci, setup-ci",
+      ...commandStats(["init-ci", "setup-ci"]),
+      recommendation: "The setup command is the funnel leak; make it louder and friendlier.",
+    },
+  ];
   return {
     totalEvents: rows.length,
     totalSessions: totalSessions.size,
@@ -845,8 +952,22 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
     sessionsPrevious7: previous7.reduce((sum, row) => sum + row.sessions, 0),
     sourceCounts: [...sourceCounts.entries()].map(([source, stats]) => ({ source, events: stats.events, sessions: stats.sessions.size })).sort((a, b) => b.events - a.events),
     dailyEvents: sortedDaily.slice(-45).reverse(),
+    dailySourceMix: sortedSourceMix.slice(-45).reverse(),
     topCommands: [...commands.entries()].map(([command, stats]) => ({ command, events: stats.events, sessions: stats.sessions.size })).sort((a, b) => b.events - a.events).slice(0, 12),
     topDomains: [...domains.entries()].map(([domain, stats]) => ({ domain, events: stats.events, sessions: stats.sessions.size })).sort((a, b) => b.events - a.events).slice(0, 12),
+    topDomainDetails: [...domainDetails.entries()].map(([domain, stats]) => ({
+      domain,
+      events: stats.events,
+      sessions: stats.sessions.size,
+      topCommand: [...stats.commands.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "unknown",
+      latestSeen: stats.latestSeen,
+    })).sort((a, b) => b.sessions - a.sessions).slice(0, 20),
+    versionAdoption: versionRows.map((row) => ({
+      ...row,
+      sessionShare: totalSessions.size === 0 ? 0 : Math.round((row.sessions / totalSessions.size) * 1000) / 10,
+      isLatest: row.version === latestVersion,
+    })).slice(0, 20),
+    commandFunnel,
   };
 }
 
@@ -958,6 +1079,50 @@ function rowsWithBars<T extends Record<string, string | number>>(rows: T[], valu
   }).join("\n");
 }
 
+function percent(part: number, whole: number): string {
+  if (whole === 0) return "0%";
+  return `${Math.round((part / whole) * 100)}%`;
+}
+
+function strategyCards(model: DashboardModel): string {
+  const externalCi = model.telemetry.sourceCounts.find((row) => row.source === "external_ci");
+  const serve = model.telemetry.commandFunnel.find((row) => row.stage === "Agent install");
+  const ciSetup = model.telemetry.commandFunnel.find((row) => row.stage === "CI setup");
+  const latestVersion = model.telemetry.versionAdoption.find((row) => row.isLatest);
+  const dominantVersion = [...model.telemetry.versionAdoption].sort((a, b) => b.sessions - a.sessions)[0];
+  const cloneViewGap = model.github.clones14 > 0 ? `${formatNumber(model.github.clones14)} clones / ${formatNumber(model.github.views14)} views` : "no clone data yet";
+  const cards = [
+    {
+      label: "Scale CI",
+      signal: `${formatNumber(externalCi?.sessions ?? 0)} external CI sessions`,
+      action: "Make setup-ci, PR comments, badges, and drift/security checks the main adoption path.",
+    },
+    {
+      label: "Scale Agent Install",
+      signal: `${formatNumber(serve?.sessions ?? 0)} serve sessions`,
+      action: "Keep Claude/Codex/Cursor install snippets above the fold and in release posts.",
+    },
+    {
+      label: "Fix Setup Leak",
+      signal: `${formatNumber(ciSetup?.sessions ?? 0)} CI setup sessions`,
+      action: "Use the friendlier setup-ci alias and route successful tests into CI setup.",
+    },
+    {
+      label: "Fix Upgrade Lag",
+      signal: latestVersion ? `${latestVersion.version}: ${formatNumber(latestVersion.sessions)} sessions (${latestVersion.sessionShare}%)` : "no version data yet",
+      action: dominantVersion && latestVersion && dominantVersion.version !== latestVersion.version
+        ? `Most sessions are still on ${dominantVersion.version}; add upgrade prompts and release notes.`
+        : "Latest version adoption is healthy; keep release prompts lightweight.",
+    },
+    {
+      label: "Fix OSS Conversion",
+      signal: cloneViewGap,
+      action: "Downloads/clones are ahead of stars and repo views; add a quiet badge/star prompt after wins.",
+    },
+  ];
+  return cards.map((card) => `<article class="insight"><span>${escapeHtml(card.label)}</span><strong>${escapeHtml(card.signal)}</strong><p>${escapeHtml(card.action)}</p></article>`).join("");
+}
+
 export function renderDashboardHtml(model: DashboardModel): string {
   const sourceRows = model.sourceRuns.map((run) => `
     <tr class="${run.status === "failed" ? "bad" : ""}"><td>${escapeHtml(run.source)}</td><td>${escapeHtml(run.status)}</td><td>${escapeHtml(run.finishedAt || run.startedAt)}</td><td>${formatNumber(run.rowsSeen)}</td><td>${formatNumber(run.rowsInserted)}</td><td>${escapeHtml(run.error.slice(0, 180))}</td></tr>`).join("");
@@ -965,6 +1130,20 @@ export function renderDashboardHtml(model: DashboardModel): string {
   const githubRows = model.github.daily.map((row) => `<tr><td>${escapeHtml(row.day)}</td><td>${formatNumber(row.clones)}</td><td>${formatNumber(row.uniqueCloners)}</td><td>${formatNumber(row.views)}</td><td>${formatNumber(row.uniqueViewers)}</td></tr>`).join("");
   const npmRows = model.npm.daily.map((row) => `<tr><td>${escapeHtml(row.day)}</td><td>${formatNumber(row.downloads)}</td></tr>`).join("");
   const workflowRows = model.github.workflowRuns.map((row) => `<tr><td>${escapeHtml(row.name)}</td><td>${escapeHtml(row.status)}</td><td>${escapeHtml(row.conclusion || "n/a")}</td><td>${escapeHtml(row.updatedAt)}</td></tr>`).join("");
+  const funnelRows = model.telemetry.commandFunnel.map((row) => `<tr><td>${escapeHtml(row.stage)}</td><td>${escapeHtml(row.commands)}</td><td>${formatNumber(row.sessions)}</td><td>${formatNumber(row.events)}</td><td>${escapeHtml(row.recommendation)}</td></tr>`).join("");
+  const versionRows = model.telemetry.versionAdoption.map((row) => `<tr class="${row.isLatest ? "good" : ""}"><td>${escapeHtml(row.version)}${row.isLatest ? " <span class=\"pill\">latest</span>" : ""}</td><td>${formatNumber(row.sessions)}</td><td>${formatNumber(row.events)}</td><td>${escapeHtml(`${row.sessionShare}%`)}</td><td><div class="bar"><i style="width:${Math.max(2, Math.round(row.sessionShare))}%"></i></div></td></tr>`).join("");
+  const domainDetailRows = model.telemetry.topDomainDetails.map((row) => `<tr><td>${escapeHtml(row.domain)}</td><td>${formatNumber(row.sessions)}</td><td>${formatNumber(row.events)}</td><td>${escapeHtml(row.topCommand)}</td><td>${escapeHtml(row.latestSeen)}</td></tr>`).join("");
+  const sourceMixRows = model.telemetry.dailySourceMix.map((row) => `<tr><td>${escapeHtml(row.day)}</td><td>${formatNumber(row.events)}</td><td>${formatNumber(row.localSessions)}</td><td>${formatNumber(row.externalCiSessions)}</td><td>${formatNumber(row.firstPartyCiSessions)}</td><td>${formatNumber(row.mcpSessions)}</td></tr>`).join("");
+  const latestVersion = model.telemetry.versionAdoption.find((row) => row.isLatest);
+  const ciSource = model.telemetry.sourceCounts.find((row) => row.source === "external_ci");
+  const serveStage = model.telemetry.commandFunnel.find((row) => row.stage === "Agent install");
+  const releaseDay = model.github.latestReleasePublishedAt.slice(0, 10);
+  const releaseTelemetry = model.telemetry.dailyEvents.find((row) => row.day === releaseDay);
+  const releaseNpm = model.npm.daily.find((row) => row.day === releaseDay);
+  const releaseGithub = model.github.daily.find((row) => row.day === releaseDay);
+  const releaseRows = releaseDay ? [
+    `<tr><td>${escapeHtml(releaseDay)}</td><td>${escapeHtml(model.github.latestRelease || "latest release")}</td><td>${formatNumber(releaseTelemetry?.events ?? 0)}</td><td>${formatNumber(releaseTelemetry?.sessions ?? 0)}</td><td>${formatNumber(releaseNpm?.downloads ?? 0)}</td><td>${formatNumber(releaseGithub?.clones ?? 0)}</td></tr>`,
+  ].join("") : "";
 
   return `<!doctype html>
 <html lang="en">
@@ -993,6 +1172,11 @@ export function renderDashboardHtml(model: DashboardModel): string {
     .metric span { display:block; color:var(--muted); font-size:12px; line-height:1.2; margin-top:3px; }
     .metric em { display:block; color:var(--muted); font-size:11px; line-height:1.2; font-style:normal; margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:9px; align-items:start; }
+    .strategy-grid { display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:7px; align-items:stretch; }
+    .insight { background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:9px 10px; min-height:118px; }
+    .insight span { display:block; color:var(--muted); font-size:11px; font-weight:650; letter-spacing:.04em; text-transform:uppercase; }
+    .insight strong { display:block; margin-top:5px; font-size:16px; line-height:1.15; }
+    .insight p { margin-top:7px; font-size:12px; }
     .section-label { color:var(--muted); font-size:11px; font-weight:650; letter-spacing:.04em; text-transform:uppercase; margin:16px 0 5px; }
     .panel { overflow:auto; max-height:350px; }
     .panel-inner { padding:8px 9px; }
@@ -1001,11 +1185,14 @@ export function renderDashboardHtml(model: DashboardModel): string {
     th { position:sticky; top:0; z-index:1; background:#eef3f8; color:#3d4d63; font-size:11px; text-transform:uppercase; }
     tr:last-child td { border-bottom:0; }
     .bad td { color:var(--bad); }
+    .good td:first-child { color:#0f7b32; font-weight:650; }
+    .pill { display:inline-block; margin-left:4px; padding:1px 5px; border-radius:999px; background:#e7f7ec; color:#0f7b32; font-size:10px; font-weight:650; vertical-align:middle; }
     .bar { height:6px; background:#edf1f6; border-radius:999px; min-width:58px; overflow:hidden; }
     .bar i { display:block; height:100%; background:var(--accent); }
     .note { color:var(--muted); font-size:12px; line-height:1.35; margin-top:4px; }
+    @media (max-width: 1180px) { .strategy-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
     @media (max-width: 1120px) { .grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
-    @media (max-width: 720px) { header { display:block; } .stamp { text-align:left; margin-top:8px; } .metric { flex-basis:145px; } .grid { grid-template-columns:1fr; } main { padding:12px 8px 24px; } }
+    @media (max-width: 720px) { header { display:block; } .stamp { text-align:left; margin-top:8px; } .metric { flex-basis:145px; } .grid, .strategy-grid { grid-template-columns:1fr; } main { padding:12px 8px 24px; } }
   </style>
 </head>
 <body>
@@ -1034,6 +1221,22 @@ export function renderDashboardHtml(model: DashboardModel): string {
       ${metric("GitHub forks", model.github.forks)}
       ${metric("open issues", model.github.openIssues)}
       ${metric("open PRs", model.github.openPullRequests)}
+    </section>
+
+    <div class="section-label">Strategy</div>
+    <section class="strategy-grid" aria-label="Recommended moves">
+      ${strategyCards(model)}
+    </section>
+    <section class="metrics" aria-label="Strategy metrics">
+      ${metric("external CI share", `${percent(ciSource?.sessions ?? 0, model.telemetry.totalSessions)}`, `${formatNumber(ciSource?.sessions ?? 0)} sessions`)}
+      ${metric("agent install share", `${percent(serveStage?.sessions ?? 0, model.telemetry.totalSessions)}`, `${formatNumber(serveStage?.sessions ?? 0)} serve sessions`)}
+      ${metric("latest version adoption", latestVersion ? `${latestVersion.sessionShare}%` : "n/a", latestVersion ? `${latestVersion.version}, ${formatNumber(latestVersion.sessions)} sessions` : "")}
+      ${metric("clone-to-view gap", model.github.views14 === 0 ? "n/a" : `${Math.round(model.github.clones14 / Math.max(model.github.views14, 1))}:1`, `${formatNumber(model.github.clones14)} clones / ${formatNumber(model.github.views14)} views`)}
+    </section>
+    <section class="grid">
+      <div><h2>Command Funnel</h2><div class="panel"><table><thead><tr><th>Stage</th><th>Commands</th><th>Sessions</th><th>Events</th><th>Move</th></tr></thead><tbody>${funnelRows || "<tr><td colspan=\"5\">No command funnel yet.</td></tr>"}</tbody></table></div></div>
+      <div><h2>Version Adoption</h2><div class="panel"><table><thead><tr><th>Version</th><th>Sessions</th><th>Events</th><th>Share</th><th>Adoption</th></tr></thead><tbody>${versionRows || "<tr><td colspan=\"5\">No version telemetry yet.</td></tr>"}</tbody></table></div></div>
+      <div><h2>Release Spike</h2><div class="panel"><table><thead><tr><th>Day</th><th>Release</th><th>Events</th><th>Sessions</th><th>npm</th><th>Clones</th></tr></thead><tbody>${releaseRows || "<tr><td colspan=\"6\">No release annotation yet.</td></tr>"}</tbody></table><div class="panel-inner note">Use this to compare release activity against telemetry, downloads, and clones.</div></div></div>
     </section>
 
     <div class="section-label">Acquisition</div>
@@ -1071,6 +1274,8 @@ export function renderDashboardHtml(model: DashboardModel): string {
       <div><h2>Telemetry Sources</h2><div class="panel"><table><thead><tr><th>Source</th><th>Events</th><th>Sessions</th><th>Share</th></tr></thead><tbody>${rowsWithBars(model.telemetry.sourceCounts, "events", ["source", "events", "sessions"]) || "<tr><td colspan=\"4\">No telemetry yet.</td></tr>"}</tbody></table></div></div>
       <div><h2>Top Attributed Domains</h2><div class="panel"><table><thead><tr><th>Domain</th><th>Events</th><th>Sessions</th><th>Share</th></tr></thead><tbody>${rowsWithBars(model.telemetry.topDomains, "events", ["domain", "events", "sessions"]) || "<tr><td colspan=\"4\">No attributed external domains yet.</td></tr>"}</tbody></table></div></div>
       <div><h2>Top External Commands</h2><div class="panel"><table><thead><tr><th>Command</th><th>Events</th><th>Sessions</th><th>Share</th></tr></thead><tbody>${rowsWithBars(model.telemetry.topCommands, "events", ["command", "events", "sessions"]) || "<tr><td colspan=\"4\">No external commands yet.</td></tr>"}</tbody></table></div></div>
+      <div><h2>Account Drilldown</h2><div class="panel"><table><thead><tr><th>Domain</th><th>Sessions</th><th>Events</th><th>Top command</th><th>Latest seen</th></tr></thead><tbody>${domainDetailRows || "<tr><td colspan=\"5\">No attributed external domains yet.</td></tr>"}</tbody></table></div></div>
+      <div><h2>Source Mix By Day</h2><div class="panel"><table><thead><tr><th>Day</th><th>Events</th><th>Local</th><th>External CI</th><th>First-party CI</th><th>MCP</th></tr></thead><tbody>${sourceMixRows || "<tr><td colspan=\"6\">No source mix yet.</td></tr>"}</tbody></table></div></div>
       <div class="panel"><table><thead><tr><th>Day</th><th>Telemetry events</th><th>Sessions</th></tr></thead><tbody>${model.telemetry.dailyEvents.map((row) => `<tr><td>${escapeHtml(row.day)}</td><td>${formatNumber(row.events)}</td><td>${formatNumber(row.sessions)}</td></tr>`).join("") || "<tr><td colspan=\"3\">No telemetry timeline yet.</td></tr>"}</tbody></table><div class="panel-inner note">Newest days first. First-party CI remains separated from external traction.</div></div>
     </section>
     <div class="section-label">Reliability</div>
@@ -1177,12 +1382,12 @@ async function refreshDashboard(paths: Paths): Promise<void> {
 
 async function serveRequest(request: IncomingMessage, response: ServerResponse, paths: Paths): Promise<void> {
   const url = new URL(request.url ?? "/", "http://127.0.0.1");
-  if (request.method === "GET" && (url.pathname === "/" || url.pathname === "/index.html")) {
+  if ((request.method === "GET" || request.method === "HEAD") && (url.pathname === "/" || url.pathname === "/index.html")) {
     if (!existsSync(paths.dashboard)) await refreshDashboard(paths);
     send(response, 200, await readFile(paths.dashboard, "utf8"), "text/html; charset=utf-8");
     return;
   }
-  if (request.method === "GET" && url.pathname === "/latest.json") {
+  if ((request.method === "GET" || request.method === "HEAD") && url.pathname === "/latest.json") {
     const latestPath = path.join(paths.dashboardDir, "latest.json");
     if (!existsSync(latestPath)) await refreshDashboard(paths);
     send(response, 200, await readFile(latestPath, "utf8"), "application/json; charset=utf-8");

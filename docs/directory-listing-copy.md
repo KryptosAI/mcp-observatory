@@ -25,7 +25,7 @@ For security and platform teams, see the MCP Server Security Field Guide and MCP
 Add MCP CI in one command:
 
 ```bash
-npx @kryptosai/mcp-observatory init-ci --all --command "npx -y my-mcp-server"
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server"
 ```
 
 ## Tags

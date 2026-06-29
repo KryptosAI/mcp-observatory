@@ -21,7 +21,7 @@ npx @kryptosai/mcp-observatory lock verify
 Add CI:
 
 ```bash
-npx @kryptosai/mcp-observatory init-ci --all --command "npx -y my-mcp-server"
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server"
 ```
 
 ## Why It Matters

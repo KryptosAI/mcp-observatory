@@ -136,7 +136,7 @@ export function summarizeRunSafety(artifact: RunArtifact): SafetySummary {
       recommendRunNextStep(artifact),
       "Add MCP Observatory to CI so every server change gets the same check.",
     ],
-    ciCta: "Add CI: npx @kryptosai/mcp-observatory init-ci --all --command \"npx -y <server-package>\"",
+    ciCta: "Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command \"npx -y <server-package>\"",
   };
 }
 
@@ -167,6 +167,6 @@ export function summarizeDiffSafety(artifact: { gate: string; regressions: unkno
       regressionCount > 0 ? "Fix or explicitly accept the listed regressions before release." : "Save this diff as release evidence.",
       "Keep this comparison running in CI for future MCP server changes.",
     ],
-    ciCta: "Add CI: npx @kryptosai/mcp-observatory init-ci --all --command \"npx -y <server-package>\"",
+    ciCta: "Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command \"npx -y <server-package>\"",
   };
 }

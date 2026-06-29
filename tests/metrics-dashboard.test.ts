@@ -56,8 +56,18 @@ describe("local metrics dashboard", () => {
         sessionsPrevious7: 1,
         sourceCounts: [{ source: "external_ci", events: 1, sessions: 1 }],
         dailyEvents: [{ day: "2026-06-21", events: 2, sessions: 2 }],
+        dailySourceMix: [{ day: "2026-06-21", events: 2, localSessions: 0, externalCiSessions: 1, firstPartyCiSessions: 1, mcpSessions: 0 }],
         topCommands: [{ command: "scan", events: 1, sessions: 1 }],
         topDomains: [{ domain: "acme.example", events: 1, sessions: 1 }],
+        topDomainDetails: [{ domain: "acme.example", events: 1, sessions: 1, topCommand: "scan", latestSeen: "2026-06-21T10:00:00.000Z" }],
+        versionAdoption: [
+          { version: "0.24.0", events: 1, sessions: 1, sessionShare: 50, isLatest: true },
+          { version: "0.23.0", events: 1, sessions: 1, sessionShare: 50, isLatest: false },
+        ],
+        commandFunnel: [
+          { stage: "Agent install", commands: "serve", events: 1, sessions: 1, recommendation: "Scale agent setup docs." },
+          { stage: "CI setup", commands: "init-ci, setup-ci", events: 0, sessions: 0, recommendation: "Make setup-ci louder." },
+        ],
       },
       github: {
         stars: 5,
@@ -95,6 +105,11 @@ describe("local metrics dashboard", () => {
 
     expect(html).toContain("MCP Observatory Local Metrics");
     expect(html).toContain("Acquisition");
+    expect(html).toContain("Strategy");
+    expect(html).toContain("Command Funnel");
+    expect(html).toContain("Version Adoption");
+    expect(html).toContain("Account Drilldown");
+    expect(html).toContain("Source Mix By Day");
     expect(html).toContain("Downloads");
     expect(html).toContain("Usage");
     expect(html).toContain("acme.example");
