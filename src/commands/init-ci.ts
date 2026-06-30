@@ -18,6 +18,7 @@ export interface InitCiOptions {
   actionRef?: string;
   all?: boolean;
   force?: boolean;
+  doctor?: boolean;
 }
 
 const DEFAULT_WORKFLOW_PATH = ".github/workflows/mcp-observatory.yml";
@@ -221,6 +222,157 @@ export interface InitCiResult {
   scoreBadgePath?: string;
 }
 
+export interface SetupCiDoctorCheck {
+  id: string;
+  label: string;
+  status: "pass" | "warn" | "fail";
+  message: string;
+  fix?: string;
+}
+
+export interface SetupCiDoctorResult {
+  ready: boolean;
+  checks: SetupCiDoctorCheck[];
+  nextCommand: string;
+}
+
+async function readOptional(filePath: string): Promise<string | undefined> {
+  try {
+    return await readFile(filePath, "utf8");
+  } catch {
+    return undefined;
+  }
+}
+
+function checkFile(id: string, label: string, filePath: string, content: string | undefined, expectedText?: string): SetupCiDoctorCheck {
+  if (content === undefined) {
+    return {
+      id,
+      label,
+      status: "warn",
+      message: `${filePath} is missing.`,
+      fix: `Run setup-ci --all to generate ${filePath}.`,
+    };
+  }
+  if (expectedText && !content.includes(expectedText)) {
+    return {
+      id,
+      label,
+      status: "warn",
+      message: `${filePath} exists but does not look like a generated MCP Observatory asset.`,
+      fix: `Regenerate with setup-ci --all --force if this file should be managed by Observatory.`,
+    };
+  }
+  return {
+    id,
+    label,
+    status: "pass",
+    message: `${filePath} exists.`,
+  };
+}
+
+function setupCommand(options: InitCiOptions): string {
+  if (options.target) return `npx @kryptosai/mcp-observatory setup-ci --all --target ${options.target}`;
+  if (options.command) return `npx @kryptosai/mcp-observatory setup-ci --all --command "${options.command.replaceAll("\"", "\\\"")}"`;
+  return "npx @kryptosai/mcp-observatory setup-ci --all --command \"npx -y <server-package>\"";
+}
+
+export async function doctorSetupCi(options: InitCiOptions = {}): Promise<SetupCiDoctorResult> {
+  const workflowPath = options.workflow ?? DEFAULT_WORKFLOW_PATH;
+  const badgePath = options.badgeFile ?? DEFAULT_BADGE_PATH;
+  const targetConfigPath = optionPath(options.targetConfig, DEFAULT_TARGET_CONFIG_PATH);
+  const prBodyPath = optionPath(options.prBody, DEFAULT_PR_BODY_PATH);
+  const issueBodyPath = optionPath(options.issueBody, DEFAULT_ISSUE_BODY_PATH);
+  const scoreBadgePath = optionPath(options.scoreBadge, DEFAULT_SCORE_BADGE_PATH);
+
+  const workflow = await readOptional(workflowPath);
+  const checks: SetupCiDoctorCheck[] = [];
+  if (workflow === undefined) {
+    checks.push({
+      id: "workflow",
+      label: "GitHub Action",
+      status: "fail",
+      message: `${workflowPath} is missing.`,
+      fix: setupCommand(options),
+    });
+  } else {
+    checks.push({
+      id: "workflow",
+      label: "GitHub Action",
+      status: "pass",
+      message: `${workflowPath} exists.`,
+    });
+
+    const actionRef = workflow.match(/KryptosAI\/mcp-observatory\/action@([^\s]+)/)?.[1];
+    if (!actionRef) {
+      checks.push({
+        id: "action-ref",
+        label: "Pinned Action",
+        status: "fail",
+        message: "Workflow does not use KryptosAI/mcp-observatory/action.",
+        fix: setupCommand(options),
+      });
+    } else if (actionRef === "main") {
+      checks.push({
+        id: "action-ref",
+        label: "Pinned Action",
+        status: "warn",
+        message: "Workflow uses action@main.",
+        fix: "Pin the action to a release tag or full commit SHA.",
+      });
+    } else {
+      checks.push({
+        id: "action-ref",
+        label: "Pinned Action",
+        status: "pass",
+        message: `Workflow uses action@${actionRef}.`,
+      });
+    }
+
+    const hasTarget = /(^|\n)\s+target:\s+\S+/.test(workflow);
+    const hasCommand = /(^|\n)\s+command:\s+\S+/.test(workflow);
+    checks.push({
+      id: "target",
+      label: "Target",
+      status: hasTarget || hasCommand ? "pass" : "fail",
+      message: hasTarget || hasCommand ? "Workflow has an MCP target." : "Workflow does not define command or target.",
+      fix: hasTarget || hasCommand ? undefined : setupCommand(options),
+    });
+
+    const hasDeep = /(^|\n)\s+deep:\s+true/.test(workflow);
+    const hasSecurity = /(^|\n)\s+security:\s+true/.test(workflow);
+    checks.push({
+      id: "coverage",
+      label: "Coverage",
+      status: hasDeep && hasSecurity ? "pass" : "warn",
+      message: hasDeep && hasSecurity ? "Workflow enables deep and security checks." : "Workflow should enable deep and security checks.",
+      fix: hasDeep && hasSecurity ? undefined : "Set deep: true and security: true in the action inputs.",
+    });
+
+    const writesPr = /(^|\n)\s+pull-requests:\s+write/.test(workflow);
+    const writesStatus = /(^|\n)\s+statuses:\s+write/.test(workflow);
+    checks.push({
+      id: "permissions",
+      label: "Permissions",
+      status: writesPr || writesStatus ? "warn" : "pass",
+      message: writesPr || writesStatus ? "Workflow can write PR comments or statuses." : "Workflow is read-only by default.",
+      fix: writesPr || writesStatus ? "Keep write permissions only when maintainers intentionally want PR comments or commit statuses." : undefined,
+    });
+  }
+
+  checks.push(checkFile("badge", "README Badge", badgePath, await readOptional(badgePath), "MCP Observatory"));
+  checks.push(checkFile("target-config", "Target Config", targetConfigPath, await readOptional(targetConfigPath), "targetId"));
+  checks.push(checkFile("pr-body", "Maintainer PR Body", prBodyPath, await readOptional(prBodyPath), "Add MCP Observatory CI"));
+  checks.push(checkFile("issue-body", "Issue Fallback", issueBodyPath, await readOptional(issueBodyPath), "compatibility/security"));
+  checks.push(checkFile("score-badge", "Score Badge Notes", scoreBadgePath, await readOptional(scoreBadgePath), "mcp-observatory badge"));
+
+  return {
+    ready: checks.every((check) => check.status !== "fail"),
+    checks,
+    nextCommand: setupCommand(options),
+  };
+}
+
 export async function initCi(options: InitCiOptions): Promise<InitCiResult> {
   if (options.command && options.target) {
     throw new Error("Use either --command or --target, not both.");
@@ -280,11 +432,32 @@ function addInitCiOptions(command: Command): Command {
     .option("--set-status", "Allow the generated workflow to set commit statuses. This adds statuses: write permission.", false)
     .option("--action-ref <ref>", "Git ref for KryptosAI/mcp-observatory/action. Use a full commit SHA for strict third-party action pinning.", DEFAULT_ACTION_REF)
     .option("--all", "Write the full adoption kit: workflow, badge, target config, PR body, issue body, and score badge instructions.", false)
-    .option("--force", "Overwrite existing files.", false);
+    .option("--force", "Overwrite existing files.", false)
+    .option("--doctor", "Inspect the current repository's MCP Observatory CI adoption state.", false);
 }
 
 function initCiAction(commandName: "init-ci" | "setup-ci"): (options: InitCiOptions) => Promise<void> {
   return async (options: InitCiOptions) => {
+    if (options.doctor) {
+      const result = await doctorSetupCi(options);
+      process.stdout.write("MCP Observatory CI doctor\n\n");
+      for (const check of result.checks) {
+        const marker = check.status === "pass" ? "✓" : check.status === "warn" ? "!" : "✗";
+        process.stdout.write(`${marker} ${check.label}: ${check.message}\n`);
+        if (check.fix) process.stdout.write(`  fix: ${check.fix}\n`);
+      }
+      process.stdout.write(`\nNext best action:\n  ${result.nextCommand}\n`);
+      if (!result.ready) process.exitCode = 1;
+      recordEvent(buildEvent("command_complete", commandName, "cli", {
+        ciProvider: "github-actions",
+        setupCiDoctor: true,
+        setupCiReady: result.ready,
+        setupCiFailCount: result.checks.filter((check) => check.status === "fail").length,
+        setupCiWarnCount: result.checks.filter((check) => check.status === "warn").length,
+      }));
+      return;
+    }
+
     const result = await initCi(options);
     const skipped = result.workflowStatus === "skipped";
     process.stdout.write(`${result.workflowStatus}: ${result.workflowPath}\n`);

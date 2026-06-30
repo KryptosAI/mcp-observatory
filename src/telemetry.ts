@@ -62,6 +62,12 @@ export interface TelemetryEnrichment {
   // Commit status
   commitStatusSet?: boolean;
   commitStatusState?: string;
+  // CI adoption
+  setupCiDoctor?: boolean;
+  setupCiReady?: boolean;
+  setupCiFailCount?: number;
+  setupCiWarnCount?: number;
+  sampleReport?: boolean;
   // Nightly scans
   nightlyScan?: boolean;
   issueCreated?: boolean;

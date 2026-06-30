@@ -5,7 +5,7 @@ import {
   readArtifact,
 } from "../index.js";
 import { buildEvent, recordEvent } from "../telemetry.js";
-import { formatOutput, writeOutput } from "./helpers.js";
+import { formatOutput, printCiConversionCta, writeOutput } from "./helpers.js";
 
 export function registerDiffCommands(program: Command): void {
   program
@@ -34,6 +34,11 @@ export function registerDiffCommands(program: Command): void {
         const artifact = diffArtifacts(baseArtifact, headArtifact);
         const output = formatOutput(artifact, options.format);
         await writeOutput(output, options.format, options.output);
+        if (options.format === "terminal" && artifact.gate !== "fail") {
+          printCiConversionCta({
+            context: "keep this diff check running on every PR:",
+          });
+        }
 
         recordEvent(buildEvent("command_complete", "diff", "cli", {
           gateResult: artifact.gate,

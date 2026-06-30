@@ -1084,6 +1084,13 @@ function percent(part: number, whole: number): string {
   return `${Math.round((part / whole) * 100)}%`;
 }
 
+function conversionPercent(part: number, whole: number): string {
+  if (whole === 0) return "n/a";
+  const value = (part / whole) * 100;
+  if (value > 0 && value < 0.01) return "<0.01%";
+  return `${Math.round(value * 100) / 100}%`;
+}
+
 function strategyCards(model: DashboardModel): string {
   const externalCi = model.telemetry.sourceCounts.find((row) => row.source === "external_ci");
   const serve = model.telemetry.commandFunnel.find((row) => row.stage === "Agent install");
@@ -1091,6 +1098,8 @@ function strategyCards(model: DashboardModel): string {
   const latestVersion = model.telemetry.versionAdoption.find((row) => row.isLatest);
   const dominantVersion = [...model.telemetry.versionAdoption].sort((a, b) => b.sessions - a.sessions)[0];
   const cloneViewGap = model.github.clones14 > 0 ? `${formatNumber(model.github.clones14)} clones / ${formatNumber(model.github.views14)} views` : "no clone data yet";
+  const cloneDownloadSignals = model.github.clones14 + model.npm.downloads14;
+  const setupConversion = conversionPercent(ciSetup?.sessions ?? 0, cloneDownloadSignals);
   const cards = [
     {
       label: "Scale CI",
@@ -1116,8 +1125,8 @@ function strategyCards(model: DashboardModel): string {
     },
     {
       label: "Fix OSS Conversion",
-      signal: cloneViewGap,
-      action: "Downloads/clones are ahead of stars and repo views; add a quiet badge/star prompt after wins.",
+      signal: `${setupConversion} clone/download to CI`,
+      action: `Downloads/clones are ahead of stars and repo views (${cloneViewGap}); make setup-ci the next step after every win.`,
     },
   ];
   return cards.map((card) => `<article class="insight"><span>${escapeHtml(card.label)}</span><strong>${escapeHtml(card.signal)}</strong><p>${escapeHtml(card.action)}</p></article>`).join("");
@@ -1137,6 +1146,8 @@ export function renderDashboardHtml(model: DashboardModel): string {
   const latestVersion = model.telemetry.versionAdoption.find((row) => row.isLatest);
   const ciSource = model.telemetry.sourceCounts.find((row) => row.source === "external_ci");
   const serveStage = model.telemetry.commandFunnel.find((row) => row.stage === "Agent install");
+  const ciSetupStage = model.telemetry.commandFunnel.find((row) => row.stage === "CI setup");
+  const cloneDownloadSignals = model.github.clones14 + model.npm.downloads14;
   const releaseDay = model.github.latestReleasePublishedAt.slice(0, 10);
   const releaseTelemetry = model.telemetry.dailyEvents.find((row) => row.day === releaseDay);
   const releaseNpm = model.npm.daily.find((row) => row.day === releaseDay);
@@ -1230,6 +1241,7 @@ export function renderDashboardHtml(model: DashboardModel): string {
     <section class="metrics" aria-label="Strategy metrics">
       ${metric("external CI share", `${percent(ciSource?.sessions ?? 0, model.telemetry.totalSessions)}`, `${formatNumber(ciSource?.sessions ?? 0)} sessions`)}
       ${metric("agent install share", `${percent(serveStage?.sessions ?? 0, model.telemetry.totalSessions)}`, `${formatNumber(serveStage?.sessions ?? 0)} serve sessions`)}
+      ${metric("clone/download to CI", conversionPercent(ciSetupStage?.sessions ?? 0, cloneDownloadSignals), `${formatNumber(ciSetupStage?.sessions ?? 0)} setup sessions / ${formatNumber(cloneDownloadSignals)} clone+download signals`)}
       ${metric("latest version adoption", latestVersion ? `${latestVersion.sessionShare}%` : "n/a", latestVersion ? `${latestVersion.version}, ${formatNumber(latestVersion.sessions)} sessions` : "")}
       ${metric("clone-to-view gap", model.github.views14 === 0 ? "n/a" : `${Math.round(model.github.clones14 / Math.max(model.github.views14, 1))}:1`, `${formatNumber(model.github.clones14)} clones / ${formatNumber(model.github.views14)} views`)}
     </section>

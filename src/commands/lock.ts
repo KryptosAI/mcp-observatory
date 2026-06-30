@@ -11,7 +11,7 @@ import {
 } from "../lockfile.js";
 import type { LockFileServerEntry } from "../lockfile.js";
 import { runTarget } from "../runner.js";
-import { ANSI, c, getBinName } from "./helpers.js";
+import { ANSI, c, getBinName, printCiConversionCta } from "./helpers.js";
 
 // ── Register ────────────────────────────────────────────────────────────────
 
@@ -162,6 +162,11 @@ export function registerLockCommands(program: Command): void {
 
       if (anyFailed) {
         process.exitCode = 1;
+      } else {
+        printCiConversionCta({
+          bin: getBinName(),
+          context: "enforce this lock file on every PR:",
+        });
       }
     });
 }

@@ -13,7 +13,7 @@ The layout follows an App Store Connect-style breakdown:
 - Usage
 - Reliability
 
-The Strategy section turns raw telemetry into operator decisions: command funnel, version adoption, account/domain drilldown, CI/local source mix, and release-spike context.
+The Strategy section turns raw telemetry into operator decisions: command funnel, clone/download-to-CI conversion, version adoption, account/domain drilldown, CI/local source mix, and release-spike context.
 
 Daily rows are shown newest to oldest so the most recent project activity is always at the top.
 
