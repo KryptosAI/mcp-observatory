@@ -144,7 +144,7 @@ function sampleArtifact(targetId: string, gate: RunArtifact["gate"], score: numb
     gate,
     runId: `sample-${targetId}`,
     createdAt: new Date().toISOString(),
-    toolVersion: "0.25.1",
+    toolVersion: "0.26.1",
     target: {
       targetId,
       adapter: "local-process",
