@@ -10,7 +10,7 @@ import { buildEvent, recordEvent } from "../telemetry.js";
 import type { RunArtifact } from "../types.js";
 import { TOOL_VERSION } from "../version.js";
 import { maybePrintCloudCta } from "../commercial.js";
-import { ANSI, LOGO, c, useColor } from "./helpers.js";
+import { ANSI, LOGO, c, printCiConversionCta, useColor } from "./helpers.js";
 
 // ── Scan implementation ─────────────────────────────────────────────────────
 
@@ -167,6 +167,14 @@ async function runScan(bin: string, configPath: string | undefined, invokeTools:
     process.stdout.write(c(ANSI.dim, `  Run ${c(ANSI.cyan, `${bin} --help`)} for more commands\n`));
   }
   process.stdout.write("\n");
+
+  if (failCount === 0) {
+    printCiConversionCta({
+      bin,
+      context: "turn this scan into a CI gate:",
+      target: targets.length === 1 ? targets[0]?.config : undefined,
+    });
+  }
 
   if (format === "pr-comment-matrix" && artifacts.length > 0) {
     const { renderMatrixComment } = await import("../reporters/pr-comment-matrix.js");

@@ -24,6 +24,8 @@ Agents should not depend on tools nobody tests. MCP Observatory gives MCP server
 
 Two fast paths:
 
+Cloned this repo? Start here: [`CLONED_THIS.md`](./CLONED_THIS.md).
+
 Add MCP CI in one command:
 
 ```bash
@@ -63,7 +65,7 @@ Observatory gives maintainers and teams:
 - **MCP server mode** so agents can inspect other MCP servers directly
 - **Production pilot path** for hosted history, private repo reporting, certification, support, and fleet visibility
 
-See the [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), the [certification distribution loop](./docs/certification-distribution.md), [local metrics dashboard](./docs/metrics-dashboard.md), and [commercial pilots](./COMMERCIAL.md).
+See the [clone-to-CI campaign](./docs/clone-to-ci-campaign.md), [`setup-ci --doctor`](./docs/setup-ci-doctor.md), [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [June 2026 safety field report](./docs/mcp-safety-field-report-2026-06.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), the [certification PR campaign](./docs/certification-pr-campaign.md), [ecosystem distribution kit](./docs/ecosystem-distribution-kit.md), [local metrics dashboard](./docs/metrics-dashboard.md), and [commercial pilots](./COMMERCIAL.md).
 
 ## For Security And Platform Teams
 
@@ -144,6 +146,7 @@ Or add it manually to your config:
 | `lock verify` | Verify live servers match the lock file |
 | `history` | Show health score trends for your MCP servers |
 | `setup-ci` / `init-ci` | Create a GitHub Action and badge snippet for MCP compatibility/security checks |
+| `setup-ci --doctor` | Inspect whether the repository has a complete CI adoption kit |
 | `ci-report` | Generate CI report for GitHub issue creation |
 | `enterprise-report` | Generate a static production/security report from run artifacts |
 | `score <cmd>` | Score an MCP server's health (0-100) |
@@ -216,6 +219,12 @@ Add Observatory to your MCP server's CI pipeline:
 
 ```bash
 npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server"
+```
+
+Check the adoption kit:
+
+```bash
+npx @kryptosai/mcp-observatory setup-ci --doctor
 ```
 
 Or create the workflow manually:

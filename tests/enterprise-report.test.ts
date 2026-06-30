@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { buildEnterpriseReport, renderEnterpriseReportHtml } from "../src/commands/enterprise-report.js";
+import { buildEnterpriseReport, buildSampleEnterpriseArtifacts, renderEnterpriseReportHtml } from "../src/commands/enterprise-report.js";
 import type { CheckResult, RunArtifact } from "../src/types.js";
 
 function makeCheck(id: CheckResult["id"], status: CheckResult["status"], itemCount = 0, message = `${id} ${status}`): CheckResult {
@@ -74,5 +74,14 @@ describe("enterprise report", () => {
     expect(html).toContain("<!doctype html>");
     expect(html).toContain("<h1>Title</h1>");
     expect(html).toContain("<p>Body</p>");
+  });
+
+  it("builds a sanitized sample enterprise report", () => {
+    const report = buildEnterpriseReport(buildSampleEnterpriseArtifacts(), "Sample pilot");
+    expect(report).toContain("Account: Sample pilot");
+    expect(report).toContain("payments-mcp");
+    expect(report).toContain("internal-docs-mcp");
+    expect(report).toContain("customer-support-mcp");
+    expect(report).toContain("Security findings");
   });
 });

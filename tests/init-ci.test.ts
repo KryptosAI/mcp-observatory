@@ -2,7 +2,7 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { initCi } from "../src/commands/init-ci.js";
+import { doctorSetupCi, initCi } from "../src/commands/init-ci.js";
 
 const tempDirs: string[] = [];
 
@@ -128,6 +128,53 @@ describe("init-ci", () => {
     expect(await readFile(issueBody, "utf8")).toContain("compatibility/security checks");
     expect(await readFile(issueBody, "utf8")).toContain("validates the pull request code");
     expect(await readFile(scoreBadge, "utf8")).toContain("mcp-observatory badge");
+  });
+
+  it("reports a ready setup-ci adoption kit", async () => {
+    const dir = await tempDir();
+    const workflow = path.join(dir, ".github/workflows/mcp-observatory.yml");
+    const badgeFile = path.join(dir, "docs/mcp-observatory-badge.md");
+    const targetConfig = path.join(dir, "mcp-observatory.target.json");
+    const prBody = path.join(dir, "docs/mcp-observatory-pr-body.md");
+    const issueBody = path.join(dir, "docs/mcp-observatory-issue.md");
+    const scoreBadge = path.join(dir, "docs/mcp-observatory-score-badge.md");
+
+    await initCi({
+      command: "npx -y @example/mcp-server",
+      workflow,
+      badgeFile,
+      targetConfig,
+      prBody,
+      issueBody,
+      scoreBadge,
+      all: true,
+    });
+
+    const result = await doctorSetupCi({
+      workflow,
+      badgeFile,
+      targetConfig,
+      prBody,
+      issueBody,
+      scoreBadge,
+    });
+
+    expect(result.ready).toBe(true);
+    expect(result.checks.find((check) => check.id === "workflow")).toMatchObject({ status: "pass" });
+    expect(result.checks.find((check) => check.id === "action-ref")).toMatchObject({ status: "pass" });
+    expect(result.checks.find((check) => check.id === "permissions")).toMatchObject({ status: "pass" });
+  });
+
+  it("reports missing setup-ci workflow as the blocking doctor failure", async () => {
+    const dir = await tempDir();
+    const workflow = path.join(dir, ".github/workflows/mcp-observatory.yml");
+    const result = await doctorSetupCi({ command: "npx -y @example/mcp-server", workflow });
+
+    expect(result.ready).toBe(false);
+    expect(result.checks.find((check) => check.id === "workflow")).toMatchObject({
+      status: "fail",
+      fix: "npx @kryptosai/mcp-observatory setup-ci --all --command \"npx -y @example/mcp-server\"",
+    });
   });
 
   it("preserves quoted command arguments in generated target config", async () => {

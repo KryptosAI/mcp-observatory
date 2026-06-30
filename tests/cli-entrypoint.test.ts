@@ -185,6 +185,7 @@ describe("CLI entrypoint", () => {
     const { stdout, exitCode } = runCli(["setup-ci", "--help"]);
     expect(exitCode).toBe(0);
     expect(stdout).toContain("setup-ci");
+    expect(stdout).toContain("--doctor");
   });
 
   it("history with no data shows empty message", () => {

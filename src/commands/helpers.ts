@@ -153,3 +153,37 @@ export function getBinName(): string {
   }
   return "mcp-observatory";
 }
+
+export function quoteShell(value: string): string {
+  if (/^[A-Za-z0-9_./:@=-]+$/.test(value)) return value;
+  return `"${value.replaceAll("\\", "\\\\").replaceAll("\"", "\\\"")}"`;
+}
+
+export function setupCiHint(target?: TargetConfig, targetPath?: string, bin = "npx @kryptosai/mcp-observatory"): string {
+  if (targetPath) {
+    return `${bin} setup-ci --all --target ${quoteShell(targetPath)}`;
+  }
+  if (target?.adapter === "local-process") {
+    const command = [target.command, ...target.args].map(quoteShell).join(" ");
+    return `${bin} setup-ci --all --command ${quoteShell(command)}`;
+  }
+  return `${bin} setup-ci --all --target mcp-observatory.target.json`;
+}
+
+export function shouldPrintConversionCta(): boolean {
+  return process.stdout.isTTY && process.env["CI"] !== "true";
+}
+
+export function printCiConversionCta(options: {
+  bin?: string;
+  context?: string;
+  target?: TargetConfig;
+  targetPath?: string;
+}): void {
+  if (!shouldPrintConversionCta()) return;
+  const bin = options.bin ?? "npx @kryptosai/mcp-observatory";
+  process.stdout.write(`  ${c(ANSI.bold, "Next:")} ${options.context ?? "keep this passing in CI"}\n`);
+  process.stdout.write(`  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, setupCiHint(options.target, options.targetPath, bin))}\n`);
+  process.stdout.write(`  ${c(ANSI.dim, `Check adoption: ${bin} setup-ci --doctor`)}\n`);
+  process.stdout.write(`  ${c(ANSI.dim, "Public trust: add the badge, and star https://github.com/KryptosAI/mcp-observatory if it saved time.")}\n\n`);
+}

@@ -10,7 +10,7 @@ import {
 import { defaultRunsDirectory } from "../storage.js";
 import { buildEvent, recordEvent } from "../telemetry.js";
 import { maybePrintCloudCta } from "../commercial.js";
-import { ANSI, c, formatOutput, targetFromCommand, writeOutput } from "./helpers.js";
+import { ANSI, c, formatOutput, printCiConversionCta, targetFromCommand, writeOutput } from "./helpers.js";
 
 export function registerScoreCommands(program: Command): void {
   // ── score ────────────────────────────────────────────────────────────
@@ -100,6 +100,12 @@ export function registerScoreCommands(program: Command): void {
         }
       }
       process.stdout.write("\n");
+      if (artifact.gate !== "fail") {
+        printCiConversionCta({
+          context: "turn this score into a public trust signal:",
+          target,
+        });
+      }
       maybePrintCloudCta("security");
 
       if (artifact.gate === "fail") {

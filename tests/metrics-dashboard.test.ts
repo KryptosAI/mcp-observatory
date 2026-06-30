@@ -108,6 +108,7 @@ describe("local metrics dashboard", () => {
     expect(html).toContain("Strategy");
     expect(html).toContain("Command Funnel");
     expect(html).toContain("Version Adoption");
+    expect(html).toContain("clone/download to CI");
     expect(html).toContain("Account Drilldown");
     expect(html).toContain("Source Mix By Day");
     expect(html).toContain("Downloads");

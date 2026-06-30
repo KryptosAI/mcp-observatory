@@ -3,7 +3,13 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 const publicProofDocs = [
+  "CLONED_THIS.md",
   "docs/proof.md",
+  "docs/clone-to-ci-campaign.md",
+  "docs/ecosystem-distribution-kit.md",
+  "docs/certification-pr-campaign.md",
+  "docs/mcp-safety-field-report-2026-06.md",
+  "docs/setup-ci-doctor.md",
   "docs/mcp-safety-report-latest.md",
   "docs/project-case-study.md",
   "docs/enterprise-outreach-playbook.md",

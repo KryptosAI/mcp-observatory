@@ -126,6 +126,73 @@ export function buildEnterpriseReport(artifacts: RunArtifact[], account = "MCP t
   ].join("\n");
 }
 
+function sampleCheck(id: CheckResult["id"], status: CheckResult["status"], itemCount = 0, message = `${id} ${status}`): CheckResult {
+  return {
+    id,
+    capability: id,
+    status,
+    durationMs: 40,
+    message,
+    evidence: [{ endpoint: id, advertised: true, responded: status !== "fail", minimalShapePresent: status !== "fail", itemCount }],
+  };
+}
+
+function sampleArtifact(targetId: string, gate: RunArtifact["gate"], score: number, grade: NonNullable<RunArtifact["healthScore"]>["grade"], checks: CheckResult[]): RunArtifact {
+  return {
+    artifactType: "run",
+    schemaVersion: "1.0.0",
+    gate,
+    runId: `sample-${targetId}`,
+    createdAt: new Date().toISOString(),
+    toolVersion: "0.25.1",
+    target: {
+      targetId,
+      adapter: "local-process",
+      command: "npx",
+      args: ["-y", targetId],
+    },
+    environment: { platform: "sample", nodeVersion: "sample" },
+    summary: {
+      gate,
+      total: checks.length,
+      pass: checks.filter((check) => check.status === "pass").length,
+      fail: checks.filter((check) => check.status === "fail").length,
+      partial: checks.filter((check) => check.status === "partial").length,
+      unsupported: 0,
+      flaky: 0,
+      skipped: 0,
+    },
+    checks,
+    healthScore: {
+      overall: score,
+      grade,
+      dimensions: [],
+    },
+  };
+}
+
+export function buildSampleEnterpriseArtifacts(): RunArtifact[] {
+  return [
+    sampleArtifact("payments-mcp", "pass", 91, "A", [
+      sampleCheck("tools", "pass", 18),
+      sampleCheck("prompts", "pass", 2),
+      sampleCheck("resources", "pass", 1),
+      sampleCheck("security-lite", "pass", 0),
+    ]),
+    sampleArtifact("internal-docs-mcp", "pass", 74, "C", [
+      sampleCheck("tools", "pass", 9),
+      sampleCheck("prompts", "pass", 0),
+      sampleCheck("resources", "pass", 3),
+      sampleCheck("schema-quality", "partial", 0, "Two tool input properties are missing descriptions."),
+      sampleCheck("security-lite", "partial", 0, "Review URL and token-adjacent inputs before production use."),
+    ]),
+    sampleArtifact("customer-support-mcp", "fail", 58, "D", [
+      sampleCheck("tools", "fail", 0, "Server did not respond to tools/list during startup window."),
+      sampleCheck("security", "partial", 0, "Authentication metadata was not explicit in the target config."),
+    ]),
+  ];
+}
+
 export function renderEnterpriseReportHtml(markdown: string): string {
   const body = markdown
     .split("\n")
@@ -162,8 +229,9 @@ export function registerEnterpriseReportCommands(program: Command): void {
     .option("--account <name>", "Account, team, or company name for the report.", "MCP team")
     .option("--format <format>", "Output format: markdown or html.", "markdown")
     .option("--output <path>", "Write report to file instead of stdout.")
-    .action(async (options: { artifactsDir: string; account: string; format: string; output?: string }) => {
-      const artifacts = await loadArtifactsFromDir(options.artifactsDir);
+    .option("--sample", "Use sanitized sample artifacts to demonstrate the paid pilot report.", false)
+    .action(async (options: { artifactsDir: string; account: string; format: string; output?: string; sample?: boolean }) => {
+      const artifacts = options.sample ? buildSampleEnterpriseArtifacts() : await loadArtifactsFromDir(options.artifactsDir);
       const markdown = buildEnterpriseReport(artifacts, options.account);
       const output = options.format === "html" ? renderEnterpriseReportHtml(markdown) : markdown;
 
@@ -179,6 +247,7 @@ export function registerEnterpriseReportCommands(program: Command): void {
         matrixPassCount: artifacts.filter((artifact) => artifact.gate === "pass").length,
         matrixFailCount: artifacts.filter((artifact) => artifact.gate === "fail").length,
         securityFindingCount: artifacts.reduce((sum, artifact) => sum + securityFindings(artifact), 0),
+        sampleReport: options.sample === true,
       }));
       if (options.output) {
         maybePrintCloudCta("ci");
