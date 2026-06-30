@@ -75,7 +75,7 @@ The distribution wedge is useful CI for other MCP repositories. The certificatio
 
 Current public distribution proof includes:
 
-- latest release: `v0.23.0`
+- latest release: `v0.25.1`
 - npm package: `@kryptosai/mcp-observatory`
 - GitHub Action: `KryptosAI/mcp-observatory/action@main`
 - npm downloads snapshot: 511 downloads for June 11-20, 2026
