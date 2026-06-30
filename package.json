@@ -1,6 +1,6 @@
 {
   "name": "@kryptosai/mcp-observatory",
-  "version": "0.25.1",
+  "version": "0.26.1",
   "description": "The CI and security gate for MCP servers before agents depend on them.",
   "mcpName": "io.github.KryptosAI/mcp-observatory",
   "license": "MIT",

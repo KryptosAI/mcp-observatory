@@ -81,7 +81,7 @@ For production CI, pin the package version:
 - uses: KryptosAI/mcp-observatory/action@main
   with:
     command: npx -y <server-package>
-    package-version: 0.25.1
+    package-version: 0.26.1
     deep: true
     security: true
 ```
