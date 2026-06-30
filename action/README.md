@@ -76,10 +76,10 @@ GitHub may downgrade `GITHUB_TOKEN` to read-only on forked pull requests. In tha
 - uses: KryptosAI/mcp-observatory/action@main
   with:
     command: npx -y my-mcp-server
-    package-version: 0.23.0
+    package-version: 0.25.1
 ```
 
-For stricter reproducibility, pin both the Action ref and the npm package version, for example `uses: KryptosAI/mcp-observatory/action@v0.23.0` plus `package-version: 0.23.0`.
+For stricter reproducibility, pin both the Action ref and the npm package version, for example `uses: KryptosAI/mcp-observatory/action@v0.25.1` plus `package-version: 0.25.1`.
 
 ### Verify against baseline
 
