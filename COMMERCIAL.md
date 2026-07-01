@@ -6,18 +6,18 @@ The open source CLI and MCP server remain free for local OSS use under the MIT l
 
 ## Pilot Pricing
 
-These are starting points for current pilots, not permanent fixed plans.
+These are starting points for current pilots, not permanent fixed plans. For public OSS users, the important part is simple: local CLI use remains free, and paid work is for private or production support needs.
 
 | Pilot | Starting Price | Best Fit |
 | --- | ---: | --- |
 | Team Pilot | $299/month | Small teams adding MCP regression checks to CI |
 | Business Pilot | $999/month | Private repos, recurring security reports, and shared reporting |
 | Enterprise Pilot | $3k/month | Private MCP readiness reports, support, and fleet visibility |
-| Strategic Accounts | Custom, $250k+/year | Major platforms, AI labs, and companies running MCP in production at scale |
+| Strategic Accounts | Custom | Major platforms, AI labs, and companies running MCP in production at scale |
 
-Contact: william@banksey.com
+Contact: open a pilot request from the GitHub issue chooser.
 
-Primary pilot offer: [Private MCP readiness review + CI rollout + drift/security report](./docs/paid-pilot-offer.md).
+Primary pilot offer: private MCP readiness review + CI rollout + drift/security report.
 
 ## Paid Production Use
 
@@ -73,12 +73,11 @@ For account-level pilot reporting in CI:
 
 ```bash
 MCP_OBSERVATORY_ORG=customer.com
-MCP_OBSERVATORY_CONTACT=mcp-owner@customer.com
+MCP_OBSERVATORY_CONTACT=customer-mcp-owner
 ```
 
-Use the [enterprise outreach playbook](./docs/enterprise-outreach-playbook.md) to route high-confidence company usage to manual pilots without sending generic low-tier pricing to major accounts.
-Use [public proof](./docs/proof.md) and the [project case study](./docs/project-case-study.md) for customer-safe credibility. Do not expose private telemetry rows in outreach.
+Use [public proof](./docs/proof.md) for customer-safe credibility. Do not expose private telemetry rows in outreach.
 
 ## Enterprise Framing
 
-For production MCP usage, private repo CI, compliance/security reporting, or large company deployments, contact us before selecting a plan. Major company usage is routed to Enterprise or Strategic pricing rather than Team or Business pilots.
+For production MCP usage, private repo CI, compliance/security reporting, or large company deployments, contact us before selecting a plan.

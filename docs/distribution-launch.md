@@ -28,7 +28,7 @@ MCP Observatory scans MCP servers, verifies capabilities, detects schema drift, 
 
 Free for local OSS use. Paid pilots are available for hosted reporting, private repo CI, recurring security reports, certification, support, and fleet visibility.
 
-Production MCP usage? Contact william@banksey.com.
+Production MCP usage? Open a pilot request from the GitHub issue chooser.
 
 ## Outreach Template
 

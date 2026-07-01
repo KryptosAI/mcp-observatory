@@ -77,7 +77,7 @@ Current public distribution proof includes:
 
 - latest release: `v0.26.1`
 - npm package: `@kryptosai/mcp-observatory`
-- GitHub Action: `KryptosAI/mcp-observatory/action@main`
+- GitHub Action: `KryptosAI/mcp-observatory/action@v0.26.1`
 - npm downloads snapshot: 511 downloads for June 11-20, 2026
 - visible GitHub traffic window: 745 clones and 232 unique cloners
 - visible GitHub page-view window: 12 views and 9 unique visitors
@@ -104,7 +104,7 @@ Current pilot anchors:
 - Team: starts at `$299/month`
 - Business: starts at `$999/month`
 - Enterprise: starts at `$3k/month`
-- Strategic: `$250k+/year`
+- Strategic: custom
 
 ## Professional Signal
 

@@ -4,6 +4,7 @@ dist/
 coverage/
 .DS_Store
 *.log
+*.swp
 logs/
 reports/
 telemetry-exports/

@@ -35,7 +35,7 @@ Known audit note:
 - Publish npm only after the release gate is green.
 - Refresh MCP directory listings with: “MCP Observatory is the CI and security gate for MCP servers before agents depend on them.”
 - Include “free for local OSS use; paid for hosted reporting, private repo CI, recurring security reports, certification, support, and fleet visibility.”
-- Link production users to `COMMERCIAL.md` and `william@banksey.com`.
+- Link production users to `COMMERCIAL.md` and the GitHub pilot request issue template.
 - Submit or refresh listings on Glama, PulseMCP, Smithery, and relevant awesome-MCP lists with the tags: security, developer tools, CI/CD, testing, MCP security, schema drift.
 - Use the certification distribution loop to open helpful PRs against popular MCP server repos and convert accepted PRs into proof points.
 - Link public proof, the safety report, and directory listing copy from launch/outreach materials.
