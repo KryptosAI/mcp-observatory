@@ -22,4 +22,15 @@ describe("hosted Worker hardening", () => {
     expect(rateLimitIndex).toBeGreaterThan(authIndex);
     expect(scanIndex).toBeGreaterThan(rateLimitIndex);
   });
+
+  it("uses cryptographic run IDs and defensive response headers", async () => {
+    const source = await readFile(workerPath, "utf8");
+
+    expect(source).toContain("crypto.getRandomValues(bytes)");
+    expect(source).not.toContain("Math.random()");
+    expect(source).toContain('"X-Content-Type-Options": "nosniff"');
+    expect(source).toContain('"Referrer-Policy": "no-referrer"');
+    expect(source).toContain("frame-ancestors 'none'");
+    expect(source).toContain("...securityHeaders()");
+  });
 });

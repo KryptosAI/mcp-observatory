@@ -1598,10 +1598,31 @@ async function openDashboard(paths: Paths): Promise<void> {
   await execFileAsync("open", [paths.dashboard]);
 }
 
+export function browserSecurityHeaders(contentType: string): Record<string, string> {
+  const headers: Record<string, string> = {
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "no-referrer",
+  };
+  if (contentType.startsWith("text/html")) {
+    headers["Content-Security-Policy"] = [
+      "default-src 'none'",
+      "script-src 'self' 'unsafe-inline'",
+      "style-src 'self' 'unsafe-inline'",
+      "connect-src 'self'",
+      "img-src 'self' data:",
+      "base-uri 'none'",
+      "form-action 'none'",
+      "frame-ancestors 'none'",
+    ].join("; ");
+  }
+  return headers;
+}
+
 function send(response: ServerResponse, status: number, body: string, contentType = "text/plain; charset=utf-8"): void {
   response.writeHead(status, {
     "content-type": contentType,
     "cache-control": "no-store",
+    ...browserSecurityHeaders(contentType),
   });
   response.end(body);
 }

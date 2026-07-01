@@ -2,7 +2,7 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { ingestTelemetryRows, openDatabase, renderDashboardHtml } from "../scripts/metrics-dashboard.js";
+import { browserSecurityHeaders, ingestTelemetryRows, openDatabase, renderDashboardHtml } from "../scripts/metrics-dashboard.js";
 import type { TelemetryRow } from "../scripts/telemetry-company-intelligence.js";
 
 const tempDirs: string[] = [];
@@ -137,5 +137,15 @@ describe("local metrics dashboard", () => {
     expect(html).not.toContain("analyst@");
     expect(html).not.toContain("git_email");
     expect(html).not.toContain("serverCommands");
+  });
+
+  it("serves the local dashboard with defensive browser headers", () => {
+    expect(browserSecurityHeaders("text/html; charset=utf-8")).toMatchObject({
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "no-referrer",
+    });
+    expect(browserSecurityHeaders("text/html; charset=utf-8")["Content-Security-Policy"]).toContain("frame-ancestors 'none'");
+    expect(browserSecurityHeaders("text/html; charset=utf-8")["Content-Security-Policy"]).toContain("connect-src 'self'");
+    expect(browserSecurityHeaders("application/json; charset=utf-8")["Content-Security-Policy"]).toBeUndefined();
   });
 });
