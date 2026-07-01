@@ -14,6 +14,8 @@ This repo is intentionally small. Good contributions make the evidence clearer. 
 
 ## Current Priorities
 
+- Add one safe MCP target to the [MCP Target Registry](./docs/target-registry.md)
+- Follow the [Target Contribution Guide](./docs/target-contribution-guide.md) for a small first PR with evidence
 - [#3 Improve artifact output readability in the Markdown report](https://github.com/KryptosAI/mcp-observatory/issues/3)
 - [#6 Improve CLI startup error messaging for connection and setup failures](https://github.com/KryptosAI/mcp-observatory/issues/6)
 - [#1](https://github.com/KryptosAI/mcp-observatory/issues/1) and [#2](https://github.com/KryptosAI/mcp-observatory/issues/2) once a concrete passing server is identified
@@ -52,9 +54,10 @@ npm run integration:real
 
 If this is your first contribution to the project, pick one of these paths:
 
-1. Docs path: improve one README or CONTRIBUTING section and keep the change tightly scoped.
-2. Reporting path: improve one Markdown report section and update the checked-in report examples.
-3. Fixture path: add or refine one deterministic target or artifact in `examples/` or `tests/fixtures/`.
+1. Target path: add one public no-secret MCP server to `docs/safety-index/targets.json` and include generated evidence.
+2. Docs path: improve one README or CONTRIBUTING section and keep the change tightly scoped.
+3. Reporting path: improve one Markdown report section and update the checked-in report examples.
+4. Fixture path: add or refine one deterministic target or artifact in `examples/` or `tests/fixtures/`.
 
 For each path:
 
@@ -81,3 +84,14 @@ When you add a fixture:
 - document what the fixture is proving and why it matters
 
 The `fixture contribution` issue template is the best starting point for proposing a new case.
+
+## Target Registry Contributions
+
+The fastest useful contribution is one safe MCP target. Start with the [MCP Target Registry](./docs/target-registry.md), then use the [Target Contribution Guide](./docs/target-contribution-guide.md).
+
+Minimal PR shape:
+
+- one new object in `docs/safety-index/targets.json`
+- generated JSON and Markdown evidence under `docs/safety-index/artifacts/`
+- updated `docs/mcp-server-safety-index.md`
+- validation commands in the PR body

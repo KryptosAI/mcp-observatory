@@ -47,6 +47,8 @@ Start here:
 
 - Agent runtime quickstart: `docs/agent-runtime-quickstart.md`
 - OpenClaw agent template: `docs/openclaw-agent-template/SOUL.md`
+- Target registry: `docs/target-registry.md`
+- Target contribution guide: `docs/target-contribution-guide.md`
 - Contribution guide: `CONTRIBUTING.md`
 - Certification distribution loop: `docs/certification-distribution.md`
 - GitHub issue tracker: https://github.com/KryptosAI/mcp-observatory/issues
@@ -56,3 +58,7 @@ Start here:
 Agents should not depend on tools nobody tests.
 
 MCP Observatory is complementary to official MCP SDKs and conformance tooling. It focuses on practical CI, security checks, drift detection, reports, and regression evidence for real MCP servers.
+
+## Best First Contribution
+
+Add one safe no-secret MCP server target to `docs/safety-index/targets.json`, run `npm run safety-index`, and open a PR with the generated evidence.
