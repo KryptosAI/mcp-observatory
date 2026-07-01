@@ -8,7 +8,30 @@ import { defaultRunsDirectory } from "../storage.js";
 import { appendHistory, buildHistoryEntry, getTrend, readHistory } from "../history.js";
 import { buildEvent, recordEvent } from "../telemetry.js";
 import { maybePrintCloudCta } from "../commercial.js";
-import { ANSI, c, printCiConversionCta, resolveTarget, targetFromCommand } from "./helpers.js";
+import { ANSI, c, resolveTarget, targetFromCommand } from "./helpers.js";
+import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
+
+function extractTrailingConversionFlags(
+  commandArgs: string[],
+  options: SetupCiConversionFlags,
+): { commandArgs: string[]; flags: SetupCiConversionFlags } {
+  const flags: SetupCiConversionFlags = { ...options };
+  const targetArgs: string[] = [];
+  for (const arg of commandArgs) {
+    if (arg === "--setup-ci") {
+      flags.setupCi = true;
+    } else if (arg === "--yes") {
+      flags.yes = true;
+    } else if (arg === "--no-setup-ci") {
+      flags.noSetupCi = true;
+    } else if (arg === "--force") {
+      flags.force = true;
+    } else {
+      targetArgs.push(arg);
+    }
+  }
+  return { commandArgs: targetArgs, flags };
+}
 
 export function registerTestCommands(program: Command): void {
   program
@@ -20,8 +43,15 @@ export function registerTestCommands(program: Command): void {
     .option("--deep", "Also invoke safe tools to verify they execute.")
     .option("--invoke-tools", "Alias for --deep.")
     .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
+    .option("--setup-ci", "Offer CI conversion after a successful check; use with --yes in non-interactive runs to write files.", false)
+    .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
+    .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
+    .option("--force", "Overwrite existing generated CI adoption files.", false)
     .option("--no-color", "Disable colored output.")
-    .action(async (commandArgs: string[], options: { deep?: boolean; invokeTools?: boolean; security?: boolean; target?: string }) => {
+    .action(async (commandArgs: string[], options: { deep?: boolean; invokeTools?: boolean; security?: boolean; target?: string } & SetupCiConversionFlags) => {
+      const extracted = extractTrailingConversionFlags(commandArgs, options);
+      commandArgs = extracted.commandArgs;
+      const conversionFlags = extracted.flags;
       const t0 = Date.now();
       const target = options.target ? await resolveTarget({ target: options.target }) : targetFromCommand(commandArgs);
       process.stdout.write(`  ${c(ANSI.dim, "⟳")} Checking ${c(ANSI.bold, target.targetId)}...`);
@@ -79,10 +109,14 @@ export function registerTestCommands(program: Command): void {
       if (artifact.gate === "fail") {
         process.exitCode = 1;
       } else {
-        printCiConversionCta({
-          context: "keep this passing in CI:",
+        await maybeConvertPassingCheckToCi({
+          artifact,
           target,
           targetPath: options.target,
+          setupCi: conversionFlags.setupCi,
+          yes: conversionFlags.yes,
+          noSetupCi: conversionFlags.noSetupCi,
+          force: conversionFlags.force,
         });
       }
       maybePrintCloudCta(options.security ? "security" : "general");

@@ -313,12 +313,18 @@ const RATE_LIMIT_WINDOW_SECONDS = 60;
 const RATE_LIMIT_MAX_REQUESTS = 10;
 
 function generateRunId(): string {
-  const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-  let id = "";
-  for (let i = 0; i < 12; i++) {
-    id += chars[Math.floor(Math.random() * chars.length)];
-  }
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  const id = Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
   return `run_${id}`;
+}
+
+function securityHeaders(): Record<string, string> {
+  return {
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "no-referrer",
+    "Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
+  };
 }
 
 function corsHeaders(): Record<string, string> {
@@ -335,6 +341,7 @@ function jsonResponse(body: unknown, status = 200): Response {
     status,
     headers: {
       "Content-Type": "application/json",
+      ...securityHeaders(),
       ...corsHeaders(),
     },
   });
@@ -912,6 +919,7 @@ async function handleGetBadge(
       headers: {
         "Content-Type": "image/svg+xml",
         "Cache-Control": "no-cache",
+        ...securityHeaders(),
         ...corsHeaders(),
       },
     });
@@ -926,6 +934,7 @@ async function handleGetBadge(
     headers: {
       "Content-Type": "image/svg+xml",
       "Cache-Control": "public, max-age=300",
+      ...securityHeaders(),
       ...corsHeaders(),
     },
   });
