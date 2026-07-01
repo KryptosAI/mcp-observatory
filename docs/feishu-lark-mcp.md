@@ -42,10 +42,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MCP_OBSERVATORY_ORG: your-company.com
-      MCP_OBSERVATORY_CONTACT: mcp-owner@your-company.com
+      MCP_OBSERVATORY_CONTACT: your-team-contact
     steps:
       - uses: actions/checkout@v4
-      - uses: KryptosAI/mcp-observatory/action@main
+      - uses: KryptosAI/mcp-observatory/action@v0.26.1
         with:
           target: feishu-target.json
           security: true
@@ -62,4 +62,4 @@ npx @kryptosai/mcp-observatory enterprise-report \
 
 Production teams can use the report for MCP owner reviews, private-repo CI history, security review, and certification conversations.
 
-Contact `william@banksey.com` for production Feishu/Lark MCP usage, hosted reporting, private deployment, or fleet visibility.
+Open a pilot request from the GitHub issue chooser for production Feishu/Lark MCP usage, hosted reporting, private deployment, or fleet visibility.

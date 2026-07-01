@@ -95,17 +95,7 @@ Use the detailed walkthrough in [Target Contribution Guide](./target-contributio
 
 ## Contribution Queue
 
-Ready-made target tasks live under the [`target-registry` label](https://github.com/KryptosAI/mcp-observatory/issues?q=is%3Aissue%20is%3Aopen%20label%3Atarget-registry).
-
-Good first target issues:
-
-- [Chrome DevTools MCP](https://github.com/KryptosAI/mcp-observatory/issues/128)
-- [Git MCP server](https://github.com/KryptosAI/mcp-observatory/issues/129)
-- [UI5 MCP safe startup mode](https://github.com/KryptosAI/mcp-observatory/issues/130)
-- [n8n MCP no-secret target](https://github.com/KryptosAI/mcp-observatory/issues/131)
-- [Kubernetes MCP safe-mode target](https://github.com/KryptosAI/mcp-observatory/issues/132)
-
-Pick one issue, make one small PR, and include generated evidence.
+Ready-made target tasks live under the [`target-registry` label](https://github.com/KryptosAI/mcp-observatory/issues?q=is%3Aissue%20is%3Aopen%20label%3Atarget-registry). Pick one issue, make one small PR, and include generated evidence.
 
 ## Maintainer-Friendly Ask
 

@@ -83,7 +83,7 @@ The **Update Data** button is available in `metrics:serve` mode. A static `file:
 For tests or offline recovery, you can seed telemetry from an existing export:
 
 ```bash
-npm run metrics:refresh -- --telemetry-input telemetry-exports/events-flat-full.json
+npm run metrics:refresh -- --telemetry-input path/to/sanitized-telemetry-export.json
 ```
 
 ## Optional Hourly Refresh
@@ -105,4 +105,4 @@ Raw telemetry remains available in the local SQLite database for account intelli
 - GitHub and npm public metrics
 - collection errors and freshness status
 
-Do not commit `.mcp-observatory-metrics/`, telemetry exports, private reports, or screenshots that reveal raw data.
+Do not commit `.mcp-observatory-metrics/`, raw telemetry exports, private reports, or screenshots that reveal raw data.

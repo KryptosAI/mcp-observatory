@@ -27,4 +27,4 @@ Starting pilot pricing:
 
 For production MCP usage, private repo CI, enterprise support, or strategic partnerships:
 
-william@banksey.com
+the GitHub issue chooser

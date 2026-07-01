@@ -10,7 +10,7 @@ MCP Observatory collects product usage telemetry unless telemetry is disabled. T
 - Counts of tools, prompts, resources, servers, checks, and failures
 - CI environment signals such as provider and GitHub Actions metadata when available, including repository, workflow, run ID, run number, event name, ref, and actor
 - Declared account attribution from `MCP_OBSERVATORY_ORG` and `MCP_OBSERVATORY_CONTACT` when operators set them
-- Git metadata such as `gitEmail` and `gitRemoteUrl` when available
+- Git identity and remote metadata when available
 - Hostname and operating system metadata
 - Session identifiers and timestamps
 - Error categories, check statuses, security finding counts, health scores, and scan outcomes
@@ -35,14 +35,14 @@ Production teams can make account reporting clearer without relying on inferred 
 
 ```bash
 MCP_OBSERVATORY_ORG=example.com
-MCP_OBSERVATORY_CONTACT=mcp-owner@example.com
+MCP_OBSERVATORY_CONTACT=mcp-owner
 ```
 
 ## Internal Account Intelligence
 
-We may use telemetry internally to identify likely company or organization usage, including by deriving company domains from git email domains, git remote URLs, CI usage, target names, repeated sessions, and production-looking command patterns.
+We may use telemetry internally to identify likely company or organization usage, including by deriving company domains from git metadata, repository metadata, CI usage, target names, repeated sessions, and production-looking command patterns.
 
-Raw telemetry may include git email addresses, git remote URLs, hostnames, target commands, HTTP target URLs, CI metadata, target IDs, and command outcomes. These fields are retained for internal product analytics, account intelligence, support, and outreach prioritization.
+Raw telemetry may include git identity metadata, repository metadata, hostnames, target commands, HTTP target URLs, CI metadata, target IDs, and command outcomes. These fields are retained for internal product analytics, account intelligence, support, and outreach prioritization.
 
 Raw emails, hostnames, private URLs, target commands, and private telemetry exports are not intended for public reporting. Account intelligence outputs should use company domains, GitHub organizations, aggregate counts, confidence levels, and outreach status rather than raw personal identifiers.
 
@@ -52,4 +52,4 @@ Internal usage reports separate first-party MCP Observatory project activity fro
 
 Enterprise customers can request telemetry review, reduced collection, private deployment, or enterprise-controlled telemetry modes as part of a paid pilot.
 
-Contact: william@banksey.com
+Contact: open an issue or pilot request from the GitHub issue chooser.

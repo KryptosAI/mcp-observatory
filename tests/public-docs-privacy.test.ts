@@ -1,24 +1,39 @@
-import { readFile } from "node:fs/promises";
+import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 
-const publicProofDocs = [
-  "CLONED_THIS.md",
-  "docs/proof.md",
-  "docs/clone-to-ci-campaign.md",
-  "docs/ecosystem-distribution-kit.md",
-  "docs/certification-pr-campaign.md",
-  "docs/mcp-safety-field-report-2026-06.md",
-  "docs/setup-ci-doctor.md",
-  "docs/mcp-safety-report-latest.md",
-  "docs/project-case-study.md",
-  "docs/enterprise-outreach-playbook.md",
-  "docs/reference-evaluations.md",
-  "docs/mcp-server-safety-index.md",
-  "docs/methodology.md",
-  "docs/safety-index/maintainer-note-template.md",
-  "docs/mcp-lock-files.md",
-];
+async function exists(filePath: string): Promise<boolean> {
+  try {
+    await stat(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function markdownFilesUnder(relativeDir: string): Promise<string[]> {
+  const root = path.join(process.cwd(), relativeDir);
+  if (!(await exists(root))) return [];
+  const rootStat = await stat(root);
+  if (rootStat.isFile()) return relativeDir.endsWith(".md") ? [relativeDir] : [];
+  const entries = await readdir(root, { withFileTypes: true });
+  const files = await Promise.all(entries.map(async (entry) => {
+    const relativePath = path.join(relativeDir, entry.name);
+    if (entry.isDirectory()) return markdownFilesUnder(relativePath);
+    return entry.isFile() && entry.name.endsWith(".md") ? [relativePath] : [];
+  }));
+  return files.flat();
+}
+
+async function packagedMarkdownDocs(): Promise<string[]> {
+  const packageJson = JSON.parse(await readFile(path.join(process.cwd(), "package.json"), "utf8")) as { files?: string[] };
+  const docs = await Promise.all((packageJson.files ?? []).map(async (entry) => {
+    if (entry.endsWith(".md")) return [entry];
+    if (entry.startsWith("docs/")) return markdownFilesUnder(entry);
+    return [];
+  }));
+  return [...new Set(docs.flat())].sort();
+}
 
 const forbiddenPatterns = [
   /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i,
@@ -37,8 +52,8 @@ const forbiddenPatterns = [
 ];
 
 describe("public proof docs privacy guardrails", () => {
-  it("does not expose private telemetry exports or raw telemetry field names", async () => {
-    for (const docPath of publicProofDocs) {
+  it("does not expose private telemetry exports or raw telemetry field names in packaged docs", async () => {
+    for (const docPath of await packagedMarkdownDocs()) {
       const content = await readFile(path.join(process.cwd(), docPath), "utf8");
       for (const pattern of forbiddenPatterns) {
         expect(content).not.toMatch(pattern);

@@ -65,9 +65,9 @@ Observatory gives maintainers and teams:
 - **Health score badges** for public trust signals
 - **Record/replay/verify** workflows for regression testing
 - **MCP server mode** so agents can inspect other MCP servers directly
-- **Production pilot path** for hosted history, private repo reporting, certification, support, and fleet visibility
+- **Production support path** for hosted history, private repo reporting, certification, support, and fleet visibility
 
-See the [target registry](./docs/target-registry.md), [target contribution guide](./docs/target-contribution-guide.md), [clone-to-CI campaign](./docs/clone-to-ci-campaign.md), [`setup-ci --doctor`](./docs/setup-ci-doctor.md), [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [June 2026 safety field report](./docs/mcp-safety-field-report-2026-06.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), the [certification PR campaign](./docs/certification-pr-campaign.md), [ecosystem distribution kit](./docs/ecosystem-distribution-kit.md), [local metrics dashboard](./docs/metrics-dashboard.md), and [commercial pilots](./COMMERCIAL.md).
+See the [target registry](./docs/target-registry.md), [target contribution guide](./docs/target-contribution-guide.md), [`setup-ci --doctor`](./docs/setup-ci-doctor.md), [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [June 2026 safety field report](./docs/mcp-safety-field-report-2026-06.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), [local metrics dashboard](./docs/metrics-dashboard.md), and [commercial support](./COMMERCIAL.md).
 
 ## For Security And Platform Teams
 
@@ -75,21 +75,11 @@ MCP servers are becoming part of the AI software supply chain. Agents need relia
 
 MCP Observatory gives security and platform teams MCP server CI, schema drift detection, security findings, SARIF/HTML/Markdown reports, and a path toward certification or fleet visibility. Local OSS use stays free; production, private repo, and fleet usage can move through a paid pilot.
 
-## Production / Enterprise
+## Production Support
 
-Free for local OSS use. Paid pilots are available for hosted reporting, private repo CI, recurring security reports, certification, support, and MCP fleet visibility.
+Local OSS use stays free under MIT. Teams running MCP in production can use [commercial support](./COMMERCIAL.md) for hosted reporting, private repo CI, recurring security reports, certification review, support, and fleet visibility.
 
-| Pilot | Starts At | Best Fit |
-|-------|----------:|----------|
-| Team Pilot | $299/month | Small teams adding MCP checks to CI |
-| Business Pilot | $999/month | Private repos and recurring security reports |
-| Enterprise Pilot | $3k/month | Private MCP readiness reports, support, and fleet visibility |
-| Strategic Accounts | Custom, $250k+/year | Major companies running MCP in production |
-
-Run `npx @kryptosai/mcp-observatory cloud` or contact `william@banksey.com` for production MCP usage. The primary paid pilot is a [private MCP readiness review](./docs/paid-pilot-offer.md).
-
-See [commercial pilots](./COMMERCIAL.md), [privacy and telemetry](./PRIVACY.md), and [terms for production use](./TERMS.md).
-For a fuller narrative, see the [project case study](./docs/project-case-study.md).
+Run `npx @kryptosai/mcp-observatory cloud`, open a pilot request from the issue chooser, or see [COMMERCIAL.md](./COMMERCIAL.md). Also see [privacy and telemetry](./PRIVACY.md) and [terms for production use](./TERMS.md).
 
 ## Quick Start
 
@@ -270,7 +260,7 @@ Action inputs:
 
 The action can comment on PRs and set commit statuses when the workflow grants write permissions. `setup-ci` generates read-only third-party-friendly workflows by default and lets maintainers opt into comments/statuses later. `init-ci` remains available as a backward-compatible alias. See [`action/README.md`](./action/README.md) for all options.
 
-Production teams can add hosted CI history, private-repo reporting, recurring security reports, certification review, support, and fleet visibility. Run `npx @kryptosai/mcp-observatory cloud` for pilot options, email `william@banksey.com`, or open a pilot request from the issue chooser.
+Production teams can add hosted CI history, private-repo reporting, recurring security reports, certification review, support, and fleet visibility. Run `npx @kryptosai/mcp-observatory cloud`, see [COMMERCIAL.md](./COMMERCIAL.md), or open a pilot request from the issue chooser.
 
 ### Certified by MCP Observatory
 
@@ -301,7 +291,7 @@ For clearer internal account attribution in CI, set:
 
 ```bash
 MCP_OBSERVATORY_ORG=your-company.com
-MCP_OBSERVATORY_CONTACT=mcp-owner@your-company.com
+MCP_OBSERVATORY_CONTACT=your-team-contact
 ```
 
 Testing Feishu/Lark integrations? See the [Feishu/Lark MCP guide](./docs/feishu-lark-mcp.md).
@@ -411,7 +401,7 @@ npx @kryptosai/mcp-observatory run --target ./target.json
 {
   "targetId": "my-remote-server",
   "adapter": "http",
-  "url": "http://localhost:3000/mcp",
+  "url": "https://mcp.example.com/mcp",
   "authToken": "${MCP_SERVER_TOKEN}",
   "headers": {
     "X-Api-Key": "$MCP_SERVER_API_KEY"

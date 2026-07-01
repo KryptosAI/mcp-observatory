@@ -27,7 +27,7 @@ npx @kryptosai/mcp-observatory badge npx -y <server-package> --output docs/mcp-h
 ```
 
 ```md
-[![MCP Health](./docs/mcp-health.svg)](https://github.com/KryptosAI/mcp-observatory)
+[![MCP Health](https://raw.githubusercontent.com/OWNER/REPO/main/docs/mcp-health.svg)](https://github.com/KryptosAI/mcp-observatory)
 ```
 
 ## GitHub Action Template
@@ -67,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: KryptosAI/mcp-observatory/action@main
+      - uses: KryptosAI/mcp-observatory/action@v0.26.1
         with:
           command: npx -y <server-package>
           deep: true
@@ -78,7 +78,7 @@ jobs:
 For production CI, pin the package version:
 
 ```yaml
-- uses: KryptosAI/mcp-observatory/action@main
+- uses: KryptosAI/mcp-observatory/action@v0.26.1
   with:
     command: npx -y <server-package>
     package-version: 0.26.1
@@ -89,7 +89,7 @@ For production CI, pin the package version:
 For repos with a local target config:
 
 ```yaml
-- uses: KryptosAI/mcp-observatory/action@main
+- uses: KryptosAI/mcp-observatory/action@v0.26.1
   with:
     target: ./observatory-target.json
     deep: true

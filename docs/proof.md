@@ -8,7 +8,7 @@ MCP Observatory is early, but it is already a working MCP testing/security stack
 - GitHub Action: `KryptosAI/mcp-observatory/action@v0.26.1`
 - Latest release: `v0.26.1`
 - CLI command count: scan, test, record, replay, verify, diff, watch, suggest, serve, lock, history, setup-ci, init-ci, ci-report, enterprise-report, score, badge, cloud
-- Test suite: 334 passing tests across 43 test files as of June 20, 2026
+- Test suite: 348 passing tests across 45 test files as of July 1, 2026
 - GitHub traffic snapshot: 745 clones and 232 unique cloners in the visible June 2026 traffic window
 - GitHub page views snapshot: 12 views and 9 unique visitors in the visible June 2026 traffic window
 - npm downloads snapshot: 511 downloads for June 11-20, 2026
@@ -89,7 +89,7 @@ Current paid positioning is pilot-first:
 - Team Pilot: starts at `$299/month`
 - Business Pilot: starts at `$999/month`
 - Enterprise Pilot: starts at `$3k/month`
-- Strategic Accounts: custom, `$250k+/year`
+- Strategic Accounts: custom
 
 Paid value is production use: hosted reporting, private repo CI history, security reports, certification, support, fleet visibility, and enterprise review.
 

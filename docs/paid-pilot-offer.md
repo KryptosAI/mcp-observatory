@@ -30,9 +30,9 @@ This is a manual pilot, not a self-serve SaaS promise.
 
 - Business Pilot: starts at `$999/month`
 - Enterprise Pilot: starts at `$3k/month`
-- Strategic Accounts: custom, `$250k+/year`
+- Strategic Accounts: custom
 
-Do not route major platforms, AI labs, or large enterprises to Team/Business pricing. Use a production/security pilot conversation and ask for the owner or procurement path.
+For major platforms, AI labs, or large enterprises, start with a production/security pilot conversation and ask for the owner or procurement path.
 
 ## Simple Outreach Copy
 
