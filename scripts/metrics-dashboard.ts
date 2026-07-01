@@ -15,6 +15,9 @@ const execFileAsync = promisify(execFile);
 const GITHUB_REPO = "KryptosAI/mcp-observatory";
 const NPM_PACKAGE = "@kryptosai/mcp-observatory";
 const DEFAULT_ROOT = ".mcp-observatory-metrics";
+const DAILY_HISTORY_DAYS = 90;
+const TREND_WINDOW_DAYS = 62;
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
 const INTERNAL_DOMAINS = new Set(["banksey.com", "example.com", "github:kryptosai", "kryptosai.com"]);
 const FREE_EMAIL_DOMAINS = new Set([
   "aol.com",
@@ -127,13 +130,19 @@ interface TelemetrySummary {
   sessions7: number;
   sessionsPrevious7: number;
   sourceCounts: Array<{ source: string; events: number; sessions: number }>;
+  marketEvents: number;
+  marketSessions: number;
   dailyEvents: Array<{ day: string; events: number; sessions: number }>;
+  dailyMarketEvents: Array<{ day: string; events: number; sessions: number }>;
   dailySourceMix: Array<{ day: string; events: number; localSessions: number; externalCiSessions: number; firstPartyCiSessions: number; mcpSessions: number }>;
+  dailyMarketSourceMix: Array<{ day: string; events: number; localSessions: number; externalCiSessions: number; mcpSessions: number }>;
   topCommands: Array<{ command: string; events: number; sessions: number }>;
   topDomains: Array<{ domain: string; events: number; sessions: number }>;
   topDomainDetails: Array<{ domain: string; events: number; sessions: number; topCommand: string; latestSeen: string }>;
   versionAdoption: Array<{ version: string; events: number; sessions: number; sessionShare: number; isLatest: boolean }>;
+  dailyMarketVersionAdoption: Array<{ day: string; totalSessions: number; latestSessions: number; latestEvents: number; latestSessionShare: number; dominantVersion: string }>;
   commandFunnel: Array<{ stage: string; commands: string; events: number; sessions: number; recommendation: string }>;
+  dailyMarketCommandFunnel: Array<{ day: string; agentInstallSessions: number; validationSessions: number; regressionSessions: number; ciSetupSessions: number }>;
 }
 
 interface GitHubSummary {
@@ -802,6 +811,7 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
   const firstPartySessions = new Set<string>();
   const sourceCounts = new Map<string, { events: number; sessions: Set<string> }>();
   const dailyEvents = new Map<string, { events: number; sessions: Set<string> }>();
+  const dailyMarketEvents = new Map<string, { events: number; sessions: Set<string> }>();
   const dailySourceMix = new Map<string, {
     events: number;
     localSessions: Set<string>;
@@ -809,10 +819,23 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
     firstPartyCiSessions: Set<string>;
     mcpSessions: Set<string>;
   }>();
+  const dailyMarketSourceMix = new Map<string, {
+    events: number;
+    localSessions: Set<string>;
+    externalCiSessions: Set<string>;
+    mcpSessions: Set<string>;
+  }>();
   const commands = new Map<string, { events: number; sessions: Set<string> }>();
   const domains = new Map<string, { events: number; sessions: Set<string> }>();
   const domainDetails = new Map<string, { events: number; sessions: Set<string>; commands: Map<string, number>; latestSeen: string }>();
   const versions = new Map<string, { events: number; sessions: Set<string> }>();
+  const dailyMarketVersionStats = new Map<string, Map<string, { events: number; sessions: Set<string> }>>();
+  const dailyMarketCommandFunnel = new Map<string, {
+    agentInstallSessions: Set<string>;
+    validationSessions: Set<string>;
+    regressionSessions: Set<string>;
+    ciSetupSessions: Set<string>;
+  }>();
   let latestExternalSeen = "";
 
   for (const row of rows) {
@@ -861,6 +884,50 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
     if (isExternalRow(row)) {
       if (session) externalSessions.add(session);
       if (seen && seen > latestExternalSeen) latestExternalSeen = seen;
+      if (seen) {
+        const day = seen.slice(0, 10);
+        const marketDayBucket = dailyMarketEvents.get(day) ?? { events: 0, sessions: new Set<string>() };
+        marketDayBucket.events += 1;
+        if (session) marketDayBucket.sessions.add(session);
+        dailyMarketEvents.set(day, marketDayBucket);
+
+        const marketMixBucket = dailyMarketSourceMix.get(day) ?? {
+          events: 0,
+          localSessions: new Set<string>(),
+          externalCiSessions: new Set<string>(),
+          mcpSessions: new Set<string>(),
+        };
+        marketMixBucket.events += 1;
+        if (session) {
+          if (category === "external_ci") marketMixBucket.externalCiSessions.add(session);
+          else if (category === "mcp") marketMixBucket.mcpSessions.add(session);
+          else marketMixBucket.localSessions.add(session);
+        }
+        dailyMarketSourceMix.set(day, marketMixBucket);
+
+        if (rawVersion) {
+          const versionDay = dailyMarketVersionStats.get(day) ?? new Map<string, { events: number; sessions: Set<string> }>();
+          const versionBucket = versionDay.get(rawVersion) ?? { events: 0, sessions: new Set<string>() };
+          versionBucket.events += 1;
+          if (session) versionBucket.sessions.add(session);
+          versionDay.set(rawVersion, versionBucket);
+          dailyMarketVersionStats.set(day, versionDay);
+        }
+
+        if (session) {
+          const commandBucket = dailyMarketCommandFunnel.get(day) ?? {
+            agentInstallSessions: new Set<string>(),
+            validationSessions: new Set<string>(),
+            regressionSessions: new Set<string>(),
+            ciSetupSessions: new Set<string>(),
+          };
+          if (row.command === "serve") commandBucket.agentInstallSessions.add(session);
+          if (row.command === "test" || row.command === "scan" || row.command === "run") commandBucket.validationSessions.add(session);
+          if (row.command === "diff" || row.command === "history" || row.command === "watch" || row.command === "lock") commandBucket.regressionSessions.add(session);
+          if (row.command === "init-ci" || row.command === "setup-ci") commandBucket.ciSetupSessions.add(session);
+          dailyMarketCommandFunnel.set(day, commandBucket);
+        }
+      }
       const command = row.command ?? "unknown";
       const commandBucket = commands.get(command) ?? { events: 0, sessions: new Set<string>() };
       commandBucket.events += 1;
@@ -887,6 +954,9 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
   const sortedDaily = [...dailyEvents.entries()]
     .map(([day, stats]) => ({ day, events: stats.events, sessions: stats.sessions.size }))
     .sort((a, b) => a.day.localeCompare(b.day));
+  const sortedMarketDaily = [...dailyMarketEvents.entries()]
+    .map(([day, stats]) => ({ day, events: stats.events, sessions: stats.sessions.size }))
+    .sort((a, b) => a.day.localeCompare(b.day));
   const recent7 = sortedDaily.slice(-7);
   const previous7 = sortedDaily.slice(-14, -7);
   const sortedSourceMix = [...dailySourceMix.entries()]
@@ -899,10 +969,46 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
       mcpSessions: stats.mcpSessions.size,
     }))
     .sort((a, b) => a.day.localeCompare(b.day));
+  const sortedMarketSourceMix = [...dailyMarketSourceMix.entries()]
+    .map(([day, stats]) => ({
+      day,
+      events: stats.events,
+      localSessions: stats.localSessions.size,
+      externalCiSessions: stats.externalCiSessions.size,
+      mcpSessions: stats.mcpSessions.size,
+    }))
+    .sort((a, b) => a.day.localeCompare(b.day));
   const versionRows = [...versions.entries()]
     .map(([version, stats]) => ({ version, events: stats.events, sessions: stats.sessions.size }))
     .sort((a, b) => compareVersions(b.version, a.version));
   const latestVersion = versionRows[0]?.version ?? "";
+  const sortedDailyMarketVersionAdoption = [...dailyMarketEvents.entries()]
+    .map(([day, stats]) => {
+      const versionStats = dailyMarketVersionStats.get(day) ?? new Map<string, { events: number; sessions: Set<string> }>();
+      const latestStats = latestVersion ? versionStats.get(latestVersion) : undefined;
+      const dominant = [...versionStats.entries()]
+        .map(([version, row]) => ({ version, sessions: row.sessions.size, events: row.events }))
+        .sort((a, b) => b.sessions - a.sessions || b.events - a.events || compareVersions(b.version, a.version))[0];
+      const latestSessions = latestStats?.sessions.size ?? 0;
+      return {
+        day,
+        totalSessions: stats.sessions.size,
+        latestSessions,
+        latestEvents: latestStats?.events ?? 0,
+        latestSessionShare: stats.sessions.size === 0 ? 0 : Math.round((latestSessions / stats.sessions.size) * 1000) / 10,
+        dominantVersion: dominant?.version ?? "n/a",
+      };
+    })
+    .sort((a, b) => a.day.localeCompare(b.day));
+  const sortedDailyMarketCommandFunnel = [...dailyMarketCommandFunnel.entries()]
+    .map(([day, stats]) => ({
+      day,
+      agentInstallSessions: stats.agentInstallSessions.size,
+      validationSessions: stats.validationSessions.size,
+      regressionSessions: stats.regressionSessions.size,
+      ciSetupSessions: stats.ciSetupSessions.size,
+    }))
+    .sort((a, b) => a.day.localeCompare(b.day));
   const commandStats = (names: string[]): { events: number; sessions: number } => {
     const sessions = new Set<string>();
     let events = 0;
@@ -951,8 +1057,12 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
     sessions7: recent7.reduce((sum, row) => sum + row.sessions, 0),
     sessionsPrevious7: previous7.reduce((sum, row) => sum + row.sessions, 0),
     sourceCounts: [...sourceCounts.entries()].map(([source, stats]) => ({ source, events: stats.events, sessions: stats.sessions.size })).sort((a, b) => b.events - a.events),
-    dailyEvents: sortedDaily.slice(-45).reverse(),
-    dailySourceMix: sortedSourceMix.slice(-45).reverse(),
+    marketEvents: sortedMarketDaily.reduce((sum, row) => sum + row.events, 0),
+    marketSessions: externalSessions.size,
+    dailyEvents: sortedDaily.slice(-DAILY_HISTORY_DAYS).reverse(),
+    dailyMarketEvents: sortedMarketDaily.slice(-DAILY_HISTORY_DAYS).reverse(),
+    dailySourceMix: sortedSourceMix.slice(-DAILY_HISTORY_DAYS).reverse(),
+    dailyMarketSourceMix: sortedMarketSourceMix.slice(-DAILY_HISTORY_DAYS).reverse(),
     topCommands: [...commands.entries()].map(([command, stats]) => ({ command, events: stats.events, sessions: stats.sessions.size })).sort((a, b) => b.events - a.events).slice(0, 12),
     topDomains: [...domains.entries()].map(([domain, stats]) => ({ domain, events: stats.events, sessions: stats.sessions.size })).sort((a, b) => b.events - a.events).slice(0, 12),
     topDomainDetails: [...domainDetails.entries()].map(([domain, stats]) => ({
@@ -967,7 +1077,9 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
       sessionShare: totalSessions.size === 0 ? 0 : Math.round((row.sessions / totalSessions.size) * 1000) / 10,
       isLatest: row.version === latestVersion,
     })).slice(0, 20),
+    dailyMarketVersionAdoption: sortedDailyMarketVersionAdoption.slice(-DAILY_HISTORY_DAYS).reverse(),
     commandFunnel,
+    dailyMarketCommandFunnel: sortedDailyMarketCommandFunnel.slice(-DAILY_HISTORY_DAYS).reverse(),
   };
 }
 
@@ -1014,7 +1126,7 @@ function summarizeGitHub(db: DatabaseSync): GitHubSummary {
     clonesPrevious7: previous7.reduce((sum, row) => sum + row.clones, 0),
     views7: last7.reduce((sum, row) => sum + row.views, 0),
     viewsPrevious7: previous7.reduce((sum, row) => sum + row.views, 0),
-    daily: daily.slice(-45).reverse(),
+    daily: daily.slice(-DAILY_HISTORY_DAYS).reverse(),
     referrers,
     paths,
     workflowRuns,
@@ -1034,7 +1146,7 @@ function summarizeNpm(db: DatabaseSync): NpmSummary {
     downloadsPrevious7: rows.slice(-14, -7).reduce((sum, row) => sum + row.downloads, 0),
     downloadsPrevious30: rows.slice(-60, -30).reduce((sum, row) => sum + row.downloads, 0),
     latestDay: rows.at(-1)?.day ?? "",
-    daily: rows.slice(-45).reverse(),
+    daily: rows.slice(-DAILY_HISTORY_DAYS).reverse(),
   };
 }
 
@@ -1070,15 +1182,6 @@ function delta(current: number, previous: number): string {
   return `${sign}${percent}% vs previous period`;
 }
 
-function rowsWithBars<T extends Record<string, string | number>>(rows: T[], valueKey: keyof T, columns: Array<keyof T>): string {
-  const max = Math.max(...rows.map((row) => Number(row[valueKey])), 1);
-  return rows.map((row) => {
-    const value = Number(row[valueKey]);
-    const width = Math.max(2, Math.round((value / max) * 100));
-    return `<tr>${columns.map((key) => `<td>${escapeHtml(row[key] ?? "")}</td>`).join("")}<td><div class="bar"><i style="width:${width}%"></i></div></td></tr>`;
-  }).join("\n");
-}
-
 function percent(part: number, whole: number): string {
   if (whole === 0) return "0%";
   return `${Math.round((part / whole) * 100)}%`;
@@ -1091,70 +1194,236 @@ function conversionPercent(part: number, whole: number): string {
   return `${Math.round(value * 100) / 100}%`;
 }
 
-function strategyCards(model: DashboardModel): string {
-  const externalCi = model.telemetry.sourceCounts.find((row) => row.source === "external_ci");
-  const serve = model.telemetry.commandFunnel.find((row) => row.stage === "Agent install");
-  const ciSetup = model.telemetry.commandFunnel.find((row) => row.stage === "CI setup");
+interface UsageTrendPoint {
+  day: string;
+  events: number;
+  sessions: number;
+  excludedSessions: number;
+  localSessions: number;
+  externalCiSessions: number;
+  mcpSessions: number;
+  latestSessions: number;
+  latestSessionShare: number;
+  dominantVersion: string;
+  agentInstallSessions: number;
+  validationSessions: number;
+  regressionSessions: number;
+  ciSetupSessions: number;
+  npmDownloads: number;
+  clones: number;
+  views: number;
+}
+
+interface UsagePeriodSummary {
+  startDay: string;
+  endDay: string;
+  events: number;
+  sessions: number;
+  excludedSessions: number;
+  latestSessions: number;
+  setupSessions: number;
+  npmDownloads: number;
+  clones: number;
+  views: number;
+}
+
+function dayToTimestamp(day: string): number | undefined {
+  const [year, month, date] = day.split("-").map((part) => Number.parseInt(part, 10));
+  if (!year || !month || !date) return undefined;
+  return Date.UTC(year, month - 1, date);
+}
+
+function timestampToDay(timestamp: number): string {
+  return new Date(timestamp).toISOString().slice(0, 10);
+}
+
+function trendDelta(current: number, previous: number): string {
+  if (previous === 0 && current === 0) return "flat";
+  if (previous === 0) return "new";
+  const diff = current - previous;
+  const percentChange = Math.round((diff / previous) * 100);
+  return `${diff >= 0 ? "+" : ""}${formatNumber(diff)} (${percentChange >= 0 ? "+" : ""}${percentChange}%)`;
+}
+
+function percentChangeLabel(current: number, previous: number): string {
+  if (previous === 0 && current === 0) return "0%";
+  if (previous === 0) return "new";
+  const percentChange = Math.round(((current - previous) / previous) * 100);
+  return `${percentChange >= 0 ? "+" : ""}${percentChange}%`;
+}
+
+function usageTrendPoints(model: DashboardModel, limit = TREND_WINDOW_DAYS): UsageTrendPoint[] {
+  const allEventsByDay = new Map(model.telemetry.dailyEvents.map((row) => [row.day, row]));
+  const eventsByDay = new Map(model.telemetry.dailyMarketEvents.map((row) => [row.day, row]));
+  const sourceByDay = new Map(model.telemetry.dailyMarketSourceMix.map((row) => [row.day, row]));
+  const versionByDay = new Map(model.telemetry.dailyMarketVersionAdoption.map((row) => [row.day, row]));
+  const commandByDay = new Map(model.telemetry.dailyMarketCommandFunnel.map((row) => [row.day, row]));
+  const npmByDay = new Map(model.npm.daily.map((row) => [row.day, row]));
+  const githubByDay = new Map(model.github.daily.map((row) => [row.day, row]));
+  const knownDays = [...new Set([
+    ...allEventsByDay.keys(),
+    ...eventsByDay.keys(),
+    ...sourceByDay.keys(),
+    ...versionByDay.keys(),
+    ...commandByDay.keys(),
+    ...npmByDay.keys(),
+    ...githubByDay.keys(),
+  ])].sort();
+  const latestTimestamp = dayToTimestamp(knownDays.at(-1) ?? "");
+  const days = latestTimestamp === undefined
+    ? []
+    : Array.from({ length: limit }, (_, index) => timestampToDay(latestTimestamp - ((limit - index - 1) * MS_PER_DAY)));
+  return days.map((day) => {
+    const allEventRow = allEventsByDay.get(day);
+    const eventRow = eventsByDay.get(day);
+    const sourceRow = sourceByDay.get(day);
+    const versionRow = versionByDay.get(day);
+    const commandRow = commandByDay.get(day);
+    const npmRow = npmByDay.get(day);
+    const githubRow = githubByDay.get(day);
+    return {
+      day,
+      events: eventRow?.events ?? 0,
+      sessions: eventRow?.sessions ?? 0,
+      excludedSessions: Math.max((allEventRow?.sessions ?? 0) - (eventRow?.sessions ?? 0), 0),
+      localSessions: sourceRow?.localSessions ?? 0,
+      externalCiSessions: sourceRow?.externalCiSessions ?? 0,
+      mcpSessions: sourceRow?.mcpSessions ?? 0,
+      latestSessions: versionRow?.latestSessions ?? 0,
+      latestSessionShare: versionRow?.latestSessionShare ?? 0,
+      dominantVersion: versionRow?.dominantVersion ?? "n/a",
+      agentInstallSessions: commandRow?.agentInstallSessions ?? 0,
+      validationSessions: commandRow?.validationSessions ?? 0,
+      regressionSessions: commandRow?.regressionSessions ?? 0,
+      ciSetupSessions: commandRow?.ciSetupSessions ?? 0,
+      npmDownloads: npmRow?.downloads ?? 0,
+      clones: githubRow?.clones ?? 0,
+      views: githubRow?.views ?? 0,
+    };
+  });
+}
+
+function usagePeriodSummary(points: UsageTrendPoint[], days: number, offset = 0): UsagePeriodSummary {
+  const end = Math.max(points.length - offset, 0);
+  const start = Math.max(end - days, 0);
+  const rows = points.slice(start, end);
+  return {
+    startDay: rows[0]?.day ?? "n/a",
+    endDay: rows.at(-1)?.day ?? "n/a",
+    events: rows.reduce((sum, point) => sum + point.events, 0),
+    sessions: rows.reduce((sum, point) => sum + point.sessions, 0),
+    excludedSessions: rows.reduce((sum, point) => sum + point.excludedSessions, 0),
+    latestSessions: rows.reduce((sum, point) => sum + point.latestSessions, 0),
+    setupSessions: rows.reduce((sum, point) => sum + point.ciSetupSessions, 0),
+    npmDownloads: rows.reduce((sum, point) => sum + point.npmDownloads, 0),
+    clones: rows.reduce((sum, point) => sum + point.clones, 0),
+    views: rows.reduce((sum, point) => sum + point.views, 0),
+  };
+}
+
+function kpiCards(points: UsageTrendPoint[]): string {
+  if (points.length === 0) return "";
+  const day = usagePeriodSummary(points, 1);
+  const previousDay = usagePeriodSummary(points, 1, 1);
+  const week = usagePeriodSummary(points, 7);
+  const previousWeek = usagePeriodSummary(points, 7, 7);
+  const month = usagePeriodSummary(points, 30);
+  const previousMonth = usagePeriodSummary(points, 30, 30);
+  const setupSignals = month.clones + month.npmDownloads;
+  return [
+    metric("Market day", `${formatNumber(day.sessions)} sessions`, `${trendDelta(day.sessions, previousDay.sessions)}; ${formatNumber(day.events)} events`),
+    metric("Market week", `${formatNumber(week.sessions)} sessions`, `${trendDelta(week.sessions, previousWeek.sessions)}; ${formatNumber(week.events)} events`),
+    metric("Market month", `${formatNumber(month.sessions)} sessions`, `${formatNumber(month.events)} events, ${formatNumber(month.excludedSessions)} internal excluded`),
+    metric("Monthly change", percentChangeLabel(month.sessions, previousMonth.sessions), `${formatNumber(month.sessions)} vs ${formatNumber(previousMonth.sessions)} sessions`),
+    metric("Setup conversion", conversionPercent(month.setupSessions, setupSignals), `${formatNumber(month.setupSessions)} setup / ${formatNumber(setupSignals)} clone+download signals`),
+  ].join("");
+}
+
+function detailRow(category: string, metricName: string, value: string | number, context: string): string {
+  const search = `${category} ${metricName} ${value} ${context}`.toLowerCase();
+  return `<tr data-search-row data-search="${escapeHtml(search)}" hidden><td>${escapeHtml(category)}</td><td>${escapeHtml(metricName)}</td><td>${escapeHtml(value)}</td><td>${escapeHtml(context)}</td></tr>`;
+}
+
+function detailSearchRows(model: DashboardModel, points: UsageTrendPoint[]): string {
+  const rows: string[] = [];
+  const add = (category: string, metricName: string, value: string | number, context: string): void => {
+    rows.push(detailRow(category, metricName, value, context));
+  };
+  const day = usagePeriodSummary(points, 1);
+  const week = usagePeriodSummary(points, 7);
+  const previousWeek = usagePeriodSummary(points, 7, 7);
+  const month = usagePeriodSummary(points, 30);
+  const previousMonth = usagePeriodSummary(points, 30, 30);
   const latestVersion = model.telemetry.versionAdoption.find((row) => row.isLatest);
-  const dominantVersion = [...model.telemetry.versionAdoption].sort((a, b) => b.sessions - a.sessions)[0];
-  const cloneViewGap = model.github.clones14 > 0 ? `${formatNumber(model.github.clones14)} clones / ${formatNumber(model.github.views14)} views` : "no clone data yet";
+  const ciSetupStage = model.telemetry.commandFunnel.find((row) => row.stage === "CI setup");
   const cloneDownloadSignals = model.github.clones14 + model.npm.downloads14;
-  const setupConversion = conversionPercent(ciSetup?.sessions ?? 0, cloneDownloadSignals);
-  const cards = [
-    {
-      label: "Scale CI",
-      signal: `${formatNumber(externalCi?.sessions ?? 0)} external CI sessions`,
-      action: "Make setup-ci, PR comments, badges, and drift/security checks the main adoption path.",
-    },
-    {
-      label: "Scale Agent Install",
-      signal: `${formatNumber(serve?.sessions ?? 0)} serve sessions`,
-      action: "Keep Claude/Codex/Cursor install snippets above the fold and in release posts.",
-    },
-    {
-      label: "Fix Setup Leak",
-      signal: `${formatNumber(ciSetup?.sessions ?? 0)} CI setup sessions`,
-      action: "Use the friendlier setup-ci alias and route successful tests into CI setup.",
-    },
-    {
-      label: "Fix Upgrade Lag",
-      signal: latestVersion ? `${latestVersion.version}: ${formatNumber(latestVersion.sessions)} sessions (${latestVersion.sessionShare}%)` : "no version data yet",
-      action: dominantVersion && latestVersion && dominantVersion.version !== latestVersion.version
-        ? `Most sessions are still on ${dominantVersion.version}; add upgrade prompts and release notes.`
-        : "Latest version adoption is healthy; keep release prompts lightweight.",
-    },
-    {
-      label: "Fix OSS Conversion",
-      signal: `${setupConversion} clone/download to CI`,
-      action: `Downloads/clones are ahead of stars and repo views (${cloneViewGap}); make setup-ci the next step after every win.`,
-    },
-  ];
-  return cards.map((card) => `<article class="insight"><span>${escapeHtml(card.label)}</span><strong>${escapeHtml(card.signal)}</strong><p>${escapeHtml(card.action)}</p></article>`).join("");
+
+  add("KPI", "Market day", `${formatNumber(day.sessions)} sessions`, `${day.startDay}; ${formatNumber(day.events)} events; ${formatNumber(day.excludedSessions)} internal sessions excluded`);
+  add("KPI", "Market week", `${formatNumber(week.sessions)} sessions`, `${week.startDay} to ${week.endDay}; ${delta(week.sessions, previousWeek.sessions)}`);
+  add("KPI", "Market month", `${formatNumber(month.sessions)} sessions`, `${month.startDay} to ${month.endDay}; ${formatNumber(month.events)} events`);
+  add("KPI", "Monthly change", percentChangeLabel(month.sessions, previousMonth.sessions), `${formatNumber(month.sessions)} current 30d sessions vs ${formatNumber(previousMonth.sessions)} prior 30d sessions`);
+  add("KPI", "Setup conversion", conversionPercent(month.setupSessions, month.clones + month.npmDownloads), `${formatNumber(month.setupSessions)} setup sessions / ${formatNumber(month.clones + month.npmDownloads)} 30d clone+download signals`);
+  add("Version", "Latest adoption", latestVersion ? `${percent(month.latestSessions, month.sessions)} 30d` : "n/a", latestVersion ? `${latestVersion.version}; ${formatNumber(month.latestSessions)} latest-version sessions / ${formatNumber(month.sessions)} market sessions` : "No version telemetry yet");
+  add("Acquisition", "Clone/download to CI", conversionPercent(ciSetupStage?.sessions ?? 0, cloneDownloadSignals), `${formatNumber(ciSetupStage?.sessions ?? 0)} setup sessions / ${formatNumber(cloneDownloadSignals)} visible clone+download signals`);
+  add("Usage", "Internal excluded", `${formatNumber(Math.max(model.telemetry.totalSessions - model.telemetry.marketSessions, 0))} sessions`, "First-party CI and internal repo activity are not counted in market KPIs");
+  add("Usage", "Latest external activity", model.telemetry.latestExternalSeen || "n/a", `${formatNumber(model.telemetry.marketEvents)} market events across ${formatNumber(model.telemetry.marketSessions)} market sessions`);
+
+  for (const point of [...points].reverse()) {
+    add(
+      "Daily market",
+      point.day,
+      `${formatNumber(point.sessions)} sessions`,
+      `${formatNumber(point.events)} events; latest ${formatNumber(point.latestSessions)} (${point.latestSessionShare}%); setup ${formatNumber(point.ciSetupSessions)}; npm ${formatNumber(point.npmDownloads)}; clones ${formatNumber(point.clones)}; internal excluded ${formatNumber(point.excludedSessions)}`,
+    );
+  }
+  for (const row of model.telemetry.commandFunnel) {
+    add("Command funnel", row.stage, `${formatNumber(row.sessions)} sessions`, `${row.commands}; ${formatNumber(row.events)} events; ${row.recommendation}`);
+  }
+  for (const row of model.telemetry.versionAdoption) {
+    add("Version", row.version, `${formatNumber(row.sessions)} sessions`, `${formatNumber(row.events)} events; ${row.sessionShare}% share${row.isLatest ? "; latest" : ""}`);
+  }
+  for (const row of model.telemetry.sourceCounts) {
+    add("Telemetry source", row.source, `${formatNumber(row.sessions)} sessions`, `${formatNumber(row.events)} events`);
+  }
+  for (const row of model.telemetry.topDomainDetails) {
+    add("Account", row.domain, `${formatNumber(row.sessions)} sessions`, `${formatNumber(row.events)} events; top command ${row.topCommand}; latest ${row.latestSeen}`);
+  }
+  for (const row of model.telemetry.topCommands) {
+    add("Command", row.command, `${formatNumber(row.sessions)} sessions`, `${formatNumber(row.events)} events`);
+  }
+  for (const row of model.github.referrers) {
+    add("GitHub referrer", row.referrer, `${formatNumber(row.count)} views`, `${formatNumber(row.uniques)} uniques`);
+  }
+  for (const row of model.github.paths) {
+    add("GitHub path", row.path, `${formatNumber(row.count)} views`, `${row.title}; ${formatNumber(row.uniques)} uniques`);
+  }
+  add("GitHub", "Clones last 7 visible days", model.github.clones7, delta(model.github.clones7, model.github.clonesPrevious7));
+  add("GitHub", "Views last 7 visible days", model.github.views7, delta(model.github.views7, model.github.viewsPrevious7));
+  for (const row of model.github.daily) {
+    add("GitHub daily", row.day, `${formatNumber(row.clones)} clones`, `${formatNumber(row.uniqueCloners)} unique cloners; ${formatNumber(row.views)} views; ${formatNumber(row.uniqueViewers)} unique viewers`);
+  }
+  add("npm", "Downloads last 7 days", model.npm.downloads7, delta(model.npm.downloads7, model.npm.downloadsPrevious7));
+  add("npm", "Downloads last 30 days", model.npm.downloads30, delta(model.npm.downloads30, model.npm.downloadsPrevious30));
+  for (const row of model.npm.daily) {
+    add("npm daily", row.day, `${formatNumber(row.downloads)} downloads`, row.day === model.npm.latestDay ? "latest npm day" : "");
+  }
+  for (const run of model.sourceRuns) {
+    add("Collection run", run.source, run.status, `${run.finishedAt || run.startedAt}; ${formatNumber(run.rowsSeen)} rows seen; ${formatNumber(run.rowsInserted)} inserted; ${run.error}`);
+  }
+  for (const run of model.recentFailures) {
+    add("Collection failure", run.source, run.startedAt, run.error);
+  }
+  for (const run of model.github.workflowRuns) {
+    add("Workflow", run.name, run.conclusion || run.status, run.updatedAt);
+  }
+
+  return rows.join("");
 }
 
 export function renderDashboardHtml(model: DashboardModel): string {
-  const sourceRows = model.sourceRuns.map((run) => `
-    <tr class="${run.status === "failed" ? "bad" : ""}"><td>${escapeHtml(run.source)}</td><td>${escapeHtml(run.status)}</td><td>${escapeHtml(run.finishedAt || run.startedAt)}</td><td>${formatNumber(run.rowsSeen)}</td><td>${formatNumber(run.rowsInserted)}</td><td>${escapeHtml(run.error.slice(0, 180))}</td></tr>`).join("");
-  const failureRows = model.recentFailures.map((run) => `<tr><td>${escapeHtml(run.source)}</td><td>${escapeHtml(run.startedAt)}</td><td>${escapeHtml(run.error.slice(0, 240))}</td></tr>`).join("");
-  const githubRows = model.github.daily.map((row) => `<tr><td>${escapeHtml(row.day)}</td><td>${formatNumber(row.clones)}</td><td>${formatNumber(row.uniqueCloners)}</td><td>${formatNumber(row.views)}</td><td>${formatNumber(row.uniqueViewers)}</td></tr>`).join("");
-  const npmRows = model.npm.daily.map((row) => `<tr><td>${escapeHtml(row.day)}</td><td>${formatNumber(row.downloads)}</td></tr>`).join("");
-  const workflowRows = model.github.workflowRuns.map((row) => `<tr><td>${escapeHtml(row.name)}</td><td>${escapeHtml(row.status)}</td><td>${escapeHtml(row.conclusion || "n/a")}</td><td>${escapeHtml(row.updatedAt)}</td></tr>`).join("");
-  const funnelRows = model.telemetry.commandFunnel.map((row) => `<tr><td>${escapeHtml(row.stage)}</td><td>${escapeHtml(row.commands)}</td><td>${formatNumber(row.sessions)}</td><td>${formatNumber(row.events)}</td><td>${escapeHtml(row.recommendation)}</td></tr>`).join("");
-  const versionRows = model.telemetry.versionAdoption.map((row) => `<tr class="${row.isLatest ? "good" : ""}"><td>${escapeHtml(row.version)}${row.isLatest ? " <span class=\"pill\">latest</span>" : ""}</td><td>${formatNumber(row.sessions)}</td><td>${formatNumber(row.events)}</td><td>${escapeHtml(`${row.sessionShare}%`)}</td><td><div class="bar"><i style="width:${Math.max(2, Math.round(row.sessionShare))}%"></i></div></td></tr>`).join("");
-  const domainDetailRows = model.telemetry.topDomainDetails.map((row) => `<tr><td>${escapeHtml(row.domain)}</td><td>${formatNumber(row.sessions)}</td><td>${formatNumber(row.events)}</td><td>${escapeHtml(row.topCommand)}</td><td>${escapeHtml(row.latestSeen)}</td></tr>`).join("");
-  const sourceMixRows = model.telemetry.dailySourceMix.map((row) => `<tr><td>${escapeHtml(row.day)}</td><td>${formatNumber(row.events)}</td><td>${formatNumber(row.localSessions)}</td><td>${formatNumber(row.externalCiSessions)}</td><td>${formatNumber(row.firstPartyCiSessions)}</td><td>${formatNumber(row.mcpSessions)}</td></tr>`).join("");
-  const latestVersion = model.telemetry.versionAdoption.find((row) => row.isLatest);
-  const ciSource = model.telemetry.sourceCounts.find((row) => row.source === "external_ci");
-  const serveStage = model.telemetry.commandFunnel.find((row) => row.stage === "Agent install");
-  const ciSetupStage = model.telemetry.commandFunnel.find((row) => row.stage === "CI setup");
-  const cloneDownloadSignals = model.github.clones14 + model.npm.downloads14;
-  const releaseDay = model.github.latestReleasePublishedAt.slice(0, 10);
-  const releaseTelemetry = model.telemetry.dailyEvents.find((row) => row.day === releaseDay);
-  const releaseNpm = model.npm.daily.find((row) => row.day === releaseDay);
-  const releaseGithub = model.github.daily.find((row) => row.day === releaseDay);
-  const releaseRows = releaseDay ? [
-    `<tr><td>${escapeHtml(releaseDay)}</td><td>${escapeHtml(model.github.latestRelease || "latest release")}</td><td>${formatNumber(releaseTelemetry?.events ?? 0)}</td><td>${formatNumber(releaseTelemetry?.sessions ?? 0)}</td><td>${formatNumber(releaseNpm?.downloads ?? 0)}</td><td>${formatNumber(releaseGithub?.clones ?? 0)}</td></tr>`,
-  ].join("") : "";
+  const trendPoints = usageTrendPoints(model, TREND_WINDOW_DAYS);
+  const cards = kpiCards(trendPoints);
+  const searchRows = detailSearchRows(model, trendPoints);
 
   return `<!doctype html>
 <html lang="en">
@@ -1165,7 +1434,7 @@ export function renderDashboardHtml(model: DashboardModel): string {
   <style>
     :root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; --ink:#152238; --muted:#647084; --line:#dce4ee; --panel:#fff; --bg:#f5f7fb; --accent:#0969da; --bad:#b42318; }
     body { margin:0; background:var(--bg); color:var(--ink); }
-    main { max-width:1480px; margin:0 auto; padding:14px 12px 28px; }
+    main { max-width:1160px; margin:0 auto; padding:18px 14px 30px; }
     header { display:flex; align-items:flex-end; justify-content:space-between; gap:14px; margin-bottom:10px; }
     .actions { display:flex; align-items:center; justify-content:flex-end; gap:8px; margin-top:6px; }
     button { border:1px solid #b8c7dc; background:#fff; color:var(--ink); border-radius:6px; padding:6px 9px; font:inherit; font-size:12px; cursor:pointer; }
@@ -1173,37 +1442,31 @@ export function renderDashboardHtml(model: DashboardModel): string {
     button:disabled { cursor:not-allowed; opacity:.62; }
     .refresh-status { color:var(--muted); font-size:12px; min-height:16px; }
     h1 { margin:0; font-size:24px; letter-spacing:0; }
-    h2 { margin:0; padding:7px 8px; font-size:14px; letter-spacing:0; border-bottom:1px solid #edf1f6; background:#fbfcfe; }
+    h2 { margin:0; padding:8px 10px; font-size:14px; letter-spacing:0; border-bottom:1px solid #edf1f6; background:#fbfcfe; }
     p { color:var(--muted); margin:3px 0 0; font-size:13px; line-height:1.35; max-width:820px; }
     .stamp { color:var(--muted); font-size:12px; text-align:right; line-height:1.35; }
-    .metrics { display:flex; flex-wrap:wrap; gap:5px; align-items:stretch; }
+    .kpi-grid { display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:8px; align-items:stretch; margin-top:14px; }
     .metric, .panel { background:var(--panel); border:1px solid var(--line); border-radius:6px; box-shadow:0 1px 1px rgba(21,34,56,.03); }
-    .metric { flex:1 1 150px; padding:8px 10px; min-height:54px; }
-    .metric strong { display:block; font-size:21px; line-height:1.05; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .metric { padding:11px 12px; min-height:86px; }
+    .metric strong { display:block; font-size:24px; line-height:1.05; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .metric span { display:block; color:var(--muted); font-size:12px; line-height:1.2; margin-top:3px; }
-    .metric em { display:block; color:var(--muted); font-size:11px; line-height:1.2; font-style:normal; margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:9px; align-items:start; }
-    .strategy-grid { display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:7px; align-items:stretch; }
-    .insight { background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:9px 10px; min-height:118px; }
-    .insight span { display:block; color:var(--muted); font-size:11px; font-weight:650; letter-spacing:.04em; text-transform:uppercase; }
-    .insight strong { display:block; margin-top:5px; font-size:16px; line-height:1.15; }
-    .insight p { margin-top:7px; font-size:12px; }
-    .section-label { color:var(--muted); font-size:11px; font-weight:650; letter-spacing:.04em; text-transform:uppercase; margin:16px 0 5px; }
-    .panel { overflow:auto; max-height:350px; }
+    .metric em { display:block; color:var(--muted); font-size:11px; line-height:1.25; font-style:normal; margin-top:8px; }
+    .search-shell { margin-top:12px; }
+    .search-bar { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+    .search-bar input { width:100%; border:1px solid #b8c7dc; border-radius:6px; background:#fff; color:var(--ink); font:inherit; font-size:14px; padding:9px 10px; outline:none; }
+    .search-bar input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(9,105,218,.12); }
+    .search-count { color:var(--muted); font-size:12px; min-width:92px; text-align:right; }
+    .panel { overflow:auto; max-height:430px; }
     .panel-inner { padding:8px 9px; }
     table { width:100%; border-collapse:collapse; font-size:13px; line-height:1.25; }
     th, td { padding:5px 7px; border-bottom:1px solid #edf1f6; text-align:left; vertical-align:top; }
     th { position:sticky; top:0; z-index:1; background:#eef3f8; color:#3d4d63; font-size:11px; text-transform:uppercase; }
     tr:last-child td { border-bottom:0; }
-    .bad td { color:var(--bad); }
-    .good td:first-child { color:#0f7b32; font-weight:650; }
-    .pill { display:inline-block; margin-left:4px; padding:1px 5px; border-radius:999px; background:#e7f7ec; color:#0f7b32; font-size:10px; font-weight:650; vertical-align:middle; }
-    .bar { height:6px; background:#edf1f6; border-radius:999px; min-width:58px; overflow:hidden; }
-    .bar i { display:block; height:100%; background:var(--accent); }
+    tr[hidden] { display:none !important; }
+    .empty-row td { color:var(--muted); padding:18px 10px; text-align:center; }
     .note { color:var(--muted); font-size:12px; line-height:1.35; margin-top:4px; }
-    @media (max-width: 1180px) { .strategy-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
-    @media (max-width: 1120px) { .grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
-    @media (max-width: 720px) { header { display:block; } .stamp { text-align:left; margin-top:8px; } .metric { flex-basis:145px; } .grid, .strategy-grid { grid-template-columns:1fr; } main { padding:12px 8px 24px; } }
+    @media (max-width: 1120px) { .kpi-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 720px) { main { padding:12px 8px 24px; } header { display:block; } .stamp { text-align:left; margin-top:8px; } .kpi-grid { grid-template-columns:1fr; } .search-bar { display:block; } .search-count { display:block; min-width:0; margin-top:5px; text-align:left; } }
   </style>
 </head>
 <body>
@@ -1221,81 +1484,24 @@ export function renderDashboardHtml(model: DashboardModel): string {
         </div>
       </div>
     </header>
-    <div class="section-label">Overview</div>
-    <section class="metrics" aria-label="Overview metrics">
-      ${metric("telemetry events", model.telemetry.totalEvents)}
-      ${metric("telemetry sessions", model.telemetry.totalSessions)}
-      ${metric("external sessions", model.telemetry.externalSessions)}
-      ${metric("first-party CI sessions", model.telemetry.firstPartyCiSessions)}
-      ${metric("latest external activity", model.telemetry.latestExternalSeen || "n/a")}
-      ${metric("GitHub stars", model.github.stars)}
-      ${metric("GitHub forks", model.github.forks)}
-      ${metric("open issues", model.github.openIssues)}
-      ${metric("open PRs", model.github.openPullRequests)}
+    <section class="kpi-grid" aria-label="Primary KPIs">
+      ${cards || metric("Market telemetry", "n/a", "Refresh data to build KPI windows")}
     </section>
 
-    <div class="section-label">Strategy</div>
-    <section class="strategy-grid" aria-label="Recommended moves">
-      ${strategyCards(model)}
-    </section>
-    <section class="metrics" aria-label="Strategy metrics">
-      ${metric("external CI share", `${percent(ciSource?.sessions ?? 0, model.telemetry.totalSessions)}`, `${formatNumber(ciSource?.sessions ?? 0)} sessions`)}
-      ${metric("agent install share", `${percent(serveStage?.sessions ?? 0, model.telemetry.totalSessions)}`, `${formatNumber(serveStage?.sessions ?? 0)} serve sessions`)}
-      ${metric("clone/download to CI", conversionPercent(ciSetupStage?.sessions ?? 0, cloneDownloadSignals), `${formatNumber(ciSetupStage?.sessions ?? 0)} setup sessions / ${formatNumber(cloneDownloadSignals)} clone+download signals`)}
-      ${metric("latest version adoption", latestVersion ? `${latestVersion.sessionShare}%` : "n/a", latestVersion ? `${latestVersion.version}, ${formatNumber(latestVersion.sessions)} sessions` : "")}
-      ${metric("clone-to-view gap", model.github.views14 === 0 ? "n/a" : `${Math.round(model.github.clones14 / Math.max(model.github.views14, 1))}:1`, `${formatNumber(model.github.clones14)} clones / ${formatNumber(model.github.views14)} views`)}
-    </section>
-    <section class="grid">
-      <div><h2>Command Funnel</h2><div class="panel"><table><thead><tr><th>Stage</th><th>Commands</th><th>Sessions</th><th>Events</th><th>Move</th></tr></thead><tbody>${funnelRows || "<tr><td colspan=\"5\">No command funnel yet.</td></tr>"}</tbody></table></div></div>
-      <div><h2>Version Adoption</h2><div class="panel"><table><thead><tr><th>Version</th><th>Sessions</th><th>Events</th><th>Share</th><th>Adoption</th></tr></thead><tbody>${versionRows || "<tr><td colspan=\"5\">No version telemetry yet.</td></tr>"}</tbody></table></div></div>
-      <div><h2>Release Spike</h2><div class="panel"><table><thead><tr><th>Day</th><th>Release</th><th>Events</th><th>Sessions</th><th>npm</th><th>Clones</th></tr></thead><tbody>${releaseRows || "<tr><td colspan=\"6\">No release annotation yet.</td></tr>"}</tbody></table><div class="panel-inner note">Use this to compare release activity against telemetry, downloads, and clones.</div></div></div>
-    </section>
-
-    <div class="section-label">Acquisition</div>
-    <section class="metrics" aria-label="Acquisition metrics">
-      ${metric("GitHub clones, last 7 visible days", model.github.clones7, delta(model.github.clones7, model.github.clonesPrevious7))}
-      ${metric("GitHub clones, visible window", model.github.clones14, `${model.github.uniqueCloners14} unique cloners`)}
-      ${metric("GitHub views, last 7 visible days", model.github.views7, delta(model.github.views7, model.github.viewsPrevious7))}
-      ${metric("GitHub views, visible window", model.github.views14, `${model.github.uniqueViewers14} unique viewers`)}
-    </section>
-    <section class="grid">
-      <div><h2>GitHub Referrers</h2><div class="panel"><table><thead><tr><th>Referrer</th><th>Views</th><th>Uniques</th><th>Share</th></tr></thead><tbody>${rowsWithBars(model.github.referrers, "count", ["referrer", "count", "uniques"]) || "<tr><td colspan=\"4\">No GitHub referrer data yet.</td></tr>"}</tbody></table></div></div>
-      <div><h2>GitHub Paths</h2><div class="panel"><table><thead><tr><th>Path</th><th>Title</th><th>Views</th><th>Uniques</th></tr></thead><tbody>${model.github.paths.map((row) => `<tr><td>${escapeHtml(row.path)}</td><td>${escapeHtml(row.title)}</td><td>${formatNumber(row.count)}</td><td>${formatNumber(row.uniques)}</td></tr>`).join("") || "<tr><td colspan=\"4\">No GitHub path data yet.</td></tr>"}</tbody></table></div></div>
-      <div class="panel"><table><thead><tr><th>Day</th><th>Clones</th><th>Unique cloners</th><th>Views</th><th>Unique viewers</th></tr></thead><tbody>${githubRows || "<tr><td colspan=\"5\">No GitHub traffic yet.</td></tr>"}</tbody></table><div class="panel-inner note">Newest days first. GitHub traffic APIs expose a limited visible window, so the local store preserves snapshots going forward.</div></div>
-    </section>
-
-    <div class="section-label">Downloads</div>
-    <section class="metrics" aria-label="Download metrics">
-      ${metric("npm downloads, last 7 complete days", model.npm.downloads7, delta(model.npm.downloads7, model.npm.downloadsPrevious7))}
-      ${metric("npm downloads, last 14 complete days", model.npm.downloads14)}
-      ${metric("npm downloads, last 30 complete days", model.npm.downloads30, delta(model.npm.downloads30, model.npm.downloadsPrevious30))}
-      ${metric("latest npm day", model.npm.latestDay || "n/a")}
-    </section>
-    <section class="grid">
-      <div class="panel"><table><thead><tr><th>Day</th><th>npm downloads</th></tr></thead><tbody>${npmRows || "<tr><td colspan=\"2\">No npm download data yet.</td></tr>"}</tbody></table><div class="panel-inner note">Newest days first. npm daily buckets can lag; missing current-day data is not treated as zero interest.</div></div>
-    </section>
-
-    <div class="section-label">Usage</div>
-    <section class="metrics" aria-label="Usage metrics">
-      ${metric("telemetry events, last 7 days", model.telemetry.events7, delta(model.telemetry.events7, model.telemetry.eventsPrevious7))}
-      ${metric("telemetry sessions, last 7 days", model.telemetry.sessions7, delta(model.telemetry.sessions7, model.telemetry.sessionsPrevious7))}
-      ${metric("external sessions", model.telemetry.externalSessions)}
-      ${metric("first-party CI sessions", model.telemetry.firstPartyCiSessions)}
-    </section>
-    <section class="grid">
-      <div><h2>Telemetry Sources</h2><div class="panel"><table><thead><tr><th>Source</th><th>Events</th><th>Sessions</th><th>Share</th></tr></thead><tbody>${rowsWithBars(model.telemetry.sourceCounts, "events", ["source", "events", "sessions"]) || "<tr><td colspan=\"4\">No telemetry yet.</td></tr>"}</tbody></table></div></div>
-      <div><h2>Top Attributed Domains</h2><div class="panel"><table><thead><tr><th>Domain</th><th>Events</th><th>Sessions</th><th>Share</th></tr></thead><tbody>${rowsWithBars(model.telemetry.topDomains, "events", ["domain", "events", "sessions"]) || "<tr><td colspan=\"4\">No attributed external domains yet.</td></tr>"}</tbody></table></div></div>
-      <div><h2>Top External Commands</h2><div class="panel"><table><thead><tr><th>Command</th><th>Events</th><th>Sessions</th><th>Share</th></tr></thead><tbody>${rowsWithBars(model.telemetry.topCommands, "events", ["command", "events", "sessions"]) || "<tr><td colspan=\"4\">No external commands yet.</td></tr>"}</tbody></table></div></div>
-      <div><h2>Account Drilldown</h2><div class="panel"><table><thead><tr><th>Domain</th><th>Sessions</th><th>Events</th><th>Top command</th><th>Latest seen</th></tr></thead><tbody>${domainDetailRows || "<tr><td colspan=\"5\">No attributed external domains yet.</td></tr>"}</tbody></table></div></div>
-      <div><h2>Source Mix By Day</h2><div class="panel"><table><thead><tr><th>Day</th><th>Events</th><th>Local</th><th>External CI</th><th>First-party CI</th><th>MCP</th></tr></thead><tbody>${sourceMixRows || "<tr><td colspan=\"6\">No source mix yet.</td></tr>"}</tbody></table></div></div>
-      <div class="panel"><table><thead><tr><th>Day</th><th>Telemetry events</th><th>Sessions</th></tr></thead><tbody>${model.telemetry.dailyEvents.map((row) => `<tr><td>${escapeHtml(row.day)}</td><td>${formatNumber(row.events)}</td><td>${formatNumber(row.sessions)}</td></tr>`).join("") || "<tr><td colspan=\"3\">No telemetry timeline yet.</td></tr>"}</tbody></table><div class="panel-inner note">Newest days first. First-party CI remains separated from external traction.</div></div>
-    </section>
-    <div class="section-label">Reliability</div>
-    <section class="grid">
-      <div class="panel"><table><thead><tr><th>Source</th><th>Status</th><th>Last finished</th><th>Rows seen</th><th>Inserted</th><th>Error</th></tr></thead><tbody>${sourceRows || "<tr><td colspan=\"6\">No collection runs yet.</td></tr>"}</tbody></table></div>
-      <div class="panel"><table><thead><tr><th>Workflow</th><th>Status</th><th>Conclusion</th><th>Updated</th></tr></thead><tbody>${workflowRows || "<tr><td colspan=\"4\">No workflow runs yet.</td></tr>"}</tbody></table></div>
-      <div class="panel"><table><thead><tr><th>Source</th><th>Started</th><th>Error</th></tr></thead><tbody>${failureRows || "<tr><td colspan=\"3\">No recent source failures.</td></tr>"}</tbody></table></div>
-      <div class="panel"><div class="panel-inner"><strong>Release:</strong> ${escapeHtml(model.github.latestRelease || "n/a")}<br><strong>Release date:</strong> ${escapeHtml(model.github.latestReleasePublishedAt || "n/a")}<br><strong>npm 7 days:</strong> ${formatNumber(model.npm.downloads7)}<br><strong>npm 14 days:</strong> ${formatNumber(model.npm.downloads14)}<p class="note">If one source fails, this dashboard keeps rendering from the local SQLite store and records the failure here.</p></div></div>
+    <section class="search-shell" aria-label="Evidence search">
+      <div class="search-bar">
+        <input id="detail-search" type="search" placeholder="Search evidence" autocomplete="off">
+        <span id="search-count" class="search-count">0 results</span>
+      </div>
+      <div class="panel">
+        <table>
+          <thead><tr><th>Area</th><th>Metric</th><th>Value</th><th>Context</th></tr></thead>
+          <tbody id="detail-results">
+            ${searchRows}
+            <tr id="search-empty" class="empty-row"><td colspan="4">Search domains, commands, npm, GitHub, versions, setup, internal, failures, or dates.</td></tr>
+          </tbody>
+        </table>
+      </div>
     </section>
   </main>
   <script>
@@ -1320,6 +1526,29 @@ export function renderDashboardHtml(model: DashboardModel): string {
         }
       });
     }
+    const detailSearch = document.getElementById("detail-search");
+    const searchCount = document.getElementById("search-count");
+    const searchEmpty = document.getElementById("search-empty");
+    const detailRows = Array.from(document.querySelectorAll("[data-search-row]"));
+    const setSearchCount = (text) => { if (searchCount) searchCount.textContent = text; };
+    const applyDetailSearch = () => {
+      const query = detailSearch && "value" in detailSearch ? String(detailSearch.value).trim().toLowerCase() : "";
+      let matches = 0;
+      let visible = 0;
+      for (const row of detailRows) {
+        const haystack = row instanceof HTMLElement ? row.dataset.search || "" : "";
+        const hit = query.length > 0 && haystack.includes(query);
+        if (hit) matches += 1;
+        const show = hit && visible < 80;
+        if (show) visible += 1;
+        if (row instanceof HTMLElement) row.hidden = !show;
+      }
+      if (searchEmpty instanceof HTMLElement) searchEmpty.hidden = query.length > 0 && matches > 0;
+      if (query.length === 0) setSearchCount("0 results");
+      else setSearchCount(matches > 80 ? String(matches) + " results, showing 80" : String(matches) + " result" + (matches === 1 ? "" : "s"));
+    };
+    if (detailSearch) detailSearch.addEventListener("input", applyDetailSearch);
+    applyDetailSearch();
   </script>
 </body>
 </html>
@@ -1394,6 +1623,11 @@ async function refreshDashboard(paths: Paths): Promise<void> {
 
 async function serveRequest(request: IncomingMessage, response: ServerResponse, paths: Paths): Promise<void> {
   const url = new URL(request.url ?? "/", "http://127.0.0.1");
+  if ((request.method === "GET" || request.method === "HEAD") && url.pathname === "/favicon.ico") {
+    response.writeHead(204, { "cache-control": "no-store" });
+    response.end();
+    return;
+  }
   if ((request.method === "GET" || request.method === "HEAD") && (url.pathname === "/" || url.pathname === "/index.html")) {
     if (!existsSync(paths.dashboard)) await refreshDashboard(paths);
     send(response, 200, await readFile(paths.dashboard, "utf8"), "text/html; charset=utf-8");

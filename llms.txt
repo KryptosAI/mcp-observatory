@@ -1,0 +1,58 @@
+# MCP Observatory
+
+MCP Observatory is a free, local-first CI and security gate for Model Context Protocol (MCP) servers before AI agents depend on them.
+
+## Use This When
+
+- You maintain an AI agent, coding agent, autonomous productivity system, MCP gateway, or bot runtime.
+- Your agent calls external MCP tools and needs to know whether those tools still start, respond, and expose safe schemas.
+- You want read-only compatibility, schema drift, and security checks without a hosted account.
+- You need a GitHub Action or CLI preflight before agents run unattended.
+
+## Fast Commands
+
+```bash
+npx @kryptosai/mcp-observatory test npx -y @modelcontextprotocol/server-everything
+```
+
+```bash
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y your-mcp-server"
+```
+
+```bash
+claude mcp add mcp-observatory -- npx -y @kryptosai/mcp-observatory serve
+```
+
+## What It Checks
+
+- MCP server startup
+- tools, prompts, and resources
+- schema drift
+- common schema/security footguns
+- record/replay/verify regressions
+- GitHub Action reports and optional PR comments
+- agent-accessible diagnostics through MCP server mode
+
+## Best Contribution From Bot Maintainers
+
+Open an agent runtime target request with:
+
+- project URL
+- safe startup command
+- whether secrets are required
+- the MCP tools/skills the agent depends on
+- what an autonomous agent should know before trusting the tool
+
+Start here:
+
+- Agent runtime quickstart: `docs/agent-runtime-quickstart.md`
+- OpenClaw agent template: `docs/openclaw-agent-template/SOUL.md`
+- Contribution guide: `CONTRIBUTING.md`
+- Certification distribution loop: `docs/certification-distribution.md`
+- GitHub issue tracker: https://github.com/KryptosAI/mcp-observatory/issues
+
+## Positioning
+
+Agents should not depend on tools nobody tests.
+
+MCP Observatory is complementary to official MCP SDKs and conformance tooling. It focuses on practical CI, security checks, drift detection, reports, and regression evidence for real MCP servers.

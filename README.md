@@ -38,6 +38,8 @@ Add Observatory as an agent-accessible MCP server:
 claude mcp add mcp-observatory -- npx -y @kryptosai/mcp-observatory serve
 ```
 
+Building an autonomous agent, OpenClaw-style productivity machine, MCP gateway, or bot runtime? Start with the [agent runtime quickstart](./docs/agent-runtime-quickstart.md), copy the [OpenClaw MCP reliability agent template](./docs/openclaw-agent-template/SOUL.md), or point your agent at [`llms.txt`](./llms.txt) and [`AGENTS.md`](./AGENTS.md).
+
 Or test a server immediately:
 
 ```bash
