@@ -10,6 +10,8 @@ For public proof, use [MCP Observatory Proof](./proof.md).
 
 MCP Observatory is the CI and security gate for MCP servers before agents depend on them.
 
+Launch wedge: MCP Observatory turns MCP server checks into GitHub Code Scanning findings.
+
 ## Public Surface Checklist
 
 - README pricing and enterprise CTA
@@ -24,7 +26,19 @@ MCP Observatory is the CI and security gate for MCP servers before agents depend
 
 MCP servers are becoming production dependencies. If an agent depends on a server, that server needs regression tests, security checks, and drift gates before it breaks workflows.
 
-MCP Observatory scans MCP servers, verifies capabilities, detects schema drift, records/replays sessions, and can run in CI or as an MCP server itself.
+MCP Observatory scans MCP servers, verifies capabilities, detects schema drift, records/replays sessions, and can run in CI or as an MCP server itself. It now emits GitHub Code Scanning friendly SARIF so MCP compatibility, startup, schema-quality, and security findings can appear in the same security review surface teams already use.
+
+One command:
+
+```bash
+npx @kryptosai/mcp-observatory test npx -y my-mcp-server --sarif mcp-observatory.sarif
+```
+
+CI setup with Code Scanning upload:
+
+```bash
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif
+```
 
 Free for local OSS use. Paid pilots are available for hosted reporting, private repo CI, recurring security reports, certification, support, and fleet visibility.
 

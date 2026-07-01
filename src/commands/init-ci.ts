@@ -18,6 +18,7 @@ export interface InitCiOptions {
   scoreBadge?: string | boolean;
   commentOnPr?: boolean;
   setStatus?: boolean;
+  sarif?: boolean;
   actionRef?: string;
   all?: boolean;
   force?: boolean;
@@ -47,6 +48,7 @@ function workflowYaml(options: InitCiOptions): string {
   const target = options.target?.trim();
   const commentsEnabled = options.commentOnPr === true;
   const statusEnabled = options.setStatus === true;
+  const sarifEnabled = options.sarif === true;
   const actionRef = options.actionRef?.trim() || DEFAULT_ACTION_REF;
   const lines = [
     "name: MCP Observatory",
@@ -62,6 +64,7 @@ function workflowYaml(options: InitCiOptions): string {
 
   if (commentsEnabled) lines.push("  pull-requests: write");
   if (statusEnabled) lines.push("  statuses: write");
+  if (sarifEnabled) lines.push("  security-events: write");
 
   lines.push(
     "",
@@ -88,7 +91,8 @@ function workflowYaml(options: InitCiOptions): string {
     `          comment-on-pr: ${commentsEnabled ? "true" : "false"}`,
     `          set-status: ${statusEnabled ? "true" : "false"}`,
   );
-  if (!commentsEnabled && !statusEnabled) {
+  if (sarifEnabled) lines.push("          upload-sarif: true");
+  if (!commentsEnabled && !statusEnabled && !sarifEnabled) {
     lines.push("          # Read-only by default for low-friction external PRs. Maintainers can enable PR comments/statuses later.");
   }
   lines.push("");
@@ -138,10 +142,11 @@ function prBodyMarkdown(options: InitCiOptions): string {
     "Why this helps:",
     "- catches MCP compatibility regressions before release",
     "- surfaces schema drift and common security issues",
+    "- can optionally upload normalized findings into GitHub Code Scanning",
     "- publishes a small PR report for maintainers",
     "- adds an optional README trust badge",
     "",
-    "This does not require an MCP Observatory account. The generated workflow is read-only by default for low-friction review; maintainers can enable PR comments or commit statuses later if they want inline reporting.",
+    "This does not require an MCP Observatory account. The generated workflow is read-only by default for low-friction review; maintainers can enable PR comments, commit statuses, or SARIF upload later if they want inline reporting in GitHub.",
     "",
     "The action reference is pinned to a release by default. Security-sensitive repos can replace it with a full commit SHA.",
     "",
@@ -276,15 +281,16 @@ function checkFile(id: string, label: string, filePath: string, content: string 
 }
 
 function setupCommand(options: InitCiOptions): string {
-  if (options.target) return `npx @kryptosai/mcp-observatory setup-ci --all --target ${options.target}`;
-  if (options.command) return `npx @kryptosai/mcp-observatory setup-ci --all --command "${options.command.replaceAll("\"", "\\\"")}"`;
-  return "npx @kryptosai/mcp-observatory setup-ci --all --command \"npx -y <server-package>\"";
+  const sarif = options.sarif ? " --sarif" : "";
+  if (options.target) return `npx @kryptosai/mcp-observatory setup-ci --all --target ${options.target}${sarif}`;
+  if (options.command) return `npx @kryptosai/mcp-observatory setup-ci --all --command "${options.command.replaceAll("\"", "\\\"")}"${sarif}`;
+  return `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"${sarif}`;
 }
 
-function initCiOptionsFromLastRunArtifact(artifact: RunArtifact, force: boolean | undefined): InitCiOptions | undefined {
+function initCiOptionsFromLastRunArtifact(artifact: RunArtifact, force: boolean | undefined, sarif: boolean | undefined): InitCiOptions | undefined {
   if (artifact.target.adapter !== "local-process") return undefined;
   const command = [artifact.target.command, ...artifact.target.args].map(quoteShell).join(" ");
-  return { all: true, command, force };
+  return { all: true, command, force, sarif };
 }
 
 export async function doctorSetupCi(options: InitCiOptions = {}): Promise<SetupCiDoctorResult> {
@@ -361,12 +367,13 @@ export async function doctorSetupCi(options: InitCiOptions = {}): Promise<SetupC
 
     const writesPr = /(^|\n)\s+pull-requests:\s+write/.test(workflow);
     const writesStatus = /(^|\n)\s+statuses:\s+write/.test(workflow);
+    const writesSarif = /(^|\n)\s+security-events:\s+write/.test(workflow);
     checks.push({
       id: "permissions",
       label: "Permissions",
-      status: writesPr || writesStatus ? "warn" : "pass",
-      message: writesPr || writesStatus ? "Workflow can write PR comments or statuses." : "Workflow is read-only by default.",
-      fix: writesPr || writesStatus ? "Keep write permissions only when maintainers intentionally want PR comments or commit statuses." : undefined,
+      status: writesPr || writesStatus || writesSarif ? "warn" : "pass",
+      message: writesPr || writesStatus || writesSarif ? "Workflow can write PR comments, statuses, or code scanning results." : "Workflow is read-only by default.",
+      fix: writesPr || writesStatus || writesSarif ? "Keep write permissions only when maintainers intentionally want PR comments, commit statuses, or SARIF upload." : undefined,
     });
   }
 
@@ -440,6 +447,7 @@ function addInitCiOptions(command: Command): Command {
     .option("--score-badge [file]", "Also write score badge generation instructions.")
     .option("--comment-on-pr", "Allow the generated workflow to post PR comments. This adds pull-requests: write permission.", false)
     .option("--set-status", "Allow the generated workflow to set commit statuses. This adds statuses: write permission.", false)
+    .option("--sarif", "Upload normalized findings to GitHub Code Scanning. This adds security-events: write permission.", false)
     .option("--action-ref <ref>", "Git ref for KryptosAI/mcp-observatory/action. Use a full commit SHA for strict third-party action pinning.", DEFAULT_ACTION_REF)
     .option("--all", "Write the full adoption kit: workflow, badge, target config, PR body, issue body, and score badge instructions.", false)
     .option("--force", "Overwrite existing files.", false)
@@ -481,7 +489,7 @@ function initCiAction(commandName: "init-ci" | "setup-ci"): (options: InitCiOpti
       if (artifact.artifactType !== "run") {
         throw new Error(`Latest artifact is not a run artifact: ${latestPath}`);
       }
-      const fromRunOptions = initCiOptionsFromLastRunArtifact(artifact, options.force);
+      const fromRunOptions = initCiOptionsFromLastRunArtifact(artifact, options.force, options.sarif);
       if (!fromRunOptions) {
         throw new Error(`Latest successful run does not contain enough target information for setup-ci: ${latestPath}`);
       }

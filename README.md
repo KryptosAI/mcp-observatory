@@ -18,11 +18,25 @@
 [![Smithery](https://smithery.ai/badge/@kryptosai/mcp-observatory)](https://smithery.ai/server/@kryptosai/mcp-observatory)
 [![mcp-observatory MCP server](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory/badges/score.svg)](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory)
 
-**The CI and security gate for MCP servers before agents depend on them.**
+**The GitHub-native CI and security gate for MCP servers before agents depend on them.**
 
-Agents should not depend on tools nobody tests. MCP Observatory gives MCP servers the production safety rails every dependency eventually needs: CI checks, security scans, schema drift detection, PR reports, score badges, and agent-accessible diagnostics.
+Agents should not depend on tools nobody tests. MCP Observatory gives MCP servers the production safety rails every dependency eventually needs: CI checks, security scans, schema drift detection, PR reports, score badges, agent-accessible diagnostics, and GitHub Code Scanning findings.
 
-Two fast paths:
+Security launch path:
+
+```bash
+npx @kryptosai/mcp-observatory test npx -y my-mcp-server --sarif mcp-observatory.sarif
+```
+
+Or install the GitHub Action with Code Scanning upload:
+
+```bash
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif
+```
+
+See [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md).
+
+Two more fast paths:
 
 Cloned this repo? Start here: [`CLONED_THIS.md`](./CLONED_THIS.md). Want to contribute? Add one server to the [MCP Target Registry](./docs/target-registry.md).
 
@@ -30,6 +44,12 @@ Add MCP CI in one command:
 
 ```bash
 npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server"
+```
+
+Upload normalized MCP findings to GitHub Code Scanning when you want a security-native release gate:
+
+```bash
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif
 ```
 
 Add Observatory as an agent-accessible MCP server:
@@ -62,18 +82,19 @@ Observatory gives maintainers and teams:
 
 - **One-command CI setup** with `setup-ci --all`
 - **GitHub PR comments** for compatibility, drift, and security findings
+- **GitHub Code Scanning SARIF** for normalized MCP findings
 - **Health score badges** for public trust signals
 - **Record/replay/verify** workflows for regression testing
 - **MCP server mode** so agents can inspect other MCP servers directly
 - **Production support path** for hosted history, private repo reporting, certification, support, and fleet visibility
 
-See the [target registry](./docs/target-registry.md), [target contribution guide](./docs/target-contribution-guide.md), [`setup-ci --doctor`](./docs/setup-ci-doctor.md), [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [June 2026 safety field report](./docs/mcp-safety-field-report-2026-06.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), [local metrics dashboard](./docs/metrics-dashboard.md), and [commercial support](./COMMERCIAL.md).
+See [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), the [target registry](./docs/target-registry.md), [target contribution guide](./docs/target-contribution-guide.md), [`setup-ci --doctor`](./docs/setup-ci-doctor.md), [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [June 2026 safety field report](./docs/mcp-safety-field-report-2026-06.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), [local metrics dashboard](./docs/metrics-dashboard.md), and [commercial support](./COMMERCIAL.md).
 
 ## For Security And Platform Teams
 
 MCP servers are becoming part of the AI software supply chain. Agents need reliable, testable, auditable tools before those tools become dependencies in mission-critical workflows.
 
-MCP Observatory gives security and platform teams MCP server CI, schema drift detection, security findings, SARIF/HTML/Markdown reports, and a path toward certification or fleet visibility. Local OSS use stays free; production, private repo, and fleet usage can move through a paid pilot.
+MCP Observatory gives security and platform teams MCP server CI, schema drift detection, security findings, SARIF/HTML/Markdown reports, GitHub Code Scanning upload, and a path toward certification or fleet visibility. Local OSS use stays free; production, private repo, and fleet usage can move through a paid pilot.
 
 ## Production Support
 
@@ -138,6 +159,7 @@ Or add it manually to your config:
 | `lock verify` | Verify live servers match the lock file |
 | `history` | Show health score trends for your MCP servers |
 | `setup-ci` / `init-ci` | Create a GitHub Action and badge snippet for MCP compatibility/security checks |
+| `setup-ci --sarif` | Generate a workflow that uploads normalized findings to GitHub Code Scanning |
 | `setup-ci --doctor` | Inspect whether the repository has a complete CI adoption kit |
 | `ci-report` | Generate CI report for GitHub issue creation |
 | `enterprise-report` | Generate a static production/security report from run artifacts |

@@ -123,13 +123,14 @@ export async function resolveTarget(options: { target?: string }): Promise<Targe
 export function formatOutput(
   artifact: Parameters<typeof renderTerminal>[0],
   format: "html" | "json" | "junit" | "markdown" | "pr-comment" | "sarif" | "terminal",
+  options: { artifactUri?: string } = {},
 ): string {
   if (format === "json") return JSON.stringify(artifact, null, 2);
   if (format === "markdown") return renderMarkdown(artifact);
   if (format === "pr-comment") return renderPrComment(artifact);
   if (format === "html") return renderHtml(artifact);
   if (format === "junit" && artifact.artifactType === "run") return renderJUnit(artifact);
-  if (format === "sarif" && artifact.artifactType === "run") return renderSarif(artifact);
+  if (format === "sarif" && artifact.artifactType === "run") return renderSarif(artifact, options);
   return renderTerminal(artifact);
 }
 

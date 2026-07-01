@@ -1,3 +1,4 @@
+import { extractObservatoryFindings, type ObservatoryFinding } from "../findings.js";
 import type { RunArtifact } from "../types.js";
 import { TOOL_VERSION } from "../version.js";
 
@@ -5,6 +6,14 @@ interface SarifResult {
   ruleId: string;
   level: "error" | "warning" | "note";
   message: { text: string };
+  locations: Array<{
+    physicalLocation: {
+      artifactLocation: { uri: string };
+      region: { startLine: number };
+    };
+  }>;
+  partialFingerprints: Record<string, string>;
+  properties: Record<string, unknown>;
 }
 
 interface SarifRule {
@@ -12,55 +21,79 @@ interface SarifRule {
   name: string;
   shortDescription: { text: string };
   defaultConfiguration: { level: "error" | "warning" | "note" };
+  help?: { text: string };
+  helpUri?: string;
+  properties: Record<string, unknown>;
 }
 
-function levelFromStatus(status: string): "error" | "warning" | "note" {
-  switch (status) {
-    case "fail": return "error";
-    case "partial":
-    case "flaky": return "warning";
-    default: return "note";
-  }
+export interface RenderSarifOptions {
+  artifactUri?: string;
 }
 
-export function renderSarif(artifact: RunArtifact): string {
+function levelFromSeverity(severity: ObservatoryFinding["severity"]): "error" | "warning" | "note" {
+  if (severity === "high") return "error";
+  if (severity === "medium") return "warning";
+  return "note";
+}
+
+function defaultArtifactUri(artifact: RunArtifact): string {
+  return `.mcp-observatory/runs/${artifact.runId}.json`;
+}
+
+function ruleTitle(finding: ObservatoryFinding): string {
+  return finding.title.length > 0 ? finding.title : finding.ruleId;
+}
+
+export function renderSarif(artifact: RunArtifact, options: RenderSarifOptions = {}): string {
   const rules: SarifRule[] = [];
   const results: SarifResult[] = [];
   const seenRules = new Set<string>();
+  const findings = extractObservatoryFindings(artifact);
+  const artifactUri = options.artifactUri ?? defaultArtifactUri(artifact);
 
-  for (const check of artifact.checks) {
-    const ruleId = `mcp-observatory/${check.id}`;
-
-    if (!seenRules.has(ruleId)) {
-      seenRules.add(ruleId);
+  for (const finding of findings) {
+    if (!seenRules.has(finding.ruleId)) {
+      seenRules.add(finding.ruleId);
       rules.push({
-        id: ruleId,
-        name: check.id,
-        shortDescription: { text: `MCP ${check.id} check` },
-        defaultConfiguration: { level: levelFromStatus(check.status) },
+        id: finding.ruleId,
+        name: ruleTitle(finding),
+        shortDescription: { text: ruleTitle(finding) },
+        defaultConfiguration: { level: levelFromSeverity(finding.severity) },
+        help: finding.recommendation ? { text: finding.recommendation } : undefined,
+        helpUri: `https://github.com/KryptosAI/mcp-observatory/tree/main/docs`,
+        properties: {
+          category: finding.category,
+          checkId: finding.checkId,
+          controlRefs: finding.controlRefs,
+          tags: ["mcp", "mcp-observatory", finding.category, ...finding.controlRefs],
+        },
       });
     }
 
-    // For security checks, create individual results per finding
-    if (check.id === "security" && check.evidence[0]?.diagnostics) {
-      for (const diagnostic of check.evidence[0].diagnostics) {
-        const severityMatch = diagnostic.match(/^\[(high|medium|low)\]/);
-        const level = severityMatch?.[1] === "high" ? "error" as const
-          : severityMatch?.[1] === "medium" ? "warning" as const
-          : "note" as const;
-        results.push({
-          ruleId,
-          level,
-          message: { text: diagnostic.replace(/^\[(high|medium|low)\]\s*/, "") },
-        });
-      }
-    } else if (check.status !== "pass" && check.status !== "skipped" && check.status !== "unsupported") {
-      results.push({
-        ruleId,
-        level: levelFromStatus(check.status),
-        message: { text: check.message },
-      });
-    }
+    results.push({
+      ruleId: finding.ruleId,
+      level: levelFromSeverity(finding.severity),
+      message: { text: finding.message },
+      locations: [{
+        physicalLocation: {
+          artifactLocation: { uri: artifactUri },
+          region: { startLine: 1 },
+        },
+      }],
+      partialFingerprints: {
+        "mcp-observatory/finding-id": finding.id,
+      },
+      properties: {
+        id: finding.id,
+        category: finding.category,
+        checkId: finding.checkId,
+        targetId: artifact.target.targetId,
+        subject: finding.subject,
+        severity: finding.severity,
+        controlRefs: finding.controlRefs,
+        tags: ["mcp", "mcp-observatory", finding.category, ...finding.controlRefs],
+      },
+    });
   }
 
   const sarif = {
@@ -75,6 +108,9 @@ export function renderSarif(artifact: RunArtifact): string {
             informationUri: "https://github.com/KryptosAI/mcp-observatory",
             rules,
           },
+        },
+        automationDetails: {
+          id: `mcp-observatory/${artifact.target.targetId}`,
         },
         results,
       },

@@ -49,6 +49,7 @@ describe("CLI entrypoint", () => {
     const { stdout, exitCode } = runCli(["test", "--help"]);
     expect(exitCode).toBe(0);
     expect(stdout).toContain("test");
+    expect(stdout).toContain("--sarif");
     expect(stdout).toContain("--setup-ci");
     expect(stdout).toContain("--no-setup-ci");
   });
@@ -148,6 +149,21 @@ describe("CLI entrypoint", () => {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
+  it("test --sarif writes a SARIF file when the flag trails the server command", () => {
+    const tmpDir = path.join(os.tmpdir(), `obs-test-${Date.now()}`);
+    fs.mkdirSync(tmpDir, { recursive: true });
+    const fixture = path.resolve("tests/fixtures/fixture-server.mjs");
+    const sarifPath = path.join(tmpDir, "observatory.sarif");
+
+    const { stdout, exitCode } = runCli(["test", "node", fixture, "--sarif", sarifPath, "--no-setup-ci"], { cwd: tmpDir });
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("Wrote sarif report");
+    const sarif = JSON.parse(fs.readFileSync(sarifPath, "utf8")) as { version: string; runs: unknown[] };
+    expect(sarif.version).toBe("2.1.0");
+    expect(sarif.runs).toHaveLength(1);
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
   it("diff --format json outputs valid JSON", () => {
     const { stdout, exitCode } = runCli([
       "diff",
@@ -204,6 +220,16 @@ describe("CLI entrypoint", () => {
     expect(stdout).toContain("setup-ci");
     expect(stdout).toContain("--doctor");
     expect(stdout).toContain("--from-last-run");
+    expect(stdout).toContain("--sarif");
+  });
+
+  it("action source gates SARIF upload behind an explicit input", () => {
+    const action = fs.readFileSync(path.resolve("action/action.yml"), "utf8");
+    expect(action).toContain("upload-sarif:");
+    expect(action).toContain("sarif-path:");
+    expect(action).toContain("github/codeql-action/upload-sarif@v4");
+    expect(action).toContain("if: inputs.upload-sarif == 'true'");
+    expect(action).toContain("Skipping SARIF for multi-server matrix scan");
   });
 
   it("setup-ci --from-last-run uses the latest successful run artifact", () => {

@@ -65,6 +65,21 @@ describe("init-ci", () => {
     expect(workflowText).toContain("set-status: true");
   });
 
+  it("can opt into SARIF upload for GitHub Code Scanning", async () => {
+    const dir = await tempDir();
+    const workflow = path.join(dir, ".github/workflows/mcp-observatory.yml");
+
+    await initCi({
+      command: "npx -y @example/mcp-server",
+      workflow,
+      sarif: true,
+    });
+
+    const workflowText = await readFile(workflow, "utf8");
+    expect(workflowText).toContain("security-events: write");
+    expect(workflowText).toContain("upload-sarif: true");
+  });
+
   it("can pin the generated workflow to a specific action ref", async () => {
     const dir = await tempDir();
     const workflow = path.join(dir, ".github/workflows/mcp-observatory.yml");
