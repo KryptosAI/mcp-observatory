@@ -1170,10 +1170,6 @@ function formatNumber(value: number): string {
   return new Intl.NumberFormat("en-US").format(value);
 }
 
-function metric(label: string, value: string | number, note = ""): string {
-  return `<div class="metric"><strong>${escapeHtml(typeof value === "number" ? formatNumber(value) : value)}</strong><span>${escapeHtml(label)}</span>${note ? `<em>${escapeHtml(note)}</em>` : ""}</div>`;
-}
-
 function delta(current: number, previous: number): string {
   if (previous === 0 && current === 0) return "no change";
   if (previous === 0) return "new activity";
@@ -1192,6 +1188,152 @@ function conversionPercent(part: number, whole: number): string {
   const value = (part / whole) * 100;
   if (value > 0 && value < 0.01) return "<0.01%";
   return `${Math.round(value * 100) / 100}%`;
+}
+
+function signedPercent(current: number, previous: number): { label: string; direction: "up" | "down" | "flat" } {
+  if (previous === 0 && current === 0) return { label: "0%", direction: "flat" };
+  if (previous === 0) return { label: "new", direction: "up" };
+  const value = Math.round(((current - previous) / previous) * 100);
+  return {
+    label: `${value >= 0 ? "+" : ""}${value}%`,
+    direction: value > 0 ? "up" : value < 0 ? "down" : "flat",
+  };
+}
+
+function shortDate(day: string): string {
+  const timestamp = dayToTimestamp(day);
+  if (timestamp === undefined) return day;
+  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" }).format(new Date(timestamp));
+}
+
+function trendClass(direction: "up" | "down" | "flat"): string {
+  if (direction === "up") return "trend-up";
+  if (direction === "down") return "trend-down";
+  return "trend-flat";
+}
+
+function sparkline(values: number[], color: string): string {
+  const width = 156;
+  const height = 34;
+  const max = Math.max(...values, 1);
+  const min = Math.min(...values, 0);
+  const range = Math.max(max - min, 1);
+  const points = values.length <= 1
+    ? `0,${height - 2} ${width},${height - 2}`
+    : values.map((value, index) => {
+      const x = (index / (values.length - 1)) * width;
+      const y = height - 3 - (((value - min) / range) * (height - 8));
+      return `${Math.round(x * 10) / 10},${Math.round(y * 10) / 10}`;
+    }).join(" ");
+  return `<svg class="sparkline" viewBox="0 0 ${width} ${height}" aria-hidden="true"><polyline fill="none" stroke="${color}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" points="${points}"/></svg>`;
+}
+
+function kpiCard(label: string, value: string | number, note: string, trend: { label: string; direction: "up" | "down" | "flat" }, values: number[], color: string): string {
+  return `<article class="kpi-card">
+    <div class="kpi-top"><span>${escapeHtml(label)}</span><em class="${trendClass(trend.direction)}">${trend.direction === "down" ? "↓" : trend.direction === "up" ? "↑" : "→"} ${escapeHtml(trend.label)}</em></div>
+    <strong>${escapeHtml(typeof value === "number" ? formatNumber(value) : value)}</strong>
+    <small>${escapeHtml(note)}</small>
+    ${sparkline(values, color)}
+  </article>`;
+}
+
+function linePath(values: number[], width: number, height: number, maxValue: number): string {
+  if (values.length === 0) return "";
+  if (values.length === 1) return `M 0 ${height} L ${width} ${height}`;
+  return values.map((value, index) => {
+    const x = (index / (values.length - 1)) * width;
+    const y = height - ((value / Math.max(maxValue, 1)) * (height - 12)) - 6;
+    return `${index === 0 ? "M" : "L"} ${Math.round(x * 10) / 10} ${Math.round(y * 10) / 10}`;
+  }).join(" ");
+}
+
+function lineChart(points: UsageTrendPoint[]): string {
+  const rows = points.slice(-30);
+  const width = 640;
+  const height = 210;
+  const maxValue = Math.max(...rows.flatMap((point) => [point.sessions, point.npmDownloads, point.clones]), 1);
+  const sessions = linePath(rows.map((point) => point.sessions), width, height, maxValue);
+  const npm = linePath(rows.map((point) => point.npmDownloads), width, height, maxValue);
+  const clones = linePath(rows.map((point) => point.clones), width, height, maxValue);
+  const labels = rows.filter((_, index) => index % 6 === 0 || index === rows.length - 1);
+  return `<svg class="line-chart" viewBox="0 0 ${width} ${height + 30}" role="img" aria-label="Usage over time">
+    <defs>
+      <linearGradient id="areaSessions" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#7c5cff" stop-opacity=".32"/><stop offset="100%" stop-color="#7c5cff" stop-opacity="0"/></linearGradient>
+    </defs>
+    ${[0, 1, 2, 3].map((row) => `<line x1="0" x2="${width}" y1="${Math.round((height / 4) * row)}" y2="${Math.round((height / 4) * row)}" class="grid-line"/>`).join("")}
+    <path d="${sessions} L ${width} ${height} L 0 ${height} Z" fill="url(#areaSessions)"/>
+    <path d="${npm}" class="line npm-line"/>
+    <path d="${clones}" class="line clone-line"/>
+    <path d="${sessions}" class="line session-line"/>
+    ${labels.map((point, index) => {
+      const sourceIndex = rows.findIndex((candidate) => candidate.day === point.day);
+      const x = rows.length <= 1 ? 0 : (sourceIndex / (rows.length - 1)) * width;
+      return `<text x="${Math.round(x)}" y="${height + 24}" class="axis-label" ${index === labels.length - 1 ? 'text-anchor="end"' : ""}>${escapeHtml(shortDate(point.day))}</text>`;
+    }).join("")}
+  </svg>`;
+}
+
+function stackedBarChart(points: UsageTrendPoint[]): string {
+  const rows = points.slice(-30);
+  const width = 640;
+  const height = 210;
+  const gap = 5;
+  const barWidth = rows.length === 0 ? 0 : Math.max(5, (width - (gap * (rows.length - 1))) / rows.length);
+  const maxValue = Math.max(...rows.map((point) => point.agentInstallSessions + point.validationSessions + point.regressionSessions + point.ciSetupSessions), 1);
+  const bars = rows.map((point, index) => {
+    const x = index * (barWidth + gap);
+    let y = height;
+    const segments = [
+      { value: point.validationSessions, color: "#3b82f6", label: "validation" },
+      { value: point.agentInstallSessions, color: "#8b5cf6", label: "agent installs" },
+      { value: point.regressionSessions, color: "#f59e0b", label: "regression" },
+      { value: point.ciSetupSessions, color: "#22c55e", label: "setup" },
+    ];
+    return segments.map((segment) => {
+      const segmentHeight = (segment.value / maxValue) * (height - 12);
+      y -= segmentHeight;
+      if (segmentHeight <= 0) return "";
+      return `<rect x="${Math.round(x * 10) / 10}" y="${Math.round(y * 10) / 10}" width="${Math.round(barWidth * 10) / 10}" height="${Math.max(1, Math.round(segmentHeight * 10) / 10)}" rx="2" fill="${segment.color}"><title>${escapeHtml(`${point.day}: ${segment.value} ${segment.label} sessions`)}</title></rect>`;
+    }).join("");
+  }).join("");
+  const labels = rows.filter((_, index) => index % 6 === 0 || index === rows.length - 1);
+  return `<svg class="bar-chart" viewBox="0 0 ${width} ${height + 30}" role="img" aria-label="Command funnel over time">
+    ${[0, 1, 2, 3].map((row) => `<line x1="0" x2="${width}" y1="${Math.round((height / 4) * row)}" y2="${Math.round((height / 4) * row)}" class="grid-line"/>`).join("")}
+    ${bars}
+    ${labels.map((point, index) => {
+      const sourceIndex = rows.findIndex((candidate) => candidate.day === point.day);
+      const x = rows.length <= 1 ? 0 : (sourceIndex / (rows.length - 1)) * width;
+      return `<text x="${Math.round(x)}" y="${height + 24}" class="axis-label" ${index === labels.length - 1 ? 'text-anchor="end"' : ""}>${escapeHtml(shortDate(point.day))}</text>`;
+    }).join("")}
+  </svg>`;
+}
+
+function donutChart(rows: Array<{ label: string; value: number; color: string }>): string {
+  const total = rows.reduce((sum, row) => sum + row.value, 0);
+  const radius = 48;
+  const circumference = 2 * Math.PI * radius;
+  let offset = 0;
+  const rings = rows.map((row) => {
+    const dash = total === 0 ? 0 : (row.value / total) * circumference;
+    const circle = `<circle r="${radius}" cx="64" cy="64" fill="none" stroke="${row.color}" stroke-width="20" stroke-dasharray="${dash} ${circumference - dash}" stroke-dashoffset="${-offset}" transform="rotate(-90 64 64)"/>`;
+    offset += dash;
+    return circle;
+  }).join("");
+  return `<svg class="donut" viewBox="0 0 128 128" role="img" aria-label="Usage by source">
+    <circle r="${radius}" cx="64" cy="64" fill="none" stroke="#172435" stroke-width="20"/>
+    ${rings}
+    <text x="64" y="61" text-anchor="middle" class="donut-value">${formatNumber(total)}</text>
+    <text x="64" y="78" text-anchor="middle" class="donut-label">sessions</text>
+  </svg>`;
+}
+
+function horizontalBars(rows: Array<{ label: string; value: number; color: string }>): string {
+  const max = Math.max(...rows.map((row) => row.value), 1);
+  return rows.map((row) => `<div class="hbar-row"><span>${escapeHtml(row.label)}</span><div><i style="width:${Math.max(2, Math.round((row.value / max) * 100))}%;background:${row.color}"></i></div><em>${formatNumber(row.value)}</em></div>`).join("");
+}
+
+function navItem(label: string, active = false): string {
+  return `<div class="nav-item${active ? " active" : ""}"><span class="nav-dot"></span>${escapeHtml(label)}</div>`;
 }
 
 interface UsageTrendPoint {
@@ -1235,14 +1377,6 @@ function dayToTimestamp(day: string): number | undefined {
 
 function timestampToDay(timestamp: number): string {
   return new Date(timestamp).toISOString().slice(0, 10);
-}
-
-function trendDelta(current: number, previous: number): string {
-  if (previous === 0 && current === 0) return "flat";
-  if (previous === 0) return "new";
-  const diff = current - previous;
-  const percentChange = Math.round((diff / previous) * 100);
-  return `${diff >= 0 ? "+" : ""}${formatNumber(diff)} (${percentChange >= 0 ? "+" : ""}${percentChange}%)`;
 }
 
 function percentChangeLabel(current: number, previous: number): string {
@@ -1329,13 +1463,14 @@ function kpiCards(points: UsageTrendPoint[]): string {
   const previousWeek = usagePeriodSummary(points, 7, 7);
   const month = usagePeriodSummary(points, 30);
   const previousMonth = usagePeriodSummary(points, 30, 30);
-  const setupSignals = month.clones + month.npmDownloads;
+  const dayPoints = points.slice(-18);
   return [
-    metric("Market day", `${formatNumber(day.sessions)} sessions`, `${trendDelta(day.sessions, previousDay.sessions)}; ${formatNumber(day.events)} events`),
-    metric("Market week", `${formatNumber(week.sessions)} sessions`, `${trendDelta(week.sessions, previousWeek.sessions)}; ${formatNumber(week.events)} events`),
-    metric("Market month", `${formatNumber(month.sessions)} sessions`, `${formatNumber(month.events)} events, ${formatNumber(month.excludedSessions)} internal excluded`),
-    metric("Monthly change", percentChangeLabel(month.sessions, previousMonth.sessions), `${formatNumber(month.sessions)} vs ${formatNumber(previousMonth.sessions)} sessions`),
-    metric("Setup conversion", conversionPercent(month.setupSessions, setupSignals), `${formatNumber(month.setupSessions)} setup / ${formatNumber(setupSignals)} clone+download signals`),
+    kpiCard("External Sessions", day.sessions, `${formatNumber(day.events)} events today`, signedPercent(day.sessions, previousDay.sessions), dayPoints.map((point) => point.sessions), "#8b5cf6"),
+    kpiCard("Weekly Sessions", week.sessions, `${formatNumber(week.events)} market events`, signedPercent(week.sessions, previousWeek.sessions), dayPoints.map((point) => point.sessions), "#3b82f6"),
+    kpiCard("NPM Downloads", week.npmDownloads, "latest 7 npm days", signedPercent(week.npmDownloads, previousWeek.npmDownloads), dayPoints.map((point) => point.npmDownloads), "#22d3ee"),
+    kpiCard("GitHub Clones", week.clones, "latest 7 GitHub days", signedPercent(week.clones, previousWeek.clones), dayPoints.map((point) => point.clones), "#f97316"),
+    kpiCard("CI Setup Sessions", month.setupSessions, "current 30 days", signedPercent(month.setupSessions, previousMonth.setupSessions), dayPoints.map((point) => point.ciSetupSessions), "#22c55e"),
+    kpiCard("Monthly Change", percentChangeLabel(month.sessions, previousMonth.sessions), `${formatNumber(month.sessions)} vs ${formatNumber(previousMonth.sessions)} sessions`, signedPercent(month.sessions, previousMonth.sessions), dayPoints.map((point) => point.sessions), "#c084fc"),
   ].join("");
 }
 
@@ -1424,6 +1559,39 @@ export function renderDashboardHtml(model: DashboardModel): string {
   const trendPoints = usageTrendPoints(model, TREND_WINDOW_DAYS);
   const cards = kpiCards(trendPoints);
   const searchRows = detailSearchRows(model, trendPoints);
+  const day = usagePeriodSummary(trendPoints, 1);
+  const month = usagePeriodSummary(trendPoints, 30);
+  const previousMonth = usagePeriodSummary(trendPoints, 30, 30);
+  const sourceRows = [
+    { label: "Local", value: model.telemetry.sourceCounts.find((row) => row.source === "local")?.sessions ?? 0, color: "#8b5cf6" },
+    { label: "External CI", value: model.telemetry.sourceCounts.find((row) => row.source === "external_ci")?.sessions ?? 0, color: "#3b82f6" },
+    { label: "MCP", value: model.telemetry.sourceCounts.find((row) => row.source === "mcp")?.sessions ?? 0, color: "#22d3ee" },
+    { label: "Internal Excluded", value: model.telemetry.firstPartyCiSessions, color: "#64748b" },
+  ];
+  const topCategories = [
+    { label: "Agent installs", value: model.telemetry.commandFunnel.find((row) => row.stage === "Agent install")?.sessions ?? 0, color: "#8b5cf6" },
+    { label: "Validation", value: model.telemetry.commandFunnel.find((row) => row.stage === "Local validation")?.sessions ?? 0, color: "#3b82f6" },
+    { label: "Regression", value: model.telemetry.commandFunnel.find((row) => row.stage === "Regression workflow")?.sessions ?? 0, color: "#f59e0b" },
+    { label: "CI setup", value: model.telemetry.commandFunnel.find((row) => row.stage === "CI setup")?.sessions ?? 0, color: "#22c55e" },
+  ];
+  const rightAccounts = model.telemetry.topDomainDetails.slice(0, 5);
+  const topCommands = model.telemetry.topCommands.slice(0, 5);
+  const latestVersion = model.telemetry.versionAdoption.find((row) => row.isLatest);
+  const collectionRows = model.sourceRuns.map((run) => `<tr><td>${escapeHtml(run.source)}</td><td><span class="status ${run.status === "success" ? "ok" : run.status === "failed" ? "bad" : "warn"}">${escapeHtml(run.status)}</span></td><td>${escapeHtml(run.finishedAt || run.startedAt)}</td></tr>`).join("");
+  const workflowRows = model.github.workflowRuns.slice(0, 5).map((run) => `<tr><td>${escapeHtml(run.name)}</td><td><span class="status ${run.conclusion === "success" ? "ok" : run.conclusion ? "bad" : "warn"}">${escapeHtml(run.conclusion || run.status)}</span></td><td>${escapeHtml(run.updatedAt)}</td></tr>`).join("");
+  const accountsRows = rightAccounts.map((row) => `<li><span><b>${escapeHtml(row.domain)}</b><small>${escapeHtml(row.topCommand)} · ${escapeHtml(row.latestSeen)}</small></span><em>${formatNumber(row.sessions)}</em></li>`).join("");
+  const commandsRows = topCommands.map((row) => `<li><span><b>${escapeHtml(row.command)}</b><small>${formatNumber(row.events)} events</small></span><em>${formatNumber(row.sessions)}</em></li>`).join("");
+  const releaseLabel = model.github.latestRelease ? `${model.github.latestRelease} · ${model.github.latestReleasePublishedAt.slice(0, 10)}` : "No release seen";
+  const visibleRange = `${shortDate(trendPoints[0]?.day ?? "")} - ${shortDate(trendPoints.at(-1)?.day ?? "")}`;
+  const monthChange = signedPercent(month.sessions, previousMonth.sessions);
+  const hasSuccessfulWorkflow = model.github.workflowRuns.some((run) => run.conclusion === "success");
+  const safetyIndex = Math.min(100, Math.max(0, Math.round(
+    62 +
+    (month.setupSessions > 0 ? 8 : 0) +
+    (latestVersion ? Math.min(12, latestVersion.sessionShare / 2) : 0) +
+    (hasSuccessfulWorkflow ? 8 : 0) +
+    (model.recentFailures.length === 0 ? 5 : 0),
+  )));
 
   return `<!doctype html>
 <html lang="en">
@@ -1432,78 +1600,220 @@ export function renderDashboardHtml(model: DashboardModel): string {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MCP Observatory Local Metrics</title>
   <style>
-    :root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; --ink:#152238; --muted:#647084; --line:#dce4ee; --panel:#fff; --bg:#f5f7fb; --accent:#0969da; --bad:#b42318; }
-    body { margin:0; background:var(--bg); color:var(--ink); }
-    main { max-width:1160px; margin:0 auto; padding:18px 14px 30px; }
-    header { display:flex; align-items:flex-end; justify-content:space-between; gap:14px; margin-bottom:10px; }
-    .actions { display:flex; align-items:center; justify-content:flex-end; gap:8px; margin-top:6px; }
-    button { border:1px solid #b8c7dc; background:#fff; color:var(--ink); border-radius:6px; padding:6px 9px; font:inherit; font-size:12px; cursor:pointer; }
-    button:hover { border-color:var(--accent); color:var(--accent); }
-    button:disabled { cursor:not-allowed; opacity:.62; }
-    .refresh-status { color:var(--muted); font-size:12px; min-height:16px; }
-    h1 { margin:0; font-size:24px; letter-spacing:0; }
-    h2 { margin:0; padding:8px 10px; font-size:14px; letter-spacing:0; border-bottom:1px solid #edf1f6; background:#fbfcfe; }
-    p { color:var(--muted); margin:3px 0 0; font-size:13px; line-height:1.35; max-width:820px; }
-    .stamp { color:var(--muted); font-size:12px; text-align:right; line-height:1.35; }
-    .kpi-grid { display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:8px; align-items:stretch; margin-top:14px; }
-    .metric, .panel { background:var(--panel); border:1px solid var(--line); border-radius:6px; box-shadow:0 1px 1px rgba(21,34,56,.03); }
-    .metric { padding:11px 12px; min-height:86px; }
-    .metric strong { display:block; font-size:24px; line-height:1.05; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .metric span { display:block; color:var(--muted); font-size:12px; line-height:1.2; margin-top:3px; }
-    .metric em { display:block; color:var(--muted); font-size:11px; line-height:1.25; font-style:normal; margin-top:8px; }
-    .search-shell { margin-top:12px; }
-    .search-bar { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
-    .search-bar input { width:100%; border:1px solid #b8c7dc; border-radius:6px; background:#fff; color:var(--ink); font:inherit; font-size:14px; padding:9px 10px; outline:none; }
-    .search-bar input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(9,105,218,.12); }
-    .search-count { color:var(--muted); font-size:12px; min-width:92px; text-align:right; }
-    .panel { overflow:auto; max-height:430px; }
-    .panel-inner { padding:8px 9px; }
-    table { width:100%; border-collapse:collapse; font-size:13px; line-height:1.25; }
-    th, td { padding:5px 7px; border-bottom:1px solid #edf1f6; text-align:left; vertical-align:top; }
-    th { position:sticky; top:0; z-index:1; background:#eef3f8; color:#3d4d63; font-size:11px; text-transform:uppercase; }
+    :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; --bg:#050b13; --rail:#07111d; --panel:#0b1724; --panel-2:#0e1d2c; --line:#203143; --soft:#132437; --ink:#f5f7fb; --muted:#94a3b8; --dim:#64748b; --purple:#8b5cf6; --blue:#3b82f6; --cyan:#22d3ee; --green:#5ee85c; --orange:#f97316; --red:#ef4444; --yellow:#facc15; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; background:radial-gradient(circle at 70% -10%, rgba(59,130,246,.18), transparent 36%), linear-gradient(180deg, #07111d 0%, var(--bg) 45%, #03070c 100%); color:var(--ink); }
+    .app-shell { display:grid; grid-template-columns:244px minmax(0, 1fr); min-height:100vh; }
+    .sidebar { border-right:1px solid var(--line); background:linear-gradient(180deg, rgba(10,20,33,.96), rgba(4,10,17,.98)); padding:22px 12px; position:sticky; top:0; height:100vh; overflow:auto; }
+    .brand { display:flex; align-items:center; gap:11px; margin:0 8px 26px; font-weight:750; font-size:18px; }
+    .logo { width:28px; height:28px; border-radius:7px; display:grid; place-items:center; background:linear-gradient(135deg, #4f46e5, #7c3aed); box-shadow:0 0 0 1px rgba(255,255,255,.13) inset; }
+    .nav-section { margin:18px 0 8px; padding:0 10px; color:var(--muted); font-size:11px; letter-spacing:.08em; text-transform:uppercase; }
+    .nav-item { display:flex; align-items:center; gap:10px; height:34px; padding:0 10px; margin:3px 0; border-radius:7px; color:#cbd5e1; font-size:13px; }
+    .nav-item.active { background:linear-gradient(90deg, rgba(139,92,246,.33), rgba(59,130,246,.08)); color:#fff; box-shadow:inset 3px 0 0 var(--purple); }
+    .nav-dot { width:15px; height:15px; border-radius:5px; border:1px solid #718096; display:inline-block; position:relative; }
+    .nav-item.active .nav-dot { border-color:var(--purple); background:rgba(139,92,246,.18); }
+    .index-card { margin:22px 10px; padding:14px; border:1px solid var(--line); border-radius:8px; background:linear-gradient(180deg, rgba(15,29,45,.92), rgba(8,17,28,.92)); }
+    .index-card h3 { margin:0 0 8px; font-size:14px; }
+    .index-score { font-size:28px; font-weight:760; }
+    .index-score span { font-size:13px; color:var(--muted); font-weight:500; }
+    .mini-line { margin-top:12px; height:34px; }
+    .sidebar-foot { margin:22px 10px 0; padding-top:18px; border-top:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; color:#cbd5e1; font-size:13px; }
+    .pro { background:linear-gradient(135deg, #4f46e5, #7c3aed); padding:4px 9px; border-radius:6px; font-size:12px; }
+    main { min-width:0; padding:22px 24px 34px; }
+    header { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; margin-bottom:18px; }
+    h1 { margin:0; font-size:20px; line-height:1.15; letter-spacing:0; }
+    p { color:#c6d0dd; margin:6px 0 0; font-size:13px; line-height:1.35; }
+    .actions { display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    button, .range-pill { border:1px solid #33465b; background:#07111d; color:#e5edf7; border-radius:8px; padding:9px 12px; font:inherit; font-size:12px; cursor:pointer; min-height:36px; }
+    button.primary { background:linear-gradient(135deg, #4f46e5, #7c3aed); border-color:#6047f5; font-weight:650; }
+    button:hover { border-color:#7c5cff; }
+    button:disabled { opacity:.62; cursor:not-allowed; }
+    .refresh-status { color:var(--muted); font-size:12px; min-width:100px; }
+    .kpi-grid { display:grid; grid-template-columns:repeat(6, minmax(0, 1fr)); gap:12px; margin-bottom:16px; }
+    .kpi-card, .panel, .small-card { background:linear-gradient(180deg, rgba(14,29,44,.94), rgba(8,18,30,.96)); border:1px solid var(--line); border-radius:8px; box-shadow:0 16px 38px rgba(0,0,0,.22); }
+    .kpi-card { min-height:132px; padding:15px 16px 12px; overflow:hidden; }
+    .kpi-top { display:flex; align-items:center; justify-content:space-between; gap:8px; color:#dbe5f1; font-size:13px; }
+    .kpi-top em { font-style:normal; font-size:12px; white-space:nowrap; }
+    .trend-up { color:var(--green); } .trend-down { color:#ff5c57; } .trend-flat { color:var(--muted); }
+    .kpi-card strong { display:block; margin-top:8px; font-size:27px; line-height:1; letter-spacing:0; }
+    .kpi-card small { display:block; color:#c4cfdb; font-size:12px; margin-top:8px; }
+    .sparkline { width:100%; height:34px; margin-top:10px; overflow:visible; }
+    .dashboard-grid { display:grid; grid-template-columns:minmax(0, 1fr) 390px; gap:16px; align-items:start; }
+    .main-grid { display:grid; gap:16px; min-width:0; }
+    .right-rail { display:grid; gap:16px; min-width:0; }
+    .two-col { display:grid; grid-template-columns:minmax(0, 1.2fr) minmax(320px, .8fr); gap:16px; }
+    .signal-grid { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px; }
+    .panel { overflow:hidden; }
+    .panel-head { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:15px 17px 8px; }
+    .panel h2 { margin:0; font-size:15px; letter-spacing:0; }
+    .panel-note { color:var(--muted); font-size:12px; }
+    .legend { display:flex; align-items:center; gap:14px; flex-wrap:wrap; color:#cbd5e1; font-size:12px; }
+    .legend i { display:inline-block; width:12px; height:8px; border-radius:2px; margin-right:5px; }
+    .chart-pad { padding:4px 16px 16px; }
+    .line-chart, .bar-chart { width:100%; height:auto; display:block; }
+    .grid-line { stroke:#1d2d3f; stroke-width:1; }
+    .line { fill:none; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; }
+    .session-line { stroke:var(--purple); } .npm-line { stroke:var(--cyan); } .clone-line { stroke:var(--orange); }
+    .axis-label { fill:#8fa0b4; font-size:11px; }
+    .donut-wrap { display:grid; grid-template-columns:150px minmax(0, 1fr); gap:14px; align-items:center; padding:4px 18px 18px; }
+    .donut { width:150px; height:150px; }
+    .donut-value { fill:#fff; font-size:18px; font-weight:760; }
+    .donut-label { fill:#94a3b8; font-size:10px; }
+    .hbar-row { display:grid; grid-template-columns:110px minmax(0, 1fr) 44px; gap:9px; align-items:center; margin:10px 0; font-size:12px; color:#dbe5f1; }
+    .hbar-row div { height:8px; background:#172435; border-radius:20px; overflow:hidden; }
+    .hbar-row i { display:block; height:100%; border-radius:20px; }
+    .hbar-row em { color:#cbd5e1; font-style:normal; text-align:right; }
+    .small-card { padding:14px 15px; min-height:104px; }
+    .small-card span { color:#cbd5e1; font-size:12px; }
+    .small-card strong { display:block; font-size:25px; margin-top:10px; }
+    .small-card small { color:var(--muted); font-size:12px; }
+    .list { list-style:none; padding:0 16px 14px; margin:0; }
+    .list li { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid rgba(51,70,91,.55); }
+    .list li:last-child { border-bottom:0; }
+    .list b { display:block; font-size:13px; font-weight:620; color:#e5edf7; }
+    .list small { display:block; margin-top:3px; color:#94a3b8; font-size:11px; }
+    .list em { font-style:normal; color:#e5edf7; font-size:13px; }
+    .table-panel { padding-bottom:6px; }
+    table { width:100%; border-collapse:collapse; font-size:12px; line-height:1.25; }
+    th, td { padding:9px 14px; border-bottom:1px solid rgba(51,70,91,.55); text-align:left; vertical-align:top; }
+    th { color:#90a4ba; font-size:11px; font-weight:600; }
     tr:last-child td { border-bottom:0; }
     tr[hidden] { display:none !important; }
-    .empty-row td { color:var(--muted); padding:18px 10px; text-align:center; }
-    .note { color:var(--muted); font-size:12px; line-height:1.35; margin-top:4px; }
-    @media (max-width: 1120px) { .kpi-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
-    @media (max-width: 720px) { main { padding:12px 8px 24px; } header { display:block; } .stamp { text-align:left; margin-top:8px; } .kpi-grid { grid-template-columns:1fr; } .search-bar { display:block; } .search-count { display:block; min-width:0; margin-top:5px; text-align:left; } }
+    .status { display:inline-flex; align-items:center; gap:5px; font-size:12px; }
+    .status.ok { color:var(--green); } .status.bad { color:#ff5c57; } .status.warn { color:var(--yellow); }
+    .search-shell { padding:15px 16px 16px; }
+    .search-bar { display:flex; align-items:center; gap:9px; margin-bottom:10px; }
+    .search-bar input { width:100%; min-width:0; border:1px solid #33465b; border-radius:8px; background:#07111d; color:#f8fafc; font:inherit; font-size:13px; padding:10px 11px; outline:none; }
+    .search-bar input:focus { border-color:#7c5cff; box-shadow:0 0 0 3px rgba(124,92,255,.18); }
+    .search-count { color:var(--muted); font-size:12px; min-width:110px; text-align:right; }
+    .search-results { max-height:340px; overflow:auto; border:1px solid rgba(51,70,91,.65); border-radius:8px; }
+    .empty-row td { color:var(--muted); padding:22px 10px; text-align:center; }
+    .integration-grid { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:9px; padding:0 16px 16px; }
+    .integration { border:1px solid rgba(51,70,91,.7); border-radius:8px; padding:11px 8px; text-align:center; background:#091522; }
+    .integration b { display:block; font-size:12px; margin-top:7px; }
+    .integration span { color:var(--green); font-size:11px; }
+    .icon { font-size:21px; line-height:1; }
+    @media (max-width: 1320px) { .app-shell { grid-template-columns:210px minmax(0, 1fr); } .kpi-grid { grid-template-columns:repeat(3, minmax(0, 1fr)); } .dashboard-grid { grid-template-columns:1fr; } .right-rail { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 900px) { .app-shell { display:block; } .sidebar { position:relative; height:auto; padding:10px 12px; } .brand { margin:0; font-size:13px; } .logo { width:16px; height:16px; border-radius:4px; font-size:10px; } .sidebar .nav-section, .sidebar .nav-item, .index-card, .sidebar-foot { display:none; } main { padding:16px 12px 28px; } header { display:block; } .actions { justify-content:flex-start; margin-top:12px; } .kpi-grid, .two-col, .signal-grid, .right-rail, .integration-grid { grid-template-columns:1fr; } .donut-wrap { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
-  <main>
-    <header>
-      <div>
-        <h1>MCP Observatory Local Metrics</h1>
-        <p>Private laptop dashboard for telemetry, GitHub traffic, and npm downloads. Raw telemetry is stored locally; this view is sanitized.</p>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="logo">⌁</span><span>MCP Observatory</span></div>
+      ${navItem("Overview", true)}
+      <div class="nav-section">Usage</div>
+      ${navItem("Adoption")}${navItem("Repositories")}${navItem("Active Installs")}${navItem("Geography")}
+      <div class="nav-section">Quality & Security</div>
+      ${navItem("Findings")}${navItem("SARIF Alerts")}${navItem("Fixed Issues")}${navItem("Regressions")}${navItem("Schema Drift")}
+      <div class="nav-section">CI / Workflows</div>
+      ${navItem("Workflow Runs")}${navItem("PR Insights")}${navItem("Release Gates")}
+      <div class="index-card">
+        <h3>MCP Safety Index</h3>
+        <div class="index-score">${safetyIndex}<span>/100</span></div>
+        <p><span class="${trendClass(monthChange.direction)}">${monthChange.label}</span> latest-version adoption</p>
+        <div class="mini-line">${sparkline(trendPoints.slice(-18).map((point) => point.latestSessions), "#8b5cf6")}</div>
       </div>
-      <div class="stamp">
-        Generated ${escapeHtml(model.generatedAt)}<br>DB ${escapeHtml(model.dbPath)}
+      <div class="sidebar-foot"><span>KryptosAI</span><span class="pro">Pro</span></div>
+    </aside>
+    <main>
+      <header>
+        <div>
+          <h1>Overview</h1>
+          <p>Real-time insights into MCP server adoption, release health, and ecosystem pull. Internal activity is separated from market usage.</p>
+        </div>
         <div class="actions">
+          <span class="range-pill">${escapeHtml(visibleRange)}</span>
           <button id="refresh-button" type="button">Update Data</button>
+          <button type="button">Share</button>
+          <button class="primary" type="button">Export</button>
           <span id="refresh-status" class="refresh-status"></span>
         </div>
-      </div>
-    </header>
-    <section class="kpi-grid" aria-label="Primary KPIs">
-      ${cards || metric("Market telemetry", "n/a", "Refresh data to build KPI windows")}
-    </section>
-
-    <section class="search-shell" aria-label="Evidence search">
-      <div class="search-bar">
-        <input id="detail-search" type="search" placeholder="Search evidence" autocomplete="off">
-        <span id="search-count" class="search-count">0 results</span>
-      </div>
-      <div class="panel">
-        <table>
-          <thead><tr><th>Area</th><th>Metric</th><th>Value</th><th>Context</th></tr></thead>
-          <tbody id="detail-results">
-            ${searchRows}
-            <tr id="search-empty" class="empty-row"><td colspan="4">Search domains, commands, npm, GitHub, versions, setup, internal, failures, or dates.</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-  </main>
+      </header>
+      <section class="kpi-grid" aria-label="Primary KPIs">
+        ${cards || kpiCard("Market telemetry", "n/a", "Refresh data to build KPI windows", { label: "0%", direction: "flat" }, [0], "#8b5cf6")}
+      </section>
+      <section class="dashboard-grid">
+        <div class="main-grid">
+          <section class="two-col">
+            <article class="panel">
+              <div class="panel-head">
+                <h2>Usage Over Time</h2>
+                <div class="legend"><span><i style="background:var(--purple)"></i>Sessions</span><span><i style="background:var(--cyan)"></i>NPM</span><span><i style="background:var(--orange)"></i>Clones</span></div>
+              </div>
+              <div class="chart-pad">${lineChart(trendPoints)}</div>
+            </article>
+            <article class="panel">
+              <div class="panel-head"><h2>Usage by Source</h2><span class="panel-note">${formatNumber(model.telemetry.marketSessions)} external sessions</span></div>
+              <div class="donut-wrap">
+                ${donutChart(sourceRows)}
+                <div>${horizontalBars(sourceRows)}</div>
+              </div>
+            </article>
+          </section>
+          <section class="signal-grid">
+            <div class="small-card"><span>Latest external</span><strong>${formatNumber(day.sessions)}</strong><small>${escapeHtml(model.telemetry.latestExternalSeen || "n/a")}</small></div>
+            <div class="small-card"><span>Setup conversion</span><strong>${escapeHtml(conversionPercent(month.setupSessions, month.clones + month.npmDownloads))}</strong><small>${formatNumber(month.setupSessions)} setup / ${formatNumber(month.clones + month.npmDownloads)} signals</small></div>
+            <div class="small-card"><span>Latest version</span><strong>${escapeHtml(latestVersion?.version ?? "n/a")}</strong><small>${latestVersion ? `${latestVersion.sessionShare}% all sessions` : "No version telemetry"}</small></div>
+            <div class="small-card"><span>Release</span><strong>${escapeHtml(model.github.latestRelease || "n/a")}</strong><small>${escapeHtml(releaseLabel)}</small></div>
+          </section>
+          <section class="two-col">
+            <article class="panel">
+              <div class="panel-head">
+                <h2>Command Funnel Over Time</h2>
+                <div class="legend"><span><i style="background:#3b82f6"></i>Validation</span><span><i style="background:#8b5cf6"></i>Install</span><span><i style="background:#22c55e"></i>Setup</span></div>
+              </div>
+              <div class="chart-pad">${stackedBarChart(trendPoints)}</div>
+            </article>
+            <article class="panel">
+              <div class="panel-head"><h2>Top Finding Categories</h2><span class="panel-note">by command stage</span></div>
+              <div style="padding:0 16px 16px">${horizontalBars(topCategories)}</div>
+            </article>
+          </section>
+          <section class="panel table-panel">
+            <div class="panel-head"><h2>Recent Workflow Runs</h2><span class="panel-note">GitHub Actions</span></div>
+            <table><thead><tr><th>Workflow</th><th>Status</th><th>Updated</th></tr></thead><tbody>${workflowRows || '<tr class="empty-row"><td colspan="3">No workflow runs collected.</td></tr>'}</tbody></table>
+          </section>
+        </div>
+        <aside class="right-rail">
+          <section class="panel">
+            <div class="panel-head"><h2>Top Accounts</h2><span class="panel-note">external only</span></div>
+            <ul class="list">${accountsRows || '<li><span><b>No accounts yet</b><small>Search telemetry after refresh</small></span><em>0</em></li>'}</ul>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h2>Top Commands</h2><span class="panel-note">market usage</span></div>
+            <ul class="list">${commandsRows}</ul>
+          </section>
+          <section class="panel table-panel">
+            <div class="panel-head"><h2>Collection Health</h2><span class="panel-note">${escapeHtml(model.generatedAt)}</span></div>
+            <table><thead><tr><th>Source</th><th>Status</th><th>Finished</th></tr></thead><tbody>${collectionRows}</tbody></table>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h2>Integrations</h2><span class="panel-note">connected</span></div>
+            <div class="integration-grid">
+              <div class="integration"><div class="icon">GH</div><b>GitHub</b><span>${formatNumber(model.github.clones7)} clones</span></div>
+              <div class="integration"><div class="icon">CI</div><b>Actions</b><span>${formatNumber(model.github.workflowRuns.length)} runs</span></div>
+              <div class="integration"><div class="icon">npm</div><b>NPM</b><span>${formatNumber(model.npm.downloads7)} downloads</span></div>
+              <div class="integration"><div class="icon">OT</div><b>Telemetry</b><span>${formatNumber(model.telemetry.marketSessions)} sessions</span></div>
+            </div>
+          </section>
+          <section class="panel search-shell" aria-label="Evidence search">
+            <div class="panel-head" style="padding:0 0 12px"><h2>Search evidence</h2><span id="search-count" class="search-count">0 results</span></div>
+            <div class="search-bar"><input id="detail-search" type="search" placeholder="Search domains, commands, npm, GitHub, versions, setup, internal, failures, or dates" autocomplete="off"></div>
+            <div class="search-results">
+              <table>
+                <thead><tr><th>Area</th><th>Metric</th><th>Value</th><th>Context</th></tr></thead>
+                <tbody id="detail-results">
+                  ${searchRows}
+                  <tr id="search-empty" class="empty-row"><td colspan="4">Type to reveal detailed evidence.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </aside>
+      </section>
+    </main>
+  </div>
   <script>
     const button = document.getElementById("refresh-button");
     const status = document.getElementById("refresh-status");

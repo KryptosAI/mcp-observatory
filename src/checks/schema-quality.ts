@@ -153,6 +153,7 @@ export async function runSchemaQualityCheck(context: CheckContext): Promise<Obse
     itemCount: findings.length,
     identifiers: [...new Set(findings.map(f => f.itemName))],
     diagnostics: diagnostics.length > 0 ? diagnostics : undefined,
+    findings: findings.length > 0 ? findings.map((finding) => ({ ...finding })) : undefined,
   };
 
   return {

@@ -113,7 +113,7 @@ export function registerLegacyCommands(program: Command): void {
     .command("report", { hidden: true })
     .description("Render a run artifact.")
     .requiredOption("--run <artifact>", "Run artifact JSON.")
-    .option("--format <format>", "terminal, markdown, pr-comment, json, or html", "terminal")
+    .option("--format <format>", "terminal, markdown, pr-comment, json, html, junit, or sarif", "terminal")
     .option("--output <file>", "Write to file instead of stdout.")
     .option("--no-color", "Disable colored output.")
     .action(
@@ -126,7 +126,7 @@ export function registerLegacyCommands(program: Command): void {
         if (artifact.artifactType !== "run") {
           throw new Error("The report command only accepts run artifacts.");
         }
-        const output = formatOutput(artifact, options.format);
+        const output = formatOutput(artifact, options.format, { artifactUri: options.run });
         await writeOutput(output, options.format, options.output);
       },
     );

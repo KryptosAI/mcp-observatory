@@ -117,9 +117,9 @@ describe("local metrics dashboard", () => {
     expect(html).toContain("Primary KPIs");
     expect(html).toContain("Evidence search");
     expect(html).toContain("Search evidence");
-    expect(html).toContain("Market day");
-    expect(html).toContain("Market week");
-    expect(html).toContain("Market month");
+    expect(html).toContain("External Sessions");
+    expect(html).toContain("Weekly Sessions");
+    expect(html).toContain("Usage Over Time");
     expect(html).toContain("Monthly change");
     expect(html).toContain("Setup conversion");
     expect(html).toContain("data-search-row");

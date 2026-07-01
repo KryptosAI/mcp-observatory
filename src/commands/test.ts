@@ -6,18 +6,24 @@ import {
 } from "../index.js";
 import { defaultRunsDirectory } from "../storage.js";
 import { appendHistory, buildHistoryEntry, getTrend, readHistory } from "../history.js";
+import { renderSarif } from "../reporters/sarif.js";
 import { buildEvent, recordEvent } from "../telemetry.js";
 import { maybePrintCloudCta } from "../commercial.js";
-import { ANSI, c, resolveTarget, targetFromCommand } from "./helpers.js";
+import { ANSI, c, resolveTarget, targetFromCommand, writeOutput } from "./helpers.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
+
+interface TestCommandFlags extends SetupCiConversionFlags {
+  sarif?: string;
+}
 
 function extractTrailingConversionFlags(
   commandArgs: string[],
-  options: SetupCiConversionFlags,
-): { commandArgs: string[]; flags: SetupCiConversionFlags } {
-  const flags: SetupCiConversionFlags = { ...options };
+  options: TestCommandFlags,
+): { commandArgs: string[]; flags: TestCommandFlags } {
+  const flags: TestCommandFlags = { ...options };
   const targetArgs: string[] = [];
-  for (const arg of commandArgs) {
+  for (let i = 0; i < commandArgs.length; i += 1) {
+    const arg = commandArgs[i]!;
     if (arg === "--setup-ci") {
       flags.setupCi = true;
     } else if (arg === "--yes") {
@@ -26,6 +32,11 @@ function extractTrailingConversionFlags(
       flags.noSetupCi = true;
     } else if (arg === "--force") {
       flags.force = true;
+    } else if (arg === "--sarif") {
+      const next = commandArgs[i + 1];
+      if (!next) throw new Error("--sarif requires an output file.");
+      flags.sarif = next;
+      i += 1;
     } else {
       targetArgs.push(arg);
     }
@@ -43,12 +54,13 @@ export function registerTestCommands(program: Command): void {
     .option("--deep", "Also invoke safe tools to verify they execute.")
     .option("--invoke-tools", "Alias for --deep.")
     .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
+    .option("--sarif <file>", "Write a GitHub Code Scanning SARIF report after the run.")
     .option("--setup-ci", "Offer CI conversion after a successful check; use with --yes in non-interactive runs to write files.", false)
     .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
     .option("--no-color", "Disable colored output.")
-    .action(async (commandArgs: string[], options: { deep?: boolean; invokeTools?: boolean; security?: boolean; target?: string } & SetupCiConversionFlags) => {
+    .action(async (commandArgs: string[], options: { deep?: boolean; invokeTools?: boolean; security?: boolean; target?: string } & TestCommandFlags) => {
       const extracted = extractTrailingConversionFlags(commandArgs, options);
       commandArgs = extracted.commandArgs;
       const conversionFlags = extracted.flags;
@@ -57,6 +69,9 @@ export function registerTestCommands(program: Command): void {
       process.stdout.write(`  ${c(ANSI.dim, "⟳")} Checking ${c(ANSI.bold, target.targetId)}...`);
       const artifact = await runTarget(target, { invokeTools: options.deep || options.invokeTools, securityCheck: options.security });
       const outPath = await writeRunArtifact(artifact, defaultRunsDirectory(process.cwd()));
+      if (conversionFlags.sarif) {
+        await writeOutput(renderSarif(artifact, { artifactUri: outPath }), "sarif", conversionFlags.sarif);
+      }
 
       const toolsEvidence = artifact.checks.find(ch => ch.id === "tools");
       const promptsEvidence = artifact.checks.find(ch => ch.id === "prompts");

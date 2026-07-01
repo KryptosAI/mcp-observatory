@@ -41,6 +41,10 @@ inputs:
     description: "Set a commit status check (green/red) on the HEAD SHA"
     required: false
     default: "true"
+  upload-sarif:
+    description: "Upload normalized MCP Observatory findings to GitHub Code Scanning. Requires security-events: write permission in the caller workflow."
+    required: false
+    default: "false"
   github-token:
     description: "GitHub token for PR comments and commit statuses"
     required: false
@@ -61,6 +65,9 @@ outputs:
   artifact-path:
     description: "Path to the run artifact JSON file"
     value: ${{ steps.run.outputs.artifact_path }}
+  sarif-path:
+    description: "Path to the generated SARIF report, when available"
+    value: ${{ steps.run.outputs.sarif_path }}
 
 runs:
   using: "composite"
@@ -83,9 +90,11 @@ runs:
         INPUT_TARGETS: ${{ inputs.targets }}
         INPUT_DEEP: ${{ inputs.deep }}
         INPUT_SECURITY: ${{ inputs.security }}
+        INPUT_UPLOAD_SARIF: ${{ inputs.upload-sarif }}
       run: |
         ARTIFACT_DIR="${RUNNER_TEMP}/observatory"
         mkdir -p "$ARTIFACT_DIR"
+        echo "sarif_path=" >> "$GITHUB_OUTPUT"
 
         # Multi-server matrix scan
         if [ -n "$INPUT_TARGETS" ]; then
@@ -117,6 +126,9 @@ runs:
 
           # Generate CI report for PR comment
           mcp-observatory ci-report --format markdown --no-color > "${ARTIFACT_DIR}/report.md" 2>/dev/null || true
+          if [ "$INPUT_UPLOAD_SARIF" = "true" ]; then
+            echo "::warning::SARIF upload currently supports single-target command or target runs. Skipping SARIF for multi-server matrix scan."
+          fi
 
         # Single-server scan
         else
@@ -147,6 +159,10 @@ runs:
           if [ -n "$ARTIFACT_PATH" ]; then
             cp "$ARTIFACT_PATH" "${ARTIFACT_DIR}/run.json"
             echo "artifact_path=${ARTIFACT_DIR}/run.json" >> "$GITHUB_OUTPUT"
+            mcp-observatory report --run "$ARTIFACT_PATH" --format sarif --output "${ARTIFACT_DIR}/observatory.sarif" >/dev/null 2>&1 || true
+            if [ -f "${ARTIFACT_DIR}/observatory.sarif" ]; then
+              echo "sarif_path=${ARTIFACT_DIR}/observatory.sarif" >> "$GITHUB_OUTPUT"
+            fi
             GATE=$(node -e "const fs=require('fs'); const d=JSON.parse(fs.readFileSync('${ARTIFACT_DIR}/run.json','utf8')); console.log(d.gate)" 2>/dev/null || echo "unknown")
             echo "gate=${GATE}" >> "$GITHUB_OUTPUT"
           else
@@ -159,6 +175,12 @@ runs:
             mcp-observatory report --run "$ARTIFACT_PATH" --format pr-comment --no-color > "${ARTIFACT_DIR}/report.md" 2>/dev/null || true
           fi
         fi
+
+    - name: Upload SARIF
+      if: inputs.upload-sarif == 'true' && steps.run.outputs.sarif_path != ''
+      uses: github/codeql-action/upload-sarif@v4
+      with:
+        sarif_file: ${{ steps.run.outputs.sarif_path }}
 
     - name: Verify against baseline
       if: inputs.baseline != ''

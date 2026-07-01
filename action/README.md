@@ -36,6 +36,7 @@ jobs:
 | `fail-on-baseline-drift` | Fail the action when baseline verification detects drift | `true` |
 | `comment-on-pr` | Post report as PR comment | `true` |
 | `set-status` | Set a commit status check (green/red) on the HEAD SHA | `true` |
+| `upload-sarif` | Upload normalized findings to GitHub Code Scanning. Requires `security-events: write`. | `false` |
 | `targets` | Path to MCP config file for multi-server matrix scan | |
 | `github-token` | Token for PR comments and commit statuses | `${{ github.token }}` |
 | `node-version` | Node.js version | `22` |
@@ -49,6 +50,7 @@ GitHub may downgrade `GITHUB_TOKEN` to read-only on forked pull requests. In tha
 |--------|-------------|
 | `gate` | Overall result: `pass` or `fail` |
 | `artifact-path` | Path to the run artifact JSON |
+| `sarif-path` | Path to the generated SARIF report, when available |
 
 ## Examples
 
@@ -68,6 +70,22 @@ GitHub may downgrade `GITHUB_TOKEN` to read-only on forked pull requests. In tha
     command: npx -y my-mcp-server
     deep: true
     security: true
+```
+
+### Upload findings to GitHub Code Scanning
+
+```yaml
+permissions:
+  contents: read
+  security-events: write
+
+steps:
+  - uses: actions/checkout@v6
+  - uses: KryptosAI/mcp-observatory/action@v0.26.1
+    with:
+      command: npx -y my-mcp-server
+      security: true
+      upload-sarif: true
 ```
 
 ### Pinned package version for production CI

@@ -7,8 +7,14 @@ interface SarifOutput {
   version: string;
   $schema: string;
   runs: Array<{
-    tool: { driver: { name: string; rules: Array<{ id: string }> } };
-    results: Array<{ level: string; ruleId: string }>;
+    tool: { driver: { name: string; rules: Array<{ id: string; properties?: Record<string, unknown> }> } };
+    results: Array<{
+      level: string;
+      ruleId: string;
+      locations?: Array<{ physicalLocation: { artifactLocation: { uri: string } } }>;
+      partialFingerprints?: Record<string, string>;
+      properties?: Record<string, unknown>;
+    }>;
   }>;
 }
 
@@ -33,7 +39,7 @@ describe("renderSarif", () => {
     ])));
     expect(sarif.runs[0]!.results).toHaveLength(1);
     expect(sarif.runs[0]!.results[0]!.level).toBe("error");
-    expect(sarif.runs[0]!.results[0]!.ruleId).toBe("mcp-observatory/tools");
+    expect(sarif.runs[0]!.results[0]!.ruleId).toBe("mcp-observatory/tools/fail");
   });
 
   it("skips results for passing checks", () => {
@@ -56,9 +62,9 @@ describe("renderSarif", () => {
           advertised: true,
           responded: true,
           minimalShapePresent: true,
-          diagnostics: [
-            "[high] Shell injection risk in tool run_cmd",
-            "[medium] No auth configured",
+          findings: [
+            { ruleId: "shell-injection", severity: "high", toolName: "run_cmd", message: "Shell injection risk in tool run_cmd" },
+            { ruleId: "no-auth-http", severity: "medium", toolName: "(target)", message: "No auth configured" },
           ],
         }],
       },
@@ -66,6 +72,8 @@ describe("renderSarif", () => {
     expect(sarif.runs[0]!.results).toHaveLength(2);
     expect(sarif.runs[0]!.results[0]!.level).toBe("error");
     expect(sarif.runs[0]!.results[1]!.level).toBe("warning");
+    expect(sarif.runs[0]!.results[0]!.partialFingerprints?.["mcp-observatory/finding-id"]).toMatch(/^mcp-observatory\/security\/shell-injection\//);
+    expect(sarif.runs[0]!.results[0]!.properties?.["controlRefs"]).toContain("mcp-observatory:command-execution");
   });
 
   it("includes rules definitions", () => {
@@ -73,6 +81,13 @@ describe("renderSarif", () => {
       { id: "conformance", capability: "conformance", status: "partial", durationMs: 100, message: "5/7 passed", evidence: [] },
     ])));
     expect(sarif.runs[0]!.tool.driver.rules).toHaveLength(1);
-    expect(sarif.runs[0]!.tool.driver.rules[0]!.id).toBe("mcp-observatory/conformance");
+    expect(sarif.runs[0]!.tool.driver.rules[0]!.id).toBe("mcp-observatory/conformance/partial");
+  });
+
+  it("uses the provided run artifact path as the SARIF location", () => {
+    const sarif = parseSarif(renderSarif(makeArtifact([
+      { id: "tools", capability: "tools", status: "fail", durationMs: 50, message: "Tools failed", evidence: [] },
+    ]), { artifactUri: ".mcp-observatory/runs/example.json" }));
+    expect(sarif.runs[0]!.results[0]!.locations?.[0]?.physicalLocation.artifactLocation.uri).toBe(".mcp-observatory/runs/example.json");
   });
 });
