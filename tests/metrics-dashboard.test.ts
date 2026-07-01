@@ -55,8 +55,12 @@ describe("local metrics dashboard", () => {
         sessions7: 2,
         sessionsPrevious7: 1,
         sourceCounts: [{ source: "external_ci", events: 1, sessions: 1 }],
+        marketEvents: 1,
+        marketSessions: 1,
         dailyEvents: [{ day: "2026-06-21", events: 2, sessions: 2 }],
+        dailyMarketEvents: [{ day: "2026-06-21", events: 1, sessions: 1 }],
         dailySourceMix: [{ day: "2026-06-21", events: 2, localSessions: 0, externalCiSessions: 1, firstPartyCiSessions: 1, mcpSessions: 0 }],
+        dailyMarketSourceMix: [{ day: "2026-06-21", events: 1, localSessions: 0, externalCiSessions: 1, mcpSessions: 0 }],
         topCommands: [{ command: "scan", events: 1, sessions: 1 }],
         topDomains: [{ domain: "acme.example", events: 1, sessions: 1 }],
         topDomainDetails: [{ domain: "acme.example", events: 1, sessions: 1, topCommand: "scan", latestSeen: "2026-06-21T10:00:00.000Z" }],
@@ -64,9 +68,15 @@ describe("local metrics dashboard", () => {
           { version: "0.24.0", events: 1, sessions: 1, sessionShare: 50, isLatest: true },
           { version: "0.23.0", events: 1, sessions: 1, sessionShare: 50, isLatest: false },
         ],
+        dailyMarketVersionAdoption: [
+          { day: "2026-06-21", totalSessions: 2, latestSessions: 1, latestEvents: 1, latestSessionShare: 50, dominantVersion: "0.24.0" },
+        ],
         commandFunnel: [
           { stage: "Agent install", commands: "serve", events: 1, sessions: 1, recommendation: "Scale agent setup docs." },
           { stage: "CI setup", commands: "init-ci, setup-ci", events: 0, sessions: 0, recommendation: "Make setup-ci louder." },
+        ],
+        dailyMarketCommandFunnel: [
+          { day: "2026-06-21", agentInstallSessions: 1, validationSessions: 1, regressionSessions: 0, ciSetupSessions: 0 },
         ],
       },
       github: {
@@ -104,17 +114,26 @@ describe("local metrics dashboard", () => {
     });
 
     expect(html).toContain("MCP Observatory Local Metrics");
-    expect(html).toContain("Acquisition");
-    expect(html).toContain("Strategy");
-    expect(html).toContain("Command Funnel");
-    expect(html).toContain("Version Adoption");
-    expect(html).toContain("clone/download to CI");
-    expect(html).toContain("Account Drilldown");
-    expect(html).toContain("Source Mix By Day");
-    expect(html).toContain("Downloads");
-    expect(html).toContain("Usage");
+    expect(html).toContain("Primary KPIs");
+    expect(html).toContain("Evidence search");
+    expect(html).toContain("Search evidence");
+    expect(html).toContain("Market day");
+    expect(html).toContain("Market week");
+    expect(html).toContain("Market month");
+    expect(html).toContain("Monthly change");
+    expect(html).toContain("Setup conversion");
+    expect(html).toContain("data-search-row");
+    expect(html).not.toContain("Market Sessions By Source");
+    expect(html).not.toContain("Market Funnel By Day");
+    expect(html).not.toContain("Market Usage Trend");
+    expect(html).not.toContain("Market Daily Trend");
+    expect(html).not.toContain("Market Timeline Details");
+    expect(html).not.toContain("Source Mix By Day");
+    expect(html).toContain("Command funnel");
+    expect(html).toContain("Latest adoption");
+    expect(html).toContain("Clone/download to CI");
     expect(html).toContain("acme.example");
-    expect(html).toContain("npm downloads");
+    expect(html).toContain("npm daily");
     expect(html).not.toContain("analyst@");
     expect(html).not.toContain("git_email");
     expect(html).not.toContain("serverCommands");

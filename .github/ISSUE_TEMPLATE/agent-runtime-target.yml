@@ -1,0 +1,55 @@
+name: Agent runtime target
+description: Propose an autonomous agent, bot, or MCP gateway target for Observatory checks.
+title: "[Agent target] "
+labels: ["agent-target"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for autonomous agents, OpenClaw-style productivity systems, coding agents, MCP gateways, or bot runtimes that depend on MCP tools.
+  - type: input
+    id: project
+    attributes:
+      label: Project
+      description: Link to the agent/runtime/gateway project.
+      placeholder: https://github.com/example/agent-runtime
+    validations:
+      required: true
+  - type: textarea
+    id: mcp-tools
+    attributes:
+      label: MCP tools or skills used
+      description: Which MCP tools, servers, or skills does this agent depend on?
+      placeholder: Browser automation MCP, database MCP, memory MCP, custom tool gateway...
+    validations:
+      required: true
+  - type: input
+    id: startup
+    attributes:
+      label: Safe startup command
+      description: Command Observatory can run in CI without private credentials or destructive side effects.
+      placeholder: npx -y your-mcp-server
+    validations:
+      required: true
+  - type: dropdown
+    id: secrets
+    attributes:
+      label: Requires secrets?
+      options:
+        - "No"
+        - "Optional"
+        - "Yes"
+    validations:
+      required: true
+  - type: textarea
+    id: trust-signal
+    attributes:
+      label: What should an autonomous agent know before trusting this tool?
+      placeholder: Startup must pass; tool schemas must match; safe smoke invocation should work; risky params should warn...
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Anything else maintainers should know?
