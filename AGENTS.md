@@ -5,6 +5,7 @@ MCP Observatory helps agents test other MCP tools before relying on them. Keep c
 ## High-Leverage Agent Tasks
 
 - Add a real MCP server target that can run in CI without secrets.
+- Follow `docs/target-contribution-guide.md` to add one Safety Index target and generated evidence.
 - Improve the Markdown or JSON report so autonomous agents can decide whether a tool is safe to use.
 - Make startup failure diagnosis clearer.
 - Improve `setup-ci --all` so maintainers can add read-only MCP checks with less friction.
@@ -41,6 +42,13 @@ npm run metrics:refresh
 npm run metrics:serve
 ```
 
+For target-registry contributions:
+
+```bash
+npm run safety-index
+npm test -- tests/safety-index.test.ts
+```
+
 ## Bot Maintainer Contribution Path
 
 If you maintain an autonomous agent, OpenClaw-style productivity system, MCP gateway, or coding-agent runtime, the best contribution is a safe target:
@@ -54,3 +62,18 @@ What should the agent know before trusting this tool?
 ```
 
 Use `docs/agent-runtime-quickstart.md` for the detailed path.
+
+## Target Registry Contribution Path
+
+The best bot-friendly contribution is one target:
+
+```text
+Public MCP server:
+Safe startup command:
+Requires secrets? yes/no
+Risk class:
+Failure class:
+Why agents care:
+```
+
+Use `docs/target-registry.md` and `docs/target-contribution-guide.md`.

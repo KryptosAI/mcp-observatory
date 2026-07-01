@@ -1,0 +1,68 @@
+name: MCP target contribution
+description: Propose one public MCP server for the Safety Index target registry.
+title: "[Target] Add "
+labels: ["good first issue", "target-registry", "mcp-server"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The highest-leverage contribution is one safe MCP target that can run without private credentials.
+
+        Please do not paste secrets, private URLs, private schemas, customer data, or destructive commands.
+  - type: input
+    id: server
+    attributes:
+      label: MCP server
+      description: Link to the public repo, package, or docs.
+      placeholder: https://github.com/example/example-mcp
+    validations:
+      required: true
+  - type: input
+    id: command
+    attributes:
+      label: Safe startup command
+      description: Command Observatory can run in CI without secrets.
+      placeholder: npx -y example-mcp
+    validations:
+      required: true
+  - type: dropdown
+    id: secrets
+    attributes:
+      label: Requires secrets?
+      options:
+        - "No"
+        - "Optional"
+        - "Yes"
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Browser Automation
+        - Developer Tools
+        - Documentation / Search
+        - Filesystem
+        - Memory
+        - Database
+        - Infrastructure
+        - Visualization
+        - Agent Runtime
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why agents care
+      description: What would an autonomous agent use this MCP server for?
+      placeholder: Agents may use this server to...
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Safety notes
+      description: Mention fixtures, harmless test modes, risky tools, or commands to avoid.
+      placeholder: This can run with no secrets. Avoid invoking...

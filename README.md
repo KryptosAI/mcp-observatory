@@ -24,7 +24,7 @@ Agents should not depend on tools nobody tests. MCP Observatory gives MCP server
 
 Two fast paths:
 
-Cloned this repo? Start here: [`CLONED_THIS.md`](./CLONED_THIS.md).
+Cloned this repo? Start here: [`CLONED_THIS.md`](./CLONED_THIS.md). Want to contribute? Add one server to the [MCP Target Registry](./docs/target-registry.md).
 
 Add MCP CI in one command:
 
@@ -67,7 +67,7 @@ Observatory gives maintainers and teams:
 - **MCP server mode** so agents can inspect other MCP servers directly
 - **Production pilot path** for hosted history, private repo reporting, certification, support, and fleet visibility
 
-See the [clone-to-CI campaign](./docs/clone-to-ci-campaign.md), [`setup-ci --doctor`](./docs/setup-ci-doctor.md), [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [June 2026 safety field report](./docs/mcp-safety-field-report-2026-06.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), the [certification PR campaign](./docs/certification-pr-campaign.md), [ecosystem distribution kit](./docs/ecosystem-distribution-kit.md), [local metrics dashboard](./docs/metrics-dashboard.md), and [commercial pilots](./COMMERCIAL.md).
+See the [target registry](./docs/target-registry.md), [target contribution guide](./docs/target-contribution-guide.md), [clone-to-CI campaign](./docs/clone-to-ci-campaign.md), [`setup-ci --doctor`](./docs/setup-ci-doctor.md), [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [June 2026 safety field report](./docs/mcp-safety-field-report-2026-06.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), the [certification PR campaign](./docs/certification-pr-campaign.md), [ecosystem distribution kit](./docs/ecosystem-distribution-kit.md), [local metrics dashboard](./docs/metrics-dashboard.md), and [commercial pilots](./COMMERCIAL.md).
 
 ## For Security And Platform Teams
 
