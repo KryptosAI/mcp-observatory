@@ -2,6 +2,9 @@ import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Command } from "commander";
 import { buildEvent, recordEvent } from "../telemetry.js";
+import { defaultRunsDirectory, findLatestSuccessfulRunArtifact, readArtifact } from "../storage.js";
+import type { RunArtifact } from "../types.js";
+import { quoteShell } from "./helpers.js";
 
 export interface InitCiOptions {
   command?: string;
@@ -19,6 +22,7 @@ export interface InitCiOptions {
   all?: boolean;
   force?: boolean;
   doctor?: boolean;
+  fromLastRun?: boolean;
 }
 
 const DEFAULT_WORKFLOW_PATH = ".github/workflows/mcp-observatory.yml";
@@ -277,6 +281,12 @@ function setupCommand(options: InitCiOptions): string {
   return "npx @kryptosai/mcp-observatory setup-ci --all --command \"npx -y <server-package>\"";
 }
 
+function initCiOptionsFromLastRunArtifact(artifact: RunArtifact, force: boolean | undefined): InitCiOptions | undefined {
+  if (artifact.target.adapter !== "local-process") return undefined;
+  const command = [artifact.target.command, ...artifact.target.args].map(quoteShell).join(" ");
+  return { all: true, command, force };
+}
+
 export async function doctorSetupCi(options: InitCiOptions = {}): Promise<SetupCiDoctorResult> {
   const workflowPath = options.workflow ?? DEFAULT_WORKFLOW_PATH;
   const badgePath = options.badgeFile ?? DEFAULT_BADGE_PATH;
@@ -433,7 +443,8 @@ function addInitCiOptions(command: Command): Command {
     .option("--action-ref <ref>", "Git ref for KryptosAI/mcp-observatory/action. Use a full commit SHA for strict third-party action pinning.", DEFAULT_ACTION_REF)
     .option("--all", "Write the full adoption kit: workflow, badge, target config, PR body, issue body, and score badge instructions.", false)
     .option("--force", "Overwrite existing files.", false)
-    .option("--doctor", "Inspect the current repository's MCP Observatory CI adoption state.", false);
+    .option("--doctor", "Inspect the current repository's MCP Observatory CI adoption state.", false)
+    .option("--from-last-run", "Generate the adoption kit from the latest successful local run artifact.", false);
 }
 
 function initCiAction(commandName: "init-ci" | "setup-ci"): (options: InitCiOptions) => Promise<void> {
@@ -456,6 +467,30 @@ function initCiAction(commandName: "init-ci" | "setup-ci"): (options: InitCiOpti
         setupCiWarnCount: result.checks.filter((check) => check.status === "warn").length,
       }));
       return;
+    }
+
+    if (options.fromLastRun) {
+      if (options.command || options.target) {
+        throw new Error("Use --from-last-run by itself, without --command or --target.");
+      }
+      const latestPath = await findLatestSuccessfulRunArtifact(defaultRunsDirectory(process.cwd()));
+      if (!latestPath) {
+        throw new Error("No successful run artifact found. Run a passing MCP check first.");
+      }
+      const artifact = await readArtifact(latestPath);
+      if (artifact.artifactType !== "run") {
+        throw new Error(`Latest artifact is not a run artifact: ${latestPath}`);
+      }
+      const fromRunOptions = initCiOptionsFromLastRunArtifact(artifact, options.force);
+      if (!fromRunOptions) {
+        throw new Error(`Latest successful run does not contain enough target information for setup-ci: ${latestPath}`);
+      }
+      options = {
+        ...options,
+        ...fromRunOptions,
+        all: true,
+      };
+      process.stdout.write(`Using latest successful run: ${latestPath}\n`);
     }
 
     const result = await initCi(options);
