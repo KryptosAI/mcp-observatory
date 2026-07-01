@@ -42,12 +42,15 @@ describe("CLI entrypoint", () => {
     const { stdout, exitCode } = runCli(["scan", "--help"]);
     expect(exitCode).toBe(0);
     expect(stdout).toContain("scan");
+    expect(stdout).toContain("--setup-ci");
   });
 
   it("test subcommand shows help", () => {
     const { stdout, exitCode } = runCli(["test", "--help"]);
     expect(exitCode).toBe(0);
     expect(stdout).toContain("test");
+    expect(stdout).toContain("--setup-ci");
+    expect(stdout).toContain("--no-setup-ci");
   });
 
   it("diff subcommand shows help", () => {
@@ -60,6 +63,7 @@ describe("CLI entrypoint", () => {
     const { stdout, exitCode } = runCli(["run", "--help"]);
     expect(exitCode).toBe(0);
     expect(stdout).toContain("run");
+    expect(stdout).toContain("--setup-ci");
   });
 
   it("serve subcommand shows help", () => {
@@ -131,6 +135,19 @@ describe("CLI entrypoint", () => {
     expect(stdout).toContain("fixture-server");
   });
 
+  it("test --setup-ci --yes writes adoption kit when flags trail the server command", () => {
+    const tmpDir = path.join(os.tmpdir(), `obs-test-${Date.now()}`);
+    fs.mkdirSync(tmpDir, { recursive: true });
+    const fixture = path.resolve("tests/fixtures/fixture-server.mjs");
+
+    const { stdout, exitCode } = runCli(["test", "node", fixture, "--setup-ci", "--yes"], { cwd: tmpDir });
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("created: .github/workflows/mcp-observatory.yml");
+    expect(fs.existsSync(path.join(tmpDir, ".github/workflows/mcp-observatory.yml"))).toBe(true);
+    expect(fs.readFileSync(path.join(tmpDir, "mcp-observatory.target.json"), "utf8")).toContain("fixture-server.mjs");
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
   it("diff --format json outputs valid JSON", () => {
     const { stdout, exitCode } = runCli([
       "diff",
@@ -186,6 +203,21 @@ describe("CLI entrypoint", () => {
     expect(exitCode).toBe(0);
     expect(stdout).toContain("setup-ci");
     expect(stdout).toContain("--doctor");
+    expect(stdout).toContain("--from-last-run");
+  });
+
+  it("setup-ci --from-last-run uses the latest successful run artifact", () => {
+    const tmpDir = path.join(os.tmpdir(), `obs-test-${Date.now()}`);
+    const runsDir = path.join(tmpDir, ".mcp-observatory", "runs");
+    fs.mkdirSync(runsDir, { recursive: true });
+    const fixture = fs.readFileSync(path.resolve("tests/fixtures/sample-run-a.json"), "utf8");
+    fs.writeFileSync(path.join(runsDir, "2026-07-01T00-00-00.000Z--fixture-server.json"), fixture);
+
+    const { stdout, exitCode } = runCli(["setup-ci", "--from-last-run"], { cwd: tmpDir });
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("Using latest successful run:");
+    expect(fs.readFileSync(path.join(tmpDir, "mcp-observatory.target.json"), "utf8")).toContain("fixture-server.mjs");
+    fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
   it("history with no data shows empty message", () => {

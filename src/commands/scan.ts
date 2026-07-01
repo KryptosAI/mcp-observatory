@@ -10,11 +10,19 @@ import { buildEvent, recordEvent } from "../telemetry.js";
 import type { RunArtifact } from "../types.js";
 import { TOOL_VERSION } from "../version.js";
 import { maybePrintCloudCta } from "../commercial.js";
-import { ANSI, LOGO, c, printCiConversionCta, useColor } from "./helpers.js";
+import { ANSI, LOGO, c, setupCiHint, useColor } from "./helpers.js";
+import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
 
 // ── Scan implementation ─────────────────────────────────────────────────────
 
-async function runScan(bin: string, configPath: string | undefined, invokeTools: boolean, securityCheck?: boolean, format?: string): Promise<void> {
+async function runScan(
+  bin: string,
+  configPath: string | undefined,
+  invokeTools: boolean,
+  securityCheck?: boolean,
+  format?: string,
+  conversionFlags: SetupCiConversionFlags = {},
+): Promise<void> {
   const t0 = Date.now();
   process.stdout.write(useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n\n` : LOGO + `  v${TOOL_VERSION}\n\n`);
 
@@ -169,11 +177,22 @@ async function runScan(bin: string, configPath: string | undefined, invokeTools:
   process.stdout.write("\n");
 
   if (failCount === 0) {
-    printCiConversionCta({
-      bin,
-      context: "turn this scan into a CI gate:",
-      target: targets.length === 1 ? targets[0]?.config : undefined,
-    });
+    if (artifacts.length === 1 && targets[0]) {
+      await maybeConvertPassingCheckToCi({
+        artifact: artifacts[0]!,
+        bin,
+        target: targets[0].config,
+        setupCi: conversionFlags.setupCi,
+        yes: conversionFlags.yes,
+        noSetupCi: conversionFlags.noSetupCi,
+        force: conversionFlags.force,
+      });
+    } else if (conversionFlags.noSetupCi !== true) {
+      process.stdout.write(`CI conversion available for a specific target:\n  ${setupCiHint(undefined, undefined, bin)}\n`);
+      if (conversionFlags.setupCi === true) {
+        process.stdout.write("Non-interactive mode will only write files when --setup-ci --yes is present, and multi-target scans need a single target config.\n");
+      }
+    }
   }
 
   if (format === "pr-comment-matrix" && artifacts.length > 0) {
@@ -219,11 +238,15 @@ export function registerScanCommands(program: Command, bin: string): void {
     .option("--config <path>", "Path to a specific MCP config file.")
     .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
     .option("--format <format>", "Output format: terminal or pr-comment-matrix.", "terminal")
+    .option("--setup-ci", "Offer CI conversion after a successful one-target scan; use with --yes in non-interactive runs to write files.", false)
+    .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
+    .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
+    .option("--force", "Overwrite existing generated CI adoption files.", false)
     .option("--no-color", "Disable colored output.");
 
   // `scan` with no subcommand — basic scan
-  scanCmd.action(async (options: { config?: string; security?: boolean; format: string }) => {
-    await runScan(bin, options.config, false, options.security, options.format);
+  scanCmd.action(async (options: { config?: string; security?: boolean; format: string } & SetupCiConversionFlags) => {
+    await runScan(bin, options.config, false, options.security, options.format, options);
   });
 
   // `scan deep` — scan + invoke tools
@@ -233,11 +256,15 @@ export function registerScanCommands(program: Command, bin: string): void {
     .option("--config <path>", "Path to a specific MCP config file.")
     .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
     .option("--format <format>", "Output format: terminal or pr-comment-matrix.", "terminal")
-    .action(async (options: { config?: string; security?: boolean; format: string }) => {
+    .option("--setup-ci", "Offer CI conversion after a successful one-target scan; use with --yes in non-interactive runs to write files.", false)
+    .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
+    .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
+    .option("--force", "Overwrite existing generated CI adoption files.", false)
+    .action(async (options: { config?: string; security?: boolean; format: string } & SetupCiConversionFlags) => {
       // Inherit parent config option if set
       const parentConfig = scanCmd.opts().config as string | undefined;
       const parentSecurity = scanCmd.opts().security as boolean | undefined;
       const parentFormat = scanCmd.opts().format as string;
-      await runScan(bin, options.config ?? parentConfig, true, options.security ?? parentSecurity ?? true, options.format ?? parentFormat);
+      await runScan(bin, options.config ?? parentConfig, true, options.security ?? parentSecurity ?? true, options.format ?? parentFormat, options);
     });
 }

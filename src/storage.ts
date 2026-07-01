@@ -46,6 +46,31 @@ export async function findLatestArtifact(outDir: string, targetId: string, exclu
   }
 }
 
+export async function findLatestSuccessfulRunArtifact(outDir: string): Promise<string | null> {
+  try {
+    const entries = await readdir(outDir);
+    const candidates = entries
+      .filter((entry) => entry.endsWith(".json"))
+      .sort()
+      .reverse()
+      .map((entry) => path.join(outDir, entry));
+
+    for (const candidate of candidates) {
+      try {
+        const artifact = await readArtifact(candidate);
+        if (artifact.artifactType === "run" && artifact.gate === "pass" && !artifact.fatalError) {
+          return candidate;
+        }
+      } catch {
+        // Ignore malformed or stale files while looking for a usable last run.
+      }
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 export async function readArtifact(filePath: string): Promise<Artifact> {
   const content = await readFile(filePath, "utf8");
   const data: unknown = JSON.parse(content);
