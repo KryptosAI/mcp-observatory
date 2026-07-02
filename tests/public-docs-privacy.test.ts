@@ -67,4 +67,29 @@ describe("public proof docs privacy guardrails", () => {
     expect(content).not.toContain("KryptosAI/mcp-observatory/action@main");
     expect(content).not.toContain("pull-requests: write\n  statuses: write");
   });
+
+  it("keeps Action README examples pinned", async () => {
+    const content = await readFile(path.join(process.cwd(), "action/README.md"), "utf8");
+    expect(content).toContain("KryptosAI/mcp-observatory/action@v0.27.0");
+    expect(content).not.toContain("KryptosAI/mcp-observatory/action@main");
+  });
+
+  it("packages the launch, attribution, bot, and gallery docs", async () => {
+    const docs = await packagedMarkdownDocs();
+    expect(docs).toContain("docs/launch.md");
+    expect(docs).toContain("docs/code-scanning-demo.md");
+    expect(docs).toContain("docs/agent-tasks.md");
+    expect(docs).toContain("docs/target-gallery.md");
+    expect(docs).toContain("docs/campaign-attribution.md");
+  });
+
+  it("keeps markdown fences balanced in packaged docs", async () => {
+    for (const docPath of await packagedMarkdownDocs()) {
+      const content = await readFile(path.join(process.cwd(), docPath), "utf8");
+      const backtickFenceCount = content.match(/^```/gm)?.length ?? 0;
+      const tildeFenceCount = content.match(/^~~~/gm)?.length ?? 0;
+      expect(backtickFenceCount, `${docPath} has unbalanced backtick fences`).toBe(backtickFenceCount % 2 === 0 ? backtickFenceCount : -1);
+      expect(tildeFenceCount, `${docPath} has unbalanced tilde fences`).toBe(tildeFenceCount % 2 === 0 ? tildeFenceCount : -1);
+    }
+  });
 });

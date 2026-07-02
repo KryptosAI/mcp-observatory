@@ -111,6 +111,21 @@ describe("telemetry", () => {
       expect(event.contact).toBe("ops@example.com");
     });
 
+    it("includes a campaign from the environment when provided", async () => {
+      vi.stubEnv("MCP_OBSERVATORY_CAMPAIGN", "maintainer-pr");
+      const { buildEvent } = await import("../src/telemetry.js");
+      const event = buildEvent("command_run", "scan", "cli");
+      expect(event.campaign).toBe("maintainer-pr");
+    });
+
+    it("rejects invalid campaign slugs", async () => {
+      const { normalizeCampaign } = await import("../src/telemetry.js");
+      expect(normalizeCampaign("agent-ci")).toBe("agent-ci");
+      expect(() => normalizeCampaign("x")).toThrow(/Campaign must be/);
+      expect(() => normalizeCampaign("bad slug")).toThrow(/Campaign must be/);
+      expect(() => normalizeCampaign("https://example.com")).toThrow(/Campaign must be/);
+    });
+
     it("classifies MCP Observatory GitHub Actions as first-party CI", async () => {
       vi.stubEnv("GITHUB_ACTIONS", "true");
       vi.stubEnv("GITHUB_REPOSITORY", "KryptosAI/mcp-observatory");

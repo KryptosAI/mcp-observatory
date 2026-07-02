@@ -10,27 +10,27 @@
 [![Smithery](https://smithery.ai/badge/@kryptosai/mcp-observatory)](https://smithery.ai/server/@kryptosai/mcp-observatory)
 [![mcp-observatory MCP server](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory/badges/score.svg)](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory)
 
-**The GitHub-native CI and security gate for MCP servers before agents depend on them.**
+**The GitHub-native CI, SARIF, and security gate for MCP servers before agents depend on them.**
 
-Agents should not depend on tools nobody tests. MCP Observatory gives MCP servers the production safety rails every dependency eventually needs: CI checks, security scans, schema drift detection, PR reports, score badges, agent-accessible diagnostics, and GitHub Code Scanning findings.
+Agents should not depend on tools nobody tests. MCP Observatory turns a local MCP check into release-gate evidence maintainers already understand: GitHub Actions, security findings, schema drift detection, PR reports, score badges, agent-accessible diagnostics, and GitHub Code Scanning SARIF.
 
-Security launch path:
+Start with one server:
 
 ```bash
-npx @kryptosai/mcp-observatory test npx -y my-mcp-server --sarif mcp-observatory.sarif
+npx @kryptosai/mcp-observatory test npx -y my-mcp-server
 ```
 
-Or install the GitHub Action with Code Scanning upload:
+Then convert the passing check into CI with Code Scanning:
 
 ```bash
 npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif
 ```
 
-See [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md).
+See the [launch page](./docs/launch.md), [GitHub Code Scanning demo](./docs/code-scanning-demo.md), and [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md).
 
 Two more fast paths:
 
-Cloned this repo? Start here: [`CLONED_THIS.md`](./CLONED_THIS.md). Want to contribute? Add one server to the [MCP Target Registry](./docs/target-registry.md).
+Cloned this repo? Start here: [`CLONED_THIS.md`](./CLONED_THIS.md). Want to contribute? Add one server to the [MCP Target Registry](./docs/target-registry.md) or use the [Agent Task Pack](./docs/agent-tasks.md).
 
 Add MCP CI in one command:
 
@@ -80,19 +80,19 @@ Observatory gives maintainers and teams:
 - **MCP server mode** so agents can inspect other MCP servers directly
 - **Production support path** for hosted history, private repo reporting, certification, support, and fleet visibility
 
-See [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), the [target registry](./docs/target-registry.md), [target contribution guide](./docs/target-contribution-guide.md), [`setup-ci --doctor`](./docs/setup-ci-doctor.md), [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [June 2026 safety field report](./docs/mcp-safety-field-report-2026-06.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), [local metrics dashboard](./docs/metrics-dashboard.md), and [commercial support](./COMMERCIAL.md).
+See the [launch page](./docs/launch.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [Code Scanning demo](./docs/code-scanning-demo.md), [target gallery](./docs/target-gallery.md), [target registry](./docs/target-registry.md), [target contribution guide](./docs/target-contribution-guide.md), [Agent Task Pack](./docs/agent-tasks.md), [`setup-ci --doctor`](./docs/setup-ci-doctor.md), [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [June 2026 safety field report](./docs/mcp-safety-field-report-2026-06.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), [campaign attribution](./docs/campaign-attribution.md), [local metrics dashboard](./docs/metrics-dashboard.md), and [commercial support](./COMMERCIAL.md).
 
 ## For Security And Platform Teams
 
 MCP servers are becoming part of the AI software supply chain. Agents need reliable, testable, auditable tools before those tools become dependencies in mission-critical workflows.
 
-MCP Observatory gives security and platform teams MCP server CI, schema drift detection, security findings, SARIF/HTML/Markdown reports, GitHub Code Scanning upload, and a path toward certification or fleet visibility. Local OSS use stays free; production, private repo, and fleet usage can move through a paid pilot.
+MCP Observatory gives security and platform teams MCP server CI, schema drift detection, security findings, SARIF/HTML/Markdown reports, GitHub Code Scanning upload, and a path toward certification or fleet visibility. Local OSS use stays free; production, private repo, and fleet usage can move through a paid MCP Readiness Review.
 
 ## Production Support
 
-Local OSS use stays free under MIT. Teams running MCP in production can use [commercial support](./COMMERCIAL.md) for hosted reporting, private repo CI, recurring security reports, certification review, support, and fleet visibility.
+Local OSS use stays free under MIT. Teams running MCP in production can use the [MCP Readiness Review](./docs/paid-pilot-offer.md) for CI rollout, SARIF/Code Scanning setup, private repo review, recurring security reports, certification review, support, and fleet visibility. The default package starts at `$2,500`.
 
-Run `npx @kryptosai/mcp-observatory cloud`, open a pilot request from the issue chooser, or see [COMMERCIAL.md](./COMMERCIAL.md). Also see [privacy and telemetry](./PRIVACY.md) and [terms for production use](./TERMS.md).
+Run `npx @kryptosai/mcp-observatory cloud`, open a pilot request from the issue chooser, or see [COMMERCIAL.md](./COMMERCIAL.md). Also see [privacy and telemetry](./PRIVACY.md), [campaign attribution](./docs/campaign-attribution.md), and [terms for production use](./TERMS.md).
 
 ## Quick Start
 

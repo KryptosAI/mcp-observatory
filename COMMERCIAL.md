@@ -4,12 +4,17 @@ MCP Observatory is the CI and security gate for MCP servers before agents depend
 
 The open source CLI and MCP server remain free for local OSS use under the MIT license. Paid pilots are for production use cases where a team needs hosted reporting, private repository CI, security reports, certification, support, or fleet visibility.
 
-## Pilot Pricing
+## MCP Readiness Review
+
+The primary paid offer is a fixed-scope MCP Readiness Review starting at `$2,500`.
+
+It includes CI rollout, SARIF/GitHub Code Scanning setup, private readiness reporting, prioritized remediation notes, and maintainer PR support for selected MCP servers.
 
 These are starting points for current pilots, not permanent fixed plans. For public OSS users, the important part is simple: local CLI use remains free, and paid work is for private or production support needs.
 
 | Pilot | Starting Price | Best Fit |
 | --- | ---: | --- |
+| MCP Readiness Review | $2,500 | CI rollout, Code Scanning, private readiness report, and prioritized fixes |
 | Team Pilot | $299/month | Small teams adding MCP regression checks to CI |
 | Business Pilot | $999/month | Private repos, recurring security reports, and shared reporting |
 | Enterprise Pilot | $3k/month | Private MCP readiness reports, support, and fleet visibility |

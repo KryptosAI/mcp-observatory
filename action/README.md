@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: KryptosAI/mcp-observatory/action@main
+      - uses: KryptosAI/mcp-observatory/action@v0.27.0
         with:
           command: npx -y my-mcp-server
 ```
@@ -57,7 +57,7 @@ GitHub may downgrade `GITHUB_TOKEN` to read-only on forked pull requests. In tha
 ### Basic check
 
 ```yaml
-- uses: KryptosAI/mcp-observatory/action@main
+- uses: KryptosAI/mcp-observatory/action@v0.27.0
   with:
     command: npx -y @modelcontextprotocol/server-filesystem .
 ```
@@ -65,7 +65,7 @@ GitHub may downgrade `GITHUB_TOKEN` to read-only on forked pull requests. In tha
 ### Deep check with security scan
 
 ```yaml
-- uses: KryptosAI/mcp-observatory/action@main
+- uses: KryptosAI/mcp-observatory/action@v0.27.0
   with:
     command: npx -y my-mcp-server
     deep: true
@@ -91,7 +91,7 @@ steps:
 ### Pinned package version for production CI
 
 ```yaml
-- uses: KryptosAI/mcp-observatory/action@main
+- uses: KryptosAI/mcp-observatory/action@v0.27.0
   with:
     command: npx -y my-mcp-server
     package-version: 0.27.0
@@ -102,7 +102,7 @@ For stricter reproducibility, pin both the Action ref and the npm package versio
 ### Verify against baseline
 
 ```yaml
-- uses: KryptosAI/mcp-observatory/action@main
+- uses: KryptosAI/mcp-observatory/action@v0.27.0
   with:
     command: npx -y my-mcp-server
     baseline: .mcp-observatory/cassettes/baseline.cassette.json
@@ -112,7 +112,7 @@ For stricter reproducibility, pin both the Action ref and the npm package versio
 ### Using target config
 
 ```yaml
-- uses: KryptosAI/mcp-observatory/action@main
+- uses: KryptosAI/mcp-observatory/action@v0.27.0
   with:
     target: ./observatory-target.json
     deep: true
@@ -121,7 +121,7 @@ For stricter reproducibility, pin both the Action ref and the npm package versio
 ### Don't fail on issues
 
 ```yaml
-- uses: KryptosAI/mcp-observatory/action@main
+- uses: KryptosAI/mcp-observatory/action@v0.27.0
   with:
     command: npx -y my-mcp-server
     fail-on-regression: false

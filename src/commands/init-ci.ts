@@ -1,7 +1,7 @@
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Command } from "commander";
-import { buildEvent, recordEvent } from "../telemetry.js";
+import { buildEvent, normalizeCampaign, recordEvent } from "../telemetry.js";
 import { defaultRunsDirectory, findLatestSuccessfulRunArtifact, readArtifact } from "../storage.js";
 import type { RunArtifact } from "../types.js";
 import { quoteShell } from "./helpers.js";
@@ -24,6 +24,7 @@ export interface InitCiOptions {
   force?: boolean;
   doctor?: boolean;
   fromLastRun?: boolean;
+  campaign?: string;
 }
 
 const DEFAULT_WORKFLOW_PATH = ".github/workflows/mcp-observatory.yml";
@@ -32,7 +33,7 @@ const DEFAULT_TARGET_CONFIG_PATH = "mcp-observatory.target.json";
 const DEFAULT_PR_BODY_PATH = "docs/mcp-observatory-pr-body.md";
 const DEFAULT_ISSUE_BODY_PATH = "docs/mcp-observatory-issue.md";
 const DEFAULT_SCORE_BADGE_PATH = "docs/mcp-observatory-score-badge.md";
-const DEFAULT_ACTION_REF = "v0.26.1";
+const DEFAULT_ACTION_REF = "v0.27.0";
 
 async function exists(filePath: string): Promise<boolean> {
   try {
@@ -452,11 +453,13 @@ function addInitCiOptions(command: Command): Command {
     .option("--all", "Write the full adoption kit: workflow, badge, target config, PR body, issue body, and score badge instructions.", false)
     .option("--force", "Overwrite existing files.", false)
     .option("--doctor", "Inspect the current repository's MCP Observatory CI adoption state.", false)
-    .option("--from-last-run", "Generate the adoption kit from the latest successful local run artifact.", false);
+    .option("--from-last-run", "Generate the adoption kit from the latest successful local run artifact.", false)
+    .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.");
 }
 
 function initCiAction(commandName: "init-ci" | "setup-ci"): (options: InitCiOptions) => Promise<void> {
   return async (options: InitCiOptions) => {
+    if (options.campaign) options.campaign = normalizeCampaign(options.campaign);
     if (options.doctor) {
       const result = await doctorSetupCi(options);
       process.stdout.write("MCP Observatory CI doctor\n\n");
@@ -473,6 +476,7 @@ function initCiAction(commandName: "init-ci" | "setup-ci"): (options: InitCiOpti
         setupCiReady: result.ready,
         setupCiFailCount: result.checks.filter((check) => check.status === "fail").length,
         setupCiWarnCount: result.checks.filter((check) => check.status === "warn").length,
+        campaign: options.campaign,
       }));
       return;
     }
@@ -527,6 +531,7 @@ function initCiAction(commandName: "init-ci" | "setup-ci"): (options: InitCiOpti
     recordEvent(buildEvent("command_complete", commandName, "cli", {
       ciProvider: "github-actions",
       commitStatusSet: !skipped,
+      campaign: options.campaign,
     }));
   };
 }
