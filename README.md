@@ -1,6 +1,14 @@
-<p align="center">
-  <img src="./docs/logo.svg" alt="MCP Observatory" width="820">
-</p>
+# MCP Observatory
+
+```
+  ███╗   ███╗ ██████╗██████╗
+  ████╗ ████║██╔════╝██╔══██╗
+  ██╔████╔██║██║     ██████╔╝
+  ██║╚██╔╝██║██║     ██╔═══╝
+  ██║ ╚═╝ ██║╚██████╗██║
+  ╚═╝     ╚═╝ ╚═════╝╚═╝
+     O B S E R V A T O R Y
+```
 
 [![CI](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/@kryptosai/mcp-observatory)](https://www.npmjs.com/package/@kryptosai/mcp-observatory)

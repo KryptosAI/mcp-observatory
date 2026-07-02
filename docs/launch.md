@@ -1,8 +1,14 @@
 # MCP Observatory Launch Page
 
-<p align="center">
-  <img src="./logo.svg" alt="MCP Observatory" width="760">
-</p>
+```
+  ███╗   ███╗ ██████╗██████╗
+  ████╗ ████║██╔════╝██╔══██╗
+  ██╔████╔██║██║     ██████╔╝
+  ██║╚██╔╝██║██║     ██╔═══╝
+  ██║ ╚═╝ ██║╚██████╗██║
+  ╚═╝     ╚═╝ ╚═════╝╚═╝
+     O B S E R V A T O R Y
+```
 
 MCP Observatory is the GitHub-native CI and security gate for MCP servers before agents depend on them.
 
@@ -56,4 +62,3 @@ If MCP servers are becoming production dependencies, use the same evidence model
 - Safety Index-style report for internal agent dependencies
 
 See the [MCP Readiness Review](./paid-pilot-offer.md). The default package starts at `$2,500`.
-
