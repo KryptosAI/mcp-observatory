@@ -1,14 +1,8 @@
 # MCP Target Registry
 
-```
-  ███╗   ███╗ ██████╗██████╗
-  ████╗ ████║██╔════╝██╔══██╗
-  ██╔████╔██║██║     ██████╔╝
-  ██║╚██╔╝██║██║     ██╔═══╝
-  ██║ ╚═╝ ██║╚██████╗██║
-  ╚═╝     ╚═╝ ╚═════╝╚═╝
-     O B S E R V A T O R Y
-```
+<p align="center">
+  <img src="./logo.svg" alt="MCP Observatory" width="760">
+</p>
 
 The easiest way to help MCP Observatory grow is to add one safe MCP target.
 

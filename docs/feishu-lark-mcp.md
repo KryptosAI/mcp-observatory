@@ -45,7 +45,7 @@ jobs:
       MCP_OBSERVATORY_CONTACT: your-team-contact
     steps:
       - uses: actions/checkout@v4
-      - uses: KryptosAI/mcp-observatory/action@v0.26.1
+      - uses: KryptosAI/mcp-observatory/action@v0.27.0
         with:
           target: feishu-target.json
           security: true

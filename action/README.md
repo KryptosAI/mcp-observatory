@@ -81,7 +81,7 @@ permissions:
 
 steps:
   - uses: actions/checkout@v6
-  - uses: KryptosAI/mcp-observatory/action@v0.26.1
+  - uses: KryptosAI/mcp-observatory/action@v0.27.0
     with:
       command: npx -y my-mcp-server
       security: true
@@ -94,10 +94,10 @@ steps:
 - uses: KryptosAI/mcp-observatory/action@main
   with:
     command: npx -y my-mcp-server
-    package-version: 0.26.1
+    package-version: 0.27.0
 ```
 
-For stricter reproducibility, pin both the Action ref and the npm package version, for example `uses: KryptosAI/mcp-observatory/action@v0.26.1` plus `package-version: 0.26.1`.
+For stricter reproducibility, pin both the Action ref and the npm package version, for example `uses: KryptosAI/mcp-observatory/action@v0.27.0` plus `package-version: 0.27.0`.
 
 ### Verify against baseline
 

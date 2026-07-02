@@ -67,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: KryptosAI/mcp-observatory/action@v0.26.1
+      - uses: KryptosAI/mcp-observatory/action@v0.27.0
         with:
           command: npx -y <server-package>
           deep: true
@@ -78,10 +78,10 @@ jobs:
 For production CI, pin the package version:
 
 ```yaml
-- uses: KryptosAI/mcp-observatory/action@v0.26.1
+- uses: KryptosAI/mcp-observatory/action@v0.27.0
   with:
     command: npx -y <server-package>
-    package-version: 0.26.1
+    package-version: 0.27.0
     deep: true
     security: true
 ```
@@ -89,7 +89,7 @@ For production CI, pin the package version:
 For repos with a local target config:
 
 ```yaml
-- uses: KryptosAI/mcp-observatory/action@v0.26.1
+- uses: KryptosAI/mcp-observatory/action@v0.27.0
   with:
     target: ./observatory-target.json
     deep: true
@@ -113,7 +113,7 @@ It runs locally/inside GitHub Actions and does not require an account. If the ch
 
 ## Comment For Passing Repos
 
-```md
+~~~md
 Nice, this server passes MCP Observatory checks. If you want the signal in the README, you can add:
 
 ```md
@@ -121,7 +121,7 @@ Nice, this server passes MCP Observatory checks. If you want the signal in the R
 ```
 
 That gives users a quick compatibility/security signal when they are choosing MCP servers.
-```
+~~~
 
 ## Targeting Order
 

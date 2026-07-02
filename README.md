@@ -1,14 +1,6 @@
-# MCP Observatory
-
-```
-  ███╗   ███╗ ██████╗██████╗
-  ████╗ ████║██╔════╝██╔══██╗
-  ██╔████╔██║██║     ██████╔╝
-  ██║╚██╔╝██║██║     ██╔═══╝
-  ██║ ╚═╝ ██║╚██████╗██║
-  ╚═╝     ╚═╝ ╚═════╝╚═╝
-     O B S E R V A T O R Y
-```
+<p align="center">
+  <img src="./docs/logo.svg" alt="MCP Observatory" width="820">
+</p>
 
 [![CI](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/@kryptosai/mcp-observatory)](https://www.npmjs.com/package/@kryptosai/mcp-observatory)
@@ -256,7 +248,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: KryptosAI/mcp-observatory/action@v0.26.1
+      - uses: KryptosAI/mcp-observatory/action@v0.27.0
         with:
           command: npx -y my-mcp-server
           deep: true
@@ -362,9 +354,7 @@ Your agent gets 10 tools:
 | `get_last_run` | Retrieve previous check results for a server |
 | `suggest_servers` | Discover MCP servers that match your project stack |
 
-An AI tool that checks other AI tools. It's a tool testing tools that serve tools.*
-
-<sub>* I'm a dude playing a dude disguised as another dude.</sub>
+An AI tool that checks other AI tools. It is a tool testing tools that serve tools.
 
 ### Security
 

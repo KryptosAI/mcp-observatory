@@ -77,7 +77,7 @@ Current public distribution proof includes:
 
 - latest release: `v0.26.1`
 - npm package: `@kryptosai/mcp-observatory`
-- GitHub Action: `KryptosAI/mcp-observatory/action@v0.26.1`
+- GitHub Action: `KryptosAI/mcp-observatory/action@v0.27.0`
 - npm downloads snapshot: 511 downloads for June 11-20, 2026
 - visible GitHub traffic window: 745 clones and 232 unique cloners
 - visible GitHub page-view window: 12 views and 9 unique visitors
