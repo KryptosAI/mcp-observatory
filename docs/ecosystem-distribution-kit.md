@@ -63,7 +63,7 @@ Description:
 Snippet:
 
 ```yaml
-- uses: KryptosAI/mcp-observatory/action@v0.26.1
+- uses: KryptosAI/mcp-observatory/action@v0.27.0
   with:
     command: npx -y <server-package>
     deep: true

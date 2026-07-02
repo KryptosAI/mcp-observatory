@@ -75,7 +75,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: KryptosAI/mcp-observatory/action@v0.26.1
+      - uses: KryptosAI/mcp-observatory/action@v0.27.0
         with:
           command: npx -y my-mcp-server
           deep: true
