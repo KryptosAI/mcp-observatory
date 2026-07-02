@@ -7,7 +7,7 @@ import {
 import { defaultRunsDirectory } from "../storage.js";
 import { appendHistory, buildHistoryEntry, getTrend, readHistory } from "../history.js";
 import { renderSarif } from "../reporters/sarif.js";
-import { buildEvent, recordEvent } from "../telemetry.js";
+import { buildEvent, normalizeCampaign, recordEvent } from "../telemetry.js";
 import { maybePrintCloudCta } from "../commercial.js";
 import { ANSI, c, resolveTarget, targetFromCommand, writeOutput } from "./helpers.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
@@ -37,10 +37,16 @@ function extractTrailingConversionFlags(
       if (!next) throw new Error("--sarif requires an output file.");
       flags.sarif = next;
       i += 1;
+    } else if (arg === "--campaign") {
+      const next = commandArgs[i + 1];
+      if (!next) throw new Error("--campaign requires a campaign slug.");
+      flags.campaign = normalizeCampaign(next);
+      i += 1;
     } else {
       targetArgs.push(arg);
     }
   }
+  if (flags.campaign) flags.campaign = normalizeCampaign(flags.campaign);
   return { commandArgs: targetArgs, flags };
 }
 
@@ -55,6 +61,7 @@ export function registerTestCommands(program: Command): void {
     .option("--invoke-tools", "Alias for --deep.")
     .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
     .option("--sarif <file>", "Write a GitHub Code Scanning SARIF report after the run.")
+    .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.")
     .option("--setup-ci", "Offer CI conversion after a successful check; use with --yes in non-interactive runs to write files.", false)
     .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
@@ -119,6 +126,7 @@ export function registerTestCommands(program: Command): void {
         connectMs: artifact.performanceMetrics?.connectMs,
         checkStatuses: testCheckStatuses,
         fatalError: artifact.fatalError?.split("\n")[0],
+        campaign: conversionFlags.campaign,
       }));
 
       if (artifact.gate === "fail") {
@@ -132,6 +140,7 @@ export function registerTestCommands(program: Command): void {
           yes: conversionFlags.yes,
           noSetupCi: conversionFlags.noSetupCi,
           force: conversionFlags.force,
+          campaign: conversionFlags.campaign,
         });
       }
       maybePrintCloudCta(options.security ? "security" : "general");

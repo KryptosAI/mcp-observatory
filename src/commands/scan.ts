@@ -6,7 +6,7 @@ import {
   runTarget,
 } from "../index.js";
 import { appendHistory, buildHistoryEntry } from "../history.js";
-import { buildEvent, recordEvent } from "../telemetry.js";
+import { buildEvent, normalizeCampaign, recordEvent } from "../telemetry.js";
 import type { RunArtifact } from "../types.js";
 import { TOOL_VERSION } from "../version.js";
 import { maybePrintCloudCta } from "../commercial.js";
@@ -23,6 +23,7 @@ async function runScan(
   format?: string,
   conversionFlags: SetupCiConversionFlags = {},
 ): Promise<void> {
+  if (conversionFlags.campaign) conversionFlags.campaign = normalizeCampaign(conversionFlags.campaign);
   const t0 = Date.now();
   process.stdout.write(useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n\n` : LOGO + `  v${TOOL_VERSION}\n\n`);
 
@@ -186,6 +187,7 @@ async function runScan(
         yes: conversionFlags.yes,
         noSetupCi: conversionFlags.noSetupCi,
         force: conversionFlags.force,
+        campaign: conversionFlags.campaign,
       });
     } else if (conversionFlags.noSetupCi !== true) {
       process.stdout.write(`CI conversion available for a specific target:\n  ${setupCiHint(undefined, undefined, bin)}\n`);
@@ -222,6 +224,7 @@ async function runScan(
     matrixServerCount: results.length,
     matrixPassCount: passCount,
     matrixFailCount: failCount,
+    campaign: conversionFlags.campaign,
   }));
 
   if (failCount > 0) {
@@ -238,6 +241,7 @@ export function registerScanCommands(program: Command, bin: string): void {
     .option("--config <path>", "Path to a specific MCP config file.")
     .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
     .option("--format <format>", "Output format: terminal or pr-comment-matrix.", "terminal")
+    .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.")
     .option("--setup-ci", "Offer CI conversion after a successful one-target scan; use with --yes in non-interactive runs to write files.", false)
     .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
@@ -256,6 +260,7 @@ export function registerScanCommands(program: Command, bin: string): void {
     .option("--config <path>", "Path to a specific MCP config file.")
     .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
     .option("--format <format>", "Output format: terminal or pr-comment-matrix.", "terminal")
+    .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.")
     .option("--setup-ci", "Offer CI conversion after a successful one-target scan; use with --yes in non-interactive runs to write files.", false)
     .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")

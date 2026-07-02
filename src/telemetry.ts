@@ -21,6 +21,7 @@ export interface TelemetryConfig {
 export interface TelemetryEnrichment {
   org?: string;
   contact?: string;
+  campaign?: string;
   ciProvider?: string;
   serversScanned?: number;
   toolsFound?: number;
@@ -107,6 +108,7 @@ const CONFIG_DIR = path.join(os.homedir(), ".mcp-observatory");
 const CONFIG_PATH = path.join(CONFIG_DIR, "config.json");
 const DEFAULT_ENDPOINT = "https://mcp-observatory-telemetry.kryptosai.workers.dev/v1/events";
 const FIRST_PARTY_GITHUB_REPOSITORY = "kryptosai/mcp-observatory";
+const CAMPAIGN_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9._-]{1,63}$/;
 
 // ── Config cache ─────────────────────────────────────────────────────────────
 
@@ -246,6 +248,19 @@ function envValue(name: string): string | undefined {
   return value || undefined;
 }
 
+export function normalizeCampaign(value: string | undefined): string | undefined {
+  const campaign = value?.trim();
+  if (!campaign) return undefined;
+  if (!CAMPAIGN_PATTERN.test(campaign)) {
+    throw new Error("Campaign must be a 2-64 character slug using letters, numbers, dot, underscore, or dash.");
+  }
+  return campaign;
+}
+
+export function campaignFromEnv(): string | undefined {
+  return normalizeCampaign(envValue("MCP_OBSERVATORY_CAMPAIGN"));
+}
+
 export function collectGitHubActionsMetadata(): Pick<
   TelemetryEnrichment,
   "githubRepository" | "githubWorkflow" | "githubRunId" | "githubRunNumber" | "githubEventName" | "githubRef" | "githubActor"
@@ -336,6 +351,7 @@ export function buildEvent(
 ): TelemetryEvent {
   const ci = detectCI();
   const identity = _cachedIdentity;
+  const campaign = enrichment?.campaign ?? campaignFromEnv();
   const ciProvider = enrichment?.ciProvider ?? detectCiProvider();
   const github = ciProvider === "github-actions" ? collectGitHubActionsMetadata() : {};
   const githubRepository = enrichment?.githubRepository ?? github.githubRepository;
@@ -366,5 +382,6 @@ export function buildEvent(
     isFirstParty: enrichment?.isFirstParty ?? classification.isFirstParty,
     telemetrySource: enrichment?.telemetrySource ?? classification.telemetrySource,
     ...enrichment,
+    campaign,
   };
 }

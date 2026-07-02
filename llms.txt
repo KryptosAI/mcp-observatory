@@ -20,6 +20,10 @@ npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y your-mcp-server"
 ```
 
 ```bash
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y your-mcp-server" --sarif --campaign agent-ci
+```
+
+```bash
 claude mcp add mcp-observatory -- npx -y @kryptosai/mcp-observatory serve
 ```
 
@@ -46,6 +50,10 @@ Open an agent runtime target request with:
 Start here:
 
 - Agent runtime quickstart: `docs/agent-runtime-quickstart.md`
+- Agent task pack: `docs/agent-tasks.md`
+- Launch page: `docs/launch.md`
+- Code Scanning demo: `docs/code-scanning-demo.md`
+- Campaign attribution: `docs/campaign-attribution.md`
 - OpenClaw agent template: `docs/openclaw-agent-template/SOUL.md`
 - Target registry: `docs/target-registry.md`
 - Target contribution guide: `docs/target-contribution-guide.md`
@@ -62,3 +70,5 @@ MCP Observatory is complementary to official MCP SDKs and conformance tooling. I
 ## Best First Contribution
 
 Add one safe no-secret MCP server target to `docs/safety-index/targets.json`, run `npm run safety-index`, and open a PR with the generated evidence.
+
+When running launch or maintainer workflows, set a safe attribution slug with `--campaign <slug>` or `MCP_OBSERVATORY_CAMPAIGN=<slug>`.

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import os from "node:os";
 import fs from "node:fs";
 import path from "node:path";
@@ -7,19 +7,40 @@ import path from "node:path";
 const CLI = path.resolve("src/cli.ts");
 const TSX = path.resolve("node_modules/.bin/tsx");
 
-function runCli(args: string[], opts?: { cwd?: string; timeout?: number }): { stdout: string; exitCode: number } {
+function runCli(args: string[], opts?: { cwd?: string; timeout?: number; env?: NodeJS.ProcessEnv }): { stdout: string; exitCode: number } {
   try {
     const stdout = execFileSync(TSX, [CLI, ...args], {
       encoding: "utf8",
       timeout: opts?.timeout ?? 15_000,
       cwd: opts?.cwd ?? process.cwd(),
-      env: { ...process.env, NO_COLOR: "1" },
+      env: { ...process.env, NO_COLOR: "1", ...opts?.env },
     });
     return { stdout, exitCode: 0 };
   } catch (error: unknown) {
     const e = error as { stdout?: string; status?: number };
     return { stdout: e.stdout ?? "", exitCode: e.status ?? 1 };
   }
+}
+
+function runCliWithStderr(args: string[], opts?: { cwd?: string; timeout?: number; env?: NodeJS.ProcessEnv }): { stdout: string; stderr: string; exitCode: number } {
+  const result = spawnSync(TSX, [CLI, ...args], {
+    encoding: "utf8",
+    timeout: opts?.timeout ?? 15_000,
+    cwd: opts?.cwd ?? process.cwd(),
+    env: { ...process.env, NO_COLOR: "1", ...opts?.env },
+  });
+  return {
+    stdout: result.stdout,
+    stderr: result.stderr,
+    exitCode: result.status ?? 1,
+  };
+}
+
+function telemetryEvents(stderr: string): Array<Record<string, unknown>> {
+  return stderr
+    .split("\n")
+    .filter((line) => line.startsWith("[telemetry] "))
+    .map((line) => JSON.parse(line.slice("[telemetry] ".length)) as Record<string, unknown>);
 }
 
 describe("CLI entrypoint", () => {
@@ -50,6 +71,7 @@ describe("CLI entrypoint", () => {
     expect(exitCode).toBe(0);
     expect(stdout).toContain("test");
     expect(stdout).toContain("--sarif");
+    expect(stdout).toContain("--campaign");
     expect(stdout).toContain("--setup-ci");
     expect(stdout).toContain("--no-setup-ci");
   });
@@ -64,6 +86,7 @@ describe("CLI entrypoint", () => {
     const { stdout, exitCode } = runCli(["run", "--help"]);
     expect(exitCode).toBe(0);
     expect(stdout).toContain("run");
+    expect(stdout).toContain("--campaign");
     expect(stdout).toContain("--setup-ci");
   });
 
@@ -164,6 +187,50 @@ describe("CLI entrypoint", () => {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
+  it("test --campaign records attribution and strips the flag from pass-through server args", () => {
+    const tmpDir = path.join(os.tmpdir(), `obs-test-${Date.now()}`);
+    fs.mkdirSync(tmpDir, { recursive: true });
+    const fixture = path.resolve("tests/fixtures/fixture-server.mjs");
+
+    const { stderr, exitCode } = runCliWithStderr(["test", "node", fixture, "--campaign", "maintainer-pr", "--no-setup-ci"], {
+      cwd: tmpDir,
+      env: {
+        MCP_OBSERVATORY_TELEMETRY_DEBUG: "1",
+      },
+    });
+    expect(exitCode).toBe(0);
+    const complete = telemetryEvents(stderr).find((event) => event["event"] === "command_complete" && event["command"] === "test");
+    expect(complete?.["campaign"]).toBe("maintainer-pr");
+    expect(JSON.stringify(complete?.["serverCommands"])).not.toContain("--campaign");
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  it("test uses MCP_OBSERVATORY_CAMPAIGN when no flag is passed", () => {
+    const tmpDir = path.join(os.tmpdir(), `obs-test-${Date.now()}`);
+    fs.mkdirSync(tmpDir, { recursive: true });
+    const fixture = path.resolve("tests/fixtures/fixture-server.mjs");
+
+    const { stderr, exitCode } = runCliWithStderr(["test", "node", fixture, "--no-setup-ci"], {
+      cwd: tmpDir,
+      env: {
+        MCP_OBSERVATORY_CAMPAIGN: "bot-runtime-review",
+        MCP_OBSERVATORY_TELEMETRY_DEBUG: "1",
+      },
+    });
+    expect(exitCode).toBe(0);
+    const events = telemetryEvents(stderr);
+    expect(events.find((event) => event["event"] === "command_run")?.["campaign"]).toBe("bot-runtime-review");
+    expect(events.find((event) => event["event"] === "command_complete")?.["campaign"]).toBe("bot-runtime-review");
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  it("test rejects invalid campaign slugs", () => {
+    const fixture = path.resolve("tests/fixtures/fixture-server.mjs");
+    const { stderr, exitCode } = runCliWithStderr(["test", "node", fixture, "--campaign", "bad slug", "--no-setup-ci"]);
+    expect(exitCode).not.toBe(0);
+    expect(stderr).toContain("Campaign must be");
+  });
+
   it("diff --format json outputs valid JSON", () => {
     const { stdout, exitCode } = runCli([
       "diff",
@@ -221,6 +288,7 @@ describe("CLI entrypoint", () => {
     expect(stdout).toContain("--doctor");
     expect(stdout).toContain("--from-last-run");
     expect(stdout).toContain("--sarif");
+    expect(stdout).toContain("--campaign");
   });
 
   it("action source gates SARIF upload behind an explicit input", () => {

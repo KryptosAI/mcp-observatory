@@ -8,7 +8,7 @@ import {
 } from "../index.js";
 import { appendHistory, buildHistoryEntry } from "../history.js";
 import { defaultRunsDirectory } from "../storage.js";
-import { buildEvent, recordEvent } from "../telemetry.js";
+import { buildEvent, normalizeCampaign, recordEvent } from "../telemetry.js";
 import { ANSI, c, colorStatus, formatOutput, resolveTarget, writeOutput } from "./helpers.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
 import { runWatchMode } from "./watch.js";
@@ -22,12 +22,14 @@ export function registerLegacyCommands(program: Command): void {
     .option("--watch", "Re-run checks on an interval.", false)
     .option("--interval <seconds>", "Interval in seconds for watch mode.", "30")
     .option("--invoke-tools", "Actually call safe tools to verify they execute.", false)
+    .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.")
     .option("--setup-ci", "Offer CI conversion after a successful check; use with --yes in non-interactive runs to write files.", false)
     .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
     .option("--no-color", "Disable colored output.")
     .action(async (options: { outDir: string; target?: string; watch: boolean; interval: string; invokeTools: boolean } & SetupCiConversionFlags) => {
+      if (options.campaign) options.campaign = normalizeCampaign(options.campaign);
       const target = await resolveTarget(options);
       if (options.watch) {
         await runWatchMode(target, options.outDir, parseInt(options.interval, 10) || 30);
@@ -59,6 +61,7 @@ export function registerLegacyCommands(program: Command): void {
         connectMs: artifact.performanceMetrics?.connectMs,
         checkStatuses,
         fatalError: artifact.fatalError?.split("\n")[0],
+        campaign: options.campaign,
       }));
 
       if (artifact.gate === "fail") {
@@ -72,6 +75,7 @@ export function registerLegacyCommands(program: Command): void {
           yes: options.yes,
           noSetupCi: options.noSetupCi,
           force: options.force,
+          campaign: options.campaign,
         });
       }
     });

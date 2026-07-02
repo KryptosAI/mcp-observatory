@@ -11,6 +11,7 @@ export interface SetupCiConversionFlags {
   yes?: boolean;
   noSetupCi?: boolean;
   force?: boolean;
+  campaign?: string;
 }
 
 export interface SetupCiConversionOptions extends SetupCiConversionFlags {
@@ -96,6 +97,7 @@ function recordConversion(status: SetupCiConversionResult["status"], options: Se
     setupCiConversionStatus: status,
     setupCiPromptShown: shouldPrompt(options),
     setupCiAutoRequested: options.setupCi === true && options.yes === true,
+    campaign: options.campaign,
     targetIds: [options.target?.targetId ?? options.artifact.target.targetId],
   }));
 }

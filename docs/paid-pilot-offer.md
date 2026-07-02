@@ -1,12 +1,10 @@
-# Paid Pilot Offer
+# MCP Readiness Review
 
-## Private MCP Readiness Review
+## Offer
 
-Offer:
+Private MCP readiness review + CI rollout + SARIF/Code Scanning setup + drift/security report.
 
-> Private MCP readiness review + CI rollout + drift/security report.
-
-This is a manual pilot, not a self-serve SaaS promise.
+This is a fixed-scope services package for teams that are starting to depend on MCP servers in production or pre-production. It uses the same evidence model as the public Safety Index, but the reviewed targets, findings, and recommendations stay private unless the customer approves otherwise.
 
 ## Who It Is For
 
@@ -15,49 +13,50 @@ This is a manual pilot, not a self-serve SaaS promise.
 - companies with private MCP repos
 - teams that need proof before agents depend on internal tools
 
-## What The Pilot Includes
+## What It Includes
 
 - MCP server inventory across selected repos, configs, or agent environments
 - reproducible test artifacts for each reviewed server
 - private readiness report covering startup, capabilities, schema quality, security findings, and drift risk
+- GitHub Actions rollout for selected MCP servers
+- optional SARIF upload into GitHub Code Scanning
 - schema/tool drift baseline using MCP lock files
-- MCP Observatory CI rollout plan for selected servers
 - executive summary with “safe for agent dependency” verdicts
 - prioritized remediation notes and owner-ready next steps
+- maintainer PR support for public or partner-owned MCP repos
 - optional certification language for servers that pass agreed checks
 
-## Starting Prices
+## Starting Package
 
-- Business Pilot: starts at `$999/month`
-- Enterprise Pilot: starts at `$3k/month`
-- Strategic Accounts: custom
+MCP Readiness Review: starts at `$2,500`.
 
-For major platforms, AI labs, or large enterprises, start with a production/security pilot conversation and ask for the owner or procurement path.
+Good fit:
+
+- a team is adding MCP tools to an agent runtime
+- a platform team needs CI evidence before approving MCP servers
+- a security team wants MCP findings in GitHub Code Scanning
+- a maintainer wants public trust signals for an MCP project
+- a company has private MCP servers and needs owner-ready remediation notes
+
+Large fleets, recurring reviews, hosted history, support, or certification programs can move into a custom production pilot.
 
 ## Simple Outreach Copy
 
-Subject: Private MCP readiness review
+Subject: MCP readiness review
 
 Hi,
 
 I build MCP Observatory, the CI and security gate for MCP servers before agents depend on them.
 
-I am opening a small number of private MCP readiness pilots for teams running MCP in production or pre-production. The pilot includes CI rollout, schema/security review, drift checks, and a private readiness report for your MCP servers.
+I am offering a fixed-scope MCP Readiness Review for teams running MCP in production or pre-production. It includes CI rollout, SARIF/Code Scanning setup, schema/security review, drift checks, and a private readiness report for selected MCP servers.
 
-If MCP is becoming part of your agent infrastructure, I can help you answer:
-
-- which servers are safe enough for agents to depend on?
-- which tool surfaces changed recently?
-- where are the schema/security risks?
-- what should block a PR before production?
+If MCP is becoming part of your agent infrastructure, I can help answer which servers are ready for agents, what should block a PR, and which findings need owner attention first.
 
 Would it be useful to compare notes this week?
 
-William
-
 ## Delivery Shape
 
-Start with static reports and CI setup. The first deliverable should look like an internal security/readiness packet, not a SaaS login.
+Start with static reports, CI setup, SARIF, and owner-ready remediation notes. The first deliverable should look like an internal security/readiness packet, not a SaaS login.
 
 ## Evidence Standard
 
