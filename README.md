@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/kryptosai-mcp-observatory-badge.png)](https://mseep.ai/app/kryptosai-mcp-observatory)
+
 # MCP Observatory
 
 ```
