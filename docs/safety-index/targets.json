@@ -102,6 +102,20 @@
     "reproductionNotes": "Zero-config public package."
   },
   {
+    "id": "cyanheads-git-mcp-server",
+    "name": "Git MCP Server",
+    "repo": "https://www.npmjs.com/package/@cyanheads/git-mcp-server",
+    "packageName": "@cyanheads/git-mcp-server",
+    "category": "Developer Tools",
+    "command": "npx",
+    "args": ["-y", "@cyanheads/git-mcp-server"],
+    "timeoutMs": 60000,
+    "riskClass": "Repository mutation",
+    "failureClass": "Git tool boundary",
+    "whyItMatters": "Coding agents often need Git context and can cause real repository changes if tool boundaries are unclear.",
+    "reproductionNotes": "Zero-config public package. Keep tool invocation read-only unless a harmless fixture repository is added."
+  },
+  {
     "id": "opentofu-server",
     "name": "OpenTofu MCP server",
     "repo": "https://github.com/opentofu/opentofu-mcp-server",

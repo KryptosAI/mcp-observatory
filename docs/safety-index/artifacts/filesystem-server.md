@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-06-24T02:07:23.999Z
+Generated at 2026-07-06T01:46:53.596Z
 
 ## Target and Environment Metadata
 
@@ -8,8 +8,8 @@ Generated at 2026-06-24T02:07:23.999Z
 - Adapter: `local-process`
 - Command: `npx -y @modelcontextprotocol/server-filesystem examples/filesystem-fixture`
 - Server: `secure-filesystem-server 0.2.0`
-- Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Platform: `darwin 24.0.0`
+- Node: `v25.8.1`
 
 ## Executive Summary
 
@@ -47,11 +47,11 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 5.24 | All 7 conformance checks passed. |
-| healthy | tools | pass | 5.63 | Advertised capability responded with the minimal expected shape (14 items). |
-| review | schema-quality | partial | 2.26 | Found 18 quality finding(s) across 14 item(s): 0 warnings, 18 info. |
-| review | security | partial | 2.14 | Found 3 security finding(s): 0 high, 3 medium, 0 low. |
-| review | security-lite | partial | 0.18 | Found 3 security finding(s): 0 high, 3 medium, 0 low. |
+| healthy | conformance | pass | 6.37 | All 7 conformance checks passed. |
+| healthy | tools | pass | 6.06 | Advertised capability responded with the minimal expected shape (14 items). |
+| review | schema-quality | partial | 2.60 | Found 18 quality finding(s) across 14 item(s): 0 warnings, 18 info. |
+| review | security | partial | 2.71 | Found 3 security finding(s): 0 high, 3 medium, 0 low. |
+| review | security-lite | partial | 0.20 | Found 3 security finding(s): 0 high, 3 medium, 0 low. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -79,7 +79,7 @@ Summary: Advertised capability responded with the minimal expected shape (14 ite
   - Minimal shape present: `true`
   - Item count: `14`
   - Identifiers: read_file, read_text_file, read_media_file, read_multiple_files, write_file (+9 more)
-  - Diagnostics: Secure MCP Filesystem Server running on stdio, Client does not support MCP Roots, using allowed directories set from server args: [, '/Users/williamweishuhn/Documents/New project/mcp-observatory/examples/filesystem-fixture' (+1 more)
+  - Diagnostics: Secure MCP Filesystem Server running on stdio, Client does not support MCP Roots, using allowed directories set from server args: [ '/Users/sanghoon/mcp-observatory/examples/filesystem-fixture' ]
 
 ### schema-quality — partial
 
@@ -152,5 +152,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-06-24T020723999Z_5297ea01`
+- Run ID: `run_2026-07-06T014653596Z_2f383767`
 - Gate: `pass`

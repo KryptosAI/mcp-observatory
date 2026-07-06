@@ -16,6 +16,7 @@ const indexDir = path.join(root, "docs", "safety-index");
 const targetsPath = path.join(indexDir, "targets.json");
 const artifactsDir = path.join(indexDir, "artifacts");
 const outputPath = path.join(root, "docs", "mcp-server-safety-index.md");
+const emailPattern = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
 
 export type SafetyVerdict =
   | "Ready for CI"
@@ -108,6 +109,25 @@ function targetConfigFor(target: SafetyIndexTarget): TargetConfig {
   };
 }
 
+function sanitizePublicArtifactValue(value: unknown): unknown {
+  if (typeof value === "string") {
+    return value.replace(emailPattern, "[redacted-email]");
+  }
+  if (Array.isArray(value)) {
+    return value.map(sanitizePublicArtifactValue);
+  }
+  if (typeof value === "object" && value !== null) {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, nestedValue]) => [key, sanitizePublicArtifactValue(nestedValue)]),
+    );
+  }
+  return value;
+}
+
+function sanitizePublicArtifact(artifact: RunArtifact): RunArtifact {
+  return sanitizePublicArtifactValue(artifact) as RunArtifact;
+}
+
 export async function loadSafetyTargets(filePath = targetsPath): Promise<SafetyIndexTarget[]> {
   const raw = JSON.parse(await readFile(filePath, "utf8")) as unknown;
   if (!Array.isArray(raw)) {
@@ -134,17 +154,18 @@ export async function loadSafetyTargets(filePath = targetsPath): Promise<SafetyI
 async function runEntry(target: SafetyIndexTarget): Promise<SafetyIndexEntry> {
   const artifact = await runTarget(targetConfigFor(target), { securityCheck: true });
   validateRunArtifact(artifact);
+  const publicArtifact = sanitizePublicArtifact(artifact);
 
   await mkdir(artifactsDir, { recursive: true });
   const artifactPath = path.join(artifactsDir, `${target.id}.json`);
   const reportPath = path.join(artifactsDir, `${target.id}.md`);
-  await writeFile(artifactPath, JSON.stringify(artifact, null, 2) + "\n", "utf8");
-  await writeFile(reportPath, renderMarkdown(artifact) + "\n", "utf8");
+  await writeFile(artifactPath, JSON.stringify(publicArtifact, null, 2) + "\n", "utf8");
+  await writeFile(reportPath, renderMarkdown(publicArtifact) + "\n", "utf8");
 
   return {
     target,
-    artifact,
-    verdict: verdictForArtifact(artifact),
+    artifact: publicArtifact,
+    verdict: verdictForArtifact(publicArtifact),
     artifactPath,
     reportPath,
   };

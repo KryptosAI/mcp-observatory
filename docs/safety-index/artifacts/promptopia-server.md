@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-06-24T02:07:25.699Z
+Generated at 2026-07-06T01:46:55.135Z
 
 ## Target and Environment Metadata
 
@@ -8,8 +8,8 @@ Generated at 2026-06-24T02:07:25.699Z
 - Adapter: `local-process`
 - Command: `npx -y promptopia-mcp`
 - Server: `promptopia-mcp 1.1.0`
-- Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Platform: `darwin 24.0.0`
+- Node: `v25.8.1`
 
 ## Executive Summary
 
@@ -47,12 +47,12 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 1.66 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 1.13 | Advertised capability responded with the minimal expected shape (1 item). |
-| healthy | security | pass | 0.19 | No security issues detected. |
+| healthy | conformance | pass | 1.69 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 1.21 | Advertised capability responded with the minimal expected shape (1 item). |
+| healthy | security | pass | 0.32 | No security issues detected. |
 | healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 1.03 | Advertised capability responded with the minimal expected shape (7 items). |
-| review | schema-quality | partial | 0.66 | Found 1 quality finding(s) across 8 item(s): 0 warnings, 1 info. |
+| healthy | tools | pass | 3.15 | Advertised capability responded with the minimal expected shape (7 items). |
+| review | schema-quality | partial | 0.74 | Found 1 quality finding(s) across 8 item(s): 0 warnings, 1 info. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
 ## Evidence Snippets
@@ -79,7 +79,7 @@ Summary: Advertised capability responded with the minimal expected shape (1 item
   - Minimal shape present: `true`
   - Item count: `1`
   - Identifiers: demo_welcome
-  - Diagnostics: Watching for changes in prompts directory: /Users/williamweishuhn/Documents/New project/mcp-observatory/examples/promptopia-prompts, promptopia-mcp MCP server running (v1.1.0)
+  - Diagnostics: Watching for changes in prompts directory: /Users/sanghoon/mcp-observatory/examples/promptopia-prompts, promptopia-mcp MCP server running (v1.1.0)
 
 ### security — pass
 
@@ -115,7 +115,7 @@ Summary: Advertised capability responded with the minimal expected shape (7 item
   - Minimal shape present: `true`
   - Item count: `7`
   - Identifiers: add_prompt, update_prompt, get_prompt, list_prompts, delete_prompt (+2 more)
-  - Diagnostics: Watching for changes in prompts directory: /Users/williamweishuhn/Documents/New project/mcp-observatory/examples/promptopia-prompts, promptopia-mcp MCP server running (v1.1.0)
+  - Diagnostics: Watching for changes in prompts directory: /Users/sanghoon/mcp-observatory/examples/promptopia-prompts, promptopia-mcp MCP server running (v1.1.0)
 
 ### schema-quality — partial
 
@@ -152,5 +152,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-06-24T020725699Z_7cde9d35`
+- Run ID: `run_2026-07-06T014655135Z_d970b9ce`
 - Gate: `pass`

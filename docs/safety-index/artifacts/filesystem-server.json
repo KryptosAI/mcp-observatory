@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-06-24T020723999Z_5297ea01",
-  "createdAt": "2026-06-24T02:07:23.999Z",
-  "toolVersion": "0.24.0",
+  "runId": "run_2026-07-06T014653596Z_2f383767",
+  "createdAt": "2026-07-06T01:46:53.596Z",
+  "toolVersion": "0.26.1",
   "target": {
     "targetId": "filesystem-server",
     "adapter": "local-process",
@@ -26,8 +26,8 @@
     "serverVersion": "0.2.0"
   },
   "environment": {
-    "platform": "darwin 25.5.0",
-    "nodeVersion": "v22.22.1"
+    "platform": "darwin 24.0.0",
+    "nodeVersion": "v25.8.1"
   },
   "summary": {
     "total": 7,
@@ -44,7 +44,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 5.625334000000294,
+      "durationMs": 6.062416000000212,
       "message": "Advertised capability responded with the minimal expected shape (14 items).",
       "evidence": [
         {
@@ -71,9 +71,7 @@
           ],
           "diagnostics": [
             "Secure MCP Filesystem Server running on stdio",
-            "Client does not support MCP Roots, using allowed directories set from server args: [",
-            "'/Users/williamweishuhn/Documents/New project/mcp-observatory/examples/filesystem-fixture'",
-            "]"
+            "Client does not support MCP Roots, using allowed directories set from server args: [ '/Users/sanghoon/mcp-observatory/examples/filesystem-fixture' ]"
           ],
           "schemas": {
             "read_file": {
@@ -327,7 +325,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0021669999996447586,
+      "durationMs": 0.002250000000003638,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -343,7 +341,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.001209000000017113,
+      "durationMs": 0.0014999999998508429,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -359,7 +357,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "partial",
-      "durationMs": 0.17987500000026557,
+      "durationMs": 0.1989160000002812,
       "message": "Found 3 security finding(s): 0 high, 3 medium, 0 low.",
       "evidence": [
         {
@@ -405,7 +403,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 5.242750000000342,
+      "durationMs": 6.366665999999896,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -431,7 +429,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 2.2571250000000873,
+      "durationMs": 2.5983750000000327,
       "message": "Found 18 quality finding(s) across 14 item(s): 0 warnings, 18 info.",
       "evidence": [
         {
@@ -473,6 +471,116 @@
             "[info] tool \"search_files\": Property 'pattern' missing description",
             "[info] tool \"search_files\": Property 'excludePatterns' missing description",
             "[info] tool \"get_file_info\": Property 'path' missing description"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "read_file",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "read_text_file",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "read_media_file",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "write_file",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "write_file",
+              "issue": "Property 'content' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "edit_file",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "edit_file",
+              "issue": "Property 'edits' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create_directory",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "list_directory",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "list_directory_with_sizes",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "directory_tree",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "directory_tree",
+              "issue": "Property 'excludePatterns' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "move_file",
+              "issue": "Property 'source' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "move_file",
+              "issue": "Property 'destination' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "search_files",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "search_files",
+              "issue": "Property 'pattern' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "search_files",
+              "issue": "Property 'excludePatterns' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_file_info",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            }
           ]
         }
       ]
@@ -481,7 +589,7 @@
       "id": "security",
       "capability": "security",
       "status": "partial",
-      "durationMs": 2.14449999999988,
+      "durationMs": 2.7058750000001055,
       "message": "Found 3 security finding(s): 0 high, 3 medium, 0 low.",
       "evidence": [
         {
@@ -568,16 +676,16 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 733ms",
+          "Connect: 682ms",
           "p95 latency: 6ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 733.215083,
-    "toolsListMs": 5.625334000000294,
-    "promptsListMs": 0.0021669999996447586,
-    "resourcesListMs": 0.001209000000017113
+    "connectMs": 681.851917,
+    "toolsListMs": 6.062416000000212,
+    "promptsListMs": 0.002250000000003638,
+    "resourcesListMs": 0.0014999999998508429
   }
 }

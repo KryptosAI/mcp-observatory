@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-06-24T020729328Z_2a54782d",
-  "createdAt": "2026-06-24T02:07:29.328Z",
-  "toolVersion": "0.24.0",
+  "runId": "run_2026-07-06T014700071Z_aaaf7fe5",
+  "createdAt": "2026-07-06T01:47:00.071Z",
+  "toolVersion": "0.26.1",
   "target": {
     "targetId": "opentofu-server",
     "adapter": "local-process",
@@ -25,8 +25,8 @@
     "serverVersion": "0.1.0"
   },
   "environment": {
-    "platform": "darwin 25.5.0",
-    "nodeVersion": "v22.22.1"
+    "platform": "darwin 24.0.0",
+    "nodeVersion": "v25.8.1"
   },
   "summary": {
     "total": 7,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 2.47979099999975,
+      "durationMs": 2.2472500000003492,
       "message": "Advertised capability responded with the minimal expected shape (5 items).",
       "evidence": [
         {
@@ -206,7 +206,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0038340000010066433,
+      "durationMs": 0.006666999999652035,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -222,7 +222,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 1.4208330000001297,
+      "durationMs": 0.5788329999995767,
       "message": "Advertised capability responded with the minimal expected shape (1 items).",
       "evidence": [
         {
@@ -251,7 +251,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.03974999999991269,
+      "durationMs": 0.032666999999491964,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -267,7 +267,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 2.5802920000005543,
+      "durationMs": 0.7163330000003043,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -293,7 +293,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 0.7996249999996508,
+      "durationMs": 0.5057919999999285,
       "message": "Found 1 quality finding(s) across 6 item(s): 1 warnings, 0 info.",
       "evidence": [
         {
@@ -307,6 +307,14 @@
           ],
           "diagnostics": [
             "[warning] resource \"opentofu-registry-info\": Missing description"
+          ],
+          "findings": [
+            {
+              "itemType": "resource",
+              "itemName": "opentofu-registry-info",
+              "issue": "Missing description",
+              "severity": "warning"
+            }
           ]
         }
       ]
@@ -315,7 +323,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 0.36629200000061246,
+      "durationMs": 0.2513330000001588,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -372,16 +380,16 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 940ms",
+          "Connect: 1133ms",
           "p95 latency: 2ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 940.4044579999991,
-    "toolsListMs": 2.47979099999975,
-    "promptsListMs": 0.0038340000010066433,
-    "resourcesListMs": 1.4208330000001297
+    "connectMs": 1133.1395840000005,
+    "toolsListMs": 2.2472500000003492,
+    "promptsListMs": 0.006666999999652035,
+    "resourcesListMs": 0.5788329999995767
   }
 }

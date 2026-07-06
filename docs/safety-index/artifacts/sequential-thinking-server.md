@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-06-24T02:07:22.515Z
+Generated at 2026-07-06T01:46:52.165Z
 
 ## Target and Environment Metadata
 
@@ -8,8 +8,8 @@ Generated at 2026-06-24T02:07:22.515Z
 - Adapter: `local-process`
 - Command: `npx -y @modelcontextprotocol/server-sequential-thinking`
 - Server: `sequential-thinking-server 0.2.0`
-- Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Platform: `darwin 24.0.0`
+- Node: `v25.8.1`
 
 ## Executive Summary
 
@@ -47,12 +47,12 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 2.25 | All 7 conformance checks passed. |
-| healthy | schema-quality | pass | 0.89 | All 1 item(s) have good schema quality. |
-| healthy | security | pass | 1.13 | No security issues detected. |
-| healthy | security-lite | pass | 0.11 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 4.48 | Advertised capability responded with the minimal expected shape (1 item). |
-| confirm intent | prompts | unsupported | 0.01 | Prompts are not advertised by the target. |
+| healthy | conformance | pass | 1.95 | All 7 conformance checks passed. |
+| healthy | schema-quality | pass | 0.96 | All 1 item(s) have good schema quality. |
+| healthy | security | pass | 1.00 | No security issues detected. |
+| healthy | security-lite | pass | 0.04 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 3.05 | Advertised capability responded with the minimal expected shape (1 item). |
+| confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
 ## Evidence Snippets
@@ -152,5 +152,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-06-24T020722515Z_10f2e6a0`
+- Run ID: `run_2026-07-06T014652165Z_55bd9c96`
 - Gate: `pass`

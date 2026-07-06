@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-06-24T02:07:24.758Z
+Generated at 2026-07-06T01:46:54.306Z
 
 ## Target and Environment Metadata
 
@@ -8,8 +8,8 @@ Generated at 2026-06-24T02:07:24.758Z
 - Adapter: `local-process`
 - Command: `npx -y @upstash/context7-mcp`
 - Server: `Context7 3.2.2`
-- Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Platform: `darwin 24.0.0`
+- Node: `v25.8.1`
 
 ## Executive Summary
 
@@ -47,13 +47,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 1.08 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 0.29 | Advertised capability responded with the minimal expected shape (0 items). |
-| healthy | resources | pass | 0.53 | Advertised capability responded with the minimal expected shape (0 items). |
-| healthy | schema-quality | pass | 0.63 | All 2 item(s) have good schema quality. |
-| healthy | security | pass | 0.25 | No security issues detected. |
+| healthy | conformance | pass | 0.77 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 0.30 | Advertised capability responded with the minimal expected shape (0 items). |
+| healthy | resources | pass | 0.44 | Advertised capability responded with the minimal expected shape (0 items). |
+| healthy | schema-quality | pass | 0.67 | All 2 item(s) have good schema quality. |
+| healthy | security | pass | 0.30 | No security issues detected. |
 | healthy | security-lite | pass | 0.02 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 1.59 | Advertised capability responded with the minimal expected shape (2 items). |
+| healthy | tools | pass | 1.72 | Advertised capability responded with the minimal expected shape (2 items). |
 
 ## Evidence Snippets
 
@@ -159,5 +159,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-06-24T020724758Z_bed6c073`
+- Run ID: `run_2026-07-06T014654306Z_160413b5`
 - Gate: `pass`

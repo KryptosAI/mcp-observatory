@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-06-24T02:07:28.542Z
+Generated at 2026-07-06T01:46:58.081Z
 
 ## Target and Environment Metadata
 
@@ -8,8 +8,8 @@ Generated at 2026-06-24T02:07:28.542Z
 - Adapter: `local-process`
 - Command: `npx -y ref-tools-mcp`
 - Server: `Ref 3.0.3`
-- Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Platform: `darwin 24.0.0`
+- Node: `v25.8.1`
 
 ## Executive Summary
 
@@ -47,12 +47,12 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 0.59 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 0.22 | Advertised capability responded with the minimal expected shape (2 items). |
-| healthy | schema-quality | pass | 0.44 | All 4 item(s) have good schema quality. |
-| healthy | security | pass | 0.45 | No security issues detected. |
+| healthy | conformance | pass | 0.51 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 0.23 | Advertised capability responded with the minimal expected shape (2 items). |
+| healthy | schema-quality | pass | 0.40 | All 4 item(s) have good schema quality. |
+| healthy | security | pass | 0.17 | No security issues detected. |
 | healthy | security-lite | pass | 0.02 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 0.96 | Advertised capability responded with the minimal expected shape (2 items). |
+| healthy | tools | pass | 0.72 | Advertised capability responded with the minimal expected shape (2 items). |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
 ## Evidence Snippets
@@ -152,5 +152,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-06-24T020728542Z_cc57c712`
+- Run ID: `run_2026-07-06T014658081Z_d215bf43`
 - Gate: `pass`
