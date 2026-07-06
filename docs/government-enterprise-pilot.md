@@ -21,6 +21,8 @@ An MCP Observatory pilot produces:
 
 The `nsa-mcp` profile is not an official certification or government authorization. It operationalizes public security guidance into practical automated MCP checks for sensitive environments.
 
+For buyer review, pair this pilot brief with the [public guidance crosswalk](./public-guidance-crosswalk.md), [procurement one-pager](./procurement-one-pager.md), and [security due diligence packet](./security-due-diligence.md).
+
 ## 30 Day Pilot
 
 A practical 30 day pilot measures whether MCP Observatory can become the release gate for MCP server adoption.

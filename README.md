@@ -79,7 +79,7 @@ Then make the evidence repeatable in CI:
 npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif
 ```
 
-See the [government and enterprise pilot brief](./docs/government-enterprise-pilot.md), [NSA-MCP audit CI guide](./docs/nsa-mcp-audit-ci.md), [example NSA-MCP audit report](./docs/examples/nsa-mcp-audit-report.md), [MCP Attack Simulator](./docs/mcp-attack-simulator.md), [Tool-call receipts](./docs/tool-call-receipts.md), [MCP Receipt Graph](./docs/receipt-graph.md), [launch page](./docs/launch.md), [GitHub Code Scanning demo](./docs/code-scanning-demo.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [sample safety reports](./docs/mcp-server-safety-index.md), and [reference evaluations](./docs/reference-evaluations.md).
+See the [government and enterprise pilot brief](./docs/government-enterprise-pilot.md), [public guidance crosswalk](./docs/public-guidance-crosswalk.md), [procurement one-pager](./docs/procurement-one-pager.md), [security due diligence packet](./docs/security-due-diligence.md), [NSA-MCP audit CI guide](./docs/nsa-mcp-audit-ci.md), [example NSA-MCP audit report](./docs/examples/nsa-mcp-audit-report.md), [MCP Attack Simulator](./docs/mcp-attack-simulator.md), [Tool-call receipts](./docs/tool-call-receipts.md), [MCP Receipt Graph](./docs/receipt-graph.md), [launch page](./docs/launch.md), [GitHub Code Scanning demo](./docs/code-scanning-demo.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [sample safety reports](./docs/mcp-server-safety-index.md), and [reference evaluations](./docs/reference-evaluations.md).
 
 Want a receipt for a server your agent depends on? Comment on [Drop an MCP server, get a receipt #146](https://github.com/KryptosAI/mcp-observatory/issues/146) or use the [structured receipt request form](https://github.com/KryptosAI/mcp-observatory/issues/new?template=tool-call-receipt-request.yml). Public requests can become Safety Index entries, delta receipts, SARIF evidence, and maintainer CI conversations.
 
@@ -89,6 +89,7 @@ Want a receipt for a server your agent depends on? Comment on [Drop an MCP serve
 |---|---|
 | Example GitHub Actions adoption | [`setup-ci --all`](./docs/setup-ci-doctor.md) and the generated workflow docs |
 | NSA-MCP audit example | [Markdown report](./docs/examples/nsa-mcp-audit-report.md), [SARIF](./docs/examples/nsa-mcp-results.sarif), and [score JSON](./docs/examples/nsa-mcp-score.json) |
+| Procurement and pilot packet | [Public guidance crosswalk](./docs/public-guidance-crosswalk.md), [procurement one-pager](./docs/procurement-one-pager.md), and [security due diligence](./docs/security-due-diligence.md) |
 | Attack simulation output | [MCP Attack Simulator](./docs/mcp-attack-simulator.md) |
 | Tool-call receipts | [Receipt standard](./docs/tool-call-receipts.md) for reproducible MCP evidence |
 | Receipt graph | [Server-to-evidence map](./docs/receipt-graph.md) for agent trust decisions |
