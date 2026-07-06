@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-06-24T020732035Z_b86ac3a9",
-  "createdAt": "2026-06-24T02:07:32.035Z",
-  "toolVersion": "0.24.0",
+  "runId": "run_2026-07-06T014703410Z_c94b3464",
+  "createdAt": "2026-07-06T01:47:03.410Z",
+  "toolVersion": "0.26.1",
   "target": {
     "targetId": "playwright-mcp-server",
     "adapter": "local-process",
@@ -22,11 +22,11 @@
       "whyItMatters": "Popular browser automation servers need explicit review around navigation, screenshots, and code evaluation."
     },
     "serverName": "Playwright",
-    "serverVersion": "1.61.0-alpha-1781023400000"
+    "serverVersion": "1.62.0-alpha-2026-06-29"
   },
   "environment": {
-    "platform": "darwin 25.5.0",
-    "nodeVersion": "v22.22.1"
+    "platform": "darwin 24.0.0",
+    "nodeVersion": "v25.8.1"
   },
   "summary": {
     "total": 7,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 59.043541999999434,
+      "durationMs": 3.186707999999271,
       "message": "Advertised capability responded with the minimal expected shape (23 items).",
       "evidence": [
         {
@@ -439,10 +439,20 @@
                 "fullPage": {
                   "description": "When true, takes a screenshot of the full scrollable page, instead of the currently visible viewport. Cannot be used with element screenshots.",
                   "type": "boolean"
+                },
+                "scale": {
+                  "default": "css",
+                  "description": "Image resolution scale. \"css\" produces a screenshot sized in CSS pixels (smaller, consistent across devices). \"device\" produces a high-resolution screenshot using device pixels (larger, accounts for the device pixel ratio). Default is css.",
+                  "type": "string",
+                  "enum": [
+                    "css",
+                    "device"
+                  ]
                 }
               },
               "required": [
-                "type"
+                "type",
+                "scale"
               ],
               "$schema": "https://json-schema.org/draft/2020-12/schema",
               "additionalProperties": false
@@ -641,7 +651,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.006790999999793712,
+      "durationMs": 0.0010409999995317776,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -657,7 +667,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.007708000001002802,
+      "durationMs": 0.002291000000695931,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -673,7 +683,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "fail",
-      "durationMs": 0.24841600000218023,
+      "durationMs": 0.06658400000014808,
       "message": "Found 6 security finding(s): 2 high, 2 medium, 2 low.",
       "evidence": [
         {
@@ -741,7 +751,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 3062.4197910000003,
+      "durationMs": 567.6830420000006,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -767,7 +777,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 7.270583000001352,
+      "durationMs": 1.3853339999986929,
       "message": "Found 4 quality finding(s) across 23 item(s): 0 warnings, 4 info.",
       "evidence": [
         {
@@ -787,6 +797,32 @@
             "[info] tool \"browser_run_code_unsafe\": Has properties but no 'required' array declared",
             "[info] tool \"browser_snapshot\": Has properties but no 'required' array declared",
             "[info] tool \"browser_wait_for\": Has properties but no 'required' array declared"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "browser_file_upload",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "browser_run_code_unsafe",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "browser_snapshot",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "browser_wait_for",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            }
           ]
         }
       ]
@@ -795,7 +831,7 @@
       "id": "security",
       "capability": "security",
       "status": "fail",
-      "durationMs": 25.690708999998606,
+      "durationMs": 1.2317499999990105,
       "message": "Found 6 security finding(s): 2 high, 2 medium, 2 low.",
       "evidence": [
         {
@@ -904,16 +940,16 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 5774ms",
-          "p95 latency: 59ms (3 operations)"
+          "Connect: 793ms",
+          "p95 latency: 3ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 5773.640125,
-    "toolsListMs": 59.043541999999434,
-    "promptsListMs": 0.006790999999793712,
-    "resourcesListMs": 0.007708000001002802
+    "connectMs": 793.3979579999996,
+    "toolsListMs": 3.186707999999271,
+    "promptsListMs": 0.0010409999995317776,
+    "resourcesListMs": 0.002291000000695931
   }
 }

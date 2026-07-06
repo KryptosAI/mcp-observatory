@@ -8,12 +8,12 @@ For the rules behind this page, see the [Safety Methodology](./methodology.md).
 
 ## Snapshot
 
-- Evaluated servers: 13
+- Evaluated servers: 14
 - Ready for CI: 10
-- Needs review before production: 1
+- Needs review before production: 2
 - Unsafe default posture: 2
 - Not reproducible: 0
-- Latest run: 2026-06-24T02:07:44.894Z
+- Latest run: 2026-07-06T01:47:05.638Z
 
 ## Evaluations
 
@@ -26,12 +26,13 @@ For the rules behind this page, see the [Safety Methodology](./methodology.md).
 | 5 | [Context7](https://github.com/upstash/context7) | Documentation / Search | **Ready for CI** | Prompt-injection-sensitive retrieval | `npx -y @upstash/context7-mcp` | [JSON](./safety-index/artifacts/context7-server.json) / [report](./safety-index/artifacts/context7-server.md) | Zero-config public package. |
 | 6 | [Promptopia](https://www.npmjs.com/package/promptopia-mcp) | Prompts | **Ready for CI** | Prompt/resource contract | `npx -y promptopia-mcp` | [JSON](./safety-index/artifacts/promptopia-server.json) / [report](./safety-index/artifacts/promptopia-server.md) | Uses the checked-in prompt fixture through package defaults. |
 | 7 | [Ref tools](https://www.npmjs.com/package/ref-tools-mcp) | Developer Tools | **Ready for CI** | Prompt/tool inventory | `npx -y ref-tools-mcp` | [JSON](./safety-index/artifacts/ref-tools-server.json) / [report](./safety-index/artifacts/ref-tools-server.md) | Zero-config public package. |
-| 8 | [OpenTofu MCP server](https://github.com/opentofu/opentofu-mcp-server) | Infrastructure | **Ready for CI** | Infrastructure tool surface | `npx -y @opentofu/opentofu-mcp-server` | [JSON](./safety-index/artifacts/opentofu-server.json) / [report](./safety-index/artifacts/opentofu-server.md) | Zero-config public package. |
-| 9 | [Puppeteer MCP server](https://www.npmjs.com/package/puppeteer-mcp-server) | Browser Automation | **Ready for CI** | Browser/code execution boundary | `npx -y puppeteer-mcp-server` | [JSON](./safety-index/artifacts/puppeteer-server.json) / [report](./safety-index/artifacts/puppeteer-server.md) | Intentional browser evaluation is suppressed so remaining findings stay readable. |
-| 10 | [BrowserMCP](https://github.com/BrowserMCP/mcp) | Browser Automation | **Ready for CI** | Browser-control boundary | `npx -y @browsermcp/mcp` | [JSON](./safety-index/artifacts/browsermcp-server.json) / [report](./safety-index/artifacts/browsermcp-server.md) | Zero-config public package. [public proof](https://github.com/BrowserMCP/mcp/pull/189) |
-| 11 | [Microsoft Playwright MCP](https://github.com/microsoft/playwright-mcp) | Browser Automation | **Unsafe default posture** | Browser/code execution boundary | `npx -y @playwright/mcp` | [JSON](./safety-index/artifacts/playwright-mcp-server.json) / [report](./safety-index/artifacts/playwright-mcp-server.md) | Zero-config public package; security findings represent policy-review prompts, not a vulnerability claim. |
-| 12 | [AntV chart MCP server](https://github.com/antvis/mcp-server-chart) | Visualization | **Ready for CI** | Artifact-producing tools | `npx -y @antv/mcp-server-chart` | [JSON](./safety-index/artifacts/antv-chart-server.json) / [report](./safety-index/artifacts/antv-chart-server.md) | Zero-config public package. [public proof](https://github.com/antvis/mcp-server-chart/pull/312) |
-| 13 | [ExecuteAutomation Playwright MCP](https://github.com/executeautomation/mcp-playwright) | Browser Automation | **Unsafe default posture** | Startup/listing reproducibility | `npx -y @executeautomation/playwright-mcp-server` | [JSON](./safety-index/artifacts/executeautomation-playwright-server.json) / [report](./safety-index/artifacts/executeautomation-playwright-server.md) | Evaluated as a public package; current result should be treated as a maintainer conversation starter. [public proof](https://github.com/executeautomation/mcp-playwright/pull/225) |
+| 8 | [Git MCP Server](https://www.npmjs.com/package/@cyanheads/git-mcp-server) | Developer Tools | **Needs review before production** | Git tool boundary | `npx -y @cyanheads/git-mcp-server` | [JSON](./safety-index/artifacts/cyanheads-git-mcp-server.json) / [report](./safety-index/artifacts/cyanheads-git-mcp-server.md) | Zero-config public package. Keep tool invocation read-only unless a harmless fixture repository is added. |
+| 9 | [OpenTofu MCP server](https://github.com/opentofu/opentofu-mcp-server) | Infrastructure | **Ready for CI** | Infrastructure tool surface | `npx -y @opentofu/opentofu-mcp-server` | [JSON](./safety-index/artifacts/opentofu-server.json) / [report](./safety-index/artifacts/opentofu-server.md) | Zero-config public package. |
+| 10 | [Puppeteer MCP server](https://www.npmjs.com/package/puppeteer-mcp-server) | Browser Automation | **Ready for CI** | Browser/code execution boundary | `npx -y puppeteer-mcp-server` | [JSON](./safety-index/artifacts/puppeteer-server.json) / [report](./safety-index/artifacts/puppeteer-server.md) | Intentional browser evaluation is suppressed so remaining findings stay readable. |
+| 11 | [BrowserMCP](https://github.com/BrowserMCP/mcp) | Browser Automation | **Ready for CI** | Browser-control boundary | `npx -y @browsermcp/mcp` | [JSON](./safety-index/artifacts/browsermcp-server.json) / [report](./safety-index/artifacts/browsermcp-server.md) | Zero-config public package. [public proof](https://github.com/BrowserMCP/mcp/pull/189) |
+| 12 | [Microsoft Playwright MCP](https://github.com/microsoft/playwright-mcp) | Browser Automation | **Unsafe default posture** | Browser/code execution boundary | `npx -y @playwright/mcp` | [JSON](./safety-index/artifacts/playwright-mcp-server.json) / [report](./safety-index/artifacts/playwright-mcp-server.md) | Zero-config public package; security findings represent policy-review prompts, not a vulnerability claim. |
+| 13 | [AntV chart MCP server](https://github.com/antvis/mcp-server-chart) | Visualization | **Ready for CI** | Artifact-producing tools | `npx -y @antv/mcp-server-chart` | [JSON](./safety-index/artifacts/antv-chart-server.json) / [report](./safety-index/artifacts/antv-chart-server.md) | Zero-config public package. [public proof](https://github.com/antvis/mcp-server-chart/pull/312) |
+| 14 | [ExecuteAutomation Playwright MCP](https://github.com/executeautomation/mcp-playwright) | Browser Automation | **Unsafe default posture** | Startup/listing reproducibility | `npx -y @executeautomation/playwright-mcp-server` | [JSON](./safety-index/artifacts/executeautomation-playwright-server.json) / [report](./safety-index/artifacts/executeautomation-playwright-server.md) | Evaluated as a public package; current result should be treated as a maintainer conversation starter. [public proof](https://github.com/executeautomation/mcp-playwright/pull/225) |
 
 ## Patterns Observed
 
@@ -39,6 +40,7 @@ For the rules behind this page, see the [Safety Methodology](./methodology.md).
 - Artifact-producing tools: 1 server(s)
 - Broad protocol surface: 1 server(s)
 - Browser-control boundary: 1 server(s)
+- Git tool boundary: 1 server(s)
 - Infrastructure tool surface: 1 server(s)
 - Persistent state tools: 1 server(s)
 - Prompt-injection-sensitive retrieval: 1 server(s)

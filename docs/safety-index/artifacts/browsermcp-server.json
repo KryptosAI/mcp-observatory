@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-06-24T020731112Z_2e7853f8",
-  "createdAt": "2026-06-24T02:07:31.112Z",
-  "toolVersion": "0.24.0",
+  "runId": "run_2026-07-06T014702689Z_66630a02",
+  "createdAt": "2026-07-06T01:47:02.689Z",
+  "toolVersion": "0.26.1",
   "target": {
     "targetId": "browsermcp-server",
     "adapter": "local-process",
@@ -25,8 +25,8 @@
     "serverVersion": "0.1.3"
   },
   "environment": {
-    "platform": "darwin 25.5.0",
-    "nodeVersion": "v22.22.1"
+    "platform": "darwin 24.0.0",
+    "nodeVersion": "v25.8.1"
   },
   "summary": {
     "total": 7,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 1.2612079999998969,
+      "durationMs": 0.9707080000007409,
       "message": "Advertised capability responded with the minimal expected shape (12 items).",
       "evidence": [
         {
@@ -242,7 +242,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0015829999993002275,
+      "durationMs": 0.0007919999989098869,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -258,7 +258,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 0.675042000000758,
+      "durationMs": 0.6247500000008586,
       "message": "Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported.",
       "evidence": [
         {
@@ -285,7 +285,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.03508300000066811,
+      "durationMs": 0.02770799999962037,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -301,7 +301,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 2.116834000000381,
+      "durationMs": 1.5951249999998254,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -327,7 +327,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "pass",
-      "durationMs": 0.5424579999998969,
+      "durationMs": 0.48875000000043656,
       "message": "All 12 item(s) have good schema quality.",
       "evidence": [
         {
@@ -344,7 +344,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 0.24799999999959255,
+      "durationMs": 0.25716600000123435,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -401,16 +401,16 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 903ms",
+          "Connect: 705ms",
           "p95 latency: 1ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 902.8017089999994,
-    "toolsListMs": 1.2612079999998969,
-    "promptsListMs": 0.0015829999993002275,
-    "resourcesListMs": 0.675042000000758
+    "connectMs": 705.3232910000006,
+    "toolsListMs": 0.9707080000007409,
+    "promptsListMs": 0.0007919999989098869,
+    "resourcesListMs": 0.6247500000008586
   }
 }

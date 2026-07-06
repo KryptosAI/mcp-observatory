@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-06-24T02:07:21.282Z
+Generated at 2026-07-06T01:46:50.997Z
 
 ## Target and Environment Metadata
 
@@ -8,8 +8,8 @@ Generated at 2026-06-24T02:07:21.282Z
 - Adapter: `local-process`
 - Command: `npx -y @modelcontextprotocol/server-everything`
 - Server: `mcp-servers/everything 2.0.0`
-- Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Platform: `darwin 24.0.0`
+- Node: `v25.8.1`
 
 ## Executive Summary
 
@@ -30,7 +30,7 @@ Generated at 2026-06-24T02:07:21.282Z
 ## At a Glance
 
 - Safety verdict: **Needs review** — The server is usable, but caveated checks should be reviewed before agents depend on it.
-- Top risks: schema-quality: Found 5 quality finding(s) across 24 item(s): 0 warnings, 5 info.
+- Top risks: schema-quality: Found 6 quality finding(s) across 24 item(s): 0 warnings, 6 info.
 - Regression/schema drift: Run `mcp-observatory diff <previous-run.json> <current-run.json>` to classify regressions and schema drift.
 - Failing checks: none
 - Partial or flaky checks: schema-quality
@@ -47,13 +47,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 3.85 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 0.74 | Advertised capability responded with the minimal expected shape (4 items). |
-| healthy | resources | pass | 1.01 | Advertised capability responded with the minimal expected shape (9 items). |
-| healthy | security | pass | 0.88 | No security issues detected. |
-| healthy | security-lite | pass | 0.48 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 7.35 | Advertised capability responded with the minimal expected shape (13 items). |
-| review | schema-quality | partial | 1.89 | Found 5 quality finding(s) across 24 item(s): 0 warnings, 5 info. |
+| healthy | conformance | pass | 5.80 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 0.87 | Advertised capability responded with the minimal expected shape (4 items). |
+| healthy | resources | pass | 1.22 | Advertised capability responded with the minimal expected shape (9 items). |
+| healthy | security | pass | 1.54 | Found 2 security finding(s): 0 high, 0 medium, 2 low. |
+| healthy | security-lite | pass | 0.51 | Found 2 security finding(s): 0 high, 0 medium, 2 low. |
+| healthy | tools | pass | 7.43 | Advertised capability responded with the minimal expected shape (13 items). |
+| review | schema-quality | partial | 4.45 | Found 6 quality finding(s) across 24 item(s): 0 warnings, 6 info. |
 
 ## Evidence Snippets
 
@@ -102,27 +102,27 @@ Summary: Advertised capability responded with the minimal expected shape (9 item
 
 ### security — pass
 
-Summary: No security issues detected.
+Summary: Found 2 security finding(s): 0 high, 0 medium, 2 low.
 
 - Endpoint: `security/scan`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
-  - Item count: `0`
-  - Identifiers: none
-  - Diagnostics: none
+  - Item count: `2`
+  - Identifiers: toggle-simulated-logging, toggle-subscriber-updates
+  - Diagnostics: [low] Tool "toggle-simulated-logging" has an empty schema but is marked as destructive., [low] Tool "toggle-subscriber-updates" has an empty schema but is marked as destructive.
 
 ### security-lite — pass
 
-Summary: No security issues detected (lightweight scan).
+Summary: Found 2 security finding(s): 0 high, 0 medium, 2 low.
 
 - Endpoint: `security/scan-lite`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
-  - Item count: `0`
-  - Identifiers: none
-  - Diagnostics: none
+  - Item count: `2`
+  - Identifiers: toggle-simulated-logging, toggle-subscriber-updates
+  - Diagnostics: [low] Tool "toggle-simulated-logging" has an empty schema but is marked as destructive., [low] Tool "toggle-subscriber-updates" has an empty schema but is marked as destructive.
 
 ### tools — pass
 
@@ -138,15 +138,15 @@ Summary: Advertised capability responded with the minimal expected shape (13 ite
 
 ### schema-quality — partial
 
-Summary: Found 5 quality finding(s) across 24 item(s): 0 warnings, 5 info.
+Summary: Found 6 quality finding(s) across 24 item(s): 0 warnings, 6 info.
 
 - Endpoint: `schema-quality/scan`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
-  - Item count: `5`
-  - Identifiers: get-resource-links, get-resource-reference, gzip-file-as-resource, trigger-long-running-operation
-  - Diagnostics: [info] tool "get-resource-links": Has properties but no 'required' array declared, [info] tool "get-resource-reference": Has properties but no 'required' array declared, [info] tool "get-resource-reference": Property 'resourceType' missing description (+2 more)
+  - Item count: `6`
+  - Identifiers: get-resource-links, get-resource-reference, gzip-file-as-resource, trigger-long-running-operation, args-prompt
+  - Diagnostics: [info] tool "get-resource-links": Has properties but no 'required' array declared, [info] tool "get-resource-reference": Has properties but no 'required' array declared, [info] tool "get-resource-reference": Property 'resourceType' missing description (+3 more)
 
 ## Reproduction Commands
 
@@ -159,5 +159,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-06-24T020721281Z_c337e720`
+- Run ID: `run_2026-07-06T014650996Z_273c0c65`
 - Gate: `pass`

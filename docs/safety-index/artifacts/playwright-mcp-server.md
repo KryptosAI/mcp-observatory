@@ -1,15 +1,15 @@
 # MCP Observatory Run Report
 
-Generated at 2026-06-24T02:07:32.035Z
+Generated at 2026-07-06T01:47:03.410Z
 
 ## Target and Environment Metadata
 
 - Target: `playwright-mcp-server`
 - Adapter: `local-process`
 - Command: `npx -y @playwright/mcp`
-- Server: `Playwright 1.61.0-alpha-1781023400000`
-- Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Server: `Playwright 1.62.0-alpha-2026-06-29`
+- Platform: `darwin 24.0.0`
+- Node: `v25.8.1`
 
 ## Executive Summary
 
@@ -47,13 +47,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 3062.42 | All 7 conformance checks passed. |
-| healthy | tools | pass | 59.04 | Advertised capability responded with the minimal expected shape (23 items). |
-| review | schema-quality | partial | 7.27 | Found 4 quality finding(s) across 23 item(s): 0 warnings, 4 info. |
-| confirm intent | prompts | unsupported | 0.01 | Prompts are not advertised by the target. |
-| confirm intent | resources | unsupported | 0.01 | Resources are not advertised by the target. |
-| act now | security | fail | 25.69 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
-| act now | security-lite | fail | 0.25 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
+| healthy | conformance | pass | 567.68 | All 7 conformance checks passed. |
+| healthy | tools | pass | 3.19 | Advertised capability responded with the minimal expected shape (23 items). |
+| review | schema-quality | partial | 1.39 | Found 4 quality finding(s) across 23 item(s): 0 warnings, 4 info. |
+| confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
+| confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
+| act now | security | fail | 1.23 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
+| act now | security-lite | fail | 0.07 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
 
 ## Evidence Snippets
 
@@ -152,5 +152,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-06-24T020732035Z_b86ac3a9`
+- Run ID: `run_2026-07-06T014703410Z_c94b3464`
 - Gate: `fail`

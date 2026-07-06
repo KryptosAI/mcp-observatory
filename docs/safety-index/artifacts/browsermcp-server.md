@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-06-24T02:07:31.112Z
+Generated at 2026-07-06T01:47:02.689Z
 
 ## Target and Environment Metadata
 
@@ -8,8 +8,8 @@ Generated at 2026-06-24T02:07:31.112Z
 - Adapter: `local-process`
 - Command: `npx -y @browsermcp/mcp`
 - Server: `Browser MCP 0.1.3`
-- Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Platform: `darwin 24.0.0`
+- Node: `v25.8.1`
 
 ## Executive Summary
 
@@ -47,12 +47,12 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 2.12 | All 7 conformance checks passed. |
-| healthy | resources | pass | 0.68 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
-| healthy | schema-quality | pass | 0.54 | All 12 item(s) have good schema quality. |
-| healthy | security | pass | 0.25 | No security issues detected. |
-| healthy | security-lite | pass | 0.04 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 1.26 | Advertised capability responded with the minimal expected shape (12 items). |
+| healthy | conformance | pass | 1.60 | All 7 conformance checks passed. |
+| healthy | resources | pass | 0.62 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
+| healthy | schema-quality | pass | 0.49 | All 12 item(s) have good schema quality. |
+| healthy | security | pass | 0.26 | No security issues detected. |
+| healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 0.97 | Advertised capability responded with the minimal expected shape (12 items). |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 
 ## Evidence Snippets
@@ -159,5 +159,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-06-24T020731112Z_2e7853f8`
+- Run ID: `run_2026-07-06T014702689Z_66630a02`
 - Gate: `pass`

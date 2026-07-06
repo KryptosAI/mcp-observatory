@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-06-24T020721281Z_c337e720",
-  "createdAt": "2026-06-24T02:07:21.282Z",
-  "toolVersion": "0.24.0",
+  "runId": "run_2026-07-06T014650996Z_273c0c65",
+  "createdAt": "2026-07-06T01:46:50.997Z",
+  "toolVersion": "0.26.1",
   "target": {
     "targetId": "everything-server",
     "adapter": "local-process",
@@ -25,8 +25,8 @@
     "serverVersion": "2.0.0"
   },
   "environment": {
-    "platform": "darwin 25.5.0",
-    "nodeVersion": "v22.22.1"
+    "platform": "darwin 24.0.0",
+    "nodeVersion": "v25.8.1"
   },
   "summary": {
     "total": 7,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 7.354332999999997,
+      "durationMs": 7.431291999999985,
       "message": "Advertised capability responded with the minimal expected shape (13 items).",
       "evidence": [
         {
@@ -82,7 +82,6 @@
               "required": [
                 "message"
               ],
-              "additionalProperties": false,
               "$schema": "http://json-schema.org/draft-07/schema#"
             },
             "get-annotated-message": {
@@ -98,15 +97,14 @@
                   "description": "Type of message to demonstrate different annotation patterns"
                 },
                 "includeImage": {
-                  "type": "boolean",
                   "default": false,
-                  "description": "Whether to include an example image"
+                  "description": "Whether to include an example image",
+                  "type": "boolean"
                 }
               },
               "required": [
                 "messageType"
               ],
-              "additionalProperties": false,
               "$schema": "http://json-schema.org/draft-07/schema#"
             },
             "get-env": {
@@ -118,34 +116,32 @@
               "type": "object",
               "properties": {
                 "count": {
+                  "default": 3,
+                  "description": "Number of resource links to return (1-10)",
                   "type": "number",
                   "minimum": 1,
-                  "maximum": 10,
-                  "default": 3,
-                  "description": "Number of resource links to return (1-10)"
+                  "maximum": 10
                 }
               },
-              "additionalProperties": false,
               "$schema": "http://json-schema.org/draft-07/schema#"
             },
             "get-resource-reference": {
               "type": "object",
               "properties": {
                 "resourceType": {
+                  "default": "Text",
                   "type": "string",
                   "enum": [
                     "Text",
                     "Blob"
-                  ],
-                  "default": "Text"
+                  ]
                 },
                 "resourceId": {
-                  "type": "number",
                   "default": 1,
-                  "description": "ID of the text resource to fetch"
+                  "description": "ID of the text resource to fetch",
+                  "type": "number"
                 }
               },
-              "additionalProperties": false,
               "$schema": "http://json-schema.org/draft-07/schema#"
             },
             "get-structured-content": {
@@ -164,7 +160,6 @@
               "required": [
                 "location"
               ],
-              "additionalProperties": false,
               "$schema": "http://json-schema.org/draft-07/schema#"
             },
             "get-sum": {
@@ -183,7 +178,6 @@
                 "a",
                 "b"
               ],
-              "additionalProperties": false,
               "$schema": "http://json-schema.org/draft-07/schema#"
             },
             "get-tiny-image": {
@@ -195,27 +189,26 @@
               "type": "object",
               "properties": {
                 "name": {
+                  "default": "README.md.gz",
                   "type": "string",
-                  "description": "Name of the output file",
-                  "default": "README.md.gz"
+                  "description": "Name of the output file"
                 },
                 "data": {
+                  "default": "https://raw.githubusercontent.com/modelcontextprotocol/servers/refs/heads/main/README.md",
                   "type": "string",
                   "format": "uri",
-                  "description": "URL or data URI of the file content to compress",
-                  "default": "https://raw.githubusercontent.com/modelcontextprotocol/servers/refs/heads/main/README.md"
+                  "description": "URL or data URI of the file content to compress"
                 },
                 "outputType": {
+                  "default": "resourceLink",
+                  "description": "How the resulting gzipped file should be returned. 'resourceLink' returns a link to a resource that can be read later, 'resource' returns a full resource object.",
                   "type": "string",
                   "enum": [
                     "resourceLink",
                     "resource"
-                  ],
-                  "default": "resourceLink",
-                  "description": "How the resulting gzipped file should be returned. 'resourceLink' returns a link to a resource that can be read later, 'resource' returns a full resource object."
+                  ]
                 }
               },
-              "additionalProperties": false,
               "$schema": "http://json-schema.org/draft-07/schema#"
             },
             "toggle-simulated-logging": {
@@ -232,17 +225,16 @@
               "type": "object",
               "properties": {
                 "duration": {
-                  "type": "number",
                   "default": 10,
-                  "description": "Duration of the operation in seconds"
+                  "description": "Duration of the operation in seconds",
+                  "type": "number"
                 },
                 "steps": {
-                  "type": "number",
                   "default": 5,
-                  "description": "Number of steps in the operation"
+                  "description": "Number of steps in the operation",
+                  "type": "number"
                 }
               },
-              "additionalProperties": false,
               "$schema": "http://json-schema.org/draft-07/schema#"
             },
             "simulate-research-query": {
@@ -253,15 +245,14 @@
                   "description": "The research topic to investigate"
                 },
                 "ambiguous": {
-                  "type": "boolean",
                   "default": false,
-                  "description": "Simulate an ambiguous query that requires clarification (triggers input_required status)"
+                  "description": "Simulate an ambiguous query that requires clarification (triggers input_required status)",
+                  "type": "boolean"
                 }
               },
               "required": [
                 "topic"
               ],
-              "additionalProperties": false,
               "$schema": "http://json-schema.org/draft-07/schema#"
             }
           }
@@ -272,7 +263,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "pass",
-      "durationMs": 0.74087499999996,
+      "durationMs": 0.8740839999999253,
       "message": "Advertised capability responded with the minimal expected shape (4 items).",
       "evidence": [
         {
@@ -297,7 +288,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 1.0068340000000262,
+      "durationMs": 1.2153749999999945,
       "message": "Advertised capability responded with the minimal expected shape (9 items).",
       "evidence": [
         {
@@ -339,15 +330,37 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.47954200000003766,
-      "message": "No security issues detected (lightweight scan).",
+      "durationMs": 0.5052909999999429,
+      "message": "Found 2 security finding(s): 0 high, 0 medium, 2 low.",
       "evidence": [
         {
           "endpoint": "security/scan-lite",
           "advertised": true,
           "responded": true,
           "minimalShapePresent": true,
-          "itemCount": 0
+          "itemCount": 2,
+          "identifiers": [
+            "toggle-simulated-logging",
+            "toggle-subscriber-updates"
+          ],
+          "diagnostics": [
+            "[low] Tool \"toggle-simulated-logging\" has an empty schema but is marked as destructive.",
+            "[low] Tool \"toggle-subscriber-updates\" has an empty schema but is marked as destructive."
+          ],
+          "findings": [
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "toggle-simulated-logging",
+              "message": "Tool \"toggle-simulated-logging\" has an empty schema but is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "toggle-subscriber-updates",
+              "message": "Tool \"toggle-subscriber-updates\" has an empty schema but is marked as destructive."
+            }
+          ]
         }
       ]
     },
@@ -355,7 +368,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 3.849082999999837,
+      "durationMs": 5.802541000000019,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -381,27 +394,67 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 1.885542000000214,
-      "message": "Found 5 quality finding(s) across 24 item(s): 0 warnings, 5 info.",
+      "durationMs": 4.454166999999984,
+      "message": "Found 6 quality finding(s) across 24 item(s): 0 warnings, 6 info.",
       "evidence": [
         {
           "endpoint": "schema-quality/scan",
           "advertised": true,
           "responded": true,
           "minimalShapePresent": true,
-          "itemCount": 5,
+          "itemCount": 6,
           "identifiers": [
             "get-resource-links",
             "get-resource-reference",
             "gzip-file-as-resource",
-            "trigger-long-running-operation"
+            "trigger-long-running-operation",
+            "args-prompt"
           ],
           "diagnostics": [
             "[info] tool \"get-resource-links\": Has properties but no 'required' array declared",
             "[info] tool \"get-resource-reference\": Has properties but no 'required' array declared",
             "[info] tool \"get-resource-reference\": Property 'resourceType' missing description",
             "[info] tool \"gzip-file-as-resource\": Has properties but no 'required' array declared",
-            "[info] tool \"trigger-long-running-operation\": Has properties but no 'required' array declared"
+            "[info] tool \"trigger-long-running-operation\": Has properties but no 'required' array declared",
+            "[info] prompt \"args-prompt\": Argument 'state' missing description"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "get-resource-links",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get-resource-reference",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get-resource-reference",
+              "issue": "Property 'resourceType' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "gzip-file-as-resource",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "trigger-long-running-operation",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "prompt",
+              "itemName": "args-prompt",
+              "issue": "Argument 'state' missing description",
+              "severity": "info"
+            }
           ]
         }
       ]
@@ -410,15 +463,37 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 0.8814159999999447,
-      "message": "No security issues detected.",
+      "durationMs": 1.5368330000000014,
+      "message": "Found 2 security finding(s): 0 high, 0 medium, 2 low.",
       "evidence": [
         {
           "endpoint": "security/scan",
           "advertised": true,
           "responded": true,
           "minimalShapePresent": true,
-          "itemCount": 0
+          "itemCount": 2,
+          "identifiers": [
+            "toggle-simulated-logging",
+            "toggle-subscriber-updates"
+          ],
+          "diagnostics": [
+            "[low] Tool \"toggle-simulated-logging\" has an empty schema but is marked as destructive.",
+            "[low] Tool \"toggle-subscriber-updates\" has an empty schema but is marked as destructive."
+          ],
+          "findings": [
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "toggle-simulated-logging",
+              "message": "Tool \"toggle-simulated-logging\" has an empty schema but is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "toggle-subscriber-updates",
+              "message": "Tool \"toggle-subscriber-updates\" has an empty schema but is marked as destructive."
+            }
+          ]
         }
       ]
     }
@@ -467,16 +542,16 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 846ms",
+          "Connect: 761ms",
           "p95 latency: 7ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 845.9128340000001,
-    "toolsListMs": 7.354332999999997,
-    "promptsListMs": 0.74087499999996,
-    "resourcesListMs": 1.0068340000000262
+    "connectMs": 760.63275,
+    "toolsListMs": 7.431291999999985,
+    "promptsListMs": 0.8740839999999253,
+    "resourcesListMs": 1.2153749999999945
   }
 }
