@@ -6,7 +6,7 @@ Each row links to a reproducible command, an action receipt, a JSON run artifact
 
 The safe attack simulation evidence checks metadata, schemas, and controlled canary surfaces only. It does not execute destructive payloads, contact external callback URLs, or claim exploitability from a static finding alone.
 
-For the rules behind this page, see the [Safety Methodology](./methodology.md) and the [MCP Attack Simulator](./mcp-attack-simulator.md). For a smaller server-to-evidence map, see the [MCP Receipt Graph](./receipt-graph.md).
+For the rules behind this page, see the [Safety Methodology](./methodology.md), the [MCP Attack Simulator](./mcp-attack-simulator.md), and the generated [MCP Risk Graph](./safety-index/mcp-risk-graph.md).
 
 ## Snapshot
 

@@ -12,6 +12,7 @@ These surfaces are intentionally public because they increase trust, integration
 - safe `attack-sim` checks
 - `audit --profile nsa-mcp`
 - public artifact schemas
+- public MCP risk graph JSON/Markdown/HTML generation
 - JSON, Markdown, HTML, JUnit, and SARIF reporters
 - GitHub Actions setup and generated CI workflows
 - public health scores and badges
@@ -27,6 +28,7 @@ These surfaces should remain private unless there is a deliberate licensing or c
 - private telemetry exports, raw events, emails, hostnames, and account identifiers
 - company/account intelligence derived from telemetry or usage patterns
 - proprietary Safety Index ranking weights, confidence models, and lead prioritization
+- private fleet graph workflows, commercial scoring weights, and buyer-specific prioritization
 - commercial report templates beyond sanitized public samples
 - buyer-specific evidence packs, remediation notes, and procurement packets
 - hosted dashboard workflows, retention logic, and fleet visibility
@@ -60,12 +62,19 @@ Keep private:
 The paid product should package the same evidence into decisions a buyer can act on:
 
 - private MCP dependency inventory
+- private MCP fleet risk graph
 - safe-mode attack simulation evidence pack
 - CI/SARIF gate rollout
 - drift and schema-change review
 - owner-ready remediation backlog
 - executive summary and procurement-friendly due diligence packet
 - recurring review cadence for production MCP fleets
+
+Pricing anchors:
+
+- `$2,500+` narrow readiness review
+- `$15,000+` attack simulation evidence pack
+- `$50,000+` private fleet risk graph pilot
 
 The open source project proves the method. The commercial product saves a team time, reduces review risk, and gives leadership a defensible record.
 
@@ -80,4 +89,3 @@ Assume visible CLI features can be copied. The moat should come from:
 - building trust with security teams through careful privacy and non-destructive defaults
 
 Do not respond to clones by hiding the core OSS loop. Respond by making the public evidence standard more useful and keeping the commercial intelligence layer private.
-

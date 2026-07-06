@@ -13,7 +13,7 @@ The layout follows an App Store Connect-style breakdown:
 - Usage
 - Reliability
 
-The Strategy section turns raw telemetry into operator decisions: command funnel, clone/download-to-CI conversion, version adoption, account/domain drilldown, CI/local source mix, and release-spike context.
+The Strategy section turns raw telemetry into operator decisions: command funnel, receipt-to-risk-graph conversion, clone/download-to-CI conversion, version adoption, account/domain drilldown, CI/local source mix, and release-spike context.
 
 Daily rows are shown newest to oldest so the most recent project activity is always at the top.
 
@@ -44,6 +44,22 @@ The collector stores each source independently. If one source fails, the dashboa
 | npm | public daily downloads for `@kryptosai/mcp-observatory` |
 
 GitHub traffic APIs have a limited visible window, so the collector stores snapshots locally going forward. npm daily buckets can lag; the dashboard labels npm data as complete public days rather than assuming current-day zero.
+
+## Growth Command Center
+
+The dashboard tracks the Wiz-style evidence funnel:
+
+- latest-version adoption
+- stale-version sessions
+- receipt sessions
+- risk-graph sessions
+- attack-sim sessions
+- setup-ci/SARIF sessions
+- external CI sessions
+- paid-intent commands
+- sanitized account/domain signals
+
+`risk-graph` telemetry stores command-level aggregates such as invocation, output format, input count, node count, highest graph risk, and whether graph output was generated. It does not collect raw artifacts, file contents, secrets, private URLs, command output, hostnames, or unapproved customer names.
 
 ## Credentials
 

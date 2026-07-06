@@ -23,6 +23,7 @@ import { registerLockCommands } from "./commands/lock.js";
 import { registerAttackSimCommands } from "./commands/attack-sim.js";
 import { registerAuditCommands } from "./commands/audit.js";
 import { registerReceiptCommands } from "./commands/receipt.js";
+import { registerRiskGraphCommands } from "./commands/risk-graph.js";
 import { DEFAULT_CLOUD_UPLOAD_ENDPOINT, printCloudInfo } from "./commercial.js";
 import { runTarget } from "./index.js";
 import type { RunArtifact, TargetConfig } from "./types.js";
@@ -65,6 +66,7 @@ const MENU_GROUPS: MenuGroup[] = [
       { command: ["setup-ci"],       label: "setup-ci",     outcome: "Create GitHub Action and badge snippets" },
       { command: ["audit"],          label: "audit <target>", outcome: "Profile-mapped security audit report + SARIF" },
       { command: ["receipt"],        label: "receipt <target>", outcome: "Portable MCP trust receipt" },
+      { command: ["risk-graph"],     label: "risk-graph",   outcome: "Map MCP receipts and artifacts into an agent toolchain graph" },
       { command: ["attack-sim"],     label: "attack-sim",   outcome: "Safely simulate MCP attack-readiness" },
       { command: ["enterprise-report"], label: "enterprise-report", outcome: "Generate a production/security report" },
     ],
@@ -258,6 +260,7 @@ async function main(): Promise<void> {
         `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} diff`)} ${c(ANSI.dim, "<a> <b>")}       Compare two runs for regressions`,
         `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} setup-ci`)}           Add GitHub Action and badge snippets`,
         `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} audit`)} ${c(ANSI.dim, "<target>")}     Profile-mapped security audit + SARIF`,
+        `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} risk-graph`)}         Map receipts into an MCP risk graph`,
         `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} attack-sim`)} ${c(ANSI.dim, "<cmd>")}  Safely simulate MCP attack-readiness`,
         "",
         `  ${c(ANSI.dim, `Run ${bin} <command> --help for details on any command.`)}`,
@@ -284,6 +287,7 @@ async function main(): Promise<void> {
   registerLockCommands(program);
   registerAuditCommands(program);
   registerReceiptCommands(program);
+  registerRiskGraphCommands(program);
   registerAttackSimCommands(program);
 
   const cloudCmd = program
