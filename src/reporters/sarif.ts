@@ -44,6 +44,14 @@ function ruleTitle(finding: ObservatoryFinding): string {
   return finding.title.length > 0 ? finding.title : finding.ruleId;
 }
 
+function helpText(finding: ObservatoryFinding): string | undefined {
+  const parts = [
+    finding.recommendation,
+    finding.recommendedAction ? `Recommended action: ${finding.recommendedAction}.` : undefined,
+  ].filter(Boolean);
+  return parts.length > 0 ? parts.join("\n\n") : undefined;
+}
+
 export function renderSarif(artifact: RunArtifact, options: RenderSarifOptions = {}): string {
   const rules: SarifRule[] = [];
   const results: SarifResult[] = [];
@@ -54,16 +62,18 @@ export function renderSarif(artifact: RunArtifact, options: RenderSarifOptions =
   for (const finding of findings) {
     if (!seenRules.has(finding.ruleId)) {
       seenRules.add(finding.ruleId);
+      const ruleHelp = helpText(finding);
       rules.push({
         id: finding.ruleId,
         name: ruleTitle(finding),
         shortDescription: { text: ruleTitle(finding) },
         defaultConfiguration: { level: levelFromSeverity(finding.severity) },
-        help: finding.recommendation ? { text: finding.recommendation } : undefined,
+        help: ruleHelp ? { text: ruleHelp } : undefined,
         helpUri: `https://github.com/KryptosAI/mcp-observatory/tree/main/docs`,
         properties: {
           category: finding.category,
           checkId: finding.checkId,
+          recommendedAction: finding.recommendedAction,
           controlRefs: finding.controlRefs,
           tags: ["mcp", "mcp-observatory", finding.category, ...finding.controlRefs],
         },
@@ -90,6 +100,7 @@ export function renderSarif(artifact: RunArtifact, options: RenderSarifOptions =
         targetId: artifact.target.targetId,
         subject: finding.subject,
         severity: finding.severity,
+        recommendedAction: finding.recommendedAction,
         controlRefs: finding.controlRefs,
         tags: ["mcp", "mcp-observatory", finding.category, ...finding.controlRefs],
       },

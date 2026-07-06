@@ -10,6 +10,7 @@ import { buildEvent, normalizeCampaign, recordEvent } from "../telemetry.js";
 import type { RunArtifact } from "../types.js";
 import { TOOL_VERSION } from "../version.js";
 import { maybePrintCloudCta } from "../commercial.js";
+import { renderActionReceipt } from "../action-receipt.js";
 import { ANSI, LOGO, c, setupCiHint, useColor } from "./helpers.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
 
@@ -21,6 +22,7 @@ async function runScan(
   invokeTools: boolean,
   securityCheck?: boolean,
   format?: string,
+  attackSim = true,
   conversionFlags: SetupCiConversionFlags = {},
 ): Promise<void> {
   if (conversionFlags.campaign) conversionFlags.campaign = normalizeCampaign(conversionFlags.campaign);
@@ -75,7 +77,11 @@ async function runScan(
   for (const t of targets) {
     process.stdout.write(`  ${c(ANSI.dim, "⟳")} Checking ${c(ANSI.bold, t.config.targetId)}...`);
     try {
-      const artifact = await runTarget(t.config, { invokeTools, securityCheck });
+      const artifact = await runTarget(t.config, {
+        invokeTools,
+        securityCheck,
+        attackSimulation: attackSim ? {} : undefined,
+      });
       artifacts.push(artifact);
       const toolsCheck = artifact.checks.find((ch) => ch.id === "tools");
       const promptsCheck = artifact.checks.find((ch) => ch.id === "prompts");
@@ -109,6 +115,9 @@ async function runScan(
       for (const check of artifact.checks) {
         checkStatusMap[`${t.config.targetId}:${check.id}`] = check.status;
       }
+
+      const receipt = renderActionReceipt(artifact).split("\n");
+      process.stdout.write(`    ${c(ANSI.dim, "→")} ${receipt[0]}\n`);
 
       // Track history
       await appendHistory(buildHistoryEntry(artifact)).catch(() => {});
@@ -186,11 +195,13 @@ async function runScan(
         setupCi: conversionFlags.setupCi,
         yes: conversionFlags.yes,
         noSetupCi: conversionFlags.noSetupCi,
+        ciSarif: conversionFlags.ciSarif,
         force: conversionFlags.force,
         campaign: conversionFlags.campaign,
       });
     } else if (conversionFlags.noSetupCi !== true) {
-      process.stdout.write(`CI conversion available for a specific target:\n  ${setupCiHint(undefined, undefined, bin)}\n`);
+      const sarif = conversionFlags.ciSarif === false ? "" : " --sarif";
+      process.stdout.write(`CI conversion available for a specific target:\n  ${setupCiHint(undefined, undefined, bin)}${sarif} --schedule weekly\n`);
       if (conversionFlags.setupCi === true) {
         process.stdout.write("Non-interactive mode will only write files when --setup-ci --yes is present, and multi-target scans need a single target config.\n");
       }
@@ -225,6 +236,10 @@ async function runScan(
     matrixPassCount: passCount,
     matrixFailCount: failCount,
     campaign: conversionFlags.campaign,
+    securityFindingCount: artifacts.reduce((sum, artifact) => {
+      const attack = artifact.checks.find((check) => check.id === "attack-sim");
+      return sum + (attack?.evidence[0]?.itemCount ?? 0);
+    }, 0),
   }));
 
   if (failCount > 0) {
@@ -240,17 +255,19 @@ export function registerScanCommands(program: Command, bin: string): void {
     .description("Check all MCP servers in your Claude configs.")
     .option("--config <path>", "Path to a specific MCP config file.")
     .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
+    .option("--no-attack-sim", "Skip the default safe attack-readiness simulation.")
     .option("--format <format>", "Output format: terminal or pr-comment-matrix.", "terminal")
     .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.")
     .option("--setup-ci", "Offer CI conversion after a successful one-target scan; use with --yes in non-interactive runs to write files.", false)
     .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
+    .option("--no-ci-sarif", "Generate post-scan CI without GitHub Code Scanning SARIF upload.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
     .option("--no-color", "Disable colored output.");
 
   // `scan` with no subcommand — basic scan
-  scanCmd.action(async (options: { config?: string; security?: boolean; format: string } & SetupCiConversionFlags) => {
-    await runScan(bin, options.config, false, options.security, options.format, options);
+  scanCmd.action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string } & SetupCiConversionFlags) => {
+    await runScan(bin, options.config, false, options.security, options.format, options.attackSim !== false, options);
   });
 
   // `scan deep` — scan + invoke tools
@@ -259,17 +276,20 @@ export function registerScanCommands(program: Command, bin: string): void {
     .description("Scan and also invoke safe tools to verify they execute.")
     .option("--config <path>", "Path to a specific MCP config file.")
     .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
+    .option("--no-attack-sim", "Skip the default safe attack-readiness simulation.")
     .option("--format <format>", "Output format: terminal or pr-comment-matrix.", "terminal")
     .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.")
     .option("--setup-ci", "Offer CI conversion after a successful one-target scan; use with --yes in non-interactive runs to write files.", false)
     .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
+    .option("--no-ci-sarif", "Generate post-scan CI without GitHub Code Scanning SARIF upload.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
-    .action(async (options: { config?: string; security?: boolean; format: string } & SetupCiConversionFlags) => {
+    .action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string } & SetupCiConversionFlags) => {
       // Inherit parent config option if set
       const parentConfig = scanCmd.opts().config as string | undefined;
       const parentSecurity = scanCmd.opts().security as boolean | undefined;
       const parentFormat = scanCmd.opts().format as string;
-      await runScan(bin, options.config ?? parentConfig, true, options.security ?? parentSecurity ?? true, options.format ?? parentFormat, options);
+      const parentAttackSim = scanCmd.opts().attackSim as boolean | undefined;
+      await runScan(bin, options.config ?? parentConfig, true, options.security ?? parentSecurity ?? true, options.format ?? parentFormat, options.attackSim !== false && parentAttackSim !== false, options);
     });
 }

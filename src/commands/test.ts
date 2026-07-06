@@ -9,10 +9,12 @@ import { appendHistory, buildHistoryEntry, getTrend, readHistory } from "../hist
 import { renderSarif } from "../reporters/sarif.js";
 import { buildEvent, normalizeCampaign, recordEvent } from "../telemetry.js";
 import { maybePrintCloudCta } from "../commercial.js";
+import { renderActionReceipt } from "../action-receipt.js";
 import { ANSI, c, resolveTarget, targetFromCommand, writeOutput } from "./helpers.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
 
 interface TestCommandFlags extends SetupCiConversionFlags {
+  attackSim?: boolean;
   sarif?: string;
 }
 
@@ -30,6 +32,10 @@ function extractTrailingConversionFlags(
       flags.yes = true;
     } else if (arg === "--no-setup-ci") {
       flags.noSetupCi = true;
+    } else if (arg === "--no-ci-sarif") {
+      flags.ciSarif = false;
+    } else if (arg === "--no-attack-sim") {
+      flags.attackSim = false;
     } else if (arg === "--force") {
       flags.force = true;
     } else if (arg === "--sarif") {
@@ -60,21 +66,28 @@ export function registerTestCommands(program: Command): void {
     .option("--deep", "Also invoke safe tools to verify they execute.")
     .option("--invoke-tools", "Alias for --deep.")
     .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
+    .option("--no-attack-sim", "Skip the default safe attack-readiness simulation.")
     .option("--sarif <file>", "Write a GitHub Code Scanning SARIF report after the run.")
     .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.")
     .option("--setup-ci", "Offer CI conversion after a successful check; use with --yes in non-interactive runs to write files.", false)
     .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
+    .option("--no-ci-sarif", "Generate post-check CI without GitHub Code Scanning SARIF upload.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
     .option("--no-color", "Disable colored output.")
-    .action(async (commandArgs: string[], options: { deep?: boolean; invokeTools?: boolean; security?: boolean; target?: string } & TestCommandFlags) => {
+    .action(async (commandArgs: string[], options: { deep?: boolean; invokeTools?: boolean; security?: boolean; target?: string; attackSim?: boolean } & TestCommandFlags) => {
       const extracted = extractTrailingConversionFlags(commandArgs, options);
       commandArgs = extracted.commandArgs;
       const conversionFlags = extracted.flags;
       const t0 = Date.now();
       const target = options.target ? await resolveTarget({ target: options.target }) : targetFromCommand(commandArgs);
       process.stdout.write(`  ${c(ANSI.dim, "⟳")} Checking ${c(ANSI.bold, target.targetId)}...`);
-      const artifact = await runTarget(target, { invokeTools: options.deep || options.invokeTools, securityCheck: options.security });
+      const attackSim = conversionFlags.attackSim !== false && options.attackSim !== false;
+      const artifact = await runTarget(target, {
+        invokeTools: options.deep || options.invokeTools,
+        securityCheck: options.security,
+        attackSimulation: attackSim ? {} : undefined,
+      });
       const outPath = await writeRunArtifact(artifact, defaultRunsDirectory(process.cwd()));
       if (conversionFlags.sarif) {
         await writeOutput(renderSarif(artifact, { artifactUri: outPath }), "sarif", conversionFlags.sarif);
@@ -96,6 +109,8 @@ export function registerTestCommands(program: Command): void {
           process.stdout.write(`    ${c(ANSI.dim, "→")} ${check.id}: ${check.message}\n`);
         }
       }
+
+      process.stdout.write(`    ${c(ANSI.dim, "→")} ${renderActionReceipt(artifact).split("\n")[0]}\n`);
 
       process.stdout.write(`\n  ${c(ANSI.dim, `Artifact: ${outPath}`)}\n\n`);
 
@@ -127,6 +142,7 @@ export function registerTestCommands(program: Command): void {
         checkStatuses: testCheckStatuses,
         fatalError: artifact.fatalError?.split("\n")[0],
         campaign: conversionFlags.campaign,
+        securityFindingCount: artifact.checks.find((check) => check.id === "attack-sim")?.evidence[0]?.itemCount,
       }));
 
       if (artifact.gate === "fail") {
@@ -139,6 +155,7 @@ export function registerTestCommands(program: Command): void {
           setupCi: conversionFlags.setupCi,
           yes: conversionFlags.yes,
           noSetupCi: conversionFlags.noSetupCi,
+          ciSarif: conversionFlags.ciSarif,
           force: conversionFlags.force,
           campaign: conversionFlags.campaign,
         });

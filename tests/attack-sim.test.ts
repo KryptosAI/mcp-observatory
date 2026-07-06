@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { runAttackSimulationCheck } from "../src/checks/attack-sim.js";
+import { buildActionReceipt } from "../src/action-receipt.js";
 import { makeArtifact, makeContext } from "./fixtures/test-helpers.js";
 import type { CheckResult } from "../src/types.js";
 import type { CheckContext } from "../src/checks/base.js";
@@ -34,6 +35,7 @@ describe("attack simulator", () => {
     const check = await runAttackSimulationCheck(context, []);
     expect(check.result.status).toBe("fail");
     expect(findings(check).some((finding) => finding["attackClass"] === "tool-poisoning")).toBe(true);
+    expect(findings(check).some((finding) => finding["recommendedAction"] === "quarantine")).toBe(true);
   });
 
   it("detects broad destructive permission boundaries", async () => {
@@ -81,6 +83,7 @@ describe("attack simulator", () => {
     const rules = findings(check).map((finding) => finding["ruleId"]);
     expect(rules).toContain("attack-sim/exfiltration-canary/canary-exposed");
     expect(rules).toContain("attack-sim/exfiltration-canary/credential-like-output");
+    expect(findings(check).some((finding) => finding["recommendedAction"] === "escalate")).toBe(true);
     expect(check.result.status).toBe("fail");
   });
 
@@ -187,5 +190,26 @@ describe("attack simulator", () => {
     expect(rules).toContain("attack-sim/contract-drift/new-destructive-tool");
     expect(rules).toContain("attack-sim/contract-drift/required-fields-removed");
     expect(rules).toContain("attack-sim/contract-drift/schema-broadened");
+  });
+
+  it("classifies action receipts for safe, gated, and escalated artifacts", async () => {
+    const safe = makeArtifact([]);
+    expect(buildActionReceipt(safe).action).toBe("allow");
+
+    const escalated = makeArtifact([(await runAttackSimulationCheck(makeContext(), [{
+      id: "tools-invoke",
+      capability: "tools-invoke",
+      status: "pass",
+      durationMs: 1,
+      message: "snapshots",
+      evidence: [{
+        endpoint: "tools/call",
+        advertised: true,
+        responded: true,
+        minimalShapePresent: true,
+        responseSnapshots: { echo: { content: "MCP_OBSERVATORY_CANARY_TEST" } },
+      }],
+    }])).result]);
+    expect(buildActionReceipt(escalated).action).toBe("escalate");
   });
 });

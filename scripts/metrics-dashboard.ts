@@ -144,7 +144,7 @@ interface TelemetrySummary {
   versionAdoption: Array<{ version: string; events: number; sessions: number; sessionShare: number; isLatest: boolean }>;
   dailyMarketVersionAdoption: Array<{ day: string; totalSessions: number; latestSessions: number; latestEvents: number; latestSessionShare: number; dominantVersion: string }>;
   commandFunnel: Array<{ stage: string; commands: string; events: number; sessions: number; recommendation: string }>;
-  dailyMarketCommandFunnel: Array<{ day: string; agentInstallSessions: number; validationSessions: number; regressionSessions: number; ciSetupSessions: number }>;
+  dailyMarketCommandFunnel: Array<{ day: string; agentInstallSessions: number; validationSessions: number; regressionSessions: number; ciSetupSessions: number; attackSimSessions: number; ciSarifSessions: number; paidIntentSessions: number }>;
 }
 
 interface GitHubSummary {
@@ -844,9 +844,12 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
   const dailyMarketVersionStats = new Map<string, Map<string, { events: number; sessions: Set<string> }>>();
   const dailyMarketCommandFunnel = new Map<string, {
     agentInstallSessions: Set<string>;
+    attackSimSessions: Set<string>;
+    ciSarifSessions: Set<string>;
     validationSessions: Set<string>;
     regressionSessions: Set<string>;
     ciSetupSessions: Set<string>;
+    paidIntentSessions: Set<string>;
   }>();
   let latestExternalSeen = "";
 
@@ -929,14 +932,20 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
         if (session) {
           const commandBucket = dailyMarketCommandFunnel.get(day) ?? {
             agentInstallSessions: new Set<string>(),
+            attackSimSessions: new Set<string>(),
+            ciSarifSessions: new Set<string>(),
             validationSessions: new Set<string>(),
             regressionSessions: new Set<string>(),
             ciSetupSessions: new Set<string>(),
+            paidIntentSessions: new Set<string>(),
           };
           if (row.command === "serve") commandBucket.agentInstallSessions.add(session);
+          if (row.command === "attack-sim") commandBucket.attackSimSessions.add(session);
           if (row.command === "test" || row.command === "scan" || row.command === "run") commandBucket.validationSessions.add(session);
           if (row.command === "diff" || row.command === "history" || row.command === "watch" || row.command === "lock") commandBucket.regressionSessions.add(session);
           if (row.command === "init-ci" || row.command === "setup-ci") commandBucket.ciSetupSessions.add(session);
+          if ((row.command === "init-ci" || row.command === "setup-ci") && (row as TelemetryRow & { setupCiSarif?: boolean }).setupCiSarif === true) commandBucket.ciSarifSessions.add(session);
+          if (row.command === "cloud" || row.command === "cloud-upload" || row.command === "enterprise-report") commandBucket.paidIntentSessions.add(session);
           dailyMarketCommandFunnel.set(day, commandBucket);
         }
       }
@@ -1016,9 +1025,12 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
     .map(([day, stats]) => ({
       day,
       agentInstallSessions: stats.agentInstallSessions.size,
+      attackSimSessions: stats.attackSimSessions.size,
+      ciSarifSessions: stats.ciSarifSessions.size,
       validationSessions: stats.validationSessions.size,
       regressionSessions: stats.regressionSessions.size,
       ciSetupSessions: stats.ciSetupSessions.size,
+      paidIntentSessions: stats.paidIntentSessions.size,
     }))
     .sort((a, b) => a.day.localeCompare(b.day));
   const commandStats = (names: string[]): { events: number; sessions: number } => {
@@ -1056,6 +1068,18 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
       commands: "init-ci, setup-ci",
       ...commandStats(["init-ci", "setup-ci"]),
       recommendation: "The setup command is the funnel leak; make it louder and friendlier.",
+    },
+    {
+      stage: "Attack simulation",
+      commands: "attack-sim",
+      ...commandStats(["attack-sim"]),
+      recommendation: "This is the demo wedge; convert every run into a receipt and CI gate.",
+    },
+    {
+      stage: "Paid intent",
+      commands: "cloud, cloud-upload, enterprise-report",
+      ...commandStats(["cloud", "cloud-upload", "enterprise-report"]),
+      recommendation: "Treat these sessions as design-partner and pilot leads.",
     },
   ];
   return {
@@ -1364,9 +1388,12 @@ interface UsageTrendPoint {
   latestSessionShare: number;
   dominantVersion: string;
   agentInstallSessions: number;
+  attackSimSessions: number;
+  ciSarifSessions: number;
   validationSessions: number;
   regressionSessions: number;
   ciSetupSessions: number;
+  paidIntentSessions: number;
   npmDownloads: number;
   clones: number;
   views: number;
@@ -1380,6 +1407,9 @@ interface UsagePeriodSummary {
   excludedSessions: number;
   latestSessions: number;
   setupSessions: number;
+  attackSimSessions: number;
+  ciSarifSessions: number;
+  paidIntentSessions: number;
   npmDownloads: number;
   clones: number;
   views: number;
@@ -1461,9 +1491,12 @@ function usageTrendPoints(model: DashboardModel, limit = TREND_WINDOW_DAYS): Usa
       latestSessionShare: versionRow?.latestSessionShare ?? 0,
       dominantVersion: versionRow?.dominantVersion ?? "n/a",
       agentInstallSessions: commandRow?.agentInstallSessions ?? 0,
+      attackSimSessions: commandRow?.attackSimSessions ?? 0,
+      ciSarifSessions: commandRow?.ciSarifSessions ?? 0,
       validationSessions: commandRow?.validationSessions ?? 0,
       regressionSessions: commandRow?.regressionSessions ?? 0,
       ciSetupSessions: commandRow?.ciSetupSessions ?? 0,
+      paidIntentSessions: commandRow?.paidIntentSessions ?? 0,
       npmDownloads: npmRow?.downloads ?? 0,
       clones: githubRow?.clones ?? 0,
       views: githubRow?.views ?? 0,
@@ -1483,6 +1516,9 @@ function usagePeriodSummary(points: UsageTrendPoint[], days: number, offset = 0)
     excludedSessions: rows.reduce((sum, point) => sum + point.excludedSessions, 0),
     latestSessions: rows.reduce((sum, point) => sum + point.latestSessions, 0),
     setupSessions: rows.reduce((sum, point) => sum + point.ciSetupSessions, 0),
+    attackSimSessions: rows.reduce((sum, point) => sum + point.attackSimSessions, 0),
+    ciSarifSessions: rows.reduce((sum, point) => sum + point.ciSarifSessions, 0),
+    paidIntentSessions: rows.reduce((sum, point) => sum + point.paidIntentSessions, 0),
     npmDownloads: rows.reduce((sum, point) => sum + point.npmDownloads, 0),
     clones: rows.reduce((sum, point) => sum + point.clones, 0),
     views: rows.reduce((sum, point) => sum + point.views, 0),
@@ -1735,6 +1771,45 @@ function kpiMomentumPanel(kpis: KpiMetric[]): string {
   </article>`;
 }
 
+function growthCommandCenterPanel(model: DashboardModel, points: UsageTrendPoint[]): string {
+  const month = usagePeriodSummary(points, 30);
+  const latestVersion = model.telemetry.versionAdoption.find((row) => row.isLatest);
+  const attackStage = model.telemetry.commandFunnel.find((row) => row.stage === "Attack simulation");
+  const setupStage = model.telemetry.commandFunnel.find((row) => row.stage === "CI setup");
+  const paidStage = model.telemetry.commandFunnel.find((row) => row.stage === "Paid intent");
+  const externalCi = model.telemetry.sourceCounts.find((row) => row.source === "external_ci")?.sessions ?? 0;
+  const latestShare = latestVersion?.sessionShare ?? 0;
+  const nextAction = month.attackSimSessions === 0
+    ? "Push attack-sim as the first demo after every scan."
+    : month.setupSessions === 0
+      ? "Convert attack receipts into setup-ci --sarif runs."
+      : month.paidIntentSessions === 0
+        ? "Route high-risk receipts to the paid pilot offer."
+        : "Follow up with the highest-intent accounts from paid and CI sessions.";
+  const rows = [
+    { label: "Latest-version adoption", value: `${latestShare}%`, context: latestVersion ? `${formatNumber(latestVersion.sessions)} sessions on ${latestVersion.version}` : "No version telemetry", color: "#8b5cf6" },
+    { label: "Attack-sim sessions", value: formatNumber(attackStage?.sessions ?? 0), context: `${formatNumber(month.attackSimSessions)} in current 30d`, color: "#ef4444" },
+    { label: "CI setup sessions", value: formatNumber(setupStage?.sessions ?? 0), context: `${formatNumber(month.ciSarifSessions)} SARIF setup sessions in current 30d`, color: "#22c55e" },
+    { label: "External CI", value: formatNumber(externalCi), context: "market CI sessions", color: "#3b82f6" },
+    { label: "Paid intent", value: formatNumber(paidStage?.sessions ?? 0), context: `${formatNumber(month.paidIntentSessions)} cloud/report sessions in current 30d`, color: "#f97316" },
+  ];
+  return `<article class="panel">
+    <div class="panel-head"><h2>Growth Command Center</h2><span class="panel-note">private operator view</span></div>
+    <div class="momentum-grid">
+      ${rows.map((row) => `<article class="small-card">
+        <span>${escapeHtml(row.label)}</span>
+        <strong style="color:${row.color}">${escapeHtml(row.value)}</strong>
+        <small>${escapeHtml(row.context)}</small>
+      </article>`).join("")}
+      <article class="small-card">
+        <span>Next best action</span>
+        <strong style="font-size:17px;line-height:1.18">${escapeHtml(nextAction)}</strong>
+        <small>Optimize for latest attack-sim + setup-ci --sarif sessions.</small>
+      </article>
+    </div>
+  </article>`;
+}
+
 function detailRow(category: string, metricName: string, value: string | number, context: string): string {
   const search = `${category} ${metricName} ${value} ${context}`.toLowerCase();
   return `<tr data-search-row data-search="${escapeHtml(search)}" hidden><td>${escapeHtml(category)}</td><td>${escapeHtml(metricName)}</td><td>${escapeHtml(value)}</td><td>${escapeHtml(context)}</td></tr>`;
@@ -1760,6 +1835,9 @@ function detailSearchRows(model: DashboardModel, points: UsageTrendPoint[]): str
   add("KPI", "Market month", `${formatNumber(month.sessions)} sessions`, `${month.startDay} to ${month.endDay}; ${formatNumber(month.events)} events`);
   add("KPI", "Monthly change", percentChangeLabel(month.sessions, previousMonth.sessions), `${formatNumber(month.sessions)} current 30d sessions vs ${formatNumber(previousMonth.sessions)} prior 30d sessions`);
   add("KPI", "Setup conversion", conversionPercent(month.setupSessions, month.clones + month.npmDownloads), `${formatNumber(month.setupSessions)} setup sessions / ${formatNumber(month.clones + month.npmDownloads)} 30d clone+download signals`);
+  add("Growth", "Attack-sim conversion", `${formatNumber(month.attackSimSessions)} sessions`, "Current 30d sessions for the public demo wedge");
+  add("Growth", "SARIF setup", `${formatNumber(month.ciSarifSessions)} sessions`, "Current 30d setup-ci/init-ci sessions that requested SARIF");
+  add("Growth", "Paid intent", `${formatNumber(month.paidIntentSessions)} sessions`, "Current 30d cloud, cloud-upload, and enterprise-report sessions");
   for (const kpi of kpiMomentum) {
     add("KPI momentum", kpi.label, typeof kpi.displayValue === "number" ? formatNumber(kpi.displayValue) : kpi.displayValue, `${kpi.trend.label} month over month; ${kpi.allTimeLabel}`);
   }
@@ -1773,7 +1851,7 @@ function detailSearchRows(model: DashboardModel, points: UsageTrendPoint[]): str
       "Daily market",
       point.day,
       `${formatNumber(point.sessions)} sessions`,
-      `${formatNumber(point.events)} events; latest ${formatNumber(point.latestSessions)} (${point.latestSessionShare}%); setup ${formatNumber(point.ciSetupSessions)}; npm ${formatNumber(point.npmDownloads)}; clones ${formatNumber(point.clones)}; internal excluded ${formatNumber(point.excludedSessions)}`,
+      `${formatNumber(point.events)} events; latest ${formatNumber(point.latestSessions)} (${point.latestSessionShare}%); attack-sim ${formatNumber(point.attackSimSessions)}; setup ${formatNumber(point.ciSetupSessions)}; SARIF setup ${formatNumber(point.ciSarifSessions)}; paid intent ${formatNumber(point.paidIntentSessions)}; npm ${formatNumber(point.npmDownloads)}; clones ${formatNumber(point.clones)}; internal excluded ${formatNumber(point.excludedSessions)}`,
     );
   }
   for (const row of model.telemetry.commandFunnel) {
@@ -1826,6 +1904,7 @@ export function renderDashboardHtml(model: DashboardModel): string {
   const kpiMomentum = monthlyKpiMetrics(allTrendPoints, model);
   const cards = kpiCards(trendPoints, model);
   const momentumPanel = kpiMomentumPanel(kpiMomentum);
+  const growthCommandCenter = growthCommandCenterPanel(model, trendPoints);
   const searchRows = detailSearchRows(model, trendPoints);
   const day = usagePeriodSummary(trendPoints, 1);
   const month = usagePeriodSummary(trendPoints, 30);
@@ -1841,6 +1920,8 @@ export function renderDashboardHtml(model: DashboardModel): string {
     { label: "Validation", value: model.telemetry.commandFunnel.find((row) => row.stage === "Local validation")?.sessions ?? 0, color: "#3b82f6" },
     { label: "Regression", value: model.telemetry.commandFunnel.find((row) => row.stage === "Regression workflow")?.sessions ?? 0, color: "#f59e0b" },
     { label: "CI setup", value: model.telemetry.commandFunnel.find((row) => row.stage === "CI setup")?.sessions ?? 0, color: "#22c55e" },
+    { label: "Attack sim", value: model.telemetry.commandFunnel.find((row) => row.stage === "Attack simulation")?.sessions ?? 0, color: "#ef4444" },
+    { label: "Paid intent", value: model.telemetry.commandFunnel.find((row) => row.stage === "Paid intent")?.sessions ?? 0, color: "#f97316" },
   ];
   const rightAccounts = model.telemetry.topDomainDetails.slice(0, 5);
   const topCommands = model.telemetry.topCommands.slice(0, 5);
@@ -2012,6 +2093,7 @@ export function renderDashboardHtml(model: DashboardModel): string {
       <section class="dashboard-grid">
         <div class="main-grid">
           ${momentumPanel}
+          ${growthCommandCenter}
           <section class="two-col">
             <article class="panel">
               <div class="panel-head">

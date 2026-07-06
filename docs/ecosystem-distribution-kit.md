@@ -26,7 +26,13 @@ MCP Observatory tests MCP servers for startup health, capability discovery, sche
 ## Primary CTA
 
 ```bash
-npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>" --sarif --schedule weekly
+```
+
+Repair/upgrade existing CI adoption:
+
+```bash
+npx @kryptosai/mcp-observatory setup-ci --doctor --fix
 ```
 
 ## Directory Targets
@@ -40,6 +46,18 @@ Prioritize surfaces where users already look for MCP infrastructure:
 - awesome-MCP repositories
 - agent framework docs and community lists
 - npm package discovery through keywords and README copy
+
+Current status:
+
+| Surface | Status | Next action |
+| --- | --- | --- |
+| Smithery | Listed in README badge | Keep listing current after each release |
+| Glama | Listed in README badge/card | Keep scorecard link below first-party positioning |
+| MseeP | Listing exists; badge PR open | Claim listing; only accept neutral directory placement, not top-of-README badge |
+| mcpservers.org / wong2 list | Website submission only; repo does not accept PRs | Submit through website manually when logged in |
+| punkpeye/awesome-mcp-servers | Not listed as of July 6, 2026 | Open a single PR under Development Tools |
+| appcypher/awesome-mcp-servers | Not listed as of July 6, 2026 | Open a single PR under Development Tools/Security if format fits |
+| Official MCP Registry | Package is public; publishing requires registry workflow/auth | Add `server.json`/publisher path only after owner auth is available |
 
 See [Agent And MCP Ecosystem Promotion Plan](./agent-ecosystem-promotion-plan.md) for the current claim, listing, agent prompt, company outreach, and weekly operating loop.
 
@@ -74,7 +92,7 @@ Description:
 Snippet:
 
 ```yaml
-- uses: KryptosAI/mcp-observatory/action@v0.27.0
+- uses: KryptosAI/mcp-observatory/action@v0.28.0
   with:
     command: npx -y <server-package>
     deep: true

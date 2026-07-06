@@ -4,6 +4,7 @@ import type { Command } from "commander";
 import { buildEvent, normalizeCampaign, recordEvent } from "../telemetry.js";
 import { defaultRunsDirectory, findLatestSuccessfulRunArtifact, readArtifact } from "../storage.js";
 import type { RunArtifact } from "../types.js";
+import { TOOL_VERSION } from "../version.js";
 import { quoteShell } from "./helpers.js";
 
 export interface InitCiOptions {
@@ -19,10 +20,12 @@ export interface InitCiOptions {
   commentOnPr?: boolean;
   setStatus?: boolean;
   sarif?: boolean;
+  schedule?: string | boolean;
   actionRef?: string;
   all?: boolean;
   force?: boolean;
   doctor?: boolean;
+  fix?: boolean;
   fromLastRun?: boolean;
   campaign?: string;
 }
@@ -33,7 +36,8 @@ const DEFAULT_TARGET_CONFIG_PATH = "mcp-observatory.target.json";
 const DEFAULT_PR_BODY_PATH = "docs/mcp-observatory-pr-body.md";
 const DEFAULT_ISSUE_BODY_PATH = "docs/mcp-observatory-issue.md";
 const DEFAULT_SCORE_BADGE_PATH = "docs/mcp-observatory-score-badge.md";
-const DEFAULT_ACTION_REF = "v0.27.0";
+const DEFAULT_ACTION_REF = `v${TOOL_VERSION}`;
+const DEFAULT_WEEKLY_CRON = "0 9 * * 1";
 
 async function exists(filePath: string): Promise<boolean> {
   try {
@@ -44,12 +48,21 @@ async function exists(filePath: string): Promise<boolean> {
   }
 }
 
+function normalizeSchedule(schedule: string | boolean | undefined): string | undefined {
+  if (schedule === undefined || schedule === false) return undefined;
+  if (schedule === true || schedule === "weekly") return DEFAULT_WEEKLY_CRON;
+  if (schedule === "daily") return "0 9 * * *";
+  const value = schedule.trim();
+  return value.length > 0 ? value : DEFAULT_WEEKLY_CRON;
+}
+
 function workflowYaml(options: InitCiOptions): string {
   const command = options.command?.trim();
   const target = options.target?.trim();
   const commentsEnabled = options.commentOnPr === true;
   const statusEnabled = options.setStatus === true;
   const sarifEnabled = options.sarif === true;
+  const schedule = normalizeSchedule(options.schedule);
   const actionRef = options.actionRef?.trim() || DEFAULT_ACTION_REF;
   const lines = [
     "name: MCP Observatory",
@@ -58,10 +71,17 @@ function workflowYaml(options: InitCiOptions): string {
     "  pull_request:",
     "  push:",
     "    branches: [main]",
+  ];
+
+  if (schedule) {
+    lines.push("  schedule:", `    - cron: ${JSON.stringify(schedule)}`);
+  }
+
+  lines.push(
     "",
     "permissions:",
     "  contents: read",
-  ];
+  );
 
   if (commentsEnabled) lines.push("  pull-requests: write");
   if (statusEnabled) lines.push("  statuses: write");
@@ -283,15 +303,45 @@ function checkFile(id: string, label: string, filePath: string, content: string 
 
 function setupCommand(options: InitCiOptions): string {
   const sarif = options.sarif ? " --sarif" : "";
-  if (options.target) return `npx @kryptosai/mcp-observatory setup-ci --all --target ${options.target}${sarif}`;
-  if (options.command) return `npx @kryptosai/mcp-observatory setup-ci --all --command "${options.command.replaceAll("\"", "\\\"")}"${sarif}`;
-  return `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"${sarif}`;
+  const schedule = normalizeSchedule(options.schedule)
+    ? ` --schedule ${quoteShell(String(options.schedule === true ? "weekly" : options.schedule))}`
+    : "";
+  if (options.target) return `npx @kryptosai/mcp-observatory setup-ci --all --target ${options.target}${sarif}${schedule}`;
+  if (options.command) return `npx @kryptosai/mcp-observatory setup-ci --all --command "${options.command.replaceAll("\"", "\\\"")}"${sarif}${schedule}`;
+  return `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"${sarif}${schedule}`;
 }
 
-function initCiOptionsFromLastRunArtifact(artifact: RunArtifact, force: boolean | undefined, sarif: boolean | undefined): InitCiOptions | undefined {
+function initCiOptionsFromLastRunArtifact(
+  artifact: RunArtifact,
+  force: boolean | undefined,
+  sarif: boolean | undefined,
+  schedule: string | boolean | undefined,
+): InitCiOptions | undefined {
   if (artifact.target.adapter !== "local-process") return undefined;
   const command = [artifact.target.command, ...artifact.target.args].map(quoteShell).join(" ");
-  return { all: true, command, force, sarif };
+  return { all: true, command, force, sarif, schedule };
+}
+
+function inferWorkflowTargetOptions(workflow: string | undefined): Pick<InitCiOptions, "command" | "target"> {
+  const target = workflow?.match(/(^|\n)\s+target:\s+(.+)/)?.[2]?.trim();
+  if (target) return { target };
+  const command = workflow?.match(/(^|\n)\s+command:\s+(.+)/)?.[2]?.trim();
+  if (command) return { command };
+  return {};
+}
+
+function doctorFixOptions(options: InitCiOptions, workflow: string | undefined): InitCiOptions {
+  const inferred = options.command || options.target ? {} : inferWorkflowTargetOptions(workflow);
+  return {
+    ...options,
+    ...inferred,
+    all: true,
+    force: true,
+    sarif: true,
+    schedule: options.schedule ?? "weekly",
+    doctor: false,
+    fix: false,
+  };
 }
 
 export async function doctorSetupCi(options: InitCiOptions = {}): Promise<SetupCiDoctorResult> {
@@ -449,10 +499,12 @@ function addInitCiOptions(command: Command): Command {
     .option("--comment-on-pr", "Allow the generated workflow to post PR comments. This adds pull-requests: write permission.", false)
     .option("--set-status", "Allow the generated workflow to set commit statuses. This adds statuses: write permission.", false)
     .option("--sarif", "Upload normalized findings to GitHub Code Scanning. This adds security-events: write permission.", false)
+    .option("--schedule [cadence]", "Also run the workflow on a schedule: weekly, daily, or a cron expression.")
     .option("--action-ref <ref>", "Git ref for KryptosAI/mcp-observatory/action. Use a full commit SHA for strict third-party action pinning.", DEFAULT_ACTION_REF)
     .option("--all", "Write the full adoption kit: workflow, badge, target config, PR body, issue body, and score badge instructions.", false)
     .option("--force", "Overwrite existing files.", false)
     .option("--doctor", "Inspect the current repository's MCP Observatory CI adoption state.", false)
+    .option("--fix", "With --doctor, repair the adoption kit with deep, security, SARIF, and weekly scheduled checks.", false)
     .option("--from-last-run", "Generate the adoption kit from the latest successful local run artifact.", false)
     .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.");
 }
@@ -469,13 +521,27 @@ function initCiAction(commandName: "init-ci" | "setup-ci"): (options: InitCiOpti
         if (check.fix) process.stdout.write(`  fix: ${check.fix}\n`);
       }
       process.stdout.write(`\nNext best action:\n  ${result.nextCommand}\n`);
-      if (!result.ready) process.exitCode = 1;
+      if (options.fix) {
+        const workflow = await readOptional(options.workflow ?? DEFAULT_WORKFLOW_PATH);
+        const fixed = await initCi(doctorFixOptions(options, workflow));
+        process.stdout.write("\nApplied repair:\n");
+        process.stdout.write(`${fixed.workflowStatus}: ${fixed.workflowPath}\n`);
+        if (fixed.badgePath && fixed.badgeStatus) process.stdout.write(`${fixed.badgeStatus}: ${fixed.badgePath}\n`);
+        if (fixed.targetConfigPath && fixed.targetConfigStatus) process.stdout.write(`${fixed.targetConfigStatus}: ${fixed.targetConfigPath}\n`);
+        if (fixed.prBodyPath && fixed.prBodyStatus) process.stdout.write(`${fixed.prBodyStatus}: ${fixed.prBodyPath}\n`);
+        if (fixed.issueBodyPath && fixed.issueBodyStatus) process.stdout.write(`${fixed.issueBodyStatus}: ${fixed.issueBodyPath}\n`);
+        if (fixed.scoreBadgePath && fixed.scoreBadgeStatus) process.stdout.write(`${fixed.scoreBadgeStatus}: ${fixed.scoreBadgePath}\n`);
+        process.stdout.write("\nAutomated checks: pull requests, pushes to main, and weekly scheduled runs.\n");
+      } else if (!result.ready) {
+        process.exitCode = 1;
+      }
       recordEvent(buildEvent("command_complete", commandName, "cli", {
         ciProvider: "github-actions",
         setupCiDoctor: true,
         setupCiReady: result.ready,
         setupCiFailCount: result.checks.filter((check) => check.status === "fail").length,
         setupCiWarnCount: result.checks.filter((check) => check.status === "warn").length,
+        setupCiFixApplied: options.fix === true,
         campaign: options.campaign,
       }));
       return;
@@ -493,7 +559,7 @@ function initCiAction(commandName: "init-ci" | "setup-ci"): (options: InitCiOpti
       if (artifact.artifactType !== "run") {
         throw new Error(`Latest artifact is not a run artifact: ${latestPath}`);
       }
-      const fromRunOptions = initCiOptionsFromLastRunArtifact(artifact, options.force, options.sarif);
+      const fromRunOptions = initCiOptionsFromLastRunArtifact(artifact, options.force, options.sarif, options.schedule);
       if (!fromRunOptions) {
         throw new Error(`Latest successful run does not contain enough target information for setup-ci: ${latestPath}`);
       }

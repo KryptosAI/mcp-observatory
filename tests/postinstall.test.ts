@@ -37,7 +37,7 @@ describe("postinstall CI helper", () => {
 
       expect(result.status).toBe(0);
       expect(result.stderr).toContain("MCP Observatory: CI ready.");
-      expect(result.stderr).toContain("setup-ci --all --command \"npx -y @example/mcp-server\"");
+      expect(result.stderr).toContain("setup-ci --all --command \"npx -y @example/mcp-server\" --sarif --schedule weekly");
       await expect(readFile(path.join(dir, ".github/workflows/mcp-observatory.yml"), "utf8")).rejects.toThrow();
     } finally {
       await rm(dir, { recursive: true, force: true });
@@ -52,7 +52,6 @@ describe("postinstall CI helper", () => {
       mcpObservatory: {
         autoSetupCi: true,
         command: "npm run mcp",
-        sarif: true,
       },
     });
     try {
@@ -62,6 +61,8 @@ describe("postinstall CI helper", () => {
       expect(result.status).toBe(0);
       expect(result.stderr).toContain("created .github/workflows/mcp-observatory.yml");
       expect(workflow).toContain('command: "npm run mcp"');
+      expect(workflow).toContain("schedule:");
+      expect(workflow).toContain('- cron: "0 9 * * 1"');
       expect(workflow).toContain("security-events: write");
       expect(workflow).toContain("upload-sarif: true");
     } finally {

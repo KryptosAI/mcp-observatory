@@ -7,7 +7,7 @@ interface SarifOutput {
   version: string;
   $schema: string;
   runs: Array<{
-    tool: { driver: { name: string; rules: Array<{ id: string; properties?: Record<string, unknown> }> } };
+    tool: { driver: { name: string; rules: Array<{ id: string; help?: { text: string }; properties?: Record<string, unknown> }> } };
     results: Array<{
       level: string;
       ruleId: string;
@@ -89,5 +89,36 @@ describe("renderSarif", () => {
       { id: "tools", capability: "tools", status: "fail", durationMs: 50, message: "Tools failed", evidence: [] },
     ]), { artifactUri: ".mcp-observatory/runs/example.json" }));
     expect(sarif.runs[0]!.results[0]!.locations?.[0]?.physicalLocation.artifactLocation.uri).toBe(".mcp-observatory/runs/example.json");
+  });
+
+  it("includes recommended action guidance for attack-sim findings", () => {
+    const sarif = parseSarif(renderSarif(makeArtifact([
+      {
+        id: "attack-sim",
+        capability: "attack-sim",
+        status: "fail",
+        durationMs: 30,
+        message: "1 finding",
+        evidence: [{
+          endpoint: "attack-sim/safe",
+          advertised: true,
+          responded: true,
+          minimalShapePresent: true,
+          findings: [{
+            ruleId: "attack-sim/tool-poisoning/hidden-instruction",
+            attackClass: "tool-poisoning",
+            severity: "high",
+            itemType: "tool",
+            itemName: "search",
+            message: "Hidden instruction risk",
+            recommendation: "Remove hidden behavioral instructions.",
+            recommendedAction: "quarantine",
+          }],
+        }],
+      },
+    ])));
+    expect(sarif.runs[0]!.results[0]!.properties?.["recommendedAction"]).toBe("quarantine");
+    expect(sarif.runs[0]!.tool.driver.rules[0]!.properties?.["recommendedAction"]).toBe("quarantine");
+    expect(sarif.runs[0]!.tool.driver.rules[0]!.help?.text).toContain("Recommended action: quarantine.");
   });
 });

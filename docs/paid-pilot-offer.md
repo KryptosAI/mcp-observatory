@@ -4,6 +4,8 @@
 
 Private MCP readiness review + CI rollout + SARIF/Code Scanning setup + drift/security report.
 
+For teams that need a higher-confidence security deliverable before production agent dependency, use the [MCP Attack Simulation Evidence Pack](./attack-simulation-pilot.md). That package starts at `$15,000` and adds safe-mode attack simulation, executive evidence, and owner-ready remediation notes.
+
 This is a fixed-scope services package for teams that are starting to depend on MCP servers in production or pre-production. It uses the same evidence model as the public Safety Index, but the reviewed targets, findings, and recommendations stay private unless the customer approves otherwise.
 
 ## Who It Is For
@@ -29,6 +31,12 @@ This is a fixed-scope services package for teams that are starting to depend on 
 ## Starting Package
 
 MCP Readiness Review: starts at `$2,500`.
+
+Higher-confidence attack simulation packages:
+
+- Attack Simulation Quickstart: `$15,000`
+- Attack Simulation Evidence Pack: `$25,000`
+- Platform Attack Simulation Pilot: `$50,000`
 
 Good fit:
 

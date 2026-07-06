@@ -222,7 +222,7 @@ async function main(): Promise<void> {
       });
       notifier.notify({
         isGlobal: true,
-        message: "Update available: {currentVersion} → {latestVersion}\nRun: npx @kryptosai/mcp-observatory@latest",
+        message: "MCP Observatory update available: {currentVersion} → {latestVersion}\nRun latest receipts + CI: npx @kryptosai/mcp-observatory@latest attack-sim <cmd>\nUpgrade command: npx @kryptosai/mcp-observatory@latest",
       });
     } catch {
       // update-notifier not available — skip silently

@@ -18,7 +18,7 @@ Expected result:
 ## Turn It Into A GitHub Release Gate
 
 ```bash
-npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y @modelcontextprotocol/server-everything" --sarif --campaign code-scanning-demo
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y @modelcontextprotocol/server-everything" --sarif --schedule weekly --campaign code-scanning-demo
 ```
 
 Then verify:
@@ -27,7 +27,7 @@ Then verify:
 npx @kryptosai/mcp-observatory setup-ci --doctor
 ```
 
-The generated workflow requests `security-events: write` only when `--sarif` is used. Standard `setup-ci` stays conservative and does not upload SARIF by default.
+The generated workflow requests `security-events: write` when SARIF upload is enabled. Direct `setup-ci` stays conservative unless `--sarif` is passed; automatic CI conversion after a passing `test`, `run`, or single-target `scan` enables SARIF and weekly scheduled checks by default and can be reduced with `--no-ci-sarif`.
 
 ## What Code Scanning Gets
 

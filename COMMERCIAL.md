@@ -4,17 +4,20 @@ MCP Observatory is the CI and security gate for MCP servers before agents depend
 
 The open source CLI and MCP server remain free for local OSS use under the MIT license. Paid pilots are for production use cases where a team needs hosted reporting, private repository CI, security reports, certification, support, or fleet visibility.
 
-## MCP Readiness Review
+## MCP Attack Simulation Evidence Pack
 
-The primary paid offer is a fixed-scope MCP Readiness Review starting at `$2,500`.
+The primary paid offer is a fixed-scope [MCP Attack Simulation Evidence Pack](./docs/attack-simulation-pilot.md) starting at `$15,000`.
 
-It includes CI rollout, SARIF/GitHub Code Scanning setup, private readiness reporting, prioritized remediation notes, and maintainer PR support for selected MCP servers.
+It includes safe-mode MCP attack simulation, CI rollout, SARIF/GitHub Code Scanning setup, private evidence reporting, prioritized remediation notes, and maintainer PR support for selected MCP servers.
 
 These are starting points for current pilots, not permanent fixed plans. For public OSS users, the important part is simple: local CLI use remains free, and paid work is for private or production support needs.
 
 | Pilot | Starting Price | Best Fit |
 | --- | ---: | --- |
-| MCP Readiness Review | $2,500 | CI rollout, Code Scanning, private readiness report, and prioritized fixes |
+| Attack Simulation Quickstart | $15,000 | One high-value MCP server or one team adopting MCP |
+| Attack Simulation Evidence Pack | $25,000 | Up to 10 MCP servers, executive evidence packet, remediation notes, and CI rollout |
+| Platform Attack Simulation Pilot | $50,000 | Multi-team MCP review, fleet inventory, recurring review plan, and stakeholder readout |
+| MCP Readiness Review | $2,500 | Narrow CI rollout, Code Scanning, private readiness report, and prioritized fixes |
 | Team Pilot | $299/month | Small teams adding MCP regression checks to CI |
 | Business Pilot | $999/month | Private repos, recurring security reports, and shared reporting |
 | Enterprise Pilot | $3k/month | Private MCP readiness reports, support, and fleet visibility |
@@ -22,13 +25,14 @@ These are starting points for current pilots, not permanent fixed plans. For pub
 
 Contact: open a pilot request from the GitHub issue chooser.
 
-Primary pilot offer: private MCP readiness review + CI rollout + drift/security report.
+Primary pilot offer: private MCP attack simulation evidence pack + CI rollout + SARIF/Code Scanning + drift/security report.
 
 ## Paid Production Use
 
 Paid pilots can include:
 
 - Hosted CI history and private-repo reporting
+- Safe-mode MCP attack simulation and evidence packs
 - MCP security reports and controlled drift review
 - Fleet inventory across teams, repos, and environments
 - Static enterprise reports generated from existing run artifacts

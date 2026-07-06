@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-06T014705638Z_2fa3564a",
-  "createdAt": "2026-07-06T01:47:05.638Z",
-  "toolVersion": "0.26.1",
+  "runId": "run_2026-07-06T194957955Z_4eaf8a90",
+  "createdAt": "2026-07-06T19:49:57.956Z",
+  "toolVersion": "0.28.0",
   "target": {
     "targetId": "executeautomation-playwright-server",
     "adapter": "local-process",
@@ -25,13 +25,13 @@
     "serverVersion": "1.0.11"
   },
   "environment": {
-    "platform": "darwin 24.0.0",
-    "nodeVersion": "v25.8.1"
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
   },
   "summary": {
-    "total": 7,
+    "total": 8,
     "pass": 3,
-    "fail": 2,
+    "fail": 3,
     "partial": 1,
     "unsupported": 1,
     "flaky": 0,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 1.4651249999988067,
+      "durationMs": 1.1761660000011034,
       "message": "Advertised capability responded with the minimal expected shape (33 items).",
       "evidence": [
         {
@@ -746,7 +746,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0007910000003903406,
+      "durationMs": 0.0007080000013957033,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -762,7 +762,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 0.7251669999986916,
+      "durationMs": 0.6060830000005808,
       "message": "Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported.",
       "evidence": [
         {
@@ -791,7 +791,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "fail",
-      "durationMs": 0.06308300000091549,
+      "durationMs": 0.05783300000075542,
       "message": "Found 1 security finding(s): 1 high, 0 medium, 0 low.",
       "evidence": [
         {
@@ -821,7 +821,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 2.7162499999994907,
+      "durationMs": 2.294624999998632,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -847,7 +847,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 0.7485839999990276,
+      "durationMs": 0.6172920000008162,
       "message": "Found 1 quality finding(s) across 34 item(s): 1 warnings, 0 info.",
       "evidence": [
         {
@@ -877,7 +877,7 @@
       "id": "security",
       "capability": "security",
       "status": "fail",
-      "durationMs": 0.4188750000012078,
+      "durationMs": 0.2935410000009142,
       "message": "Found 1 security finding(s): 1 high, 0 medium, 0 low.",
       "evidence": [
         {
@@ -898,6 +898,140 @@
               "severity": "high",
               "toolName": "playwright_evaluate",
               "message": "Tool \"playwright_evaluate\" has parameter \"script\" which may allow arbitrary command execution."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "fail",
+      "durationMs": 1.4405839999999444,
+      "message": "Safe attack simulation found 6 finding(s): 1 high, 5 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 6,
+          "identifiers": [
+            "playwright_upload_file",
+            "playwright_evaluate",
+            "playwright_post",
+            "playwright_put",
+            "playwright_patch",
+            "playwright_delete"
+          ],
+          "diagnostics": [
+            "[medium] Tool \"playwright_upload_file\" combines broad parameters (filePath) with destructive or non-read-only behavior.",
+            "[high] Tool \"playwright_evaluate\" combines broad parameters (script) with destructive or non-read-only behavior.",
+            "[medium] Tool \"playwright_post\" combines broad parameters (url, headers) with destructive or non-read-only behavior.",
+            "[medium] Tool \"playwright_put\" combines broad parameters (url, headers) with destructive or non-read-only behavior.",
+            "[medium] Tool \"playwright_patch\" combines broad parameters (url, headers) with destructive or non-read-only behavior.",
+            "[medium] Tool \"playwright_delete\" combines broad parameters (url, headers) with destructive or non-read-only behavior."
+          ],
+          "findings": [
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "playwright_upload_file",
+              "message": "Tool \"playwright_upload_file\" combines broad parameters (filePath) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "filePath"
+                ],
+                "description": "Upload a file to an input[type='file'] element on the page"
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "high",
+              "itemType": "tool",
+              "itemName": "playwright_evaluate",
+              "message": "Tool \"playwright_evaluate\" combines broad parameters (script) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "script"
+                ],
+                "description": "Execute JavaScript in the browser console"
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "quarantine"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "playwright_post",
+              "message": "Tool \"playwright_post\" combines broad parameters (url, headers) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "url",
+                  "headers"
+                ],
+                "description": "Perform an HTTP POST request"
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "playwright_put",
+              "message": "Tool \"playwright_put\" combines broad parameters (url, headers) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "url",
+                  "headers"
+                ],
+                "description": "Perform an HTTP PUT request"
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "playwright_patch",
+              "message": "Tool \"playwright_patch\" combines broad parameters (url, headers) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "url",
+                  "headers"
+                ],
+                "description": "Perform an HTTP PATCH request"
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "playwright_delete",
+              "message": "Tool \"playwright_delete\" combines broad parameters (url, headers) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "url",
+                  "headers"
+                ],
+                "description": "Perform an HTTP DELETE request"
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
             }
           ]
         }
@@ -930,7 +1064,8 @@
         "score": 0,
         "details": [
           "security-lite: fail (0/100)",
-          "security: fail (0/100)"
+          "security: fail (0/100)",
+          "attack-sim: fail (0/100)"
         ]
       },
       {
@@ -948,16 +1083,16 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 850ms",
+          "Connect: 908ms",
           "p95 latency: 1ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 850.0112910000007,
-    "toolsListMs": 1.4651249999988067,
-    "promptsListMs": 0.0007910000003903406,
-    "resourcesListMs": 0.7251669999986916
+    "connectMs": 907.6346670000003,
+    "toolsListMs": 1.1761660000011034,
+    "promptsListMs": 0.0007080000013957033,
+    "resourcesListMs": 0.6060830000005808
   }
 }

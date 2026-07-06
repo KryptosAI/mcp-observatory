@@ -5,12 +5,15 @@ import { extractObservatoryFindings } from "../findings.js";
 import { runTarget } from "../index.js";
 import { renderAttackSimulationMarkdown } from "../reporters/attack-sim.js";
 import { renderSarif } from "../reporters/sarif.js";
-import { buildEvent, recordEvent } from "../telemetry.js";
+import { buildEvent, normalizeCampaign, recordEvent } from "../telemetry.js";
 import type { RunArtifact } from "../types.js";
 import { validateRunArtifact } from "../validate.js";
-import { ANSI, c, quoteShell, resolveTarget, targetFromCommand, writeOutput } from "./helpers.js";
+import { renderActionReceipt } from "../action-receipt.js";
+import { maybePrintCloudCta } from "../commercial.js";
+import { ANSI, c, getBinName, quoteShell, resolveTarget, targetFromCommand, writeOutput } from "./helpers.js";
+import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
 
-interface AttackSimOptions {
+interface AttackSimOptions extends SetupCiConversionFlags {
   baseline?: string;
   failOnHigh?: boolean;
   json?: string;
@@ -46,6 +49,21 @@ function extractTrailingAttackFlags(
       i += 1;
     } else if (arg === "--fail-on-high") {
       flags.failOnHigh = true;
+    } else if (arg === "--setup-ci") {
+      flags.setupCi = true;
+    } else if (arg === "--yes") {
+      flags.yes = true;
+    } else if (arg === "--no-setup-ci") {
+      flags.noSetupCi = true;
+    } else if (arg === "--no-ci-sarif") {
+      flags.ciSarif = false;
+    } else if (arg === "--force") {
+      flags.force = true;
+    } else if (arg === "--campaign") {
+      const next = commandArgs[i + 1];
+      if (!next) throw new Error("--campaign requires a campaign slug.");
+      flags.campaign = normalizeCampaign(next);
+      i += 1;
     } else if (arg === "--no-color") {
       // Commander handles the color option; keep it out of the server command.
     } else if (arg === "--json") {
@@ -109,11 +127,18 @@ export function registerAttackSimCommands(program: Command): void {
     .option("--sarif <file>", "Write attack-sim findings as SARIF for GitHub Code Scanning.")
     .option("--mode <mode>", "Simulation mode. Only 'safe' is supported.", "safe")
     .option("--fail-on-high", "Exit nonzero when high-risk attack findings exist.", false)
+    .option("--setup-ci", "Offer CI conversion after a successful simulation; use with --yes in non-interactive runs to write files.", false)
+    .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
+    .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
+    .option("--no-ci-sarif", "Generate post-check CI without GitHub Code Scanning SARIF upload.")
+    .option("--force", "Overwrite existing generated CI adoption files.", false)
+    .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.")
     .option("--no-color", "Disable colored output.")
     .action(async (commandArgs: string[], options: AttackSimOptions) => {
       const extracted = extractTrailingAttackFlags(commandArgs, options);
       commandArgs = extracted.commandArgs;
       options = extracted.flags;
+      if (options.campaign) options.campaign = normalizeCampaign(options.campaign);
       if (options.mode !== "safe") {
         throw new Error("attack-sim supports only --mode safe.");
       }
@@ -141,6 +166,7 @@ export function registerAttackSimCommands(program: Command): void {
       for (const finding of findings) {
         process.stdout.write(`    ${c(ANSI.dim, "→")} [${finding.severity}] ${finding.message}\n`);
       }
+      process.stdout.write(`    ${c(ANSI.dim, "→")} ${renderActionReceipt(artifact).split("\n")[0]}\n`);
       process.stdout.write(`\n  ${c(ANSI.bold, "Reproduce:")} ${c(ANSI.cyan, repro)}\n\n`);
 
       if (options.json) {
@@ -159,7 +185,25 @@ export function registerAttackSimCommands(program: Command): void {
         securityFindingCount: attackCheck?.evidence[0]?.itemCount ?? 0,
         checkStatuses: attackCheck ? { "attack-sim": attackCheck.status } : undefined,
         executionMs: Date.now() - startedAt,
+        campaign: options.campaign,
       }));
+
+      if (artifact.gate === "pass") {
+        await maybeConvertPassingCheckToCi({
+          artifact,
+          bin: getBinName(),
+          target,
+          targetPath: options.target,
+          setupCi: options.setupCi,
+          yes: options.yes,
+          noSetupCi: options.noSetupCi,
+          ciSarif: options.ciSarif,
+          force: options.force,
+          campaign: options.campaign,
+        });
+      } else if (highCount > 0) {
+        maybePrintCloudCta("security");
+      }
 
       if (options.failOnHigh && highCount > 0) {
         process.exitCode = 1;

@@ -3,6 +3,7 @@ import { performance } from "node:perf_hooks";
 import type { Prompt, Resource, ResourceTemplate, Tool } from "@modelcontextprotocol/sdk/types.js";
 
 import type { CheckResult, EvidenceSummary, RunArtifact } from "../types.js";
+import { recommendedActionForFinding, type ReceiptAction } from "../action-receipt.js";
 import { CREDENTIAL_PATTERNS } from "./security-rules.js";
 import { isCapabilityAdvertised, makeCheckResult, type CheckContext, type ObservedCheck } from "./base.js";
 
@@ -23,6 +24,7 @@ export interface AttackSimulationFinding {
   message: string;
   evidence: Record<string, unknown>;
   recommendation: string;
+  recommendedAction?: ReceiptAction;
 }
 
 export interface AttackSimulationOptions {
@@ -127,6 +129,7 @@ function addPoisoningFindings(
         message: `${itemType} "${itemName}" contains ${pattern.label} text that could steer an agent.`,
         evidence: { path, excerpt: text.slice(0, 240), match: match[0] },
         recommendation: "Remove hidden or behavioral instructions from MCP metadata; keep descriptions factual and user-visible.",
+        recommendedAction: recommendedActionForFinding({ attackClass: "tool-poisoning", ruleId: `attack-sim/tool-poisoning/${pattern.id}`, severity: pattern.severity }),
       });
     }
   }
@@ -145,6 +148,11 @@ function addPermissionBoundaryFindings(findings: AttackSimulationFinding[], tool
     message: `Tool "${tool.name}" combines broad parameters (${broadParams.join(", ")}) with destructive or non-read-only behavior.`,
     evidence: { broadParams, annotations: tool.annotations, description: tool.description },
     recommendation: "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+    recommendedAction: recommendedActionForFinding({
+      attackClass: "permission-boundary",
+      ruleId: "attack-sim/permission-boundary/broad-destructive-tool",
+      severity: broadParams.some((name) => ["command", "cmd", "exec", "shell", "script", "code"].includes(name.toLowerCase())) ? "high" : "medium",
+    }),
   });
 }
 
@@ -163,6 +171,7 @@ function addCanaryFindings(findings: AttackSimulationFinding[], source: string, 
         message: `${canary.name} appeared in captured MCP evidence for "${source}".`,
         evidence: { source, match: match[0] },
         recommendation: "Redact canary-like or secret-like values from tool responses before exposing them to agents or logs.",
+        recommendedAction: recommendedActionForFinding({ attackClass: "exfiltration-canary", ruleId: "attack-sim/exfiltration-canary/canary-exposed", severity: "high" }),
       });
     }
   }
@@ -178,6 +187,7 @@ function addCanaryFindings(findings: AttackSimulationFinding[], source: string, 
         message: `Captured MCP evidence for "${source}" contains credential-like text (${credential.name}).`,
         evidence: { source, credentialPattern: credential.name },
         recommendation: "Redact credentials from MCP responses and move secrets into environment or secret storage.",
+        recommendedAction: recommendedActionForFinding({ attackClass: "exfiltration-canary", ruleId: "attack-sim/exfiltration-canary/credential-like-output", severity: "high" }),
       });
     }
   }
@@ -211,6 +221,7 @@ function addDriftFindings(findings: AttackSimulationFinding[], tools: Tool[], ba
         message: `New destructive-looking tool "${tool.name}" appeared after the baseline.`,
         evidence: { toolName: tool.name, description: tool.description, annotations: tool.annotations },
         recommendation: "Review and approve new destructive tool surfaces before agents can depend on this server update.",
+        recommendedAction: recommendedActionForFinding({ attackClass: "contract-drift", ruleId: "attack-sim/contract-drift/new-destructive-tool", severity: "high" }),
       });
     }
     if (!baselineSchema || !currentSchema) continue;
@@ -227,6 +238,7 @@ function addDriftFindings(findings: AttackSimulationFinding[], tools: Tool[], ba
         message: `Tool "${tool.name}" removed required fields from its schema: ${removedRequired.join(", ")}.`,
         evidence: { removedRequired },
         recommendation: "Treat required-field removals as agent contract drift and require maintainer review.",
+        recommendedAction: recommendedActionForFinding({ attackClass: "contract-drift", ruleId: "attack-sim/contract-drift/required-fields-removed", severity: "medium" }),
       });
     }
     const oldAdditional = additionalProperties(baselineSchema);
@@ -241,6 +253,7 @@ function addDriftFindings(findings: AttackSimulationFinding[], tools: Tool[], ba
         message: `Tool "${tool.name}" broadened its schema by allowing additional properties.`,
         evidence: { previousAdditionalProperties: oldAdditional, currentAdditionalProperties: newAdditional },
         recommendation: "Keep agent-facing schemas strict or document why additional properties are safe.",
+        recommendedAction: recommendedActionForFinding({ attackClass: "contract-drift", ruleId: "attack-sim/contract-drift/schema-broadened", severity: "medium" }),
       });
     }
   }

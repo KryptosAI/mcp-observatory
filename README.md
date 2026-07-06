@@ -41,7 +41,7 @@ Agents should not depend on tools nobody tests. MCP Observatory turns a local MC
 
 ## Try It
 
-Start with the homepage demo: safely simulate MCP attack-readiness for one server and emit SARIF evidence that maintainers can inspect in GitHub Code Scanning.
+Start with the homepage demo: safely simulate MCP attack-readiness for one server, emit an action receipt, and produce SARIF evidence that maintainers can inspect in GitHub Code Scanning.
 
 ```bash
 npx @kryptosai/mcp-observatory attack-sim npx -y my-mcp-server --sarif attack-results.sarif
@@ -80,10 +80,18 @@ AI coding agents, agentic workflows, and rough PRs are welcome. Use the [10x Age
 Add MCP CI and Code Scanning in one command:
 
 ```bash
-npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif --schedule weekly
+```
+
+Repair or upgrade an existing adoption kit:
+
+```bash
+npx @kryptosai/mcp-observatory setup-ci --doctor --fix
 ```
 
 Installing MCP Observatory in an MCP server project also prints the exact CI setup command. Projects can opt into automatic workflow creation during install with [`mcpObservatory.autoSetupCi`](./docs/automatic-ci-integration.md).
+
+Normal `scan` and `test` runs include safe attack-readiness simulation by default. Use `--no-attack-sim` only when you want the older compatibility-only path.
 
 Upload normalized MCP findings to GitHub Code Scanning when you want a security-native release gate:
 
@@ -122,6 +130,7 @@ MCP servers are becoming production dependencies. If agents rely on them, teams 
 Observatory gives maintainers and teams:
 
 - **One-command CI setup** with `setup-ci --all`
+- **Action receipts** that say `allow`, `gate`, `rerun`, `quarantine`, or `escalate`
 - **GitHub PR comments** for compatibility, drift, and security findings
 - **GitHub Code Scanning SARIF** for normalized MCP findings
 - **Health score badges** for public trust signals
@@ -129,7 +138,7 @@ Observatory gives maintainers and teams:
 - **MCP server mode** so agents can inspect other MCP servers directly
 - **Production support path** for hosted history, private repo reporting, certification, support, and fleet visibility
 
-See the [launch page](./docs/launch.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [Code Scanning demo](./docs/code-scanning-demo.md), [target gallery](./docs/target-gallery.md), [target registry](./docs/target-registry.md), [target contribution guide](./docs/target-contribution-guide.md), [MCP Observatory Contributors](./docs/contributor-recognition.md), [Agent Task Pack](./docs/agent-tasks.md), [Tool-call receipts](./docs/tool-call-receipts.md), [MCP Receipt Graph](./docs/receipt-graph.md), [`setup-ci --doctor`](./docs/setup-ci-doctor.md), [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [June 2026 safety field report](./docs/mcp-safety-field-report-2026-06.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), [campaign attribution](./docs/campaign-attribution.md), [local metrics dashboard](./docs/metrics-dashboard.md), and [commercial support](./COMMERCIAL.md).
+See the [launch page](./docs/launch.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [Code Scanning demo](./docs/code-scanning-demo.md), [target gallery](./docs/target-gallery.md), [target registry](./docs/target-registry.md), [target contribution guide](./docs/target-contribution-guide.md), [MCP Observatory Contributors](./docs/contributor-recognition.md), [Agent Task Pack](./docs/agent-tasks.md), [Tool-call receipts](./docs/tool-call-receipts.md), [MCP Receipt Graph](./docs/receipt-graph.md), [`setup-ci --doctor`](./docs/setup-ci-doctor.md), [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [June 2026 safety field report](./docs/mcp-safety-field-report-2026-06.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), [campaign attribution](./docs/campaign-attribution.md), [local metrics dashboard](./docs/metrics-dashboard.md), [MCP Attack Simulation Evidence Pack](./docs/attack-simulation-pilot.md), and [commercial support](./COMMERCIAL.md).
 
 ## For Security And Platform Teams
 
@@ -139,7 +148,7 @@ MCP Observatory gives security and platform teams MCP server CI, schema drift de
 
 ## Production Support
 
-Local OSS use stays free under MIT. Teams running MCP in production can use the [MCP Readiness Review](./docs/paid-pilot-offer.md) for CI rollout, SARIF/Code Scanning setup, private repo review, recurring security reports, certification review, support, and fleet visibility. The default package starts at `$2,500`.
+Local OSS use stays free under MIT. Teams running MCP in production can use the [MCP Attack Simulation Evidence Pack](./docs/attack-simulation-pilot.md) for safe-mode attack simulation, SARIF/Code Scanning setup, CI rollout, private evidence reporting, and owner-ready remediation notes. Attack simulation packages start at `$15,000`; narrow readiness reviews start at `$2,500`.
 
 Run `npx @kryptosai/mcp-observatory cloud`, open a pilot request from the issue chooser, or see [COMMERCIAL.md](./COMMERCIAL.md). Also see [privacy and telemetry](./PRIVACY.md), [campaign attribution](./docs/campaign-attribution.md), and [terms for production use](./TERMS.md).
 
@@ -186,9 +195,9 @@ Or add it manually to your config:
 
 | Command | What it does |
 |---------|-------------|
-| `scan` | Auto-discover servers from config files and check them all (default) |
-| `scan deep` | Scan and also invoke safe tools to verify they execute |
-| `test <cmd>` / `test --target <file>` | Test a specific server by command or target config |
+| `scan` | Auto-discover servers, check them, and run safe attack-readiness simulation by default |
+| `scan deep` | Scan, run safe attack simulation, and also invoke safe tools to verify they execute |
+| `test <cmd>` / `test --target <file>` | Test one server and emit an action receipt by command or target config |
 | `record <cmd>` | Record a server session to a cassette file for offline replay |
 | `replay <cassette>` | Replay a cassette offline — no live server needed |
 | `verify <cassette> <cmd>` | Verify a live server still matches a recorded cassette |
@@ -202,6 +211,7 @@ Or add it manually to your config:
 | `setup-ci` / `init-ci` | Create a GitHub Action and badge snippet for MCP compatibility/security checks |
 | `setup-ci --sarif` | Generate a workflow that uploads normalized findings to GitHub Code Scanning |
 | `setup-ci --doctor` | Inspect whether the repository has a complete CI adoption kit |
+| `--no-attack-sim` | Opt out of the default safe attack simulation on `scan` or `test` |
 | `ci-report` | Generate CI report for GitHub issue creation |
 | `enterprise-report` | Generate a static production/security report from run artifacts |
 | `score <cmd>` | Score an MCP server's health (0-100) |
@@ -273,7 +283,7 @@ When you run `scan`, it looks for MCP configs in:
 Add Observatory to your MCP server's CI pipeline:
 
 ```bash
-npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server"
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif --schedule weekly
 ```
 
 Check the adoption kit:
@@ -281,6 +291,8 @@ Check the adoption kit:
 ```bash
 npx @kryptosai/mcp-observatory setup-ci --doctor
 ```
+
+Successful `test`, `run`, and single-target `scan` checks also offer to convert the passing result into a CI adoption kit. That automatic conversion enables SARIF/Code Scanning and weekly scheduled checks by default; pass `--no-ci-sarif` when you only want a conservative workflow without Code Scanning upload.
 
 Or create the workflow manually:
 
@@ -297,7 +309,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: KryptosAI/mcp-observatory/action@v0.27.0
+      - uses: KryptosAI/mcp-observatory/action@v0.28.0
         with:
           command: npx -y my-mcp-server
           deep: true

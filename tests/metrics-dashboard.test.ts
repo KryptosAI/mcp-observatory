@@ -87,10 +87,12 @@ describe("local metrics dashboard", () => {
         commandFunnel: [
           { stage: "Agent install", commands: "serve", events: 1, sessions: 1, recommendation: "Scale agent setup docs." },
           { stage: "CI setup", commands: "init-ci, setup-ci", events: 0, sessions: 0, recommendation: "Make setup-ci louder." },
+          { stage: "Attack simulation", commands: "attack-sim", events: 1, sessions: 1, recommendation: "Push receipts." },
+          { stage: "Paid intent", commands: "cloud, cloud-upload, enterprise-report", events: 0, sessions: 0, recommendation: "Follow up." },
         ],
         dailyMarketCommandFunnel: [
-          { day: "2026-05-21", agentInstallSessions: 1, validationSessions: 1, regressionSessions: 0, ciSetupSessions: 0 },
-          { day: "2026-06-21", agentInstallSessions: 2, validationSessions: 3, regressionSessions: 0, ciSetupSessions: 1 },
+          { day: "2026-05-21", agentInstallSessions: 1, attackSimSessions: 0, ciSarifSessions: 0, validationSessions: 1, regressionSessions: 0, ciSetupSessions: 0, paidIntentSessions: 0 },
+          { day: "2026-06-21", agentInstallSessions: 2, attackSimSessions: 1, ciSarifSessions: 1, validationSessions: 3, regressionSessions: 0, ciSetupSessions: 1, paidIntentSessions: 0 },
         ],
       },
       github: {
@@ -143,6 +145,9 @@ describe("local metrics dashboard", () => {
     expect(html).toContain("External Sessions");
     expect(html).toContain("Weekly Sessions");
     expect(html).toContain("KPI Momentum");
+    expect(html).toContain("Growth Command Center");
+    expect(html).toContain("Attack-sim sessions");
+    expect(html).toContain("SARIF setup");
     expect(html).toContain("month over month · all time");
     expect(html).toContain("Latest Version Adoption");
     expect(html).toContain("KPI momentum");

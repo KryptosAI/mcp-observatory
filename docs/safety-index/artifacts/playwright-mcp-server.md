@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T01:47:03.410Z
+Generated at 2026-07-06T19:49:55.359Z
 
 ## Target and Environment Metadata
 
@@ -8,8 +8,8 @@ Generated at 2026-07-06T01:47:03.410Z
 - Adapter: `local-process`
 - Command: `npx -y @playwright/mcp`
 - Server: `Playwright 1.62.0-alpha-2026-06-29`
-- Platform: `darwin 24.0.0`
-- Node: `v25.8.1`
+- Platform: `darwin 25.5.0`
+- Node: `v22.22.1`
 
 ## Executive Summary
 
@@ -25,18 +25,18 @@ Generated at 2026-07-06T01:47:03.410Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| fail | 7 | 2 | 2 | 1 | 2 | 0 | 0 |
+| fail | 8 | 2 | 3 | 1 | 2 | 0 | 0 |
 
 ## At a Glance
 
 - Safety verdict: **Blocked** — One or more checks can break agent dependence and should be fixed before production use.
-- Top risks: schema-quality: Found 4 quality finding(s) across 23 item(s): 0 warnings, 4 info.; security: Found 6 security finding(s): 2 high, 2 medium, 2 low.; security-lite: Found 6 security finding(s): 2 high, 2 medium, 2 low.
+- Top risks: schema-quality: Found 4 quality finding(s) across 23 item(s): 0 warnings, 4 info.; attack-sim: Safe attack simulation found 4 finding(s): 1 high, 3 medium, 0 low.; security: Found 6 security finding(s): 2 high, 2 medium, 2 low.
 - Regression/schema drift: Run `mcp-observatory diff <previous-run.json> <current-run.json>` to classify regressions and schema drift.
-- Failing checks: security-lite, security
+- Failing checks: security-lite, security, attack-sim
 - Partial or flaky checks: schema-quality
 - Skipped checks: none
 - Unsupported checks: prompts, resources
-- Suggested next step: Start with the failing checks: security-lite, security.
+- Suggested next step: Start with the failing checks: security-lite, security, attack-sim.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
 
 ## Regressions and Recoveries
@@ -47,13 +47,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 567.68 | All 7 conformance checks passed. |
-| healthy | tools | pass | 3.19 | Advertised capability responded with the minimal expected shape (23 items). |
-| review | schema-quality | partial | 1.39 | Found 4 quality finding(s) across 23 item(s): 0 warnings, 4 info. |
+| healthy | conformance | pass | 987.09 | All 7 conformance checks passed. |
+| healthy | tools | pass | 2.86 | Advertised capability responded with the minimal expected shape (23 items). |
+| review | schema-quality | partial | 1.85 | Found 4 quality finding(s) across 23 item(s): 0 warnings, 4 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
-| act now | security | fail | 1.23 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
-| act now | security-lite | fail | 0.07 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
+| act now | attack-sim | fail | 1.00 | Safe attack simulation found 4 finding(s): 1 high, 3 medium, 0 low. |
+| act now | security | fail | 2.53 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
+| act now | security-lite | fail | 0.05 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
 
 ## Evidence Snippets
 
@@ -117,6 +118,18 @@ Summary: Resources are not advertised by the target.
   - Identifiers: none
   - Diagnostics: none
 
+### attack-sim — fail
+
+Summary: Safe attack simulation found 4 finding(s): 1 high, 3 medium, 0 low.
+
+- Endpoint: `attack-sim/safe`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `4`
+  - Identifiers: browser_evaluate, browser_navigate, browser_run_code_unsafe, browser_tabs
+  - Diagnostics: [medium] Tool "browser_evaluate" combines broad parameters (filename) with destructive or non-read-only behavior., [medium] Tool "browser_navigate" combines broad parameters (url) with destructive or non-read-only behavior., [high] Tool "browser_run_code_unsafe" combines broad parameters (code, filename) with destructive or non-read-only behavior. (+1 more)
+
 ### security — fail
 
 Summary: Found 6 security finding(s): 2 high, 2 medium, 2 low.
@@ -152,5 +165,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T014703410Z_c94b3464`
+- Run ID: `run_2026-07-06T194955359Z_d769bb31`
 - Gate: `fail`

@@ -1,12 +1,12 @@
-name: Private MCP readiness pilot
-description: Request a private MCP readiness review, CI rollout, or fleet visibility pilot.
-title: "[Pilot] Private MCP readiness review"
+name: Private MCP pilot
+description: Request a private MCP attack simulation, readiness review, CI rollout, or fleet visibility pilot.
+title: "[Pilot] Private MCP attack simulation"
 labels: ["pilot", "commercial"]
 body:
   - type: markdown
     attributes:
       value: |
-        Use this for production or pre-production MCP usage where you want private compatibility, security, drift, CI, or fleet review.
+        Use this for production or pre-production MCP usage where you want private attack simulation, compatibility, security, drift, CI, or fleet review.
 
         Do not paste secrets, private source code, customer data, private URLs, or proprietary MCP schemas into this public issue. If details are sensitive, keep this brief and email william@banksey.com.
   - type: input
@@ -22,6 +22,9 @@ body:
     attributes:
       label: Pilot type
       options:
+        - Attack Simulation Evidence Pack
+        - Attack Simulation Quickstart
+        - Platform Attack Simulation Pilot
         - Private MCP readiness review
         - Hosted CI history for private repos
         - Recurring security/drift report

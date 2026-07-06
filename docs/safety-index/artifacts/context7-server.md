@@ -1,42 +1,42 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T01:46:54.306Z
+Generated at 2026-07-06T19:49:48.132Z
 
 ## Target and Environment Metadata
 
 - Target: `context7-server`
 - Adapter: `local-process`
 - Command: `npx -y @upstash/context7-mcp`
-- Server: `Context7 3.2.2`
-- Platform: `darwin 24.0.0`
-- Node: `v25.8.1`
+- Server: `Context7 3.2.3`
+- Platform: `darwin 25.5.0`
+- Node: `v22.22.1`
 
 ## Executive Summary
 
-**Health Score: 100/100 (A)**
+**Health Score: 97/100 (A)**
 
 | Dimension | Score | Weight |
 | --- | --- | --- |
 | Protocol Compliance | 100/100 | 30% |
 | Schema Quality | 100/100 | 20% |
-| Security | 100/100 | 20% |
+| Security | 87/100 | 20% |
 | Reliability | 100/100 | 20% |
 | Performance | 100/100 | 10% |
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| pass | 7 | 7 | 0 | 0 | 0 | 0 | 0 |
+| pass | 8 | 7 | 0 | 1 | 0 | 0 | 0 |
 
 ## At a Glance
 
-- Safety verdict: **Ready** — No blocking MCP compatibility or security issues were detected.
-- Top risks: No high-priority risks detected.
+- Safety verdict: **Needs review** — The server is usable, but caveated checks should be reviewed before agents depend on it.
+- Top risks: attack-sim: Safe attack simulation found 2 finding(s): 0 high, 2 medium, 0 low.
 - Regression/schema drift: Run `mcp-observatory diff <previous-run.json> <current-run.json>` to classify regressions and schema drift.
 - Failing checks: none
-- Partial or flaky checks: none
+- Partial or flaky checks: attack-sim
 - Skipped checks: none
 - Unsupported checks: none
-- Suggested next step: Save this run artifact and diff it against the next meaningful server or package change.
+- Suggested next step: Review the caveated checks next: attack-sim.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
 
 ## Regressions and Recoveries
@@ -47,13 +47,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 0.77 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 0.30 | Advertised capability responded with the minimal expected shape (0 items). |
-| healthy | resources | pass | 0.44 | Advertised capability responded with the minimal expected shape (0 items). |
-| healthy | schema-quality | pass | 0.67 | All 2 item(s) have good schema quality. |
-| healthy | security | pass | 0.30 | No security issues detected. |
+| healthy | conformance | pass | 1.09 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 0.28 | Advertised capability responded with the minimal expected shape (0 items). |
+| healthy | resources | pass | 0.40 | Advertised capability responded with the minimal expected shape (0 items). |
+| healthy | schema-quality | pass | 0.51 | All 2 item(s) have good schema quality. |
+| healthy | security | pass | 0.20 | No security issues detected. |
 | healthy | security-lite | pass | 0.02 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 1.72 | Advertised capability responded with the minimal expected shape (2 items). |
+| healthy | tools | pass | 1.79 | Advertised capability responded with the minimal expected shape (2 items). |
+| review | attack-sim | partial | 1.05 | Safe attack simulation found 2 finding(s): 0 high, 2 medium, 0 low. |
 
 ## Evidence Snippets
 
@@ -79,7 +80,7 @@ Summary: Advertised capability responded with the minimal expected shape (0 item
   - Minimal shape present: `true`
   - Item count: `0`
   - Identifiers: none
-  - Diagnostics: Context7 Documentation MCP Server v3.2.2 running on stdio
+  - Diagnostics: Context7 Documentation MCP Server v3.2.3 running on stdio
 
 ### resources — pass
 
@@ -91,14 +92,14 @@ Summary: Advertised capability responded with the minimal expected shape (0 item
   - Minimal shape present: `true`
   - Item count: `0`
   - Identifiers: none
-  - Diagnostics: Context7 Documentation MCP Server v3.2.2 running on stdio
+  - Diagnostics: Context7 Documentation MCP Server v3.2.3 running on stdio
 - Endpoint: `resources/templates/list`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
   - Item count: `0`
   - Identifiers: none
-  - Diagnostics: Context7 Documentation MCP Server v3.2.2 running on stdio
+  - Diagnostics: Context7 Documentation MCP Server v3.2.3 running on stdio
 
 ### schema-quality — pass
 
@@ -146,7 +147,19 @@ Summary: Advertised capability responded with the minimal expected shape (2 item
   - Minimal shape present: `true`
   - Item count: `2`
   - Identifiers: resolve-library-id, query-docs
-  - Diagnostics: Context7 Documentation MCP Server v3.2.2 running on stdio
+  - Diagnostics: Context7 Documentation MCP Server v3.2.3 running on stdio
+
+### attack-sim — partial
+
+Summary: Safe attack simulation found 2 finding(s): 0 high, 2 medium, 0 low.
+
+- Endpoint: `attack-sim/safe`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `2`
+  - Identifiers: resolve-library-id, query-docs
+  - Diagnostics: [medium] tool "resolve-library-id" contains agent behavior control text that could steer an agent., [medium] tool "query-docs" contains agent behavior control text that could steer an agent.
 
 ## Reproduction Commands
 
@@ -159,5 +172,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T014654306Z_160413b5`
+- Run ID: `run_2026-07-06T194948132Z_cb0c4915`
 - Gate: `pass`

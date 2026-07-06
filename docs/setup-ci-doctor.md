@@ -20,9 +20,19 @@ It checks:
 Use it after generating a kit:
 
 ```bash
-npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>" --sarif --schedule weekly
 npx @kryptosai/mcp-observatory setup-ci --doctor
 ```
+
+When a passing `test`, `run`, or single-target `scan` offers CI conversion, the generated kit includes SARIF/Code Scanning upload and weekly scheduled checks by default. Use `--no-ci-sarif` on that source command if a repo wants the lowest-permission workflow first.
+
+Repair or upgrade an existing kit in one step:
+
+```bash
+npx @kryptosai/mcp-observatory setup-ci --doctor --fix
+```
+
+`--fix` preserves an existing target or command when it can infer one, then rewrites the adoption kit with deep checks, security checks, SARIF upload, maintainer copy, badge snippets, and weekly scheduled runs.
 
 Use it during maintainer PRs to make review easier:
 

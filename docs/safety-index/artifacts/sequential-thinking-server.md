@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T01:46:52.165Z
+Generated at 2026-07-06T19:49:46.140Z
 
 ## Target and Environment Metadata
 
@@ -8,8 +8,8 @@ Generated at 2026-07-06T01:46:52.165Z
 - Adapter: `local-process`
 - Command: `npx -y @modelcontextprotocol/server-sequential-thinking`
 - Server: `sequential-thinking-server 0.2.0`
-- Platform: `darwin 24.0.0`
-- Node: `v25.8.1`
+- Platform: `darwin 25.5.0`
+- Node: `v22.22.1`
 
 ## Executive Summary
 
@@ -25,7 +25,7 @@ Generated at 2026-07-06T01:46:52.165Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| pass | 7 | 5 | 0 | 0 | 2 | 0 | 0 |
+| pass | 8 | 6 | 0 | 0 | 2 | 0 | 0 |
 
 ## At a Glance
 
@@ -47,15 +47,28 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 1.95 | All 7 conformance checks passed. |
-| healthy | schema-quality | pass | 0.96 | All 1 item(s) have good schema quality. |
-| healthy | security | pass | 1.00 | No security issues detected. |
-| healthy | security-lite | pass | 0.04 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 3.05 | Advertised capability responded with the minimal expected shape (1 item). |
+| healthy | attack-sim | pass | 0.82 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 1.51 | All 7 conformance checks passed. |
+| healthy | schema-quality | pass | 0.85 | All 1 item(s) have good schema quality. |
+| healthy | security | pass | 0.91 | No security issues detected. |
+| healthy | security-lite | pass | 0.08 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 3.74 | Advertised capability responded with the minimal expected shape (1 item). |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
 ## Evidence Snippets
+
+### attack-sim — pass
+
+Summary: Safe attack simulation found no high-risk MCP attack-readiness findings.
+
+- Endpoint: `attack-sim/safe`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `0`
+  - Identifiers: none
+  - Diagnostics: none
 
 ### conformance — pass
 
@@ -152,5 +165,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T014652165Z_55bd9c96`
+- Run ID: `run_2026-07-06T194946140Z_d608f553`
 - Gate: `pass`

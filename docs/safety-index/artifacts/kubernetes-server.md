@@ -1,13 +1,13 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T05:32:58.918Z
+Generated at 2026-07-06T19:49:58.878Z
 
 ## Target and Environment Metadata
 
-- Target: `mcp-server-kubernetes`
+- Target: `kubernetes-server`
 - Adapter: `local-process`
 - Command: `npx -y mcp-server-kubernetes`
-- Server: `kubernetes 3.9.2`
+- Server: `kubernetes 3.9.3`
 - Platform: `darwin 25.5.0`
 - Node: `v22.22.1`
 
@@ -25,18 +25,18 @@ Generated at 2026-07-06T05:32:58.918Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| fail | 6 | 4 | 1 | 1 | 0 | 0 | 0 |
+| fail | 8 | 4 | 3 | 1 | 0 | 0 | 0 |
 
 ## At a Glance
 
 - Safety verdict: **Blocked** — One or more checks can break agent dependence and should be fixed before production use.
-- Top risks: schema-quality: Found 7 quality finding(s) across 29 item(s): 0 warnings, 7 info.; security-lite: Found 8 security finding(s): 3 high, 3 medium, 2 low.
+- Top risks: schema-quality: Found 7 quality finding(s) across 29 item(s): 0 warnings, 7 info.; attack-sim: Safe attack simulation found 5 finding(s): 3 high, 2 medium, 0 low.; security: Found 8 security finding(s): 3 high, 3 medium, 2 low.
 - Regression/schema drift: Run `mcp-observatory diff <previous-run.json> <current-run.json>` to classify regressions and schema drift.
-- Failing checks: security-lite
+- Failing checks: security-lite, security, attack-sim
 - Partial or flaky checks: schema-quality
 - Skipped checks: none
 - Unsupported checks: none
-- Suggested next step: Start with the failing checks: security-lite.
+- Suggested next step: Start with the failing checks: security-lite, security, attack-sim.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
 
 ## Regressions and Recoveries
@@ -47,12 +47,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 7.21 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 0.62 | Advertised capability responded with the minimal expected shape (1 item). |
-| healthy | resources | pass | 1.03 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
-| healthy | tools | pass | 2.26 | Advertised capability responded with the minimal expected shape (23 items). |
-| review | schema-quality | partial | 0.90 | Found 7 quality finding(s) across 29 item(s): 0 warnings, 7 info. |
-| act now | security-lite | fail | 0.60 | Found 8 security finding(s): 3 high, 3 medium, 2 low. |
+| healthy | conformance | pass | 1.69 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 0.30 | Advertised capability responded with the minimal expected shape (1 item). |
+| healthy | resources | pass | 0.38 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
+| healthy | tools | pass | 1.26 | Advertised capability responded with the minimal expected shape (23 items). |
+| review | schema-quality | partial | 0.49 | Found 7 quality finding(s) across 29 item(s): 0 warnings, 7 info. |
+| act now | attack-sim | fail | 0.75 | Safe attack simulation found 5 finding(s): 3 high, 2 medium, 0 low. |
+| act now | security | fail | 0.28 | Found 8 security finding(s): 3 high, 3 medium, 2 low. |
+| act now | security-lite | fail | 0.06 | Found 8 security finding(s): 3 high, 3 medium, 2 low. |
 
 ## Evidence Snippets
 
@@ -78,7 +80,7 @@ Summary: Advertised capability responded with the minimal expected shape (1 item
   - Minimal shape present: `true`
   - Item count: `1`
   - Identifiers: k8s-diagnose
-  - Diagnostics: Starting Kubernetes MCP server v3.9.2, handling commands..., Telemetry: Disabled, (node:54973) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. (+1 more)
+  - Diagnostics: Starting Kubernetes MCP server v3.9.3, handling commands..., Telemetry: Disabled, (node:13988) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. (+1 more)
 
 ### resources — pass
 
@@ -90,14 +92,14 @@ Summary: Advertised capability responded with the minimal expected shape, but on
   - Minimal shape present: `true`
   - Item count: `5`
   - Identifiers: k8s://default/pods, k8s://default/deployments, k8s://default/services, k8s://namespaces, k8s://nodes
-  - Diagnostics: Starting Kubernetes MCP server v3.9.2, handling commands..., Telemetry: Disabled, (node:54973) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. (+1 more)
+  - Diagnostics: Starting Kubernetes MCP server v3.9.3, handling commands..., Telemetry: Disabled, (node:13988) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. (+1 more)
 - Endpoint: `resources/templates/list`
   - Advertised: `true`
   - Responded: `false`
   - Minimal shape present: `false`
   - Item count: `0`
   - Identifiers: none
-  - Diagnostics: MCP error -32601: Method not found, Starting Kubernetes MCP server v3.9.2, handling commands..., Telemetry: Disabled (+2 more)
+  - Diagnostics: MCP error -32601: Method not found, Starting Kubernetes MCP server v3.9.3, handling commands..., Telemetry: Disabled (+2 more)
 
 ### tools — pass
 
@@ -109,7 +111,7 @@ Summary: Advertised capability responded with the minimal expected shape (23 ite
   - Minimal shape present: `true`
   - Item count: `23`
   - Identifiers: cleanup, kubectl_get, kubectl_describe, kubectl_apply, kubectl_delete (+18 more)
-  - Diagnostics: Starting Kubernetes MCP server v3.9.2, handling commands..., Telemetry: Disabled, (node:54973) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. (+1 more)
+  - Diagnostics: Starting Kubernetes MCP server v3.9.3, handling commands..., Telemetry: Disabled, (node:13988) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. (+1 more)
 
 ### schema-quality — partial
 
@@ -122,6 +124,30 @@ Summary: Found 7 quality finding(s) across 29 item(s): 0 warnings, 7 info.
   - Item count: `7`
   - Identifiers: port_forward, stop_port_forward, list_api_resources
   - Diagnostics: [info] tool "port_forward": Property 'resourceType' missing description, [info] tool "port_forward": Property 'resourceName' missing description, [info] tool "port_forward": Property 'localPort' missing description (+4 more)
+
+### attack-sim — fail
+
+Summary: Safe attack simulation found 5 finding(s): 3 high, 2 medium, 0 low.
+
+- Endpoint: `attack-sim/safe`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `5`
+  - Identifiers: kubectl_apply, kubectl_delete, kubectl_create, exec_in_pod, kubectl_generic
+  - Diagnostics: [medium] Tool "kubectl_apply" combines broad parameters (filename) with destructive or non-read-only behavior., [medium] Tool "kubectl_delete" combines broad parameters (filename) with destructive or non-read-only behavior., [high] Tool "kubectl_create" combines broad parameters (filename, command) with destructive or non-read-only behavior. (+2 more)
+
+### security — fail
+
+Summary: Found 8 security finding(s): 3 high, 3 medium, 2 low.
+
+- Endpoint: `security/scan`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `8`
+  - Identifiers: cleanup, kubectl_apply, kubectl_delete, kubectl_create, kubectl_reconnect (+2 more)
+  - Diagnostics: [low] Tool "cleanup" has an empty schema but is marked as destructive., [medium] Tool "kubectl_apply" accepts filesystem paths and has destructive capabilities., [medium] Tool "kubectl_delete" accepts filesystem paths and has destructive capabilities. (+5 more)
 
 ### security-lite — fail
 
@@ -146,5 +172,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T053258917Z_2e4f693a`
+- Run ID: `run_2026-07-06T194958878Z_b41bb221`
 - Gate: `fail`

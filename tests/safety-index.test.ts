@@ -137,6 +137,9 @@ describe("Safety Index", () => {
     const second = renderSafetyIndex([entry]);
     expect(first).toBe(second);
     expect(first).toContain("MCP Server Safety Index v1");
+    expect(first).toContain("Action Receipt");
+    expect(first).toContain("CI Gate");
+    expect(first).toContain("setup-ci --all --command");
     expect(first).toContain("[JSON](./safety-index/artifacts/test-server.json)");
     expect(first).toContain("Tool schema clarity: 1 server(s)");
   });

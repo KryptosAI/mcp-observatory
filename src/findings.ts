@@ -17,6 +17,7 @@ export interface ObservatoryFinding {
   checkId: CheckId;
   subject: ObservatoryFindingSubject;
   recommendation?: string;
+  recommendedAction?: string;
   controlRefs: string[];
   evidence?: Record<string, unknown>;
 }
@@ -212,6 +213,7 @@ function attackFindingFromRecord(
     checkId: check.id,
     subject: { type: subjectType, name: itemName },
     recommendation: toText(record["recommendation"]) ?? "Review the simulated MCP attack-readiness finding before agents depend on this server.",
+    recommendedAction: toText(record["recommendedAction"]),
     controlRefs: ATTACK_CONTROL_REFS[attackClass] ?? ["mcp-observatory:attack-sim"],
     evidence: record,
   };

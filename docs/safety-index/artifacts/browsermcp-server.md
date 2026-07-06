@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T01:47:02.689Z
+Generated at 2026-07-06T19:49:54.694Z
 
 ## Target and Environment Metadata
 
@@ -8,8 +8,8 @@ Generated at 2026-07-06T01:47:02.689Z
 - Adapter: `local-process`
 - Command: `npx -y @browsermcp/mcp`
 - Server: `Browser MCP 0.1.3`
-- Platform: `darwin 24.0.0`
-- Node: `v25.8.1`
+- Platform: `darwin 25.5.0`
+- Node: `v22.22.1`
 
 ## Executive Summary
 
@@ -25,7 +25,7 @@ Generated at 2026-07-06T01:47:02.689Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| pass | 7 | 6 | 0 | 0 | 1 | 0 | 0 |
+| pass | 8 | 7 | 0 | 0 | 1 | 0 | 0 |
 
 ## At a Glance
 
@@ -47,15 +47,28 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 1.60 | All 7 conformance checks passed. |
-| healthy | resources | pass | 0.62 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
-| healthy | schema-quality | pass | 0.49 | All 12 item(s) have good schema quality. |
-| healthy | security | pass | 0.26 | No security issues detected. |
+| healthy | attack-sim | pass | 0.51 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 1.57 | All 7 conformance checks passed. |
+| healthy | resources | pass | 0.44 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
+| healthy | schema-quality | pass | 0.37 | All 12 item(s) have good schema quality. |
+| healthy | security | pass | 0.15 | No security issues detected. |
 | healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 0.97 | Advertised capability responded with the minimal expected shape (12 items). |
+| healthy | tools | pass | 0.82 | Advertised capability responded with the minimal expected shape (12 items). |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 
 ## Evidence Snippets
+
+### attack-sim — pass
+
+Summary: Safe attack simulation found no high-risk MCP attack-readiness findings.
+
+- Endpoint: `attack-sim/safe`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `0`
+  - Identifiers: none
+  - Diagnostics: none
 
 ### conformance — pass
 
@@ -159,5 +172,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T014702689Z_66630a02`
+- Run ID: `run_2026-07-06T194954693Z_39638a36`
 - Gate: `pass`
