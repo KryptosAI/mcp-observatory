@@ -1,0 +1,13 @@
+{
+  "targetId": "insecure-mcp-server",
+  "adapter": "local-process",
+  "command": "node",
+  "args": ["server.mjs"],
+  "timeoutMs": 15000,
+  "env": {
+    "DEMO_API_TOKEN": "demo-token-not-real-do-not-use"
+  },
+  "metadata": {
+    "environment": "demo-insecure-fixture"
+  }
+}

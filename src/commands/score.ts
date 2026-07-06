@@ -3,6 +3,7 @@ import path from "node:path";
 import type { Command } from "commander";
 
 import { generateBadgeSvg } from "../badge.js";
+import { auditScore, resolveAuditTarget, runAudit } from "../audit.js";
 import {
   runTarget,
   writeRunArtifact,
@@ -12,6 +13,38 @@ import { buildEvent, recordEvent } from "../telemetry.js";
 import { maybePrintCloudCta } from "../commercial.js";
 import { ANSI, c, formatOutput, printCiConversionCta, targetFromCommand, writeOutput } from "./helpers.js";
 
+function extractTrailingProfileScoreFlags(
+  args: string[],
+  options: { profile?: string; format: string; output?: string },
+): { commandArgs: string[]; options: { profile?: string; format: string; output?: string } } {
+  const commandArgs: string[] = [];
+  const nextOptions = { ...options };
+  for (let i = 0; i < args.length; i += 1) {
+    const arg = args[i]!;
+    if (arg === "--profile") {
+      const next = args[i + 1];
+      if (!next) throw new Error("--profile requires a value.");
+      nextOptions.profile = next;
+      i += 1;
+    } else if (arg === "--format") {
+      const next = args[i + 1];
+      if (!next) throw new Error("--format requires a value.");
+      nextOptions.format = next;
+      i += 1;
+    } else if (arg === "--output") {
+      const next = args[i + 1];
+      if (!next) throw new Error("--output requires a value.");
+      nextOptions.output = next;
+      i += 1;
+    } else if (arg === "--no-color") {
+      // Commander handles color globally; keep it out of the server command.
+    } else {
+      commandArgs.push(arg);
+    }
+  }
+  return { commandArgs, options: nextOptions };
+}
+
 export function registerScoreCommands(program: Command): void {
   // ── score ────────────────────────────────────────────────────────────
 
@@ -20,11 +53,37 @@ export function registerScoreCommands(program: Command): void {
     .passThroughOptions()
     .description("Score an MCP server's health (0-100).")
     .argument("<command...>", "Server command and arguments to run.")
+    .option("--profile <profile>", "Return profile trust score output, for example nsa-mcp.")
     .option("--format <format>", "terminal, json, junit, markdown, html, or sarif", "terminal")
     .option("--output <file>", "Write to file instead of stdout.")
     .option("--no-color", "Disable colored output.")
-    .action(async (commandArgs: string[], options: { format: string; output?: string }) => {
+    .action(async (commandArgs: string[], options: { profile?: string; format: string; output?: string }) => {
+      const extracted = extractTrailingProfileScoreFlags(commandArgs, options);
+      commandArgs = extracted.commandArgs;
+      options = extracted.options;
       const t0 = Date.now();
+      if (options.profile) {
+        const target = await resolveAuditTarget(commandArgs);
+        const report = await runAudit(target, options.profile);
+        const score = auditScore(report);
+        const output = options.format === "json" || options.format === "terminal"
+          ? JSON.stringify(score, null, options.format === "json" ? 2 : 0)
+          : JSON.stringify(score, null, 2);
+        if (options.output) {
+          await writeOutput(output, "json", options.output);
+        } else {
+          process.stdout.write(`${output}\n`);
+        }
+        recordEvent(buildEvent("command_complete", "score", "cli", {
+          serversScanned: 1,
+          gateResult: score.status,
+          executionMs: Date.now() - t0,
+          securityFlag: true,
+          securityFindingCount: score.finding_count,
+          targetIds: [target.targetId],
+        }));
+        return;
+      }
       const target = targetFromCommand(commandArgs);
       process.stdout.write(`${c(ANSI.dim, "⟳")} Scoring ${c(ANSI.bold, target.targetId)}...\n\n`);
       const artifact = await runTarget(target, { invokeTools: true, securityCheck: true });

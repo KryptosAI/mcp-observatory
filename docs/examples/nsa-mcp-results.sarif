@@ -1,0 +1,930 @@
+{
+  "$schema": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/schemas/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "mcp-observatory",
+          "informationUri": "https://github.com/KryptosAI/mcp-observatory",
+          "rules": [
+            {
+              "id": "mcp-observatory/security/shell-injection",
+              "name": "Security: shell-injection",
+              "shortDescription": {
+                "text": "Security: shell-injection"
+              },
+              "fullDescription": {
+                "text": "Tool \"run_shell\" has parameter \"command\" which may allow arbitrary command execution."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Constrain command execution tools with strict allowlists, typed inputs, and clear destructive annotations.\n\nTrust status: critical_risk. Controls: tool_permissions, runtime_safety, input_validation."
+              },
+              "properties": {
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "nsa-mcp",
+                  "tool_permissions",
+                  "runtime_safety",
+                  "input_validation"
+                ],
+                "control_mappings": [
+                  "tool_permissions",
+                  "runtime_safety",
+                  "input_validation"
+                ],
+                "confidence": "high"
+              }
+            },
+            {
+              "id": "mcp-observatory/security/broad-filesystem",
+              "name": "Security: broad-filesystem",
+              "shortDescription": {
+                "text": "Security: broad-filesystem"
+              },
+              "fullDescription": {
+                "text": "Tool \"write_any_file\" accepts filesystem paths and has destructive capabilities."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "Narrow filesystem scope, prefer read-only access, and document destructive behavior explicitly.\n\nTrust status: critical_risk. Controls: tool_permissions, trust_boundaries."
+              },
+              "properties": {
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "nsa-mcp",
+                  "tool_permissions",
+                  "trust_boundaries"
+                ],
+                "control_mappings": [
+                  "tool_permissions",
+                  "trust_boundaries"
+                ],
+                "confidence": "high"
+              }
+            },
+            {
+              "id": "mcp-observatory/security/permissive-schema",
+              "name": "Security: permissive-schema",
+              "shortDescription": {
+                "text": "Security: permissive-schema"
+              },
+              "fullDescription": {
+                "text": "Tool \"collect_secret\" has an empty schema but is marked as destructive."
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "text": "Use a strict input schema and avoid accepting arbitrary properties for destructive tools.\n\nTrust status: critical_risk. Controls: schema_validation, input_validation."
+              },
+              "properties": {
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "nsa-mcp",
+                  "schema_validation",
+                  "input_validation"
+                ],
+                "control_mappings": [
+                  "schema_validation",
+                  "input_validation"
+                ],
+                "confidence": "high"
+              }
+            },
+            {
+              "id": "mcp-observatory/conformance/diagnostic",
+              "name": "conformance: diagnostic",
+              "shortDescription": {
+                "text": "conformance: diagnostic"
+              },
+              "fullDescription": {
+                "text": "[pass] capabilities-present: Server returned capabilities object."
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "text": "Review the check output and update the MCP server or target configuration before release.\n\nTrust status: critical_risk. Controls: runtime_safety."
+              },
+              "properties": {
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "nsa-mcp",
+                  "runtime_safety"
+                ],
+                "control_mappings": [
+                  "runtime_safety"
+                ],
+                "confidence": "medium"
+              }
+            },
+            {
+              "id": "mcp-observatory/attack-sim/tool-poisoning/hidden-instruction",
+              "name": "Attack simulation: tool-poisoning",
+              "shortDescription": {
+                "text": "Attack simulation: tool-poisoning"
+              },
+              "fullDescription": {
+                "text": "tool \"run_shell\" contains hidden instruction override text that could steer an agent."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Remove hidden or behavioral instructions from MCP metadata; keep descriptions factual and user-visible.\n\nTrust status: critical_risk. Controls: tool_description_integrity, trust_boundaries."
+              },
+              "properties": {
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "nsa-mcp",
+                  "tool_description_integrity",
+                  "trust_boundaries"
+                ],
+                "control_mappings": [
+                  "tool_description_integrity",
+                  "trust_boundaries"
+                ],
+                "confidence": "high"
+              }
+            },
+            {
+              "id": "mcp-observatory/attack-sim/permission-boundary/broad-destructive-tool",
+              "name": "Attack simulation: permission-boundary",
+              "shortDescription": {
+                "text": "Attack simulation: permission-boundary"
+              },
+              "fullDescription": {
+                "text": "Tool \"run_shell\" combines broad parameters (command) with destructive or non-read-only behavior."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.\n\nTrust status: critical_risk. Controls: tool_permissions, runtime_safety, trust_boundaries."
+              },
+              "properties": {
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "nsa-mcp",
+                  "tool_permissions",
+                  "runtime_safety",
+                  "trust_boundaries"
+                ],
+                "control_mappings": [
+                  "tool_permissions",
+                  "runtime_safety",
+                  "trust_boundaries"
+                ],
+                "confidence": "high"
+              }
+            },
+            {
+              "id": "mcp-observatory/audit/env-secret",
+              "name": "Secret-like environment variable configured",
+              "shortDescription": {
+                "text": "Secret-like environment variable configured"
+              },
+              "fullDescription": {
+                "text": "Target environment contains secret-like variable \"DEMO_API_TOKEN\"."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Use a secret manager or CI secret store and verify the MCP server never returns this value in tool responses or logs.\n\nTrust status: critical_risk. Controls: secrets_exposure, auditability."
+              },
+              "properties": {
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "nsa-mcp",
+                  "secrets_exposure",
+                  "auditability"
+                ],
+                "control_mappings": [
+                  "secrets_exposure",
+                  "auditability"
+                ],
+                "confidence": "high"
+              }
+            },
+            {
+              "id": "mcp-observatory/audit/auditability-not-declared",
+              "name": "Audit logging not declared",
+              "shortDescription": {
+                "text": "Audit logging not declared"
+              },
+              "fullDescription": {
+                "text": "The target did not declare structured audit logging, event output, or traceability metadata for tool calls."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "Document how tool calls, permission decisions, failures, and sensitive data handling are logged for security review.\n\nTrust status: critical_risk. Controls: runtime_safety, auditability."
+              },
+              "properties": {
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "nsa-mcp",
+                  "runtime_safety",
+                  "auditability"
+                ],
+                "control_mappings": [
+                  "runtime_safety",
+                  "auditability"
+                ],
+                "confidence": "medium"
+              }
+            }
+          ]
+        }
+      },
+      "automationDetails": {
+        "id": "mcp-observatory/audit/insecure-mcp-server"
+      },
+      "results": [
+        {
+          "ruleId": "mcp-observatory/security/shell-injection",
+          "level": "error",
+          "message": {
+            "text": "Tool \"run_shell\" has parameter \"command\" which may allow arbitrary command execution."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "nsa-mcp-results.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/fingerprint": "2eae18eafee502bbe912521e"
+          },
+          "properties": {
+            "id": "mcp-observatory/security/shell-injection/f2079218",
+            "check_id": "security",
+            "severity": "high",
+            "category": "security",
+            "target": {
+              "target_id": "insecure-mcp-server",
+              "subject_type": "tool",
+              "subject_name": "run_shell"
+            },
+            "control_mappings": [
+              "tool_permissions",
+              "runtime_safety",
+              "input_validation"
+            ],
+            "confidence": "high",
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "nsa-mcp",
+              "tool_permissions",
+              "runtime_safety",
+              "input_validation"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/broad-filesystem",
+          "level": "warning",
+          "message": {
+            "text": "Tool \"write_any_file\" accepts filesystem paths and has destructive capabilities."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "nsa-mcp-results.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/fingerprint": "3a4074c58a2f545b8aef3f4c"
+          },
+          "properties": {
+            "id": "mcp-observatory/security/broad-filesystem/722ef284",
+            "check_id": "security",
+            "severity": "medium",
+            "category": "security",
+            "target": {
+              "target_id": "insecure-mcp-server",
+              "subject_type": "tool",
+              "subject_name": "write_any_file"
+            },
+            "control_mappings": [
+              "tool_permissions",
+              "trust_boundaries"
+            ],
+            "confidence": "high",
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "nsa-mcp",
+              "tool_permissions",
+              "trust_boundaries"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/permissive-schema",
+          "level": "note",
+          "message": {
+            "text": "Tool \"collect_secret\" has an empty schema but is marked as destructive."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "nsa-mcp-results.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/fingerprint": "dc49a1fd45637f71be052587"
+          },
+          "properties": {
+            "id": "mcp-observatory/security/permissive-schema/e9f03d9b",
+            "check_id": "security",
+            "severity": "low",
+            "category": "security",
+            "target": {
+              "target_id": "insecure-mcp-server",
+              "subject_type": "tool",
+              "subject_name": "collect_secret"
+            },
+            "control_mappings": [
+              "schema_validation",
+              "input_validation"
+            ],
+            "confidence": "high",
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "nsa-mcp",
+              "schema_validation",
+              "input_validation"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] capabilities-present: Server returned capabilities object."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "nsa-mcp-results.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/fingerprint": "fae290ed59175184c602e42b"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/b8b27a9c",
+            "check_id": "conformance",
+            "severity": "info",
+            "category": "conformance",
+            "target": {
+              "target_id": "insecure-mcp-server",
+              "subject_type": "check",
+              "subject_name": "conformance"
+            },
+            "control_mappings": [
+              "runtime_safety"
+            ],
+            "confidence": "medium",
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "nsa-mcp",
+              "runtime_safety"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] server-info: Server provided initialization info."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "nsa-mcp-results.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/fingerprint": "4be4590f724dd5dab7aade15"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/6395e83c",
+            "check_id": "conformance",
+            "severity": "info",
+            "category": "conformance",
+            "target": {
+              "target_id": "insecure-mcp-server",
+              "subject_type": "check",
+              "subject_name": "conformance"
+            },
+            "control_mappings": [
+              "runtime_safety"
+            ],
+            "confidence": "medium",
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "nsa-mcp",
+              "runtime_safety"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] tools-capability-match: tools/list returned 3 tool(s)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "nsa-mcp-results.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/fingerprint": "e5002341330a5ff7d57768c7"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/9179af03",
+            "check_id": "conformance",
+            "severity": "info",
+            "category": "conformance",
+            "target": {
+              "target_id": "insecure-mcp-server",
+              "subject_type": "check",
+              "subject_name": "conformance"
+            },
+            "control_mappings": [
+              "runtime_safety"
+            ],
+            "confidence": "medium",
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "nsa-mcp",
+              "runtime_safety"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "nsa-mcp-results.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/fingerprint": "a6e09532808401c798668ba4"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/4fa52fd2",
+            "check_id": "conformance",
+            "severity": "info",
+            "category": "conformance",
+            "target": {
+              "target_id": "insecure-mcp-server",
+              "subject_type": "check",
+              "subject_name": "conformance"
+            },
+            "control_mappings": [
+              "runtime_safety"
+            ],
+            "confidence": "medium",
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "nsa-mcp",
+              "runtime_safety"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] resources-capability-match: Resources not advertised — endpoint check skipped."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "nsa-mcp-results.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/fingerprint": "47ea71b4d26b22d807bd5273"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/e70c7c63",
+            "check_id": "conformance",
+            "severity": "info",
+            "category": "conformance",
+            "target": {
+              "target_id": "insecure-mcp-server",
+              "subject_type": "check",
+              "subject_name": "conformance"
+            },
+            "control_mappings": [
+              "runtime_safety"
+            ],
+            "confidence": "medium",
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "nsa-mcp",
+              "runtime_safety"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] tool-response-content: Tool \"collect_secret\" response has valid content array."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "nsa-mcp-results.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/fingerprint": "b76d99d2c84da453d87f852d"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/8dc474c0",
+            "check_id": "conformance",
+            "severity": "info",
+            "category": "conformance",
+            "target": {
+              "target_id": "insecure-mcp-server",
+              "subject_type": "check",
+              "subject_name": "conformance"
+            },
+            "control_mappings": [
+              "runtime_safety"
+            ],
+            "confidence": "medium",
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "nsa-mcp",
+              "runtime_safety"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "nsa-mcp-results.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/fingerprint": "677a9ecc2a4fb566106e03bc"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/ff952327",
+            "check_id": "conformance",
+            "severity": "info",
+            "category": "conformance",
+            "target": {
+              "target_id": "insecure-mcp-server",
+              "subject_type": "check",
+              "subject_name": "conformance"
+            },
+            "control_mappings": [
+              "runtime_safety"
+            ],
+            "confidence": "medium",
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "nsa-mcp",
+              "runtime_safety"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/attack-sim/tool-poisoning/hidden-instruction",
+          "level": "error",
+          "message": {
+            "text": "tool \"run_shell\" contains hidden instruction override text that could steer an agent."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "nsa-mcp-results.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/fingerprint": "923b7aeb72cd4f1d0d4e8cc6"
+          },
+          "properties": {
+            "id": "mcp-observatory/attack-sim/attack-sim/tool-poisoning/hidden-instruction/4f6d36e1",
+            "check_id": "attack-sim",
+            "severity": "high",
+            "category": "attack-sim",
+            "target": {
+              "target_id": "insecure-mcp-server",
+              "subject_type": "tool",
+              "subject_name": "run_shell"
+            },
+            "control_mappings": [
+              "tool_description_integrity",
+              "trust_boundaries"
+            ],
+            "confidence": "high",
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "nsa-mcp",
+              "tool_description_integrity",
+              "trust_boundaries"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/attack-sim/permission-boundary/broad-destructive-tool",
+          "level": "error",
+          "message": {
+            "text": "Tool \"run_shell\" combines broad parameters (command) with destructive or non-read-only behavior."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "nsa-mcp-results.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/fingerprint": "62b797439e1e434c977fe0d9"
+          },
+          "properties": {
+            "id": "mcp-observatory/attack-sim/attack-sim/permission-boundary/broad-destructive-tool/fe074eb3",
+            "check_id": "attack-sim",
+            "severity": "high",
+            "category": "attack-sim",
+            "target": {
+              "target_id": "insecure-mcp-server",
+              "subject_type": "tool",
+              "subject_name": "run_shell"
+            },
+            "control_mappings": [
+              "tool_permissions",
+              "runtime_safety",
+              "trust_boundaries"
+            ],
+            "confidence": "high",
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "nsa-mcp",
+              "tool_permissions",
+              "runtime_safety",
+              "trust_boundaries"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/attack-sim/permission-boundary/broad-destructive-tool",
+          "level": "warning",
+          "message": {
+            "text": "Tool \"write_any_file\" combines broad parameters (path) with destructive or non-read-only behavior."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "nsa-mcp-results.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/fingerprint": "0bca06a33bf23db74f667f35"
+          },
+          "properties": {
+            "id": "mcp-observatory/attack-sim/attack-sim/permission-boundary/broad-destructive-tool/a6beb106",
+            "check_id": "attack-sim",
+            "severity": "medium",
+            "category": "attack-sim",
+            "target": {
+              "target_id": "insecure-mcp-server",
+              "subject_type": "tool",
+              "subject_name": "write_any_file"
+            },
+            "control_mappings": [
+              "tool_permissions",
+              "runtime_safety",
+              "trust_boundaries"
+            ],
+            "confidence": "high",
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "nsa-mcp",
+              "tool_permissions",
+              "runtime_safety",
+              "trust_boundaries"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/audit/env-secret",
+          "level": "error",
+          "message": {
+            "text": "Target environment contains secret-like variable \"DEMO_API_TOKEN\"."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "nsa-mcp-results.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/fingerprint": "68cef245bdfe0757e473259c"
+          },
+          "properties": {
+            "id": "mcp-observatory/audit/env-secret/68cef245bdfe0757e473259c",
+            "check_id": "security",
+            "severity": "critical",
+            "category": "secrets_exposure",
+            "target": {
+              "target_id": "insecure-mcp-server",
+              "subject_type": "target",
+              "subject_name": "insecure-mcp-server"
+            },
+            "control_mappings": [
+              "secrets_exposure",
+              "auditability"
+            ],
+            "confidence": "high",
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "nsa-mcp",
+              "secrets_exposure",
+              "auditability"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/audit/auditability-not-declared",
+          "level": "warning",
+          "message": {
+            "text": "The target did not declare structured audit logging, event output, or traceability metadata for tool calls."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "nsa-mcp-results.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/fingerprint": "dc2c3ab3927debe0a4621535"
+          },
+          "properties": {
+            "id": "mcp-observatory/audit/auditability/dc2c3ab3927debe0a4621535",
+            "check_id": "conformance",
+            "severity": "medium",
+            "category": "auditability",
+            "target": {
+              "target_id": "insecure-mcp-server",
+              "subject_type": "target",
+              "subject_name": "insecure-mcp-server"
+            },
+            "control_mappings": [
+              "runtime_safety",
+              "auditability"
+            ],
+            "confidence": "medium",
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "nsa-mcp",
+              "runtime_safety",
+              "auditability"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
