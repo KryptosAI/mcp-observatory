@@ -1,7 +1,12 @@
-import { describe, expect, it } from "vitest";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import path from "node:path";
 
+import { afterEach, describe, expect, it } from "vitest";
+
+import { buildActionReceipt, recommendedActionForFinding, renderActionReceipt } from "../src/action-receipt.js";
 import { buildAuditReport } from "../src/audit.js";
-import { buildMcpReceipt, mapStatusToReceiptVerdict, renderReceiptMarkdown } from "../src/receipt.js";
+import { buildMcpReceipt, mapStatusToReceiptVerdict, receiptFormatFromPath, renderReceipt, renderReceiptMarkdown } from "../src/receipt.js";
 import { makeArtifact } from "./fixtures/test-helpers.js";
 
 const target = {
@@ -14,6 +19,18 @@ const target = {
 };
 
 describe("MCP receipts", () => {
+  const tempDirs: string[] = [];
+
+  async function makeTempDir(): Promise<string> {
+    const dir = await mkdtemp(path.join(tmpdir(), "mcp-observatory-receipt-"));
+    tempDirs.push(dir);
+    return dir;
+  }
+
+  afterEach(async () => {
+    await Promise.all(tempDirs.splice(0).map((dir) => rm(dir, { recursive: true, force: true })));
+  });
+
   it("maps audit trust status into deterministic receipt verdict actions", () => {
     const cleanArtifact = makeArtifact([]);
     cleanArtifact.target.metadata = { audit: "structured events" };
@@ -58,6 +75,13 @@ describe("MCP receipts", () => {
       state: "blocked",
       action: "escalate",
       status: "critical_risk",
+    });
+
+    const fatal = buildAuditReport(makeArtifact([], "startup failed\ntransport closed"), target);
+    expect(mapStatusToReceiptVerdict(fatal)).toMatchObject({
+      state: "could_not_evaluate",
+      action: "rerun",
+      reason: "startup failed",
     });
   });
 
@@ -127,5 +151,148 @@ describe("MCP receipts", () => {
     expect(markdown).toContain("## Reproduction");
     expect(markdown).toContain("Claim this receipt");
     expect(markdown).toContain("Request private fleet receipt pack");
+  });
+
+  it("builds HTTP receipts with artifact hashes and safe path handling", async () => {
+    const dir = await makeTempDir();
+    const jsonReportPath = path.join(dir, "report.json");
+    const markdownReportPath = path.join(dir, "report.md");
+    const htmlReportPath = path.join(dir, "report.html");
+    const sarifPath = path.join(dir, "results.sarif");
+    await Promise.all([
+      writeFile(jsonReportPath, "{\"ok\":true}\n", "utf8"),
+      writeFile(markdownReportPath, "# Report\n", "utf8"),
+      writeFile(htmlReportPath, "<main>Report</main>\n", "utf8"),
+      writeFile(sarifPath, "{\"version\":\"2.1.0\"}\n", "utf8"),
+    ]);
+
+    const httpTarget = {
+      targetId: "http-fixture",
+      adapter: "http" as const,
+      url: "https://example.test/mcp",
+      metadata: { source: "https://example.test/repo", version: "9.9.9", commit: "def456" },
+    };
+    const artifact = makeArtifact([
+      {
+        id: "tools",
+        capability: "tools",
+        status: "pass",
+        durationMs: 5,
+        message: "2 tools",
+        evidence: [{
+          endpoint: "tools/list",
+          advertised: true,
+          responded: true,
+          minimalShapePresent: true,
+          identifiers: ["search", "read_resource", "write_file", "delete_file", "run_command", "open_url"],
+        }],
+      },
+      {
+        id: "schema-quality",
+        capability: "schema-quality",
+        status: "partial",
+        durationMs: 4,
+        message: "1 schema warning",
+        evidence: [{
+          endpoint: "schema-quality",
+          advertised: true,
+          responded: true,
+          minimalShapePresent: true,
+          findings: [{ itemType: "tool", itemName: "search", issue: "Missing description", severity: "warning" }],
+        }],
+      },
+    ]);
+    artifact.target = {
+      targetId: "http-fixture",
+      adapter: "http",
+      command: "",
+      args: [],
+      url: "https://example.test/mcp",
+      serverName: "example-http-server",
+    };
+    const report = buildAuditReport(artifact, httpTarget);
+
+    const receipt = await buildMcpReceipt(report, httpTarget, {
+      jsonReportPath,
+      markdownReportPath,
+      htmlReportPath,
+      sarifPath,
+      configFileUsed: path.join(tmpdir(), "receipt-target.json"),
+    });
+
+    expect(receipt.subject).toMatchObject({
+      mcp_server_name: "example-http-server",
+      source: "http",
+      startup_command: null,
+      target_path_or_url: "https://example.test/mcp",
+      package_or_repo: "https://example.test/repo",
+      version: "9.9.9",
+      commit_sha: "def456",
+      package_manager: null,
+    });
+    expect(receipt.run_context.config_file_used).toContain("receipt-target.json");
+    expect(receipt.evidence.json_report_sha256).toMatch(/^[a-f0-9]{64}$/);
+    expect(receipt.evidence.html_report_sha256).toMatch(/^[a-f0-9]{64}$/);
+    expect(receipt.evidence.tool_surface_summary).toContain("search, read_resource, write_file, delete_file, run_command, ...");
+    expect(receipt.evidence.schema_summary).toContain("1 schema finding");
+    expect(receipt.reproduction.ci_command).toContain("setup-ci --all --command https://example.test/mcp --sarif --schedule weekly");
+    expect(JSON.parse(renderReceipt(receipt, "json"))).toMatchObject({ receipt_type: "mcp-observatory-receipt" });
+    expect(renderReceipt(receipt, "markdown")).toContain("## Evidence");
+    expect(receiptFormatFromPath("receipt.json", "markdown")).toBe("json");
+    expect(receiptFormatFromPath("receipt.md", "json")).toBe("markdown");
+    expect(receiptFormatFromPath(undefined, "json")).toBe("json");
+  });
+
+  it("classifies and renders action receipts for release decisions", () => {
+    expect(recommendedActionForFinding({ severity: "high", attackClass: "exfiltration-canary" })).toBe("escalate");
+    expect(recommendedActionForFinding({ severity: "high", ruleId: "credential-pattern" })).toBe("escalate");
+    expect(recommendedActionForFinding({ severity: "high", category: "runtime" })).toBe("rerun");
+    expect(recommendedActionForFinding({ severity: "high", category: "attack-sim" })).toBe("quarantine");
+    expect(recommendedActionForFinding({ severity: "high", ruleId: "generic-high" })).toBe("gate");
+    expect(recommendedActionForFinding({ severity: "medium", attackClass: "contract-drift" })).toBe("rerun");
+    expect(recommendedActionForFinding({ severity: "medium" })).toBe("gate");
+    expect(recommendedActionForFinding({ severity: "low" })).toBe("allow");
+    expect(recommendedActionForFinding({ severity: "warning" })).toBe("gate");
+    expect(recommendedActionForFinding({ severity: "error" })).toBe("gate");
+
+    const fatal = makeArtifact([], "server failed to start\nstack trace");
+    expect(buildActionReceipt(fatal)).toMatchObject({
+      action: "rerun",
+      reason: "The MCP server did not complete startup/readiness checks.",
+      topFindings: [{ ruleId: "mcp-observatory/run/fatal-error", message: "server failed to start" }],
+    });
+    expect(renderActionReceipt(fatal)).toContain("Action Receipt: rerun");
+
+    const artifact = makeArtifact([
+      {
+        id: "attack-sim",
+        capability: "attack-sim",
+        status: "fail",
+        durationMs: 3,
+        message: "attack readiness finding",
+        evidence: [{
+          endpoint: "attack-sim/safe",
+          advertised: true,
+          responded: true,
+          minimalShapePresent: true,
+          findings: [{
+            ruleId: "attack-sim/contract-drift/destructive-tool-added",
+            attackClass: "contract-drift",
+            severity: "medium",
+            itemType: "tool",
+            itemName: "delete_everything",
+            message: "New destructive tool appeared after the baseline.",
+            recommendedAction: "quarantine",
+          }],
+        }],
+      },
+    ]);
+    const receipt = buildActionReceipt(artifact);
+    expect(receipt.action).toBe("quarantine");
+    expect(receipt.topFindings[0]).toMatchObject({
+      severity: "medium",
+      ruleId: "mcp-observatory/attack-sim/contract-drift/destructive-tool-added",
+    });
+    expect(renderActionReceipt(artifact)).toContain("Top evidence:");
   });
 });
