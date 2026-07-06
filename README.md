@@ -41,13 +41,13 @@ Agents should not depend on tools nobody tests. MCP Observatory turns a local MC
 
 ## Try It
 
-Safely simulate MCP attack-readiness for one server:
+Start with the homepage demo: safely simulate MCP attack-readiness for one server and emit SARIF evidence that maintainers can inspect in GitHub Code Scanning.
 
 ```bash
 npx @kryptosai/mcp-observatory attack-sim npx -y my-mcp-server --sarif attack-results.sarif
 ```
 
-Then convert the evidence into CI with Code Scanning:
+Then make the evidence repeatable in CI:
 
 ```bash
 npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif
