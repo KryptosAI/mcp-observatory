@@ -22,6 +22,7 @@ import { registerInitCiCommands } from "./commands/init-ci.js";
 import { registerLockCommands } from "./commands/lock.js";
 import { registerAttackSimCommands } from "./commands/attack-sim.js";
 import { registerAuditCommands } from "./commands/audit.js";
+import { registerReceiptCommands } from "./commands/receipt.js";
 import { DEFAULT_CLOUD_UPLOAD_ENDPOINT, printCloudInfo } from "./commercial.js";
 import { runTarget } from "./index.js";
 import type { RunArtifact, TargetConfig } from "./types.js";
@@ -63,6 +64,7 @@ const MENU_GROUPS: MenuGroup[] = [
       { command: ["history"],        label: "history",      outcome: "Show health score trends over time" },
       { command: ["setup-ci"],       label: "setup-ci",     outcome: "Create GitHub Action and badge snippets" },
       { command: ["audit"],          label: "audit <target>", outcome: "Profile-mapped security audit report + SARIF" },
+      { command: ["receipt"],        label: "receipt <target>", outcome: "Portable MCP trust receipt" },
       { command: ["attack-sim"],     label: "attack-sim",   outcome: "Safely simulate MCP attack-readiness" },
       { command: ["enterprise-report"], label: "enterprise-report", outcome: "Generate a production/security report" },
     ],
@@ -281,6 +283,7 @@ async function main(): Promise<void> {
   registerInitCiCommands(program);
   registerLockCommands(program);
   registerAuditCommands(program);
+  registerReceiptCommands(program);
   registerAttackSimCommands(program);
 
   const cloudCmd = program

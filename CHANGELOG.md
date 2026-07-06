@@ -4,6 +4,19 @@ All notable changes to MCP Observatory will be documented in this file.
 
 ## Unreleased
 
+## v1.28.0 - 2026-07-06
+
+### Added
+
+- **MCP Receipts** — canonical portable trust artifacts for MCP servers, emitted as JSON or Markdown.
+- **`receipt` command** — generate a standalone MCP receipt for any audit target.
+- **`audit --receipt <file>`** — emit a receipt alongside JSON, Markdown, or SARIF audit reports.
+- Open-core/commercial boundary docs that keep the evidence engine public while reserving private telemetry intelligence, buyer reports, and fleet workflows for paid pilots.
+
+### Changed
+
+- Release positioning moves from scanner/reporting toward reproducible MCP trust receipts for CI gates, public Safety Index entries, maintainers, agents, and buyers.
+
 ## v0.28.0 - 2026-07-05
 
 ### Added

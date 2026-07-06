@@ -77,7 +77,7 @@ Refresh these surfaces first because they are already relevant to MCP users:
 | mcpservers.org | Listing present or submitted | `setup-ci --all` |
 | awesome-mcp-servers | Developer tools/security category mention | `setup-ci --all` |
 | agent framework docs/community lists | Agent workflow examples | `serve` |
-| GitHub Action Marketplace | Action example and security framing | `action@v0.28.0` |
+| GitHub Action Marketplace | Action example and security framing | `action@v1.28.0` |
 
 Submission snippet:
 

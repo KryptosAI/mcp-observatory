@@ -9,6 +9,7 @@ import {
   resolveAuditTarget,
   runAudit,
 } from "../audit.js";
+import { buildMcpReceipt, receiptFormatFromPath, renderReceipt } from "../receipt.js";
 import { buildEvent, recordEvent } from "../telemetry.js";
 import { ANSI, c } from "./helpers.js";
 
@@ -18,6 +19,7 @@ interface AuditOptions {
   profile: string;
   format: AuditFormat;
   output?: string;
+  receipt?: string;
   failOnHigh?: boolean;
   failOnCritical?: boolean;
 }
@@ -41,6 +43,11 @@ function extractTrailingAuditFlags(args: string[], options: AuditOptions): { tar
       const next = args[i + 1];
       if (!next) throw new Error("--output requires a value.");
       nextOptions.output = next;
+      i += 1;
+    } else if (arg === "--receipt") {
+      const next = args[i + 1];
+      if (!next) throw new Error("--receipt requires a value.");
+      nextOptions.receipt = next;
       i += 1;
     } else if (arg === "--fail-on-high") {
       nextOptions.failOnHigh = true;
@@ -74,6 +81,7 @@ export function registerAuditCommands(program: Command): void {
     .option("--profile <profile>", "Security profile to apply.", "nsa-mcp")
     .option("--format <format>", "markdown, json, or sarif.", "markdown")
     .option("--output <file>", "Write report to a file instead of stdout.")
+    .option("--receipt <file>", "Also write a portable MCP receipt (.json or .md).")
     .option("--fail-on-high", "Exit nonzero when high or critical findings are present.", false)
     .option("--fail-on-critical", "Exit nonzero when critical findings are present.", false)
     .option("--no-color", "Disable colored output.")
@@ -97,6 +105,16 @@ export function registerAuditCommands(program: Command): void {
       } else {
         throw new Error("Unsupported audit format. Use markdown, json, or sarif.");
       }
+      if (options.receipt) {
+        const receipt = await buildMcpReceipt(report, target, {
+          commandInvoked: `mcp-observatory audit ${targetArgs.join(" ")} --profile ${options.profile} --format ${format}${options.output ? ` --output ${options.output}` : ""} --receipt ${options.receipt}`,
+          jsonReportPath: format === "json" ? options.output : undefined,
+          markdownReportPath: format === "markdown" ? options.output : undefined,
+          sarifPath: format === "sarif" ? options.output : undefined,
+        });
+        const receiptFormat = receiptFormatFromPath(options.receipt, "json");
+        await writeMaybe(options.receipt, renderReceipt(receipt, receiptFormat));
+      }
 
       if (options.output) {
         const score = auditScore(report);
@@ -110,6 +128,9 @@ export function registerAuditCommands(program: Command): void {
         securityFindingCount: report.summary.finding_count,
         targetIds: [target.targetId],
         checkStatuses: Object.fromEntries(report.artifact.checks.map((check) => [check.id, check.status])),
+        receiptGenerated: Boolean(options.receipt),
+        receiptFormat: options.receipt ? receiptFormatFromPath(options.receipt, "json") : undefined,
+        receiptProfile: options.profile,
       }));
 
       if (

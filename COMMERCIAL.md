@@ -4,6 +4,23 @@ MCP Observatory is the CI and security gate for MCP servers before agents depend
 
 The open source CLI and MCP server remain free for local OSS use under the MIT license. Paid pilots are for production use cases where a team needs hosted reporting, private repository CI, security reports, certification, support, or fleet visibility.
 
+See the [open core and commercial boundary](./docs/commercial-boundary.md) for the explicit line between public evidence surfaces and proprietary intelligence/reporting workflows.
+
+## Open Core Boundary
+
+MCP Observatory intentionally keeps the local evidence engine open: CLI checks, safe attack simulation, audit profiles, SARIF, GitHub Actions setup, artifact schemas, public health scores, and public Safety Index receipts.
+
+Commercial value should stay in the private workflow around that evidence:
+
+- hosted CI history and fleet visibility
+- private repository and internal MCP reporting
+- account/company intelligence derived from private telemetry
+- proprietary portfolio risk ranking and lead prioritization
+- buyer-ready evidence packs, remediation notes, and procurement deliverables
+- runtime/flight-recorder storage, alerting, retention, and SIEM export
+
+The public project should prove the method. Paid pilots should save production teams time and give them a defensible decision record.
+
 ## MCP Attack Simulation Evidence Pack
 
 The primary paid offer is a fixed-scope [MCP Attack Simulation Evidence Pack](./docs/attack-simulation-pilot.md) starting at `$15,000`.

@@ -67,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: KryptosAI/mcp-observatory/action@v0.28.0
+      - uses: KryptosAI/mcp-observatory/action@v1.28.0
         with:
           command: npx -y <server-package>
           deep: true
@@ -78,10 +78,10 @@ jobs:
 For production CI, pin the package version:
 
 ```yaml
-- uses: KryptosAI/mcp-observatory/action@v0.28.0
+- uses: KryptosAI/mcp-observatory/action@v1.28.0
   with:
     command: npx -y <server-package>
-    package-version: 0.28.0
+    package-version: 1.28.0
     deep: true
     security: true
 ```
@@ -89,7 +89,7 @@ For production CI, pin the package version:
 For repos with a local target config:
 
 ```yaml
-- uses: KryptosAI/mcp-observatory/action@v0.28.0
+- uses: KryptosAI/mcp-observatory/action@v1.28.0
   with:
     target: ./observatory-target.json
     deep: true

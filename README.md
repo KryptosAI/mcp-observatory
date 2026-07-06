@@ -73,13 +73,20 @@ Or start with the homepage demo: safely simulate MCP attack-readiness for one se
 npx @kryptosai/mcp-observatory attack-sim npx -y my-mcp-server --sarif attack-results.sarif
 ```
 
+Emit the portable trust record:
+
+```bash
+npx @kryptosai/mcp-observatory audit npx -y my-mcp-server --profile nsa-mcp --format json --output report.json --receipt receipt.json
+npx @kryptosai/mcp-observatory receipt npx -y my-mcp-server --profile nsa-mcp --format markdown --output receipt.md
+```
+
 Then make the evidence repeatable in CI:
 
 ```bash
 npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif
 ```
 
-See the [government and enterprise pilot brief](./docs/government-enterprise-pilot.md), [public guidance crosswalk](./docs/public-guidance-crosswalk.md), [procurement one-pager](./docs/procurement-one-pager.md), [security due diligence packet](./docs/security-due-diligence.md), [NSA-MCP audit CI guide](./docs/nsa-mcp-audit-ci.md), [example NSA-MCP audit report](./docs/examples/nsa-mcp-audit-report.md), [MCP Attack Simulator](./docs/mcp-attack-simulator.md), [Tool-call receipts](./docs/tool-call-receipts.md), [MCP Receipt Graph](./docs/receipt-graph.md), [launch page](./docs/launch.md), [GitHub Code Scanning demo](./docs/code-scanning-demo.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [sample safety reports](./docs/mcp-server-safety-index.md), and [reference evaluations](./docs/reference-evaluations.md).
+See the [government and enterprise pilot brief](./docs/government-enterprise-pilot.md), [public guidance crosswalk](./docs/public-guidance-crosswalk.md), [procurement one-pager](./docs/procurement-one-pager.md), [security due diligence packet](./docs/security-due-diligence.md), [NSA-MCP audit CI guide](./docs/nsa-mcp-audit-ci.md), [example NSA-MCP audit report](./docs/examples/nsa-mcp-audit-report.md), [MCP Receipts](./docs/mcp-receipts.md), [MCP Attack Simulator](./docs/mcp-attack-simulator.md), [Tool-call receipts](./docs/tool-call-receipts.md), [MCP Receipt Graph](./docs/receipt-graph.md), [launch page](./docs/launch.md), [GitHub Code Scanning demo](./docs/code-scanning-demo.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [sample safety reports](./docs/mcp-server-safety-index.md), and [reference evaluations](./docs/reference-evaluations.md).
 
 Want a receipt for a server your agent depends on? Comment on [Drop an MCP server, get a receipt #146](https://github.com/KryptosAI/mcp-observatory/issues/146) or use the [structured receipt request form](https://github.com/KryptosAI/mcp-observatory/issues/new?template=tool-call-receipt-request.yml). Public requests can become Safety Index entries, delta receipts, SARIF evidence, and maintainer CI conversations.
 
@@ -91,12 +98,14 @@ Want a receipt for a server your agent depends on? Comment on [Drop an MCP serve
 | NSA-MCP audit example | [Markdown report](./docs/examples/nsa-mcp-audit-report.md), [SARIF](./docs/examples/nsa-mcp-results.sarif), and [score JSON](./docs/examples/nsa-mcp-score.json) |
 | Procurement and pilot packet | [Public guidance crosswalk](./docs/public-guidance-crosswalk.md), [procurement one-pager](./docs/procurement-one-pager.md), and [security due diligence](./docs/security-due-diligence.md) |
 | Attack simulation output | [MCP Attack Simulator](./docs/mcp-attack-simulator.md) |
+| MCP receipts | [Portable trust receipts](./docs/mcp-receipts.md) |
 | Tool-call receipts | [Receipt standard](./docs/tool-call-receipts.md) for reproducible MCP evidence |
 | Receipt graph | [Server-to-evidence map](./docs/receipt-graph.md) for agent trust decisions |
 | SARIF / Code Scanning output | [GitHub Code Scanning demo](./docs/code-scanning-demo.md) |
 | Real MCP server evaluations | [MCP Server Safety Index](./docs/mcp-server-safety-index.md) |
 | Reference reports | [Reference evaluations](./docs/reference-evaluations.md) |
 | Maintainer and contributor proof | [MCP Observatory Contributors](./docs/contributor-recognition.md) |
+| Open core boundary | [What is open vs. commercial](./docs/commercial-boundary.md) |
 | Security disclosure path | [SECURITY.md](./SECURITY.md) |
 
 Two more fast paths:
@@ -159,6 +168,7 @@ Observatory gives maintainers and teams:
 
 - **One-command CI setup** with `setup-ci --all`
 - **Profile-mapped audits** with `audit --profile nsa-mcp`
+- **MCP receipts** that package target, evidence, verdict, action, and reproduction commands
 - **Action receipts** that say `allow`, `gate`, `rerun`, `quarantine`, or `escalate`
 - **GitHub PR comments** for compatibility, drift, and security findings
 - **GitHub Code Scanning SARIF** for normalized MCP findings
@@ -167,7 +177,7 @@ Observatory gives maintainers and teams:
 - **MCP server mode** so agents can inspect other MCP servers directly
 - **Production support path** for hosted history, private repo reporting, certification, support, and fleet visibility
 
-See the [launch page](./docs/launch.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [Code Scanning demo](./docs/code-scanning-demo.md), [target gallery](./docs/target-gallery.md), [target registry](./docs/target-registry.md), [target contribution guide](./docs/target-contribution-guide.md), [MCP Observatory Contributors](./docs/contributor-recognition.md), [Agent Task Pack](./docs/agent-tasks.md), [Tool-call receipts](./docs/tool-call-receipts.md), [MCP Receipt Graph](./docs/receipt-graph.md), [`setup-ci --doctor`](./docs/setup-ci-doctor.md), [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [June 2026 safety field report](./docs/mcp-safety-field-report-2026-06.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), [campaign attribution](./docs/campaign-attribution.md), [local metrics dashboard](./docs/metrics-dashboard.md), [MCP Attack Simulation Evidence Pack](./docs/attack-simulation-pilot.md), and [commercial support](./COMMERCIAL.md).
+See the [launch page](./docs/launch.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [Code Scanning demo](./docs/code-scanning-demo.md), [target gallery](./docs/target-gallery.md), [target registry](./docs/target-registry.md), [target contribution guide](./docs/target-contribution-guide.md), [MCP Observatory Contributors](./docs/contributor-recognition.md), [Agent Task Pack](./docs/agent-tasks.md), [MCP Receipts](./docs/mcp-receipts.md), [Tool-call receipts](./docs/tool-call-receipts.md), [MCP Receipt Graph](./docs/receipt-graph.md), [`setup-ci --doctor`](./docs/setup-ci-doctor.md), [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [June 2026 safety field report](./docs/mcp-safety-field-report-2026-06.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), [campaign attribution](./docs/campaign-attribution.md), [local metrics dashboard](./docs/metrics-dashboard.md), [open core boundary](./docs/commercial-boundary.md), [MCP Attack Simulation Evidence Pack](./docs/attack-simulation-pilot.md), and [commercial support](./COMMERCIAL.md).
 
 ## For Security And Platform Teams
 
@@ -178,6 +188,8 @@ MCP Observatory gives security and platform teams MCP server CI, schema drift de
 ## Production Support
 
 Local OSS use stays free under MIT. Teams running MCP in production can use the [MCP Attack Simulation Evidence Pack](./docs/attack-simulation-pilot.md) for safe-mode attack simulation, SARIF/Code Scanning setup, CI rollout, private evidence reporting, and owner-ready remediation notes. Attack simulation packages start at `$15,000`; narrow readiness reviews start at `$2,500`.
+
+The open source repo is the public evidence engine. Private telemetry intelligence, company/account prioritization, commercial ranking weights, hosted fleet workflows, and buyer-specific evidence packs stay outside the OSS package; see the [open core boundary](./docs/commercial-boundary.md).
 
 Run `npx @kryptosai/mcp-observatory cloud`, open a pilot request from the issue chooser, or see [COMMERCIAL.md](./COMMERCIAL.md). Also see [privacy and telemetry](./PRIVACY.md), [campaign attribution](./docs/campaign-attribution.md), and [terms for production use](./TERMS.md).
 
@@ -338,7 +350,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: KryptosAI/mcp-observatory/action@v0.28.0
+      - uses: KryptosAI/mcp-observatory/action@v1.28.0
         with:
           command: npx -y my-mcp-server
           deep: true

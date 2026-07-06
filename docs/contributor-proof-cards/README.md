@@ -17,7 +17,7 @@ Copy this template into a new file named after the target or contribution:
 | Role | Target Verifier |
 | Target | Example MCP Server |
 | Date | YYYY-MM-DD |
-| Observatory Version | v0.28.0 or later |
+| Observatory Version | v1.28.0 or later |
 | Verdict | Ready for CI / Needs maintainer review / Not reproducible yet |
 | Merged PR | https://github.com/KryptosAI/mcp-observatory/pull/000 |
 | Generated Evidence | docs/safety-index/artifacts/example-server.md |
