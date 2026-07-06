@@ -92,6 +92,14 @@ describe("CLI entrypoint", () => {
     expect(stdout).toContain("--setup-ci");
   });
 
+  it("audit subcommand shows help", () => {
+    const { stdout, exitCode } = runCli(["audit", "--help"]);
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("audit");
+    expect(stdout).toContain("--profile");
+    expect(stdout).toContain("--fail-on-high");
+  });
+
   it("diff subcommand shows help", () => {
     const { stdout, exitCode } = runCli(["diff", "--help"]);
     expect(exitCode).toBe(0);
@@ -275,6 +283,38 @@ describe("CLI entrypoint", () => {
     const sarif = JSON.parse(fs.readFileSync(sarifPath, "utf8")) as { version: string };
     expect(sarif.version).toBe("2.1.0");
     fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  it("audit writes markdown, JSON, SARIF, and profile score output for the insecure fixture", () => {
+    const tmpDir = path.join(os.tmpdir(), `obs-audit-${Date.now()}`);
+    fs.mkdirSync(tmpDir, { recursive: true });
+    const reportPath = path.join(tmpDir, "audit.md");
+    const jsonPath = path.join(tmpDir, "audit.json");
+    const sarifPath = path.join(tmpDir, "audit.sarif");
+    try {
+      const markdown = runCli(["audit", "examples/insecure-mcp-server", "--profile", "nsa-mcp", "--format", "markdown", "--output", reportPath], { timeout: 30_000 });
+      expect(markdown.exitCode).toBe(0);
+      expect(fs.readFileSync(reportPath, "utf8")).toContain("MCP Observatory Security Audit");
+      expect(fs.readFileSync(reportPath, "utf8")).toContain("critical_risk");
+
+      const json = runCli(["audit", "examples/insecure-mcp-server", "--profile", "nsa-mcp", "--format", "json", "--output", jsonPath], { timeout: 30_000 });
+      expect(json.exitCode).toBe(0);
+      const parsed = JSON.parse(fs.readFileSync(jsonPath, "utf8")) as { summary: { trust_status: string }; findings: Array<{ control_mappings: string[] }> };
+      expect(parsed.summary.trust_status).toBe("critical_risk");
+      expect(parsed.findings.some((finding) => finding.control_mappings.includes("tool_permissions"))).toBe(true);
+
+      const sarif = runCli(["audit", "examples/insecure-mcp-server", "--profile", "nsa-mcp", "--format", "sarif", "--output", sarifPath], { timeout: 30_000 });
+      expect(sarif.exitCode).toBe(0);
+      const parsedSarif = JSON.parse(fs.readFileSync(sarifPath, "utf8")) as { version: string };
+      expect(parsedSarif.version).toBe("2.1.0");
+
+      const score = runCli(["score", "examples/insecure-mcp-server", "--profile", "nsa-mcp", "--format", "json"], { timeout: 30_000 });
+      expect(score.exitCode).toBe(0);
+      const parsedScore = JSON.parse(score.stdout) as { status: string };
+      expect(parsedScore.status).toBe("critical_risk");
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
   });
 
   it("attack-sim accepts positional server commands and fails on high findings when requested", () => {

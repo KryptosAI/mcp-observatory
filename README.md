@@ -25,9 +25,27 @@
 [![mcp-observatory MCP server](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory/badges/score.svg)](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory)
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](./CONTRIBUTORS.md)
 
-**The GitHub-native CI, SARIF, and security-readiness gate for MCP servers before agents depend on them.**
+**MCP Observatory is a security release gate for MCP servers. It helps teams validate MCP servers before deployment into sensitive, regulated, or mission-critical agentic AI environments.**
 
-Agents should not depend on tools nobody tests. MCP Observatory turns a local MCP check into release-gate evidence maintainers already understand: GitHub Actions, security findings, schema drift detection, PR reports, score badges, agent-accessible diagnostics, and GitHub Code Scanning SARIF.
+Agents should not depend on tools nobody tests. MCP Observatory turns a local MCP check into release-gate evidence maintainers and security teams already understand: profile-mapped audit reports, normalized findings, SARIF for GitHub Code Scanning, GitHub Actions gates, schema drift detection, trust status output, score badges, and agent-accessible diagnostics.
+
+```bash
+npx @kryptosai/mcp-observatory audit npx -y my-mcp-server --profile nsa-mcp --format markdown --output mcp-audit.md
+```
+
+Sample trust output:
+
+```json
+{
+  "target_id": "my-mcp-server",
+  "profile": "nsa-mcp",
+  "score": 87,
+  "status": "needs_review",
+  "finding_count": 2
+}
+```
+
+The `nsa-mcp` profile is not an official certification. It maps MCP Observatory findings to practical control areas for sensitive environments: trust boundaries, tool permissions, tool description integrity, authentication, secrets exposure, schema validation, input validation, auditability, runtime safety, and supply chain.
 
 ## Trust Signals
 
@@ -41,7 +59,15 @@ Agents should not depend on tools nobody tests. MCP Observatory turns a local MC
 
 ## Try It
 
-Start with the homepage demo: safely simulate MCP attack-readiness for one server, emit an action receipt, and produce SARIF evidence that maintainers can inspect in GitHub Code Scanning.
+Run a buyer-ready MCP security audit:
+
+```bash
+npx @kryptosai/mcp-observatory audit npx -y my-mcp-server --profile nsa-mcp --format markdown --output report.md
+npx @kryptosai/mcp-observatory audit npx -y my-mcp-server --profile nsa-mcp --format sarif --output results.sarif
+npx @kryptosai/mcp-observatory score npx -y my-mcp-server --profile nsa-mcp --format json
+```
+
+Or start with the homepage demo: safely simulate MCP attack-readiness for one server, emit an action receipt, and produce SARIF evidence that maintainers can inspect in GitHub Code Scanning.
 
 ```bash
 npx @kryptosai/mcp-observatory attack-sim npx -y my-mcp-server --sarif attack-results.sarif
@@ -53,7 +79,7 @@ Then make the evidence repeatable in CI:
 npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif
 ```
 
-See the [MCP Attack Simulator](./docs/mcp-attack-simulator.md), [Tool-call receipts](./docs/tool-call-receipts.md), [MCP Receipt Graph](./docs/receipt-graph.md), [launch page](./docs/launch.md), [GitHub Code Scanning demo](./docs/code-scanning-demo.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [sample safety reports](./docs/mcp-server-safety-index.md), and [reference evaluations](./docs/reference-evaluations.md).
+See the [government and enterprise pilot brief](./docs/government-enterprise-pilot.md), [NSA-MCP audit CI guide](./docs/nsa-mcp-audit-ci.md), [example NSA-MCP audit report](./docs/examples/nsa-mcp-audit-report.md), [MCP Attack Simulator](./docs/mcp-attack-simulator.md), [Tool-call receipts](./docs/tool-call-receipts.md), [MCP Receipt Graph](./docs/receipt-graph.md), [launch page](./docs/launch.md), [GitHub Code Scanning demo](./docs/code-scanning-demo.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [sample safety reports](./docs/mcp-server-safety-index.md), and [reference evaluations](./docs/reference-evaluations.md).
 
 Want a receipt for a server your agent depends on? Comment on [Drop an MCP server, get a receipt #146](https://github.com/KryptosAI/mcp-observatory/issues/146) or use the [structured receipt request form](https://github.com/KryptosAI/mcp-observatory/issues/new?template=tool-call-receipt-request.yml). Public requests can become Safety Index entries, delta receipts, SARIF evidence, and maintainer CI conversations.
 
@@ -62,6 +88,7 @@ Want a receipt for a server your agent depends on? Comment on [Drop an MCP serve
 | Evidence | Where |
 |---|---|
 | Example GitHub Actions adoption | [`setup-ci --all`](./docs/setup-ci-doctor.md) and the generated workflow docs |
+| NSA-MCP audit example | [Markdown report](./docs/examples/nsa-mcp-audit-report.md), [SARIF](./docs/examples/nsa-mcp-results.sarif), and [score JSON](./docs/examples/nsa-mcp-score.json) |
 | Attack simulation output | [MCP Attack Simulator](./docs/mcp-attack-simulator.md) |
 | Tool-call receipts | [Receipt standard](./docs/tool-call-receipts.md) for reproducible MCP evidence |
 | Receipt graph | [Server-to-evidence map](./docs/receipt-graph.md) for agent trust decisions |
@@ -130,6 +157,7 @@ MCP servers are becoming production dependencies. If agents rely on them, teams 
 Observatory gives maintainers and teams:
 
 - **One-command CI setup** with `setup-ci --all`
+- **Profile-mapped audits** with `audit --profile nsa-mcp`
 - **Action receipts** that say `allow`, `gate`, `rerun`, `quarantine`, or `escalate`
 - **GitHub PR comments** for compatibility, drift, and security findings
 - **GitHub Code Scanning SARIF** for normalized MCP findings

@@ -1,0 +1,13 @@
+{
+  "target_id": "insecure-mcp-server",
+  "profile": "nsa-mcp",
+  "score": 0,
+  "status": "critical_risk",
+  "finding_count": 15,
+  "critical": 1,
+  "high": 3,
+  "medium": 3,
+  "low": 1,
+  "info": 7,
+  "generated_at": "2026-07-06T20:08:56.194Z"
+}

@@ -1,5 +1,18 @@
 export { generateBadgeSvg, type BadgeOptions } from "./badge.js";
 export {
+  auditScore,
+  buildAuditReport,
+  renderAuditMarkdown,
+  renderAuditSarif,
+  resolveAuditTarget,
+  runAudit,
+  type AuditReport,
+  type AuditScore,
+  type AuditSeverity,
+  type NormalizedSecurityFinding,
+  type TrustStatus,
+} from "./audit.js";
+export {
   defaultCassettesDirectory,
   loadCassette,
   saveCassette,
