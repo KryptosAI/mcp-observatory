@@ -6,7 +6,7 @@ Useful merged work can receive public credit through [MCP Observatory Contributo
 
 Rough agentic contribution ideas are welcome too. Use the [Agentic Contributor Outreach](./agentic-contributor-outreach.md) playbook or open an `Agentic contribution idea` issue when a task is promising but not ready for a focused PR.
 
-The core standard is a [tool-call receipt](./tool-call-receipts.md): public source, safe startup command, run artifact, attack-sim evidence, SARIF when useful, and a clear capability envelope showing what the run could not access. The public map is the [MCP Receipt Graph](./receipt-graph.md).
+The core standard is a [tool-call receipt](./tool-call-receipts.md): public source, safe startup command, run artifact, attack-sim evidence, SARIF when useful, and a clear capability envelope showing what the run could not access. The public map is the [MCP Risk Graph](./receipt-graph.md).
 
 ## Task 1: Add MCP Observatory CI To A Repo
 

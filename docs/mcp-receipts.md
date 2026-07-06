@@ -23,6 +23,8 @@ Each receipt has eight stable sections:
 
 The full audit report remains the place for every finding. The receipt is the compact trust record people and agents can cite.
 
+Receipts can also participate in a public or private MCP risk graph. The receipt schema does not need to change for that: `risk-graph` reads receipt artifacts, preserves the source evidence hash, classifies the capability boundary, and renders whether the server should be allowed, gated, rerun, quarantined, or escalated.
+
 ## Verdict And Action Mapping
 
 Receipts include both a human-readable state and an action receipt.
@@ -84,6 +86,12 @@ Public Safety Index receipt:
 mcp-observatory receipt npx -y my-mcp-server --profile nsa-mcp --environment-class public_safety_index --format markdown --output receipt.md
 ```
 
+Generate a risk graph from one receipt or a directory of receipts and run artifacts:
+
+```bash
+mcp-observatory risk-graph --input receipt.json --json mcp-risk-graph.json --output mcp-risk-graph.md --html mcp-risk-graph.html
+```
+
 Supported `environment_class` values:
 
 - `local`
@@ -102,6 +110,7 @@ Receipts also avoid leaking secrets or sensitive local paths. Working directorie
 Receipts are meant to become the object that directories, agents, CI gates, maintainers, and buyers can pass around:
 
 - a directory can link to the current receipt for a public MCP server
+- a graph can group receipts by capability boundary and recommended action
 - a maintainer can claim the receipt and add CI
 - an agent can decide whether to `allow`, `gate`, `rerun`, `quarantine`, or `escalate`
 - a buyer can ask for a private fleet receipt pack before approving internal MCP dependencies

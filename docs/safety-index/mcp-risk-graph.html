@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MCP Risk Graph</title>
+  <style>
+    body { margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #172033; background: #f7f9fc; }
+    header { padding: 28px 32px 18px; background: #ffffff; border-bottom: 1px solid #d8e0ea; }
+    h1 { margin: 0 0 8px; font-size: 32px; letter-spacing: 0; }
+    main { padding: 24px 32px 40px; }
+    .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .card, table { background: #ffffff; border: 1px solid #d8e0ea; border-radius: 8px; }
+    .card { padding: 16px; }
+    .card span { display: block; color: #667085; font-size: 13px; }
+    .card strong { display: block; margin-top: 6px; font-size: 24px; }
+    table { width: 100%; border-collapse: collapse; overflow: hidden; }
+    th, td { padding: 11px 12px; border-bottom: 1px solid #e5ebf2; text-align: left; vertical-align: top; font-size: 14px; }
+    th { color: #475467; background: #f0f4f8; font-size: 12px; text-transform: uppercase; }
+    code { font-size: 12px; white-space: normal; }
+    .pill { display: inline-block; padding: 3px 8px; border-radius: 999px; background: #e8eef6; font-size: 12px; }
+    .critical, .high { background: #fee2e2; color: #991b1b; }
+    .medium { background: #fef3c7; color: #92400e; }
+    .low { background: #dcfce7; color: #166534; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MCP Risk Graph</h1>
+    <p>MCP Observatory maps the risk graph of agent toolchains before agents depend on them.</p>
+  </header>
+  <main>
+    <section class="summary">
+      <article class="card"><span>Servers</span><strong>15</strong></article>
+      <article class="card"><span>Capability boundaries</span><strong>5</strong></article>
+      <article class="card"><span>Highest risk</span><strong>high</strong></article>
+      <article class="card"><span>Generated</span><strong>2026-07-06</strong></article>
+    </section>
+    <table>
+      <thead><tr><th>Server</th><th>Boundary</th><th>Risk</th><th>Action</th><th>Receipt</th><th>CI command</th><th>Evidence</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>@cyanheads/git-mcp-server</strong><br><small>@cyanheads/git-mcp-server</small></td>
+          <td><span class="pill">filesystem</span></td>
+          <td><span class="pill medium">medium</span></td>
+          <td>gate</td>
+          <td>not_generated</td>
+          <td><code>mcp-observatory setup-ci --all --command &quot;npx -y @cyanheads/git-mcp-server&quot; --sarif --schedule weekly</code></td>
+          <td><code>run-artifact:docs/safety-index/artifacts/cyanheads-git-mcp-server.json</code><br><code>attack-sim:docs/safety-index/artifacts/cyanheads-git-mcp-server.json</code></td>
+        </tr><tr>
+          <td><strong>Browser MCP</strong><br><small>@browsermcp/mcp</small></td>
+          <td><span class="pill">browser</span></td>
+          <td><span class="pill low">low</span></td>
+          <td>allow</td>
+          <td>not_generated</td>
+          <td><code>mcp-observatory setup-ci --all --command &quot;npx -y @browsermcp/mcp&quot; --sarif --schedule weekly</code></td>
+          <td><code>run-artifact:docs/safety-index/artifacts/browsermcp-server.json</code><br><code>attack-sim:docs/safety-index/artifacts/browsermcp-server.json</code></td>
+        </tr><tr>
+          <td><strong>Context7</strong><br><small>@upstash/context7-mcp</small></td>
+          <td><span class="pill">unknown</span></td>
+          <td><span class="pill medium">medium</span></td>
+          <td>gate</td>
+          <td>not_generated</td>
+          <td><code>mcp-observatory setup-ci --all --command &quot;npx -y @upstash/context7-mcp&quot; --sarif --schedule weekly</code></td>
+          <td><code>run-artifact:docs/safety-index/artifacts/context7-server.json</code><br><code>attack-sim:docs/safety-index/artifacts/context7-server.json</code></td>
+        </tr><tr>
+          <td><strong>example-servers/puppeteer</strong><br><small>puppeteer-mcp-server</small></td>
+          <td><span class="pill">browser</span></td>
+          <td><span class="pill high">high</span></td>
+          <td>quarantine</td>
+          <td>not_generated</td>
+          <td><code>mcp-observatory setup-ci --all --command &quot;npx -y puppeteer-mcp-server&quot; --sarif --schedule weekly</code></td>
+          <td><code>run-artifact:docs/safety-index/artifacts/puppeteer-server.json</code><br><code>attack-sim:docs/safety-index/artifacts/puppeteer-server.json</code></td>
+        </tr><tr>
+          <td><strong>kubernetes</strong><br><small>mcp-server-kubernetes</small></td>
+          <td><span class="pill">infra-cloud</span></td>
+          <td><span class="pill high">high</span></td>
+          <td>quarantine</td>
+          <td>not_generated</td>
+          <td><code>mcp-observatory setup-ci --all --command &quot;npx -y mcp-server-kubernetes&quot; --sarif --schedule weekly</code></td>
+          <td><code>run-artifact:docs/safety-index/artifacts/kubernetes-server.attack.json</code><br><code>attack-sim:docs/safety-index/artifacts/kubernetes-server.attack.json</code><br><code>run-artifact:docs/safety-index/artifacts/kubernetes-server.json</code><br><code>attack-sim:docs/safety-index/artifacts/kubernetes-server.json</code></td>
+        </tr><tr>
+          <td><strong>mcp-server-chart</strong><br><small>@antv/mcp-server-chart</small></td>
+          <td><span class="pill">unknown</span></td>
+          <td><span class="pill low">low</span></td>
+          <td>allow</td>
+          <td>not_generated</td>
+          <td><code>mcp-observatory setup-ci --all --command &quot;npx -y @antv/mcp-server-chart&quot; --sarif --schedule weekly</code></td>
+          <td><code>run-artifact:docs/safety-index/artifacts/antv-chart-server.json</code><br><code>attack-sim:docs/safety-index/artifacts/antv-chart-server.json</code></td>
+        </tr><tr>
+          <td><strong>mcp-servers/everything</strong><br><small>@modelcontextprotocol/server-everything</small></td>
+          <td><span class="pill">filesystem</span></td>
+          <td><span class="pill low">low</span></td>
+          <td>allow</td>
+          <td>not_generated</td>
+          <td><code>mcp-observatory setup-ci --all --command &quot;npx -y @modelcontextprotocol/server-everything&quot; --sarif --schedule weekly</code></td>
+          <td><code>run-artifact:docs/safety-index/artifacts/everything-server.json</code><br><code>attack-sim:docs/safety-index/artifacts/everything-server.json</code></td>
+        </tr><tr>
+          <td><strong>memory-server</strong><br><small>@modelcontextprotocol/server-memory</small></td>
+          <td><span class="pill">memory</span></td>
+          <td><span class="pill low">low</span></td>
+          <td>allow</td>
+          <td>not_generated</td>
+          <td><code>mcp-observatory setup-ci --all --command &quot;npx -y @modelcontextprotocol/server-memory&quot; --sarif --schedule weekly</code></td>
+          <td><code>run-artifact:docs/safety-index/artifacts/memory-server.json</code><br><code>attack-sim:docs/safety-index/artifacts/memory-server.json</code></td>
+        </tr><tr>
+          <td><strong>opentofu</strong><br><small>@opentofu/opentofu-mcp-server</small></td>
+          <td><span class="pill">infra-cloud</span></td>
+          <td><span class="pill medium">medium</span></td>
+          <td>gate</td>
+          <td>not_generated</td>
+          <td><code>mcp-observatory setup-ci --all --command &quot;npx -y @opentofu/opentofu-mcp-server&quot; --sarif --schedule weekly</code></td>
+          <td><code>run-artifact:docs/safety-index/artifacts/opentofu-server.json</code><br><code>attack-sim:docs/safety-index/artifacts/opentofu-server.json</code></td>
+        </tr><tr>
+          <td><strong>Playwright</strong><br><small>@playwright/mcp</small></td>
+          <td><span class="pill">browser</span></td>
+          <td><span class="pill high">high</span></td>
+          <td>quarantine</td>
+          <td>not_generated</td>
+          <td><code>mcp-observatory setup-ci --all --command &quot;npx -y @playwright/mcp&quot; --sarif --schedule weekly</code></td>
+          <td><code>run-artifact:docs/safety-index/artifacts/playwright-mcp-server.json</code><br><code>attack-sim:docs/safety-index/artifacts/playwright-mcp-server.json</code></td>
+        </tr><tr>
+          <td><strong>playwright-mcp</strong><br><small>@executeautomation/playwright-mcp-server</small></td>
+          <td><span class="pill">browser</span></td>
+          <td><span class="pill high">high</span></td>
+          <td>quarantine</td>
+          <td>not_generated</td>
+          <td><code>mcp-observatory setup-ci --all --command &quot;npx -y @executeautomation/playwright-mcp-server&quot; --sarif --schedule weekly</code></td>
+          <td><code>run-artifact:docs/safety-index/artifacts/executeautomation-playwright-server.json</code><br><code>attack-sim:docs/safety-index/artifacts/executeautomation-playwright-server.json</code></td>
+        </tr><tr>
+          <td><strong>promptopia-mcp</strong><br><small>promptopia-mcp</small></td>
+          <td><span class="pill">filesystem</span></td>
+          <td><span class="pill low">low</span></td>
+          <td>allow</td>
+          <td>not_generated</td>
+          <td><code>mcp-observatory setup-ci --all --command &quot;npx -y promptopia-mcp&quot; --sarif --schedule weekly</code></td>
+          <td><code>run-artifact:docs/safety-index/artifacts/promptopia-server.json</code><br><code>attack-sim:docs/safety-index/artifacts/promptopia-server.json</code></td>
+        </tr><tr>
+          <td><strong>Ref</strong><br><small>ref-tools-mcp</small></td>
+          <td><span class="pill">unknown</span></td>
+          <td><span class="pill low">low</span></td>
+          <td>allow</td>
+          <td>not_generated</td>
+          <td><code>mcp-observatory setup-ci --all --command &quot;npx -y ref-tools-mcp&quot; --sarif --schedule weekly</code></td>
+          <td><code>run-artifact:docs/safety-index/artifacts/ref-tools-server.json</code><br><code>attack-sim:docs/safety-index/artifacts/ref-tools-server.json</code></td>
+        </tr><tr>
+          <td><strong>secure-filesystem-server</strong><br><small>@modelcontextprotocol/server-filesystem</small></td>
+          <td><span class="pill">filesystem</span></td>
+          <td><span class="pill medium">medium</span></td>
+          <td>gate</td>
+          <td>not_generated</td>
+          <td><code>mcp-observatory setup-ci --all --command &quot;npx -y @modelcontextprotocol/server-filesystem examples/filesystem-fixture&quot; --sarif --schedule weekly</code></td>
+          <td><code>run-artifact:docs/safety-index/artifacts/filesystem-server.json</code><br><code>attack-sim:docs/safety-index/artifacts/filesystem-server.json</code></td>
+        </tr><tr>
+          <td><strong>sequential-thinking-server</strong><br><small>@modelcontextprotocol/server-sequential-thinking</small></td>
+          <td><span class="pill">unknown</span></td>
+          <td><span class="pill low">low</span></td>
+          <td>allow</td>
+          <td>not_generated</td>
+          <td><code>mcp-observatory setup-ci --all --command &quot;npx -y @modelcontextprotocol/server-sequential-thinking&quot; --sarif --schedule weekly</code></td>
+          <td><code>run-artifact:docs/safety-index/artifacts/sequential-thinking-server.json</code><br><code>attack-sim:docs/safety-index/artifacts/sequential-thinking-server.json</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

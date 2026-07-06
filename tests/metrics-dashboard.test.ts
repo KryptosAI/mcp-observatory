@@ -99,8 +99,8 @@ describe("local metrics dashboard", () => {
           { stage: "Paid intent", commands: "cloud, cloud-upload, enterprise-report", events: 0, sessions: 0, recommendation: "Follow up." },
         ],
         dailyMarketCommandFunnel: [
-          { day: "2026-05-21", agentInstallSessions: 1, attackSimSessions: 0, ciSarifSessions: 0, receiptSessions: 0, validationSessions: 1, regressionSessions: 0, ciSetupSessions: 0, paidIntentSessions: 0 },
-          { day: "2026-06-21", agentInstallSessions: 2, attackSimSessions: 1, ciSarifSessions: 1, receiptSessions: 1, validationSessions: 3, regressionSessions: 0, ciSetupSessions: 1, paidIntentSessions: 0 },
+          { day: "2026-05-21", agentInstallSessions: 1, attackSimSessions: 0, ciSarifSessions: 0, receiptSessions: 0, riskGraphSessions: 0, validationSessions: 1, regressionSessions: 0, ciSetupSessions: 0, paidIntentSessions: 0 },
+          { day: "2026-06-21", agentInstallSessions: 2, attackSimSessions: 1, ciSarifSessions: 1, receiptSessions: 1, riskGraphSessions: 1, validationSessions: 3, regressionSessions: 0, ciSetupSessions: 1, paidIntentSessions: 0 },
         ],
         dailyDirectionSignals: [
           { metric: "Market sessions", current: 4, previous: 1, deltaLabel: "+300%", direction: "up", context: "2026-06-21", nextAction: "Amplify the source that changed." },
@@ -170,6 +170,7 @@ describe("local metrics dashboard", () => {
     expect(html).toContain("Data Quality");
     expect(html).toContain("Attack-sim sessions");
     expect(html).toContain("Receipt sessions");
+    expect(html).toContain("Risk-graph sessions");
     expect(html).toContain("SARIF setup");
     expect(html).toContain("month over month · all time");
     expect(html).toContain("Latest Version Adoption");

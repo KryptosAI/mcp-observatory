@@ -180,7 +180,7 @@ interface TelemetrySummary {
   versionHealth: VersionHealth;
   dailyMarketVersionAdoption: Array<{ day: string; totalSessions: number; latestSessions: number; latestEvents: number; latestSessionShare: number; dominantVersion: string }>;
   commandFunnel: Array<{ stage: string; commands: string; events: number; sessions: number; recommendation: string }>;
-  dailyMarketCommandFunnel: Array<{ day: string; agentInstallSessions: number; validationSessions: number; regressionSessions: number; ciSetupSessions: number; attackSimSessions: number; ciSarifSessions: number; receiptSessions: number; paidIntentSessions: number }>;
+  dailyMarketCommandFunnel: Array<{ day: string; agentInstallSessions: number; validationSessions: number; regressionSessions: number; ciSetupSessions: number; attackSimSessions: number; ciSarifSessions: number; receiptSessions: number; riskGraphSessions: number; paidIntentSessions: number }>;
   dailyDirectionSignals: DailyDirectionSignal[];
   funnelConversions: FunnelConversion[];
   dataQualitySignals: DataQualitySignal[];
@@ -922,12 +922,15 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
   const setupStageSessions = new Set<string>();
   const ciSarifStageSessions = new Set<string>();
   const paidStageSessions = new Set<string>();
+  const riskGraphStageSessions = new Set<string>();
   let receiptEvents = 0;
+  let riskGraphEvents = 0;
   const dailyMarketCommandFunnel = new Map<string, {
     agentInstallSessions: Set<string>;
     attackSimSessions: Set<string>;
     ciSarifSessions: Set<string>;
     receiptSessions: Set<string>;
+    riskGraphSessions: Set<string>;
     validationSessions: Set<string>;
     regressionSessions: Set<string>;
     ciSetupSessions: Set<string>;
@@ -1021,6 +1024,7 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
             attackSimSessions: new Set<string>(),
             ciSarifSessions: new Set<string>(),
             receiptSessions: new Set<string>(),
+            riskGraphSessions: new Set<string>(),
             validationSessions: new Set<string>(),
             regressionSessions: new Set<string>(),
             ciSetupSessions: new Set<string>(),
@@ -1033,6 +1037,7 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
           if (row.command === "init-ci" || row.command === "setup-ci") commandBucket.ciSetupSessions.add(session);
           if ((row.command === "init-ci" || row.command === "setup-ci") && (row as TelemetryRow & { setupCiSarif?: boolean }).setupCiSarif === true) commandBucket.ciSarifSessions.add(session);
           if (row.command === "receipt" || (row as TelemetryRow & { receiptGenerated?: boolean }).receiptGenerated === true) commandBucket.receiptSessions.add(session);
+          if (row.command === "risk-graph" || (row as TelemetryRow & { riskGraphGenerated?: boolean }).riskGraphGenerated === true) commandBucket.riskGraphSessions.add(session);
           if (row.command === "cloud" || row.command === "cloud-upload" || row.command === "enterprise-report") commandBucket.paidIntentSessions.add(session);
           dailyMarketCommandFunnel.set(day, commandBucket);
         }
@@ -1047,11 +1052,16 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
         if (row.command === "test" || row.command === "scan" || row.command === "run") validationStageSessions.add(session);
         if (row.command === "init-ci" || row.command === "setup-ci") setupStageSessions.add(session);
         if ((row.command === "init-ci" || row.command === "setup-ci") && (row as TelemetryRow & { setupCiSarif?: boolean }).setupCiSarif === true) ciSarifStageSessions.add(session);
+        if (row.command === "risk-graph" || (row as TelemetryRow & { riskGraphGenerated?: boolean }).riskGraphGenerated === true) riskGraphStageSessions.add(session);
         if (row.command === "cloud" || row.command === "cloud-upload" || row.command === "enterprise-report") paidStageSessions.add(session);
       }
       if (row.command === "receipt" || (row as TelemetryRow & { receiptGenerated?: boolean }).receiptGenerated === true) {
         receiptEvents += 1;
         if (session) receiptSessions.add(session);
+      }
+      if (row.command === "risk-graph" || (row as TelemetryRow & { riskGraphGenerated?: boolean }).riskGraphGenerated === true) {
+        riskGraphEvents += 1;
+        if (session) riskGraphStageSessions.add(session);
       }
       for (const domain of rowDomains(row)) {
         if (INTERNAL_DOMAINS.has(domain)) continue;
@@ -1136,6 +1146,7 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
       ciSetupSessions: stats.ciSetupSessions.size,
       paidIntentSessions: stats.paidIntentSessions.size,
       receiptSessions: stats.receiptSessions.size,
+      riskGraphSessions: stats.riskGraphSessions.size,
     }))
     .sort((a, b) => a.day.localeCompare(b.day));
   const commandStats = (names: string[]): { events: number; sessions: number } => {
@@ -1191,6 +1202,13 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
       recommendation: "Treat receipts as the portable artifact that can drive maintainer replies and paid pilots.",
     },
     {
+      stage: "Risk graph",
+      commands: "risk-graph",
+      events: riskGraphEvents,
+      sessions: riskGraphStageSessions.size,
+      recommendation: "This is the Wiz-style surface; turn receipts into fleet and toolchain risk visibility.",
+    },
+    {
       stage: "Paid intent",
       commands: "cloud, cloud-upload, enterprise-report",
       ...commandStats(["cloud", "cloud-upload", "enterprise-report"]),
@@ -1205,6 +1223,7 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
   const previousVersionDay = sortedDailyMarketVersionAdoption.at(-2);
   const validationToAttack = intersectionSize(validationStageSessions, attackStageSessions);
   const attackToReceipt = intersectionSize(attackStageSessions, receiptSessions);
+  const receiptToRiskGraph = intersectionSize(receiptSessions, riskGraphStageSessions);
   const attackToSetup = intersectionSize(attackStageSessions, setupStageSessions);
   const setupToSarif = intersectionSize(setupStageSessions, ciSarifStageSessions);
   const lastSeenAgeHours = latestExternalSeen
@@ -1272,6 +1291,7 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
       directionSignal("Market sessions", latestMarketDay?.sessions ?? 0, previousMarketDay?.sessions ?? 0, latestMarketDay ? latestMarketDay.day : "No market day yet", "If this is up, amplify the source that changed; if down, post a fresh receipt/index proof."),
       directionSignal("Attack-sim sessions", latestCommandDay?.attackSimSessions ?? 0, previousCommandDay?.attackSimSessions ?? 0, latestCommandDay ? latestCommandDay.day : "No attack-sim day yet", "Make attack-sim the first demo and push receipts after every finding."),
       directionSignal("Receipt sessions", latestCommandDay?.receiptSessions ?? 0, previousCommandDay?.receiptSessions ?? 0, latestCommandDay ? latestCommandDay.day : "No receipt day yet", "Use generated receipts as the artifact for maintainer conversations and paid pilots."),
+      directionSignal("Risk-graph sessions", latestCommandDay?.riskGraphSessions ?? 0, previousCommandDay?.riskGraphSessions ?? 0, latestCommandDay ? latestCommandDay.day : "No risk-graph day yet", "Turn receipts into the agent toolchain risk graph and route high-risk nodes to pilots."),
       directionSignal("CI setup sessions", latestCommandDay?.ciSetupSessions ?? 0, previousCommandDay?.ciSetupSessions ?? 0, latestCommandDay ? latestCommandDay.day : "No CI setup day yet", "Push setup-ci --all --sarif --schedule weekly after passing scans."),
       directionSignal("SARIF setup sessions", latestCommandDay?.ciSarifSessions ?? 0, previousCommandDay?.ciSarifSessions ?? 0, latestCommandDay ? latestCommandDay.day : "No SARIF setup day yet", "Make SARIF the default enterprise/security handoff path."),
       directionSignal("Paid-intent sessions", latestCommandDay?.paidIntentSessions ?? 0, previousCommandDay?.paidIntentSessions ?? 0, latestCommandDay ? latestCommandDay.day : "No paid-intent day yet", "Follow up on cloud/report sessions with the pilot offer."),
@@ -1280,6 +1300,7 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
     funnelConversions: [
       { name: "Validation to attack-sim", numerator: validationToAttack, denominator: validationStageSessions.size, rate: numericRate(validationToAttack, validationStageSessions.size), context: "Same-session progression from scan/test/run into the demo wedge." },
       { name: "Attack-sim to receipt", numerator: attackToReceipt, denominator: attackStageSessions.size, rate: numericRate(attackToReceipt, attackStageSessions.size), context: "Same-session progression from findings into portable proof." },
+      { name: "Receipt to risk graph", numerator: receiptToRiskGraph, denominator: receiptSessions.size, rate: numericRate(receiptToRiskGraph, receiptSessions.size), context: "Same-session progression from portable proof into fleet/toolchain visibility." },
       { name: "Attack-sim to CI setup", numerator: attackToSetup, denominator: attackStageSessions.size, rate: numericRate(attackToSetup, attackStageSessions.size), context: "Same-session progression from attack evidence into a recurring gate." },
       { name: "CI setup to SARIF", numerator: setupToSarif, denominator: setupStageSessions.size, rate: numericRate(setupToSarif, setupStageSessions.size), context: "Same-session progression into the security-friendly CI path." },
       { name: "Market to paid intent", numerator: paidStageSessions.size, denominator: externalSessions.size, rate: numericRate(paidStageSessions.size, externalSessions.size), context: "Market sessions that reached cloud/report pilot intent." },
@@ -1560,6 +1581,7 @@ interface UsageTrendPoint {
   attackSimSessions: number;
   ciSarifSessions: number;
   receiptSessions: number;
+  riskGraphSessions: number;
   validationSessions: number;
   regressionSessions: number;
   ciSetupSessions: number;
@@ -1580,6 +1602,7 @@ interface UsagePeriodSummary {
   attackSimSessions: number;
   ciSarifSessions: number;
   receiptSessions: number;
+  riskGraphSessions: number;
   paidIntentSessions: number;
   npmDownloads: number;
   clones: number;
@@ -1665,6 +1688,7 @@ function usageTrendPoints(model: DashboardModel, limit = TREND_WINDOW_DAYS): Usa
       attackSimSessions: commandRow?.attackSimSessions ?? 0,
       ciSarifSessions: commandRow?.ciSarifSessions ?? 0,
       receiptSessions: commandRow?.receiptSessions ?? 0,
+      riskGraphSessions: commandRow?.riskGraphSessions ?? 0,
       validationSessions: commandRow?.validationSessions ?? 0,
       regressionSessions: commandRow?.regressionSessions ?? 0,
       ciSetupSessions: commandRow?.ciSetupSessions ?? 0,
@@ -1691,6 +1715,7 @@ function usagePeriodSummary(points: UsageTrendPoint[], days: number, offset = 0)
     attackSimSessions: rows.reduce((sum, point) => sum + point.attackSimSessions, 0),
     ciSarifSessions: rows.reduce((sum, point) => sum + point.ciSarifSessions, 0),
     receiptSessions: rows.reduce((sum, point) => sum + point.receiptSessions, 0),
+    riskGraphSessions: rows.reduce((sum, point) => sum + point.riskGraphSessions, 0),
     paidIntentSessions: rows.reduce((sum, point) => sum + point.paidIntentSessions, 0),
     npmDownloads: rows.reduce((sum, point) => sum + point.npmDownloads, 0),
     clones: rows.reduce((sum, point) => sum + point.clones, 0),
@@ -1951,14 +1976,17 @@ function growthCommandCenterPanel(model: DashboardModel, points: UsageTrendPoint
   const setupStage = model.telemetry.commandFunnel.find((row) => row.stage === "CI setup");
   const paidStage = model.telemetry.commandFunnel.find((row) => row.stage === "Paid intent");
   const receiptStage = model.telemetry.commandFunnel.find((row) => row.stage === "Receipts");
+  const riskGraphStage = model.telemetry.commandFunnel.find((row) => row.stage === "Risk graph");
   const externalCi = model.telemetry.sourceCounts.find((row) => row.source === "external_ci")?.sessions ?? 0;
   const latestShare = latestVersion?.sessionShare ?? 0;
   const nextAction = month.attackSimSessions === 0
     ? "Push attack-sim as the first demo after every scan."
     : month.receiptSessions === 0
       ? "Turn attack-sim results into portable MCP receipts."
+    : month.riskGraphSessions === 0
+      ? "Turn receipts into MCP risk graphs for agent toolchain visibility."
     : month.setupSessions === 0
-      ? "Convert attack receipts into setup-ci --sarif runs."
+      ? "Convert risk graph entries into setup-ci --sarif runs."
       : month.paidIntentSessions === 0
         ? "Route high-risk receipts to the paid pilot offer."
         : "Follow up with the highest-intent accounts from paid and CI sessions.";
@@ -1966,6 +1994,7 @@ function growthCommandCenterPanel(model: DashboardModel, points: UsageTrendPoint
     { label: "Latest-version adoption", value: `${latestShare}%`, context: latestVersion ? `${formatNumber(latestVersion.sessions)} sessions on ${latestVersion.version}` : "No version telemetry", color: "#8b5cf6" },
     { label: "Attack-sim sessions", value: formatNumber(attackStage?.sessions ?? 0), context: `${formatNumber(month.attackSimSessions)} in current 30d`, color: "#ef4444" },
     { label: "Receipt sessions", value: formatNumber(receiptStage?.sessions ?? 0), context: `${formatNumber(month.receiptSessions)} in current 30d`, color: "#c084fc" },
+    { label: "Risk-graph sessions", value: formatNumber(riskGraphStage?.sessions ?? 0), context: `${formatNumber(month.riskGraphSessions)} in current 30d`, color: "#14b8a6" },
     { label: "CI setup sessions", value: formatNumber(setupStage?.sessions ?? 0), context: `${formatNumber(month.ciSarifSessions)} SARIF setup sessions in current 30d`, color: "#22c55e" },
     { label: "External CI", value: formatNumber(externalCi), context: "market CI sessions", color: "#3b82f6" },
     { label: "Paid intent", value: formatNumber(paidStage?.sessions ?? 0), context: `${formatNumber(month.paidIntentSessions)} cloud/report sessions in current 30d`, color: "#f97316" },
@@ -1981,7 +2010,7 @@ function growthCommandCenterPanel(model: DashboardModel, points: UsageTrendPoint
       <article class="small-card">
         <span>Next best action</span>
         <strong style="font-size:17px;line-height:1.18">${escapeHtml(nextAction)}</strong>
-        <small>Optimize for latest attack-sim + setup-ci --sarif sessions.</small>
+        <small>Optimize for latest attack-sim, receipts, risk graphs, and setup-ci --sarif sessions.</small>
       </article>
     </div>
   </article>`;
@@ -2050,6 +2079,7 @@ function detailSearchRows(model: DashboardModel, points: UsageTrendPoint[]): str
   add("KPI", "Setup conversion", conversionPercent(month.setupSessions, month.clones + month.npmDownloads), `${formatNumber(month.setupSessions)} setup sessions / ${formatNumber(month.clones + month.npmDownloads)} 30d clone+download signals`);
   add("Growth", "Attack-sim conversion", `${formatNumber(month.attackSimSessions)} sessions`, "Current 30d sessions for the public demo wedge");
   add("Growth", "Receipt conversion", `${formatNumber(month.receiptSessions)} sessions`, "Current 30d sessions that generated MCP receipts");
+  add("Growth", "Risk graph conversion", `${formatNumber(month.riskGraphSessions)} sessions`, "Current 30d sessions that mapped receipts/artifacts into MCP risk graphs");
   add("Growth", "SARIF setup", `${formatNumber(month.ciSarifSessions)} sessions`, "Current 30d setup-ci/init-ci sessions that requested SARIF");
   add("Growth", "Paid intent", `${formatNumber(month.paidIntentSessions)} sessions`, "Current 30d cloud, cloud-upload, and enterprise-report sessions");
   for (const signal of model.telemetry.dailyDirectionSignals) {

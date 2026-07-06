@@ -109,6 +109,15 @@ describe("CLI entrypoint", () => {
     expect(stdout).toContain("--environment-class");
   });
 
+  it("risk-graph subcommand shows help", () => {
+    const { stdout, exitCode } = runCli(["risk-graph", "--help"]);
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("risk-graph");
+    expect(stdout).toContain("--input");
+    expect(stdout).toContain("--json");
+    expect(stdout).toContain("--html");
+  });
+
   it("diff subcommand shows help", () => {
     const { stdout, exitCode } = runCli(["diff", "--help"]);
     expect(exitCode).toBe(0);
@@ -385,6 +394,50 @@ describe("CLI entrypoint", () => {
       expect(markdown).toContain("public_safety_index");
       expect(markdown).toContain("Request private fleet receipt pack");
       expect(markdown).toContain("mcp-observatory setup-ci --all");
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
+  });
+
+  it("risk-graph writes JSON, Markdown, and HTML from artifact inputs", () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "obs-risk-"));
+    const inputDir = path.join(tmpDir, "artifacts");
+    fs.mkdirSync(inputDir, { recursive: true });
+    fs.copyFileSync(path.resolve("tests/fixtures/sample-run-a.json"), path.join(inputDir, "sample-run-a.json"));
+    const jsonPath = path.join(tmpDir, "risk-graph.json");
+    const markdownPath = path.join(tmpDir, "risk-graph.md");
+    const htmlPath = path.join(tmpDir, "risk-graph.html");
+    try {
+      const result = runCli([
+        "risk-graph",
+        "--input",
+        inputDir,
+        "--json",
+        jsonPath,
+        "--output",
+        markdownPath,
+        "--html",
+        htmlPath,
+      ]);
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain("Built MCP risk graph");
+      const graph = JSON.parse(fs.readFileSync(jsonPath, "utf8")) as { schemaVersion: string; summary: { totalServers: number }; nodes: Array<{ name: string }> };
+      expect(graph.schemaVersion).toBe("1.0.0");
+      expect(graph.summary.totalServers).toBe(1);
+      expect(graph.nodes.some((node) => node.name === "fixture-server")).toBe(true);
+      expect(fs.readFileSync(markdownPath, "utf8")).toContain("# MCP Risk Graph");
+      expect(fs.readFileSync(htmlPath, "utf8")).toContain("<title>MCP Risk Graph</title>");
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
+  });
+
+  it("risk-graph exits nonzero for an empty input directory", () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "obs-risk-empty-"));
+    try {
+      const { stderr, exitCode } = runCliWithStderr(["risk-graph", "--input", tmpDir]);
+      expect(exitCode).not.toBe(0);
+      expect(stderr).toContain("No supported MCP run artifacts or receipts found");
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
     }

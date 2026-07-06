@@ -81,6 +81,14 @@ export interface TelemetryEnrichment {
   receiptProfile?: string;
   receiptEnvironmentClass?: string;
   receiptTopFindings?: number;
+  // Risk graph
+  riskGraphGenerated?: boolean;
+  riskGraphNodeCount?: number;
+  riskGraphServerCount?: number;
+  riskGraphBoundaryCount?: number;
+  riskGraphHighestRisk?: string;
+  riskGraphInputCount?: number;
+  riskGraphOutputFormats?: string[];
   // Nightly scans
   nightlyScan?: boolean;
   issueCreated?: boolean;

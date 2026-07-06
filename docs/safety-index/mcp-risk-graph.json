@@ -1,0 +1,669 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-07-06T22:47:17.078Z",
+  "toolVersion": "1.28.2",
+  "nodes": [
+    {
+      "id": "boundary:browser",
+      "name": "browser",
+      "source": "capability-boundary",
+      "serverPackageOrRepo": null,
+      "capabilityBoundary": "browser",
+      "receiptState": "not_generated",
+      "recommendedAction": "gate",
+      "riskLevel": "medium",
+      "evidenceRefs": [],
+      "ciCommand": null
+    },
+    {
+      "id": "boundary:filesystem",
+      "name": "filesystem",
+      "source": "capability-boundary",
+      "serverPackageOrRepo": null,
+      "capabilityBoundary": "filesystem",
+      "receiptState": "not_generated",
+      "recommendedAction": "gate",
+      "riskLevel": "medium",
+      "evidenceRefs": [],
+      "ciCommand": null
+    },
+    {
+      "id": "boundary:infra-cloud",
+      "name": "infra-cloud",
+      "source": "capability-boundary",
+      "serverPackageOrRepo": null,
+      "capabilityBoundary": "infra-cloud",
+      "receiptState": "not_generated",
+      "recommendedAction": "gate",
+      "riskLevel": "medium",
+      "evidenceRefs": [],
+      "ciCommand": null
+    },
+    {
+      "id": "boundary:memory",
+      "name": "memory",
+      "source": "capability-boundary",
+      "serverPackageOrRepo": null,
+      "capabilityBoundary": "memory",
+      "receiptState": "not_generated",
+      "recommendedAction": "gate",
+      "riskLevel": "medium",
+      "evidenceRefs": [],
+      "ciCommand": null
+    },
+    {
+      "id": "boundary:unknown",
+      "name": "unknown",
+      "source": "capability-boundary",
+      "serverPackageOrRepo": null,
+      "capabilityBoundary": "unknown",
+      "receiptState": "not_generated",
+      "recommendedAction": "allow",
+      "riskLevel": "unknown",
+      "evidenceRefs": [],
+      "ciCommand": null
+    },
+    {
+      "id": "server:a6f199ad8d4e160f",
+      "name": "@cyanheads/git-mcp-server",
+      "source": "run-artifact",
+      "serverPackageOrRepo": "@cyanheads/git-mcp-server",
+      "capabilityBoundary": "filesystem",
+      "receiptState": "not_generated",
+      "recommendedAction": "gate",
+      "riskLevel": "medium",
+      "evidenceRefs": [
+        {
+          "type": "run-artifact",
+          "path": "docs/safety-index/artifacts/cyanheads-git-mcp-server.json",
+          "sha256": "d971c980f63c7e267ebf445ad287783cf1b0061472e120659ff8454d318d8cf5"
+        },
+        {
+          "type": "attack-sim",
+          "path": "docs/safety-index/artifacts/cyanheads-git-mcp-server.json"
+        }
+      ],
+      "ciCommand": "mcp-observatory setup-ci --all --command \"npx -y @cyanheads/git-mcp-server\" --sarif --schedule weekly"
+    },
+    {
+      "id": "server:035ad89537d6510b",
+      "name": "Browser MCP",
+      "source": "run-artifact",
+      "serverPackageOrRepo": "@browsermcp/mcp",
+      "capabilityBoundary": "browser",
+      "receiptState": "not_generated",
+      "recommendedAction": "allow",
+      "riskLevel": "low",
+      "evidenceRefs": [
+        {
+          "type": "run-artifact",
+          "path": "docs/safety-index/artifacts/browsermcp-server.json",
+          "sha256": "88ecd58add9adb4535501e86abaeddc7c425afdc43227a77f890b6605f1197db"
+        },
+        {
+          "type": "attack-sim",
+          "path": "docs/safety-index/artifacts/browsermcp-server.json"
+        }
+      ],
+      "ciCommand": "mcp-observatory setup-ci --all --command \"npx -y @browsermcp/mcp\" --sarif --schedule weekly"
+    },
+    {
+      "id": "server:6b95baeb28bffc42",
+      "name": "Context7",
+      "source": "run-artifact",
+      "serverPackageOrRepo": "@upstash/context7-mcp",
+      "capabilityBoundary": "unknown",
+      "receiptState": "not_generated",
+      "recommendedAction": "gate",
+      "riskLevel": "medium",
+      "evidenceRefs": [
+        {
+          "type": "run-artifact",
+          "path": "docs/safety-index/artifacts/context7-server.json",
+          "sha256": "3a0634207bdcbbd18c8aa71efc48f01bbbd85a0b1d8c3f6714536bc956c28826"
+        },
+        {
+          "type": "attack-sim",
+          "path": "docs/safety-index/artifacts/context7-server.json"
+        }
+      ],
+      "ciCommand": "mcp-observatory setup-ci --all --command \"npx -y @upstash/context7-mcp\" --sarif --schedule weekly"
+    },
+    {
+      "id": "server:b1f7c29595b3542e",
+      "name": "example-servers/puppeteer",
+      "source": "run-artifact",
+      "serverPackageOrRepo": "puppeteer-mcp-server",
+      "capabilityBoundary": "browser",
+      "receiptState": "not_generated",
+      "recommendedAction": "quarantine",
+      "riskLevel": "high",
+      "evidenceRefs": [
+        {
+          "type": "run-artifact",
+          "path": "docs/safety-index/artifacts/puppeteer-server.json",
+          "sha256": "5fe7522609f91c09f641f98913c83b9cfb372716d505432a8fd7436c8f91fbdb"
+        },
+        {
+          "type": "attack-sim",
+          "path": "docs/safety-index/artifacts/puppeteer-server.json"
+        }
+      ],
+      "ciCommand": "mcp-observatory setup-ci --all --command \"npx -y puppeteer-mcp-server\" --sarif --schedule weekly"
+    },
+    {
+      "id": "server:57567ad1deefc1c3",
+      "name": "kubernetes",
+      "source": "run-artifact",
+      "serverPackageOrRepo": "mcp-server-kubernetes",
+      "capabilityBoundary": "infra-cloud",
+      "receiptState": "not_generated",
+      "recommendedAction": "quarantine",
+      "riskLevel": "high",
+      "evidenceRefs": [
+        {
+          "type": "run-artifact",
+          "path": "docs/safety-index/artifacts/kubernetes-server.attack.json",
+          "sha256": "3242514d67f85ba610cb3776262112f3f7870baaef9f0b28dfa3b8c61bdffae4"
+        },
+        {
+          "type": "attack-sim",
+          "path": "docs/safety-index/artifacts/kubernetes-server.attack.json"
+        },
+        {
+          "type": "run-artifact",
+          "path": "docs/safety-index/artifacts/kubernetes-server.json",
+          "sha256": "913bccf0d9992cd6d38c7bc4abbe5fbc2783277a68e33c94d1394aa359db1ea4"
+        },
+        {
+          "type": "attack-sim",
+          "path": "docs/safety-index/artifacts/kubernetes-server.json"
+        }
+      ],
+      "ciCommand": "mcp-observatory setup-ci --all --command \"npx -y mcp-server-kubernetes\" --sarif --schedule weekly"
+    },
+    {
+      "id": "server:e5498920ff2df847",
+      "name": "mcp-server-chart",
+      "source": "run-artifact",
+      "serverPackageOrRepo": "@antv/mcp-server-chart",
+      "capabilityBoundary": "unknown",
+      "receiptState": "not_generated",
+      "recommendedAction": "allow",
+      "riskLevel": "low",
+      "evidenceRefs": [
+        {
+          "type": "run-artifact",
+          "path": "docs/safety-index/artifacts/antv-chart-server.json",
+          "sha256": "6731abd894766ae159faef2a4db1275fa711f2587f2b7dab9fdaac1fbaf08ef3"
+        },
+        {
+          "type": "attack-sim",
+          "path": "docs/safety-index/artifacts/antv-chart-server.json"
+        }
+      ],
+      "ciCommand": "mcp-observatory setup-ci --all --command \"npx -y @antv/mcp-server-chart\" --sarif --schedule weekly"
+    },
+    {
+      "id": "server:b010c790088ce622",
+      "name": "mcp-servers/everything",
+      "source": "run-artifact",
+      "serverPackageOrRepo": "@modelcontextprotocol/server-everything",
+      "capabilityBoundary": "filesystem",
+      "receiptState": "not_generated",
+      "recommendedAction": "allow",
+      "riskLevel": "low",
+      "evidenceRefs": [
+        {
+          "type": "run-artifact",
+          "path": "docs/safety-index/artifacts/everything-server.json",
+          "sha256": "f777a50b319e318e4b9ad8604afc816cdcdfeadcaa05d6e7b323eaaa1830789c"
+        },
+        {
+          "type": "attack-sim",
+          "path": "docs/safety-index/artifacts/everything-server.json"
+        }
+      ],
+      "ciCommand": "mcp-observatory setup-ci --all --command \"npx -y @modelcontextprotocol/server-everything\" --sarif --schedule weekly"
+    },
+    {
+      "id": "server:30e6e77d471786bd",
+      "name": "memory-server",
+      "source": "run-artifact",
+      "serverPackageOrRepo": "@modelcontextprotocol/server-memory",
+      "capabilityBoundary": "memory",
+      "receiptState": "not_generated",
+      "recommendedAction": "allow",
+      "riskLevel": "low",
+      "evidenceRefs": [
+        {
+          "type": "run-artifact",
+          "path": "docs/safety-index/artifacts/memory-server.json",
+          "sha256": "369ac7e0a4d49ce7b8b2cecf543b8813452926053bc79f5533ccc01392375c1c"
+        },
+        {
+          "type": "attack-sim",
+          "path": "docs/safety-index/artifacts/memory-server.json"
+        }
+      ],
+      "ciCommand": "mcp-observatory setup-ci --all --command \"npx -y @modelcontextprotocol/server-memory\" --sarif --schedule weekly"
+    },
+    {
+      "id": "server:eafd616fec331c2f",
+      "name": "opentofu",
+      "source": "run-artifact",
+      "serverPackageOrRepo": "@opentofu/opentofu-mcp-server",
+      "capabilityBoundary": "infra-cloud",
+      "receiptState": "not_generated",
+      "recommendedAction": "gate",
+      "riskLevel": "medium",
+      "evidenceRefs": [
+        {
+          "type": "run-artifact",
+          "path": "docs/safety-index/artifacts/opentofu-server.json",
+          "sha256": "3bd1034cce5f6780b801149bc3139b0307aa84f85ced005a4d170ca2b3ef97b5"
+        },
+        {
+          "type": "attack-sim",
+          "path": "docs/safety-index/artifacts/opentofu-server.json"
+        }
+      ],
+      "ciCommand": "mcp-observatory setup-ci --all --command \"npx -y @opentofu/opentofu-mcp-server\" --sarif --schedule weekly"
+    },
+    {
+      "id": "server:8ce8a49061581b20",
+      "name": "Playwright",
+      "source": "run-artifact",
+      "serverPackageOrRepo": "@playwright/mcp",
+      "capabilityBoundary": "browser",
+      "receiptState": "not_generated",
+      "recommendedAction": "quarantine",
+      "riskLevel": "high",
+      "evidenceRefs": [
+        {
+          "type": "run-artifact",
+          "path": "docs/safety-index/artifacts/playwright-mcp-server.json",
+          "sha256": "8876fe55de6bc2a018214484ecda8cb2cb338d42c37eb8eb3d45e4345bfa2d13"
+        },
+        {
+          "type": "attack-sim",
+          "path": "docs/safety-index/artifacts/playwright-mcp-server.json"
+        }
+      ],
+      "ciCommand": "mcp-observatory setup-ci --all --command \"npx -y @playwright/mcp\" --sarif --schedule weekly"
+    },
+    {
+      "id": "server:fa823c0c44196cd1",
+      "name": "playwright-mcp",
+      "source": "run-artifact",
+      "serverPackageOrRepo": "@executeautomation/playwright-mcp-server",
+      "capabilityBoundary": "browser",
+      "receiptState": "not_generated",
+      "recommendedAction": "quarantine",
+      "riskLevel": "high",
+      "evidenceRefs": [
+        {
+          "type": "run-artifact",
+          "path": "docs/safety-index/artifacts/executeautomation-playwright-server.json",
+          "sha256": "ed32ff8aae0913223f4d47000339fed20d2a86908400b599d2bfaa8091d0cad0"
+        },
+        {
+          "type": "attack-sim",
+          "path": "docs/safety-index/artifacts/executeautomation-playwright-server.json"
+        }
+      ],
+      "ciCommand": "mcp-observatory setup-ci --all --command \"npx -y @executeautomation/playwright-mcp-server\" --sarif --schedule weekly"
+    },
+    {
+      "id": "server:54615b35971daa68",
+      "name": "promptopia-mcp",
+      "source": "run-artifact",
+      "serverPackageOrRepo": "promptopia-mcp",
+      "capabilityBoundary": "filesystem",
+      "receiptState": "not_generated",
+      "recommendedAction": "allow",
+      "riskLevel": "low",
+      "evidenceRefs": [
+        {
+          "type": "run-artifact",
+          "path": "docs/safety-index/artifacts/promptopia-server.json",
+          "sha256": "1fa980c07a4ce10f0e9df714549f8f049621ec8989e13daa6b24a3f8284ebf67"
+        },
+        {
+          "type": "attack-sim",
+          "path": "docs/safety-index/artifacts/promptopia-server.json"
+        }
+      ],
+      "ciCommand": "mcp-observatory setup-ci --all --command \"npx -y promptopia-mcp\" --sarif --schedule weekly"
+    },
+    {
+      "id": "server:f4495758cf92f287",
+      "name": "Ref",
+      "source": "run-artifact",
+      "serverPackageOrRepo": "ref-tools-mcp",
+      "capabilityBoundary": "unknown",
+      "receiptState": "not_generated",
+      "recommendedAction": "allow",
+      "riskLevel": "low",
+      "evidenceRefs": [
+        {
+          "type": "run-artifact",
+          "path": "docs/safety-index/artifacts/ref-tools-server.json",
+          "sha256": "e247789d8042c6f72c2b804202ec2ea697f876d903446beee0aa9291d00efe97"
+        },
+        {
+          "type": "attack-sim",
+          "path": "docs/safety-index/artifacts/ref-tools-server.json"
+        }
+      ],
+      "ciCommand": "mcp-observatory setup-ci --all --command \"npx -y ref-tools-mcp\" --sarif --schedule weekly"
+    },
+    {
+      "id": "server:6486282ca7845d72",
+      "name": "secure-filesystem-server",
+      "source": "run-artifact",
+      "serverPackageOrRepo": "@modelcontextprotocol/server-filesystem",
+      "capabilityBoundary": "filesystem",
+      "receiptState": "not_generated",
+      "recommendedAction": "gate",
+      "riskLevel": "medium",
+      "evidenceRefs": [
+        {
+          "type": "run-artifact",
+          "path": "docs/safety-index/artifacts/filesystem-server.json",
+          "sha256": "d49d1fbad362e7d5f6fe483c59c4505adbc4c168100b18b46c30669f2689eccf"
+        },
+        {
+          "type": "attack-sim",
+          "path": "docs/safety-index/artifacts/filesystem-server.json"
+        }
+      ],
+      "ciCommand": "mcp-observatory setup-ci --all --command \"npx -y @modelcontextprotocol/server-filesystem examples/filesystem-fixture\" --sarif --schedule weekly"
+    },
+    {
+      "id": "server:5a614022054e4907",
+      "name": "sequential-thinking-server",
+      "source": "run-artifact",
+      "serverPackageOrRepo": "@modelcontextprotocol/server-sequential-thinking",
+      "capabilityBoundary": "unknown",
+      "receiptState": "not_generated",
+      "recommendedAction": "allow",
+      "riskLevel": "low",
+      "evidenceRefs": [
+        {
+          "type": "run-artifact",
+          "path": "docs/safety-index/artifacts/sequential-thinking-server.json",
+          "sha256": "005f865fea9e60e7c3801183ae7dca5bf77f1346c0c805c04a80ded75956bce9"
+        },
+        {
+          "type": "attack-sim",
+          "path": "docs/safety-index/artifacts/sequential-thinking-server.json"
+        }
+      ],
+      "ciCommand": "mcp-observatory setup-ci --all --command \"npx -y @modelcontextprotocol/server-sequential-thinking\" --sarif --schedule weekly"
+    }
+  ],
+  "edges": [
+    {
+      "from": "server:035ad89537d6510b",
+      "to": "boundary:browser",
+      "type": "has-capability-boundary",
+      "reason": "Observed tools/findings classify this server as browser."
+    },
+    {
+      "from": "server:035ad89537d6510b",
+      "to": "boundary:browser",
+      "type": "has-evidence",
+      "reason": "Safe attack-sim evidence is present."
+    },
+    {
+      "from": "server:30e6e77d471786bd",
+      "to": "boundary:memory",
+      "type": "has-capability-boundary",
+      "reason": "Observed tools/findings classify this server as memory."
+    },
+    {
+      "from": "server:30e6e77d471786bd",
+      "to": "boundary:memory",
+      "type": "has-evidence",
+      "reason": "Safe attack-sim evidence is present."
+    },
+    {
+      "from": "server:54615b35971daa68",
+      "to": "boundary:filesystem",
+      "type": "has-capability-boundary",
+      "reason": "Observed tools/findings classify this server as filesystem."
+    },
+    {
+      "from": "server:54615b35971daa68",
+      "to": "boundary:filesystem",
+      "type": "has-evidence",
+      "reason": "Safe attack-sim evidence is present."
+    },
+    {
+      "from": "server:57567ad1deefc1c3",
+      "to": "boundary:infra-cloud",
+      "type": "has-capability-boundary",
+      "reason": "Observed tools/findings classify this server as infra-cloud."
+    },
+    {
+      "from": "server:57567ad1deefc1c3",
+      "to": "boundary:infra-cloud",
+      "type": "has-evidence",
+      "reason": "Safe attack-sim evidence is present."
+    },
+    {
+      "from": "server:57567ad1deefc1c3",
+      "to": "boundary:infra-cloud",
+      "type": "requires-action",
+      "reason": "Quarantine from production agents until the boundary is reduced or accepted."
+    },
+    {
+      "from": "server:5a614022054e4907",
+      "to": "boundary:unknown",
+      "type": "has-capability-boundary",
+      "reason": "Observed tools/findings classify this server as unknown."
+    },
+    {
+      "from": "server:5a614022054e4907",
+      "to": "boundary:unknown",
+      "type": "has-evidence",
+      "reason": "Safe attack-sim evidence is present."
+    },
+    {
+      "from": "server:6486282ca7845d72",
+      "to": "boundary:filesystem",
+      "type": "has-capability-boundary",
+      "reason": "Observed tools/findings classify this server as filesystem."
+    },
+    {
+      "from": "server:6486282ca7845d72",
+      "to": "boundary:filesystem",
+      "type": "has-evidence",
+      "reason": "Safe attack-sim evidence is present."
+    },
+    {
+      "from": "server:6486282ca7845d72",
+      "to": "boundary:filesystem",
+      "type": "requires-action",
+      "reason": "Gate adoption until maintainers review the finding."
+    },
+    {
+      "from": "server:6b95baeb28bffc42",
+      "to": "boundary:unknown",
+      "type": "has-capability-boundary",
+      "reason": "Observed tools/findings classify this server as unknown."
+    },
+    {
+      "from": "server:6b95baeb28bffc42",
+      "to": "boundary:unknown",
+      "type": "has-evidence",
+      "reason": "Safe attack-sim evidence is present."
+    },
+    {
+      "from": "server:6b95baeb28bffc42",
+      "to": "boundary:unknown",
+      "type": "requires-action",
+      "reason": "Gate adoption until maintainers review the finding."
+    },
+    {
+      "from": "server:8ce8a49061581b20",
+      "to": "boundary:browser",
+      "type": "has-capability-boundary",
+      "reason": "Observed tools/findings classify this server as browser."
+    },
+    {
+      "from": "server:8ce8a49061581b20",
+      "to": "boundary:browser",
+      "type": "has-evidence",
+      "reason": "Safe attack-sim evidence is present."
+    },
+    {
+      "from": "server:8ce8a49061581b20",
+      "to": "boundary:browser",
+      "type": "requires-action",
+      "reason": "Quarantine from production agents until the boundary is reduced or accepted."
+    },
+    {
+      "from": "server:a6f199ad8d4e160f",
+      "to": "boundary:filesystem",
+      "type": "has-capability-boundary",
+      "reason": "Observed tools/findings classify this server as filesystem."
+    },
+    {
+      "from": "server:a6f199ad8d4e160f",
+      "to": "boundary:filesystem",
+      "type": "has-evidence",
+      "reason": "Safe attack-sim evidence is present."
+    },
+    {
+      "from": "server:a6f199ad8d4e160f",
+      "to": "boundary:filesystem",
+      "type": "requires-action",
+      "reason": "Gate adoption until maintainers review the finding."
+    },
+    {
+      "from": "server:b010c790088ce622",
+      "to": "boundary:filesystem",
+      "type": "has-capability-boundary",
+      "reason": "Observed tools/findings classify this server as filesystem."
+    },
+    {
+      "from": "server:b010c790088ce622",
+      "to": "boundary:filesystem",
+      "type": "has-evidence",
+      "reason": "Safe attack-sim evidence is present."
+    },
+    {
+      "from": "server:b1f7c29595b3542e",
+      "to": "boundary:browser",
+      "type": "has-capability-boundary",
+      "reason": "Observed tools/findings classify this server as browser."
+    },
+    {
+      "from": "server:b1f7c29595b3542e",
+      "to": "boundary:browser",
+      "type": "has-evidence",
+      "reason": "Safe attack-sim evidence is present."
+    },
+    {
+      "from": "server:b1f7c29595b3542e",
+      "to": "boundary:browser",
+      "type": "requires-action",
+      "reason": "Quarantine from production agents until the boundary is reduced or accepted."
+    },
+    {
+      "from": "server:e5498920ff2df847",
+      "to": "boundary:unknown",
+      "type": "has-capability-boundary",
+      "reason": "Observed tools/findings classify this server as unknown."
+    },
+    {
+      "from": "server:e5498920ff2df847",
+      "to": "boundary:unknown",
+      "type": "has-evidence",
+      "reason": "Safe attack-sim evidence is present."
+    },
+    {
+      "from": "server:eafd616fec331c2f",
+      "to": "boundary:infra-cloud",
+      "type": "has-capability-boundary",
+      "reason": "Observed tools/findings classify this server as infra-cloud."
+    },
+    {
+      "from": "server:eafd616fec331c2f",
+      "to": "boundary:infra-cloud",
+      "type": "has-evidence",
+      "reason": "Safe attack-sim evidence is present."
+    },
+    {
+      "from": "server:eafd616fec331c2f",
+      "to": "boundary:infra-cloud",
+      "type": "requires-action",
+      "reason": "Gate adoption until maintainers review the finding."
+    },
+    {
+      "from": "server:f4495758cf92f287",
+      "to": "boundary:unknown",
+      "type": "has-capability-boundary",
+      "reason": "Observed tools/findings classify this server as unknown."
+    },
+    {
+      "from": "server:f4495758cf92f287",
+      "to": "boundary:unknown",
+      "type": "has-evidence",
+      "reason": "Safe attack-sim evidence is present."
+    },
+    {
+      "from": "server:fa823c0c44196cd1",
+      "to": "boundary:browser",
+      "type": "has-capability-boundary",
+      "reason": "Observed tools/findings classify this server as browser."
+    },
+    {
+      "from": "server:fa823c0c44196cd1",
+      "to": "boundary:browser",
+      "type": "has-evidence",
+      "reason": "Safe attack-sim evidence is present."
+    },
+    {
+      "from": "server:fa823c0c44196cd1",
+      "to": "boundary:browser",
+      "type": "requires-action",
+      "reason": "Quarantine from production agents until the boundary is reduced or accepted."
+    }
+  ],
+  "summary": {
+    "totalServers": 15,
+    "totalBoundaries": 5,
+    "highestRiskLevel": "high",
+    "actionCounts": {
+      "allow": 7,
+      "gate": 4,
+      "rerun": 0,
+      "quarantine": 4,
+      "escalate": 0
+    },
+    "boundaryCounts": {
+      "filesystem": 4,
+      "browser": 4,
+      "command-execution": 0,
+      "infra-cloud": 2,
+      "memory": 1,
+      "data-api": 0,
+      "identity-auth": 0,
+      "unknown": 4
+    }
+  },
+  "recommendedActions": [
+    "@cyanheads/git-mcp-server: Gate adoption until maintainers review the finding.",
+    "Context7: Gate adoption until maintainers review the finding.",
+    "opentofu: Gate adoption until maintainers review the finding.",
+    "secure-filesystem-server: Gate adoption until maintainers review the finding.",
+    "example-servers/puppeteer: Quarantine from production agents until the boundary is reduced or accepted.",
+    "kubernetes: Quarantine from production agents until the boundary is reduced or accepted.",
+    "Playwright: Quarantine from production agents until the boundary is reduced or accepted.",
+    "playwright-mcp: Quarantine from production agents until the boundary is reduced or accepted."
+  ],
+  "warnings": []
+}
