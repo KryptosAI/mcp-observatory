@@ -41,25 +41,27 @@ Agents should not depend on tools nobody tests. MCP Observatory turns a local MC
 
 ## Try It
 
-Test one server:
+Safely simulate MCP attack-readiness for one server:
 
 ```bash
-npx @kryptosai/mcp-observatory test npx -y my-mcp-server
+npx @kryptosai/mcp-observatory attack-sim npx -y my-mcp-server --sarif attack-results.sarif
 ```
 
-Then convert the passing check into CI with Code Scanning:
+Then convert the evidence into CI with Code Scanning:
 
 ```bash
 npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif
 ```
 
-See the [launch page](./docs/launch.md), [GitHub Code Scanning demo](./docs/code-scanning-demo.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [sample safety reports](./docs/mcp-server-safety-index.md), and [reference evaluations](./docs/reference-evaluations.md).
+See the [MCP Attack Simulator](./docs/mcp-attack-simulator.md), [Tool-call receipts](./docs/tool-call-receipts.md), [launch page](./docs/launch.md), [GitHub Code Scanning demo](./docs/code-scanning-demo.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [sample safety reports](./docs/mcp-server-safety-index.md), and [reference evaluations](./docs/reference-evaluations.md).
 
 ## Evidence You Can Inspect
 
 | Evidence | Where |
 |---|---|
 | Example GitHub Actions adoption | [`setup-ci --all`](./docs/setup-ci-doctor.md) and the generated workflow docs |
+| Attack simulation output | [MCP Attack Simulator](./docs/mcp-attack-simulator.md) |
+| Tool-call receipts | [Receipt standard](./docs/tool-call-receipts.md) for reproducible MCP evidence |
 | SARIF / Code Scanning output | [GitHub Code Scanning demo](./docs/code-scanning-demo.md) |
 | Real MCP server evaluations | [MCP Server Safety Index](./docs/mcp-server-safety-index.md) |
 | Reference reports | [Reference evaluations](./docs/reference-evaluations.md) |
@@ -122,7 +124,7 @@ Observatory gives maintainers and teams:
 - **MCP server mode** so agents can inspect other MCP servers directly
 - **Production support path** for hosted history, private repo reporting, certification, support, and fleet visibility
 
-See the [launch page](./docs/launch.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [Code Scanning demo](./docs/code-scanning-demo.md), [target gallery](./docs/target-gallery.md), [target registry](./docs/target-registry.md), [target contribution guide](./docs/target-contribution-guide.md), [MCP Observatory Contributors](./docs/contributor-recognition.md), [Agent Task Pack](./docs/agent-tasks.md), [`setup-ci --doctor`](./docs/setup-ci-doctor.md), [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [June 2026 safety field report](./docs/mcp-safety-field-report-2026-06.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), [campaign attribution](./docs/campaign-attribution.md), [local metrics dashboard](./docs/metrics-dashboard.md), and [commercial support](./COMMERCIAL.md).
+See the [launch page](./docs/launch.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [Code Scanning demo](./docs/code-scanning-demo.md), [target gallery](./docs/target-gallery.md), [target registry](./docs/target-registry.md), [target contribution guide](./docs/target-contribution-guide.md), [MCP Observatory Contributors](./docs/contributor-recognition.md), [Agent Task Pack](./docs/agent-tasks.md), [Tool-call receipts](./docs/tool-call-receipts.md), [`setup-ci --doctor`](./docs/setup-ci-doctor.md), [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [June 2026 safety field report](./docs/mcp-safety-field-report-2026-06.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), [campaign attribution](./docs/campaign-attribution.md), [local metrics dashboard](./docs/metrics-dashboard.md), and [commercial support](./COMMERCIAL.md).
 
 ## For Security And Platform Teams
 

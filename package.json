@@ -70,6 +70,7 @@
     "docs/target-contribution-guide.md",
     "docs/target-gallery.md",
     "docs/target-registry.md",
+    "docs/tool-call-receipts.md",
     "scripts/postinstall.mjs",
     "schemas"
   ],
