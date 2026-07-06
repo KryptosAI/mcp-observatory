@@ -8,6 +8,8 @@ For teams that need a higher-confidence security deliverable before production a
 
 This is a fixed-scope services package for teams that are starting to depend on MCP servers in production or pre-production. It uses the same evidence model as the public Safety Index, but the reviewed targets, findings, and recommendations stay private unless the customer approves otherwise.
 
+The public CLI produces reproducible evidence. The paid review packages that evidence with private fleet context, account-specific risk prioritization, remediation planning, and buyer-ready due diligence. See the [open core and commercial boundary](./commercial-boundary.md).
+
 ## Who It Is For
 
 - teams running MCP servers in production or pre-production

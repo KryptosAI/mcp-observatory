@@ -97,7 +97,16 @@ describe("CLI entrypoint", () => {
     expect(exitCode).toBe(0);
     expect(stdout).toContain("audit");
     expect(stdout).toContain("--profile");
+    expect(stdout).toContain("--receipt");
     expect(stdout).toContain("--fail-on-high");
+  });
+
+  it("receipt subcommand shows help", () => {
+    const { stdout, exitCode } = runCli(["receipt", "--help"]);
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("receipt");
+    expect(stdout).toContain("--profile");
+    expect(stdout).toContain("--environment-class");
   });
 
   it("diff subcommand shows help", () => {
@@ -312,6 +321,70 @@ describe("CLI entrypoint", () => {
       expect(score.exitCode).toBe(0);
       const parsedScore = JSON.parse(score.stdout) as { status: string };
       expect(parsedScore.status).toBe("critical_risk");
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
+  });
+
+  it("audit can emit a JSON MCP receipt alongside the report", () => {
+    const tmpDir = path.join(os.tmpdir(), `obs-receipt-${Date.now()}`);
+    fs.mkdirSync(tmpDir, { recursive: true });
+    const reportPath = path.join(tmpDir, "audit.json");
+    const receiptPath = path.join(tmpDir, "receipt.json");
+    try {
+      const result = runCli([
+        "audit",
+        "examples/insecure-mcp-server",
+        "--profile",
+        "nsa-mcp",
+        "--format",
+        "json",
+        "--output",
+        reportPath,
+        "--receipt",
+        receiptPath,
+      ], { timeout: 30_000 });
+      expect(result.exitCode).toBe(0);
+      const receipt = JSON.parse(fs.readFileSync(receiptPath, "utf8")) as {
+        receipt_type: string;
+        verdict: { state: string; action: string; status: string };
+        evidence: { json_report_path: string; json_report_sha256: string };
+        reproduction: { ci_command: string };
+      };
+      expect(receipt.receipt_type).toBe("mcp-observatory-receipt");
+      expect(receipt.verdict.status).toBe("critical_risk");
+      expect(receipt.verdict.action).toBe("escalate");
+      expect(receipt.evidence.json_report_path).toBe(reportPath);
+      expect(receipt.evidence.json_report_sha256).toMatch(/^[a-f0-9]{64}$/);
+      expect(receipt.reproduction.ci_command).toContain("setup-ci --all");
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
+  });
+
+  it("receipt command writes a markdown MCP receipt", () => {
+    const tmpDir = path.join(os.tmpdir(), `obs-receipt-${Date.now()}`);
+    fs.mkdirSync(tmpDir, { recursive: true });
+    const receiptPath = path.join(tmpDir, "receipt.md");
+    try {
+      const result = runCli([
+        "receipt",
+        "examples/insecure-mcp-server",
+        "--profile",
+        "nsa-mcp",
+        "--format",
+        "markdown",
+        "--output",
+        receiptPath,
+        "--environment-class",
+        "public_safety_index",
+      ], { timeout: 30_000 });
+      expect(result.exitCode).toBe(0);
+      const markdown = fs.readFileSync(receiptPath, "utf8");
+      expect(markdown).toContain("# MCP Observatory Receipt");
+      expect(markdown).toContain("public_safety_index");
+      expect(markdown).toContain("Request private fleet receipt pack");
+      expect(markdown).toContain("mcp-observatory setup-ci --all");
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
     }

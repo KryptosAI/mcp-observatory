@@ -89,8 +89,27 @@ describe("public proof docs privacy guardrails", () => {
     expect(docs).toContain("docs/agent-tasks.md");
     expect(docs).toContain("docs/target-gallery.md");
     expect(docs).toContain("docs/campaign-attribution.md");
+    expect(docs).toContain("docs/commercial-boundary.md");
+    expect(docs).toContain("docs/mcp-receipts.md");
     expect(docs).toContain("docs/contributor-recognition.md");
     expect(docs).toContain("docs/contributor-proof-cards/README.md");
+  });
+
+  it("documents and guards the commercial/private asset boundary", async () => {
+    const boundary = await readFile(path.join(process.cwd(), "docs/commercial-boundary.md"), "utf8");
+    const commercial = await readFile(path.join(process.cwd(), "COMMERCIAL.md"), "utf8");
+    const readme = await readFile(path.join(process.cwd(), "README.md"), "utf8");
+    const gitignore = await readFile(path.join(process.cwd(), ".gitignore"), "utf8");
+
+    expect(boundary).toContain("What Stays Open");
+    expect(boundary).toContain("What Stays Proprietary");
+    expect(boundary).toContain("The public health score in this repository is open source");
+    expect(commercial).toContain("open core and commercial boundary");
+    expect(readme).toContain("./docs/commercial-boundary.md");
+    expect(gitignore).toContain("commercial-private/");
+    expect(gitignore).toContain("private-intelligence/");
+    expect(gitignore).toContain("customer-reports/");
+    expect(gitignore).toContain("pilot-deliverables/");
   });
 
   it("keeps contributor recognition public, badge-renderable, and honest about GitHub achievements", async () => {

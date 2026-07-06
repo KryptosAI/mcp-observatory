@@ -10,3 +10,13 @@ reports/
 telemetry-exports/
 .mcp-observatory-metrics/
 .mcpregistry_*
+
+# Commercial/private operating assets. Keep customer data, telemetry exports,
+# lead scoring, proprietary risk weights, and buyer deliverables out of OSS.
+commercial-private/
+private-intelligence/
+sales-pipeline/
+customer-reports/
+pilot-deliverables/
+*.customer-report.*
+*.evidence-pack.private.*
