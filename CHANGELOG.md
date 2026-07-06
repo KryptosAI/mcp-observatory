@@ -8,6 +8,7 @@ All notable changes to MCP Observatory will be documented in this file.
 
 ### Added
 
+- Install-time CI helper that detects MCP server projects, prints the exact `setup-ci` command, and can create the workflow automatically when `mcpObservatory.autoSetupCi` is enabled.
 - Safe MCP Attack Simulator command for tool-poisoning, canary exposure, permission-boundary, and contract-drift evidence.
 - Markdown, JSON, and SARIF output for Attack Simulator findings.
 - README status badges and adoption links for CI, CodeQL, OpenSSF Scorecard, Dependabot, npm provenance, coverage, stars, downloads, and contributors.

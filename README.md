@@ -76,6 +76,8 @@ Add MCP CI in one command:
 npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server"
 ```
 
+Installing MCP Observatory in an MCP server project also prints the exact CI setup command. Projects can opt into automatic workflow creation during install with [`mcpObservatory.autoSetupCi`](./docs/automatic-ci-integration.md).
+
 Upload normalized MCP findings to GitHub Code Scanning when you want a security-native release gate:
 
 ```bash
