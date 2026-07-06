@@ -35,6 +35,7 @@ Known audit note:
 - Publish npm only after the release gate is green.
 - Refresh MCP directory listings with: “MCP Observatory is the CI and security gate for MCP servers before agents depend on them.”
 - Include “free for local OSS use; paid for hosted reporting, private repo CI, recurring security reports, certification, support, and fleet visibility.”
+- Link the [open core and commercial boundary](./commercial-boundary.md) when buyers or contributors ask what stays proprietary.
 - Link production users to `COMMERCIAL.md` and the GitHub pilot request issue template.
 - Submit or refresh listings on Glama, PulseMCP, Smithery, and relevant awesome-MCP lists with the tags: security, developer tools, CI/CD, testing, MCP security, schema drift.
 - Claim or refresh MseeP with neutral listing copy; do not add badges that imply audited/certified status until public scan evidence has been reviewed.
@@ -78,3 +79,4 @@ Worker:
 - Do not hard-paywall existing local OSS checks.
 - Do not build a full dashboard before a buyer asks for dashboard workflows.
 - Do not publish raw telemetry emails or individual PII in public materials.
+- Do not publish proprietary portfolio scoring weights, account intelligence, lead lists, or buyer-specific evidence packs in the OSS repo.

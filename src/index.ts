@@ -13,6 +13,26 @@ export {
   type TrustStatus,
 } from "./audit.js";
 export {
+  buildMcpReceipt,
+  mapStatusToReceiptVerdict,
+  renderReceipt,
+  renderReceiptMarkdown,
+  receiptFormatFromPath,
+  type BuildReceiptOptions,
+  type McpReceipt,
+  type ReceiptAction,
+  type ReceiptCta,
+  type ReceiptEnvironmentClass,
+  type ReceiptEvidence,
+  type ReceiptFinding,
+  type ReceiptFormat,
+  type ReceiptReproduction,
+  type ReceiptRunContext,
+  type ReceiptState,
+  type ReceiptSubject,
+  type ReceiptVerdict,
+} from "./receipt.js";
+export {
   defaultCassettesDirectory,
   loadCassette,
   saveCassette,
