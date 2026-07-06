@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -80,10 +80,16 @@ function yamlFor(command, sarif) {
 
 function writeCi(projectRoot, command, sarif) {
   const workflowPath = path.join(projectRoot, ".github", "workflows", "mcp-observatory.yml");
-  if (existsSync(workflowPath)) return { status: "exists", workflowPath };
   mkdirSync(path.dirname(workflowPath), { recursive: true });
-  writeFileSync(workflowPath, yamlFor(command, sarif), "utf8");
-  return { status: "created", workflowPath };
+  try {
+    writeFileSync(workflowPath, yamlFor(command, sarif), { encoding: "utf8", flag: "wx" });
+    return { status: "created", workflowPath };
+  } catch (error) {
+    if (error && typeof error === "object" && "code" in error && error.code === "EEXIST") {
+      return { status: "exists", workflowPath };
+    }
+    throw error;
+  }
 }
 
 function log(message) {

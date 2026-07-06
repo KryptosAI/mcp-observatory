@@ -307,6 +307,7 @@ async function main(): Promise<void> {
           "Content-Type": "application/json",
           ...(org ? { "X-MCP-Observatory-Org": org } : {}),
         },
+        // lgtm[js/file-data-in-network-request] This command explicitly uploads the user-provided artifact to a validated HTTPS endpoint.
         body: JSON.stringify(artifact),
       });
       const text = await response.text();

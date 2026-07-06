@@ -65,30 +65,35 @@ export function registerTelemetryCommands(program: Command): void {
           process.env["MCP_OBSERVATORY_TELEMETRY_URL"] ?? "https://mcp-observatory-telemetry.kryptosai.workers.dev",
           "Telemetry stats endpoint",
         );
-        const token = process.env["MCP_OBSERVATORY_STATS_TOKEN"] ?? config.statsToken;
+        const token = process.env["MCP_OBSERVATORY_STATS_TOKEN"];
         if (!token) {
           process.stderr.write("  No stats token configured.\n");
-          process.stderr.write("  Set MCP_OBSERVATORY_STATS_TOKEN or add \"statsToken\" to ~/.mcp-observatory/config.json\n\n");
+          process.stderr.write("  Set MCP_OBSERVATORY_STATS_TOKEN in the environment.\n\n");
           return;
         }
         const authHeaders = { Authorization: `Bearer ${token}` };
         try {
-          const [all, others] = await Promise.all([
-            fetch(new URL("/v1/stats", endpoint), { headers: authHeaders }).then(r => r.json() as Promise<Record<string, unknown>>),
-            fetch(appendQuery(new URL("/v1/stats", endpoint).toString(), { exclude: config.sessionId }), { headers: authHeaders }).then(r => r.json() as Promise<Record<string, unknown>>),
-          ]);
+          const excludeSession = process.env["MCP_OBSERVATORY_STATS_EXCLUDE_SESSION"];
+          const all = await fetch(new URL("/v1/stats", endpoint), { headers: authHeaders }).then(r => r.json() as Promise<Record<string, unknown>>);
+          const others = excludeSession
+            ? await fetch(appendQuery(new URL("/v1/stats", endpoint).toString(), { exclude: excludeSession }), { headers: authHeaders }).then(r => r.json() as Promise<Record<string, unknown>>)
+            : undefined;
           if (all.error) { process.stderr.write(`  Error: ${all.error as string}\n\n`); return; }
           const totalAll = (all.total as number) ?? 0;
-          const totalOthers = (others.total as number) ?? 0;
-          const you = totalAll - totalOthers;
+          const totalOthers = (others?.total as number | undefined) ?? 0;
+          const you = excludeSession ? totalAll - totalOthers : undefined;
           const sessionsAll = (all.uniqueSessions as number) ?? 0;
-          const sessionsOthers = (others.uniqueSessions as number) ?? 0;
+          const sessionsOthers = (others?.uniqueSessions as number | undefined) ?? 0;
+          const last24hAll = (all.last24h as number) ?? 0;
+          const last24hOthers = (others?.last24h as number | undefined) ?? 0;
 
           process.stdout.write(`  Total events:     ${totalAll}\n`);
-          process.stdout.write(`  Your events:      ${you}\n`);
-          process.stdout.write(`  Other events:     ${totalOthers}\n`);
-          process.stdout.write(`  Unique sessions:  ${sessionsAll}  (${sessionsOthers} excluding you)\n`);
-          process.stdout.write(`  Last 24h:         ${(all.last24h as number) ?? 0}  (${(others.last24h as number) ?? 0} excluding you)\n\n`);
+          if (you !== undefined) {
+            process.stdout.write(`  Excluded events:  ${you}\n`);
+            process.stdout.write(`  Other events:     ${totalOthers}\n`);
+          }
+          process.stdout.write(`  Unique sessions:  ${sessionsAll}${excludeSession ? `  (${sessionsOthers} excluding provided session)` : ""}\n`);
+          process.stdout.write(`  Last 24h:         ${last24hAll}${excludeSession ? `  (${last24hOthers} excluding provided session)` : ""}\n\n`);
         } catch {
           process.stderr.write("  Failed to fetch telemetry stats.\n\n");
         }
