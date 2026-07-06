@@ -3,6 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { doctorSetupCi, initCi } from "../src/commands/init-ci.js";
+import { TOOL_VERSION } from "../src/version.js";
 
 const tempDirs: string[] = [];
 
@@ -33,7 +34,7 @@ describe("init-ci", () => {
     expect(result.badgeStatus).toBe("created");
 
     const workflowText = await readFile(workflow, "utf8");
-    expect(workflowText).toContain("uses: KryptosAI/mcp-observatory/action@v0.27.0");
+    expect(workflowText).toContain(`uses: KryptosAI/mcp-observatory/action@v${TOOL_VERSION}`);
     expect(workflowText).not.toContain("pull-requests: write");
     expect(workflowText).not.toContain("statuses: write");
     expect(workflowText).toContain("command: npx -y @example/mcp-server");

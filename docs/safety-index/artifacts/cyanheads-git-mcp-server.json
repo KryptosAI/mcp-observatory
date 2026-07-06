@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-06T014658742Z_9d713d02",
-  "createdAt": "2026-07-06T01:46:58.742Z",
-  "toolVersion": "0.26.1",
+  "runId": "run_2026-07-06T194952194Z_80b1e6dd",
+  "createdAt": "2026-07-06T19:49:52.194Z",
+  "toolVersion": "0.28.0",
   "target": {
     "targetId": "cyanheads-git-mcp-server",
     "adapter": "local-process",
@@ -25,14 +25,14 @@
     "serverVersion": "2.15.1"
   },
   "environment": {
-    "platform": "darwin 24.0.0",
-    "nodeVersion": "v25.8.1"
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
   },
   "summary": {
-    "total": 7,
+    "total": 8,
     "pass": 4,
     "fail": 0,
-    "partial": 3,
+    "partial": 4,
     "unsupported": 0,
     "flaky": 0,
     "skipped": 0,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 33.99316700000054,
+      "durationMs": 27.61420899999939,
       "message": "Advertised capability responded with the minimal expected shape (28 items).",
       "evidence": [
         {
@@ -1357,7 +1357,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "pass",
-      "durationMs": 0.766749999998865,
+      "durationMs": 0.6529589999991003,
       "message": "Advertised capability responded with the minimal expected shape (1 item).",
       "evidence": [
         {
@@ -1370,11 +1370,11 @@
             "git_wrapup"
           ],
           "diagnostics": [
-            "{\"level\":30,\"time\":1783302419905,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":87344,\"transport\":\"stdio\",\"requestId\":\"0MOWN-K5EH1\",\"timestamp\":\"2026-07-06T01:46:59.900Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Attempting to connect stdio transport...\"}",
-            "{\"level\":20,\"time\":1783302419905,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":87344,\"transport\":\"stdio\",\"requestId\":\"0MOWN-K5EH1\",\"timestamp\":\"2026-07-06T01:46:59.900Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Creating StdioServerTransport instance...\"}",
-            "{\"level\":20,\"time\":1783302419905,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":87344,\"transport\":\"stdio\",\"requestId\":\"0MOWN-K5EH1\",\"timestamp\":\"2026-07-06T01:46:59.900Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Connecting McpServer instance to StdioServerTransport...\"}",
-            "{\"level\":30,\"time\":1783302419905,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":87344,\"transport\":\"stdio\",\"requestId\":\"0MOWN-K5EH1\",\"timestamp\":\"2026-07-06T01:46:59.900Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"MCP Server connected and listening via stdio transport.\"}",
-            "{\"level\":30,\"time\":1783302419905,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":87344,\"applicationName\":\"@cyanheads/git-mcp-server\",\"applicationVersion\":\"2.15.1\",\"nodeEnvironment\":\"development\",\"requestId\":\"E3M9U-3WL5B\",\"timestamp\":\"2026-07-06T01:46:59.900Z\",\"operation\":\"ServerStartup\",\"msg\":\"@cyanheads/git-mcp-server is now running and ready.\"}"
+            "{\"level\":30,\"time\":1783367393061,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":13590,\"transport\":\"stdio\",\"requestId\":\"A40P7-B7WJU\",\"timestamp\":\"2026-07-06T19:49:53.057Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Attempting to connect stdio transport...\"}",
+            "{\"level\":20,\"time\":1783367393061,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":13590,\"transport\":\"stdio\",\"requestId\":\"A40P7-B7WJU\",\"timestamp\":\"2026-07-06T19:49:53.057Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Creating StdioServerTransport instance...\"}",
+            "{\"level\":20,\"time\":1783367393061,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":13590,\"transport\":\"stdio\",\"requestId\":\"A40P7-B7WJU\",\"timestamp\":\"2026-07-06T19:49:53.057Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Connecting McpServer instance to StdioServerTransport...\"}",
+            "{\"level\":30,\"time\":1783367393061,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":13590,\"transport\":\"stdio\",\"requestId\":\"A40P7-B7WJU\",\"timestamp\":\"2026-07-06T19:49:53.057Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"MCP Server connected and listening via stdio transport.\"}",
+            "{\"level\":30,\"time\":1783367393061,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":13590,\"applicationName\":\"@cyanheads/git-mcp-server\",\"applicationVersion\":\"2.15.1\",\"nodeEnvironment\":\"development\",\"requestId\":\"TCM3J-5YAYY\",\"timestamp\":\"2026-07-06T19:49:53.057Z\",\"operation\":\"ServerStartup\",\"msg\":\"@cyanheads/git-mcp-server is now running and ready.\"}"
           ]
         }
       ]
@@ -1383,7 +1383,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 0.6985839999997552,
+      "durationMs": 0.6025000000008731,
       "message": "Advertised capability responded with the minimal expected shape (2 items).",
       "evidence": [
         {
@@ -1396,11 +1396,11 @@
             "git://working-directory"
           ],
           "diagnostics": [
-            "{\"level\":30,\"time\":1783302419905,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":87344,\"transport\":\"stdio\",\"requestId\":\"0MOWN-K5EH1\",\"timestamp\":\"2026-07-06T01:46:59.900Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Attempting to connect stdio transport...\"}",
-            "{\"level\":20,\"time\":1783302419905,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":87344,\"transport\":\"stdio\",\"requestId\":\"0MOWN-K5EH1\",\"timestamp\":\"2026-07-06T01:46:59.900Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Creating StdioServerTransport instance...\"}",
-            "{\"level\":20,\"time\":1783302419905,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":87344,\"transport\":\"stdio\",\"requestId\":\"0MOWN-K5EH1\",\"timestamp\":\"2026-07-06T01:46:59.900Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Connecting McpServer instance to StdioServerTransport...\"}",
-            "{\"level\":30,\"time\":1783302419905,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":87344,\"transport\":\"stdio\",\"requestId\":\"0MOWN-K5EH1\",\"timestamp\":\"2026-07-06T01:46:59.900Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"MCP Server connected and listening via stdio transport.\"}",
-            "{\"level\":30,\"time\":1783302419905,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":87344,\"applicationName\":\"@cyanheads/git-mcp-server\",\"applicationVersion\":\"2.15.1\",\"nodeEnvironment\":\"development\",\"requestId\":\"E3M9U-3WL5B\",\"timestamp\":\"2026-07-06T01:46:59.900Z\",\"operation\":\"ServerStartup\",\"msg\":\"@cyanheads/git-mcp-server is now running and ready.\"}"
+            "{\"level\":30,\"time\":1783367393061,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":13590,\"transport\":\"stdio\",\"requestId\":\"A40P7-B7WJU\",\"timestamp\":\"2026-07-06T19:49:53.057Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Attempting to connect stdio transport...\"}",
+            "{\"level\":20,\"time\":1783367393061,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":13590,\"transport\":\"stdio\",\"requestId\":\"A40P7-B7WJU\",\"timestamp\":\"2026-07-06T19:49:53.057Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Creating StdioServerTransport instance...\"}",
+            "{\"level\":20,\"time\":1783367393061,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":13590,\"transport\":\"stdio\",\"requestId\":\"A40P7-B7WJU\",\"timestamp\":\"2026-07-06T19:49:53.057Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Connecting McpServer instance to StdioServerTransport...\"}",
+            "{\"level\":30,\"time\":1783367393061,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":13590,\"transport\":\"stdio\",\"requestId\":\"A40P7-B7WJU\",\"timestamp\":\"2026-07-06T19:49:53.057Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"MCP Server connected and listening via stdio transport.\"}",
+            "{\"level\":30,\"time\":1783367393061,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":13590,\"applicationName\":\"@cyanheads/git-mcp-server\",\"applicationVersion\":\"2.15.1\",\"nodeEnvironment\":\"development\",\"requestId\":\"TCM3J-5YAYY\",\"timestamp\":\"2026-07-06T19:49:53.057Z\",\"operation\":\"ServerStartup\",\"msg\":\"@cyanheads/git-mcp-server is now running and ready.\"}"
           ]
         },
         {
@@ -1413,11 +1413,11 @@
             "git://working-directory"
           ],
           "diagnostics": [
-            "{\"level\":30,\"time\":1783302419905,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":87344,\"transport\":\"stdio\",\"requestId\":\"0MOWN-K5EH1\",\"timestamp\":\"2026-07-06T01:46:59.900Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Attempting to connect stdio transport...\"}",
-            "{\"level\":20,\"time\":1783302419905,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":87344,\"transport\":\"stdio\",\"requestId\":\"0MOWN-K5EH1\",\"timestamp\":\"2026-07-06T01:46:59.900Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Creating StdioServerTransport instance...\"}",
-            "{\"level\":20,\"time\":1783302419905,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":87344,\"transport\":\"stdio\",\"requestId\":\"0MOWN-K5EH1\",\"timestamp\":\"2026-07-06T01:46:59.900Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Connecting McpServer instance to StdioServerTransport...\"}",
-            "{\"level\":30,\"time\":1783302419905,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":87344,\"transport\":\"stdio\",\"requestId\":\"0MOWN-K5EH1\",\"timestamp\":\"2026-07-06T01:46:59.900Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"MCP Server connected and listening via stdio transport.\"}",
-            "{\"level\":30,\"time\":1783302419905,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":87344,\"applicationName\":\"@cyanheads/git-mcp-server\",\"applicationVersion\":\"2.15.1\",\"nodeEnvironment\":\"development\",\"requestId\":\"E3M9U-3WL5B\",\"timestamp\":\"2026-07-06T01:46:59.900Z\",\"operation\":\"ServerStartup\",\"msg\":\"@cyanheads/git-mcp-server is now running and ready.\"}"
+            "{\"level\":30,\"time\":1783367393061,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":13590,\"transport\":\"stdio\",\"requestId\":\"A40P7-B7WJU\",\"timestamp\":\"2026-07-06T19:49:53.057Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Attempting to connect stdio transport...\"}",
+            "{\"level\":20,\"time\":1783367393061,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":13590,\"transport\":\"stdio\",\"requestId\":\"A40P7-B7WJU\",\"timestamp\":\"2026-07-06T19:49:53.057Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Creating StdioServerTransport instance...\"}",
+            "{\"level\":20,\"time\":1783367393061,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":13590,\"transport\":\"stdio\",\"requestId\":\"A40P7-B7WJU\",\"timestamp\":\"2026-07-06T19:49:53.057Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Connecting McpServer instance to StdioServerTransport...\"}",
+            "{\"level\":30,\"time\":1783367393061,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":13590,\"transport\":\"stdio\",\"requestId\":\"A40P7-B7WJU\",\"timestamp\":\"2026-07-06T19:49:53.057Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"MCP Server connected and listening via stdio transport.\"}",
+            "{\"level\":30,\"time\":1783367393061,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":13590,\"applicationName\":\"@cyanheads/git-mcp-server\",\"applicationVersion\":\"2.15.1\",\"nodeEnvironment\":\"development\",\"requestId\":\"TCM3J-5YAYY\",\"timestamp\":\"2026-07-06T19:49:53.057Z\",\"operation\":\"ServerStartup\",\"msg\":\"@cyanheads/git-mcp-server is now running and ready.\"}"
           ]
         }
       ]
@@ -1426,7 +1426,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "partial",
-      "durationMs": 0.10316700000112178,
+      "durationMs": 0.08429100000103062,
       "message": "Found 19 security finding(s): 0 high, 19 medium, 0 low.",
       "evidence": [
         {
@@ -1600,7 +1600,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 43.65862500000003,
+      "durationMs": 35.621124999999665,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -1626,7 +1626,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 21.666000000001077,
+      "durationMs": 17.433541000000332,
       "message": "Found 17 quality finding(s) across 30 item(s): 0 warnings, 17 info.",
       "evidence": [
         {
@@ -1784,7 +1784,7 @@
       "id": "security",
       "capability": "security",
       "status": "partial",
-      "durationMs": 27.04162499999984,
+      "durationMs": 16.142957999998544,
       "message": "Found 19 security finding(s): 0 high, 19 medium, 0 low.",
       "evidence": [
         {
@@ -1953,6 +1953,429 @@
           ]
         }
       ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "partial",
+      "durationMs": 18.084541000000172,
+      "message": "Safe attack simulation found 19 finding(s): 0 high, 19 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 19,
+          "identifiers": [
+            "git_add",
+            "git_branch",
+            "git_checkout",
+            "git_cherry_pick",
+            "git_clean",
+            "git_clone",
+            "git_commit",
+            "git_fetch",
+            "git_init",
+            "git_merge",
+            "git_pull",
+            "git_push",
+            "git_rebase",
+            "git_remote",
+            "git_reset",
+            "git_set_working_dir",
+            "git_stash",
+            "git_tag",
+            "git_worktree"
+          ],
+          "diagnostics": [
+            "[medium] Tool \"git_add\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"git_branch\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"git_checkout\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"git_cherry_pick\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"git_clean\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"git_clone\" combines broad parameters (url, path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"git_commit\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"git_fetch\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"git_init\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"git_merge\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"git_pull\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"git_push\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"git_rebase\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"git_remote\" combines broad parameters (path, url) with destructive or non-read-only behavior.",
+            "[medium] Tool \"git_reset\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"git_set_working_dir\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"git_stash\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"git_tag\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"git_worktree\" combines broad parameters (path) with destructive or non-read-only behavior."
+          ],
+          "findings": [
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "git_add",
+              "message": "Tool \"git_add\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Stage files for commit. Add file contents to the staging area (index) to prepare for the next commit."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "git_branch",
+              "message": "Tool \"git_branch\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Manage branches: list all branches, show current branch, create a new branch, delete a branch, or rename a branch."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "git_checkout",
+              "message": "Tool \"git_checkout\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Switch branches or restore working tree files. Can checkout an existing branch, create a new branch, or restore specific files."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "git_cherry_pick",
+              "message": "Tool \"git_cherry_pick\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Cherry-pick commits from other branches. Apply specific commits to the current branch without merging entire branches."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "git_clean",
+              "message": "Tool \"git_clean\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Remove untracked files from the working directory. Requires force flag for safety. Use dry-run to preview files that would be removed."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "git_clone",
+              "message": "Tool \"git_clone\" combines broad parameters (url, path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "url",
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Clone a repository from a remote URL or local path. Accepts HTTP(S), SSH, git://, file://, and bare filesystem paths, with optional shallow cloning."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "git_commit",
+              "message": "Tool \"git_commit\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Create a new commit with staged changes in the repository. Records a snapshot of the staging area with a commit message.\n\n**Commit Message Format:**\nPass commit messages as JSON string parameters. Multi-line messages are supported using standard JSON string escaping.\n\n**Examples:**\n- Single line: { \"message\": \"feat: add user authentication\" }\n- Multi-line: { \"message\": \"feat: add user authentication\\n\\nImplemented OAuth2 flow with JWT tokens.\\nAdded tests for login and logout.\" }\n\nNote: Do not use bash heredoc syntax. Literal escape sequences (\\n, \\t) in the message string are automatically normalized to their actual characters."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "git_fetch",
+              "message": "Tool \"git_fetch\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Fetch updates from a remote repository. Downloads objects and refs without merging them."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "git_init",
+              "message": "Tool \"git_init\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Initialize a new Git repository at the specified path. Creates a .git directory and sets up the initial branch."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "git_merge",
+              "message": "Tool \"git_merge\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Merge branches together. Integrates changes from another branch into the current branch with optional merge strategies."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "git_pull",
+              "message": "Tool \"git_pull\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Pull changes from a remote repository. Fetches and integrates changes into the current branch."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "git_push",
+              "message": "Tool \"git_push\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Push changes to a remote repository. Uploads local commits to the remote branch."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "git_rebase",
+              "message": "Tool \"git_rebase\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Rebase commits onto another branch. Reapplies commits on top of another base tip for a cleaner history."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "git_remote",
+              "message": "Tool \"git_remote\" combines broad parameters (path, url) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path",
+                  "url"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Manage remote repositories: list remotes, add new remotes, remove remotes, rename remotes, or get/set remote URLs."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "git_reset",
+              "message": "Tool \"git_reset\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Reset current HEAD to specified state. Can be used to unstage files (soft), discard commits (mixed), or discard all changes (hard)."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "git_set_working_dir",
+              "message": "Tool \"git_set_working_dir\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Set the session working directory for all git operations so subsequent calls can omit the path parameter. Always returns a repository snapshot (status, recent commits, recent tags, remotes) to orient the caller."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "git_stash",
+              "message": "Tool \"git_stash\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Manage stashes: list stashes, save current changes (push), restore changes (pop/apply), or remove stashes (drop/clear)."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "git_tag",
+              "message": "Tool \"git_tag\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Manage tags: list all tags, create a new tag, delete a tag, or verify a signed tag. Tags are used to mark specific points in history (releases, milestones). Verify runs `git tag -v` and returns a structured result distinguishing unsigned tags, missing trust configuration, bad signatures, and valid signatures."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "git_worktree",
+              "message": "Tool \"git_worktree\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Manage multiple working trees: list worktrees, add new worktrees for parallel work, remove worktrees, or move worktrees to new locations."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            }
+          ]
+        }
+      ]
     }
   ],
   "healthScore": {
@@ -1981,7 +2404,8 @@
         "score": 60,
         "details": [
           "security-lite: partial (60/100)",
-          "security: partial (60/100)"
+          "security: partial (60/100)",
+          "attack-sim: partial (60/100)"
         ]
       },
       {
@@ -1999,16 +2423,16 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 1166ms",
-          "p95 latency: 34ms (3 operations)"
+          "Connect: 870ms",
+          "p95 latency: 28ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 1166.4691249999996,
-    "toolsListMs": 33.99316700000054,
-    "promptsListMs": 0.766749999998865,
-    "resourcesListMs": 0.6985839999997552
+    "connectMs": 869.9702500000003,
+    "toolsListMs": 27.61420899999939,
+    "promptsListMs": 0.6529589999991003,
+    "resourcesListMs": 0.6025000000008731
   }
 }

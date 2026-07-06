@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-06T014652165Z_55bd9c96",
-  "createdAt": "2026-07-06T01:46:52.165Z",
-  "toolVersion": "0.26.1",
+  "runId": "run_2026-07-06T194946140Z_d608f553",
+  "createdAt": "2026-07-06T19:49:46.140Z",
+  "toolVersion": "0.28.0",
   "target": {
     "targetId": "sequential-thinking-server",
     "adapter": "local-process",
@@ -25,12 +25,12 @@
     "serverVersion": "0.2.0"
   },
   "environment": {
-    "platform": "darwin 24.0.0",
-    "nodeVersion": "v25.8.1"
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
   },
   "summary": {
-    "total": 7,
-    "pass": 5,
+    "total": 8,
+    "pass": 6,
     "fail": 0,
     "partial": 0,
     "unsupported": 2,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 3.0525840000000244,
+      "durationMs": 3.737249999999676,
       "message": "Advertised capability responded with the minimal expected shape (1 item).",
       "evidence": [
         {
@@ -122,7 +122,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.003916000000117492,
+      "durationMs": 0.00408400000014808,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -138,7 +138,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.0017090000001189765,
+      "durationMs": 0.0015830000002097222,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -154,7 +154,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.03904199999988123,
+      "durationMs": 0.0753340000001117,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -170,7 +170,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 1.9475420000001122,
+      "durationMs": 1.5115419999997357,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -196,7 +196,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "pass",
-      "durationMs": 0.9627080000000205,
+      "durationMs": 0.8508339999998498,
       "message": "All 1 item(s) have good schema quality.",
       "evidence": [
         {
@@ -213,7 +213,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 1,
+      "durationMs": 0.908542000000125,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -222,6 +222,23 @@
           "responded": true,
           "minimalShapePresent": true,
           "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "pass",
+      "durationMs": 0.819166000000223,
+      "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
         }
       ]
     }
@@ -252,7 +269,8 @@
         "score": 100,
         "details": [
           "security-lite: pass (100/100)",
-          "security: pass (100/100)"
+          "security: pass (100/100)",
+          "attack-sim: pass (100/100)"
         ]
       },
       {
@@ -270,16 +288,16 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 671ms",
-          "p95 latency: 3ms (3 operations)"
+          "Connect: 614ms",
+          "p95 latency: 4ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 670.6410000000001,
-    "toolsListMs": 3.0525840000000244,
-    "promptsListMs": 0.003916000000117492,
-    "resourcesListMs": 0.0017090000001189765
+    "connectMs": 614.4627080000002,
+    "toolsListMs": 3.737249999999676,
+    "promptsListMs": 0.00408400000014808,
+    "resourcesListMs": 0.0015830000002097222
   }
 }

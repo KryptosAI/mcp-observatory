@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-06T014654306Z_160413b5",
-  "createdAt": "2026-07-06T01:46:54.306Z",
-  "toolVersion": "0.26.1",
+  "runId": "run_2026-07-06T194948132Z_cb0c4915",
+  "createdAt": "2026-07-06T19:49:48.132Z",
+  "toolVersion": "0.28.0",
   "target": {
     "targetId": "context7-server",
     "adapter": "local-process",
@@ -22,17 +22,17 @@
       "whyItMatters": "Documentation retrieval tools can return untrusted text into agent context."
     },
     "serverName": "Context7",
-    "serverVersion": "3.2.2"
+    "serverVersion": "3.2.3"
   },
   "environment": {
-    "platform": "darwin 24.0.0",
-    "nodeVersion": "v25.8.1"
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
   },
   "summary": {
-    "total": 7,
+    "total": 8,
     "pass": 7,
     "fail": 0,
-    "partial": 0,
+    "partial": 1,
     "unsupported": 0,
     "flaky": 0,
     "skipped": 0,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 1.7208330000003116,
+      "durationMs": 1.788749999999709,
       "message": "Advertised capability responded with the minimal expected shape (2 items).",
       "evidence": [
         {
@@ -57,7 +57,7 @@
             "query-docs"
           ],
           "diagnostics": [
-            "Context7 Documentation MCP Server v3.2.2 running on stdio"
+            "Context7 Documentation MCP Server v3.2.3 running on stdio"
           ],
           "schemas": {
             "resolve-library-id": {
@@ -87,7 +87,7 @@
                 },
                 "query": {
                   "type": "string",
-                  "description": "The question or task you need help with. Be specific and include relevant details. Good: 'How to set up authentication with JWT in Express.js' or 'React useEffect cleanup function examples'. Bad: 'auth' or 'hooks'. The query is sent to the Context7 API for processing. Do not include any sensitive or confidential information such as API keys, passwords, credentials, personal data, or proprietary code in your query."
+                  "description": "The question or task you need help with, scoped to a single concept. Be specific and include relevant details, but keep each query to one topic — if the user's question spans multiple distinct concepts, make a separate call per concept instead of combining them, unless the question is about how the concepts interact. Good: 'How to set up authentication with JWT in Express.js' or 'React useEffect cleanup function examples'. Bad (too vague): 'auth' or 'hooks'. Bad (too broad): 'routing and auth and caching in Next.js'. The query is sent to the Context7 API for processing. Do not include any sensitive or confidential information such as API keys, passwords, credentials, personal data, or proprietary code in your query."
                 }
               },
               "required": [
@@ -104,7 +104,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "pass",
-      "durationMs": 0.2972090000002936,
+      "durationMs": 0.2839160000003176,
       "message": "Advertised capability responded with the minimal expected shape (0 items).",
       "evidence": [
         {
@@ -115,7 +115,7 @@
           "itemCount": 0,
           "identifiers": [],
           "diagnostics": [
-            "Context7 Documentation MCP Server v3.2.2 running on stdio"
+            "Context7 Documentation MCP Server v3.2.3 running on stdio"
           ]
         }
       ]
@@ -124,7 +124,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 0.4392909999996846,
+      "durationMs": 0.4017499999999927,
       "message": "Advertised capability responded with the minimal expected shape (0 items).",
       "evidence": [
         {
@@ -135,7 +135,7 @@
           "itemCount": 0,
           "identifiers": [],
           "diagnostics": [
-            "Context7 Documentation MCP Server v3.2.2 running on stdio"
+            "Context7 Documentation MCP Server v3.2.3 running on stdio"
           ]
         },
         {
@@ -146,7 +146,7 @@
           "itemCount": 0,
           "identifiers": [],
           "diagnostics": [
-            "Context7 Documentation MCP Server v3.2.2 running on stdio"
+            "Context7 Documentation MCP Server v3.2.3 running on stdio"
           ]
         }
       ]
@@ -155,7 +155,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.023624999999810825,
+      "durationMs": 0.02495900000030815,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -171,7 +171,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 0.7742079999998168,
+      "durationMs": 1.094916000000012,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -197,7 +197,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "pass",
-      "durationMs": 0.6652500000000146,
+      "durationMs": 0.5149579999997513,
       "message": "All 2 item(s) have good schema quality.",
       "evidence": [
         {
@@ -214,7 +214,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 0.29783299999962765,
+      "durationMs": 0.20175000000017462,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -225,10 +225,66 @@
           "itemCount": 0
         }
       ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "partial",
+      "durationMs": 1.0464579999998023,
+      "message": "Safe attack simulation found 2 finding(s): 0 high, 2 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 2,
+          "identifiers": [
+            "resolve-library-id",
+            "query-docs"
+          ],
+          "diagnostics": [
+            "[medium] tool \"resolve-library-id\" contains agent behavior control text that could steer an agent.",
+            "[medium] tool \"query-docs\" contains agent behavior control text that could steer an agent."
+          ],
+          "findings": [
+            {
+              "ruleId": "attack-sim/tool-poisoning/agent-behavior-control",
+              "attackClass": "tool-poisoning",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "resolve-library-id",
+              "message": "tool \"resolve-library-id\" contains agent behavior control text that could steer an agent.",
+              "evidence": {
+                "path": "description",
+                "excerpt": "Resolves a package/product name to a Context7-compatible library ID and returns matching libraries.\n\nYou MUST call this function before 'Query Documentation' tool to obtain a valid Context7-compatible library ID UNLESS the user explicitly p",
+                "match": "MUST call this function before 'Query Documentation' tool"
+              },
+              "recommendation": "Remove hidden or behavioral instructions from MCP metadata; keep descriptions factual and user-visible.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/tool-poisoning/agent-behavior-control",
+              "attackClass": "tool-poisoning",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "query-docs",
+              "message": "tool \"query-docs\" contains agent behavior control text that could steer an agent.",
+              "evidence": {
+                "path": "description",
+                "excerpt": "Retrieves and queries up-to-date documentation and code examples from Context7 for any programming library or framework.\n\nYou must call 'Resolve Context7 Library ID' tool first to obtain the exact Context7-compatible library ID required to ",
+                "match": "must call 'Resolve Context7 Library ID' tool"
+              },
+              "recommendation": "Remove hidden or behavioral instructions from MCP metadata; keep descriptions factual and user-visible.",
+              "recommendedAction": "gate"
+            }
+          ]
+        }
+      ]
     }
   ],
   "healthScore": {
-    "overall": 100,
+    "overall": 97,
     "grade": "A",
     "dimensions": [
       {
@@ -250,10 +306,11 @@
       {
         "name": "Security",
         "weight": 0.2,
-        "score": 100,
+        "score": 87,
         "details": [
           "security-lite: pass (100/100)",
-          "security: pass (100/100)"
+          "security: pass (100/100)",
+          "attack-sim: partial (60/100)"
         ]
       },
       {
@@ -271,16 +328,16 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 817ms",
+          "Connect: 753ms",
           "p95 latency: 2ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 817.0577499999995,
-    "toolsListMs": 1.7208330000003116,
-    "promptsListMs": 0.2972090000002936,
-    "resourcesListMs": 0.4392909999996846
+    "connectMs": 753.3337500000002,
+    "toolsListMs": 1.788749999999709,
+    "promptsListMs": 0.2839160000003176,
+    "resourcesListMs": 0.4017499999999927
   }
 }

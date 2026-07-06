@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T01:46:55.135Z
+Generated at 2026-07-06T19:49:48.899Z
 
 ## Target and Environment Metadata
 
@@ -8,8 +8,8 @@ Generated at 2026-07-06T01:46:55.135Z
 - Adapter: `local-process`
 - Command: `npx -y promptopia-mcp`
 - Server: `promptopia-mcp 1.1.0`
-- Platform: `darwin 24.0.0`
-- Node: `v25.8.1`
+- Platform: `darwin 25.5.0`
+- Node: `v22.22.1`
 
 ## Executive Summary
 
@@ -25,7 +25,7 @@ Generated at 2026-07-06T01:46:55.135Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| pass | 7 | 5 | 0 | 1 | 1 | 0 | 0 |
+| pass | 8 | 6 | 0 | 1 | 1 | 0 | 0 |
 
 ## At a Glance
 
@@ -47,15 +47,28 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 1.69 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 1.21 | Advertised capability responded with the minimal expected shape (1 item). |
-| healthy | security | pass | 0.32 | No security issues detected. |
-| healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 3.15 | Advertised capability responded with the minimal expected shape (7 items). |
-| review | schema-quality | partial | 0.74 | Found 1 quality finding(s) across 8 item(s): 0 warnings, 1 info. |
+| healthy | attack-sim | pass | 0.42 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 1.59 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 1.08 | Advertised capability responded with the minimal expected shape (1 item). |
+| healthy | security | pass | 0.19 | No security issues detected. |
+| healthy | security-lite | pass | 0.02 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 2.47 | Advertised capability responded with the minimal expected shape (7 items). |
+| review | schema-quality | partial | 0.59 | Found 1 quality finding(s) across 8 item(s): 0 warnings, 1 info. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
 ## Evidence Snippets
+
+### attack-sim — pass
+
+Summary: Safe attack simulation found no high-risk MCP attack-readiness findings.
+
+- Endpoint: `attack-sim/safe`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `0`
+  - Identifiers: none
+  - Diagnostics: none
 
 ### conformance — pass
 
@@ -79,7 +92,7 @@ Summary: Advertised capability responded with the minimal expected shape (1 item
   - Minimal shape present: `true`
   - Item count: `1`
   - Identifiers: demo_welcome
-  - Diagnostics: Watching for changes in prompts directory: /Users/sanghoon/mcp-observatory/examples/promptopia-prompts, promptopia-mcp MCP server running (v1.1.0)
+  - Diagnostics: Watching for changes in prompts directory: /Users/williamweishuhn/Documents/New project/mcp-observatory/examples/promptopia-prompts, promptopia-mcp MCP server running (v1.1.0)
 
 ### security — pass
 
@@ -115,7 +128,7 @@ Summary: Advertised capability responded with the minimal expected shape (7 item
   - Minimal shape present: `true`
   - Item count: `7`
   - Identifiers: add_prompt, update_prompt, get_prompt, list_prompts, delete_prompt (+2 more)
-  - Diagnostics: Watching for changes in prompts directory: /Users/sanghoon/mcp-observatory/examples/promptopia-prompts, promptopia-mcp MCP server running (v1.1.0)
+  - Diagnostics: Watching for changes in prompts directory: /Users/williamweishuhn/Documents/New project/mcp-observatory/examples/promptopia-prompts, promptopia-mcp MCP server running (v1.1.0)
 
 ### schema-quality — partial
 
@@ -152,5 +165,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T014655135Z_d970b9ce`
+- Run ID: `run_2026-07-06T194948899Z_ab0f7d29`
 - Gate: `pass`

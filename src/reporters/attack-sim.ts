@@ -1,4 +1,5 @@
 import { extractObservatoryFindings } from "../findings.js";
+import { buildActionReceipt } from "../action-receipt.js";
 import type { RunArtifact } from "../types.js";
 
 function table(rows: string[][]): string {
@@ -35,6 +36,7 @@ export function renderAttackSimulationMarkdown(artifact: RunArtifact, reproducti
     : medium > 0
       ? "Medium-risk simulated attack findings should be reviewed before production use."
       : "No high-risk simulated attack findings were detected.";
+  const actionReceipt = buildActionReceipt(artifact);
 
   return [
     "# MCP Attack Simulation Report",
@@ -44,6 +46,8 @@ export function renderAttackSimulationMarkdown(artifact: RunArtifact, reproducti
     "## Executive Verdict",
     "",
     `**${verdict}**`,
+    "",
+    `**Action receipt:** \`${actionReceipt.action}\` — ${actionReceipt.reason}`,
     "",
     table([
       ["Target", "Attack Check", "High", "Medium", "Low", "Total"],
@@ -60,9 +64,10 @@ export function renderAttackSimulationMarkdown(artifact: RunArtifact, reproducti
     "## Findings",
     "",
     table([
-      ["Severity", "Rule", "Subject", "Message", "Recommendation"],
+      ["Severity", "Action", "Rule", "Subject", "Message", "Recommendation"],
       ...findings.map((finding) => [
         finding.severity,
+        escapeCell(finding.recommendedAction ?? "gate"),
         `\`${escapeCell(finding.ruleId)}\``,
         escapeCell(`${finding.subject.type}:${finding.subject.name ?? ""}`),
         escapeCell(finding.message),

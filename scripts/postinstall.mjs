@@ -47,7 +47,20 @@ function yamlString(value) {
   return JSON.stringify(value);
 }
 
-function yamlFor(command, sarif) {
+function normalizeSchedule(schedule) {
+  if (schedule === false || schedule === "off" || schedule === "none") return undefined;
+  if (typeof schedule === "string" && schedule.trim()) {
+    if (schedule === "weekly") return "0 9 * * 1";
+    if (schedule === "daily") return "0 9 * * *";
+    return schedule.trim();
+  }
+  return "0 9 * * 1";
+}
+
+function yamlFor(command, sarif, schedule) {
+  const selfPackage = readJson(path.join(packageRoot, "package.json"));
+  const actionRef = `v${selfPackage?.version || "0.28.0"}`;
+  const cron = normalizeSchedule(schedule);
   return [
     "name: MCP Observatory",
     "",
@@ -55,6 +68,7 @@ function yamlFor(command, sarif) {
     "  pull_request:",
     "  push:",
     "    branches: [main]",
+    ...(cron ? ["  schedule:", `    - cron: ${JSON.stringify(cron)}`] : []),
     "",
     "permissions:",
     "  contents: read",
@@ -65,7 +79,7 @@ function yamlFor(command, sarif) {
     "    runs-on: ubuntu-latest",
     "    steps:",
     "      - uses: actions/checkout@v6",
-    "      - uses: KryptosAI/mcp-observatory/action@v0.27.0",
+    `      - uses: KryptosAI/mcp-observatory/action@${actionRef}`,
     "        with:",
     `          command: ${yamlString(command)}`,
     "          deep: true",
@@ -78,11 +92,11 @@ function yamlFor(command, sarif) {
   ].join("\n");
 }
 
-function writeCi(projectRoot, command, sarif) {
+function writeCi(projectRoot, command, sarif, schedule) {
   const workflowPath = path.join(projectRoot, ".github", "workflows", "mcp-observatory.yml");
   mkdirSync(path.dirname(workflowPath), { recursive: true });
   try {
-    writeFileSync(workflowPath, yamlFor(command, sarif), { encoding: "utf8", flag: "wx" });
+    writeFileSync(workflowPath, yamlFor(command, sarif, schedule), { encoding: "utf8", flag: "wx" });
     return { status: "created", workflowPath };
   } catch (error) {
     if (error && typeof error === "object" && "code" in error && error.code === "EEXIST") {
@@ -104,17 +118,18 @@ try {
 
   const config = pkg.mcpObservatory && typeof pkg.mcpObservatory === "object" ? pkg.mcpObservatory : {};
   const command = inferCommand(pkg, config);
-  const sarif = config.sarif === true || process.env.MCP_OBSERVATORY_AUTO_SETUP_SARIF === "1";
+  const sarif = config.sarif !== false && process.env.MCP_OBSERVATORY_AUTO_SETUP_SARIF !== "0";
+  const schedule = process.env.MCP_OBSERVATORY_AUTO_SETUP_SCHEDULE || config.schedule || "weekly";
   const autoSetup = forceAuto || config.autoSetupCi === true;
 
   if (autoSetup) {
-    const result = writeCi(projectRoot, command, sarif);
+    const result = writeCi(projectRoot, command, sarif, schedule);
     const relative = path.relative(projectRoot, result.workflowPath);
     log(result.status === "created"
       ? `MCP Observatory: created ${relative}. Verify with: npx @kryptosai/mcp-observatory setup-ci --doctor`
       : `MCP Observatory: ${relative} already exists. Verify with: npx @kryptosai/mcp-observatory setup-ci --doctor`);
   } else {
-    log(`MCP Observatory: CI ready. Run: npx @kryptosai/mcp-observatory setup-ci --all --command "${command.replaceAll("\"", "\\\"")}"${sarif ? " --sarif" : ""}`);
+    log(`MCP Observatory: CI ready. Run: npx @kryptosai/mcp-observatory setup-ci --all --command "${command.replaceAll("\"", "\\\"")}"${sarif ? " --sarif" : ""} --schedule weekly`);
     log("MCP Observatory: to auto-create CI on install, set package.json mcpObservatory.autoSetupCi=true.");
   }
 } catch (error) {

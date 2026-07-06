@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T01:47:05.638Z
+Generated at 2026-07-06T19:49:57.956Z
 
 ## Target and Environment Metadata
 
@@ -8,8 +8,8 @@ Generated at 2026-07-06T01:47:05.638Z
 - Adapter: `local-process`
 - Command: `npx -y @executeautomation/playwright-mcp-server`
 - Server: `playwright-mcp 1.0.11`
-- Platform: `darwin 24.0.0`
-- Node: `v25.8.1`
+- Platform: `darwin 25.5.0`
+- Node: `v22.22.1`
 
 ## Executive Summary
 
@@ -25,18 +25,18 @@ Generated at 2026-07-06T01:47:05.638Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| fail | 7 | 3 | 2 | 1 | 1 | 0 | 0 |
+| fail | 8 | 3 | 3 | 1 | 1 | 0 | 0 |
 
 ## At a Glance
 
 - Safety verdict: **Blocked** — One or more checks can break agent dependence and should be fixed before production use.
-- Top risks: schema-quality: Found 1 quality finding(s) across 34 item(s): 1 warnings, 0 info.; security: Found 1 security finding(s): 1 high, 0 medium, 0 low.; security-lite: Found 1 security finding(s): 1 high, 0 medium, 0 low.
+- Top risks: schema-quality: Found 1 quality finding(s) across 34 item(s): 1 warnings, 0 info.; attack-sim: Safe attack simulation found 6 finding(s): 1 high, 5 medium, 0 low.; security: Found 1 security finding(s): 1 high, 0 medium, 0 low.
 - Regression/schema drift: Run `mcp-observatory diff <previous-run.json> <current-run.json>` to classify regressions and schema drift.
-- Failing checks: security-lite, security
+- Failing checks: security-lite, security, attack-sim
 - Partial or flaky checks: schema-quality
 - Skipped checks: none
 - Unsupported checks: prompts
-- Suggested next step: Start with the failing checks: security-lite, security.
+- Suggested next step: Start with the failing checks: security-lite, security, attack-sim.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
 
 ## Regressions and Recoveries
@@ -47,12 +47,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 2.72 | All 7 conformance checks passed. |
-| healthy | resources | pass | 0.73 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
-| healthy | tools | pass | 1.47 | Advertised capability responded with the minimal expected shape (33 items). |
-| review | schema-quality | partial | 0.75 | Found 1 quality finding(s) across 34 item(s): 1 warnings, 0 info. |
+| healthy | conformance | pass | 2.29 | All 7 conformance checks passed. |
+| healthy | resources | pass | 0.61 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
+| healthy | tools | pass | 1.18 | Advertised capability responded with the minimal expected shape (33 items). |
+| review | schema-quality | partial | 0.62 | Found 1 quality finding(s) across 34 item(s): 1 warnings, 0 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
-| act now | security | fail | 0.42 | Found 1 security finding(s): 1 high, 0 medium, 0 low. |
+| act now | attack-sim | fail | 1.44 | Safe attack simulation found 6 finding(s): 1 high, 5 medium, 0 low. |
+| act now | security | fail | 0.29 | Found 1 security finding(s): 1 high, 0 medium, 0 low. |
 | act now | security-lite | fail | 0.06 | Found 1 security finding(s): 1 high, 0 medium, 0 low. |
 
 ## Evidence Snippets
@@ -124,6 +125,18 @@ Summary: Prompts are not advertised by the target.
   - Identifiers: none
   - Diagnostics: none
 
+### attack-sim — fail
+
+Summary: Safe attack simulation found 6 finding(s): 1 high, 5 medium, 0 low.
+
+- Endpoint: `attack-sim/safe`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `6`
+  - Identifiers: playwright_upload_file, playwright_evaluate, playwright_post, playwright_put, playwright_patch (+1 more)
+  - Diagnostics: [medium] Tool "playwright_upload_file" combines broad parameters (filePath) with destructive or non-read-only behavior., [high] Tool "playwright_evaluate" combines broad parameters (script) with destructive or non-read-only behavior., [medium] Tool "playwright_post" combines broad parameters (url, headers) with destructive or non-read-only behavior. (+3 more)
+
 ### security — fail
 
 Summary: Found 1 security finding(s): 1 high, 0 medium, 0 low.
@@ -159,5 +172,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T014705638Z_2fa3564a`
+- Run ID: `run_2026-07-06T194957955Z_4eaf8a90`
 - Gate: `fail`

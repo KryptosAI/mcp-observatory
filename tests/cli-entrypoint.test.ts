@@ -66,6 +66,7 @@ describe("CLI entrypoint", () => {
     const { stdout, exitCode } = runCli(["scan", "--help"]);
     expect(exitCode).toBe(0);
     expect(stdout).toContain("scan");
+    expect(stdout).toContain("--no-attack-sim");
     expect(stdout).toContain("--setup-ci");
     expect(stdout).toContain("--no-ci-sarif");
   });
@@ -76,6 +77,7 @@ describe("CLI entrypoint", () => {
     expect(stdout).toContain("test");
     expect(stdout).toContain("--sarif");
     expect(stdout).toContain("--campaign");
+    expect(stdout).toContain("--no-attack-sim");
     expect(stdout).toContain("--setup-ci");
     expect(stdout).toContain("--no-setup-ci");
     expect(stdout).toContain("--no-ci-sarif");
@@ -87,6 +89,7 @@ describe("CLI entrypoint", () => {
     expect(stdout).toContain("attack-sim");
     expect(stdout).toContain("--fail-on-high");
     expect(stdout).toContain("--baseline");
+    expect(stdout).toContain("--setup-ci");
   });
 
   it("diff subcommand shows help", () => {
@@ -187,10 +190,34 @@ describe("CLI entrypoint", () => {
 
     const { stdout, exitCode } = runCli(["test", "node", fixture, "--setup-ci", "--yes"], { cwd: tmpDir });
     expect(exitCode).toBe(0);
+    expect(stdout).toContain("Action Receipt: allow");
     expect(stdout).toContain("created: .github/workflows/mcp-observatory.yml");
     expect(fs.existsSync(path.join(tmpDir, ".github/workflows/mcp-observatory.yml"))).toBe(true);
     expect(fs.readFileSync(path.join(tmpDir, ".github/workflows/mcp-observatory.yml"), "utf8")).toContain("upload-sarif: true");
     expect(fs.readFileSync(path.join(tmpDir, "mcp-observatory.target.json"), "utf8")).toContain("fixture-server.mjs");
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  it("test runs safe attack simulation by default and supports --no-attack-sim", () => {
+    const tmpDir = path.join(os.tmpdir(), `obs-test-${Date.now()}`);
+    fs.mkdirSync(tmpDir, { recursive: true });
+    const fixture = path.resolve("tests/fixtures/fixture-server.mjs");
+
+    const withAttack = runCliWithStderr(["test", "node", fixture, "--no-setup-ci"], {
+      cwd: tmpDir,
+      env: { MCP_OBSERVATORY_TELEMETRY_DEBUG: "1" },
+    });
+    expect(withAttack.exitCode).toBe(0);
+    const withAttackComplete = telemetryEvents(withAttack.stderr).find((event) => event["event"] === "command_complete" && event["command"] === "test");
+    expect((withAttackComplete?.["checkStatuses"] as Record<string, string> | undefined)?.["attack-sim"]).toBe("pass");
+
+    const withoutAttack = runCliWithStderr(["test", "node", fixture, "--no-attack-sim", "--no-setup-ci"], {
+      cwd: tmpDir,
+      env: { MCP_OBSERVATORY_TELEMETRY_DEBUG: "1" },
+    });
+    expect(withoutAttack.exitCode).toBe(0);
+    const withoutAttackComplete = telemetryEvents(withoutAttack.stderr).find((event) => event["event"] === "command_complete" && event["command"] === "test");
+    expect((withoutAttackComplete?.["checkStatuses"] as Record<string, string> | undefined)?.["attack-sim"]).toBeUndefined();
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
@@ -238,9 +265,13 @@ describe("CLI entrypoint", () => {
     ], { cwd: tmpDir, timeout: 25_000 });
     expect(exitCode).toBe(0);
     expect(stdout).toContain("attack-sim");
+    expect(stdout).toContain("Action Receipt: allow");
+    expect(stdout).toContain("CI conversion available:");
     const artifact = JSON.parse(fs.readFileSync(jsonPath, "utf8")) as { checks: Array<{ id: string }> };
     expect(artifact.checks.some((check) => check.id === "attack-sim")).toBe(true);
-    expect(fs.readFileSync(reportPath, "utf8")).toContain("MCP Attack Simulation Report");
+    const report = fs.readFileSync(reportPath, "utf8");
+    expect(report).toContain("MCP Attack Simulation Report");
+    expect(report).toContain("Action receipt");
     const sarif = JSON.parse(fs.readFileSync(sarifPath, "utf8")) as { version: string };
     expect(sarif.version).toBe("2.1.0");
     fs.rmSync(tmpDir, { recursive: true, force: true });
@@ -433,7 +464,7 @@ describe("CLI entrypoint", () => {
       "    runs-on: ubuntu-latest",
       "    steps:",
       "      - uses: actions/checkout@v6",
-      "      - uses: KryptosAI/mcp-observatory/action@v0.27.0",
+      "      - uses: KryptosAI/mcp-observatory/action@v0.28.0",
       "        with:",
       "          command: npx -y @example/mcp-server",
       "",

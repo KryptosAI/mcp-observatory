@@ -4,6 +4,7 @@ import type { Command } from "commander";
 import { buildEvent, normalizeCampaign, recordEvent } from "../telemetry.js";
 import { defaultRunsDirectory, findLatestSuccessfulRunArtifact, readArtifact } from "../storage.js";
 import type { RunArtifact } from "../types.js";
+import { TOOL_VERSION } from "../version.js";
 import { quoteShell } from "./helpers.js";
 
 export interface InitCiOptions {
@@ -35,7 +36,7 @@ const DEFAULT_TARGET_CONFIG_PATH = "mcp-observatory.target.json";
 const DEFAULT_PR_BODY_PATH = "docs/mcp-observatory-pr-body.md";
 const DEFAULT_ISSUE_BODY_PATH = "docs/mcp-observatory-issue.md";
 const DEFAULT_SCORE_BADGE_PATH = "docs/mcp-observatory-score-badge.md";
-const DEFAULT_ACTION_REF = "v0.27.0";
+const DEFAULT_ACTION_REF = `v${TOOL_VERSION}`;
 const DEFAULT_WEEKLY_CRON = "0 9 * * 1";
 
 async function exists(filePath: string): Promise<boolean> {

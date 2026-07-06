@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T01:47:04.792Z
+Generated at 2026-07-06T19:49:57.048Z
 
 ## Target and Environment Metadata
 
@@ -8,8 +8,8 @@ Generated at 2026-07-06T01:47:04.792Z
 - Adapter: `local-process`
 - Command: `npx -y @antv/mcp-server-chart`
 - Server: `mcp-server-chart 0.8.x`
-- Platform: `darwin 24.0.0`
-- Node: `v25.8.1`
+- Platform: `darwin 25.5.0`
+- Node: `v22.22.1`
 
 ## Executive Summary
 
@@ -25,7 +25,7 @@ Generated at 2026-07-06T01:47:04.792Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| pass | 7 | 5 | 0 | 0 | 2 | 0 | 0 |
+| pass | 8 | 6 | 0 | 0 | 2 | 0 | 0 |
 
 ## At a Glance
 
@@ -47,15 +47,28 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 1.41 | All 7 conformance checks passed. |
-| healthy | schema-quality | pass | 1.02 | All 27 item(s) have good schema quality. |
+| healthy | attack-sim | pass | 1.90 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 1.36 | All 7 conformance checks passed. |
+| healthy | schema-quality | pass | 2.78 | All 27 item(s) have good schema quality. |
 | healthy | security | pass | 0.91 | No security issues detected. |
-| healthy | security-lite | pass | 0.09 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 1.91 | Advertised capability responded with the minimal expected shape (27 items). |
+| healthy | security-lite | pass | 0.07 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 1.71 | Advertised capability responded with the minimal expected shape (27 items). |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
 ## Evidence Snippets
+
+### attack-sim — pass
+
+Summary: Safe attack simulation found no high-risk MCP attack-readiness findings.
+
+- Endpoint: `attack-sim/safe`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `0`
+  - Identifiers: none
+  - Diagnostics: none
 
 ### conformance — pass
 
@@ -115,7 +128,7 @@ Summary: Advertised capability responded with the minimal expected shape (27 ite
   - Minimal shape present: `true`
   - Item count: `27`
   - Identifiers: generate_area_chart, generate_bar_chart, generate_boxplot_chart, generate_column_chart, generate_district_map (+22 more)
-  - Diagnostics: [MCP-Server-Chart] 2026-07-06T01:47:05.616Z ℹ️  setting up tool handlers..., [MCP-Server-Chart] 2026-07-06T01:47:05.617Z ℹ️  tool handlers set up, [MCP-Server-Chart] 2026-07-06T01:47:05.618Z ✅ Stdio MCP Server started
+  - Diagnostics: [MCP-Server-Chart] 2026-07-06T19:49:57.931Z ℹ️  setting up tool handlers..., [MCP-Server-Chart] 2026-07-06T19:49:57.932Z ℹ️  tool handlers set up, [MCP-Server-Chart] 2026-07-06T19:49:57.933Z ✅ Stdio MCP Server started
 
 ### prompts — unsupported
 
@@ -152,5 +165,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T014704792Z_4aa8d9c4`
+- Run ID: `run_2026-07-06T194957048Z_8266b9f7`
 - Gate: `pass`

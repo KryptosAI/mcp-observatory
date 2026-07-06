@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T01:46:58.742Z
+Generated at 2026-07-06T19:49:52.194Z
 
 ## Target and Environment Metadata
 
@@ -8,8 +8,8 @@ Generated at 2026-07-06T01:46:58.742Z
 - Adapter: `local-process`
 - Command: `npx -y @cyanheads/git-mcp-server`
 - Server: `@cyanheads/git-mcp-server 2.15.1`
-- Platform: `darwin 24.0.0`
-- Node: `v25.8.1`
+- Platform: `darwin 25.5.0`
+- Node: `v22.22.1`
 
 ## Executive Summary
 
@@ -25,18 +25,18 @@ Generated at 2026-07-06T01:46:58.742Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| pass | 7 | 4 | 0 | 3 | 0 | 0 | 0 |
+| pass | 8 | 4 | 0 | 4 | 0 | 0 | 0 |
 
 ## At a Glance
 
 - Safety verdict: **Needs review** — The server is usable, but caveated checks should be reviewed before agents depend on it.
-- Top risks: schema-quality: Found 17 quality finding(s) across 30 item(s): 0 warnings, 17 info.; security: Found 19 security finding(s): 0 high, 19 medium, 0 low.; security-lite: Found 19 security finding(s): 0 high, 19 medium, 0 low.
+- Top risks: attack-sim: Safe attack simulation found 19 finding(s): 0 high, 19 medium, 0 low.; schema-quality: Found 17 quality finding(s) across 30 item(s): 0 warnings, 17 info.; security: Found 19 security finding(s): 0 high, 19 medium, 0 low.
 - Regression/schema drift: Run `mcp-observatory diff <previous-run.json> <current-run.json>` to classify regressions and schema drift.
 - Failing checks: none
-- Partial or flaky checks: security-lite, schema-quality, security
+- Partial or flaky checks: security-lite, schema-quality, security, attack-sim
 - Skipped checks: none
 - Unsupported checks: none
-- Suggested next step: Review the caveated checks next: security-lite, schema-quality, security.
+- Suggested next step: Review the caveated checks next: security-lite, schema-quality, security, attack-sim.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
 
 ## Regressions and Recoveries
@@ -47,13 +47,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 43.66 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 0.77 | Advertised capability responded with the minimal expected shape (1 item). |
-| healthy | resources | pass | 0.70 | Advertised capability responded with the minimal expected shape (2 items). |
-| healthy | tools | pass | 33.99 | Advertised capability responded with the minimal expected shape (28 items). |
-| review | schema-quality | partial | 21.67 | Found 17 quality finding(s) across 30 item(s): 0 warnings, 17 info. |
-| review | security | partial | 27.04 | Found 19 security finding(s): 0 high, 19 medium, 0 low. |
-| review | security-lite | partial | 0.10 | Found 19 security finding(s): 0 high, 19 medium, 0 low. |
+| healthy | conformance | pass | 35.62 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 0.65 | Advertised capability responded with the minimal expected shape (1 item). |
+| healthy | resources | pass | 0.60 | Advertised capability responded with the minimal expected shape (2 items). |
+| healthy | tools | pass | 27.61 | Advertised capability responded with the minimal expected shape (28 items). |
+| review | attack-sim | partial | 18.08 | Safe attack simulation found 19 finding(s): 0 high, 19 medium, 0 low. |
+| review | schema-quality | partial | 17.43 | Found 17 quality finding(s) across 30 item(s): 0 warnings, 17 info. |
+| review | security | partial | 16.14 | Found 19 security finding(s): 0 high, 19 medium, 0 low. |
+| review | security-lite | partial | 0.08 | Found 19 security finding(s): 0 high, 19 medium, 0 low. |
 
 ## Evidence Snippets
 
@@ -79,7 +80,7 @@ Summary: Advertised capability responded with the minimal expected shape (1 item
   - Minimal shape present: `true`
   - Item count: `1`
   - Identifiers: git_wrapup
-  - Diagnostics: {"level":30,"time":1783302419905,"env":"development","version":"2.15.1","pid":87344,"transport":"stdio","requestId":"0MOWN-K5EH1","timestamp":"2026-07-06T01:46:59.900Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Attempting to connect stdio transport..."}, {"level":20,"time":1783302419905,"env":"development","version":"2.15.1","pid":87344,"transport":"stdio","requestId":"0MOWN-K5EH1","timestamp":"2026-07-06T01:46:59.900Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Creating StdioServerTransport instance..."}, {"level":20,"time":1783302419905,"env":"development","version":"2.15.1","pid":87344,"transport":"stdio","requestId":"0MOWN-K5EH1","timestamp":"2026-07-06T01:46:59.900Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Connecting McpServer instance to StdioServerTransport..."} (+2 more)
+  - Diagnostics: {"level":30,"time":1783367393061,"env":"development","version":"2.15.1","pid":13590,"transport":"stdio","requestId":"A40P7-B7WJU","timestamp":"2026-07-06T19:49:53.057Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Attempting to connect stdio transport..."}, {"level":20,"time":1783367393061,"env":"development","version":"2.15.1","pid":13590,"transport":"stdio","requestId":"A40P7-B7WJU","timestamp":"2026-07-06T19:49:53.057Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Creating StdioServerTransport instance..."}, {"level":20,"time":1783367393061,"env":"development","version":"2.15.1","pid":13590,"transport":"stdio","requestId":"A40P7-B7WJU","timestamp":"2026-07-06T19:49:53.057Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Connecting McpServer instance to StdioServerTransport..."} (+2 more)
 
 ### resources — pass
 
@@ -91,14 +92,14 @@ Summary: Advertised capability responded with the minimal expected shape (2 item
   - Minimal shape present: `true`
   - Item count: `1`
   - Identifiers: git://working-directory
-  - Diagnostics: {"level":30,"time":1783302419905,"env":"development","version":"2.15.1","pid":87344,"transport":"stdio","requestId":"0MOWN-K5EH1","timestamp":"2026-07-06T01:46:59.900Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Attempting to connect stdio transport..."}, {"level":20,"time":1783302419905,"env":"development","version":"2.15.1","pid":87344,"transport":"stdio","requestId":"0MOWN-K5EH1","timestamp":"2026-07-06T01:46:59.900Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Creating StdioServerTransport instance..."}, {"level":20,"time":1783302419905,"env":"development","version":"2.15.1","pid":87344,"transport":"stdio","requestId":"0MOWN-K5EH1","timestamp":"2026-07-06T01:46:59.900Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Connecting McpServer instance to StdioServerTransport..."} (+2 more)
+  - Diagnostics: {"level":30,"time":1783367393061,"env":"development","version":"2.15.1","pid":13590,"transport":"stdio","requestId":"A40P7-B7WJU","timestamp":"2026-07-06T19:49:53.057Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Attempting to connect stdio transport..."}, {"level":20,"time":1783367393061,"env":"development","version":"2.15.1","pid":13590,"transport":"stdio","requestId":"A40P7-B7WJU","timestamp":"2026-07-06T19:49:53.057Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Creating StdioServerTransport instance..."}, {"level":20,"time":1783367393061,"env":"development","version":"2.15.1","pid":13590,"transport":"stdio","requestId":"A40P7-B7WJU","timestamp":"2026-07-06T19:49:53.057Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Connecting McpServer instance to StdioServerTransport..."} (+2 more)
 - Endpoint: `resources/templates/list`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
   - Item count: `1`
   - Identifiers: git://working-directory
-  - Diagnostics: {"level":30,"time":1783302419905,"env":"development","version":"2.15.1","pid":87344,"transport":"stdio","requestId":"0MOWN-K5EH1","timestamp":"2026-07-06T01:46:59.900Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Attempting to connect stdio transport..."}, {"level":20,"time":1783302419905,"env":"development","version":"2.15.1","pid":87344,"transport":"stdio","requestId":"0MOWN-K5EH1","timestamp":"2026-07-06T01:46:59.900Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Creating StdioServerTransport instance..."}, {"level":20,"time":1783302419905,"env":"development","version":"2.15.1","pid":87344,"transport":"stdio","requestId":"0MOWN-K5EH1","timestamp":"2026-07-06T01:46:59.900Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Connecting McpServer instance to StdioServerTransport..."} (+2 more)
+  - Diagnostics: {"level":30,"time":1783367393061,"env":"development","version":"2.15.1","pid":13590,"transport":"stdio","requestId":"A40P7-B7WJU","timestamp":"2026-07-06T19:49:53.057Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Attempting to connect stdio transport..."}, {"level":20,"time":1783367393061,"env":"development","version":"2.15.1","pid":13590,"transport":"stdio","requestId":"A40P7-B7WJU","timestamp":"2026-07-06T19:49:53.057Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Creating StdioServerTransport instance..."}, {"level":20,"time":1783367393061,"env":"development","version":"2.15.1","pid":13590,"transport":"stdio","requestId":"A40P7-B7WJU","timestamp":"2026-07-06T19:49:53.057Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Connecting McpServer instance to StdioServerTransport..."} (+2 more)
 
 ### tools — pass
 
@@ -111,6 +112,18 @@ Summary: Advertised capability responded with the minimal expected shape (28 ite
   - Item count: `28`
   - Identifiers: git_add, git_blame, git_branch, git_changelog_analyze, git_checkout (+23 more)
   - Diagnostics: none
+
+### attack-sim — partial
+
+Summary: Safe attack simulation found 19 finding(s): 0 high, 19 medium, 0 low.
+
+- Endpoint: `attack-sim/safe`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `19`
+  - Identifiers: git_add, git_branch, git_checkout, git_cherry_pick, git_clean (+14 more)
+  - Diagnostics: [medium] Tool "git_add" combines broad parameters (path) with destructive or non-read-only behavior., [medium] Tool "git_branch" combines broad parameters (path) with destructive or non-read-only behavior., [medium] Tool "git_checkout" combines broad parameters (path) with destructive or non-read-only behavior. (+16 more)
 
 ### schema-quality — partial
 
@@ -159,5 +172,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T014658742Z_9d713d02`
+- Run ID: `run_2026-07-06T194952194Z_80b1e6dd`
 - Gate: `pass`

@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T01:47:00.071Z
+Generated at 2026-07-06T19:49:53.212Z
 
 ## Target and Environment Metadata
 
@@ -8,8 +8,8 @@ Generated at 2026-07-06T01:47:00.071Z
 - Adapter: `local-process`
 - Command: `npx -y @opentofu/opentofu-mcp-server`
 - Server: `opentofu 0.1.0`
-- Platform: `darwin 24.0.0`
-- Node: `v25.8.1`
+- Platform: `darwin 25.5.0`
+- Node: `v22.22.1`
 
 ## Executive Summary
 
@@ -25,7 +25,7 @@ Generated at 2026-07-06T01:47:00.071Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| pass | 7 | 5 | 0 | 1 | 1 | 0 | 0 |
+| pass | 8 | 6 | 0 | 1 | 1 | 0 | 0 |
 
 ## At a Glance
 
@@ -47,15 +47,28 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 0.72 | All 7 conformance checks passed. |
-| healthy | resources | pass | 0.58 | Advertised capability responded with the minimal expected shape (1 items). |
-| healthy | security | pass | 0.25 | No security issues detected. |
-| healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 2.25 | Advertised capability responded with the minimal expected shape (5 items). |
-| review | schema-quality | partial | 0.51 | Found 1 quality finding(s) across 6 item(s): 1 warnings, 0 info. |
+| healthy | attack-sim | pass | 0.45 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 0.71 | All 7 conformance checks passed. |
+| healthy | resources | pass | 0.54 | Advertised capability responded with the minimal expected shape (1 items). |
+| healthy | security | pass | 0.16 | No security issues detected. |
+| healthy | security-lite | pass | 0.02 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 1.90 | Advertised capability responded with the minimal expected shape (5 items). |
+| review | schema-quality | partial | 0.49 | Found 1 quality finding(s) across 6 item(s): 1 warnings, 0 info. |
 | confirm intent | prompts | unsupported | 0.01 | Prompts are not advertised by the target. |
 
 ## Evidence Snippets
+
+### attack-sim — pass
+
+Summary: Safe attack simulation found no high-risk MCP attack-readiness findings.
+
+- Endpoint: `attack-sim/safe`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `0`
+  - Identifiers: none
+  - Diagnostics: none
 
 ### conformance — pass
 
@@ -159,5 +172,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T014700071Z_aaaf7fe5`
+- Run ID: `run_2026-07-06T194953212Z_e649da15`
 - Gate: `pass`

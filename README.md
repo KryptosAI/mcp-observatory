@@ -41,7 +41,7 @@ Agents should not depend on tools nobody tests. MCP Observatory turns a local MC
 
 ## Try It
 
-Start with the homepage demo: safely simulate MCP attack-readiness for one server and emit SARIF evidence that maintainers can inspect in GitHub Code Scanning.
+Start with the homepage demo: safely simulate MCP attack-readiness for one server, emit an action receipt, and produce SARIF evidence that maintainers can inspect in GitHub Code Scanning.
 
 ```bash
 npx @kryptosai/mcp-observatory attack-sim npx -y my-mcp-server --sarif attack-results.sarif
@@ -91,6 +91,8 @@ npx @kryptosai/mcp-observatory setup-ci --doctor --fix
 
 Installing MCP Observatory in an MCP server project also prints the exact CI setup command. Projects can opt into automatic workflow creation during install with [`mcpObservatory.autoSetupCi`](./docs/automatic-ci-integration.md).
 
+Normal `scan` and `test` runs include safe attack-readiness simulation by default. Use `--no-attack-sim` only when you want the older compatibility-only path.
+
 Upload normalized MCP findings to GitHub Code Scanning when you want a security-native release gate:
 
 ```bash
@@ -128,6 +130,7 @@ MCP servers are becoming production dependencies. If agents rely on them, teams 
 Observatory gives maintainers and teams:
 
 - **One-command CI setup** with `setup-ci --all`
+- **Action receipts** that say `allow`, `gate`, `rerun`, `quarantine`, or `escalate`
 - **GitHub PR comments** for compatibility, drift, and security findings
 - **GitHub Code Scanning SARIF** for normalized MCP findings
 - **Health score badges** for public trust signals
@@ -192,9 +195,9 @@ Or add it manually to your config:
 
 | Command | What it does |
 |---------|-------------|
-| `scan` | Auto-discover servers from config files and check them all (default) |
-| `scan deep` | Scan and also invoke safe tools to verify they execute |
-| `test <cmd>` / `test --target <file>` | Test a specific server by command or target config |
+| `scan` | Auto-discover servers, check them, and run safe attack-readiness simulation by default |
+| `scan deep` | Scan, run safe attack simulation, and also invoke safe tools to verify they execute |
+| `test <cmd>` / `test --target <file>` | Test one server and emit an action receipt by command or target config |
 | `record <cmd>` | Record a server session to a cassette file for offline replay |
 | `replay <cassette>` | Replay a cassette offline — no live server needed |
 | `verify <cassette> <cmd>` | Verify a live server still matches a recorded cassette |
@@ -208,6 +211,7 @@ Or add it manually to your config:
 | `setup-ci` / `init-ci` | Create a GitHub Action and badge snippet for MCP compatibility/security checks |
 | `setup-ci --sarif` | Generate a workflow that uploads normalized findings to GitHub Code Scanning |
 | `setup-ci --doctor` | Inspect whether the repository has a complete CI adoption kit |
+| `--no-attack-sim` | Opt out of the default safe attack simulation on `scan` or `test` |
 | `ci-report` | Generate CI report for GitHub issue creation |
 | `enterprise-report` | Generate a static production/security report from run artifacts |
 | `score <cmd>` | Score an MCP server's health (0-100) |
@@ -305,7 +309,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: KryptosAI/mcp-observatory/action@v0.27.0
+      - uses: KryptosAI/mcp-observatory/action@v0.28.0
         with:
           command: npx -y my-mcp-server
           deep: true
