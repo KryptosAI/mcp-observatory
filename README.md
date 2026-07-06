@@ -55,6 +55,8 @@ npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" -
 
 See the [MCP Attack Simulator](./docs/mcp-attack-simulator.md), [Tool-call receipts](./docs/tool-call-receipts.md), [MCP Receipt Graph](./docs/receipt-graph.md), [launch page](./docs/launch.md), [GitHub Code Scanning demo](./docs/code-scanning-demo.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [sample safety reports](./docs/mcp-server-safety-index.md), and [reference evaluations](./docs/reference-evaluations.md).
 
+Want a receipt for a server your agent depends on? Comment on [Drop an MCP server, get a receipt #146](https://github.com/KryptosAI/mcp-observatory/issues/146) or use the [structured receipt request form](https://github.com/KryptosAI/mcp-observatory/issues/new?template=tool-call-receipt-request.yml). Public requests can become Safety Index entries, delta receipts, SARIF evidence, and maintainer CI conversations.
+
 ## Evidence You Can Inspect
 
 | Evidence | Where |
@@ -73,7 +75,7 @@ Two more fast paths:
 
 Cloned this repo? Start here: [`CLONED_THIS.md`](./CLONED_THIS.md). Want to contribute? Add one server to the [MCP Target Registry](./docs/target-registry.md), use the [Agent Task Pack](./docs/agent-tasks.md), and get public credit through [MCP Observatory Contributors](./docs/contributor-recognition.md).
 
-AI coding agents, agentic workflows, and rough PRs are welcome. Use the [10x Agentic Growth Sprint](./docs/10x-agentic-growth-sprint.md), [Agentic Contributor Outreach](./docs/agentic-contributor-outreach.md), or open a `Contributor quest`, `Agentic contribution idea`, or `MCP tool-call receipt request` issue to suggest a target, prompt, docs fix, receipt, or `setup-ci --sarif` integration.
+AI coding agents, agentic workflows, and rough PRs are welcome. Use the [10x Agentic Growth Sprint](./docs/10x-agentic-growth-sprint.md), [Agentic Contributor Outreach](./docs/agentic-contributor-outreach.md), or open a `Contributor quest`, `Agentic contribution idea`, or [`Drop an MCP server, get a receipt`](./docs/drop-server-get-receipt.md) issue to suggest a target, prompt, docs fix, receipt, or `setup-ci --sarif` integration.
 
 Add MCP CI and Code Scanning in one command:
 

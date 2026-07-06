@@ -32,7 +32,7 @@ Use this page as the first public map from MCP servers to reproducible evidence.
 
 ## How To Add A Node
 
-1. Open a [tool-call receipt request](https://github.com/KryptosAI/mcp-observatory/issues/new?template=tool-call-receipt-request.yml).
+1. Open a [Drop an MCP server, get a receipt request](https://github.com/KryptosAI/mcp-observatory/issues/new?template=tool-call-receipt-request.yml).
 2. Provide a public MCP server and safe startup command.
 3. Run:
 
@@ -49,3 +49,5 @@ npx @kryptosai/mcp-observatory setup-ci --all --command "<safe startup command>"
 ```text
 Name one MCP server your agent depends on. I will help turn it into a reproducible receipt: safe startup command, run artifact, attack-sim evidence, SARIF, and a CI gate maintainers can review.
 ```
+
+For the public intake loop, see [Drop an MCP server, get a receipt](./drop-server-get-receipt.md) or comment on [the live GitHub thread](https://github.com/KryptosAI/mcp-observatory/issues/146).
