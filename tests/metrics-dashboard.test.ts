@@ -80,6 +80,13 @@ describe("local metrics dashboard", () => {
           { version: "0.24.0", events: 1, sessions: 1, sessionShare: 50, isLatest: true },
           { version: "0.23.0", events: 1, sessions: 1, sessionShare: 50, isLatest: false },
         ],
+        versionHealth: {
+          latestVersion: "0.24.0",
+          latestSessions: 1,
+          staleSessions: 1,
+          staleSessionShare: 50,
+          staleVersions: [{ version: "0.23.0", events: 1, sessions: 1 }],
+        },
         dailyMarketVersionAdoption: [
           { day: "2026-05-21", totalSessions: 1, latestSessions: 0, latestEvents: 0, latestSessionShare: 0, dominantVersion: "0.23.0" },
           { day: "2026-06-21", totalSessions: 4, latestSessions: 2, latestEvents: 2, latestSessionShare: 50, dominantVersion: "0.24.0" },
@@ -88,11 +95,23 @@ describe("local metrics dashboard", () => {
           { stage: "Agent install", commands: "serve", events: 1, sessions: 1, recommendation: "Scale agent setup docs." },
           { stage: "CI setup", commands: "init-ci, setup-ci", events: 0, sessions: 0, recommendation: "Make setup-ci louder." },
           { stage: "Attack simulation", commands: "attack-sim", events: 1, sessions: 1, recommendation: "Push receipts." },
+          { stage: "Receipts", commands: "receipt, audit --receipt", events: 1, sessions: 1, recommendation: "Turn scans into portable proof." },
           { stage: "Paid intent", commands: "cloud, cloud-upload, enterprise-report", events: 0, sessions: 0, recommendation: "Follow up." },
         ],
         dailyMarketCommandFunnel: [
-          { day: "2026-05-21", agentInstallSessions: 1, attackSimSessions: 0, ciSarifSessions: 0, validationSessions: 1, regressionSessions: 0, ciSetupSessions: 0, paidIntentSessions: 0 },
-          { day: "2026-06-21", agentInstallSessions: 2, attackSimSessions: 1, ciSarifSessions: 1, validationSessions: 3, regressionSessions: 0, ciSetupSessions: 1, paidIntentSessions: 0 },
+          { day: "2026-05-21", agentInstallSessions: 1, attackSimSessions: 0, ciSarifSessions: 0, receiptSessions: 0, validationSessions: 1, regressionSessions: 0, ciSetupSessions: 0, paidIntentSessions: 0 },
+          { day: "2026-06-21", agentInstallSessions: 2, attackSimSessions: 1, ciSarifSessions: 1, receiptSessions: 1, validationSessions: 3, regressionSessions: 0, ciSetupSessions: 1, paidIntentSessions: 0 },
+        ],
+        dailyDirectionSignals: [
+          { metric: "Market sessions", current: 4, previous: 1, deltaLabel: "+300%", direction: "up", context: "2026-06-21", nextAction: "Amplify the source that changed." },
+          { metric: "Receipt sessions", current: 1, previous: 0, deltaLabel: "new", direction: "up", context: "2026-06-21", nextAction: "Use receipts in maintainer conversations." },
+        ],
+        funnelConversions: [
+          { name: "Attack-sim to receipt", numerator: 1, denominator: 1, rate: 100, context: "Are findings turning into portable proof?" },
+        ],
+        dataQualitySignals: [
+          { label: "Telemetry freshness", status: "ok", detail: "Latest external event 1h ago." },
+          { label: "Version adoption", status: "warn", detail: "One stale session remains." },
         ],
       },
       github: {
@@ -146,7 +165,11 @@ describe("local metrics dashboard", () => {
     expect(html).toContain("Weekly Sessions");
     expect(html).toContain("KPI Momentum");
     expect(html).toContain("Growth Command Center");
+    expect(html).toContain("What Changed Today");
+    expect(html).toContain("Conversion Readiness");
+    expect(html).toContain("Data Quality");
     expect(html).toContain("Attack-sim sessions");
+    expect(html).toContain("Receipt sessions");
     expect(html).toContain("SARIF setup");
     expect(html).toContain("month over month · all time");
     expect(html).toContain("Latest Version Adoption");

@@ -10,6 +10,7 @@ import { setTimeout as sleep } from "node:timers/promises";
 import { promisify } from "node:util";
 import { LOGO } from "../src/commands/helpers.js";
 import { writeTextFileAtomic } from "../src/utils/files.js";
+import { TOOL_VERSION } from "../src/version.js";
 import { classifyUsageRow, type TelemetryRow } from "./telemetry-company-intelligence.js";
 
 const execFileAsync = promisify(execFile);
@@ -121,6 +122,40 @@ interface NpmDownloadsResponse {
   downloads?: Array<{ day: string; downloads: number }>;
 }
 
+type TrendDirection = "up" | "down" | "flat";
+
+interface DailyDirectionSignal {
+  metric: string;
+  current: number;
+  previous: number;
+  deltaLabel: string;
+  direction: TrendDirection;
+  context: string;
+  nextAction: string;
+}
+
+interface FunnelConversion {
+  name: string;
+  numerator: number;
+  denominator: number;
+  rate: number;
+  context: string;
+}
+
+interface VersionHealth {
+  latestVersion: string;
+  latestSessions: number;
+  staleSessions: number;
+  staleSessionShare: number;
+  staleVersions: Array<{ version: string; sessions: number; events: number }>;
+}
+
+interface DataQualitySignal {
+  label: string;
+  status: "ok" | "warn" | "bad";
+  detail: string;
+}
+
 interface TelemetrySummary {
   totalEvents: number;
   totalSessions: number;
@@ -142,9 +177,13 @@ interface TelemetrySummary {
   topDomains: Array<{ domain: string; events: number; sessions: number }>;
   topDomainDetails: Array<{ domain: string; events: number; sessions: number; topCommand: string; latestSeen: string }>;
   versionAdoption: Array<{ version: string; events: number; sessions: number; sessionShare: number; isLatest: boolean }>;
+  versionHealth: VersionHealth;
   dailyMarketVersionAdoption: Array<{ day: string; totalSessions: number; latestSessions: number; latestEvents: number; latestSessionShare: number; dominantVersion: string }>;
   commandFunnel: Array<{ stage: string; commands: string; events: number; sessions: number; recommendation: string }>;
-  dailyMarketCommandFunnel: Array<{ day: string; agentInstallSessions: number; validationSessions: number; regressionSessions: number; ciSetupSessions: number; attackSimSessions: number; ciSarifSessions: number; paidIntentSessions: number }>;
+  dailyMarketCommandFunnel: Array<{ day: string; agentInstallSessions: number; validationSessions: number; regressionSessions: number; ciSetupSessions: number; attackSimSessions: number; ciSarifSessions: number; receiptSessions: number; paidIntentSessions: number }>;
+  dailyDirectionSignals: DailyDirectionSignal[];
+  funnelConversions: FunnelConversion[];
+  dataQualitySignals: DataQualitySignal[];
 }
 
 interface GitHubSummary {
@@ -816,6 +855,39 @@ function compareVersions(a: string, b: string): number {
   return a.localeCompare(b);
 }
 
+function numericRate(numerator: number, denominator: number): number {
+  if (denominator <= 0) return 0;
+  return Math.round((numerator / denominator) * 10_000) / 100;
+}
+
+function intersectionSize(a: Set<string>, b: Set<string>): number {
+  let count = 0;
+  const [smaller, larger] = a.size <= b.size ? [a, b] : [b, a];
+  for (const value of smaller) {
+    if (larger.has(value)) count += 1;
+  }
+  return count;
+}
+
+function directionSignal(
+  metric: string,
+  current: number,
+  previous: number,
+  context: string,
+  nextAction: string,
+): DailyDirectionSignal {
+  const trend = signedPercent(current, previous);
+  return {
+    metric,
+    current,
+    previous,
+    deltaLabel: trend.label,
+    direction: trend.direction,
+    context,
+    nextAction,
+  };
+}
+
 function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
   const rows = telemetryRows(db);
   const totalSessions = new Set<string>();
@@ -841,11 +913,21 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
   const domains = new Map<string, { events: number; sessions: Set<string> }>();
   const domainDetails = new Map<string, { events: number; sessions: Set<string>; commands: Map<string, number>; latestSeen: string }>();
   const versions = new Map<string, { events: number; sessions: Set<string> }>();
+  const latestVersionSessions = new Set<string>();
+  const staleVersionSessions = new Set<string>();
   const dailyMarketVersionStats = new Map<string, Map<string, { events: number; sessions: Set<string> }>>();
+  const receiptSessions = new Set<string>();
+  const validationStageSessions = new Set<string>();
+  const attackStageSessions = new Set<string>();
+  const setupStageSessions = new Set<string>();
+  const ciSarifStageSessions = new Set<string>();
+  const paidStageSessions = new Set<string>();
+  let receiptEvents = 0;
   const dailyMarketCommandFunnel = new Map<string, {
     agentInstallSessions: Set<string>;
     attackSimSessions: Set<string>;
     ciSarifSessions: Set<string>;
+    receiptSessions: Set<string>;
     validationSessions: Set<string>;
     regressionSessions: Set<string>;
     ciSetupSessions: Set<string>;
@@ -869,6 +951,10 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
       versionBucket.events += 1;
       if (session) versionBucket.sessions.add(session);
       versions.set(rawVersion, versionBucket);
+      if (session) {
+        if (rawVersion === TOOL_VERSION) latestVersionSessions.add(session);
+        else staleVersionSessions.add(session);
+      }
     }
 
     const seen = rowCreatedAt(row);
@@ -934,6 +1020,7 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
             agentInstallSessions: new Set<string>(),
             attackSimSessions: new Set<string>(),
             ciSarifSessions: new Set<string>(),
+            receiptSessions: new Set<string>(),
             validationSessions: new Set<string>(),
             regressionSessions: new Set<string>(),
             ciSetupSessions: new Set<string>(),
@@ -945,6 +1032,7 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
           if (row.command === "diff" || row.command === "history" || row.command === "watch" || row.command === "lock") commandBucket.regressionSessions.add(session);
           if (row.command === "init-ci" || row.command === "setup-ci") commandBucket.ciSetupSessions.add(session);
           if ((row.command === "init-ci" || row.command === "setup-ci") && (row as TelemetryRow & { setupCiSarif?: boolean }).setupCiSarif === true) commandBucket.ciSarifSessions.add(session);
+          if (row.command === "receipt" || (row as TelemetryRow & { receiptGenerated?: boolean }).receiptGenerated === true) commandBucket.receiptSessions.add(session);
           if (row.command === "cloud" || row.command === "cloud-upload" || row.command === "enterprise-report") commandBucket.paidIntentSessions.add(session);
           dailyMarketCommandFunnel.set(day, commandBucket);
         }
@@ -954,6 +1042,17 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
       commandBucket.events += 1;
       if (session) commandBucket.sessions.add(session);
       commands.set(command, commandBucket);
+      if (session) {
+        if (row.command === "attack-sim") attackStageSessions.add(session);
+        if (row.command === "test" || row.command === "scan" || row.command === "run") validationStageSessions.add(session);
+        if (row.command === "init-ci" || row.command === "setup-ci") setupStageSessions.add(session);
+        if ((row.command === "init-ci" || row.command === "setup-ci") && (row as TelemetryRow & { setupCiSarif?: boolean }).setupCiSarif === true) ciSarifStageSessions.add(session);
+        if (row.command === "cloud" || row.command === "cloud-upload" || row.command === "enterprise-report") paidStageSessions.add(session);
+      }
+      if (row.command === "receipt" || (row as TelemetryRow & { receiptGenerated?: boolean }).receiptGenerated === true) {
+        receiptEvents += 1;
+        if (session) receiptSessions.add(session);
+      }
       for (const domain of rowDomains(row)) {
         if (INTERNAL_DOMAINS.has(domain)) continue;
         const domainBucket = domains.get(domain) ?? { events: 0, sessions: new Set<string>() };
@@ -999,10 +1098,15 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
       mcpSessions: stats.mcpSessions.size,
     }))
     .sort((a, b) => a.day.localeCompare(b.day));
-  const versionRows = [...versions.entries()]
+  const observedVersionRows = [...versions.entries()]
     .map(([version, stats]) => ({ version, events: stats.events, sessions: stats.sessions.size }))
     .sort((a, b) => compareVersions(b.version, a.version));
-  const latestVersion = versionRows[0]?.version ?? "";
+  const latestStats = versions.get(TOOL_VERSION);
+  const versionRows = [
+    { version: TOOL_VERSION, events: latestStats?.events ?? 0, sessions: latestStats?.sessions.size ?? 0 },
+    ...observedVersionRows.filter((row) => row.version !== TOOL_VERSION),
+  ];
+  const latestVersion = TOOL_VERSION;
   const sortedDailyMarketVersionAdoption = [...dailyMarketEvents.entries()]
     .map(([day, stats]) => {
       const versionStats = dailyMarketVersionStats.get(day) ?? new Map<string, { events: number; sessions: Set<string> }>();
@@ -1031,6 +1135,7 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
       regressionSessions: stats.regressionSessions.size,
       ciSetupSessions: stats.ciSetupSessions.size,
       paidIntentSessions: stats.paidIntentSessions.size,
+      receiptSessions: stats.receiptSessions.size,
     }))
     .sort((a, b) => a.day.localeCompare(b.day));
   const commandStats = (names: string[]): { events: number; sessions: number } => {
@@ -1044,6 +1149,9 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
     }
     return { events, sessions: sessions.size };
   };
+  const latestVersionRow = versionRows[0];
+  const staleVersions = versionRows.slice(1);
+  const staleSessions = staleVersionSessions.size;
   const commandFunnel = [
     {
       stage: "Agent install",
@@ -1076,10 +1184,47 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
       recommendation: "This is the demo wedge; convert every run into a receipt and CI gate.",
     },
     {
+      stage: "Receipts",
+      commands: "receipt, audit --receipt",
+      events: receiptEvents,
+      sessions: receiptSessions.size,
+      recommendation: "Treat receipts as the portable artifact that can drive maintainer replies and paid pilots.",
+    },
+    {
       stage: "Paid intent",
       commands: "cloud, cloud-upload, enterprise-report",
       ...commandStats(["cloud", "cloud-upload", "enterprise-report"]),
       recommendation: "Treat these sessions as design-partner and pilot leads.",
+    },
+  ];
+  const latestMarketDay = sortedMarketDaily.at(-1);
+  const previousMarketDay = sortedMarketDaily.at(-2);
+  const latestCommandDay = sortedDailyMarketCommandFunnel.at(-1);
+  const previousCommandDay = sortedDailyMarketCommandFunnel.at(-2);
+  const latestVersionDay = sortedDailyMarketVersionAdoption.at(-1);
+  const previousVersionDay = sortedDailyMarketVersionAdoption.at(-2);
+  const validationToAttack = intersectionSize(validationStageSessions, attackStageSessions);
+  const attackToReceipt = intersectionSize(attackStageSessions, receiptSessions);
+  const attackToSetup = intersectionSize(attackStageSessions, setupStageSessions);
+  const setupToSarif = intersectionSize(setupStageSessions, ciSarifStageSessions);
+  const lastSeenAgeHours = latestExternalSeen
+    ? Math.max(0, Math.round((Date.now() - Date.parse(latestExternalSeen)) / (60 * 60 * 1000)))
+    : Number.POSITIVE_INFINITY;
+  const dataQualitySignals: DataQualitySignal[] = [
+    {
+      label: "Telemetry freshness",
+      status: !latestExternalSeen ? "bad" : lastSeenAgeHours > 30 ? "warn" : "ok",
+      detail: latestExternalSeen ? `Latest external event ${lastSeenAgeHours}h ago (${latestExternalSeen}).` : "No external telemetry has been collected.",
+    },
+    {
+      label: "Market segmentation",
+      status: totalSessions.size > 0 && externalSessions.size === 0 ? "warn" : "ok",
+      detail: `${formatNumber(externalSessions.size)} market sessions, ${formatNumber(Math.max(totalSessions.size - externalSessions.size, 0))} internal or first-party sessions excluded.`,
+    },
+    {
+      label: "Version adoption",
+      status: latestVersionRow && staleSessions > latestVersionRow.sessions ? "warn" : "ok",
+      detail: latestVersionRow ? `${formatNumber(latestVersionRow.sessions)} sessions on ${latestVersionRow.version}; ${formatNumber(staleSessions)} sessions on older versions.` : "No version telemetry yet.",
     },
   ];
   return {
@@ -1113,9 +1258,33 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
       sessionShare: totalSessions.size === 0 ? 0 : Math.round((row.sessions / totalSessions.size) * 1000) / 10,
       isLatest: row.version === latestVersion,
     })).slice(0, 20),
+    versionHealth: {
+      latestVersion: latestVersionRow?.version ?? "",
+      latestSessions: latestVersionRow?.sessions ?? 0,
+      staleSessions,
+      staleSessionShare: totalSessions.size === 0 ? 0 : Math.round((staleSessions / totalSessions.size) * 1000) / 10,
+      staleVersions: staleVersions.slice(0, 8).map((row) => ({ version: row.version, sessions: row.sessions, events: row.events })),
+    },
     dailyMarketVersionAdoption: sortedDailyMarketVersionAdoption.slice(-DAILY_HISTORY_DAYS).reverse(),
     commandFunnel,
     dailyMarketCommandFunnel: sortedDailyMarketCommandFunnel.slice(-DAILY_HISTORY_DAYS).reverse(),
+    dailyDirectionSignals: [
+      directionSignal("Market sessions", latestMarketDay?.sessions ?? 0, previousMarketDay?.sessions ?? 0, latestMarketDay ? latestMarketDay.day : "No market day yet", "If this is up, amplify the source that changed; if down, post a fresh receipt/index proof."),
+      directionSignal("Attack-sim sessions", latestCommandDay?.attackSimSessions ?? 0, previousCommandDay?.attackSimSessions ?? 0, latestCommandDay ? latestCommandDay.day : "No attack-sim day yet", "Make attack-sim the first demo and push receipts after every finding."),
+      directionSignal("Receipt sessions", latestCommandDay?.receiptSessions ?? 0, previousCommandDay?.receiptSessions ?? 0, latestCommandDay ? latestCommandDay.day : "No receipt day yet", "Use generated receipts as the artifact for maintainer conversations and paid pilots."),
+      directionSignal("CI setup sessions", latestCommandDay?.ciSetupSessions ?? 0, previousCommandDay?.ciSetupSessions ?? 0, latestCommandDay ? latestCommandDay.day : "No CI setup day yet", "Push setup-ci --all --sarif --schedule weekly after passing scans."),
+      directionSignal("SARIF setup sessions", latestCommandDay?.ciSarifSessions ?? 0, previousCommandDay?.ciSarifSessions ?? 0, latestCommandDay ? latestCommandDay.day : "No SARIF setup day yet", "Make SARIF the default enterprise/security handoff path."),
+      directionSignal("Paid-intent sessions", latestCommandDay?.paidIntentSessions ?? 0, previousCommandDay?.paidIntentSessions ?? 0, latestCommandDay ? latestCommandDay.day : "No paid-intent day yet", "Follow up on cloud/report sessions with the pilot offer."),
+      directionSignal("Latest-version adoption", latestVersionDay?.latestSessionShare ?? 0, previousVersionDay?.latestSessionShare ?? 0, latestVersionDay ? `${latestVersionDay.day}; percent of market sessions` : "No version adoption day yet", "If this lags, strengthen @latest upgrade copy and release notes."),
+    ],
+    funnelConversions: [
+      { name: "Validation to attack-sim", numerator: validationToAttack, denominator: validationStageSessions.size, rate: numericRate(validationToAttack, validationStageSessions.size), context: "Same-session progression from scan/test/run into the demo wedge." },
+      { name: "Attack-sim to receipt", numerator: attackToReceipt, denominator: attackStageSessions.size, rate: numericRate(attackToReceipt, attackStageSessions.size), context: "Same-session progression from findings into portable proof." },
+      { name: "Attack-sim to CI setup", numerator: attackToSetup, denominator: attackStageSessions.size, rate: numericRate(attackToSetup, attackStageSessions.size), context: "Same-session progression from attack evidence into a recurring gate." },
+      { name: "CI setup to SARIF", numerator: setupToSarif, denominator: setupStageSessions.size, rate: numericRate(setupToSarif, setupStageSessions.size), context: "Same-session progression into the security-friendly CI path." },
+      { name: "Market to paid intent", numerator: paidStageSessions.size, denominator: externalSessions.size, rate: numericRate(paidStageSessions.size, externalSessions.size), context: "Market sessions that reached cloud/report pilot intent." },
+    ],
+    dataQualitySignals,
   };
 }
 
@@ -1390,6 +1559,7 @@ interface UsageTrendPoint {
   agentInstallSessions: number;
   attackSimSessions: number;
   ciSarifSessions: number;
+  receiptSessions: number;
   validationSessions: number;
   regressionSessions: number;
   ciSetupSessions: number;
@@ -1409,6 +1579,7 @@ interface UsagePeriodSummary {
   setupSessions: number;
   attackSimSessions: number;
   ciSarifSessions: number;
+  receiptSessions: number;
   paidIntentSessions: number;
   npmDownloads: number;
   clones: number;
@@ -1493,6 +1664,7 @@ function usageTrendPoints(model: DashboardModel, limit = TREND_WINDOW_DAYS): Usa
       agentInstallSessions: commandRow?.agentInstallSessions ?? 0,
       attackSimSessions: commandRow?.attackSimSessions ?? 0,
       ciSarifSessions: commandRow?.ciSarifSessions ?? 0,
+      receiptSessions: commandRow?.receiptSessions ?? 0,
       validationSessions: commandRow?.validationSessions ?? 0,
       regressionSessions: commandRow?.regressionSessions ?? 0,
       ciSetupSessions: commandRow?.ciSetupSessions ?? 0,
@@ -1518,6 +1690,7 @@ function usagePeriodSummary(points: UsageTrendPoint[], days: number, offset = 0)
     setupSessions: rows.reduce((sum, point) => sum + point.ciSetupSessions, 0),
     attackSimSessions: rows.reduce((sum, point) => sum + point.attackSimSessions, 0),
     ciSarifSessions: rows.reduce((sum, point) => sum + point.ciSarifSessions, 0),
+    receiptSessions: rows.reduce((sum, point) => sum + point.receiptSessions, 0),
     paidIntentSessions: rows.reduce((sum, point) => sum + point.paidIntentSessions, 0),
     npmDownloads: rows.reduce((sum, point) => sum + point.npmDownloads, 0),
     clones: rows.reduce((sum, point) => sum + point.clones, 0),
@@ -1777,10 +1950,13 @@ function growthCommandCenterPanel(model: DashboardModel, points: UsageTrendPoint
   const attackStage = model.telemetry.commandFunnel.find((row) => row.stage === "Attack simulation");
   const setupStage = model.telemetry.commandFunnel.find((row) => row.stage === "CI setup");
   const paidStage = model.telemetry.commandFunnel.find((row) => row.stage === "Paid intent");
+  const receiptStage = model.telemetry.commandFunnel.find((row) => row.stage === "Receipts");
   const externalCi = model.telemetry.sourceCounts.find((row) => row.source === "external_ci")?.sessions ?? 0;
   const latestShare = latestVersion?.sessionShare ?? 0;
   const nextAction = month.attackSimSessions === 0
     ? "Push attack-sim as the first demo after every scan."
+    : month.receiptSessions === 0
+      ? "Turn attack-sim results into portable MCP receipts."
     : month.setupSessions === 0
       ? "Convert attack receipts into setup-ci --sarif runs."
       : month.paidIntentSessions === 0
@@ -1789,6 +1965,7 @@ function growthCommandCenterPanel(model: DashboardModel, points: UsageTrendPoint
   const rows = [
     { label: "Latest-version adoption", value: `${latestShare}%`, context: latestVersion ? `${formatNumber(latestVersion.sessions)} sessions on ${latestVersion.version}` : "No version telemetry", color: "#8b5cf6" },
     { label: "Attack-sim sessions", value: formatNumber(attackStage?.sessions ?? 0), context: `${formatNumber(month.attackSimSessions)} in current 30d`, color: "#ef4444" },
+    { label: "Receipt sessions", value: formatNumber(receiptStage?.sessions ?? 0), context: `${formatNumber(month.receiptSessions)} in current 30d`, color: "#c084fc" },
     { label: "CI setup sessions", value: formatNumber(setupStage?.sessions ?? 0), context: `${formatNumber(month.ciSarifSessions)} SARIF setup sessions in current 30d`, color: "#22c55e" },
     { label: "External CI", value: formatNumber(externalCi), context: "market CI sessions", color: "#3b82f6" },
     { label: "Paid intent", value: formatNumber(paidStage?.sessions ?? 0), context: `${formatNumber(month.paidIntentSessions)} cloud/report sessions in current 30d`, color: "#f97316" },
@@ -1807,6 +1984,42 @@ function growthCommandCenterPanel(model: DashboardModel, points: UsageTrendPoint
         <small>Optimize for latest attack-sim + setup-ci --sarif sessions.</small>
       </article>
     </div>
+  </article>`;
+}
+
+function dailyDirectionPanel(model: DashboardModel): string {
+  return `<article class="panel">
+    <div class="panel-head"><h2>What Changed Today</h2><span class="panel-note">latest market day vs prior market day</span></div>
+    <div class="direction-grid">
+      ${model.telemetry.dailyDirectionSignals.map((signal) => `<article class="direction-card">
+        <div><span>${escapeHtml(signal.metric)}</span><em class="${trendClass(signal.direction)}">${signal.direction === "down" ? "↓" : signal.direction === "up" ? "↑" : "→"} ${escapeHtml(signal.deltaLabel)}</em></div>
+        <strong>${formatNumber(signal.current)}</strong>
+        <small>${escapeHtml(`${signal.context}; previous ${formatNumber(signal.previous)}. ${signal.nextAction}`)}</small>
+      </article>`).join("")}
+    </div>
+  </article>`;
+}
+
+function conversionPanel(model: DashboardModel): string {
+  return `<article class="panel">
+    <div class="panel-head"><h2>Conversion Readiness</h2><span class="panel-note">market usage to receipts, CI, paid intent</span></div>
+    <div class="conversion-list">
+      ${model.telemetry.funnelConversions.map((row) => `<div class="conversion-row">
+        <span><b>${escapeHtml(row.name)}</b><small>${escapeHtml(row.context)}</small></span>
+        <strong>${escapeHtml(`${row.rate}%`)}</strong>
+        <em>${formatNumber(row.numerator)} / ${formatNumber(row.denominator)}</em>
+      </div>`).join("")}
+    </div>
+  </article>`;
+}
+
+function dataQualityPanel(model: DashboardModel): string {
+  return `<article class="panel">
+    <div class="panel-head"><h2>Data Quality</h2><span class="panel-note">dashboard feature health</span></div>
+    <ul class="quality-list">
+      ${model.telemetry.dataQualitySignals.map((signal) => `<li><span class="status ${signal.status === "ok" ? "ok" : signal.status === "bad" ? "bad" : "warn"}">${escapeHtml(signal.status)}</span><div><b>${escapeHtml(signal.label)}</b><small>${escapeHtml(signal.detail)}</small></div></li>`).join("")}
+      ${model.sourceRuns.map((run) => `<li><span class="status ${run.status === "success" ? "ok" : run.status === "failed" ? "bad" : "warn"}">${escapeHtml(run.status)}</span><div><b>${escapeHtml(`${run.source} collector`)}</b><small>${escapeHtml(`${run.finishedAt || run.startedAt}; ${formatNumber(run.rowsSeen)} rows seen; ${run.error || "no error"}`)}</small></div></li>`).join("")}
+    </ul>
   </article>`;
 }
 
@@ -1836,8 +2049,22 @@ function detailSearchRows(model: DashboardModel, points: UsageTrendPoint[]): str
   add("KPI", "Monthly change", percentChangeLabel(month.sessions, previousMonth.sessions), `${formatNumber(month.sessions)} current 30d sessions vs ${formatNumber(previousMonth.sessions)} prior 30d sessions`);
   add("KPI", "Setup conversion", conversionPercent(month.setupSessions, month.clones + month.npmDownloads), `${formatNumber(month.setupSessions)} setup sessions / ${formatNumber(month.clones + month.npmDownloads)} 30d clone+download signals`);
   add("Growth", "Attack-sim conversion", `${formatNumber(month.attackSimSessions)} sessions`, "Current 30d sessions for the public demo wedge");
+  add("Growth", "Receipt conversion", `${formatNumber(month.receiptSessions)} sessions`, "Current 30d sessions that generated MCP receipts");
   add("Growth", "SARIF setup", `${formatNumber(month.ciSarifSessions)} sessions`, "Current 30d setup-ci/init-ci sessions that requested SARIF");
   add("Growth", "Paid intent", `${formatNumber(month.paidIntentSessions)} sessions`, "Current 30d cloud, cloud-upload, and enterprise-report sessions");
+  for (const signal of model.telemetry.dailyDirectionSignals) {
+    add("Daily direction", signal.metric, `${formatNumber(signal.current)} current`, `${signal.deltaLabel}; previous ${formatNumber(signal.previous)}; ${signal.context}; ${signal.nextAction}`);
+  }
+  for (const conversion of model.telemetry.funnelConversions) {
+    add("Conversion", conversion.name, `${conversion.rate}%`, `${formatNumber(conversion.numerator)} / ${formatNumber(conversion.denominator)}; ${conversion.context}`);
+  }
+  add("Version", "Stale sessions", `${formatNumber(model.telemetry.versionHealth.staleSessions)} sessions`, `${model.telemetry.versionHealth.staleSessionShare}% all-time share outside ${model.telemetry.versionHealth.latestVersion || "latest"}`);
+  for (const stale of model.telemetry.versionHealth.staleVersions) {
+    add("Version stale", stale.version, `${formatNumber(stale.sessions)} sessions`, `${formatNumber(stale.events)} events`);
+  }
+  for (const signal of model.telemetry.dataQualitySignals) {
+    add("Data quality", signal.label, signal.status, signal.detail);
+  }
   for (const kpi of kpiMomentum) {
     add("KPI momentum", kpi.label, typeof kpi.displayValue === "number" ? formatNumber(kpi.displayValue) : kpi.displayValue, `${kpi.trend.label} month over month; ${kpi.allTimeLabel}`);
   }
@@ -1851,7 +2078,7 @@ function detailSearchRows(model: DashboardModel, points: UsageTrendPoint[]): str
       "Daily market",
       point.day,
       `${formatNumber(point.sessions)} sessions`,
-      `${formatNumber(point.events)} events; latest ${formatNumber(point.latestSessions)} (${point.latestSessionShare}%); attack-sim ${formatNumber(point.attackSimSessions)}; setup ${formatNumber(point.ciSetupSessions)}; SARIF setup ${formatNumber(point.ciSarifSessions)}; paid intent ${formatNumber(point.paidIntentSessions)}; npm ${formatNumber(point.npmDownloads)}; clones ${formatNumber(point.clones)}; internal excluded ${formatNumber(point.excludedSessions)}`,
+      `${formatNumber(point.events)} events; latest ${formatNumber(point.latestSessions)} (${point.latestSessionShare}%); attack-sim ${formatNumber(point.attackSimSessions)}; receipts ${formatNumber(point.receiptSessions)}; setup ${formatNumber(point.ciSetupSessions)}; SARIF setup ${formatNumber(point.ciSarifSessions)}; paid intent ${formatNumber(point.paidIntentSessions)}; npm ${formatNumber(point.npmDownloads)}; clones ${formatNumber(point.clones)}; internal excluded ${formatNumber(point.excludedSessions)}`,
     );
   }
   for (const row of model.telemetry.commandFunnel) {
@@ -1905,6 +2132,9 @@ export function renderDashboardHtml(model: DashboardModel): string {
   const cards = kpiCards(trendPoints, model);
   const momentumPanel = kpiMomentumPanel(kpiMomentum);
   const growthCommandCenter = growthCommandCenterPanel(model, trendPoints);
+  const dailyDirection = dailyDirectionPanel(model);
+  const conversions = conversionPanel(model);
+  const dataQuality = dataQualityPanel(model);
   const searchRows = detailSearchRows(model, trendPoints);
   const day = usagePeriodSummary(trendPoints, 1);
   const month = usagePeriodSummary(trendPoints, 30);
@@ -2018,6 +2248,22 @@ export function renderDashboardHtml(model: DashboardModel): string {
     .small-card span { color:#cbd5e1; font-size:12px; }
     .small-card strong { display:block; font-size:25px; margin-top:10px; }
     .small-card small { color:var(--muted); font-size:12px; }
+    .direction-grid { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:10px; padding:4px 16px 16px; }
+    .direction-card { border:1px solid rgba(51,70,91,.7); border-radius:8px; background:#091522; padding:12px; min-height:112px; }
+    .direction-card div { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .direction-card span { color:#cbd5e1; font-size:12px; }
+    .direction-card em { font-style:normal; font-size:12px; white-space:nowrap; }
+    .direction-card strong { display:block; margin-top:9px; font-size:24px; }
+    .direction-card small { display:block; margin-top:6px; color:var(--muted); font-size:11px; line-height:1.35; }
+    .conversion-list, .quality-list { padding:2px 16px 16px; margin:0; }
+    .conversion-row { display:grid; grid-template-columns:minmax(0, 1fr) 74px 92px; gap:12px; align-items:center; padding:11px 0; border-bottom:1px solid rgba(51,70,91,.55); }
+    .conversion-row:last-child { border-bottom:0; }
+    .conversion-row b, .quality-list b { display:block; font-size:12px; color:#e5edf7; }
+    .conversion-row small, .quality-list small { display:block; margin-top:3px; color:var(--muted); font-size:11px; line-height:1.35; }
+    .conversion-row strong { color:var(--green); font-size:18px; text-align:right; }
+    .conversion-row em { color:#cbd5e1; font-style:normal; font-size:12px; text-align:right; }
+    .quality-list { list-style:none; display:grid; gap:9px; }
+    .quality-list li { display:grid; grid-template-columns:54px minmax(0, 1fr); gap:10px; align-items:start; border:1px solid rgba(51,70,91,.55); border-radius:8px; padding:10px; background:#091522; }
     .momentum-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px; padding:4px 16px 16px; }
     .momentum-card { display:grid; grid-template-columns:minmax(0, .95fr) minmax(92px, .8fr) auto; gap:12px; align-items:center; min-height:112px; }
     .momentum-card strong { font-size:22px; }
@@ -2050,8 +2296,8 @@ export function renderDashboardHtml(model: DashboardModel): string {
     .integration span { color:var(--green); font-size:11px; }
     .icon { font-size:21px; line-height:1; }
     @media (max-width: 1320px) { .app-shell { grid-template-columns:210px minmax(0, 1fr); } .kpi-grid { grid-template-columns:repeat(3, minmax(0, 1fr)); } .dashboard-grid { grid-template-columns:1fr; } .right-rail { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
-    @media (max-width: 1100px) { .momentum-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
-    @media (max-width: 900px) { .app-shell { display:block; } .sidebar { position:relative; height:auto; padding:10px 12px; } .brand { margin:0; min-height:36px; } .logo-pixel { font-size:4.35px; line-height:1.04; } .sidebar .nav-section, .sidebar .nav-item, .index-card, .sidebar-foot { display:none; } main { padding:16px 12px 28px; } header { display:block; } .actions { justify-content:flex-start; margin-top:12px; } .kpi-grid, .two-col, .signal-grid, .right-rail, .integration-grid, .momentum-grid { grid-template-columns:1fr; } .momentum-card { grid-template-columns:minmax(0, 1fr); } .momentum-card em { justify-self:start; } .donut-wrap { grid-template-columns:1fr; } }
+    @media (max-width: 1100px) { .momentum-grid, .direction-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 900px) { .app-shell { display:block; } .sidebar { position:relative; height:auto; padding:10px 12px; } .brand { margin:0; min-height:36px; } .logo-pixel { font-size:4.35px; line-height:1.04; } .sidebar .nav-section, .sidebar .nav-item, .index-card, .sidebar-foot { display:none; } main { padding:16px 12px 28px; } header { display:block; } .actions { justify-content:flex-start; margin-top:12px; } .kpi-grid, .two-col, .signal-grid, .right-rail, .integration-grid, .momentum-grid, .direction-grid { grid-template-columns:1fr; } .momentum-card, .conversion-row { grid-template-columns:minmax(0, 1fr); } .momentum-card em { justify-self:start; } .conversion-row strong, .conversion-row em { text-align:left; } .donut-wrap { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
@@ -2094,6 +2340,7 @@ export function renderDashboardHtml(model: DashboardModel): string {
         <div class="main-grid">
           ${momentumPanel}
           ${growthCommandCenter}
+          ${dailyDirection}
           <section class="two-col">
             <article class="panel">
               <div class="panel-head">
@@ -2128,6 +2375,10 @@ export function renderDashboardHtml(model: DashboardModel): string {
               <div class="panel-head"><h2>Top Finding Categories</h2><span class="panel-note">by command stage</span></div>
               <div style="padding:0 16px 16px">${horizontalBars(topCategories)}</div>
             </article>
+          </section>
+          <section class="two-col">
+            ${conversions}
+            ${dataQuality}
           </section>
           <section class="panel table-panel">
             <div class="panel-head"><h2>Recent Workflow Runs</h2><span class="panel-note">GitHub Actions</span></div>

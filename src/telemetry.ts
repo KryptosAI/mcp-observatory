@@ -75,6 +75,12 @@ export interface TelemetryEnrichment {
   setupCiSarif?: boolean;
   setupCiFixApplied?: boolean;
   sampleReport?: boolean;
+  // Receipts
+  receiptGenerated?: boolean;
+  receiptFormat?: string;
+  receiptProfile?: string;
+  receiptEnvironmentClass?: string;
+  receiptTopFindings?: number;
   // Nightly scans
   nightlyScan?: boolean;
   issueCreated?: boolean;

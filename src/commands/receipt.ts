@@ -104,6 +104,11 @@ export function registerReceiptCommands(program: Command): void {
         securityFlag: true,
         securityFindingCount: report.summary.finding_count,
         targetIds: [target.targetId],
+        receiptGenerated: true,
+        receiptFormat: format,
+        receiptProfile: options.profile,
+        receiptEnvironmentClass: options.environmentClass,
+        receiptTopFindings: receipt.findings.length,
       }));
     });
 }

@@ -128,6 +128,9 @@ export function registerAuditCommands(program: Command): void {
         securityFindingCount: report.summary.finding_count,
         targetIds: [target.targetId],
         checkStatuses: Object.fromEntries(report.artifact.checks.map((check) => [check.id, check.status])),
+        receiptGenerated: Boolean(options.receipt),
+        receiptFormat: options.receipt ? receiptFormatFromPath(options.receipt, "json") : undefined,
+        receiptProfile: options.profile,
       }));
 
       if (
