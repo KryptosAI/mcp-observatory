@@ -103,25 +103,63 @@ jobs:
         run: |
           package_name="$(node -p 'require("./package.json").name')"
           package_version="$(node -p 'require("./package.json").version')"
-          if npm view "${package_name}@${package_version}" version >/tmp/npm-published-version.txt 2>/dev/null; then
-            echo "published=true" >> "$GITHUB_OUTPUT"
-            echo "Package ${package_name}@${package_version} is already published."
-          else
-            echo "published=false" >> "$GITHUB_OUTPUT"
-            echo "Package ${package_name}@${package_version} is not published yet."
-          fi
           echo "name=${package_name}" >> "$GITHUB_OUTPUT"
           echo "version=${package_version}" >> "$GITHUB_OUTPUT"
+          for attempt in 1 2 3 4 5 6; do
+            if npm view "${package_name}@${package_version}" version >/tmp/npm-published-version.txt 2>/dev/null; then
+              echo "published=true" >> "$GITHUB_OUTPUT"
+              echo "Package ${package_name}@${package_version} is already published."
+              exit 0
+            fi
+            latest_version="$(npm view "${package_name}" version 2>/dev/null || true)"
+            if node -e 'const semver = require("semver"); const latest = process.argv[1]; const current = process.argv[2]; process.exit(latest && semver.valid(latest) && semver.gte(latest, current) ? 0 : 1)' "$latest_version" "$package_version"; then
+              echo "published=true" >> "$GITHUB_OUTPUT"
+              echo "Package ${package_name}@${package_version} is covered by published latest ${latest_version}."
+              exit 0
+            fi
+            echo "Package ${package_name}@${package_version} not visible yet (attempt ${attempt}/6)."
+            sleep 10
+          done
+          echo "published=false" >> "$GITHUB_OUTPUT"
+          echo "Package ${package_name}@${package_version} is not published yet."
 
       - name: Publish package.json version with npm token
         if: steps.package-version.outputs.published != 'true' && steps.npm-auth.outputs.valid == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public
+        run: |
+          package_name="${{ steps.package-version.outputs.name }}"
+          package_version="${{ steps.package-version.outputs.version }}"
+          if npm publish --access public; then
+            exit 0
+          fi
+          for attempt in 1 2 3 4 5 6; do
+            if npm view "${package_name}@${package_version}" version >/dev/null 2>&1; then
+              echo "Package ${package_name}@${package_version} is published; treating duplicate publish race as success."
+              exit 0
+            fi
+            echo "Package ${package_name}@${package_version} still not visible after publish failure (attempt ${attempt}/6)."
+            sleep 10
+          done
+          exit 1
 
       - name: Publish package.json version with npm trusted publishing
         if: steps.package-version.outputs.published != 'true' && steps.npm-auth.outputs.valid != 'true' && steps.npm-oidc.outputs.configured == 'true'
-        run: npm publish --provenance --access public
+        run: |
+          package_name="${{ steps.package-version.outputs.name }}"
+          package_version="${{ steps.package-version.outputs.version }}"
+          if npm publish --provenance --access public; then
+            exit 0
+          fi
+          for attempt in 1 2 3 4 5 6; do
+            if npm view "${package_name}@${package_version}" version >/dev/null 2>&1; then
+              echo "Package ${package_name}@${package_version} is published; treating duplicate publish race as success."
+              exit 0
+            fi
+            echo "Package ${package_name}@${package_version} still not visible after publish failure (attempt ${attempt}/6)."
+            sleep 10
+          done
+          exit 1
 
       - name: Skip release until npm trusted publishing is configured
         if: steps.npm-auth.outputs.valid != 'true' && steps.npm-oidc.outputs.configured != 'true'
