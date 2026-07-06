@@ -10,6 +10,7 @@ export interface SetupCiConversionFlags {
   setupCi?: boolean;
   yes?: boolean;
   noSetupCi?: boolean;
+  ciSarif?: boolean;
   force?: boolean;
   campaign?: string;
 }
@@ -42,22 +43,24 @@ function targetCommand(target: TargetConfig | undefined): string | undefined {
 
 function conversionCommand(options: SetupCiConversionOptions): string | undefined {
   const bin = options.bin ?? "npx @kryptosai/mcp-observatory";
-  if (options.targetPath) return setupCiHint(undefined, options.targetPath, bin);
+  const sarif = options.ciSarif === false ? "" : " --sarif";
+  const schedule = " --schedule weekly";
+  if (options.targetPath) return `${setupCiHint(undefined, options.targetPath, bin)}${sarif}${schedule}`;
   const command = targetCommand(options.target) ?? artifactTargetCommand(options.artifact);
-  if (command) return `${bin} setup-ci --all --command ${quoteShell(command)}`;
+  if (command) return `${bin} setup-ci --all --command ${quoteShell(command)}${sarif}${schedule}`;
   return undefined;
 }
 
 export function initCiOptionsFromRunArtifact(
   artifact: RunArtifact,
-  options: Pick<SetupCiConversionOptions, "force" | "target" | "targetPath"> = {},
+  options: Pick<SetupCiConversionOptions, "ciSarif" | "force" | "target" | "targetPath"> = {},
 ): InitCiOptions | undefined {
   if (options.targetPath) {
-    return { all: true, target: options.targetPath, force: options.force };
+    return { all: true, target: options.targetPath, force: options.force, sarif: options.ciSarif !== false, schedule: "weekly" };
   }
   const command = targetCommand(options.target) ?? artifactTargetCommand(artifact);
   if (!command) return undefined;
-  return { all: true, command, force: options.force };
+  return { all: true, command, force: options.force, sarif: options.ciSarif !== false, schedule: "weekly" };
 }
 
 function shouldPrompt(options: SetupCiConversionOptions): boolean {
@@ -70,14 +73,14 @@ async function promptForConversion(options: SetupCiConversionOptions): Promise<b
   const output = options.output ?? process.stdout;
   const rl = readline.createInterface({ input, output });
   try {
-    const answer = (await rl.question("Convert this passing MCP check into CI? [Y/n] ")).trim().toLowerCase();
+    const answer = (await rl.question("Convert this passing MCP check into CI + Code Scanning? [Y/n] ")).trim().toLowerCase();
     return answer === "" || answer === "y" || answer === "yes";
   } finally {
     rl.close();
   }
 }
 
-function printInitCiResult(result: InitCiResult, output: NodeJS.WriteStream | Writable): void {
+function printInitCiResult(result: InitCiResult, output: NodeJS.WriteStream | Writable, sarifRequested: boolean): void {
   output.write(`${result.workflowStatus}: ${result.workflowPath}\n`);
   if (result.badgePath && result.badgeStatus) output.write(`${result.badgeStatus}: ${result.badgePath}\n`);
   if (result.targetConfigPath && result.targetConfigStatus) output.write(`${result.targetConfigStatus}: ${result.targetConfigPath}\n`);
@@ -86,6 +89,20 @@ function printInitCiResult(result: InitCiResult, output: NodeJS.WriteStream | Wr
   if (result.scoreBadgePath && result.scoreBadgeStatus) output.write(`${result.scoreBadgeStatus}: ${result.scoreBadgePath}\n`);
   if (result.workflowStatus === "skipped") output.write("Use --force to overwrite existing files.\n");
   output.write("Next: commit the workflow, open a PR, and paste the generated PR body if present.\n");
+  if (sarifRequested) {
+    output.write(
+      result.workflowStatus === "skipped"
+        ? "Code Scanning: SARIF upload was requested, but the existing workflow was unchanged.\n"
+        : "Code Scanning: SARIF upload is enabled in the generated workflow.\n",
+    );
+  } else {
+    output.write("Code Scanning: SARIF upload is not enabled; rerun without --no-ci-sarif to include it.\n");
+  }
+  output.write(
+    result.workflowStatus === "skipped"
+      ? "Automation: weekly scheduled checks were requested, but the existing workflow was unchanged.\n"
+      : "Automation: weekly scheduled checks are enabled in the generated workflow.\n",
+  );
   output.write("Verify: npx @kryptosai/mcp-observatory setup-ci --doctor\n");
 }
 
@@ -97,6 +114,7 @@ function recordConversion(status: SetupCiConversionResult["status"], options: Se
     setupCiConversionStatus: status,
     setupCiPromptShown: shouldPrompt(options),
     setupCiAutoRequested: options.setupCi === true && options.yes === true,
+    setupCiSarif: options.ciSarif !== false,
     campaign: options.campaign,
     targetIds: [options.target?.targetId ?? options.artifact.target.targetId],
   }));
@@ -120,7 +138,7 @@ export async function maybeConvertPassingCheckToCi(options: SetupCiConversionOpt
   if (options.setupCi === true && options.yes === true) {
     const initResult = await initCi(initOptions);
     output.write("\n");
-    printInitCiResult(initResult, output);
+    printInitCiResult(initResult, output, initOptions.sarif === true);
     recordConversion("written", options);
     return { status: "written", command, initResult };
   }
@@ -130,7 +148,7 @@ export async function maybeConvertPassingCheckToCi(options: SetupCiConversionOpt
     const accepted = await promptForConversion(options);
     if (accepted) {
       const initResult = await initCi(initOptions);
-      printInitCiResult(initResult, output);
+      printInitCiResult(initResult, output, initOptions.sarif === true);
       recordConversion("written", options);
       return { status: "written", command, initResult };
     }

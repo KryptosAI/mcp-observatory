@@ -31,6 +31,30 @@ Skip:
 - abandoned repos unless they have major download volume
 - projects that already have equivalent MCP compatibility/security CI
 
+## Current Risk-Adjusted Target Wave
+
+Updated July 6, 2026 from current GitHub search, prior public proof, and local Safety Index history. Score favors high visibility, safe/no-secret startup, enterprise relevance, and likelihood a maintainer accepts a CI-only PR.
+
+| Rank | Target | Current signal | Risk-adjusted ROI | Recommended action |
+| ---: | --- | --- | --- | --- |
+| 1 | `upstash/context7` | ~58k stars; docs/RAG MCP category; existing PR opened | Very high: huge audience, zero-secret package, developer-tool fit | Follow up on existing PR with `--schedule weekly` upgrade after this release lands |
+| 2 | `microsoft/playwright-mcp` | ~35k stars; browser automation category; existing PR opened | Very high but policy-sensitive: browser/code execution risk makes CI evidence valuable | Keep PR narrow; add attack-sim evidence only as advisory, not a vulnerability claim |
+| 3 | `github/github-mcp-server` | ~31k stars; official developer workflow server | Very high visibility; likely auth-gated, so PR risk is higher | Issue/discussion first asking for safe CI fixture or read-only unauthenticated startup |
+| 4 | `googleapis/mcp-toolbox` | ~16k stars; database/enterprise category | High enterprise fit; likely maintainers understand CI gates | Research safe no-secret config; PR if a fixture DB can run locally |
+| 5 | `ChromeDevTools/chrome-devtools-mcp` | ~46k stars; coding-agent browser tooling | High distribution; browser trust-boundary story is perfect | Research safe startup; PR only if no live browser secrets are needed |
+| 6 | `awslabs/mcp` | ~9k stars; cloud/enterprise category | High business signal; many servers may require credentials | Issue-first with request for no-secret fixture target |
+| 7 | `makenotion/notion-mcp-server` | ~4.5k stars; official SaaS MCP; existing PR opened | High user trust value but auth-sensitive | Keep existing PR advisory; avoid badge push |
+| 8 | `antvis/mcp-server-chart` | ~4.2k stars; artifact-producing server; existing PR opened | Good acceptance odds, low secret risk | Follow up with weekly scheduled CI upgrade |
+| 9 | `haris-musa/excel-mcp-server` | ~4k stars; document/data category; prior outreach | Good practical user value, likely fixtureable | Open CI PR if a harmless workbook fixture is accepted |
+| 10 | `BrowserMCP/mcp` | ~6.8k stars; existing PR opened | Good visibility but browser permissions require careful wording | Keep inventory/security wording, no exploit framing |
+| 11 | `mongodb-js/mongodb-mcp-server` | ~1k stars; enterprise database category | Strong commercial relevance, likely service-dependent | Issue-first asking for fixture/local Mongo startup |
+| 12 | `qdrant/mcp-server-qdrant` | existing maintainer outreach; vector DB category | Good AI-infra relevance, medium setup risk | Issue-first or PR with local container fixture |
+| 13 | `cloudflare/mcp-server-cloudflare` | ~3.9k stars; cloud platform | Strong business relevance, auth-heavy | Issue-first; no PR without token-free mode |
+| 14 | `sooperset/mcp-atlassian` | ~5.5k stars; enterprise SaaS | Strong buyer category, auth-heavy | Issue-first for schema-only CI mode |
+| 15 | `firecrawl/firecrawl-mcp-server` | ~6.8k stars; web/search | Good developer audience, likely API-key path | Issue-first unless startup lists tools without key |
+
+Operating rule: open PRs only when a no-secret command starts cleanly. Otherwise open one helpful issue asking for a safe fixture mode and offer the exact Observatory workflow.
+
 ## Tracker
 
 | Priority | Repo | Package/Command | Category | Stars/Downloads/Listing Signal | Activity Signal | Risk Notes | Status | PR URL | Accepted/Badge/Proof |

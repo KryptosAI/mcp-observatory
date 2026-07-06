@@ -30,6 +30,8 @@ function extractTrailingConversionFlags(
       flags.yes = true;
     } else if (arg === "--no-setup-ci") {
       flags.noSetupCi = true;
+    } else if (arg === "--no-ci-sarif") {
+      flags.ciSarif = false;
     } else if (arg === "--force") {
       flags.force = true;
     } else if (arg === "--sarif") {
@@ -65,6 +67,7 @@ export function registerTestCommands(program: Command): void {
     .option("--setup-ci", "Offer CI conversion after a successful check; use with --yes in non-interactive runs to write files.", false)
     .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
+    .option("--no-ci-sarif", "Generate post-check CI without GitHub Code Scanning SARIF upload.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
     .option("--no-color", "Disable colored output.")
     .action(async (commandArgs: string[], options: { deep?: boolean; invokeTools?: boolean; security?: boolean; target?: string } & TestCommandFlags) => {
@@ -139,6 +142,7 @@ export function registerTestCommands(program: Command): void {
           setupCi: conversionFlags.setupCi,
           yes: conversionFlags.yes,
           noSetupCi: conversionFlags.noSetupCi,
+          ciSarif: conversionFlags.ciSarif,
           force: conversionFlags.force,
           campaign: conversionFlags.campaign,
         });

@@ -80,6 +80,21 @@ describe("init-ci", () => {
     expect(workflowText).toContain("upload-sarif: true");
   });
 
+  it("can add recurring scheduled checks", async () => {
+    const dir = await tempDir();
+    const workflow = path.join(dir, ".github/workflows/mcp-observatory.yml");
+
+    await initCi({
+      command: "npx -y @example/mcp-server",
+      workflow,
+      schedule: "weekly",
+    });
+
+    const workflowText = await readFile(workflow, "utf8");
+    expect(workflowText).toContain("schedule:");
+    expect(workflowText).toContain('cron: "0 9 * * 1"');
+  });
+
   it("can pin the generated workflow to a specific action ref", async () => {
     const dir = await tempDir();
     const workflow = path.join(dir, ".github/workflows/mcp-observatory.yml");
@@ -190,6 +205,40 @@ describe("init-ci", () => {
       status: "fail",
       fix: "npx @kryptosai/mcp-observatory setup-ci --all --command \"npx -y @example/mcp-server\"",
     });
+  });
+
+  it("repairs an incomplete setup-ci kit with SARIF and scheduled checks", async () => {
+    const dir = await tempDir();
+    const workflow = path.join(dir, ".github/workflows/mcp-observatory.yml");
+    const badgeFile = path.join(dir, "docs/mcp-observatory-badge.md");
+    const targetConfig = path.join(dir, "mcp-observatory.target.json");
+    const prBody = path.join(dir, "docs/mcp-observatory-pr-body.md");
+    const issueBody = path.join(dir, "docs/mcp-observatory-issue.md");
+    const scoreBadge = path.join(dir, "docs/mcp-observatory-score-badge.md");
+
+    await initCi({
+      command: "npx -y @example/mcp-server",
+      workflow,
+    });
+    await initCi({
+      workflow,
+      badgeFile,
+      targetConfig,
+      prBody,
+      issueBody,
+      scoreBadge,
+      all: true,
+      force: true,
+      sarif: true,
+      schedule: "weekly",
+    });
+
+    const workflowText = await readFile(workflow, "utf8");
+    expect(workflowText).toContain(`target: ${targetConfig}`);
+    expect(workflowText).toContain("security-events: write");
+    expect(workflowText).toContain("upload-sarif: true");
+    expect(workflowText).toContain("schedule:");
+    expect(await readFile(targetConfig, "utf8")).toContain("<server-package>");
   });
 
   it("preserves quoted command arguments in generated target config", async () => {

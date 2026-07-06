@@ -26,6 +26,7 @@ export function registerLegacyCommands(program: Command): void {
     .option("--setup-ci", "Offer CI conversion after a successful check; use with --yes in non-interactive runs to write files.", false)
     .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
+    .option("--no-ci-sarif", "Generate post-run CI without GitHub Code Scanning SARIF upload.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
     .option("--no-color", "Disable colored output.")
     .action(async (options: { outDir: string; target?: string; watch: boolean; interval: string; invokeTools: boolean } & SetupCiConversionFlags) => {
@@ -74,6 +75,7 @@ export function registerLegacyCommands(program: Command): void {
           setupCi: options.setupCi,
           yes: options.yes,
           noSetupCi: options.noSetupCi,
+          ciSarif: options.ciSarif,
           force: options.force,
           campaign: options.campaign,
         });

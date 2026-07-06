@@ -72,6 +72,8 @@ export interface TelemetryEnrichment {
   setupCiConversionStatus?: string;
   setupCiPromptShown?: boolean;
   setupCiAutoRequested?: boolean;
+  setupCiSarif?: boolean;
+  setupCiFixApplied?: boolean;
   sampleReport?: boolean;
   // Nightly scans
   nightlyScan?: boolean;

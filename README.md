@@ -80,7 +80,13 @@ AI coding agents, agentic workflows, and rough PRs are welcome. Use the [10x Age
 Add MCP CI and Code Scanning in one command:
 
 ```bash
-npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif --schedule weekly
+```
+
+Repair or upgrade an existing adoption kit:
+
+```bash
+npx @kryptosai/mcp-observatory setup-ci --doctor --fix
 ```
 
 Installing MCP Observatory in an MCP server project also prints the exact CI setup command. Projects can opt into automatic workflow creation during install with [`mcpObservatory.autoSetupCi`](./docs/automatic-ci-integration.md).
@@ -273,7 +279,7 @@ When you run `scan`, it looks for MCP configs in:
 Add Observatory to your MCP server's CI pipeline:
 
 ```bash
-npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server"
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif --schedule weekly
 ```
 
 Check the adoption kit:
@@ -281,6 +287,8 @@ Check the adoption kit:
 ```bash
 npx @kryptosai/mcp-observatory setup-ci --doctor
 ```
+
+Successful `test`, `run`, and single-target `scan` checks also offer to convert the passing result into a CI adoption kit. That automatic conversion enables SARIF/Code Scanning and weekly scheduled checks by default; pass `--no-ci-sarif` when you only want a conservative workflow without Code Scanning upload.
 
 Or create the workflow manually:
 

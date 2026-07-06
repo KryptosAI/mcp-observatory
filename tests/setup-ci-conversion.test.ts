@@ -82,9 +82,16 @@ describe("post-check setup-ci conversion", () => {
     });
 
     expect(result.status).toBe("written");
-    expect(await readFile(path.join(dir, ".github/workflows/mcp-observatory.yml"), "utf8")).toContain("target: mcp-observatory.target.json");
+    const workflow = await readFile(path.join(dir, ".github/workflows/mcp-observatory.yml"), "utf8");
+    expect(workflow).toContain("target: mcp-observatory.target.json");
+    expect(workflow).toContain("schedule:");
+    expect(workflow).toContain('cron: "0 9 * * 1"');
+    expect(workflow).toContain("security-events: write");
+    expect(workflow).toContain("upload-sarif: true");
     expect(await readFile(path.join(dir, "mcp-observatory.target.json"), "utf8")).toContain("example-mcp");
-    expect(sink.text()).toContain("Convert this passing MCP check into CI? [Y/n]");
+    expect(sink.text()).toContain("Convert this passing MCP check into CI + Code Scanning? [Y/n]");
+    expect(sink.text()).toContain("Code Scanning: SARIF upload is enabled");
+    expect(sink.text()).toContain("Automation: weekly scheduled checks are enabled");
     expect(sink.text()).toContain("Verify: npx @kryptosai/mcp-observatory setup-ci --doctor");
   });
 
@@ -120,6 +127,8 @@ describe("post-check setup-ci conversion", () => {
     await expect(readFile(path.join(dir, ".github/workflows/mcp-observatory.yml"), "utf8")).rejects.toThrow();
     expect(sink.text()).toContain("CI conversion available:");
     expect(sink.text()).toContain("setup-ci --all --command");
+    expect(sink.text()).toContain("--sarif");
+    expect(sink.text()).toContain("--schedule weekly");
   });
 
   it("writes automatically with --setup-ci --yes", async () => {
@@ -136,7 +145,32 @@ describe("post-check setup-ci conversion", () => {
     });
 
     expect(result.status).toBe("written");
-    expect(await readFile(path.join(dir, ".github/workflows/mcp-observatory.yml"), "utf8")).toContain("MCP Observatory");
+    const workflow = await readFile(path.join(dir, ".github/workflows/mcp-observatory.yml"), "utf8");
+    expect(workflow).toContain("MCP Observatory");
+    expect(workflow).toContain("upload-sarif: true");
+    expect(workflow).toContain("schedule:");
+  });
+
+  it("can opt out of SARIF upload for automatic CI conversion", async () => {
+    const dir = await tempDir();
+    process.chdir(dir);
+    const sink = outputSink();
+
+    const result = await maybeConvertPassingCheckToCi({
+      artifact: passingArtifact(),
+      output: sink.output,
+      isInteractive: false,
+      setupCi: true,
+      yes: true,
+      ciSarif: false,
+    });
+
+    expect(result.status).toBe("written");
+    const workflow = await readFile(path.join(dir, ".github/workflows/mcp-observatory.yml"), "utf8");
+    expect(workflow).not.toContain("security-events: write");
+    expect(workflow).not.toContain("upload-sarif: true");
+    expect(workflow).toContain("schedule:");
+    expect(sink.text()).toContain("Code Scanning: SARIF upload is not enabled");
   });
 
   it("never writes for failed or fatal artifacts", async () => {

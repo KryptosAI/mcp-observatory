@@ -186,11 +186,13 @@ async function runScan(
         setupCi: conversionFlags.setupCi,
         yes: conversionFlags.yes,
         noSetupCi: conversionFlags.noSetupCi,
+        ciSarif: conversionFlags.ciSarif,
         force: conversionFlags.force,
         campaign: conversionFlags.campaign,
       });
     } else if (conversionFlags.noSetupCi !== true) {
-      process.stdout.write(`CI conversion available for a specific target:\n  ${setupCiHint(undefined, undefined, bin)}\n`);
+      const sarif = conversionFlags.ciSarif === false ? "" : " --sarif";
+      process.stdout.write(`CI conversion available for a specific target:\n  ${setupCiHint(undefined, undefined, bin)}${sarif} --schedule weekly\n`);
       if (conversionFlags.setupCi === true) {
         process.stdout.write("Non-interactive mode will only write files when --setup-ci --yes is present, and multi-target scans need a single target config.\n");
       }
@@ -245,6 +247,7 @@ export function registerScanCommands(program: Command, bin: string): void {
     .option("--setup-ci", "Offer CI conversion after a successful one-target scan; use with --yes in non-interactive runs to write files.", false)
     .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
+    .option("--no-ci-sarif", "Generate post-scan CI without GitHub Code Scanning SARIF upload.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
     .option("--no-color", "Disable colored output.");
 
@@ -264,6 +267,7 @@ export function registerScanCommands(program: Command, bin: string): void {
     .option("--setup-ci", "Offer CI conversion after a successful one-target scan; use with --yes in non-interactive runs to write files.", false)
     .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
+    .option("--no-ci-sarif", "Generate post-scan CI without GitHub Code Scanning SARIF upload.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
     .action(async (options: { config?: string; security?: boolean; format: string } & SetupCiConversionFlags) => {
       // Inherit parent config option if set

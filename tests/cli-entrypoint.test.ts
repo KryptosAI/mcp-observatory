@@ -67,6 +67,7 @@ describe("CLI entrypoint", () => {
     expect(exitCode).toBe(0);
     expect(stdout).toContain("scan");
     expect(stdout).toContain("--setup-ci");
+    expect(stdout).toContain("--no-ci-sarif");
   });
 
   it("test subcommand shows help", () => {
@@ -77,6 +78,7 @@ describe("CLI entrypoint", () => {
     expect(stdout).toContain("--campaign");
     expect(stdout).toContain("--setup-ci");
     expect(stdout).toContain("--no-setup-ci");
+    expect(stdout).toContain("--no-ci-sarif");
   });
 
   it("attack-sim subcommand shows help", () => {
@@ -187,6 +189,7 @@ describe("CLI entrypoint", () => {
     expect(exitCode).toBe(0);
     expect(stdout).toContain("created: .github/workflows/mcp-observatory.yml");
     expect(fs.existsSync(path.join(tmpDir, ".github/workflows/mcp-observatory.yml"))).toBe(true);
+    expect(fs.readFileSync(path.join(tmpDir, ".github/workflows/mcp-observatory.yml"), "utf8")).toContain("upload-sarif: true");
     expect(fs.readFileSync(path.join(tmpDir, "mcp-observatory.target.json"), "utf8")).toContain("fixture-server.mjs");
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
@@ -388,6 +391,8 @@ describe("CLI entrypoint", () => {
     expect(stdout).toContain("--doctor");
     expect(stdout).toContain("--from-last-run");
     expect(stdout).toContain("--sarif");
+    expect(stdout).toContain("--schedule");
+    expect(stdout).toContain("--fix");
     expect(stdout).toContain("--campaign");
   });
 
@@ -411,6 +416,37 @@ describe("CLI entrypoint", () => {
     expect(exitCode).toBe(0);
     expect(stdout).toContain("Using latest successful run:");
     expect(fs.readFileSync(path.join(tmpDir, "mcp-observatory.target.json"), "utf8")).toContain("fixture-server.mjs");
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  it("setup-ci --doctor --fix repairs CI with SARIF and weekly automation", () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "obs-test-"));
+    const workflow = path.join(tmpDir, ".github/workflows/mcp-observatory.yml");
+    fs.mkdirSync(path.dirname(workflow), { recursive: true });
+    fs.writeFileSync(workflow, [
+      "name: MCP Observatory",
+      "on: [pull_request]",
+      "permissions:",
+      "  contents: read",
+      "jobs:",
+      "  mcp-observatory:",
+      "    runs-on: ubuntu-latest",
+      "    steps:",
+      "      - uses: actions/checkout@v6",
+      "      - uses: KryptosAI/mcp-observatory/action@v0.27.0",
+      "        with:",
+      "          command: npx -y @example/mcp-server",
+      "",
+    ].join("\n"));
+
+    const { stdout, exitCode } = runCli(["setup-ci", "--doctor", "--fix"], { cwd: tmpDir });
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("Applied repair:");
+    const workflowText = fs.readFileSync(workflow, "utf8");
+    expect(workflowText).toContain("security-events: write");
+    expect(workflowText).toContain("upload-sarif: true");
+    expect(workflowText).toContain("schedule:");
+    expect(fs.readFileSync(path.join(tmpDir, "mcp-observatory.target.json"), "utf8")).toContain("@example/mcp-server");
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
