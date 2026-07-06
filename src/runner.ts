@@ -6,6 +6,7 @@ import { AdapterConnectError, LocalProcessAdapter } from "./adapters/local-proce
 import type { AdapterConnectOptions, AdapterSession } from "./adapters/local-process.js";
 import type { CassetteEntry } from "./cassette.js";
 import { runConformanceCheck } from "./checks/conformance.js";
+import { runAttackSimulationCheck } from "./checks/attack-sim.js";
 import { runPromptsCheck } from "./checks/prompts.js";
 import { runResourcesCheck } from "./checks/resources.js";
 import { runSchemaQualityCheck } from "./checks/schema-quality.js";
@@ -47,6 +48,9 @@ function buildSummary(checks: CheckResult[], fatalError?: string): RunArtifact["
 }
 
 export interface RunOptions {
+  attackSimulation?: {
+    baseline?: RunArtifact;
+  };
   invokeTools?: boolean;
   record?: boolean;
   securityCheck?: boolean;
@@ -166,6 +170,11 @@ async function runTargetWithRecording(target: TargetConfig, options?: RunOptions
       if (options?.securityCheck) {
         const secCheck = await runSecurityCheck(checkContext, checks);
         checks.push(secCheck.result);
+      }
+
+      if (options?.attackSimulation) {
+        const attackCheck = await runAttackSimulationCheck(checkContext, checks, options.attackSimulation);
+        checks.push(attackCheck.result);
       }
     } finally {
       // Extract cassette entries before closing

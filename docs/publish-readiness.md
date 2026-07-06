@@ -37,6 +37,7 @@ Known audit note:
 - Include “free for local OSS use; paid for hosted reporting, private repo CI, recurring security reports, certification, support, and fleet visibility.”
 - Link production users to `COMMERCIAL.md` and the GitHub pilot request issue template.
 - Submit or refresh listings on Glama, PulseMCP, Smithery, and relevant awesome-MCP lists with the tags: security, developer tools, CI/CD, testing, MCP security, schema drift.
+- Claim or refresh MseeP with neutral listing copy; do not add badges that imply audited/certified status until public scan evidence has been reviewed.
 - Use the certification distribution loop to open helpful PRs against popular MCP server repos and convert accepted PRs into proof points.
 - Link public proof, the safety report, and directory listing copy from launch/outreach materials.
 

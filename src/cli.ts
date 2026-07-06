@@ -20,10 +20,13 @@ import { registerCiReportCommands } from "./commands/ci-report.js";
 import { registerEnterpriseReportCommands } from "./commands/enterprise-report.js";
 import { registerInitCiCommands } from "./commands/init-ci.js";
 import { registerLockCommands } from "./commands/lock.js";
+import { registerAttackSimCommands } from "./commands/attack-sim.js";
 import { DEFAULT_CLOUD_UPLOAD_ENDPOINT, printCloudInfo } from "./commercial.js";
 import { runTarget } from "./index.js";
 import type { RunArtifact, TargetConfig } from "./types.js";
 import { loadTelemetryConfig, collectUserIdentity, recordEvent, buildEvent } from "./telemetry.js";
+import { requireHttpUrl } from "./utils/url.js";
+import { validateRunArtifact } from "./validate.js";
 import { TOOL_VERSION } from "./version.js";
 
 // ── Interactive Menu ─────────────────────────────────────────────────────────
@@ -58,6 +61,7 @@ const MENU_GROUPS: MenuGroup[] = [
       { command: ["diff"],           label: "diff",         outcome: "Compare two run artifacts for regressions" },
       { command: ["history"],        label: "history",      outcome: "Show health score trends over time" },
       { command: ["setup-ci"],       label: "setup-ci",     outcome: "Create GitHub Action and badge snippets" },
+      { command: ["attack-sim"],     label: "attack-sim",   outcome: "Safely simulate MCP attack-readiness" },
       { command: ["enterprise-report"], label: "enterprise-report", outcome: "Generate a production/security report" },
     ],
   },
@@ -66,6 +70,12 @@ const MENU_GROUPS: MenuGroup[] = [
     items: [
       { command: ["score"],  label: "score",  outcome: "Health score (0-100) for a specific server" },
       { command: ["badge"],  label: "badge",  outcome: "Generate an SVG health badge for README" },
+    ],
+  },
+  {
+    heading: "Agent Server",
+    items: [
+      { command: ["serve"], label: "serve", outcome: "Start Observatory as an MCP server over stdio" },
     ],
   },
 ];
@@ -243,6 +253,7 @@ async function main(): Promise<void> {
         `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} lock verify`)}        Verify no schema drift since last lock`,
         `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} diff`)} ${c(ANSI.dim, "<a> <b>")}       Compare two runs for regressions`,
         `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} setup-ci`)}           Add GitHub Action and badge snippets`,
+        `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} attack-sim`)} ${c(ANSI.dim, "<cmd>")}  Safely simulate MCP attack-readiness`,
         "",
         `  ${c(ANSI.dim, `Run ${bin} <command> --help for details on any command.`)}`,
         "",
@@ -266,6 +277,7 @@ async function main(): Promise<void> {
   registerEnterpriseReportCommands(program);
   registerInitCiCommands(program);
   registerLockCommands(program);
+  registerAttackSimCommands(program);
 
   const cloudCmd = program
     .command("cloud")
@@ -286,15 +298,17 @@ async function main(): Promise<void> {
         throw new Error("MCP_OBSERVATORY_CLOUD_TOKEN is required for cloud uploads.");
       }
       const org = options.org ?? process.env["MCP_OBSERVATORY_ORG"];
-      const raw = await readFile(artifactPath, "utf8");
-      const response = await fetch(options.endpoint, {
+      const artifact = validateRunArtifact(JSON.parse(await readFile(artifactPath, "utf8")));
+      const endpoint = requireHttpUrl(options.endpoint, "Cloud upload endpoint");
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
           ...(org ? { "X-MCP-Observatory-Org": org } : {}),
         },
-        body: raw,
+        // lgtm[js/file-data-in-network-request] This command explicitly uploads the user-provided artifact to a validated HTTPS endpoint.
+        body: JSON.stringify(artifact),
       });
       const text = await response.text();
       if (!response.ok) {

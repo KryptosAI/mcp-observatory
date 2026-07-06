@@ -11,40 +11,77 @@
 ```
 
 [![CI](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/KryptosAI/mcp-observatory/actions/workflows/codeql.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/codeql.yml)
+[![Coverage](https://github.com/KryptosAI/mcp-observatory/actions/workflows/coverage.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/coverage.yml)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/KryptosAI/mcp-observatory/badge)](https://securityscorecards.dev/viewer/?uri=github.com/KryptosAI/mcp-observatory)
+[![Dependabot](https://img.shields.io/badge/dependabot-enabled-025e8c?logo=dependabot)](./.github/dependabot.yml)
+[![npm provenance workflow](https://img.shields.io/badge/npm%20provenance-workflow-blue)](./.github/workflows/release.yml)
 [![npm](https://img.shields.io/npm/v/@kryptosai/mcp-observatory)](https://www.npmjs.com/package/@kryptosai/mcp-observatory)
-[![npm downloads](https://img.shields.io/npm/dm/@kryptosai/mcp-observatory)](https://www.npmjs.com/package/@kryptosai/mcp-observatory)
+[![npm weekly downloads](https://img.shields.io/npm/dw/@kryptosai/mcp-observatory)](https://www.npmjs.com/package/@kryptosai/mcp-observatory)
+[![GitHub stars](https://img.shields.io/github/stars/KryptosAI/mcp-observatory?style=flat)](https://github.com/KryptosAI/mcp-observatory/stargazers)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 [![Node >= 20](https://img.shields.io/badge/node-%3E%3D20-339933)](./package.json)
 [![Smithery](https://smithery.ai/badge/@kryptosai/mcp-observatory)](https://smithery.ai/server/@kryptosai/mcp-observatory)
 [![mcp-observatory MCP server](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory/badges/score.svg)](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory)
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](./CONTRIBUTORS.md)
 
-**The GitHub-native CI, SARIF, and security gate for MCP servers before agents depend on them.**
+**The GitHub-native CI, SARIF, and security-readiness gate for MCP servers before agents depend on them.**
 
 Agents should not depend on tools nobody tests. MCP Observatory turns a local MCP check into release-gate evidence maintainers already understand: GitHub Actions, security findings, schema drift detection, PR reports, score badges, agent-accessible diagnostics, and GitHub Code Scanning SARIF.
 
-Start with one server:
+## Trust Signals
+
+| Signal | What it means |
+|---|---|
+| CI + coverage | Typecheck, lint, tests, build, packed install, artifact validation, smoke test, and measured coverage run in GitHub Actions. |
+| CodeQL + OpenSSF Scorecard | Static analysis and supply-chain posture are visible in GitHub-native security surfaces. |
+| Dependabot | npm and GitHub Actions dependency updates are monitored weekly. |
+| npm provenance workflow | Release automation is prepared for npm provenance through GitHub OIDC. |
+| Security policy | Vulnerability reports go through private disclosure; see [SECURITY.md](./SECURITY.md). |
+
+## Try It
+
+Safely simulate MCP attack-readiness for one server:
 
 ```bash
-npx @kryptosai/mcp-observatory test npx -y my-mcp-server
+npx @kryptosai/mcp-observatory attack-sim npx -y my-mcp-server --sarif attack-results.sarif
 ```
 
-Then convert the passing check into CI with Code Scanning:
+Then convert the evidence into CI with Code Scanning:
 
 ```bash
 npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif
 ```
 
-See the [launch page](./docs/launch.md), [GitHub Code Scanning demo](./docs/code-scanning-demo.md), and [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md).
+See the [MCP Attack Simulator](./docs/mcp-attack-simulator.md), [Tool-call receipts](./docs/tool-call-receipts.md), [MCP Receipt Graph](./docs/receipt-graph.md), [launch page](./docs/launch.md), [GitHub Code Scanning demo](./docs/code-scanning-demo.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [sample safety reports](./docs/mcp-server-safety-index.md), and [reference evaluations](./docs/reference-evaluations.md).
+
+## Evidence You Can Inspect
+
+| Evidence | Where |
+|---|---|
+| Example GitHub Actions adoption | [`setup-ci --all`](./docs/setup-ci-doctor.md) and the generated workflow docs |
+| Attack simulation output | [MCP Attack Simulator](./docs/mcp-attack-simulator.md) |
+| Tool-call receipts | [Receipt standard](./docs/tool-call-receipts.md) for reproducible MCP evidence |
+| Receipt graph | [Server-to-evidence map](./docs/receipt-graph.md) for agent trust decisions |
+| SARIF / Code Scanning output | [GitHub Code Scanning demo](./docs/code-scanning-demo.md) |
+| Real MCP server evaluations | [MCP Server Safety Index](./docs/mcp-server-safety-index.md) |
+| Reference reports | [Reference evaluations](./docs/reference-evaluations.md) |
+| Maintainer and contributor proof | [MCP Observatory Contributors](./docs/contributor-recognition.md) |
+| Security disclosure path | [SECURITY.md](./SECURITY.md) |
 
 Two more fast paths:
 
-Cloned this repo? Start here: [`CLONED_THIS.md`](./CLONED_THIS.md). Want to contribute? Add one server to the [MCP Target Registry](./docs/target-registry.md) or use the [Agent Task Pack](./docs/agent-tasks.md).
+Cloned this repo? Start here: [`CLONED_THIS.md`](./CLONED_THIS.md). Want to contribute? Add one server to the [MCP Target Registry](./docs/target-registry.md), use the [Agent Task Pack](./docs/agent-tasks.md), and get public credit through [MCP Observatory Contributors](./docs/contributor-recognition.md).
 
-Add MCP CI in one command:
+AI coding agents, agentic workflows, and rough PRs are welcome. Use the [10x Agentic Growth Sprint](./docs/10x-agentic-growth-sprint.md), [Agentic Contributor Outreach](./docs/agentic-contributor-outreach.md), or open a `Contributor quest`, `Agentic contribution idea`, or `MCP tool-call receipt request` issue to suggest a target, prompt, docs fix, receipt, or `setup-ci --sarif` integration.
+
+Add MCP CI and Code Scanning in one command:
 
 ```bash
-npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server"
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif
 ```
+
+Installing MCP Observatory in an MCP server project also prints the exact CI setup command. Projects can opt into automatic workflow creation during install with [`mcpObservatory.autoSetupCi`](./docs/automatic-ci-integration.md).
 
 Upload normalized MCP findings to GitHub Code Scanning when you want a security-native release gate:
 
@@ -74,6 +111,8 @@ Use it as a CLI, a GitHub Action, or an MCP server that lets your AI agent scan,
 
 [![Observatory MCP server](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory/badges/card.svg)](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory)
 
+The Glama card is an external MCP directory scorecard. Treat it as directory-level social proof; click through for the underlying category details before using it as a production approval signal.
+
 ## Why MCP Observatory
 
 MCP servers are becoming production dependencies. If agents rely on them, teams need a way to catch broken tools, unsafe schemas, schema drift, slow responses, and security footguns before those failures reach users.
@@ -88,7 +127,7 @@ Observatory gives maintainers and teams:
 - **MCP server mode** so agents can inspect other MCP servers directly
 - **Production support path** for hosted history, private repo reporting, certification, support, and fleet visibility
 
-See the [launch page](./docs/launch.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [Code Scanning demo](./docs/code-scanning-demo.md), [target gallery](./docs/target-gallery.md), [target registry](./docs/target-registry.md), [target contribution guide](./docs/target-contribution-guide.md), [Agent Task Pack](./docs/agent-tasks.md), [`setup-ci --doctor`](./docs/setup-ci-doctor.md), [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [June 2026 safety field report](./docs/mcp-safety-field-report-2026-06.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), [campaign attribution](./docs/campaign-attribution.md), [local metrics dashboard](./docs/metrics-dashboard.md), and [commercial support](./COMMERCIAL.md).
+See the [launch page](./docs/launch.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [Code Scanning demo](./docs/code-scanning-demo.md), [target gallery](./docs/target-gallery.md), [target registry](./docs/target-registry.md), [target contribution guide](./docs/target-contribution-guide.md), [MCP Observatory Contributors](./docs/contributor-recognition.md), [Agent Task Pack](./docs/agent-tasks.md), [Tool-call receipts](./docs/tool-call-receipts.md), [MCP Receipt Graph](./docs/receipt-graph.md), [`setup-ci --doctor`](./docs/setup-ci-doctor.md), [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [June 2026 safety field report](./docs/mcp-safety-field-report-2026-06.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), [campaign attribution](./docs/campaign-attribution.md), [local metrics dashboard](./docs/metrics-dashboard.md), and [commercial support](./COMMERCIAL.md).
 
 ## For Security And Platform Teams
 

@@ -76,6 +76,9 @@ Open and accepted third-party integrations are tracked here:
 
 GitHub code search shows public references outside the main repo. These are discovery/listing signals, not customer claims:
 
+- PulseMCP has a maintainer-recognized `io.github.KryptosAI/mcp-observatory` listing with `server.json` visibility.
+- Smithery, Glama, LobeHub, Yarn/Vibehackers, and other MCP catalogs surface MCP Observatory install or scorecard pages.
+- MseeP has an unclaimed listing for MCP Observatory. Treat it as a directory opportunity until ownership, scan evidence, and badge wording are reviewed.
 - `punkpeye/awesome-mcp-devtools` lists MCP Observatory in an MCP developer-tools index.
 - `linny006/mcp-servers-live` mirrors a public MCP Observatory listing page.
 - `gabrielmoreira/awesome-ai-rabbit-holes` catalogs the GitHub project.

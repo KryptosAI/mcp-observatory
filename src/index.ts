@@ -8,6 +8,7 @@ export {
 } from "./cassette.js";
 export { runConformanceCheck } from "./checks/conformance.js";
 export { runSchemaQualityCheck } from "./checks/schema-quality.js";
+export { runAttackSimulationCheck, type AttackSimulationFinding, type AttackSimulationOptions } from "./checks/attack-sim.js";
 export { runLightweightSecurityCheck, runSecurityCheck } from "./checks/security.js";
 export { SECURITY_RULES, type SecurityFinding, type SecurityRule, type ToolInfo } from "./checks/security-rules.js";
 export { diffArtifacts } from "./diff.js";
@@ -16,6 +17,7 @@ export { renderHtml } from "./reporters/html.js";
 export { renderJUnit } from "./reporters/junit.js";
 export { renderMarkdown } from "./reporters/markdown.js";
 export { renderPrComment } from "./reporters/pr-comment.js";
+export { renderAttackSimulationMarkdown } from "./reporters/attack-sim.js";
 export { readHistory, appendHistory, buildHistoryEntry, getTrend, renderTrendLabel } from "./history.js";
 export { readLockFile, writeLockFile, buildServerLockEntry, verifyAgainstLock, mergeLockFile } from "./lockfile.js";
 export { renderMatrixComment, type MatrixRow } from "./reporters/pr-comment-matrix.js";

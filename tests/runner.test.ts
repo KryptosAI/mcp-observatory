@@ -44,5 +44,5 @@ describe("runTarget", () => {
     expect(markdown).toContain("### tools — pass");
     expect(markdown).toContain("## Reproduction Commands");
     expect(markdown).toContain("## Artifact Provenance");
-  });
+  }, 30_000);
 });

@@ -4,6 +4,20 @@ All notable changes to MCP Observatory will be documented in this file.
 
 ## Unreleased
 
+## v0.28.0 - 2026-07-05
+
+### Added
+
+- Install-time CI helper that detects MCP server projects, prints the exact `setup-ci` command, and can create the workflow automatically when `mcpObservatory.autoSetupCi` is enabled.
+- Safe MCP Attack Simulator command for tool-poisoning, canary exposure, permission-boundary, and contract-drift evidence.
+- Markdown, JSON, and SARIF output for Attack Simulator findings.
+- README status badges and adoption links for CI, CodeQL, OpenSSF Scorecard, Dependabot, npm provenance, coverage, stars, downloads, and contributors.
+- Coverage command and GitHub Actions coverage workflow with a 90% core line-coverage floor enforced.
+
+### Changed
+
+- README first screen now leads with trust signals and copy-paste adoption paths.
+
 ## v0.8.0 - 2026-03-20
 
 ### Added

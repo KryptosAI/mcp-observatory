@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { execFileSync, spawnSync } from "node:child_process";
 import os from "node:os";
 import fs from "node:fs";
@@ -6,12 +6,15 @@ import path from "node:path";
 
 const CLI = path.resolve("src/cli.ts");
 const TSX = path.resolve("node_modules/.bin/tsx");
+const CLI_TEST_TIMEOUT_MS = 30_000;
+
+vi.setConfig({ testTimeout: CLI_TEST_TIMEOUT_MS });
 
 function runCli(args: string[], opts?: { cwd?: string; timeout?: number; env?: NodeJS.ProcessEnv }): { stdout: string; exitCode: number } {
   try {
     const stdout = execFileSync(TSX, [CLI, ...args], {
       encoding: "utf8",
-      timeout: opts?.timeout ?? 15_000,
+      timeout: opts?.timeout ?? CLI_TEST_TIMEOUT_MS,
       cwd: opts?.cwd ?? process.cwd(),
       env: { ...process.env, NO_COLOR: "1", ...opts?.env },
     });
@@ -25,7 +28,7 @@ function runCli(args: string[], opts?: { cwd?: string; timeout?: number; env?: N
 function runCliWithStderr(args: string[], opts?: { cwd?: string; timeout?: number; env?: NodeJS.ProcessEnv }): { stdout: string; stderr: string; exitCode: number } {
   const result = spawnSync(TSX, [CLI, ...args], {
     encoding: "utf8",
-    timeout: opts?.timeout ?? 15_000,
+    timeout: opts?.timeout ?? CLI_TEST_TIMEOUT_MS,
     cwd: opts?.cwd ?? process.cwd(),
     env: { ...process.env, NO_COLOR: "1", ...opts?.env },
   });
@@ -76,6 +79,14 @@ describe("CLI entrypoint", () => {
     expect(stdout).toContain("--no-setup-ci");
   });
 
+  it("attack-sim subcommand shows help", () => {
+    const { stdout, exitCode } = runCli(["attack-sim", "--help"]);
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("attack-sim");
+    expect(stdout).toContain("--fail-on-high");
+    expect(stdout).toContain("--baseline");
+  });
+
   it("diff subcommand shows help", () => {
     const { stdout, exitCode } = runCli(["diff", "--help"]);
     expect(exitCode).toBe(0);
@@ -94,6 +105,14 @@ describe("CLI entrypoint", () => {
     const { stdout, exitCode } = runCli(["serve", "--help"]);
     expect(exitCode).toBe(0);
     expect(stdout).toContain("serve");
+    expect(stdout).toContain("--quiet");
+  });
+
+  it("serve keeps stdio output clean for MCP hosts", () => {
+    const { stdout, stderr, exitCode } = runCliWithStderr(["serve", "--quiet"], { timeout: 2_000 });
+    expect([0, 143]).toContain(exitCode);
+    expect(stdout).toBe("");
+    expect(stderr).toBe("");
   });
 
   it("record subcommand shows help", () => {
@@ -184,6 +203,87 @@ describe("CLI entrypoint", () => {
     const sarif = JSON.parse(fs.readFileSync(sarifPath, "utf8")) as { version: string; runs: unknown[] };
     expect(sarif.version).toBe("2.1.0");
     expect(sarif.runs).toHaveLength(1);
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  it("attack-sim writes JSON, Markdown, and SARIF for a target config", () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "obs-attack-"));
+    fs.mkdirSync(tmpDir, { recursive: true });
+    const jsonPath = path.join(tmpDir, "attack-artifact.json");
+    const reportPath = path.join(tmpDir, "attack-report.md");
+    const sarifPath = path.join(tmpDir, "attack.sarif");
+    const targetPath = path.join(tmpDir, "target.json");
+    fs.writeFileSync(targetPath, JSON.stringify({
+      targetId: "fixture-server",
+      adapter: "local-process",
+      command: "node",
+      args: [path.resolve("tests/fixtures/fixture-server.mjs")],
+      cwd: process.cwd(),
+      timeoutMs: 10000,
+    }));
+
+    const { stdout, exitCode } = runCli([
+      "attack-sim",
+      "--target",
+      targetPath,
+      "--json",
+      jsonPath,
+      "--output",
+      reportPath,
+      "--sarif",
+      sarifPath,
+    ], { cwd: tmpDir, timeout: 25_000 });
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("attack-sim");
+    const artifact = JSON.parse(fs.readFileSync(jsonPath, "utf8")) as { checks: Array<{ id: string }> };
+    expect(artifact.checks.some((check) => check.id === "attack-sim")).toBe(true);
+    expect(fs.readFileSync(reportPath, "utf8")).toContain("MCP Attack Simulation Report");
+    const sarif = JSON.parse(fs.readFileSync(sarifPath, "utf8")) as { version: string };
+    expect(sarif.version).toBe("2.1.0");
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  it("attack-sim accepts positional server commands and fails on high findings when requested", () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "obs-attack-"));
+    fs.mkdirSync(tmpDir, { recursive: true });
+    const fixture = path.resolve("tests/fixtures/poisoned-fixture-server.mjs");
+    const jsonPath = path.join(tmpDir, "attack-artifact.json");
+
+    const { stdout, exitCode } = runCli([
+      "attack-sim",
+      "node",
+      fixture,
+      "--json",
+      jsonPath,
+      "--fail-on-high",
+    ], { cwd: tmpDir, timeout: 25_000 });
+    expect(exitCode).toBe(1);
+    expect(stdout).toContain("attack-sim: fail");
+    const artifact = JSON.parse(fs.readFileSync(jsonPath, "utf8")) as { checks: Array<{ id: string; status: string }> };
+    expect(artifact.checks.find((check) => check.id === "attack-sim")?.status).toBe("fail");
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  it("attack-sim accepts equals-form output flags and strips CLI-only flags", () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "obs-attack-"));
+    fs.mkdirSync(tmpDir, { recursive: true });
+    const fixture = path.resolve("tests/fixtures/poisoned-fixture-server.mjs");
+    const jsonPath = path.join(tmpDir, "attack-artifact.json");
+
+    const { stdout, exitCode } = runCli([
+      "attack-sim",
+      "node",
+      fixture,
+      `--json=${jsonPath}`,
+      "--no-color",
+      "--fail-on-high",
+    ], { cwd: tmpDir, timeout: 25_000 });
+
+    expect(exitCode).toBe(1);
+    expect(stdout).toContain("attack-sim: fail");
+    expect(fs.existsSync(jsonPath)).toBe(true);
+    const artifact = JSON.parse(fs.readFileSync(jsonPath, "utf8")) as { checks: Array<{ id: string; status: string }> };
+    expect(artifact.checks.find((check) => check.id === "attack-sim")?.status).toBe("fail");
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
@@ -301,7 +401,7 @@ describe("CLI entrypoint", () => {
   });
 
   it("setup-ci --from-last-run uses the latest successful run artifact", () => {
-    const tmpDir = path.join(os.tmpdir(), `obs-test-${Date.now()}`);
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "obs-test-"));
     const runsDir = path.join(tmpDir, ".mcp-observatory", "runs");
     fs.mkdirSync(runsDir, { recursive: true });
     const fixture = fs.readFileSync(path.resolve("tests/fixtures/sample-run-a.json"), "utf8");

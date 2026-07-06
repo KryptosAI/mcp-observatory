@@ -1,13 +1,15 @@
 import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
-import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { DatabaseSync } from "node:sqlite";
 import os from "node:os";
 import path from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 import { promisify } from "node:util";
+import { LOGO } from "../src/commands/helpers.js";
+import { writeTextFileAtomic } from "../src/utils/files.js";
 import { classifyUsageRow, type TelemetryRow } from "./telemetry-company-intelligence.js";
 
 const execFileAsync = promisify(execFile);
@@ -341,6 +343,16 @@ function unknownToString(value: unknown): string {
   }
 }
 
+function safeErrorMessage(error: unknown): string {
+  if (!error) return "";
+  const message = error instanceof Error ? error.message : unknownToString(error);
+  return message
+    .split("\n")[0]!
+    .replaceAll(process.cwd(), "<workspace>")
+    .replaceAll(os.homedir(), "<home>")
+    .slice(0, 500);
+}
+
 function startRun(db: DatabaseSync, source: SourceName): RunRecord {
   const record = { id: `${source}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, source, startedAt: nowIso() };
   db.prepare("INSERT INTO collection_runs (id, source, started_at, status) VALUES (?, ?, ?, ?)").run(
@@ -361,7 +373,7 @@ function finishRun(
   error?: unknown,
   metadata?: unknown,
 ): void {
-  const message = error instanceof Error ? error.message : unknownToString(error);
+  const message = safeErrorMessage(error);
   db.prepare(`
 UPDATE collection_runs
 SET finished_at = ?, status = ?, rows_seen = ?, rows_inserted = ?, error = ?, metadata_json = ?
@@ -1336,6 +1348,10 @@ function navItem(label: string, active = false): string {
   return `<div class="nav-item${active ? " active" : ""}"><span class="nav-dot"></span>${escapeHtml(label)}</div>`;
 }
 
+function brandAsciiLogo(): string {
+  return `<pre class="logo-pixel" aria-label="MCP Observatory ASCII art logo">${escapeHtml(LOGO.trim())}</pre>`;
+}
+
 interface UsageTrendPoint {
   day: string;
   events: number;
@@ -1367,6 +1383,18 @@ interface UsagePeriodSummary {
   npmDownloads: number;
   clones: number;
   views: number;
+}
+
+interface KpiMetric {
+  allTimeLabel: string;
+  color: string;
+  current: number;
+  displayValue: string | number;
+  label: string;
+  monthlyValues: number[];
+  note: string;
+  previous: number;
+  trend: { label: string; direction: "up" | "down" | "flat" };
 }
 
 function dayToTimestamp(day: string): number | undefined {
@@ -1404,9 +1432,15 @@ function usageTrendPoints(model: DashboardModel, limit = TREND_WINDOW_DAYS): Usa
     ...githubByDay.keys(),
   ])].sort();
   const latestTimestamp = dayToTimestamp(knownDays.at(-1) ?? "");
+  const earliestTimestamp = dayToTimestamp(knownDays[0] ?? "");
+  const dayCount = latestTimestamp === undefined
+    ? 0
+    : Number.isFinite(limit)
+      ? Math.max(1, limit)
+      : Math.max(1, Math.floor((latestTimestamp - (earliestTimestamp ?? latestTimestamp)) / MS_PER_DAY) + 1);
   const days = latestTimestamp === undefined
     ? []
-    : Array.from({ length: limit }, (_, index) => timestampToDay(latestTimestamp - ((limit - index - 1) * MS_PER_DAY)));
+    : Array.from({ length: dayCount }, (_, index) => timestampToDay(latestTimestamp - ((dayCount - index - 1) * MS_PER_DAY)));
   return days.map((day) => {
     const allEventRow = allEventsByDay.get(day);
     const eventRow = eventsByDay.get(day);
@@ -1455,7 +1489,149 @@ function usagePeriodSummary(points: UsageTrendPoint[], days: number, offset = 0)
   };
 }
 
-function kpiCards(points: UsageTrendPoint[]): string {
+function sortKpisByMomentum(kpis: KpiMetric[]): KpiMetric[] {
+  const score = (kpi: KpiMetric): number => {
+    if (kpi.previous === 0 && kpi.current > 0) return 10_000 + kpi.current;
+    if (kpi.previous === 0) return kpi.current > 0 ? 1 : 0;
+    const change = ((kpi.current - kpi.previous) / kpi.previous) * 100;
+    return change + Math.min(kpi.current / Math.max(kpi.previous, 1), 100);
+  };
+
+  return [...kpis].sort((a, b) => {
+    const directionRank = { up: 0, flat: 1, down: 2 };
+    const directionDiff = directionRank[a.trend.direction] - directionRank[b.trend.direction];
+    if (directionDiff !== 0) return directionDiff;
+    return score(b) - score(a);
+  });
+}
+
+function allTimeCiSetupSessions(model: DashboardModel): number {
+  const funnelSessions = model.telemetry.commandFunnel.find((row) => row.stage === "CI setup")?.sessions ?? 0;
+  const dailySessions = model.telemetry.dailyMarketCommandFunnel.reduce((sum, point) => sum + point.ciSetupSessions, 0);
+  return Math.max(funnelSessions, dailySessions);
+}
+
+function monthlyKpiMetrics(points: UsageTrendPoint[], model: DashboardModel): KpiMetric[] {
+  const monthly = new Map<string, {
+    ciSetupSessions: number;
+    clones: number;
+    events: number;
+    latestSessions: number;
+    npmDownloads: number;
+    sessions: number;
+  }>();
+  for (const point of points) {
+    const month = point.day.slice(0, 7);
+    const bucket = monthly.get(month) ?? {
+      ciSetupSessions: 0,
+      clones: 0,
+      events: 0,
+      latestSessions: 0,
+      npmDownloads: 0,
+      sessions: 0,
+    };
+    bucket.ciSetupSessions += point.ciSetupSessions;
+    bucket.clones += point.clones;
+    bucket.events += point.events;
+    bucket.latestSessions += point.latestSessions;
+    bucket.npmDownloads += point.npmDownloads;
+    bucket.sessions += point.sessions;
+    monthly.set(month, bucket);
+  }
+
+  const months = [...monthly.keys()].sort();
+  const currentPeriod = usagePeriodSummary(points, 30);
+  const previousPeriod = usagePeriodSummary(points, 30, 30);
+  type MonthlyBucket = NonNullable<ReturnType<typeof monthly.get>>;
+  const latestVersion = model.telemetry.versionAdoption.find((row) => row.isLatest);
+  const allTimeNpmDownloads = model.npm.daily.reduce((sum, point) => sum + point.downloads, 0);
+  const allTimeClones = model.github.daily.reduce((sum, point) => sum + point.clones, 0);
+  const allTimeSetupSessions = allTimeCiSetupSessions(model);
+  const latestShare = (bucket: MonthlyBucket | undefined): number =>
+    bucket && bucket.sessions > 0 ? Math.round((bucket.latestSessions / bucket.sessions) * 100) : 0;
+  const periodLatestShare = (period: UsagePeriodSummary): number =>
+    period.sessions > 0 ? Math.round((period.latestSessions / period.sessions) * 100) : 0;
+  const monthlyValues = (selector: (bucket: MonthlyBucket) => number): number[] =>
+    months.map((month) => selector(monthly.get(month) ?? {
+      ciSetupSessions: 0,
+      clones: 0,
+      events: 0,
+      latestSessions: 0,
+      npmDownloads: 0,
+      sessions: 0,
+    }));
+
+  return sortKpisByMomentum([
+    {
+      allTimeLabel: `${formatNumber(model.telemetry.marketSessions)} all-time`,
+      color: "#8b5cf6",
+      current: currentPeriod.sessions,
+      displayValue: currentPeriod.sessions,
+      label: "External Sessions",
+      monthlyValues: monthlyValues((bucket) => bucket.sessions),
+      note: "current 30d market sessions",
+      previous: previousPeriod.sessions,
+      trend: signedPercent(currentPeriod.sessions, previousPeriod.sessions),
+    },
+    {
+      allTimeLabel: `${formatNumber(model.telemetry.marketEvents)} all-time`,
+      color: "#3b82f6",
+      current: currentPeriod.events,
+      displayValue: currentPeriod.events,
+      label: "Market Events",
+      monthlyValues: monthlyValues((bucket) => bucket.events),
+      note: "current 30d market events",
+      previous: previousPeriod.events,
+      trend: signedPercent(currentPeriod.events, previousPeriod.events),
+    },
+    {
+      allTimeLabel: `${formatNumber(allTimeNpmDownloads)} all-time`,
+      color: "#22d3ee",
+      current: currentPeriod.npmDownloads,
+      displayValue: currentPeriod.npmDownloads,
+      label: "NPM Downloads",
+      monthlyValues: monthlyValues((bucket) => bucket.npmDownloads),
+      note: "current 30d npm downloads",
+      previous: previousPeriod.npmDownloads,
+      trend: signedPercent(currentPeriod.npmDownloads, previousPeriod.npmDownloads),
+    },
+    {
+      allTimeLabel: `${formatNumber(allTimeClones)} all-time`,
+      color: "#f97316",
+      current: currentPeriod.clones,
+      displayValue: currentPeriod.clones,
+      label: "GitHub Clones",
+      monthlyValues: monthlyValues((bucket) => bucket.clones),
+      note: "current 30d GitHub clones",
+      previous: previousPeriod.clones,
+      trend: signedPercent(currentPeriod.clones, previousPeriod.clones),
+    },
+    {
+      allTimeLabel: `${formatNumber(allTimeSetupSessions)} all-time`,
+      color: "#22c55e",
+      current: currentPeriod.setupSessions,
+      displayValue: currentPeriod.setupSessions,
+      label: "CI Setup Sessions",
+      monthlyValues: monthlyValues((bucket) => bucket.ciSetupSessions),
+      note: "current 30d setup sessions",
+      previous: previousPeriod.setupSessions,
+      trend: signedPercent(currentPeriod.setupSessions, previousPeriod.setupSessions),
+    },
+    {
+      allTimeLabel: `${latestVersion ? `${latestVersion.sessionShare}% all-time` : "No version telemetry"}`,
+      color: "#c084fc",
+      current: periodLatestShare(currentPeriod),
+      displayValue: `${periodLatestShare(currentPeriod)}%`,
+      label: "Latest Version Adoption",
+      monthlyValues: monthlyValues((bucket) => latestShare(bucket)),
+      note: latestVersion ? `${latestVersion.version} latest release` : "No latest version yet",
+      previous: periodLatestShare(previousPeriod),
+      trend: signedPercent(periodLatestShare(currentPeriod), periodLatestShare(previousPeriod)),
+    },
+  ]);
+}
+
+function kpiCards(points: UsageTrendPoint[], model: DashboardModel): string {
   if (points.length === 0) return "";
   const day = usagePeriodSummary(points, 1);
   const previousDay = usagePeriodSummary(points, 1, 1);
@@ -1464,14 +1640,99 @@ function kpiCards(points: UsageTrendPoint[]): string {
   const month = usagePeriodSummary(points, 30);
   const previousMonth = usagePeriodSummary(points, 30, 30);
   const dayPoints = points.slice(-18);
-  return [
-    kpiCard("External Sessions", day.sessions, `${formatNumber(day.events)} events today`, signedPercent(day.sessions, previousDay.sessions), dayPoints.map((point) => point.sessions), "#8b5cf6"),
-    kpiCard("Weekly Sessions", week.sessions, `${formatNumber(week.events)} market events`, signedPercent(week.sessions, previousWeek.sessions), dayPoints.map((point) => point.sessions), "#3b82f6"),
-    kpiCard("NPM Downloads", week.npmDownloads, "latest 7 npm days", signedPercent(week.npmDownloads, previousWeek.npmDownloads), dayPoints.map((point) => point.npmDownloads), "#22d3ee"),
-    kpiCard("GitHub Clones", week.clones, "latest 7 GitHub days", signedPercent(week.clones, previousWeek.clones), dayPoints.map((point) => point.clones), "#f97316"),
-    kpiCard("CI Setup Sessions", month.setupSessions, "current 30 days", signedPercent(month.setupSessions, previousMonth.setupSessions), dayPoints.map((point) => point.ciSetupSessions), "#22c55e"),
-    kpiCard("Monthly Change", percentChangeLabel(month.sessions, previousMonth.sessions), `${formatNumber(month.sessions)} vs ${formatNumber(previousMonth.sessions)} sessions`, signedPercent(month.sessions, previousMonth.sessions), dayPoints.map((point) => point.sessions), "#c084fc"),
-  ].join("");
+  return sortKpisByMomentum([
+    {
+      allTimeLabel: `${formatNumber(model.telemetry.marketSessions)} all-time`,
+      color: "#8b5cf6",
+      current: day.sessions,
+      displayValue: day.sessions,
+      label: "External Sessions",
+      monthlyValues: [],
+      note: `${formatNumber(day.events)} events today`,
+      previous: previousDay.sessions,
+      trend: signedPercent(day.sessions, previousDay.sessions),
+    },
+    {
+      allTimeLabel: `${formatNumber(model.telemetry.marketSessions)} all-time`,
+      color: "#3b82f6",
+      current: week.sessions,
+      displayValue: week.sessions,
+      label: "Weekly Sessions",
+      monthlyValues: [],
+      note: `${formatNumber(week.events)} market events`,
+      previous: previousWeek.sessions,
+      trend: signedPercent(week.sessions, previousWeek.sessions),
+    },
+    {
+      allTimeLabel: `${formatNumber(model.npm.daily.reduce((sum, point) => sum + point.downloads, 0))} all-time`,
+      color: "#22d3ee",
+      current: week.npmDownloads,
+      displayValue: week.npmDownloads,
+      label: "NPM Downloads",
+      monthlyValues: [],
+      note: "latest 7 npm days",
+      previous: previousWeek.npmDownloads,
+      trend: signedPercent(week.npmDownloads, previousWeek.npmDownloads),
+    },
+    {
+      allTimeLabel: `${formatNumber(model.github.daily.reduce((sum, point) => sum + point.clones, 0))} all-time`,
+      color: "#f97316",
+      current: week.clones,
+      displayValue: week.clones,
+      label: "GitHub Clones",
+      monthlyValues: [],
+      note: "latest 7 GitHub days",
+      previous: previousWeek.clones,
+      trend: signedPercent(week.clones, previousWeek.clones),
+    },
+    {
+      allTimeLabel: `${formatNumber(allTimeCiSetupSessions(model))} all-time`,
+      color: "#22c55e",
+      current: month.setupSessions,
+      displayValue: month.setupSessions,
+      label: "CI Setup Sessions",
+      monthlyValues: [],
+      note: "current 30 days",
+      previous: previousMonth.setupSessions,
+      trend: signedPercent(month.setupSessions, previousMonth.setupSessions),
+    },
+    {
+      allTimeLabel: `${formatNumber(model.telemetry.marketSessions)} all-time`,
+      color: "#c084fc",
+      current: month.sessions,
+      displayValue: percentChangeLabel(month.sessions, previousMonth.sessions),
+      label: "Monthly Change",
+      monthlyValues: [],
+      note: `${formatNumber(month.sessions)} vs ${formatNumber(previousMonth.sessions)} sessions`,
+      previous: previousMonth.sessions,
+      trend: signedPercent(month.sessions, previousMonth.sessions),
+    },
+  ])
+    .map((kpi) => kpiCard(kpi.label, kpi.displayValue, `${kpi.note} · ${kpi.allTimeLabel}`, kpi.trend, dayPoints.map((point) => {
+      if (kpi.label === "NPM Downloads") return point.npmDownloads;
+      if (kpi.label === "GitHub Clones") return point.clones;
+      if (kpi.label === "CI Setup Sessions") return point.ciSetupSessions;
+      return point.sessions;
+    }), kpi.color))
+    .join("");
+}
+
+function kpiMomentumPanel(kpis: KpiMetric[]): string {
+  if (kpis.length === 0) return "";
+  return `<article class="panel">
+    <div class="panel-head"><h2>KPI Momentum</h2><span class="panel-note">month over month · all time</span></div>
+    <div class="momentum-grid">
+      ${kpis.map((kpi) => `<article class="small-card momentum-card">
+        <div>
+          <span>${escapeHtml(kpi.label)}</span>
+          <strong>${escapeHtml(typeof kpi.displayValue === "number" ? formatNumber(kpi.displayValue) : kpi.displayValue)}</strong>
+          <small>${escapeHtml(kpi.allTimeLabel)}</small>
+        </div>
+        <div class="momentum-line">${sparkline(kpi.monthlyValues, kpi.color)}</div>
+        <em class="${trendClass(kpi.trend.direction)}">${kpi.trend.direction === "down" ? "↓" : kpi.trend.direction === "up" ? "↑" : "→"} ${escapeHtml(kpi.trend.label)} MoM</em>
+      </article>`).join("")}
+    </div>
+  </article>`;
 }
 
 function detailRow(category: string, metricName: string, value: string | number, context: string): string {
@@ -1489,6 +1750,7 @@ function detailSearchRows(model: DashboardModel, points: UsageTrendPoint[]): str
   const previousWeek = usagePeriodSummary(points, 7, 7);
   const month = usagePeriodSummary(points, 30);
   const previousMonth = usagePeriodSummary(points, 30, 30);
+  const kpiMomentum = monthlyKpiMetrics(usageTrendPoints(model, Number.POSITIVE_INFINITY), model);
   const latestVersion = model.telemetry.versionAdoption.find((row) => row.isLatest);
   const ciSetupStage = model.telemetry.commandFunnel.find((row) => row.stage === "CI setup");
   const cloneDownloadSignals = model.github.clones14 + model.npm.downloads14;
@@ -1498,6 +1760,9 @@ function detailSearchRows(model: DashboardModel, points: UsageTrendPoint[]): str
   add("KPI", "Market month", `${formatNumber(month.sessions)} sessions`, `${month.startDay} to ${month.endDay}; ${formatNumber(month.events)} events`);
   add("KPI", "Monthly change", percentChangeLabel(month.sessions, previousMonth.sessions), `${formatNumber(month.sessions)} current 30d sessions vs ${formatNumber(previousMonth.sessions)} prior 30d sessions`);
   add("KPI", "Setup conversion", conversionPercent(month.setupSessions, month.clones + month.npmDownloads), `${formatNumber(month.setupSessions)} setup sessions / ${formatNumber(month.clones + month.npmDownloads)} 30d clone+download signals`);
+  for (const kpi of kpiMomentum) {
+    add("KPI momentum", kpi.label, typeof kpi.displayValue === "number" ? formatNumber(kpi.displayValue) : kpi.displayValue, `${kpi.trend.label} month over month; ${kpi.allTimeLabel}`);
+  }
   add("Version", "Latest adoption", latestVersion ? `${percent(month.latestSessions, month.sessions)} 30d` : "n/a", latestVersion ? `${latestVersion.version}; ${formatNumber(month.latestSessions)} latest-version sessions / ${formatNumber(month.sessions)} market sessions` : "No version telemetry yet");
   add("Acquisition", "Clone/download to CI", conversionPercent(ciSetupStage?.sessions ?? 0, cloneDownloadSignals), `${formatNumber(ciSetupStage?.sessions ?? 0)} setup sessions / ${formatNumber(cloneDownloadSignals)} visible clone+download signals`);
   add("Usage", "Internal excluded", `${formatNumber(Math.max(model.telemetry.totalSessions - model.telemetry.marketSessions, 0))} sessions`, "First-party CI and internal repo activity are not counted in market KPIs");
@@ -1557,7 +1822,10 @@ function detailSearchRows(model: DashboardModel, points: UsageTrendPoint[]): str
 
 export function renderDashboardHtml(model: DashboardModel): string {
   const trendPoints = usageTrendPoints(model, TREND_WINDOW_DAYS);
-  const cards = kpiCards(trendPoints);
+  const allTrendPoints = usageTrendPoints(model, Number.POSITIVE_INFINITY);
+  const kpiMomentum = monthlyKpiMetrics(allTrendPoints, model);
+  const cards = kpiCards(trendPoints, model);
+  const momentumPanel = kpiMomentumPanel(kpiMomentum);
   const searchRows = detailSearchRows(model, trendPoints);
   const day = usagePeriodSummary(trendPoints, 1);
   const month = usagePeriodSummary(trendPoints, 30);
@@ -1605,8 +1873,10 @@ export function renderDashboardHtml(model: DashboardModel): string {
     body { margin:0; min-height:100vh; background:radial-gradient(circle at 70% -10%, rgba(59,130,246,.18), transparent 36%), linear-gradient(180deg, #07111d 0%, var(--bg) 45%, #03070c 100%); color:var(--ink); }
     .app-shell { display:grid; grid-template-columns:244px minmax(0, 1fr); min-height:100vh; }
     .sidebar { border-right:1px solid var(--line); background:linear-gradient(180deg, rgba(10,20,33,.96), rgba(4,10,17,.98)); padding:22px 12px; position:sticky; top:0; height:100vh; overflow:auto; }
-    .brand { display:flex; align-items:center; gap:11px; margin:0 8px 26px; font-weight:750; font-size:18px; }
-    .logo { width:28px; height:28px; border-radius:7px; display:grid; place-items:center; background:linear-gradient(135deg, #4f46e5, #7c3aed); box-shadow:0 0 0 1px rgba(255,255,255,.13) inset; }
+    .brand { display:flex; align-items:center; margin:0 8px 28px; min-height:56px; }
+    .logo { display:block; max-width:100%; }
+    .logo-pixel { color:#cfd8ff; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size:6.25px; font-weight:800; letter-spacing:0; line-height:1.08; margin:0; text-shadow:0 0 8px rgba(139,92,246,.65), 0 0 13px rgba(34,211,238,.18); white-space:pre; }
+    .brand-name { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; }
     .nav-section { margin:18px 0 8px; padding:0 10px; color:var(--muted); font-size:11px; letter-spacing:.08em; text-transform:uppercase; }
     .nav-item { display:flex; align-items:center; gap:10px; height:34px; padding:0 10px; margin:3px 0; border-radius:7px; color:#cbd5e1; font-size:13px; }
     .nav-item.active { background:linear-gradient(90deg, rgba(139,92,246,.33), rgba(59,130,246,.08)); color:#fff; box-shadow:inset 3px 0 0 var(--purple); }
@@ -1667,6 +1937,11 @@ export function renderDashboardHtml(model: DashboardModel): string {
     .small-card span { color:#cbd5e1; font-size:12px; }
     .small-card strong { display:block; font-size:25px; margin-top:10px; }
     .small-card small { color:var(--muted); font-size:12px; }
+    .momentum-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px; padding:4px 16px 16px; }
+    .momentum-card { display:grid; grid-template-columns:minmax(0, .95fr) minmax(92px, .8fr) auto; gap:12px; align-items:center; min-height:112px; }
+    .momentum-card strong { font-size:22px; }
+    .momentum-card em { justify-self:end; font-style:normal; font-size:12px; white-space:nowrap; }
+    .momentum-line .sparkline { margin-top:0; height:38px; }
     .list { list-style:none; padding:0 16px 14px; margin:0; }
     .list li { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid rgba(51,70,91,.55); }
     .list li:last-child { border-bottom:0; }
@@ -1694,13 +1969,14 @@ export function renderDashboardHtml(model: DashboardModel): string {
     .integration span { color:var(--green); font-size:11px; }
     .icon { font-size:21px; line-height:1; }
     @media (max-width: 1320px) { .app-shell { grid-template-columns:210px minmax(0, 1fr); } .kpi-grid { grid-template-columns:repeat(3, minmax(0, 1fr)); } .dashboard-grid { grid-template-columns:1fr; } .right-rail { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
-    @media (max-width: 900px) { .app-shell { display:block; } .sidebar { position:relative; height:auto; padding:10px 12px; } .brand { margin:0; font-size:13px; } .logo { width:16px; height:16px; border-radius:4px; font-size:10px; } .sidebar .nav-section, .sidebar .nav-item, .index-card, .sidebar-foot { display:none; } main { padding:16px 12px 28px; } header { display:block; } .actions { justify-content:flex-start; margin-top:12px; } .kpi-grid, .two-col, .signal-grid, .right-rail, .integration-grid { grid-template-columns:1fr; } .donut-wrap { grid-template-columns:1fr; } }
+    @media (max-width: 1100px) { .momentum-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 900px) { .app-shell { display:block; } .sidebar { position:relative; height:auto; padding:10px 12px; } .brand { margin:0; min-height:36px; } .logo-pixel { font-size:4.35px; line-height:1.04; } .sidebar .nav-section, .sidebar .nav-item, .index-card, .sidebar-foot { display:none; } main { padding:16px 12px 28px; } header { display:block; } .actions { justify-content:flex-start; margin-top:12px; } .kpi-grid, .two-col, .signal-grid, .right-rail, .integration-grid, .momentum-grid { grid-template-columns:1fr; } .momentum-card { grid-template-columns:minmax(0, 1fr); } .momentum-card em { justify-self:start; } .donut-wrap { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar">
-      <div class="brand"><span class="logo">⌁</span><span>MCP Observatory</span></div>
+      <div class="brand"><span class="logo">${brandAsciiLogo()}</span><span class="brand-name">MCP Observatory</span></div>
       ${navItem("Overview", true)}
       <div class="nav-section">Usage</div>
       ${navItem("Adoption")}${navItem("Repositories")}${navItem("Active Installs")}${navItem("Geography")}
@@ -1735,6 +2011,7 @@ export function renderDashboardHtml(model: DashboardModel): string {
       </section>
       <section class="dashboard-grid">
         <div class="main-grid">
+          ${momentumPanel}
           <section class="two-col">
             <article class="panel">
               <div class="panel-head">
@@ -1870,27 +2147,25 @@ async function buildDashboard(db: DatabaseSync, paths: Paths): Promise<void> {
   try {
     let model = buildModel(db, paths);
     let html = renderDashboardHtml(model);
-    const tmp = `${paths.dashboard}.tmp`;
     await mkdir(paths.dashboardDir, { recursive: true });
-    await writeFile(tmp, html, "utf8");
-    await rename(tmp, paths.dashboard);
+    await writeTextFileAtomic(paths.dashboard, html);
     finishRun(db, run, "success", 1, 1);
     model = buildModel(db, paths);
     html = renderDashboardHtml(model);
-    await writeFile(tmp, html, "utf8");
-    await rename(tmp, paths.dashboard);
-    await writeFile(path.join(paths.dashboardDir, "latest.json"), JSON.stringify(model, null, 2) + "\n", "utf8");
+    await writeTextFileAtomic(paths.dashboard, html);
+    await writeTextFileAtomic(path.join(paths.dashboardDir, "latest.json"), JSON.stringify(model, null, 2) + "\n");
   } catch (error) {
     finishRun(db, run, "failed", 0, 0, error);
   }
 }
 
 async function acquireLock(paths: Paths): Promise<void> {
-  if (existsSync(paths.lock)) {
+  try {
+    await writeFile(paths.lock, `${process.pid} ${new Date().toISOString()} ${os.hostname()}\n`, { flag: "wx" });
+  } catch (error) {
     const content = await readFile(paths.lock, "utf8").catch(() => "");
-    throw new Error(`Metrics refresh lock exists at ${paths.lock}${content ? ` (${content.trim()})` : ""}`);
+    throw new Error(`Metrics refresh lock exists at ${paths.lock}${content ? ` (${content.trim()})` : ""}`, { cause: error });
   }
-  await writeFile(paths.lock, `${process.pid} ${new Date().toISOString()} ${os.hostname()}\n`, { flag: "wx" });
 }
 
 async function releaseLock(paths: Paths): Promise<void> {
@@ -1975,8 +2250,7 @@ async function serveRequest(request: IncomingMessage, response: ServerResponse, 
       await refreshDashboard(paths);
       send(response, 200, JSON.stringify({ ok: true, refreshedAt: nowIso() }) + "\n", "application/json; charset=utf-8");
     } catch (error) {
-      const message = error instanceof Error ? error.message : unknownToString(error);
-      send(response, 500, message);
+      send(response, 500, safeErrorMessage(error));
     }
     return;
   }
@@ -1988,8 +2262,7 @@ async function serveDashboard(paths: Paths): Promise<void> {
   if (!existsSync(paths.dashboard)) await refreshDashboard(paths);
   const server = createServer((request, response) => {
     void serveRequest(request, response, paths).catch((error: unknown) => {
-      const message = error instanceof Error ? error.message : unknownToString(error);
-      send(response, 500, message);
+      send(response, 500, safeErrorMessage(error));
     });
   });
   await new Promise<void>((resolve, reject) => {

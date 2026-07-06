@@ -110,7 +110,7 @@ export function computeHealthScore(
   const dimensions: ScoreDimension[] = [
     scoreDimension("Protocol Compliance", w.protocolCompliance, checks, ["conformance"]),
     scoreDimension("Schema Quality", w.schemaQuality, checks, ["schema-quality"]),
-    scoreDimension("Security", w.security, checks, ["security", "security-lite"]),
+    scoreDimension("Security", w.security, checks, ["security", "security-lite", "attack-sim"]),
     scoreDimension("Reliability", w.reliability, checks, ["tools", "prompts", "resources", "tools-invoke"]),
     scorePerformance(w.performance, performanceMetrics),
   ];

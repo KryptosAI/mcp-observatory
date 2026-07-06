@@ -1,5 +1,6 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile } from "node:fs/promises";
 import path from "node:path";
+import { writeTextFileAtomic } from "./utils/files.js";
 import type { Gate, HealthGrade, RunArtifact } from "./types.js";
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -53,7 +54,7 @@ export async function appendHistory(
   const history = await readHistory(filePath);
   history.entries.push(entry);
   await mkdir(path.dirname(filePath), { recursive: true });
-  await writeFile(filePath, JSON.stringify(history, null, 2) + "\n", "utf8");
+  await writeTextFileAtomic(filePath, JSON.stringify(history, null, 2) + "\n");
 }
 
 // ── Build entry from artifact ────────────────────────────────────────────────

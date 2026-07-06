@@ -21,9 +21,9 @@ export function extractSecurityFindings(checks: CheckResult[]): ParsedFinding[] 
   for (const check of securityChecks) {
     for (const ev of check.evidence) {
       for (const diag of ev.diagnostics ?? []) {
-        const match = diag.match(/^\[(high|medium|low)]\s+(.+)$/);
-        if (match) {
-          findings.push({ severity: match[1]!, message: match[2]! });
+        const finding = parseBracketFinding(diag, ["high", "medium", "low"]);
+        if (finding) {
+          findings.push(finding);
         }
       }
     }
@@ -37,14 +37,27 @@ export function extractQualityFindings(checks: CheckResult[]): ParsedFinding[] {
   for (const check of qualityChecks) {
     for (const ev of check.evidence) {
       for (const diag of ev.diagnostics ?? []) {
-        const match = diag.match(/^\[(warning|info)]\s+(.+)$/i);
-        if (match) {
-          findings.push({ severity: match[1]!, message: match[2]! });
+        const finding = parseBracketFinding(diag, ["warning", "info"]);
+        if (finding) {
+          findings.push(finding);
         }
       }
     }
   }
   return findings;
+}
+
+function parseBracketFinding(value: string, allowedSeverities: string[]): ParsedFinding | undefined {
+  if (!value.startsWith("[")) return undefined;
+  const close = value.indexOf("]");
+  if (close <= 1) return undefined;
+
+  const severity = value.slice(1, close).toLowerCase();
+  if (!allowedSeverities.includes(severity)) return undefined;
+
+  const message = value.slice(close + 1).trimStart();
+  if (!message) return undefined;
+  return { severity, message };
 }
 
 export function countCapabilities(checks: CheckResult[]): { tools: number; prompts: number; resources: number } {

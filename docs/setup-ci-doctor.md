@@ -6,6 +6,8 @@
 npx @kryptosai/mcp-observatory setup-ci --doctor
 ```
 
+MCP server packages can also opt into install-time workflow creation by setting `mcpObservatory.autoSetupCi` in `package.json`. See [Automatic CI Integration](./automatic-ci-integration.md).
+
 It checks:
 
 - the GitHub Action workflow exists

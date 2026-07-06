@@ -32,6 +32,8 @@ npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>
 7. Generate a sanitized sample enterprise report for pilot conversations:
    `npx @kryptosai/mcp-observatory enterprise-report --sample --format html --output reports/sample-enterprise-report.html`
 
+Use [Agent And MCP Ecosystem Promotion Plan](./agent-ecosystem-promotion-plan.md) for the current MseeP claim flow, directory target list, agent prompts, company outreach copy, and certification PR shape.
+
 ## Public Copy
 
 Short:

@@ -37,6 +37,13 @@ const SECURITY_RECOMMENDATIONS: Record<string, string> = {
   "no-auth-http": "Require authentication for HTTP MCP targets before exposing them to shared networks.",
 };
 
+const ATTACK_CONTROL_REFS: Record<string, string[]> = {
+  "tool-poisoning": ["mcp-observatory:tool-poisoning", "mcp-observatory:prompt-injection"],
+  "exfiltration-canary": ["mcp-observatory:data-exposure", "mcp-observatory:secret-handling"],
+  "permission-boundary": ["mcp-observatory:tool-safety", "mcp-observatory:least-privilege"],
+  "contract-drift": ["mcp-observatory:schema-drift", "mcp-observatory:agent-contract"],
+};
+
 function stableHash(value: string): string {
   let hash = 0x811c9dc5;
   for (let i = 0; i < value.length; i += 1) {
@@ -173,6 +180,43 @@ function qualityFindingFromRecord(
   };
 }
 
+function attackFindingFromRecord(
+  artifact: RunArtifact,
+  check: CheckResult,
+  record: Record<string, unknown>,
+  index: number,
+): ObservatoryFinding | undefined {
+  const ruleName = toText(record["ruleId"]) ?? "attack-sim";
+  const attackClass = toText(record["attackClass"]) ?? "attack-sim";
+  const itemType = toText(record["itemType"]);
+  const itemName = toText(record["itemName"]) ?? artifact.target.targetId;
+  const message = toText(record["message"]);
+  if (!message) return undefined;
+  const subjectType = itemType === "tool" || itemType === "prompt" || itemType === "resource"
+    ? itemType
+    : itemType === "target" ? "target" : "check";
+  return {
+    id: findingId({
+      targetId: artifact.target.targetId,
+      checkId: check.id,
+      ruleId: ruleName,
+      subjectName: itemName,
+      message,
+      index,
+    }),
+    ruleId: `mcp-observatory/${ruleName}`,
+    title: `Attack simulation: ${attackClass}`,
+    message,
+    severity: normalizeSecuritySeverity(record["severity"], check.status),
+    category: "attack-sim",
+    checkId: check.id,
+    subject: { type: subjectType, name: itemName },
+    recommendation: toText(record["recommendation"]) ?? "Review the simulated MCP attack-readiness finding before agents depend on this server.",
+    controlRefs: ATTACK_CONTROL_REFS[attackClass] ?? ["mcp-observatory:attack-sim"],
+    evidence: record,
+  };
+}
+
 function diagnosticFindings(artifact: RunArtifact, check: CheckResult, diagnostics: string[]): ObservatoryFinding[] {
   return diagnostics.map((diagnostic, index) => {
     const parsed = stripDiagnosticSeverity(diagnostic);
@@ -235,7 +279,9 @@ export function extractObservatoryFindings(artifact: RunArtifact): ObservatoryFi
           ? securityFindingFromRecord(artifact, check, record, index)
           : check.id === "schema-quality"
             ? qualityFindingFromRecord(artifact, check, record, index)
-            : undefined;
+            : check.id === "attack-sim"
+              ? attackFindingFromRecord(artifact, check, record, index)
+              : undefined;
         if (finding) {
           findings.push(finding);
           addedStructured = true;

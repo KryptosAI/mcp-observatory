@@ -1,7 +1,8 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 
 import { ensureDirectory } from "./storage.js";
+import { writeTextFileAtomic } from "./utils/files.js";
 import { slugify } from "./utils/ids.js";
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -37,7 +38,7 @@ export async function saveCassette(
   const timestamp = new Date().toISOString().replaceAll(":", "-");
   const fileName = `${timestamp}--${slugify(cassette.targetId)}.cassette.json`;
   const filePath = path.join(outDir, fileName);
-  await writeFile(filePath, JSON.stringify(cassette, null, 2) + "\n", "utf8");
+  await writeTextFileAtomic(filePath, JSON.stringify(cassette, null, 2) + "\n");
   return filePath;
 }
 

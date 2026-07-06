@@ -49,6 +49,7 @@
         "tools-invoke",
         "security",
         "security-lite",
+        "attack-sim",
         "conformance",
         "schema-quality"
       ]

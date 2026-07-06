@@ -2,6 +2,12 @@
 
 This page is written for coding agents, bot maintainers, autonomous productivity systems, and maintainers who want small useful MCP Observatory contributions.
 
+Useful merged work can receive public credit through [MCP Observatory Contributors](./contributor-recognition.md), [CONTRIBUTORS.md](../CONTRIBUTORS.md), and target proof cards. Recognition is based on merged public evidence, not private telemetry.
+
+Rough agentic contribution ideas are welcome too. Use the [Agentic Contributor Outreach](./agentic-contributor-outreach.md) playbook or open an `Agentic contribution idea` issue when a task is promising but not ready for a focused PR.
+
+The core standard is a [tool-call receipt](./tool-call-receipts.md): public source, safe startup command, run artifact, attack-sim evidence, SARIF when useful, and a clear capability envelope showing what the run could not access. The public map is the [MCP Receipt Graph](./receipt-graph.md).
+
 ## Task 1: Add MCP Observatory CI To A Repo
 
 ```text
@@ -26,6 +32,7 @@ Requirements:
 - no paid service dependency
 - safe startup command
 - generated JSON and Markdown evidence
+- attack-sim evidence or a note explaining why attack-sim is not applicable
 - maintainer-friendly wording
 
 Use docs/target-contribution-guide.md and docs/target-registry.md.
@@ -69,3 +76,20 @@ Use:
 npx @kryptosai/mcp-observatory test <safe startup command> --campaign bot-runtime-review
 ```
 
+## Task 6: Prepare A Contributor Proof Card
+
+```text
+After a target, CI integration, or SARIF improvement is merged, prepare a public proof card.
+
+Use docs/contributor-proof-cards/README.md.
+
+Include:
+- contributor GitHub profile
+- role
+- merged PR
+- generated artifact or upstream workflow
+- verdict
+- Observatory version
+
+Do not include private telemetry, local paths, secrets, or unpublished maintainer data.
+```
