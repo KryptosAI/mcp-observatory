@@ -33,7 +33,7 @@ Example shape:
     "command": "npx -y example-mcp-server"
   },
   "observatory": {
-    "version": "0.28.0",
+    "version": "1.28.0",
     "mode": "safe",
     "command": "mcp-observatory attack-sim npx -y example-mcp-server"
   },
@@ -113,4 +113,3 @@ Use this when inviting agents, bot authors, and MCP maintainers to contribute:
 ```text
 Name one MCP server your agent depends on. I will help turn it into a reproducible tool-call receipt: safe startup command, run artifact, attack-sim evidence, SARIF, and a CI gate maintainers can review.
 ```
-

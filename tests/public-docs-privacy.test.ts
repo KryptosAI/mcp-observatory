@@ -70,14 +70,14 @@ describe("public proof docs privacy guardrails", () => {
 
   it("keeps README action examples read-only and pinned", async () => {
     const content = await readFile(path.join(process.cwd(), "README.md"), "utf8");
-    expect(content).toContain("KryptosAI/mcp-observatory/action@v0.28.0");
+    expect(content).toContain("KryptosAI/mcp-observatory/action@v1.28.0");
     expect(content).not.toContain("KryptosAI/mcp-observatory/action@main");
     expect(content).not.toContain("pull-requests: write\n  statuses: write");
   });
 
   it("keeps Action README examples pinned", async () => {
     const content = await readFile(path.join(process.cwd(), "action/README.md"), "utf8");
-    expect(content).toContain("KryptosAI/mcp-observatory/action@v0.28.0");
+    expect(content).toContain("KryptosAI/mcp-observatory/action@v1.28.0");
     expect(content).not.toContain("KryptosAI/mcp-observatory/action@main");
   });
 
