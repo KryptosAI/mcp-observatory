@@ -1,0 +1,2857 @@
+{
+  "$schema": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/schemas/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "mcp-observatory",
+          "version": "0.28.0",
+          "informationUri": "https://github.com/KryptosAI/mcp-observatory",
+          "rules": [
+            {
+              "id": "mcp-observatory/tools/diagnostic",
+              "name": "tools: diagnostic",
+              "shortDescription": {
+                "text": "tools: diagnostic"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "text": "Review the check output and update the MCP server or target configuration before release."
+              },
+              "helpUri": "https://github.com/KryptosAI/mcp-observatory/tree/main/docs",
+              "properties": {
+                "category": "tools",
+                "checkId": "tools",
+                "controlRefs": [
+                  "mcp-observatory:tools"
+                ],
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "tools",
+                  "mcp-observatory:tools"
+                ]
+              }
+            },
+            {
+              "id": "mcp-observatory/prompts/diagnostic",
+              "name": "prompts: diagnostic",
+              "shortDescription": {
+                "text": "prompts: diagnostic"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "text": "Review the check output and update the MCP server or target configuration before release."
+              },
+              "helpUri": "https://github.com/KryptosAI/mcp-observatory/tree/main/docs",
+              "properties": {
+                "category": "prompts",
+                "checkId": "prompts",
+                "controlRefs": [
+                  "mcp-observatory:prompts"
+                ],
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "prompts",
+                  "mcp-observatory:prompts"
+                ]
+              }
+            },
+            {
+              "id": "mcp-observatory/resources/diagnostic",
+              "name": "resources: diagnostic",
+              "shortDescription": {
+                "text": "resources: diagnostic"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "text": "Review the check output and update the MCP server or target configuration before release."
+              },
+              "helpUri": "https://github.com/KryptosAI/mcp-observatory/tree/main/docs",
+              "properties": {
+                "category": "resources",
+                "checkId": "resources",
+                "controlRefs": [
+                  "mcp-observatory:resources"
+                ],
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "resources",
+                  "mcp-observatory:resources"
+                ]
+              }
+            },
+            {
+              "id": "mcp-observatory/security/permissive-schema",
+              "name": "Security: permissive-schema",
+              "shortDescription": {
+                "text": "Security: permissive-schema"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "text": "Use a strict input schema and avoid accepting arbitrary properties for destructive tools."
+              },
+              "helpUri": "https://github.com/KryptosAI/mcp-observatory/tree/main/docs",
+              "properties": {
+                "category": "security",
+                "checkId": "security-lite",
+                "controlRefs": [
+                  "mcp-observatory:schema-quality",
+                  "mcp-observatory:least-privilege"
+                ],
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "security",
+                  "mcp-observatory:schema-quality",
+                  "mcp-observatory:least-privilege"
+                ]
+              }
+            },
+            {
+              "id": "mcp-observatory/security/broad-filesystem",
+              "name": "Security: broad-filesystem",
+              "shortDescription": {
+                "text": "Security: broad-filesystem"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "Narrow filesystem scope, prefer read-only access, and document destructive behavior explicitly."
+              },
+              "helpUri": "https://github.com/KryptosAI/mcp-observatory/tree/main/docs",
+              "properties": {
+                "category": "security",
+                "checkId": "security-lite",
+                "controlRefs": [
+                  "mcp-observatory:tool-safety",
+                  "mcp-observatory:filesystem-access"
+                ],
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "security",
+                  "mcp-observatory:tool-safety",
+                  "mcp-observatory:filesystem-access"
+                ]
+              }
+            },
+            {
+              "id": "mcp-observatory/security/shell-injection",
+              "name": "Security: shell-injection",
+              "shortDescription": {
+                "text": "Security: shell-injection"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Constrain command execution tools with strict allowlists, typed inputs, and clear destructive annotations."
+              },
+              "helpUri": "https://github.com/KryptosAI/mcp-observatory/tree/main/docs",
+              "properties": {
+                "category": "security",
+                "checkId": "security-lite",
+                "controlRefs": [
+                  "mcp-observatory:tool-safety",
+                  "mcp-observatory:command-execution"
+                ],
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "security",
+                  "mcp-observatory:tool-safety",
+                  "mcp-observatory:command-execution"
+                ]
+              }
+            },
+            {
+              "id": "mcp-observatory/conformance/diagnostic",
+              "name": "conformance: diagnostic",
+              "shortDescription": {
+                "text": "conformance: diagnostic"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "text": "Review the check output and update the MCP server or target configuration before release."
+              },
+              "helpUri": "https://github.com/KryptosAI/mcp-observatory/tree/main/docs",
+              "properties": {
+                "category": "conformance",
+                "checkId": "conformance",
+                "controlRefs": [
+                  "mcp-observatory:conformance"
+                ],
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "conformance",
+                  "mcp-observatory:conformance"
+                ]
+              }
+            },
+            {
+              "id": "mcp-observatory/schema-quality/schema-property-resourcetype-missing-description",
+              "name": "Schema quality: Property 'resourceType' missing description",
+              "shortDescription": {
+                "text": "Schema quality: Property 'resourceType' missing description"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "text": "Add clear names, descriptions, and strict JSON schema metadata so agents can call the MCP server safely."
+              },
+              "helpUri": "https://github.com/KryptosAI/mcp-observatory/tree/main/docs",
+              "properties": {
+                "category": "schema-quality",
+                "checkId": "schema-quality",
+                "controlRefs": [
+                  "mcp-observatory:schema-quality",
+                  "mcp-observatory:agent-readiness"
+                ],
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "schema-quality",
+                  "mcp-observatory:schema-quality",
+                  "mcp-observatory:agent-readiness"
+                ]
+              }
+            },
+            {
+              "id": "mcp-observatory/schema-quality/schema-property-resourcename-missing-description",
+              "name": "Schema quality: Property 'resourceName' missing description",
+              "shortDescription": {
+                "text": "Schema quality: Property 'resourceName' missing description"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "text": "Add clear names, descriptions, and strict JSON schema metadata so agents can call the MCP server safely."
+              },
+              "helpUri": "https://github.com/KryptosAI/mcp-observatory/tree/main/docs",
+              "properties": {
+                "category": "schema-quality",
+                "checkId": "schema-quality",
+                "controlRefs": [
+                  "mcp-observatory:schema-quality",
+                  "mcp-observatory:agent-readiness"
+                ],
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "schema-quality",
+                  "mcp-observatory:schema-quality",
+                  "mcp-observatory:agent-readiness"
+                ]
+              }
+            },
+            {
+              "id": "mcp-observatory/schema-quality/schema-property-localport-missing-description",
+              "name": "Schema quality: Property 'localPort' missing description",
+              "shortDescription": {
+                "text": "Schema quality: Property 'localPort' missing description"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "text": "Add clear names, descriptions, and strict JSON schema metadata so agents can call the MCP server safely."
+              },
+              "helpUri": "https://github.com/KryptosAI/mcp-observatory/tree/main/docs",
+              "properties": {
+                "category": "schema-quality",
+                "checkId": "schema-quality",
+                "controlRefs": [
+                  "mcp-observatory:schema-quality",
+                  "mcp-observatory:agent-readiness"
+                ],
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "schema-quality",
+                  "mcp-observatory:schema-quality",
+                  "mcp-observatory:agent-readiness"
+                ]
+              }
+            },
+            {
+              "id": "mcp-observatory/schema-quality/schema-property-targetport-missing-description",
+              "name": "Schema quality: Property 'targetPort' missing description",
+              "shortDescription": {
+                "text": "Schema quality: Property 'targetPort' missing description"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "text": "Add clear names, descriptions, and strict JSON schema metadata so agents can call the MCP server safely."
+              },
+              "helpUri": "https://github.com/KryptosAI/mcp-observatory/tree/main/docs",
+              "properties": {
+                "category": "schema-quality",
+                "checkId": "schema-quality",
+                "controlRefs": [
+                  "mcp-observatory:schema-quality",
+                  "mcp-observatory:agent-readiness"
+                ],
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "schema-quality",
+                  "mcp-observatory:schema-quality",
+                  "mcp-observatory:agent-readiness"
+                ]
+              }
+            },
+            {
+              "id": "mcp-observatory/schema-quality/schema-property-namespace-missing-description",
+              "name": "Schema quality: Property 'namespace' missing description",
+              "shortDescription": {
+                "text": "Schema quality: Property 'namespace' missing description"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "text": "Add clear names, descriptions, and strict JSON schema metadata so agents can call the MCP server safely."
+              },
+              "helpUri": "https://github.com/KryptosAI/mcp-observatory/tree/main/docs",
+              "properties": {
+                "category": "schema-quality",
+                "checkId": "schema-quality",
+                "controlRefs": [
+                  "mcp-observatory:schema-quality",
+                  "mcp-observatory:agent-readiness"
+                ],
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "schema-quality",
+                  "mcp-observatory:schema-quality",
+                  "mcp-observatory:agent-readiness"
+                ]
+              }
+            },
+            {
+              "id": "mcp-observatory/schema-quality/schema-property-id-missing-description",
+              "name": "Schema quality: Property 'id' missing description",
+              "shortDescription": {
+                "text": "Schema quality: Property 'id' missing description"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "text": "Add clear names, descriptions, and strict JSON schema metadata so agents can call the MCP server safely."
+              },
+              "helpUri": "https://github.com/KryptosAI/mcp-observatory/tree/main/docs",
+              "properties": {
+                "category": "schema-quality",
+                "checkId": "schema-quality",
+                "controlRefs": [
+                  "mcp-observatory:schema-quality",
+                  "mcp-observatory:agent-readiness"
+                ],
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "schema-quality",
+                  "mcp-observatory:schema-quality",
+                  "mcp-observatory:agent-readiness"
+                ]
+              }
+            },
+            {
+              "id": "mcp-observatory/schema-quality/schema-has-properties-but-no-required-array-declared",
+              "name": "Schema quality: Has properties but no 'required' array declared",
+              "shortDescription": {
+                "text": "Schema quality: Has properties but no 'required' array declared"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "text": "Add clear names, descriptions, and strict JSON schema metadata so agents can call the MCP server safely."
+              },
+              "helpUri": "https://github.com/KryptosAI/mcp-observatory/tree/main/docs",
+              "properties": {
+                "category": "schema-quality",
+                "checkId": "schema-quality",
+                "controlRefs": [
+                  "mcp-observatory:schema-quality",
+                  "mcp-observatory:agent-readiness"
+                ],
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "schema-quality",
+                  "mcp-observatory:schema-quality",
+                  "mcp-observatory:agent-readiness"
+                ]
+              }
+            },
+            {
+              "id": "mcp-observatory/attack-sim/permission-boundary/broad-destructive-tool",
+              "name": "Attack simulation: permission-boundary",
+              "shortDescription": {
+                "text": "Attack simulation: permission-boundary"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture."
+              },
+              "helpUri": "https://github.com/KryptosAI/mcp-observatory/tree/main/docs",
+              "properties": {
+                "category": "attack-sim",
+                "checkId": "attack-sim",
+                "controlRefs": [
+                  "mcp-observatory:tool-safety",
+                  "mcp-observatory:least-privilege"
+                ],
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "attack-sim",
+                  "mcp-observatory:tool-safety",
+                  "mcp-observatory:least-privilege"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "automationDetails": {
+        "id": "mcp-observatory/mcp-server-kubernetes"
+      },
+      "results": [
+        {
+          "ruleId": "mcp-observatory/tools/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/tools/diagnostic/fa01cab3"
+          },
+          "properties": {
+            "id": "mcp-observatory/tools/diagnostic/fa01cab3",
+            "category": "tools",
+            "checkId": "tools",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "tools"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:tools"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "tools",
+              "mcp-observatory:tools"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/tools/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "Starting Kubernetes MCP server v3.9.2, handling commands..."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/tools/diagnostic/ca24c12d"
+          },
+          "properties": {
+            "id": "mcp-observatory/tools/diagnostic/ca24c12d",
+            "category": "tools",
+            "checkId": "tools",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "tools"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:tools"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "tools",
+              "mcp-observatory:tools"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/tools/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "Telemetry: Disabled"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/tools/diagnostic/7ed3134b"
+          },
+          "properties": {
+            "id": "mcp-observatory/tools/diagnostic/7ed3134b",
+            "category": "tools",
+            "checkId": "tools",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "tools"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:tools"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "tools",
+              "mcp-observatory:tools"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/tools/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "(node:51681) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/tools/diagnostic/f9b8fd22"
+          },
+          "properties": {
+            "id": "mcp-observatory/tools/diagnostic/f9b8fd22",
+            "category": "tools",
+            "checkId": "tools",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "tools"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:tools"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "tools",
+              "mcp-observatory:tools"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/tools/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "(Use `node --trace-deprecation ...` to show where the warning was created)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/tools/diagnostic/8942ceaf"
+          },
+          "properties": {
+            "id": "mcp-observatory/tools/diagnostic/8942ceaf",
+            "category": "tools",
+            "checkId": "tools",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "tools"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:tools"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "tools",
+              "mcp-observatory:tools"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/prompts/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/prompts/diagnostic/4a48a3d7"
+          },
+          "properties": {
+            "id": "mcp-observatory/prompts/diagnostic/4a48a3d7",
+            "category": "prompts",
+            "checkId": "prompts",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "prompts"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:prompts"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "prompts",
+              "mcp-observatory:prompts"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/prompts/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "Starting Kubernetes MCP server v3.9.2, handling commands..."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/prompts/diagnostic/d0b9cac9"
+          },
+          "properties": {
+            "id": "mcp-observatory/prompts/diagnostic/d0b9cac9",
+            "category": "prompts",
+            "checkId": "prompts",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "prompts"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:prompts"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "prompts",
+              "mcp-observatory:prompts"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/prompts/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "Telemetry: Disabled"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/prompts/diagnostic/f355d4d7"
+          },
+          "properties": {
+            "id": "mcp-observatory/prompts/diagnostic/f355d4d7",
+            "category": "prompts",
+            "checkId": "prompts",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "prompts"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:prompts"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "prompts",
+              "mcp-observatory:prompts"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/prompts/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "(node:51681) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/prompts/diagnostic/a6df9e4e"
+          },
+          "properties": {
+            "id": "mcp-observatory/prompts/diagnostic/a6df9e4e",
+            "category": "prompts",
+            "checkId": "prompts",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "prompts"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:prompts"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "prompts",
+              "mcp-observatory:prompts"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/prompts/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "(Use `node --trace-deprecation ...` to show where the warning was created)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/prompts/diagnostic/f8dea713"
+          },
+          "properties": {
+            "id": "mcp-observatory/prompts/diagnostic/f8dea713",
+            "category": "prompts",
+            "checkId": "prompts",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "prompts"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:prompts"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "prompts",
+              "mcp-observatory:prompts"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/resources/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/resources/diagnostic/ed3ded95"
+          },
+          "properties": {
+            "id": "mcp-observatory/resources/diagnostic/ed3ded95",
+            "category": "resources",
+            "checkId": "resources",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "resources"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:resources"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "resources",
+              "mcp-observatory:resources"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/resources/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "Starting Kubernetes MCP server v3.9.2, handling commands..."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/resources/diagnostic/0ba59cdb"
+          },
+          "properties": {
+            "id": "mcp-observatory/resources/diagnostic/0ba59cdb",
+            "category": "resources",
+            "checkId": "resources",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "resources"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:resources"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "resources",
+              "mcp-observatory:resources"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/resources/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "Telemetry: Disabled"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/resources/diagnostic/e5a88999"
+          },
+          "properties": {
+            "id": "mcp-observatory/resources/diagnostic/e5a88999",
+            "category": "resources",
+            "checkId": "resources",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "resources"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:resources"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "resources",
+              "mcp-observatory:resources"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/resources/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "(node:51681) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/resources/diagnostic/9c185fe4"
+          },
+          "properties": {
+            "id": "mcp-observatory/resources/diagnostic/9c185fe4",
+            "category": "resources",
+            "checkId": "resources",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "resources"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:resources"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "resources",
+              "mcp-observatory:resources"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/resources/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "(Use `node --trace-deprecation ...` to show where the warning was created)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/resources/diagnostic/51efdc19"
+          },
+          "properties": {
+            "id": "mcp-observatory/resources/diagnostic/51efdc19",
+            "category": "resources",
+            "checkId": "resources",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "resources"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:resources"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "resources",
+              "mcp-observatory:resources"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/resources/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "MCP error -32601: Method not found"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/resources/diagnostic/ce159f1e"
+          },
+          "properties": {
+            "id": "mcp-observatory/resources/diagnostic/ce159f1e",
+            "category": "resources",
+            "checkId": "resources",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "resources"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:resources"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "resources",
+              "mcp-observatory:resources"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/resources/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/resources/diagnostic/e73de423"
+          },
+          "properties": {
+            "id": "mcp-observatory/resources/diagnostic/e73de423",
+            "category": "resources",
+            "checkId": "resources",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "resources"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:resources"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "resources",
+              "mcp-observatory:resources"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/resources/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "Starting Kubernetes MCP server v3.9.2, handling commands..."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/resources/diagnostic/11a5a64d"
+          },
+          "properties": {
+            "id": "mcp-observatory/resources/diagnostic/11a5a64d",
+            "category": "resources",
+            "checkId": "resources",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "resources"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:resources"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "resources",
+              "mcp-observatory:resources"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/resources/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "Telemetry: Disabled"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/resources/diagnostic/eba8930b"
+          },
+          "properties": {
+            "id": "mcp-observatory/resources/diagnostic/eba8930b",
+            "category": "resources",
+            "checkId": "resources",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "resources"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:resources"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "resources",
+              "mcp-observatory:resources"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/resources/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "(node:51681) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/resources/diagnostic/96185672"
+          },
+          "properties": {
+            "id": "mcp-observatory/resources/diagnostic/96185672",
+            "category": "resources",
+            "checkId": "resources",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "resources"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:resources"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "resources",
+              "mcp-observatory:resources"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/resources/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "(Use `node --trace-deprecation ...` to show where the warning was created)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/resources/diagnostic/979f03c6"
+          },
+          "properties": {
+            "id": "mcp-observatory/resources/diagnostic/979f03c6",
+            "category": "resources",
+            "checkId": "resources",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "resources"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:resources"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "resources",
+              "mcp-observatory:resources"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/permissive-schema",
+          "level": "note",
+          "message": {
+            "text": "Tool \"cleanup\" has an empty schema but is marked as destructive."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security-lite/permissive-schema/8a100770"
+          },
+          "properties": {
+            "id": "mcp-observatory/security-lite/permissive-schema/8a100770",
+            "category": "security",
+            "checkId": "security-lite",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "cleanup"
+            },
+            "severity": "low",
+            "controlRefs": [
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:least-privilege"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:least-privilege"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/broad-filesystem",
+          "level": "warning",
+          "message": {
+            "text": "Tool \"kubectl_apply\" accepts filesystem paths and has destructive capabilities."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security-lite/broad-filesystem/520aaff5"
+          },
+          "properties": {
+            "id": "mcp-observatory/security-lite/broad-filesystem/520aaff5",
+            "category": "security",
+            "checkId": "security-lite",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "kubectl_apply"
+            },
+            "severity": "medium",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:filesystem-access"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:filesystem-access"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/broad-filesystem",
+          "level": "warning",
+          "message": {
+            "text": "Tool \"kubectl_delete\" accepts filesystem paths and has destructive capabilities."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security-lite/broad-filesystem/689270a4"
+          },
+          "properties": {
+            "id": "mcp-observatory/security-lite/broad-filesystem/689270a4",
+            "category": "security",
+            "checkId": "security-lite",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "kubectl_delete"
+            },
+            "severity": "medium",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:filesystem-access"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:filesystem-access"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/shell-injection",
+          "level": "error",
+          "message": {
+            "text": "Tool \"kubectl_create\" has parameter \"command\" which may allow arbitrary command execution."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security-lite/shell-injection/f8301eba"
+          },
+          "properties": {
+            "id": "mcp-observatory/security-lite/shell-injection/f8301eba",
+            "category": "security",
+            "checkId": "security-lite",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "kubectl_create"
+            },
+            "severity": "high",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/broad-filesystem",
+          "level": "warning",
+          "message": {
+            "text": "Tool \"kubectl_create\" accepts filesystem paths and has destructive capabilities."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security-lite/broad-filesystem/f5f6d78c"
+          },
+          "properties": {
+            "id": "mcp-observatory/security-lite/broad-filesystem/f5f6d78c",
+            "category": "security",
+            "checkId": "security-lite",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "kubectl_create"
+            },
+            "severity": "medium",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:filesystem-access"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:filesystem-access"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/permissive-schema",
+          "level": "note",
+          "message": {
+            "text": "Tool \"kubectl_reconnect\" has an empty schema but is marked as destructive."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security-lite/permissive-schema/8351871f"
+          },
+          "properties": {
+            "id": "mcp-observatory/security-lite/permissive-schema/8351871f",
+            "category": "security",
+            "checkId": "security-lite",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "kubectl_reconnect"
+            },
+            "severity": "low",
+            "controlRefs": [
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:least-privilege"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:least-privilege"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/shell-injection",
+          "level": "error",
+          "message": {
+            "text": "Tool \"exec_in_pod\" has parameter \"command\" which may allow arbitrary command execution."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security-lite/shell-injection/980e1623"
+          },
+          "properties": {
+            "id": "mcp-observatory/security-lite/shell-injection/980e1623",
+            "category": "security",
+            "checkId": "security-lite",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "exec_in_pod"
+            },
+            "severity": "high",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/shell-injection",
+          "level": "error",
+          "message": {
+            "text": "Tool \"kubectl_generic\" has parameter \"command\" which may allow arbitrary command execution."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security-lite/shell-injection/6f931430"
+          },
+          "properties": {
+            "id": "mcp-observatory/security-lite/shell-injection/6f931430",
+            "category": "security",
+            "checkId": "security-lite",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "kubectl_generic"
+            },
+            "severity": "high",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] capabilities-present: Server returned capabilities object."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/conformance/diagnostic/88d0914e"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/88d0914e",
+            "category": "conformance",
+            "checkId": "conformance",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "conformance"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:conformance"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "conformance",
+              "mcp-observatory:conformance"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] server-info: Server provided initialization info."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/conformance/diagnostic/ae05997e"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/ae05997e",
+            "category": "conformance",
+            "checkId": "conformance",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "conformance"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:conformance"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "conformance",
+              "mcp-observatory:conformance"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] tools-capability-match: tools/list returned 23 tool(s)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/conformance/diagnostic/42b5ebfb"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/42b5ebfb",
+            "category": "conformance",
+            "checkId": "conformance",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "conformance"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:conformance"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "conformance",
+              "mcp-observatory:conformance"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] prompts-capability-match: prompts/list returned 1 prompt(s)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/conformance/diagnostic/4d41ef14"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/4d41ef14",
+            "category": "conformance",
+            "checkId": "conformance",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "conformance"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:conformance"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "conformance",
+              "mcp-observatory:conformance"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] resources-capability-match: resources/list returned 5 resource(s)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/conformance/diagnostic/8f3585af"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/8f3585af",
+            "category": "conformance",
+            "checkId": "conformance",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "conformance"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:conformance"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "conformance",
+              "mcp-observatory:conformance"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] tool-response-content: Tool \"cleanup\" response has valid content array."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/conformance/diagnostic/75c4ce09"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/75c4ce09",
+            "category": "conformance",
+            "checkId": "conformance",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "conformance"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:conformance"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "conformance",
+              "mcp-observatory:conformance"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/conformance/diagnostic/df9339b5"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/df9339b5",
+            "category": "conformance",
+            "checkId": "conformance",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "check",
+              "name": "conformance"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:conformance"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "conformance",
+              "mcp-observatory:conformance"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/schema-quality/schema-property-resourcetype-missing-description",
+          "level": "note",
+          "message": {
+            "text": "tool \"port_forward\": Property 'resourceType' missing description"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/schema-quality/schema-property-resourcetype-missing-description/7605745e"
+          },
+          "properties": {
+            "id": "mcp-observatory/schema-quality/schema-property-resourcetype-missing-description/7605745e",
+            "category": "schema-quality",
+            "checkId": "schema-quality",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "port_forward"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "schema-quality",
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/schema-quality/schema-property-resourcename-missing-description",
+          "level": "note",
+          "message": {
+            "text": "tool \"port_forward\": Property 'resourceName' missing description"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/schema-quality/schema-property-resourcename-missing-description/eab850a7"
+          },
+          "properties": {
+            "id": "mcp-observatory/schema-quality/schema-property-resourcename-missing-description/eab850a7",
+            "category": "schema-quality",
+            "checkId": "schema-quality",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "port_forward"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "schema-quality",
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/schema-quality/schema-property-localport-missing-description",
+          "level": "note",
+          "message": {
+            "text": "tool \"port_forward\": Property 'localPort' missing description"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/schema-quality/schema-property-localport-missing-description/ca1b1a8c"
+          },
+          "properties": {
+            "id": "mcp-observatory/schema-quality/schema-property-localport-missing-description/ca1b1a8c",
+            "category": "schema-quality",
+            "checkId": "schema-quality",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "port_forward"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "schema-quality",
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/schema-quality/schema-property-targetport-missing-description",
+          "level": "note",
+          "message": {
+            "text": "tool \"port_forward\": Property 'targetPort' missing description"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/schema-quality/schema-property-targetport-missing-description/26623fef"
+          },
+          "properties": {
+            "id": "mcp-observatory/schema-quality/schema-property-targetport-missing-description/26623fef",
+            "category": "schema-quality",
+            "checkId": "schema-quality",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "port_forward"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "schema-quality",
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/schema-quality/schema-property-namespace-missing-description",
+          "level": "note",
+          "message": {
+            "text": "tool \"port_forward\": Property 'namespace' missing description"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/schema-quality/schema-property-namespace-missing-description/91c0a2de"
+          },
+          "properties": {
+            "id": "mcp-observatory/schema-quality/schema-property-namespace-missing-description/91c0a2de",
+            "category": "schema-quality",
+            "checkId": "schema-quality",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "port_forward"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "schema-quality",
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/schema-quality/schema-property-id-missing-description",
+          "level": "note",
+          "message": {
+            "text": "tool \"stop_port_forward\": Property 'id' missing description"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/schema-quality/schema-property-id-missing-description/8258354d"
+          },
+          "properties": {
+            "id": "mcp-observatory/schema-quality/schema-property-id-missing-description/8258354d",
+            "category": "schema-quality",
+            "checkId": "schema-quality",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "stop_port_forward"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "schema-quality",
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/schema-quality/schema-has-properties-but-no-required-array-declared",
+          "level": "note",
+          "message": {
+            "text": "tool \"list_api_resources\": Has properties but no 'required' array declared"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/schema-quality/schema-has-properties-but-no-required-array-declared/a965b929"
+          },
+          "properties": {
+            "id": "mcp-observatory/schema-quality/schema-has-properties-but-no-required-array-declared/a965b929",
+            "category": "schema-quality",
+            "checkId": "schema-quality",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "list_api_resources"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "schema-quality",
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/permissive-schema",
+          "level": "note",
+          "message": {
+            "text": "Tool \"cleanup\" has an empty schema but is marked as destructive."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security/permissive-schema/2f34c639"
+          },
+          "properties": {
+            "id": "mcp-observatory/security/permissive-schema/2f34c639",
+            "category": "security",
+            "checkId": "security",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "cleanup"
+            },
+            "severity": "low",
+            "controlRefs": [
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:least-privilege"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:least-privilege"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/broad-filesystem",
+          "level": "warning",
+          "message": {
+            "text": "Tool \"kubectl_apply\" accepts filesystem paths and has destructive capabilities."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security/broad-filesystem/97ff4c78"
+          },
+          "properties": {
+            "id": "mcp-observatory/security/broad-filesystem/97ff4c78",
+            "category": "security",
+            "checkId": "security",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "kubectl_apply"
+            },
+            "severity": "medium",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:filesystem-access"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:filesystem-access"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/broad-filesystem",
+          "level": "warning",
+          "message": {
+            "text": "Tool \"kubectl_delete\" accepts filesystem paths and has destructive capabilities."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security/broad-filesystem/e1d59bf1"
+          },
+          "properties": {
+            "id": "mcp-observatory/security/broad-filesystem/e1d59bf1",
+            "category": "security",
+            "checkId": "security",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "kubectl_delete"
+            },
+            "severity": "medium",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:filesystem-access"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:filesystem-access"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/shell-injection",
+          "level": "error",
+          "message": {
+            "text": "Tool \"kubectl_create\" has parameter \"command\" which may allow arbitrary command execution."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security/shell-injection/7d649295"
+          },
+          "properties": {
+            "id": "mcp-observatory/security/shell-injection/7d649295",
+            "category": "security",
+            "checkId": "security",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "kubectl_create"
+            },
+            "severity": "high",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/broad-filesystem",
+          "level": "warning",
+          "message": {
+            "text": "Tool \"kubectl_create\" accepts filesystem paths and has destructive capabilities."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security/broad-filesystem/d395cbe9"
+          },
+          "properties": {
+            "id": "mcp-observatory/security/broad-filesystem/d395cbe9",
+            "category": "security",
+            "checkId": "security",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "kubectl_create"
+            },
+            "severity": "medium",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:filesystem-access"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:filesystem-access"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/permissive-schema",
+          "level": "note",
+          "message": {
+            "text": "Tool \"kubectl_reconnect\" has an empty schema but is marked as destructive."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security/permissive-schema/686b00da"
+          },
+          "properties": {
+            "id": "mcp-observatory/security/permissive-schema/686b00da",
+            "category": "security",
+            "checkId": "security",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "kubectl_reconnect"
+            },
+            "severity": "low",
+            "controlRefs": [
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:least-privilege"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:least-privilege"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/shell-injection",
+          "level": "error",
+          "message": {
+            "text": "Tool \"exec_in_pod\" has parameter \"command\" which may allow arbitrary command execution."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security/shell-injection/d2191014"
+          },
+          "properties": {
+            "id": "mcp-observatory/security/shell-injection/d2191014",
+            "category": "security",
+            "checkId": "security",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "exec_in_pod"
+            },
+            "severity": "high",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/shell-injection",
+          "level": "error",
+          "message": {
+            "text": "Tool \"kubectl_generic\" has parameter \"command\" which may allow arbitrary command execution."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security/shell-injection/255143ff"
+          },
+          "properties": {
+            "id": "mcp-observatory/security/shell-injection/255143ff",
+            "category": "security",
+            "checkId": "security",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "kubectl_generic"
+            },
+            "severity": "high",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/attack-sim/permission-boundary/broad-destructive-tool",
+          "level": "warning",
+          "message": {
+            "text": "Tool \"kubectl_apply\" combines broad parameters (filename) with destructive or non-read-only behavior."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/attack-sim/attack-sim/permission-boundary/broad-destructive-tool/61e89efa"
+          },
+          "properties": {
+            "id": "mcp-observatory/attack-sim/attack-sim/permission-boundary/broad-destructive-tool/61e89efa",
+            "category": "attack-sim",
+            "checkId": "attack-sim",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "kubectl_apply"
+            },
+            "severity": "medium",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:least-privilege"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "attack-sim",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:least-privilege"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/attack-sim/permission-boundary/broad-destructive-tool",
+          "level": "warning",
+          "message": {
+            "text": "Tool \"kubectl_delete\" combines broad parameters (filename) with destructive or non-read-only behavior."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/attack-sim/attack-sim/permission-boundary/broad-destructive-tool/ff6d490d"
+          },
+          "properties": {
+            "id": "mcp-observatory/attack-sim/attack-sim/permission-boundary/broad-destructive-tool/ff6d490d",
+            "category": "attack-sim",
+            "checkId": "attack-sim",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "kubectl_delete"
+            },
+            "severity": "medium",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:least-privilege"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "attack-sim",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:least-privilege"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/attack-sim/permission-boundary/broad-destructive-tool",
+          "level": "error",
+          "message": {
+            "text": "Tool \"kubectl_create\" combines broad parameters (filename, command) with destructive or non-read-only behavior."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/attack-sim/attack-sim/permission-boundary/broad-destructive-tool/3287b0b7"
+          },
+          "properties": {
+            "id": "mcp-observatory/attack-sim/attack-sim/permission-boundary/broad-destructive-tool/3287b0b7",
+            "category": "attack-sim",
+            "checkId": "attack-sim",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "kubectl_create"
+            },
+            "severity": "high",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:least-privilege"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "attack-sim",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:least-privilege"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/attack-sim/permission-boundary/broad-destructive-tool",
+          "level": "error",
+          "message": {
+            "text": "Tool \"exec_in_pod\" combines broad parameters (command) with destructive or non-read-only behavior."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/attack-sim/attack-sim/permission-boundary/broad-destructive-tool/a5b5a3d7"
+          },
+          "properties": {
+            "id": "mcp-observatory/attack-sim/attack-sim/permission-boundary/broad-destructive-tool/a5b5a3d7",
+            "category": "attack-sim",
+            "checkId": "attack-sim",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "exec_in_pod"
+            },
+            "severity": "high",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:least-privilege"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "attack-sim",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:least-privilege"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/attack-sim/permission-boundary/broad-destructive-tool",
+          "level": "error",
+          "message": {
+            "text": "Tool \"kubectl_generic\" combines broad parameters (command) with destructive or non-read-only behavior."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "reports/moltbook-receipts/kubernetes/attack-artifact.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/attack-sim/attack-sim/permission-boundary/broad-destructive-tool/2663a1ee"
+          },
+          "properties": {
+            "id": "mcp-observatory/attack-sim/attack-sim/permission-boundary/broad-destructive-tool/2663a1ee",
+            "category": "attack-sim",
+            "checkId": "attack-sim",
+            "targetId": "mcp-server-kubernetes",
+            "subject": {
+              "type": "tool",
+              "name": "kubectl_generic"
+            },
+            "severity": "high",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:least-privilege"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "attack-sim",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:least-privilege"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

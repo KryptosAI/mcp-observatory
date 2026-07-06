@@ -10,12 +10,12 @@ For the rules behind this page, see the [Safety Methodology](./methodology.md). 
 
 ## Snapshot
 
-- Evaluated servers: 14
+- Evaluated servers: 15
 - Ready for CI: 10
-- Needs review before production: 2
+- Needs review before production: 3
 - Unsafe default posture: 2
 - Not reproducible: 0
-- Latest run: 2026-07-06T01:47:05.638Z
+- Latest run: 2026-07-06T05:32:58.918Z
 
 ## Evaluations
 
@@ -35,6 +35,7 @@ For the rules behind this page, see the [Safety Methodology](./methodology.md). 
 | 12 | [Microsoft Playwright MCP](https://github.com/microsoft/playwright-mcp) | Browser Automation | **Unsafe default posture** | Browser/code execution boundary | `npx -y @playwright/mcp` | [JSON](./safety-index/artifacts/playwright-mcp-server.json) / [report](./safety-index/artifacts/playwright-mcp-server.md) | Zero-config public package; security findings represent policy-review prompts, not a vulnerability claim. |
 | 13 | [AntV chart MCP server](https://github.com/antvis/mcp-server-chart) | Visualization | **Ready for CI** | Artifact-producing tools | `npx -y @antv/mcp-server-chart` | [JSON](./safety-index/artifacts/antv-chart-server.json) / [report](./safety-index/artifacts/antv-chart-server.md) | Zero-config public package. [public proof](https://github.com/antvis/mcp-server-chart/pull/312) |
 | 14 | [ExecuteAutomation Playwright MCP](https://github.com/executeautomation/mcp-playwright) | Browser Automation | **Unsafe default posture** | Startup/listing reproducibility | `npx -y @executeautomation/playwright-mcp-server` | [JSON](./safety-index/artifacts/executeautomation-playwright-server.json) / [report](./safety-index/artifacts/executeautomation-playwright-server.md) | Evaluated as a public package; current result should be treated as a maintainer conversation starter. [public proof](https://github.com/executeautomation/mcp-playwright/pull/225) |
+| 15 | [Flux159 Kubernetes MCP server](https://github.com/Flux159/mcp-server-kubernetes) | Infrastructure / Kubernetes | **Needs review before production** | Command and cluster mutation boundary | `npx -y mcp-server-kubernetes` | [JSON](./safety-index/artifacts/kubernetes-server.json) / [report](./safety-index/artifacts/kubernetes-server.md) / [attack-sim](./safety-index/artifacts/kubernetes-server.attack.md) / [SARIF](./safety-index/artifacts/kubernetes-server.attack.sarif) | Zero-config public package. Evaluated without cluster credentials; findings are metadata and schema boundary prompts, not exploit claims. |
 
 ## Patterns Observed
 
@@ -42,6 +43,7 @@ For the rules behind this page, see the [Safety Methodology](./methodology.md). 
 - Artifact-producing tools: 1 server(s)
 - Broad protocol surface: 1 server(s)
 - Browser-control boundary: 1 server(s)
+- Command and cluster mutation boundary: 1 server(s)
 - Git tool boundary: 1 server(s)
 - Infrastructure tool surface: 1 server(s)
 - Persistent state tools: 1 server(s)

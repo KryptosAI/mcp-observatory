@@ -6,7 +6,10 @@
     "packageName": "@modelcontextprotocol/server-everything",
     "category": "Reference",
     "command": "npx",
-    "args": ["-y", "@modelcontextprotocol/server-everything"],
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-everything"
+    ],
     "timeoutMs": 60000,
     "riskClass": "Reference compatibility",
     "failureClass": "Broad protocol surface",
@@ -21,7 +24,10 @@
     "packageName": "@modelcontextprotocol/server-sequential-thinking",
     "category": "Reference",
     "command": "npx",
-    "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-sequential-thinking"
+    ],
     "timeoutMs": 60000,
     "riskClass": "Reference compatibility",
     "failureClass": "Tool schema clarity",
@@ -35,7 +41,10 @@
     "packageName": "@modelcontextprotocol/server-memory",
     "category": "Reference / Memory",
     "command": "npx",
-    "args": ["-y", "@modelcontextprotocol/server-memory"],
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-memory"
+    ],
     "timeoutMs": 60000,
     "riskClass": "Agent memory mutation",
     "failureClass": "Persistent state tools",
@@ -49,7 +58,11 @@
     "packageName": "@modelcontextprotocol/server-filesystem",
     "category": "Filesystem",
     "command": "npx",
-    "args": ["-y", "@modelcontextprotocol/server-filesystem", "examples/filesystem-fixture"],
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-filesystem",
+      "examples/filesystem-fixture"
+    ],
     "timeoutMs": 30000,
     "riskClass": "Filesystem boundary",
     "failureClass": "Sandboxed filesystem access",
@@ -63,7 +76,10 @@
     "packageName": "@upstash/context7-mcp",
     "category": "Documentation / Search",
     "command": "npx",
-    "args": ["-y", "@upstash/context7-mcp"],
+    "args": [
+      "-y",
+      "@upstash/context7-mcp"
+    ],
     "timeoutMs": 60000,
     "riskClass": "Untrusted content retrieval",
     "failureClass": "Prompt-injection-sensitive retrieval",
@@ -77,7 +93,10 @@
     "packageName": "promptopia-mcp",
     "category": "Prompts",
     "command": "npx",
-    "args": ["-y", "promptopia-mcp"],
+    "args": [
+      "-y",
+      "promptopia-mcp"
+    ],
     "env": {
       "PROMPTS_DIR": "examples/promptopia-prompts"
     },
@@ -94,7 +113,10 @@
     "packageName": "ref-tools-mcp",
     "category": "Developer Tools",
     "command": "npx",
-    "args": ["-y", "ref-tools-mcp"],
+    "args": [
+      "-y",
+      "ref-tools-mcp"
+    ],
     "timeoutMs": 60000,
     "riskClass": "Developer reference tooling",
     "failureClass": "Prompt/tool inventory",
@@ -108,7 +130,10 @@
     "packageName": "@cyanheads/git-mcp-server",
     "category": "Developer Tools",
     "command": "npx",
-    "args": ["-y", "@cyanheads/git-mcp-server"],
+    "args": [
+      "-y",
+      "@cyanheads/git-mcp-server"
+    ],
     "timeoutMs": 60000,
     "riskClass": "Repository mutation",
     "failureClass": "Git tool boundary",
@@ -122,7 +147,10 @@
     "packageName": "@opentofu/opentofu-mcp-server",
     "category": "Infrastructure",
     "command": "npx",
-    "args": ["-y", "@opentofu/opentofu-mcp-server"],
+    "args": [
+      "-y",
+      "@opentofu/opentofu-mcp-server"
+    ],
     "timeoutMs": 60000,
     "riskClass": "Infrastructure-as-code",
     "failureClass": "Infrastructure tool surface",
@@ -136,9 +164,14 @@
     "packageName": "puppeteer-mcp-server",
     "category": "Browser Automation",
     "command": "npx",
-    "args": ["-y", "puppeteer-mcp-server"],
+    "args": [
+      "-y",
+      "puppeteer-mcp-server"
+    ],
     "timeoutMs": 60000,
-    "securitySuppressions": ["puppeteer_evaluate:shell-injection"],
+    "securitySuppressions": [
+      "puppeteer_evaluate:shell-injection"
+    ],
     "riskClass": "Browser control",
     "failureClass": "Browser/code execution boundary",
     "whyItMatters": "Browser automation gives agents navigation, page state, and sometimes code-evaluation powers.",
@@ -151,7 +184,10 @@
     "packageName": "@browsermcp/mcp",
     "category": "Browser Automation",
     "command": "npx",
-    "args": ["-y", "@browsermcp/mcp"],
+    "args": [
+      "-y",
+      "@browsermcp/mcp"
+    ],
     "timeoutMs": 60000,
     "riskClass": "Browser control",
     "failureClass": "Browser-control boundary",
@@ -166,7 +202,10 @@
     "packageName": "@playwright/mcp",
     "category": "Browser Automation",
     "command": "npx",
-    "args": ["-y", "@playwright/mcp"],
+    "args": [
+      "-y",
+      "@playwright/mcp"
+    ],
     "timeoutMs": 60000,
     "riskClass": "Browser control",
     "failureClass": "Browser/code execution boundary",
@@ -180,7 +219,10 @@
     "packageName": "@antv/mcp-server-chart",
     "category": "Visualization",
     "command": "npx",
-    "args": ["-y", "@antv/mcp-server-chart"],
+    "args": [
+      "-y",
+      "@antv/mcp-server-chart"
+    ],
     "timeoutMs": 60000,
     "riskClass": "Generated artifacts",
     "failureClass": "Artifact-producing tools",
@@ -195,12 +237,32 @@
     "packageName": "@executeautomation/playwright-mcp-server",
     "category": "Browser Automation",
     "command": "npx",
-    "args": ["-y", "@executeautomation/playwright-mcp-server"],
+    "args": [
+      "-y",
+      "@executeautomation/playwright-mcp-server"
+    ],
     "timeoutMs": 60000,
     "riskClass": "Browser control",
     "failureClass": "Startup/listing reproducibility",
     "whyItMatters": "A public browser automation package that fails basic listing checks shows why reproducible readiness evidence matters.",
     "reproductionNotes": "Evaluated as a public package; current result should be treated as a maintainer conversation starter.",
     "publicProof": "https://github.com/executeautomation/mcp-playwright/pull/225"
+  },
+  {
+    "id": "kubernetes-server",
+    "name": "Flux159 Kubernetes MCP server",
+    "repo": "https://github.com/Flux159/mcp-server-kubernetes",
+    "packageName": "mcp-server-kubernetes",
+    "category": "Infrastructure / Kubernetes",
+    "command": "npx",
+    "args": [
+      "-y",
+      "mcp-server-kubernetes"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Kubernetes control plane",
+    "failureClass": "Command and cluster mutation boundary",
+    "whyItMatters": "Kubernetes MCP servers can expose cluster mutation, pod exec, manifest apply/delete, and broad kubectl command surfaces to agents.",
+    "reproductionNotes": "Zero-config public package. Evaluated without cluster credentials; findings are metadata and schema boundary prompts, not exploit claims."
   }
 ]
