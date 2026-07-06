@@ -1,12 +1,17 @@
-name: MCP tool-call receipt request
-description: Request a reproducible receipt for one MCP server your agent depends on.
-title: "[Receipt] "
+name: Drop an MCP server, get a receipt
+description: Request a safe, reproducible MCP Observatory receipt for one server your agent depends on.
+title: "[Receipt request] "
 labels: ["tool-call-receipt", "target-registry", "needs-triage"]
 body:
   - type: markdown
     attributes:
       value: |
-        Request one public MCP server receipt: safe startup command, run artifact, attack-sim evidence, SARIF when useful, and CI setup guidance.
+        Drop one public MCP server/package and MCP Observatory will try to turn it into a safe, reproducible receipt.
+
+        A normal receipt answers: what happened in this run?
+        A delta receipt answers: what changed since the last trusted run?
+
+        Good requests can become Safety Index entries, attack-sim evidence, SARIF artifacts, maintainer CI conversations, or starter PRs.
 
         Please do not paste secrets, private telemetry, private URLs, customer data, or destructive commands.
   - type: input
@@ -21,7 +26,7 @@ body:
     id: command
     attributes:
       label: Safe startup command
-      description: Command Observatory can run without secrets or destructive side effects.
+      description: Command Observatory can run without secrets, writes, destructive side effects, or production access.
       placeholder: npx -y example-mcp
     validations:
       required: true
@@ -67,5 +72,4 @@ body:
     attributes:
       label: Desired output
       description: What would be useful to receive?
-      placeholder: Safety Index entry, attack-sim report, SARIF artifact, setup-ci PR, private review, etc.
-
+      placeholder: Safety Index entry, attack-sim report, delta receipt, SARIF artifact, setup-ci PR, private review, etc.
