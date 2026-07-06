@@ -66,7 +66,11 @@ const RATE_LIMIT_DELAY_MS = 1_500;
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
 function baseUrl(config?: SmitheryConfig): string {
-  return config?.baseUrl?.replace(/\/+$/, "") ?? DEFAULT_BASE_URL;
+  let value = config?.baseUrl ?? DEFAULT_BASE_URL;
+  while (value.endsWith("/")) {
+    value = value.slice(0, -1);
+  }
+  return value;
 }
 
 function buildHeaders(config?: SmitheryConfig): Record<string, string> {

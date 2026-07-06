@@ -316,6 +316,7 @@ describe("ObservatoryMonitor", () => {
   });
 
   it("reports scores when reportTo is configured", async () => {
+    vi.useRealTimers();
     const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("ok"));
     mockedRunTarget.mockResolvedValue(makeArtifact(85));
 

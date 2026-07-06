@@ -57,10 +57,22 @@ describe("local metrics dashboard", () => {
         sourceCounts: [{ source: "external_ci", events: 1, sessions: 1 }],
         marketEvents: 1,
         marketSessions: 1,
-        dailyEvents: [{ day: "2026-06-21", events: 2, sessions: 2 }],
-        dailyMarketEvents: [{ day: "2026-06-21", events: 1, sessions: 1 }],
-        dailySourceMix: [{ day: "2026-06-21", events: 2, localSessions: 0, externalCiSessions: 1, firstPartyCiSessions: 1, mcpSessions: 0 }],
-        dailyMarketSourceMix: [{ day: "2026-06-21", events: 1, localSessions: 0, externalCiSessions: 1, mcpSessions: 0 }],
+        dailyEvents: [
+          { day: "2026-05-21", events: 2, sessions: 2 },
+          { day: "2026-06-21", events: 5, sessions: 5 },
+        ],
+        dailyMarketEvents: [
+          { day: "2026-05-21", events: 1, sessions: 1 },
+          { day: "2026-06-21", events: 4, sessions: 4 },
+        ],
+        dailySourceMix: [
+          { day: "2026-05-21", events: 2, localSessions: 0, externalCiSessions: 1, firstPartyCiSessions: 1, mcpSessions: 0 },
+          { day: "2026-06-21", events: 5, localSessions: 0, externalCiSessions: 4, firstPartyCiSessions: 1, mcpSessions: 0 },
+        ],
+        dailyMarketSourceMix: [
+          { day: "2026-05-21", events: 1, localSessions: 0, externalCiSessions: 1, mcpSessions: 0 },
+          { day: "2026-06-21", events: 4, localSessions: 0, externalCiSessions: 4, mcpSessions: 0 },
+        ],
         topCommands: [{ command: "scan", events: 1, sessions: 1 }],
         topDomains: [{ domain: "acme.example", events: 1, sessions: 1 }],
         topDomainDetails: [{ domain: "acme.example", events: 1, sessions: 1, topCommand: "scan", latestSeen: "2026-06-21T10:00:00.000Z" }],
@@ -69,14 +81,16 @@ describe("local metrics dashboard", () => {
           { version: "0.23.0", events: 1, sessions: 1, sessionShare: 50, isLatest: false },
         ],
         dailyMarketVersionAdoption: [
-          { day: "2026-06-21", totalSessions: 2, latestSessions: 1, latestEvents: 1, latestSessionShare: 50, dominantVersion: "0.24.0" },
+          { day: "2026-05-21", totalSessions: 1, latestSessions: 0, latestEvents: 0, latestSessionShare: 0, dominantVersion: "0.23.0" },
+          { day: "2026-06-21", totalSessions: 4, latestSessions: 2, latestEvents: 2, latestSessionShare: 50, dominantVersion: "0.24.0" },
         ],
         commandFunnel: [
           { stage: "Agent install", commands: "serve", events: 1, sessions: 1, recommendation: "Scale agent setup docs." },
           { stage: "CI setup", commands: "init-ci, setup-ci", events: 0, sessions: 0, recommendation: "Make setup-ci louder." },
         ],
         dailyMarketCommandFunnel: [
-          { day: "2026-06-21", agentInstallSessions: 1, validationSessions: 1, regressionSessions: 0, ciSetupSessions: 0 },
+          { day: "2026-05-21", agentInstallSessions: 1, validationSessions: 1, regressionSessions: 0, ciSetupSessions: 0 },
+          { day: "2026-06-21", agentInstallSessions: 2, validationSessions: 3, regressionSessions: 0, ciSetupSessions: 1 },
         ],
       },
       github: {
@@ -95,7 +109,10 @@ describe("local metrics dashboard", () => {
         clonesPrevious7: 5,
         views7: 20,
         viewsPrevious7: 10,
-        daily: [{ day: "2026-06-21", clones: 10, uniqueCloners: 7, views: 20, uniqueViewers: 11 }],
+        daily: [
+          { day: "2026-05-21", clones: 10, uniqueCloners: 7, views: 20, uniqueViewers: 11 },
+          { day: "2026-06-21", clones: 4, uniqueCloners: 3, views: 22, uniqueViewers: 12 },
+        ],
         referrers: [{ referrer: "github.com", count: 5, uniques: 3 }],
         paths: [{ path: "/KryptosAI/mcp-observatory", title: "Repo", count: 8, uniques: 6 }],
         workflowRuns: [{ name: "CI", status: "completed", conclusion: "success", updatedAt: "2026-06-21T00:00:00.000Z" }],
@@ -107,18 +124,28 @@ describe("local metrics dashboard", () => {
         downloadsPrevious7: 35,
         downloadsPrevious30: 150,
         latestDay: "2026-06-20",
-        daily: [{ day: "2026-06-20", downloads: 10 }],
+        daily: [
+          { day: "2026-05-20", downloads: 5 },
+          { day: "2026-06-20", downloads: 10 },
+        ],
       },
       sourceRuns: [],
       recentFailures: [],
     });
 
     expect(html).toContain("MCP Observatory Local Metrics");
+    expect(html).toContain("MCP Observatory ASCII art logo");
+    expect(html).toContain("███╗   ███╗");
+    expect(html).toContain("O B S E R V A T O R Y");
     expect(html).toContain("Primary KPIs");
     expect(html).toContain("Evidence search");
     expect(html).toContain("Search evidence");
     expect(html).toContain("External Sessions");
     expect(html).toContain("Weekly Sessions");
+    expect(html).toContain("KPI Momentum");
+    expect(html).toContain("month over month · all time");
+    expect(html).toContain("Latest Version Adoption");
+    expect(html).toContain("KPI momentum");
     expect(html).toContain("Usage Over Time");
     expect(html).toContain("Monthly change");
     expect(html).toContain("Setup conversion");
@@ -129,9 +156,12 @@ describe("local metrics dashboard", () => {
     expect(html).not.toContain("Market Daily Trend");
     expect(html).not.toContain("Market Timeline Details");
     expect(html).not.toContain("Source Mix By Day");
+    expect(html).not.toContain('<span class="logo">⌁</span>');
+    expect(html).not.toContain("logo-art");
     expect(html).toContain("Command funnel");
     expect(html).toContain("Latest adoption");
     expect(html).toContain("Clone/download to CI");
+    expect(html.indexOf("Latest Version Adoption", html.indexOf("KPI Momentum"))).toBeLessThan(html.indexOf("GitHub Clones", html.indexOf("KPI Momentum")));
     expect(html).toContain("acme.example");
     expect(html).toContain("npm daily");
     expect(html).not.toContain("analyst@");

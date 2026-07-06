@@ -45,7 +45,7 @@ function requireStatus(value: unknown, label: string): void {
 }
 
 function requireCheckId(value: unknown, label: string): void {
-  const ids = new Set(["tools", "prompts", "resources", "tools-invoke", "security", "security-lite", "conformance", "schema-quality"]);
+  const ids = new Set(["tools", "prompts", "resources", "tools-invoke", "security", "security-lite", "attack-sim", "conformance", "schema-quality"]);
   if (typeof value !== "string" || !ids.has(value)) {
     throw new Error(`${label} has invalid check id '${String(value)}'.`);
   }

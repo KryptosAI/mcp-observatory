@@ -1,7 +1,8 @@
-import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 
 import type { DiffArtifact, RunArtifact } from "./types.js";
+import { writeTextFileAtomic } from "./utils/files.js";
 import { slugify } from "./utils/ids.js";
 import { validateDiffArtifact, validateRunArtifact } from "./validate.js";
 
@@ -24,7 +25,7 @@ export async function writeRunArtifact(
     artifact.target.targetId,
   )}.json`;
   const filePath = path.join(outDir, fileName);
-  await writeFile(filePath, JSON.stringify(artifact, null, 2) + "\n", "utf8");
+  await writeTextFileAtomic(filePath, JSON.stringify(artifact, null, 2) + "\n");
   return filePath;
 }
 

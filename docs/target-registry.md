@@ -23,6 +23,7 @@ Every accepted target creates several useful surfaces:
 - JSON and Markdown evidence artifacts
 - a maintainer conversation starter
 - a badge or CI adoption path
+- contributor recognition and a proof-card link
 - a small contribution that another agent can copy
 
 That means one tiny PR can produce docs, evidence, search surface, backlinks, and future issues.
@@ -89,9 +90,12 @@ Add one object to `docs/safety-index/targets.json`:
 3. Add one target entry.
 4. Run the Safety Index locally.
 5. Open a small PR with the target and generated evidence.
-6. Optionally ask the maintainer if they want an Observatory badge or CI check.
+6. Add or request a contributor proof card.
+7. Optionally ask the maintainer if they want an Observatory badge or CI check.
 
 Use the detailed walkthrough in [Target Contribution Guide](./target-contribution-guide.md).
+
+Accepted target contributions can receive a role on [MCP Observatory Contributors](./contributor-recognition.md), an All Contributors entry, and a Markdown proof card under [`docs/contributor-proof-cards/`](./contributor-proof-cards/).
 
 ## Contribution Queue
 

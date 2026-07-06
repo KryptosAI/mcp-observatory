@@ -1,0 +1,28 @@
+{
+  "projectName": "mcp-observatory",
+  "projectOwner": "KryptosAI",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "CONTRIBUTORS.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributorsPerLine": 7,
+  "skipCi": true,
+  "contributors": [
+    {
+      "login": "KryptosAI",
+      "name": "William Weishuhn",
+      "avatar_url": "https://avatars.githubusercontent.com/u/140749029?v=4",
+      "profile": "https://github.com/KryptosAI",
+      "contributions": [
+        "code",
+        "doc",
+        "ideas",
+        "maintenance",
+        "test"
+      ]
+    }
+  ]
+}

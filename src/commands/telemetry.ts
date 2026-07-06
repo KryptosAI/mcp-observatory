@@ -1,6 +1,7 @@
 import type { Command } from "commander";
 
 import { loadTelemetryConfig, saveTelemetryConfig, isTelemetryEnabled } from "../telemetry.js";
+import { appendQuery, requireHttpUrl } from "../utils/url.js";
 
 const TELEMETRY_FIELDS = [
   "sessionId",
@@ -60,7 +61,10 @@ export function registerTelemetryCommands(program: Command): void {
         await saveTelemetryConfig(config);
         process.stdout.write("  Telemetry disabled.\n\n");
       } else if (action === "stats") {
-        const endpoint = process.env["MCP_OBSERVATORY_TELEMETRY_URL"] ?? "https://mcp-observatory-telemetry.kryptosai.workers.dev";
+        const endpoint = requireHttpUrl(
+          process.env["MCP_OBSERVATORY_TELEMETRY_URL"] ?? "https://mcp-observatory-telemetry.kryptosai.workers.dev",
+          "Telemetry stats endpoint",
+        );
         const token = process.env["MCP_OBSERVATORY_STATS_TOKEN"] ?? config.statsToken;
         if (!token) {
           process.stderr.write("  No stats token configured.\n");
@@ -70,8 +74,8 @@ export function registerTelemetryCommands(program: Command): void {
         const authHeaders = { Authorization: `Bearer ${token}` };
         try {
           const [all, others] = await Promise.all([
-            fetch(`${endpoint}/v1/stats`, { headers: authHeaders }).then(r => r.json() as Promise<Record<string, unknown>>),
-            fetch(`${endpoint}/v1/stats?exclude=${config.sessionId}`, { headers: authHeaders }).then(r => r.json() as Promise<Record<string, unknown>>),
+            fetch(new URL("/v1/stats", endpoint), { headers: authHeaders }).then(r => r.json() as Promise<Record<string, unknown>>),
+            fetch(appendQuery(new URL("/v1/stats", endpoint).toString(), { exclude: config.sessionId }), { headers: authHeaders }).then(r => r.json() as Promise<Record<string, unknown>>),
           ]);
           if (all.error) { process.stderr.write(`  Error: ${all.error as string}\n\n`); return; }
           const totalAll = (all.total as number) ?? 0;

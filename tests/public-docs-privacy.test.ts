@@ -39,10 +39,6 @@ const forbiddenPatterns = [
   /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i,
   /telemetry-exports\//,
   /events-flat-full/,
-  /thinkingdata\.cn/i,
-  /kimquy\.capital/i,
-  /paperstreetdata\.com/i,
-  /cyberneticsplus\.com/i,
   /gitEmail/,
   /gitRemoteUrl/,
   /serverCommands/,
@@ -51,12 +47,23 @@ const forbiddenPatterns = [
   /https?:\/\/(?:localhost|127\.0\.0\.1|10\.|192\.168\.|172\.(?:1[6-9]|2\d|3[0-1])\.)/i,
 ];
 
+const forbiddenText = [
+  "thinkingdata.cn",
+  "kimquy.capital",
+  "paperstreetdata.com",
+  "cyberneticsplus.com",
+];
+
 describe("public proof docs privacy guardrails", () => {
   it("does not expose private telemetry exports or raw telemetry field names in packaged docs", async () => {
     for (const docPath of await packagedMarkdownDocs()) {
       const content = await readFile(path.join(process.cwd(), docPath), "utf8");
       for (const pattern of forbiddenPatterns) {
         expect(content).not.toMatch(pattern);
+      }
+      const lowerContent = content.toLowerCase();
+      for (const text of forbiddenText) {
+        expect(lowerContent).not.toContain(text);
       }
     }
   });
@@ -76,11 +83,32 @@ describe("public proof docs privacy guardrails", () => {
 
   it("packages the launch, attribution, bot, and gallery docs", async () => {
     const docs = await packagedMarkdownDocs();
+    expect(docs).toContain("CONTRIBUTORS.md");
     expect(docs).toContain("docs/launch.md");
     expect(docs).toContain("docs/code-scanning-demo.md");
     expect(docs).toContain("docs/agent-tasks.md");
     expect(docs).toContain("docs/target-gallery.md");
     expect(docs).toContain("docs/campaign-attribution.md");
+    expect(docs).toContain("docs/contributor-recognition.md");
+    expect(docs).toContain("docs/contributor-proof-cards/README.md");
+  });
+
+  it("keeps contributor recognition public, badge-renderable, and honest about GitHub achievements", async () => {
+    const readme = await readFile(path.join(process.cwd(), "README.md"), "utf8");
+    const contributors = await readFile(path.join(process.cwd(), "CONTRIBUTORS.md"), "utf8");
+    const recognition = await readFile(path.join(process.cwd(), "docs/contributor-recognition.md"), "utf8");
+    const proofCards = await readFile(path.join(process.cwd(), "docs/contributor-proof-cards/README.md"), "utf8");
+
+    expect(readme).toContain("[MCP Observatory Contributors](./docs/contributor-recognition.md)");
+    expect(contributors).toContain("Official GitHub profile achievements are platform-controlled");
+    expect(recognition).toContain("Official GitHub profile achievements are platform-controlled");
+    expect(`${contributors}\n${recognition}`).not.toMatch(/award official GitHub Achievements/i);
+    expect(recognition).toContain("https://img.shields.io/badge/MCP%20Observatory-Target%20Scout-2563eb");
+    expect(recognition).toContain("https://img.shields.io/badge/MCP%20Observatory-Safety%20Index%20Contributor-16a34a");
+    expect(recognition).toContain("https://img.shields.io/badge/MCP%20Observatory-CI%20Integrator-7c3aed");
+    expect(recognition).toContain("https://img.shields.io/badge/MCP%20Observatory-Maintainer%20Partner-f97316");
+    expect(proofCards).toContain("Merged PR");
+    expect(proofCards).toContain("Generated Evidence");
   });
 
   it("keeps markdown fences balanced in packaged docs", async () => {

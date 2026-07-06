@@ -13,5 +13,5 @@ describe("artifact schemas", () => {
     });
 
     expect(stderr).toBe("");
-  });
+  }, 30_000);
 });

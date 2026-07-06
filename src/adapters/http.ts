@@ -29,26 +29,22 @@ export class HttpAdapter {
     }
     const timeoutMs = target.timeoutMs ?? 15_000;
 
-    // Try streamable-http first, fall back to SSE
-    let connected = false;
     let activeTransport: Transport | undefined;
     try {
       let transport: Transport = new StreamableHTTPClientTransport(url, { requestInit: { headers } });
       if (options?.record) transport = new RecordingTransport(transport);
       await client.connect(transport, { timeout: timeoutMs });
       activeTransport = transport;
-      connected = true;
     } catch {
       stderrLines.push("Streamable HTTP failed, falling back to SSE.");
     }
 
-    if (!connected) {
+    if (!activeTransport) {
       try {
         let transport: Transport = new SSEClientTransport(url, { requestInit: { headers } });
         if (options?.record) transport = new RecordingTransport(transport);
         await client.connect(transport, { timeout: timeoutMs });
         activeTransport = transport;
-        connected = true;
       } catch (error) {
         const rawMessage = errorMessage(error);
         await client.close().catch(() => undefined); // Cleanup errors are non-fatal

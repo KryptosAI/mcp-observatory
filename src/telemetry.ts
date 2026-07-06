@@ -5,6 +5,7 @@ import { randomUUID } from "node:crypto";
 import os from "node:os";
 import path from "node:path";
 import { isCI as _isCI, ciName as _ciName } from "./ci.js";
+import { requireHttpUrl } from "./utils/url.js";
 import { TOOL_VERSION } from "./version.js";
 
 const execFileAsync = promisify(execFile);
@@ -204,7 +205,10 @@ export function recordEvent(event: TelemetryEvent): void {
   if (!isTelemetryEnabled()) return;
 
   const debug = process.env["MCP_OBSERVATORY_TELEMETRY_DEBUG"] === "1";
-  const endpoint = process.env["MCP_OBSERVATORY_TELEMETRY_URL"] ?? DEFAULT_ENDPOINT;
+  const endpoint = requireHttpUrl(
+    process.env["MCP_OBSERVATORY_TELEMETRY_URL"] ?? DEFAULT_ENDPOINT,
+    "Telemetry endpoint",
+  );
 
   const config = _cachedConfig;
   const body = JSON.stringify({

@@ -2,8 +2,9 @@ import { describe, expect, it, vi } from "vitest";
 
 // Mock fs/promises to avoid real file writes
 vi.mock("node:fs/promises", () => ({
-  writeFile: vi.fn(async () => {}),
-  unlink: vi.fn(async () => {}),
+  mkdtemp: vi.fn(() => Promise.resolve("/tmp/mcp-observatory-issue-test")),
+  rm: vi.fn(() => Promise.resolve()),
+  writeFile: vi.fn(() => Promise.resolve()),
 }));
 
 import type { CommandExecutor } from "../src/ci-issue.js";

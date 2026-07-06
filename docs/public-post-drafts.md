@@ -96,3 +96,24 @@ npx @kryptosai/mcp-observatory lock verify
 ```
 
 The point is not bureaucracy. It is to make the agent-facing contract reviewable before production workflows quietly depend on something new.
+
+## Supporting Angle: I Safely Simulated MCP Tool Poisoning Against Real Servers
+
+The useful MCP security demo is not “this scanner found risk.”
+
+It is:
+
+> here is the exact metadata, schema, or drift pattern that could steer an agent into unsafe behavior.
+
+MCP Attack Simulator runs safe, inert simulations for:
+
+- tool poisoning in tool/prompt/resource metadata
+- fake canary and credential-like exposure in captured evidence
+- broad permission boundaries around destructive tools
+- contract drift when a server changes its agent-facing surface
+
+It does not execute destructive payloads or exfiltrate real data. The goal is reproducible evidence maintainers can fix and security teams can review.
+
+```bash
+npx @kryptosai/mcp-observatory attack-sim --target ./target.json --sarif attack-results.sarif
+```

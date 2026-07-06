@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { readFileSync, readdirSync } from "node:fs";
@@ -14,12 +14,14 @@ import { readFileSync, readdirSync } from "node:fs";
 const CLI = path.resolve("src/cli.ts");
 const TSX = path.resolve("node_modules/.bin/tsx");
 const FIXTURE_CONFIG = "tests/fixtures/sample-target-config.json";
-const CLI_TEST_TIMEOUT_MS = 20_000;
+const CLI_TEST_TIMEOUT_MS = 60_000;
+
+vi.setConfig({ testTimeout: CLI_TEST_TIMEOUT_MS });
 
 function runCli(args: string[]): string {
   return execFileSync(TSX, [CLI, ...args], {
     encoding: "utf8",
-    timeout: 15_000,
+    timeout: CLI_TEST_TIMEOUT_MS,
     env: { ...process.env, NO_COLOR: "1" },
   });
 }

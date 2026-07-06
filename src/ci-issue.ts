@@ -1,5 +1,5 @@
 import { execFile } from "node:child_process";
-import { writeFile, unlink } from "node:fs/promises";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
@@ -81,10 +81,8 @@ export async function createOrUpdateIssue(options: {
   exec?: CommandExecutor;
 }): Promise<number> {
   const exec = options.exec ?? execCommand;
-  const bodyFile = path.join(
-    tmpdir(),
-    `mcp-observatory-issue-${Date.now()}.md`,
-  );
+  const tempDir = await mkdtemp(path.join(tmpdir(), "mcp-observatory-issue-"));
+  const bodyFile = path.join(tempDir, "body.md");
 
   try {
     await writeFile(bodyFile, options.body, "utf8");
@@ -134,6 +132,6 @@ export async function createOrUpdateIssue(options: {
       `Failed to parse issue number from gh output: ${stdout.trim()}`,
     );
   } finally {
-    await unlink(bodyFile).catch(() => {});
+    await rm(tempDir, { recursive: true, force: true }).catch(() => {});
   }
 }

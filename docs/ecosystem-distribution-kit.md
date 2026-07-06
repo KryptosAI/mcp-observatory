@@ -41,6 +41,17 @@ Prioritize surfaces where users already look for MCP infrastructure:
 - agent framework docs and community lists
 - npm package discovery through keywords and README copy
 
+See [Agent And MCP Ecosystem Promotion Plan](./agent-ecosystem-promotion-plan.md) for the current claim, listing, agent prompt, company outreach, and weekly operating loop.
+
+## Badge Policy
+
+Use directory badges only when their wording is backed by public evidence that the project has reviewed.
+
+- Plain directory listings are useful distribution.
+- Plain text directory links are acceptable when the listing is accurate.
+- Badges that imply `Audited`, `Certified`, `Verified`, or similar should wait for public scan/evaluation evidence.
+- Do not approve fork PR checks for mass badge campaigns unless the provider is intentionally being adopted.
+
 ## Submission Checklist
 
 - Link to the README.

@@ -2,6 +2,8 @@
 
 This page is written for coding agents, bot maintainers, autonomous productivity systems, and maintainers who want small useful MCP Observatory contributions.
 
+Useful merged work can receive public credit through [MCP Observatory Contributors](./contributor-recognition.md), [CONTRIBUTORS.md](../CONTRIBUTORS.md), and target proof cards. Recognition is based on merged public evidence, not private telemetry.
+
 ## Task 1: Add MCP Observatory CI To A Repo
 
 ```text
@@ -69,3 +71,20 @@ Use:
 npx @kryptosai/mcp-observatory test <safe startup command> --campaign bot-runtime-review
 ```
 
+## Task 6: Prepare A Contributor Proof Card
+
+```text
+After a target, CI integration, or SARIF improvement is merged, prepare a public proof card.
+
+Use docs/contributor-proof-cards/README.md.
+
+Include:
+- contributor GitHub profile
+- role
+- merged PR
+- generated artifact or upstream workflow
+- verdict
+- Observatory version
+
+Do not include private telemetry, local paths, secrets, or unpublished maintainer data.
+```

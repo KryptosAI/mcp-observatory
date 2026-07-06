@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { mkdir, rm } from "node:fs/promises";
+import { mkdtemp, rm } from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
 
@@ -8,8 +8,7 @@ import { makeCassette } from "./fixtures/test-helpers.js";
 
 describe("cassette round-trip", () => {
   it("saves and loads a cassette file", async () => {
-    const tmpDir = path.join(os.tmpdir(), `mcp-obs-test-${Date.now()}`);
-    await mkdir(tmpDir, { recursive: true });
+    const tmpDir = await mkdtemp(path.join(os.tmpdir(), "mcp-obs-test-"));
 
     try {
       const original = makeCassette();
@@ -29,8 +28,7 @@ describe("cassette round-trip", () => {
   });
 
   it("rejects invalid cassette files", async () => {
-    const tmpDir = path.join(os.tmpdir(), `mcp-obs-test-${Date.now()}`);
-    await mkdir(tmpDir, { recursive: true });
+    const tmpDir = await mkdtemp(path.join(os.tmpdir(), "mcp-obs-test-"));
     const filePath = path.join(tmpDir, "bad.json");
     const { writeFile } = await import("node:fs/promises");
     await writeFile(filePath, JSON.stringify({ notACassette: true }));

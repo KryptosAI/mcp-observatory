@@ -1,7 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
-import { runLightweightSecurityCheck } from "../src/checks/security.js";
+import { runLightweightSecurityCheck, runSecurityCheck } from "../src/checks/security.js";
 import { SECURITY_RULES, CREDENTIAL_PATTERNS, type ToolInfo } from "../src/checks/security-rules.js";
+import { makeContext } from "./fixtures/test-helpers.js";
 
 function findRule(id: string) {
   return SECURITY_RULES.find(r => r.id === id)!;
@@ -179,5 +180,119 @@ describe("security check evidence", () => {
     expect(evidence.findings).toBeUndefined();
     expect(evidence.itemCount).toBe(0);
     expect(check.result.status).toBe("pass");
+  });
+
+  it("flags unauthenticated HTTP targets as partial", () => {
+    const check = runLightweightSecurityCheck([], {
+      targetId: "http-test",
+      adapter: "http",
+      url: "https://example.com/mcp",
+    });
+
+    expect(check.result.status).toBe("partial");
+    expect(check.result.evidence[0]?.findings?.[0]?.["ruleId"]).toBe("no-auth-http");
+  });
+
+  it("accepts HTTP targets with auth headers", () => {
+    const check = runLightweightSecurityCheck([], {
+      targetId: "http-test",
+      adapter: "http",
+      url: "https://example.com/mcp",
+      headers: { Authorization: "Bearer token" },
+    });
+
+    expect(check.result.status).toBe("pass");
+    expect(check.result.evidence[0]?.findings).toBeUndefined();
+  });
+
+  it("suppresses findings by toolName:ruleId", () => {
+    const check = runLightweightSecurityCheck([
+      {
+        name: "exec_query",
+        inputSchema: { type: "object", properties: { command: { type: "string" } } },
+      },
+    ], {
+      targetId: "test",
+      adapter: "local-process",
+      command: "node",
+      args: ["server.js"],
+      securitySuppressions: ["exec_query:shell-injection"],
+    });
+
+    expect(check.result.status).toBe("pass");
+    expect(check.result.evidence[0]?.findings).toBeUndefined();
+  });
+});
+
+describe("full security check", () => {
+  it("lists tools when advertised and reports high-severity findings", async () => {
+    const context = makeContext({
+      client: {
+        listTools: vi.fn().mockResolvedValue({
+          tools: [
+            {
+              name: "exec_query",
+              inputSchema: { type: "object", properties: { command: { type: "string" } } },
+            },
+          ],
+        }),
+      } as unknown as ReturnType<typeof makeContext>["client"],
+      serverCapabilities: { tools: {} },
+    });
+
+    const check = await runSecurityCheck(context, []);
+
+    expect(check.result.id).toBe("security");
+    expect(check.result.status).toBe("fail");
+    expect(check.result.message).toContain("1 high");
+    expect(check.result.evidence[0]?.identifiers).toContain("exec_query");
+  });
+
+  it("scans previous tool responses for credential patterns", async () => {
+    const context = makeContext({
+      client: {
+        listTools: vi.fn().mockResolvedValue({ tools: [] }),
+      } as unknown as ReturnType<typeof makeContext>["client"],
+      serverCapabilities: {},
+    });
+
+    const check = await runSecurityCheck(context, [
+      {
+        id: "tools-invoke",
+        capability: "tools-invoke",
+        status: "pass",
+        durationMs: 1,
+        message: "OK",
+        evidence: [
+          {
+            endpoint: "tools/call",
+            advertised: true,
+            responded: true,
+            minimalShapePresent: true,
+            responseSnapshots: {
+              get_secret: { token: "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn" },
+            },
+          },
+        ],
+      },
+    ]);
+
+    expect(check.result.status).toBe("fail");
+    expect(check.result.evidence[0]?.findings?.[0]?.["ruleId"]).toBe("credential-pattern");
+    expect(check.result.evidence[0]?.findings?.[0]?.["toolName"]).toBe("get_secret");
+  });
+
+  it("still returns a passing check when tool listing fails", async () => {
+    const context = makeContext({
+      client: {
+        listTools: vi.fn().mockRejectedValue(new Error("list failed")),
+      } as unknown as ReturnType<typeof makeContext>["client"],
+      serverCapabilities: { tools: {} },
+    });
+
+    const check = await runSecurityCheck(context, []);
+
+    expect(check.result.status).toBe("pass");
+    expect(check.result.message).toBe("No security issues detected.");
   });
 });
