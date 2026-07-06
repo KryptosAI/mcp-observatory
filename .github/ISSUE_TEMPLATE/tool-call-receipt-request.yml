@@ -1,0 +1,71 @@
+name: MCP tool-call receipt request
+description: Request a reproducible receipt for one MCP server your agent depends on.
+title: "[Receipt] "
+labels: ["tool-call-receipt", "target-registry", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Request one public MCP server receipt: safe startup command, run artifact, attack-sim evidence, SARIF when useful, and CI setup guidance.
+
+        Please do not paste secrets, private telemetry, private URLs, customer data, or destructive commands.
+  - type: input
+    id: server
+    attributes:
+      label: MCP server
+      description: Link to the public repo, package, docs, or directory listing.
+      placeholder: https://github.com/example/example-mcp
+    validations:
+      required: true
+  - type: input
+    id: command
+    attributes:
+      label: Safe startup command
+      description: Command Observatory can run without secrets or destructive side effects.
+      placeholder: npx -y example-mcp
+    validations:
+      required: true
+  - type: dropdown
+    id: secrets
+    attributes:
+      label: Does it require secrets?
+      options:
+        - "No"
+        - "Optional"
+        - "Yes"
+        - "Unknown"
+    validations:
+      required: true
+  - type: textarea
+    id: agent_use
+    attributes:
+      label: Which agent or workflow depends on it?
+      description: Explain the agent workflow this MCP server supports.
+      placeholder: My coding agent uses this to search docs, browse pages, read files, query a database, etc.
+    validations:
+      required: true
+  - type: checkboxes
+    id: risks
+    attributes:
+      label: What risks should the receipt check?
+      options:
+        - label: Tool poisoning or suspicious instructions
+        - label: Schema drift or changed tool surface
+        - label: Broad filesystem access
+        - label: Browser, network, or command execution boundary
+        - label: Credential or canary exposure
+        - label: Startup/listing reproducibility
+        - label: CI/SARIF adoption
+  - type: textarea
+    id: safety_notes
+    attributes:
+      label: Safety notes
+      description: Mention safe fixtures, harmless modes, risky tools, or commands to avoid.
+      placeholder: This can run with no secrets. Use a fixture directory. Do not invoke...
+  - type: textarea
+    id: desired_output
+    attributes:
+      label: Desired output
+      description: What would be useful to receive?
+      placeholder: Safety Index entry, attack-sim report, SARIF artifact, setup-ci PR, private review, etc.
+

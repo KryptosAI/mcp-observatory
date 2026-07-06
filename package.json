@@ -64,6 +64,7 @@
     "docs/metrics-dashboard.md",
     "docs/openclaw-agent-template",
     "docs/proof.md",
+    "docs/receipt-graph.md",
     "docs/reference-evaluations.md",
     "docs/safety-index",
     "docs/setup-ci-doctor.md",
