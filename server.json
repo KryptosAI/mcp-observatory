@@ -1,23 +1,21 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.KryptosAI/mcp-observatory",
-  "description": "MCP security and CI gate with drift checks, credential scanning, attack simulation, and SARIF.",
+  "description": "Test, secure, and monitor MCP servers. Auto-discovery, drift detection, SARIF, record/replay/verify.",
   "repository": {
     "url": "https://github.com/KryptosAI/mcp-observatory",
     "source": "github"
   },
-  "version": "0.28.0",
+  "version": "1.28.2",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@kryptosai/mcp-observatory",
-      "version": "0.28.0",
+      "version": "1.28.2",
       "transport": {
         "type": "stdio"
       },
-      "arguments": [
-        "serve"
-      ],
+      "arguments": ["serve"],
       "environmentVariables": []
     }
   ]
