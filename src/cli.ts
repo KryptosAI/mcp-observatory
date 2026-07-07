@@ -4,7 +4,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { Command } from "commander";
 
 import { isCI } from "./ci.js";
-import { ANSI, LOGO, c, getBinName, useColor } from "./commands/helpers.js";
+import { ANSI, LOGO, c, getBinName, setNoColor, useColor } from "./commands/helpers.js";
 import { registerDiffCommands } from "./commands/diff.js";
 import { registerLegacyCommands } from "./commands/legacy.js";
 import { registerRecordReplayCommands } from "./commands/record-replay.js";
@@ -212,6 +212,11 @@ async function showInteractiveMenu(): Promise<string[] | null> {
 // ── Main ────────────────────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
+  // Capture --no-color before Commander strips it from process.argv
+  if (process.argv.includes("--no-color")) {
+    setNoColor(true);
+  }
+
   const bin = getBinName();
 
   // Telemetry: load config and warm identity cache in background

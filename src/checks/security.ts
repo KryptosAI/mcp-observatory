@@ -4,7 +4,7 @@ import type { Tool } from "@modelcontextprotocol/sdk/types.js";
 
 import { isCapabilityAdvertised, makeCheckResult, type CheckContext, type ObservedCheck } from "./base.js";
 import { CREDENTIAL_PATTERNS, SECURITY_RULES, type SecurityFinding, type ToolInfo } from "./security-rules.js";
-import type { CheckResult, EvidenceSummary, TargetConfig } from "../types.js";
+import type { CheckId, CheckResult, EvidenceSummary, TargetConfig } from "../types.js";
 
 function toolToInfo(tool: Tool): ToolInfo {
   return {
@@ -75,31 +75,13 @@ function structuredFindings(findings: SecurityFinding[]): Array<Record<string, u
   return findings.map((finding) => ({ ...finding }));
 }
 
-export function runLightweightSecurityCheck(
-  tools: Tool[],
-  target: TargetConfig,
-): ObservedCheck {
-  const startedAt = performance.now();
-  const findings: SecurityFinding[] = [];
-
-  // Rule: no-auth-http (target-level)
-  const authFinding = checkNoAuthHttp(target);
-  if (authFinding) findings.push(authFinding);
-
-  // Tool-level rules against already-fetched tools
-  const toolInfos = tools.map(toolToInfo);
-  for (const tool of toolInfos) {
-    for (const rule of SECURITY_RULES) {
-      const finding = rule.match(tool);
-      if (finding) findings.push(finding);
-    }
-  }
-
-  const activeFindings = filterSuppressedFindings(findings, target);
-
-  // Determine status based on highest severity
-  const hasHigh = activeFindings.some(f => f.severity === "high");
-  const hasMedium = activeFindings.some(f => f.severity === "medium");
+function buildSecurityCheckResult(
+  findings: SecurityFinding[],
+  checkId: CheckId,
+  startedAt: number,
+): CheckResult {
+  const hasHigh = findings.some(f => f.severity === "high");
+  const hasMedium = findings.some(f => f.severity === "medium");
   let status: "pass" | "partial" | "fail";
   if (hasHigh) {
     status = "fail";
@@ -109,33 +91,56 @@ export function runLightweightSecurityCheck(
     status = "pass";
   }
 
-  const diagnostics = activeFindings.map(f => `[${f.severity}] ${f.message}`);
-  const toolNames = [...new Set(activeFindings.map(f => f.toolName))];
+  const diagnostics = findings.map(f => `[${f.severity}] ${f.message}`);
+  const toolNames = [...new Set(findings.map(f => f.toolName))];
 
-  const message = activeFindings.length === 0
-    ? "No security issues detected (lightweight scan)."
-    : `Found ${activeFindings.length} security finding(s): ${activeFindings.filter(f => f.severity === "high").length} high, ${activeFindings.filter(f => f.severity === "medium").length} medium, ${activeFindings.filter(f => f.severity === "low").length} low.`;
+  const endpoint = checkId === "security-lite" ? "security/scan-lite" : "security/scan";
+  const message = findings.length === 0
+    ? (checkId === "security-lite"
+        ? "No security issues detected (lightweight scan)."
+        : "No security issues detected.")
+    : `Found ${findings.length} security finding(s): ${findings.filter(f => f.severity === "high").length} high, ${findings.filter(f => f.severity === "medium").length} medium, ${findings.filter(f => f.severity === "low").length} low.`;
 
   const evidence: EvidenceSummary = {
-    endpoint: "security/scan-lite",
+    endpoint,
     advertised: true,
     responded: true,
     minimalShapePresent: true,
-    itemCount: activeFindings.length,
+    itemCount: findings.length,
     identifiers: toolNames.length > 0 ? toolNames : undefined,
     diagnostics: diagnostics.length > 0 ? diagnostics : undefined,
-    findings: structuredFindings(activeFindings),
+    findings: structuredFindings(findings),
   };
 
-  return {
-    result: makeCheckResult(
-      "security-lite",
-      status,
-      performance.now() - startedAt,
-      message,
-      [evidence],
-    ),
-  };
+  return makeCheckResult(
+    checkId,
+    status,
+    performance.now() - startedAt,
+    message,
+    [evidence],
+  );
+}
+
+export function runLightweightSecurityCheck(
+  tools: Tool[],
+  target: TargetConfig,
+): ObservedCheck {
+  const startedAt = performance.now();
+  const findings: SecurityFinding[] = [];
+
+  const authFinding = checkNoAuthHttp(target);
+  if (authFinding) findings.push(authFinding);
+
+  const toolInfos = tools.map(toolToInfo);
+  for (const tool of toolInfos) {
+    for (const rule of SECURITY_RULES) {
+      const finding = rule.match(tool);
+      if (finding) findings.push(finding);
+    }
+  }
+
+  const activeFindings = filterSuppressedFindings(findings, target);
+  return { result: buildSecurityCheckResult(activeFindings, "security-lite", startedAt) };
 }
 
 export async function runSecurityCheck(
@@ -145,11 +150,9 @@ export async function runSecurityCheck(
   const startedAt = performance.now();
   const findings: SecurityFinding[] = [];
 
-  // Rule: no-auth-http (target-level, doesn't need tools)
   const authFinding = checkNoAuthHttp(context.target);
   if (authFinding) findings.push(authFinding);
 
-  // Tool-level rules
   const advertised = isCapabilityAdvertised(context.serverCapabilities, "tools");
   if (advertised) {
     try {
@@ -167,49 +170,9 @@ export async function runSecurityCheck(
     }
   }
 
-  // Credential scanning in response snapshots (from tools-invoke check)
   const credentialFindings = scanResponsesForCredentials(previousChecks);
   findings.push(...credentialFindings);
 
   const activeFindings = filterSuppressedFindings(findings, context.target);
-
-  // Determine status based on highest severity
-  const hasHigh = activeFindings.some(f => f.severity === "high");
-  const hasMedium = activeFindings.some(f => f.severity === "medium");
-  let status: "pass" | "partial" | "fail";
-  if (hasHigh) {
-    status = "fail";
-  } else if (hasMedium) {
-    status = "partial";
-  } else {
-    status = "pass";
-  }
-
-  const diagnostics = activeFindings.map(f => `[${f.severity}] ${f.message}`);
-  const toolNames = [...new Set(activeFindings.map(f => f.toolName))];
-
-  const message = activeFindings.length === 0
-    ? "No security issues detected."
-    : `Found ${activeFindings.length} security finding(s): ${activeFindings.filter(f => f.severity === "high").length} high, ${activeFindings.filter(f => f.severity === "medium").length} medium, ${activeFindings.filter(f => f.severity === "low").length} low.`;
-
-  const evidence: EvidenceSummary = {
-    endpoint: "security/scan",
-    advertised: true,
-    responded: true,
-    minimalShapePresent: true,
-    itemCount: activeFindings.length,
-    identifiers: toolNames.length > 0 ? toolNames : undefined,
-    diagnostics: diagnostics.length > 0 ? diagnostics : undefined,
-    findings: structuredFindings(activeFindings),
-  };
-
-  return {
-    result: makeCheckResult(
-      "security",
-      status,
-      performance.now() - startedAt,
-      message,
-      [evidence],
-    ),
-  };
+  return { result: buildSecurityCheckResult(activeFindings, "security", startedAt) };
 }

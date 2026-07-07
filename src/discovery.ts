@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { z } from "zod";
 
 import type { TargetConfig } from "./types.js";
 
@@ -8,6 +9,20 @@ interface DiscoveredTarget {
   source: string;
   config: TargetConfig;
 }
+
+const mcpServerEntrySchema = z.object({
+  url: z.string().optional(),
+  command: z.string().optional(),
+  args: z.array(z.unknown()).optional(),
+  env: z.record(z.string(), z.unknown()).optional(),
+  authToken: z.string().optional(),
+}).passthrough();
+
+const mcpConfigSchema = z.object({
+  mcpServers: z.record(z.string(), z.unknown()),
+}).passthrough();
+
+type McpConfig = z.infer<typeof mcpConfigSchema>;
 
 function defaultConfigPaths(): string[] {
   const home = os.homedir();
@@ -46,45 +61,32 @@ function defaultConfigPaths(): string[] {
   return paths;
 }
 
-async function tryReadJson(filePath: string): Promise<unknown> {
+async function tryReadJson(filePath: string): Promise<McpConfig | undefined> {
   try {
     const content = await readFile(filePath, "utf8");
-    return JSON.parse(content) as unknown;
+    return mcpConfigSchema.parse(JSON.parse(content));
   } catch {
     return undefined;
   }
 }
 
-function extractTargets(data: unknown, source: string): DiscoveredTarget[] {
-  if (typeof data !== "object" || data === null || Array.isArray(data)) {
-    return [];
-  }
-
-  const obj = data as Record<string, unknown>;
-  const servers = obj["mcpServers"];
-  if (typeof servers !== "object" || servers === null || Array.isArray(servers)) {
-    return [];
-  }
-
+function extractTargets(data: McpConfig, source: string): DiscoveredTarget[] {
   const results: DiscoveredTarget[] = [];
-  for (const [name, entry] of Object.entries(servers as Record<string, unknown>)) {
-    if (typeof entry !== "object" || entry === null || Array.isArray(entry)) {
-      continue;
-    }
-    const serverEntry = entry as Record<string, unknown>;
-    const command = serverEntry["command"];
-    const args = serverEntry["args"];
+
+  for (const [name, entry] of Object.entries(data.mcpServers)) {
+    const parsed = mcpServerEntrySchema.safeParse(entry);
+    if (!parsed.success) continue;
+    const serverEntry = parsed.data;
 
     // HTTP/SSE server (has url field)
-    const url = serverEntry["url"];
-    if (typeof url === "string" && url.length > 0) {
+    if (serverEntry.url) {
       results.push({
         source,
         config: {
           targetId: name,
           adapter: "http",
-          url,
-          authToken: typeof serverEntry["authToken"] === "string" ? serverEntry["authToken"] : undefined,
+          url: serverEntry.url,
+          authToken: serverEntry.authToken,
           timeoutMs: 15_000,
         }
       });
@@ -92,30 +94,36 @@ function extractTargets(data: unknown, source: string): DiscoveredTarget[] {
     }
 
     // Local process server (has command field)
-    if (typeof command !== "string" || command.length === 0) {
+    if (!serverEntry.command) {
       continue;
     }
 
     const parsedArgs: string[] = [];
-    if (Array.isArray(args)) {
-      for (const arg of args) {
+    if (serverEntry.args) {
+      for (const arg of serverEntry.args) {
         if (typeof arg === "string") {
           parsedArgs.push(arg);
         }
       }
     }
 
+    const envPairs: Array<[string, string]> = [];
+    if (serverEntry.env) {
+      for (const [key, value] of Object.entries(serverEntry.env)) {
+        if (typeof value === "string") {
+          envPairs.push([key, value]);
+        }
+      }
+    }
     const env: Record<string, string> | undefined =
-      typeof serverEntry["env"] === "object" && serverEntry["env"] !== null && !Array.isArray(serverEntry["env"])
-        ? serverEntry["env"] as Record<string, string>
-        : undefined;
+      envPairs.length > 0 ? Object.fromEntries(envPairs) : undefined;
 
     results.push({
       source,
       config: {
         targetId: name,
         adapter: "local-process",
-        command,
+        command: serverEntry.command,
         args: parsedArgs,
         env,
         timeoutMs: 15_000,

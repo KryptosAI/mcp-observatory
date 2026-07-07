@@ -17,11 +17,6 @@ export class HttpAdapter {
       headers["Authorization"] = `Bearer ${target.authToken}`;
     }
 
-    const client = new Client(
-      { name: "mcp-observatory", version: TOOL_VERSION },
-      { capabilities: {} },
-    );
-
     const stderrLines: string[] = [];
     const url = new URL(target.url);
     if (url.protocol !== "http:" && url.protocol !== "https:") {
@@ -29,29 +24,44 @@ export class HttpAdapter {
     }
     const timeoutMs = target.timeoutMs ?? 15_000;
 
+    let mcpClient: Client | undefined;
     let activeTransport: Transport | undefined;
+
+    const makeClient = () =>
+      new Client(
+        { name: "mcp-observatory", version: TOOL_VERSION },
+        { capabilities: {} },
+      );
+
     try {
+      mcpClient = makeClient();
       let transport: Transport = new StreamableHTTPClientTransport(url, { requestInit: { headers } });
       if (options?.record) transport = new RecordingTransport(transport);
-      await client.connect(transport, { timeout: timeoutMs });
+      await mcpClient.connect(transport, { timeout: timeoutMs });
       activeTransport = transport;
     } catch {
       stderrLines.push("Streamable HTTP failed, falling back to SSE.");
+      if (mcpClient) {
+        await mcpClient.close().catch(() => undefined);
+        mcpClient = undefined;
+      }
     }
 
     if (!activeTransport) {
       try {
+        mcpClient = makeClient();
         let transport: Transport = new SSEClientTransport(url, { requestInit: { headers } });
         if (options?.record) transport = new RecordingTransport(transport);
-        await client.connect(transport, { timeout: timeoutMs });
+        await mcpClient.connect(transport, { timeout: timeoutMs });
         activeTransport = transport;
       } catch (error) {
         const rawMessage = errorMessage(error);
-        await client.close().catch(() => undefined); // Cleanup errors are non-fatal
+        if (mcpClient) await mcpClient.close().catch(() => undefined);
         throw new AdapterConnectError(target, rawMessage, stderrLines);
       }
     }
 
+    const client = mcpClient as Client;
     const serverVersion = client.getServerVersion();
 
     return {

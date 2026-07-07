@@ -70,6 +70,7 @@ Replace the link target with the merged proof card or PR for your contribution.
 | Contributor | Role | Public Proof |
 | --- | --- | --- |
 | [William Weishuhn](https://github.com/KryptosAI) | Founding maintainer, CI Integrator, SARIF Fixer, Docs/Agent Prompt Contributor | [All Contributors entry](../CONTRIBUTORS.md), [Code Scanning demo](./code-scanning-demo.md), [Agent Task Pack](./agent-tasks.md) |
+| [Lee Sang Hoon](https://github.com/leemeo3) | Target Verifier, Safety Index Contributor | [PR #144](https://github.com/KryptosAI/mcp-observatory/pull/144), [PR #159](https://github.com/KryptosAI/mcp-observatory/pull/159) |
 
 External contributors are added after a merged PR, an accepted target artifact, or maintainer-confirmed upstream adoption.
 

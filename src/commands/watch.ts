@@ -98,17 +98,22 @@ async function runWatchMode(target: TargetConfig, outDir: string, intervalSecond
   const loop = async (): Promise<void> => {
     await new Promise((resolve) => setTimeout(resolve, intervalSeconds * 1000));
 
-    const currentArtifact = await runTarget(target);
-    const diffResult = diff(previousArtifact, currentArtifact);
+    try {
+      const currentArtifact = await runTarget(target);
+      const diffResult = diff(previousArtifact, currentArtifact);
 
-    if (diffResult.summary.regressions > 0 || diffResult.summary.recoveries > 0 || diffResult.summary.added > 0 || diffResult.summary.removed > 0) {
-      const outPath = await writeRunArtifact(currentArtifact, outDir);
-      process.stdout.write(`\n--- ${new Date().toLocaleTimeString()} ---\n`);
-      process.stdout.write(renderWatchChanges(currentArtifact, diffResult) + "\n");
-      process.stdout.write(`${c(ANSI.dim, `Artifact: ${outPath}`)}\n\n`);
+      if (diffResult.summary.regressions > 0 || diffResult.summary.recoveries > 0 || diffResult.summary.added > 0 || diffResult.summary.removed > 0) {
+        const outPath = await writeRunArtifact(currentArtifact, outDir);
+        process.stdout.write(`\n--- ${new Date().toLocaleTimeString()} ---\n`);
+        process.stdout.write(renderWatchChanges(currentArtifact, diffResult) + "\n");
+        process.stdout.write(`${c(ANSI.dim, `Artifact: ${outPath}`)}\n\n`);
+      }
+
+      previousArtifact = currentArtifact;
+    } catch (err) {
+      process.stderr.write(`[watch] poll error: ${err instanceof Error ? err.message : String(err)}\n`);
     }
 
-    previousArtifact = currentArtifact;
     void loop();
   };
 

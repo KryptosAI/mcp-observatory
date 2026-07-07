@@ -10,6 +10,7 @@ import {
   formatOutput,
   getBinName,
   quoteShell,
+  setNoColor,
   setupCiHint,
   targetFromCommand,
   useColor,
@@ -23,6 +24,7 @@ const originalEnv = { ...process.env };
 afterEach(() => {
   process.argv = [...originalArgv];
   process.env = { ...originalEnv };
+  setNoColor(false);
   vi.restoreAllMocks();
 });
 
@@ -60,7 +62,7 @@ describe("command helper target handling", () => {
 describe("command helper formatting", () => {
   it("controls ANSI color output using env and argv", () => {
     delete process.env["NO_COLOR"];
-    process.argv = ["node", "cli.js"];
+    setNoColor(false);
     expect(useColor()).toBe(true);
     expect(c(ANSI.green, "pass")).toContain(ANSI.green);
 
@@ -69,7 +71,7 @@ describe("command helper formatting", () => {
     expect(c(ANSI.green, "pass")).toBe("pass");
 
     delete process.env["NO_COLOR"];
-    process.argv = ["node", "cli.js", "--no-color"];
+    setNoColor(true);
     expect(useColor()).toBe(false);
   });
 
