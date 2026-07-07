@@ -15,8 +15,8 @@ import type {
   SchemaDriftEntry,
   TargetConfig,
   TargetSnapshot,
+  SCHEMA_VERSION,
 } from "./types.js";
-import { SCHEMA_VERSION } from "./types.js";
 
 export function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
