@@ -9,6 +9,8 @@ body:
         The highest-leverage contribution is one safe MCP target that can run without private credentials.
 
         Please do not paste secrets, private URLs, private schemas, customer data, or destructive commands.
+
+        中文和韩语提交欢迎 | Chinese and Korean submissions welcome
   - type: input
     id: server
     attributes:

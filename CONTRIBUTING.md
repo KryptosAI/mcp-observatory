@@ -4,6 +4,16 @@ Thanks for helping make MCP Observatory sharper and more trustworthy.
 
 This project adheres to a [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
 
+## 🌏 International Contributors Welcome
+
+We actively welcome contributors from China, Korea, Japan, and across Asia. This is an early-stage project — contributors can help shape the direction before it becomes established infrastructure.
+
+- [中文 README](README.zh-CN.md) — Simplified Chinese documentation
+- Bilingual issues welcome: 欢迎提交中文 issues 和 PRs
+- We use `新手友好` (Chinese) and `초보자 환영` (Korean) labels alongside `good first issue`
+
+Join us early. Your contributions will define how MCP security tooling evolves.
+
 ## ⚡ 5-Minute Quickstart
 
 ```bash
