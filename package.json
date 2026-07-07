@@ -9,7 +9,7 @@
   "homepage": "https://github.com/KryptosAI/mcp-observatory#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KryptosAI/mcp-observatory.git"
+    "url": "https://github.com/KryptosAI/mcp-observatory.git"
   },
   "bugs": {
     "url": "https://github.com/KryptosAI/mcp-observatory/issues"
