@@ -582,6 +582,7 @@ The record/replay/verify pattern is inspired by:
 Thanks to these amazing people who have contributed:
 
 - [leemeo3](https://github.com/leemeo3) — 3 Safety Index targets (Git, Chrome DevTools, Filesystem MCP)
+- [tanishxdev](https://github.com/tanishxdev) — Legacy CLI deprecation warnings (#187)
 - [sansynx](https://github.com/sansynx) — CLI format validation (#182)
 - [tanishxdev](https://github.com/tanishxdev) — Legacy CLI deprecation warnings (#187)
 
