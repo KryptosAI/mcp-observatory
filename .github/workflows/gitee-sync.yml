@@ -16,18 +16,6 @@ jobs:
           fetch-depth: 0
 
       - name: Mirror to Gitee
-        uses: wearerequired/git-mirror-action@v1
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.GITEE_SSH_PRIVATE_KEY }}
-        with:
-          source-repo: "git@github.com:KryptosAI/mcp-observatory.git"
-          destination-repo: "git@gitee.com:KryptosAI/mcp-observatory.git"
-
-# Setup instructions:
-# 1. Create a Gitee account at https://gitee.com
-# 2. Add an SSH public key at https://gitee.com/profile/sshkeys
-#    (generate one: ssh-keygen -t ed25519 -C "gitee-sync" -f gitee-sync-key)
-# 3. Add the SSH private key as a GitHub secret named GITEE_SSH_PRIVATE_KEY
-#    at https://github.com/KryptosAI/mcp-observatory/settings/secrets/actions
-# 4. Create the repo manually on Gitee: https://gitee.com/KryptosAI/mcp-observatory
-#    (Gitee only allows creating repos via authenticated API or manual creation)
+        run: |
+          git remote add gitee "https://williamweishuhn:${{ secrets.GITEE_API_TOKEN }}@gitee.com/williamweishuhn/mcp-observatory.git" || git remote set-url gitee "https://williamweishuhn:${{ secrets.GITEE_API_TOKEN }}@gitee.com/williamweishuhn/mcp-observatory.git"
+          git push gitee main --force
