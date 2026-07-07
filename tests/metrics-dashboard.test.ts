@@ -73,9 +73,9 @@ describe("local metrics dashboard", () => {
           { day: "2026-05-21", events: 1, localSessions: 0, externalCiSessions: 1, mcpSessions: 0 },
           { day: "2026-06-21", events: 4, localSessions: 0, externalCiSessions: 4, mcpSessions: 0 },
         ],
-        topCommands: [{ command: "scan", events: 1, sessions: 1 }],
+        topCommands: [{ command: "scan", events: 1, sessions: 1, uniqueDomains: 1 }],
         topDomains: [{ domain: "acme.example", events: 1, sessions: 1 }],
-        topDomainDetails: [{ domain: "acme.example", events: 1, sessions: 1, topCommand: "scan", latestSeen: "2026-06-21T10:00:00.000Z" }],
+        topDomainDetails: [{ domain: "acme.example", events: 1, sessions: 1, topCommand: "scan", latestSeen: "2026-06-21T10:00:00.000Z", firstSeen: "2026-06-21T10:00:00.000Z" }],
         versionAdoption: [
           { version: "0.24.0", events: 1, sessions: 1, sessionShare: 50, isLatest: true },
           { version: "0.23.0", events: 1, sessions: 1, sessionShare: 50, isLatest: false },

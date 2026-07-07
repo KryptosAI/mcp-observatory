@@ -112,7 +112,7 @@ export function registerScoreCommands(program: Command): void {
       }));
 
       if (options.format !== "terminal") {
-        const output = formatOutput(artifact, options.format as "json" | "junit" | "sarif" | "markdown" | "html" | "terminal");
+        const output = formatOutput(artifact, options.format);
         await writeOutput(output, options.format, options.output);
         return;
       }
