@@ -28,6 +28,10 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](./CONTRIBUTORS.md)
 [![Gitee Stars](https://gitee.com/williamweishuhn/mcp-observatory/badge/star.svg)](https://gitee.com/williamweishuhn/mcp-observatory)
 [![Gitee Forks](https://gitee.com/williamweishuhn/mcp-observatory/badge/fork.svg)](https://gitee.com/williamweishuhn/mcp-observatory)
+[![MCP Registry](https://img.shields.io/badge/MCP_Registry-listed-blue)](https://registry.modelcontextprotocol.io)
+[![MCP Market](https://img.shields.io/badge/MCP_Market-premium-gold)](https://mcpmarket.com)
+[![MCP Hub China](https://img.shields.io/badge/MCP_Hub_China-listed-red)](https://mcp-hub.cn)
+[![OpenTools](https://img.shields.io/badge/OpenTools-listed-green)](https://opentools.ai)
 
 > 我们热烈欢迎中国开发者贡献代码、文档和新的 MCP 服务器安全索引条目。请查看 CONTRIBUTING.md 了解如何参与。
 
