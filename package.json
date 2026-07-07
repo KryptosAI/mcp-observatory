@@ -161,16 +161,16 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@types/node": "26.0.1",
-    "@typescript-eslint/eslint-plugin": "8.62.1",
-    "@typescript-eslint/parser": "8.62.1",
+    "@types/node": "26.1.0",
+    "@typescript-eslint/eslint-plugin": "8.63.0",
+    "@typescript-eslint/parser": "8.63.0",
     "ajv": "8.20.0",
     "eslint": "10.6.0",
     "globals": "17.7.0",
-    "tsx": "4.22.4",
-    "@vitest/coverage-v8": "4.1.9",
+    "tsx": "4.23.0",
+    "@vitest/coverage-v8": "4.1.10",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.62.1",
-    "vitest": "4.1.9"
+    "typescript-eslint": "8.63.0",
+    "vitest": "4.1.10"
   }
 }
