@@ -34,6 +34,16 @@
         "doc",
         "test"
       ]
+    },
+    {
+      "login": "sansynx",
+      "name": "Sanath",
+      "avatar_url": "https://avatars.githubusercontent.com/u/89244519?v=4",
+      "profile": "https://github.com/sansynx",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ]
 }
