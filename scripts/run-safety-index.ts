@@ -1,4 +1,5 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, realpath, rm, writeFile } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -45,6 +46,11 @@ export interface SafetyIndexTarget {
   reproductionNotes: string;
   status?: string;
   publicProof?: string;
+  tempDirArg?: {
+    index: number;
+    prefix?: string;
+    placeholder?: string;
+  };
 }
 
 export interface SafetyIndexEntry {
@@ -124,23 +130,61 @@ function targetConfigFor(target: SafetyIndexTarget): TargetConfig {
   };
 }
 
-function sanitizePublicArtifactValue(value: unknown): unknown {
+function sanitizePublicArtifactValue(value: unknown, replacements: Map<string, string>): unknown {
   if (typeof value === "string") {
-    return value.replace(emailPattern, "[redacted-email]");
+    let sanitized = value.replace(emailPattern, "[redacted-email]");
+    for (const [actual, replacement] of [...replacements].sort((a, b) => b[0].length - a[0].length)) {
+      sanitized = sanitized.replaceAll(actual, replacement);
+    }
+    return sanitized;
   }
   if (Array.isArray(value)) {
-    return value.map(sanitizePublicArtifactValue);
+    return value.map((item) => sanitizePublicArtifactValue(item, replacements));
   }
   if (typeof value === "object" && value !== null) {
     return Object.fromEntries(
-      Object.entries(value).map(([key, nestedValue]) => [key, sanitizePublicArtifactValue(nestedValue)]),
+      Object.entries(value).map(([key, nestedValue]) => [key, sanitizePublicArtifactValue(nestedValue, replacements)]),
     );
   }
   return value;
 }
 
-function sanitizePublicArtifact(artifact: RunArtifact): RunArtifact {
-  return sanitizePublicArtifactValue(artifact) as RunArtifact;
+function sanitizePublicArtifact(artifact: RunArtifact, replacements = new Map<string, string>()): RunArtifact {
+  return sanitizePublicArtifactValue(artifact, replacements) as RunArtifact;
+}
+
+async function resolveSafetyIndexTargetConfig(target: SafetyIndexTarget): Promise<{
+  config: TargetConfig;
+  replacements: Map<string, string>;
+  cleanup: () => Promise<void>;
+}> {
+  const config = targetConfigFor(target);
+  const replacements = new Map<string, string>();
+  const tempDirArg = target.tempDirArg;
+  if (!tempDirArg) {
+    return { config, replacements, cleanup: () => Promise.resolve() };
+  }
+
+  if (config.adapter !== "local-process") {
+    throw new Error(`Safety Index target ${target.id} tempDirArg requires a local-process target.`);
+  }
+
+  const placeholder = tempDirArg.placeholder ?? target.args[tempDirArg.index] ?? "<safe-empty-temp-dir>";
+  const tempDir = await mkdtemp(path.join(os.tmpdir(), `${tempDirArg.prefix ?? target.id}-`));
+  const resolvedTempDir = await realpath(tempDir).catch(() => tempDir);
+  const args = [...config.args];
+  args[tempDirArg.index] = tempDir;
+  config.args = args;
+  replacements.set(tempDir, placeholder);
+  replacements.set(resolvedTempDir, placeholder);
+
+  return {
+    config,
+    replacements,
+    cleanup: async () => {
+      await rm(tempDir, { recursive: true, force: true });
+    },
+  };
 }
 
 export async function loadSafetyTargets(filePath = targetsPath): Promise<SafetyIndexTarget[]> {
@@ -162,14 +206,35 @@ export async function loadSafetyTargets(filePath = targetsPath): Promise<SafetyI
     if (!Array.isArray(target.args) || !target.args.every((arg) => typeof arg === "string")) {
       throw new Error(`Safety Index target ${index} args must be an array of strings.`);
     }
+    if (target.tempDirArg !== undefined) {
+      if (typeof target.tempDirArg !== "object" || target.tempDirArg === null || Array.isArray(target.tempDirArg)) {
+        throw new Error(`Safety Index target ${index} tempDirArg must be an object.`);
+      }
+      if (!Number.isInteger(target.tempDirArg.index) || target.tempDirArg.index < 0 || target.tempDirArg.index >= target.args.length) {
+        throw new Error(`Safety Index target ${index} tempDirArg index must point at an args entry.`);
+      }
+      if (target.tempDirArg.prefix !== undefined && (typeof target.tempDirArg.prefix !== "string" || target.tempDirArg.prefix.length === 0)) {
+        throw new Error(`Safety Index target ${index} tempDirArg prefix must be a non-empty string.`);
+      }
+      if (target.tempDirArg.placeholder !== undefined && (typeof target.tempDirArg.placeholder !== "string" || target.tempDirArg.placeholder.length === 0)) {
+        throw new Error(`Safety Index target ${index} tempDirArg placeholder must be a non-empty string.`);
+      }
+    }
     return target as SafetyIndexTarget;
   });
 }
 
 async function runEntry(target: SafetyIndexTarget): Promise<SafetyIndexEntry> {
-  const artifact = await runTarget(targetConfigFor(target), { securityCheck: true, attackSimulation: {} });
-  validateRunArtifact(artifact);
-  const publicArtifact = sanitizePublicArtifact(artifact);
+  const resolvedTarget = await resolveSafetyIndexTargetConfig(target);
+  let publicArtifact: RunArtifact;
+
+  try {
+    const artifact = await runTarget(resolvedTarget.config, { securityCheck: true, attackSimulation: {} });
+    validateRunArtifact(artifact);
+    publicArtifact = sanitizePublicArtifact(artifact, resolvedTarget.replacements);
+  } finally {
+    await resolvedTarget.cleanup();
+  }
 
   await mkdir(artifactsDir, { recursive: true });
   const artifactPath = path.join(artifactsDir, `${target.id}.json`);

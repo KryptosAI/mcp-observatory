@@ -1,0 +1,786 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-07-07T211635668Z_9369cd63",
+  "createdAt": "2026-07-07T21:16:35.668Z",
+  "toolVersion": "1.28.2",
+  "target": {
+    "targetId": "filesystem-mcp-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-filesystem",
+      "<safe-empty-temp-dir>"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "@modelcontextprotocol/server-filesystem",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Filesystem boundary",
+      "failureClass": "Temporary directory filesystem access",
+      "whyItMatters": "Filesystem MCP is a core agent trust boundary because it exposes read, write, edit, delete, and directory traversal tools."
+    },
+    "serverName": "secure-filesystem-server",
+    "serverVersion": "0.2.0"
+  },
+  "environment": {
+    "platform": "darwin 24.0.0",
+    "nodeVersion": "v25.8.1"
+  },
+  "summary": {
+    "total": 8,
+    "pass": 2,
+    "fail": 0,
+    "partial": 4,
+    "unsupported": 2,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 4.94458399999985,
+      "message": "Advertised capability responded with the minimal expected shape (14 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 14,
+          "identifiers": [
+            "read_file",
+            "read_text_file",
+            "read_media_file",
+            "read_multiple_files",
+            "write_file",
+            "edit_file",
+            "create_directory",
+            "list_directory",
+            "list_directory_with_sizes",
+            "directory_tree",
+            "move_file",
+            "search_files",
+            "get_file_info",
+            "list_allowed_directories"
+          ],
+          "diagnostics": [
+            "Secure MCP Filesystem Server running on stdio",
+            "Client does not support MCP Roots, using allowed directories set from server args: [",
+            "'<safe-empty-temp-dir>',",
+            "'<safe-empty-temp-dir>'",
+            "]"
+          ],
+          "schemas": {
+            "read_file": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "tail": {
+                  "description": "If provided, returns only the last N lines of the file",
+                  "type": "number"
+                },
+                "head": {
+                  "description": "If provided, returns only the first N lines of the file",
+                  "type": "number"
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "read_text_file": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "tail": {
+                  "description": "If provided, returns only the last N lines of the file",
+                  "type": "number"
+                },
+                "head": {
+                  "description": "If provided, returns only the first N lines of the file",
+                  "type": "number"
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "read_media_file": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "read_multiple_files": {
+              "type": "object",
+              "properties": {
+                "paths": {
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Array of file paths to read. Each path must be a string pointing to a valid file within allowed directories."
+                }
+              },
+              "required": [
+                "paths"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "write_file": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "path",
+                "content"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "edit_file": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "edits": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "oldText": {
+                        "type": "string",
+                        "description": "Text to search for - must match exactly"
+                      },
+                      "newText": {
+                        "type": "string",
+                        "description": "Text to replace with"
+                      }
+                    },
+                    "required": [
+                      "oldText",
+                      "newText"
+                    ]
+                  }
+                },
+                "dryRun": {
+                  "default": false,
+                  "description": "Preview changes using git-style diff format",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "path",
+                "edits"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "create_directory": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "list_directory": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "list_directory_with_sizes": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "sortBy": {
+                  "default": "name",
+                  "description": "Sort entries by name or size",
+                  "type": "string",
+                  "enum": [
+                    "name",
+                    "size"
+                  ]
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "directory_tree": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "excludePatterns": {
+                  "default": [],
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "move_file": {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "type": "string"
+                },
+                "destination": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source",
+                "destination"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "search_files": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "pattern": {
+                  "type": "string"
+                },
+                "excludePatterns": {
+                  "default": [],
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "path",
+                "pattern"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_file_info": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "list_allowed_directories": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.0038749999998799467,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.001750000000356522,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "partial",
+      "durationMs": 0.06254200000012133,
+      "message": "Found 3 security finding(s): 0 high, 3 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 3,
+          "identifiers": [
+            "write_file",
+            "edit_file",
+            "create_directory"
+          ],
+          "diagnostics": [
+            "[medium] Tool \"write_file\" accepts filesystem paths and has destructive capabilities.",
+            "[medium] Tool \"edit_file\" accepts filesystem paths and has destructive capabilities.",
+            "[medium] Tool \"create_directory\" accepts filesystem paths and has destructive capabilities."
+          ],
+          "findings": [
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "write_file",
+              "message": "Tool \"write_file\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "edit_file",
+              "message": "Tool \"edit_file\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "create_directory",
+              "message": "Tool \"create_directory\" accepts filesystem paths and has destructive capabilities."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 4.9719169999998485,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 14 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
+            "[pass] tool-response-content: Tool \"list_allowed_directories\" response has valid content array.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "partial",
+      "durationMs": 2.0610830000000533,
+      "message": "Found 18 quality finding(s) across 14 item(s): 0 warnings, 18 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 18,
+          "identifiers": [
+            "read_file",
+            "read_text_file",
+            "read_media_file",
+            "write_file",
+            "edit_file",
+            "create_directory",
+            "list_directory",
+            "list_directory_with_sizes",
+            "directory_tree",
+            "move_file",
+            "search_files",
+            "get_file_info"
+          ],
+          "diagnostics": [
+            "[info] tool \"read_file\": Property 'path' missing description",
+            "[info] tool \"read_text_file\": Property 'path' missing description",
+            "[info] tool \"read_media_file\": Property 'path' missing description",
+            "[info] tool \"write_file\": Property 'path' missing description",
+            "[info] tool \"write_file\": Property 'content' missing description",
+            "[info] tool \"edit_file\": Property 'path' missing description",
+            "[info] tool \"edit_file\": Property 'edits' missing description",
+            "[info] tool \"create_directory\": Property 'path' missing description",
+            "[info] tool \"list_directory\": Property 'path' missing description",
+            "[info] tool \"list_directory_with_sizes\": Property 'path' missing description",
+            "[info] tool \"directory_tree\": Property 'path' missing description",
+            "[info] tool \"directory_tree\": Property 'excludePatterns' missing description",
+            "[info] tool \"move_file\": Property 'source' missing description",
+            "[info] tool \"move_file\": Property 'destination' missing description",
+            "[info] tool \"search_files\": Property 'path' missing description",
+            "[info] tool \"search_files\": Property 'pattern' missing description",
+            "[info] tool \"search_files\": Property 'excludePatterns' missing description",
+            "[info] tool \"get_file_info\": Property 'path' missing description"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "read_file",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "read_text_file",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "read_media_file",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "write_file",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "write_file",
+              "issue": "Property 'content' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "edit_file",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "edit_file",
+              "issue": "Property 'edits' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create_directory",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "list_directory",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "list_directory_with_sizes",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "directory_tree",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "directory_tree",
+              "issue": "Property 'excludePatterns' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "move_file",
+              "issue": "Property 'source' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "move_file",
+              "issue": "Property 'destination' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "search_files",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "search_files",
+              "issue": "Property 'pattern' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "search_files",
+              "issue": "Property 'excludePatterns' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_file_info",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "partial",
+      "durationMs": 2.289042000000336,
+      "message": "Found 3 security finding(s): 0 high, 3 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 3,
+          "identifiers": [
+            "write_file",
+            "edit_file",
+            "create_directory"
+          ],
+          "diagnostics": [
+            "[medium] Tool \"write_file\" accepts filesystem paths and has destructive capabilities.",
+            "[medium] Tool \"edit_file\" accepts filesystem paths and has destructive capabilities.",
+            "[medium] Tool \"create_directory\" accepts filesystem paths and has destructive capabilities."
+          ],
+          "findings": [
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "write_file",
+              "message": "Tool \"write_file\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "edit_file",
+              "message": "Tool \"edit_file\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "create_directory",
+              "message": "Tool \"create_directory\" accepts filesystem paths and has destructive capabilities."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "partial",
+      "durationMs": 2.580167000000074,
+      "message": "Safe attack simulation found 3 finding(s): 0 high, 3 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 3,
+          "identifiers": [
+            "write_file",
+            "edit_file",
+            "create_directory"
+          ],
+          "diagnostics": [
+            "[medium] Tool \"write_file\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"edit_file\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"create_directory\" combines broad parameters (path) with destructive or non-read-only behavior."
+          ],
+          "findings": [
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "write_file",
+              "message": "Tool \"write_file\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false,
+                  "destructiveHint": true,
+                  "idempotentHint": true
+                },
+                "description": "Create a new file or completely overwrite an existing file with new content. Use with caution as it will overwrite existing files without warning. Handles text content with proper encoding. Only works within allowed directories."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "edit_file",
+              "message": "Tool \"edit_file\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false,
+                  "destructiveHint": true,
+                  "idempotentHint": false
+                },
+                "description": "Make line-based edits to a text file. Each edit replaces exact line sequences with new content. Returns a git-style diff showing the changes made. Only works within allowed directories."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "create_directory",
+              "message": "Tool \"create_directory\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "readOnlyHint": false,
+                  "destructiveHint": false,
+                  "idempotentHint": true
+                },
+                "description": "Create a new directory or ensure a directory exists. Can create multiple nested directories in one operation. If the directory already exists, this operation will succeed silently. Perfect for setting up directory structures for projects or ensuring required paths exist. Only works within allowed directories."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 77,
+    "grade": "C",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "schema-quality: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "security-lite: partial (60/100)",
+          "security: partial (60/100)",
+          "attack-sim: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 67,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: unsupported (50/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 618ms",
+          "p95 latency: 5ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 618.2616669999998,
+    "toolsListMs": 4.94458399999985,
+    "promptsListMs": 0.0038749999998799467,
+    "resourcesListMs": 0.001750000000356522
+  }
+}
