@@ -25,7 +25,7 @@
 [![Node >= 20](https://img.shields.io/badge/node-%3E%3D20-339933)](./package.json)
 [![Smithery](https://smithery.ai/badge/@kryptosai/mcp-observatory)](https://smithery.ai/server/@kryptosai/mcp-observatory)
 [![mcp-observatory MCP server](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory/badges/score.svg)](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory)
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](./CONTRIBUTORS.md)
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](./CONTRIBUTORS.md)
 [![Gitee Stars](https://gitee.com/williamweishuhn/mcp-observatory/badge/star.svg)](https://gitee.com/williamweishuhn/mcp-observatory)
 [![Gitee Forks](https://gitee.com/williamweishuhn/mcp-observatory/badge/fork.svg)](https://gitee.com/williamweishuhn/mcp-observatory)
 [![Gitee](https://img.shields.io/badge/Gitee-镜像-orange)](https://gitee.com/williamweishuhn/mcp-observatory)
@@ -572,6 +572,16 @@ The record/replay/verify pattern is inspired by:
 - Servers requiring interactive OAuth (e.g., Google Drive) need pre-authentication before Observatory can connect
 - Custom WebSocket transports (e.g., BrowserTools MCP) are not supported
 - A few servers time out or close before init — see [known issues](./docs/known-issues.md) and [compatibility](./docs/compatibility.md)
+
+## Contributors ✨
+
+Thanks to these amazing people who have contributed:
+
+- [leemeo3](https://github.com/leemeo3) — 3 Safety Index targets (Git, Chrome DevTools, Filesystem MCP)
+- [sansynx](https://github.com/sansynx) — CLI format validation (#182)
+- [tanishxdev](https://github.com/tanishxdev) — Legacy CLI deprecation warnings (#187)
+
+[See all contributors →](CONTRIBUTORS.md)
 
 ## Contributing
 
