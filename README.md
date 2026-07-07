@@ -565,7 +565,15 @@ The record/replay/verify pattern is inspired by:
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines. The fastest way to contribute is to add a real passing target with a distinct capability shape, a clearer report surface, or a cleaner startup diagnosis.
+We welcome contributors! The fastest way to get involved:
+
+[![good first issue](https://img.shields.io/github/issues-search/KryptosAI/mcp-observatory?query=is%3Aopen%20label%3A%22good%20first%20issue%22&label=good%20first%20issue&color=green)](https://github.com/KryptosAI/mcp-observatory/issues?q=is%3Aopen+label%3A%22good+first+issue%22)
+
+```bash
+git clone https://github.com/KryptosAI/mcp-observatory.git && cd mcp-observatory && npm install && npm test
+```
+
+The most common first contribution is adding an MCP server to the Safety Index (10-15 minutes). See [CONTRIBUTING.md](CONTRIBUTING.md) for full guidelines, code standards, and the contributor recognition ladder.
 
 ---
 
