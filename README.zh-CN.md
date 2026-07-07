@@ -1,3 +1,5 @@
+> 🇺🇸 English: [README.md](README.md)  
+
 # MCP Observatory
 
 ```
