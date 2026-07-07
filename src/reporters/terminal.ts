@@ -121,8 +121,10 @@ const ANSI = {
   reset: "\x1b[0m",
 } as const;
 
+const _argvNoColor = process.argv.includes("--no-color");
+
 function shouldColor(): boolean {
-  return !process.env["NO_COLOR"] && !process.argv.includes("--no-color");
+  return !process.env["NO_COLOR"] && !_argvNoColor;
 }
 
 function co(code: string, text: string): string {

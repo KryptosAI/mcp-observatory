@@ -39,8 +39,14 @@ export const LOGO = `
 
 // ── Color helpers ───────────────────────────────────────────────────────────
 
+let _noColor = false;
+
+export function setNoColor(value: boolean): void {
+  _noColor = value;
+}
+
 export function useColor(): boolean {
-  return !process.env["NO_COLOR"] && !process.argv.includes("--no-color");
+  return !process.env["NO_COLOR"] && !_noColor;
 }
 
 export function c(code: string, text: string): string {

@@ -4,7 +4,7 @@ import path from "node:path";
 import type { DiffArtifact, RunArtifact } from "./types.js";
 import { writeTextFileAtomic } from "./utils/files.js";
 import { slugify } from "./utils/ids.js";
-import { validateDiffArtifact, validateRunArtifact } from "./validate.js";
+import { isObject, validateDiffArtifact, validateRunArtifact } from "./validate.js";
 
 export type Artifact = RunArtifact | DiffArtifact;
 
@@ -74,15 +74,22 @@ export async function findLatestSuccessfulRunArtifact(outDir: string): Promise<s
 
 export async function readArtifact(filePath: string): Promise<Artifact> {
   const content = await readFile(filePath, "utf8");
-  const data: unknown = JSON.parse(content);
-  if (typeof data === "object" && data !== null && !Array.isArray(data) && (data as Record<string, unknown>)["artifactType"] === "diff") {
-    return validateDiffArtifact(data);
+  const data = JSON.parse(content);
+
+  if (isObject(data)) {
+    if (data["artifactType"] === "diff") {
+      return validateDiffArtifact(data);
+    }
+    if (data["artifactType"] === "run") {
+      return validateRunArtifact(data);
+    }
   }
-  // For run artifacts and target configs (which lack artifactType), return as-is
-  // Target configs are validated separately via validateTargetConfig
-  if (typeof data === "object" && data !== null && !Array.isArray(data) && (data as Record<string, unknown>)["artifactType"] === "run") {
-    return validateRunArtifact(data);
+
+  // Unrecognized shape — return as-is for backwards compat (e.g., target configs read via readArtifact).
+  // Guarded by isObject above to ensure we only cast actual objects.
+  if (isObject(data)) {
+    return data as unknown as Artifact;
   }
-  // Unrecognized shape — return as-is for backwards compat (e.g., target configs read via readArtifact)
-  return data as Artifact;
+
+  throw new Error(`Unrecognized artifact format in '${filePath}': expected an object.`);
 }
