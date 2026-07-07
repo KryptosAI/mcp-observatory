@@ -23,6 +23,17 @@
         "maintenance",
         "test"
       ]
+    },
+    {
+      "login": "leemeo3",
+      "name": "Lee Sang Hoon",
+      "avatar_url": "https://avatars.githubusercontent.com/u/leemeo3",
+      "profile": "https://github.com/leemeo3",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
     }
   ]
 }
