@@ -173,9 +173,9 @@ interface TelemetrySummary {
   dailyMarketEvents: Array<{ day: string; events: number; sessions: number }>;
   dailySourceMix: Array<{ day: string; events: number; localSessions: number; externalCiSessions: number; firstPartyCiSessions: number; mcpSessions: number }>;
   dailyMarketSourceMix: Array<{ day: string; events: number; localSessions: number; externalCiSessions: number; mcpSessions: number }>;
-  topCommands: Array<{ command: string; events: number; sessions: number }>;
+  topCommands: Array<{ command: string; events: number; sessions: number; uniqueDomains: number }>;
   topDomains: Array<{ domain: string; events: number; sessions: number }>;
-  topDomainDetails: Array<{ domain: string; events: number; sessions: number; topCommand: string; latestSeen: string }>;
+  topDomainDetails: Array<{ domain: string; events: number; sessions: number; topCommand: string; latestSeen: string; firstSeen: string }>;
   versionAdoption: Array<{ version: string; events: number; sessions: number; sessionShare: number; isLatest: boolean }>;
   versionHealth: VersionHealth;
   dailyMarketVersionAdoption: Array<{ day: string; totalSessions: number; latestSessions: number; latestEvents: number; latestSessionShare: number; dominantVersion: string }>;
@@ -909,9 +909,9 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
     externalCiSessions: Set<string>;
     mcpSessions: Set<string>;
   }>();
-  const commands = new Map<string, { events: number; sessions: Set<string> }>();
+  const commands = new Map<string, { events: number; sessions: Set<string>; domains: Set<string> }>();
   const domains = new Map<string, { events: number; sessions: Set<string> }>();
-  const domainDetails = new Map<string, { events: number; sessions: Set<string>; commands: Map<string, number>; latestSeen: string }>();
+  const domainDetails = new Map<string, { events: number; sessions: Set<string>; commands: Map<string, number>; latestSeen: string; firstSeen: string }>();
   const versions = new Map<string, { events: number; sessions: Set<string> }>();
   const latestVersionSessions = new Set<string>();
   const staleVersionSessions = new Set<string>();
@@ -1043,9 +1043,12 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
         }
       }
       const command = row.command ?? "unknown";
-      const commandBucket = commands.get(command) ?? { events: 0, sessions: new Set<string>() };
+      const commandBucket = commands.get(command) ?? { events: 0, sessions: new Set<string>(), domains: new Set<string>() };
       commandBucket.events += 1;
       if (session) commandBucket.sessions.add(session);
+      for (const domain of rowDomains(row)) {
+        if (!INTERNAL_DOMAINS.has(domain)) commandBucket.domains.add(domain);
+      }
       commands.set(command, commandBucket);
       if (session) {
         if (row.command === "attack-sim") attackStageSessions.add(session);
@@ -1070,12 +1073,13 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
         if (session) domainBucket.sessions.add(session);
         domains.set(domain, domainBucket);
 
-        const detailBucket = domainDetails.get(domain) ?? { events: 0, sessions: new Set<string>(), commands: new Map<string, number>(), latestSeen: "" };
+        const detailBucket = domainDetails.get(domain) ?? { events: 0, sessions: new Set<string>(), commands: new Map<string, number>(), latestSeen: "", firstSeen: "" };
         detailBucket.events += 1;
         if (session) detailBucket.sessions.add(session);
-        const command = row.command ?? "unknown";
-        detailBucket.commands.set(command, (detailBucket.commands.get(command) ?? 0) + 1);
+        const domainCommand = row.command ?? "unknown";
+        detailBucket.commands.set(domainCommand, (detailBucket.commands.get(domainCommand) ?? 0) + 1);
         if (seen && seen > detailBucket.latestSeen) detailBucket.latestSeen = seen;
+        if (seen && (!detailBucket.firstSeen || seen < detailBucket.firstSeen)) detailBucket.firstSeen = seen;
         domainDetails.set(domain, detailBucket);
       }
     }
@@ -1263,7 +1267,7 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
     dailyMarketEvents: sortedMarketDaily.slice(-DAILY_HISTORY_DAYS).reverse(),
     dailySourceMix: sortedSourceMix.slice(-DAILY_HISTORY_DAYS).reverse(),
     dailyMarketSourceMix: sortedMarketSourceMix.slice(-DAILY_HISTORY_DAYS).reverse(),
-    topCommands: [...commands.entries()].map(([command, stats]) => ({ command, events: stats.events, sessions: stats.sessions.size })).sort((a, b) => b.events - a.events).slice(0, 12),
+    topCommands: [...commands.entries()].map(([command, stats]) => ({ command, events: stats.events, sessions: stats.sessions.size, uniqueDomains: stats.domains.size })).sort((a, b) => b.events - a.events).slice(0, 12),
     topDomains: [...domains.entries()].map(([domain, stats]) => ({ domain, events: stats.events, sessions: stats.sessions.size })).sort((a, b) => b.events - a.events).slice(0, 12),
     topDomainDetails: [...domainDetails.entries()].map(([domain, stats]) => ({
       domain,
@@ -1271,6 +1275,7 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
       sessions: stats.sessions.size,
       topCommand: [...stats.commands.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "unknown",
       latestSeen: stats.latestSeen,
+      firstSeen: stats.firstSeen,
     })).sort((a, b) => b.sessions - a.sessions).slice(0, 20),
     versionAdoption: versionRows.map((row) => ({
       ...row,
@@ -1865,90 +1870,252 @@ function monthlyKpiMetrics(points: UsageTrendPoint[], model: DashboardModel): Kp
   ]);
 }
 
-function kpiCards(points: UsageTrendPoint[], model: DashboardModel): string {
+function marketFunnelPanel(model: DashboardModel, points: UsageTrendPoint[]): string {
+  const trend30 = points.slice(-30);
+  const trendPrev30 = points.slice(-60, -30);
+  const sumAgentInstall = (pts: UsageTrendPoint[]) => pts.reduce((sum, p) => sum + p.agentInstallSessions, 0);
+  const month = usagePeriodSummary(points, 30);
+  const previousMonth = usagePeriodSummary(points, 30, 30);
+  const agentInstall30 = sumAgentInstall(trend30);
+  const agentInstallPrev30 = sumAgentInstall(trendPrev30);
+  const repeat30 = Math.max(0, month.sessions - agentInstall30);
+  const repeatPrev30 = Math.max(0, previousMonth.sessions - agentInstallPrev30);
+  const latestPct = month.sessions > 0 ? Math.round((month.latestSessions / month.sessions) * 100) : 0;
+  const latestPctPrev = previousMonth.sessions > 0 ? Math.round((previousMonth.latestSessions / previousMonth.sessions) * 100) : 0;
+
+  const stages: Array<{
+    label: string;
+    header: string;
+    value: string;
+    sub: string;
+    trend: { label: string; direction: "up" | "down" | "flat" };
+    color: string;
+  }> = [
+    {
+      label: "GitHub Clones",
+      header: "Discovery",
+      value: formatNumber(month.clones),
+      sub: `${previousMonth.clones > 0 ? formatNumber(previousMonth.clones) : "n/a"} prior`,
+      trend: signedPercent(month.clones, previousMonth.clones),
+      color: "#f97316",
+    },
+    {
+      label: "NPM Downloads",
+      header: "Install",
+      value: formatNumber(month.npmDownloads),
+      sub: `${previousMonth.npmDownloads > 0 ? formatNumber(previousMonth.npmDownloads) : "n/a"} prior`,
+      trend: signedPercent(month.npmDownloads, previousMonth.npmDownloads),
+      color: "#22d3ee",
+    },
+    {
+      label: "First Run",
+      header: "Usage",
+      value: formatNumber(agentInstall30),
+      sub: `${agentInstallPrev30 > 0 ? formatNumber(agentInstallPrev30) : "n/a"} prior`,
+      trend: signedPercent(agentInstall30, agentInstallPrev30),
+      color: "#8b5cf6",
+    },
+    {
+      label: "Repeat Usage",
+      header: "Retention",
+      value: formatNumber(repeat30),
+      sub: `${repeatPrev30 > 0 ? formatNumber(repeatPrev30) : "n/a"} prior`,
+      trend: signedPercent(repeat30, repeatPrev30),
+      color: "#3b82f6",
+    },
+    {
+      label: "Latest Version",
+      header: "Upgrade",
+      value: `${latestPct}%`,
+      sub: `${formatNumber(month.latestSessions)} sessions · ${model.telemetry.versionHealth.latestVersion}`,
+      trend: signedPercent(latestPct, latestPctPrev),
+      color: "#5ee85c",
+    },
+  ];
+
+  return `<article class="panel market-funnel-panel">
+    <div class="panel-head"><h2>Market Funnel</h2><span class="panel-note">30-day cohort flow</span></div>
+    <div class="funnel-arrow-bar">
+      ${stages.map((s) => s.header).join('<span class="funnel-delta arrow">→</span>')}
+    </div>
+    <div class="funnel-stages">
+      ${stages.map((s) => `<div class="funnel-stage">
+        <span class="funnel-metric" style="color:${s.color}">${escapeHtml(s.label)}</span>
+        <strong class="funnel-value">${escapeHtml(s.value)}</strong>
+        <span class="funnel-sub">${escapeHtml(s.sub)}</span>
+        <em class="funnel-delta ${trendClass(s.trend.direction)}">${s.trend.direction === "down" ? "↓" : s.trend.direction === "up" ? "↑" : "→"} ${escapeHtml(s.trend.label)}</em>
+      </div>`).join("")}
+    </div>
+  </article>`;
+}
+
+function momentumTrendChart(points: UsageTrendPoint[]): string {
+  const rows = points.slice(-30);
+  if (rows.length === 0) return '<article class="panel momentum-chart-panel"><div class="panel-head"><h2>Momentum Trend</h2></div><div style="padding:16px;color:var(--muted)">No trend data available.</div></article>';
+
+  const seriesDefs: Array<{ key: string; label: string; color: string; axis: "left" | "right"; selector: (p: UsageTrendPoint) => number }> = [
+    { key: "sessions", label: "External Sessions", color: "#8b5cf6", axis: "left", selector: (p) => p.sessions },
+    { key: "clones", label: "GitHub Clones", color: "#f97316", axis: "left", selector: (p) => p.clones },
+    { key: "downloads", label: "NPM Downloads", color: "#22d3ee", axis: "left", selector: (p) => p.npmDownloads },
+    { key: "installs", label: "Active Installs", color: "#3b82f6", axis: "left", selector: (p) => p.agentInstallSessions },
+    { key: "versionAdoption", label: "Version Adoption %", color: "#5ee85c", axis: "right", selector: (p) => p.latestSessionShare },
+  ];
+
+  const padLeft = 56;
+  const padRight = 44;
+  const padTop = 14;
+  const padBottom = 36;
+  const svgWidth = 700;
+  const svgHeight = 300;
+  const plotWidth = svgWidth - padLeft - padRight;
+  const plotHeight = svgHeight - padTop - padBottom;
+
+  const leftMax = Math.max(
+    ...rows.map((p) => Math.max(p.sessions, p.clones, p.npmDownloads, p.agentInstallSessions)),
+    1,
+  );
+  const rightMax = 100;
+
+  const leftY = (value: number): number => padTop + plotHeight - (value / leftMax) * plotHeight;
+  const rightY = (value: number): number => padTop + plotHeight - (value / rightMax) * plotHeight;
+
+  const pathData = (values: number[], axisY: (v: number) => number): string => {
+    if (values.length === 0) return "";
+    if (values.length === 1) return `M ${padLeft} ${axisY(values[0]!)} L ${svgWidth - padRight} ${axisY(values[0]!)}`;
+    return values
+      .map((value, i) => {
+        const x = padLeft + (i / (values.length - 1)) * plotWidth;
+        const y = axisY(value);
+        return `${i === 0 ? "M" : "L"} ${Math.round(x * 10) / 10} ${Math.round(y * 10) / 10}`;
+      })
+      .join(" ");
+  };
+
+  const leftGridValues = [0, leftMax * 0.25, leftMax * 0.5, leftMax * 0.75, leftMax].map((v) => Math.round(v));
+  const rightGridValues = [0, 25, 50, 75, 100];
+
+  const gridLines = [...new Set([...leftGridValues.map((v) => leftY(v)), ...rightGridValues.map((v) => rightY(v))])]
+    .sort((a, b) => a - b)
+    .map((y) => `<line x1="${padLeft}" x2="${svgWidth - padRight}" y1="${Math.round(y)}" y2="${Math.round(y)}" class="chart-grid"/>`)
+    .join("");
+
+  const leftAxisLabels = leftGridValues
+    .map((v) => `<text x="${padLeft - 6}" y="${leftY(v) + 4}" text-anchor="end" class="chart-label">${v >= 1000 ? Math.round(v / 1000) + "k" : v}</text>`)
+    .join("");
+  const rightAxisLabels = rightGridValues
+    .map((v) => `<text x="${svgWidth - padRight + 6}" y="${rightY(v) + 4}" text-anchor="start" class="chart-label">${v}%</text>`)
+    .join("");
+
+  const seriesPaths = seriesDefs.map((def) => {
+    const values = rows.map(def.selector);
+    const d = def.axis === "left" ? pathData(values, leftY) : pathData(values, rightY);
+    return `<path d="${d}" class="chart-line" data-series="${def.key}" stroke="${def.color}" fill="none"/>`;
+  }).join("");
+
+  const xLabels = rows
+    .filter((_, i) => i % 6 === 0 || i === rows.length - 1)
+    .map((point, filteredIdx) => {
+      const sourceIndex = rows.indexOf(point);
+      const x = padLeft + (rows.length <= 1 ? 0 : (sourceIndex / (rows.length - 1)) * plotWidth);
+      const anchor = filteredIdx === 0 ? "start" : filteredIdx >= rows.filter((_, i) => i % 6 === 0 || i === rows.length - 1).length - 1 ? "end" : "middle";
+      return `<text x="${Math.round(x)}" y="${svgHeight - 10}" text-anchor="${anchor}" class="chart-label">${escapeHtml(shortDate(point.day))}</text>`;
+    }).join("");
+
+  const seriesDataJson = JSON.stringify(
+    seriesDefs.map((def) => ({
+      key: def.key,
+      label: def.label,
+      color: def.color,
+      axis: def.axis,
+      values: rows.map(def.selector),
+    })),
+  );
+  const dayLabelsJson = JSON.stringify(rows.map((p) => p.day));
+
+  return `<article class="panel momentum-chart-panel">
+    <div class="panel-head"><h2>Momentum Trend</h2><span class="panel-note">30-day market signals</span></div>
+    <div class="momentum-toggles" id="momentum-toggles">
+      ${seriesDefs.map((def) => `<button class="momentum-toggle active" data-series="${def.key}" type="button"><i></i>${escapeHtml(def.label)}</button>`).join("")}
+    </div>
+    <div class="momentum-chart-wrap" id="momentum-chart-wrap">
+      <svg viewBox="0 0 ${svgWidth} ${svgHeight}" preserveAspectRatio="xMidYMid meet" aria-label="Momentum trend chart">
+        <rect x="${padLeft}" y="${padTop}" width="${plotWidth}" height="${plotHeight}" fill="none"/>
+        ${gridLines}
+        ${leftAxisLabels}
+        ${rightAxisLabels}
+        ${seriesPaths}
+        ${xLabels}
+        <rect id="momentum-hitarea" x="${padLeft}" y="${padTop}" width="${plotWidth}" height="${plotHeight}" fill="transparent" style="cursor:crosshair"/>
+      </svg>
+      <div class="chart-tooltip" id="momentum-tooltip"></div>
+    </div>
+    <script type="application/json" id="momentum-series-data">${seriesDataJson}</script>
+    <script type="application/json" id="momentum-day-labels">${dayLabelsJson}</script>
+  </article>`;
+}
+
+function adoptionPulseCards(points: UsageTrendPoint[], model: DashboardModel): string {
   if (points.length === 0) return "";
+
   const day = usagePeriodSummary(points, 1);
-  const previousDay = usagePeriodSummary(points, 1, 1);
   const week = usagePeriodSummary(points, 7);
   const previousWeek = usagePeriodSummary(points, 7, 7);
   const month = usagePeriodSummary(points, 30);
   const previousMonth = usagePeriodSummary(points, 30, 30);
-  const dayPoints = points.slice(-18);
-  return sortKpisByMomentum([
-    {
-      allTimeLabel: `${formatNumber(model.telemetry.marketSessions)} all-time`,
-      color: "#8b5cf6",
-      current: day.sessions,
-      displayValue: day.sessions,
-      label: "External Sessions",
-      monthlyValues: [],
-      note: `${formatNumber(day.events)} events today`,
-      previous: previousDay.sessions,
-      trend: signedPercent(day.sessions, previousDay.sessions),
-    },
-    {
-      allTimeLabel: `${formatNumber(model.telemetry.marketSessions)} all-time`,
-      color: "#3b82f6",
-      current: week.sessions,
-      displayValue: week.sessions,
-      label: "Weekly Sessions",
-      monthlyValues: [],
-      note: `${formatNumber(week.events)} market events`,
-      previous: previousWeek.sessions,
-      trend: signedPercent(week.sessions, previousWeek.sessions),
-    },
-    {
-      allTimeLabel: `${formatNumber(model.npm.daily.reduce((sum, point) => sum + point.downloads, 0))} all-time`,
-      color: "#22d3ee",
-      current: week.npmDownloads,
-      displayValue: week.npmDownloads,
-      label: "NPM Downloads",
-      monthlyValues: [],
-      note: "latest 7 npm days",
-      previous: previousWeek.npmDownloads,
-      trend: signedPercent(week.npmDownloads, previousWeek.npmDownloads),
-    },
-    {
-      allTimeLabel: `${formatNumber(model.github.daily.reduce((sum, point) => sum + point.clones, 0))} all-time`,
-      color: "#f97316",
-      current: week.clones,
-      displayValue: week.clones,
-      label: "GitHub Clones",
-      monthlyValues: [],
-      note: "latest 7 GitHub days",
-      previous: previousWeek.clones,
-      trend: signedPercent(week.clones, previousWeek.clones),
-    },
-    {
-      allTimeLabel: `${formatNumber(allTimeCiSetupSessions(model))} all-time`,
-      color: "#22c55e",
-      current: month.setupSessions,
-      displayValue: month.setupSessions,
-      label: "CI Setup Sessions",
-      monthlyValues: [],
-      note: "current 30 days",
-      previous: previousMonth.setupSessions,
-      trend: signedPercent(month.setupSessions, previousMonth.setupSessions),
-    },
-    {
-      allTimeLabel: `${formatNumber(model.telemetry.marketSessions)} all-time`,
-      color: "#c084fc",
-      current: month.sessions,
-      displayValue: percentChangeLabel(month.sessions, previousMonth.sessions),
-      label: "Monthly Change",
-      monthlyValues: [],
-      note: `${formatNumber(month.sessions)} vs ${formatNumber(previousMonth.sessions)} sessions`,
-      previous: previousMonth.sessions,
-      trend: signedPercent(month.sessions, previousMonth.sessions),
-    },
-  ])
-    .map((kpi) => kpiCard(kpi.label, kpi.displayValue, `${kpi.note} · ${kpi.allTimeLabel}`, kpi.trend, dayPoints.map((point) => {
-      if (kpi.label === "NPM Downloads") return point.npmDownloads;
-      if (kpi.label === "GitHub Clones") return point.clones;
-      if (kpi.label === "CI Setup Sessions") return point.ciSetupSessions;
-      return point.sessions;
-    }), kpi.color))
-    .join("");
+
+  const monthTrend = signedPercent(month.sessions, previousMonth.sessions);
+  const sparklineValues = points.slice(-30).map((p) => p.sessions);
+
+  const northStar = `<article class="north-star-card">
+    <div class="ns-header">
+      <span class="ns-icon">&#x1F9ED;</span>
+      <span class="ns-label">External Adoption</span>
+    </div>
+    <div class="ns-stats">
+      <div class="ns-stat"><strong>${formatNumber(day.sessions)}</strong><small>today</small></div>
+      <div class="ns-stat"><strong>${formatNumber(week.sessions)}</strong><small>this week</small></div>
+      <div class="ns-stat ${trendClass(monthTrend.direction)}"><strong>${escapeHtml(monthTrend.label)}</strong><small>vs 30d</small></div>
+    </div>
+    <small class="ns-note">Internal traffic excluded</small>
+    <div class="ns-separator"></div>
+    <div class="ns-sparkline">${sparkline(sparklineValues, "#8b5cf6")}</div>
+  </article>`;
+
+  const clonesTrend = signedPercent(week.clones, previousWeek.clones);
+  const npmTrend = signedPercent(week.npmDownloads, previousWeek.npmDownloads);
+
+  const currentVersionShare = month.sessions > 0 ? Math.round((month.latestSessions / month.sessions) * 100) : 0;
+  const previousVersionShare = previousMonth.sessions > 0 ? Math.round((previousMonth.latestSessions / previousMonth.sessions) * 100) : 0;
+  const versionTrend = signedPercent(currentVersionShare, previousVersionShare);
+
+  const directionArrow = (d: "up" | "down" | "flat"): string => d === "up" ? "↗" : d === "down" ? "↘" : "→";
+
+  const card = (
+    label: string,
+    value: string | number,
+    periodLabel: string,
+    previousLabel: string,
+    trend: { label: string; direction: "up" | "down" | "flat" },
+  ): string => `<article class="pulse-card">
+    <span class="pulse-card-label">${escapeHtml(label)}</span>
+    <strong class="pulse-card-value">${escapeHtml(typeof value === "number" ? formatNumber(value) : value)} <small>${escapeHtml(periodLabel)}</small></strong>
+    <div class="pulse-card-delta">
+      <em class="${trendClass(trend.direction)}">${escapeHtml(trend.label)} vs ${escapeHtml(previousLabel)}</em>
+      <span class="pulse-card-arrow ${trendClass(trend.direction)}">${directionArrow(trend.direction)}</span>
+    </div>
+  </article>`;
+
+  const pulseCards = [
+    card("GitHub Clones", week.clones, "last 7 days", "prev 7 days", clonesTrend),
+    card("NPM Downloads", week.npmDownloads, "last 7 days", "prev 7 days", npmTrend),
+    card("Active Installs", month.sessions, "last 30 days", "prev 30 days", monthTrend),
+    card("Latest Version", `${currentVersionShare}% adoption`, "all sessions", "prev 30 days", versionTrend),
+  ].join("");
+
+  return `<section class="adoption-pulse" aria-label="Adoption Pulse">
+    ${northStar}
+    <div class="pulse-grid">${pulseCards}</div>
+  </section>`;
 }
 
 function kpiMomentumPanel(kpis: KpiMetric[]): string {
@@ -2155,17 +2322,244 @@ function detailSearchRows(model: DashboardModel, points: UsageTrendPoint[]): str
   return rows.join("");
 }
 
+function classifyAccountType(domain: string): string {
+  if (domain.startsWith("github:")) return "GitHub Actions";
+  if (/^(\d{1,3}\.){2,3}/.test(domain)) return "Unknown";
+  if (FREE_EMAIL_DOMAINS.has(domain)) return "Individual";
+  if (/\.(local|localhost|internal|corp|lan|test|dev)$/.test(domain)) return "Internal";
+  if (/ci|pipeline|runner|agent|bot|build/i.test(domain)) return "CI Bot";
+  return "Company";
+}
+
+function classifyConfidence(domain: string): "High" | "Medium" | "Low" {
+  if (domain.startsWith("github:")) return "High";
+  if (/^(\d{1,3}\.){2,3}/.test(domain)) return "Low";
+  if (FREE_EMAIL_DOMAINS.has(domain)) return "Medium";
+  if (/\.(local|localhost|internal|corp|lan|test|dev)$/.test(domain)) return "Low";
+  if (domain.includes(".") && /\.(com|io|co|org|net|dev|ai|app)$/.test(domain)) return "High";
+  return "Medium";
+}
+
+function growthBadge(sessions: number, totalSessions: number, firstSeen: string, latestSeen: string): { label: string; direction: "up" | "down" | "flat" | "new" } {
+  if (!firstSeen) return { label: "N/A", direction: "flat" };
+  const firstTime = new Date(firstSeen).getTime();
+  const lastTime = new Date(latestSeen || firstSeen).getTime();
+  const daysActive = Math.max(1, Math.round((lastTime - firstTime) / MS_PER_DAY));
+  const sessionsPerDay = sessions / daysActive;
+  const overallAvg = totalSessions / Math.max(1, daysActive);
+  const share = overallAvg > 0 ? Math.round(((sessionsPerDay - overallAvg) / overallAvg) * 100) : 0;
+  if (daysActive <= 2 && sessions <= 12) return { label: "New", direction: "new" };
+  if (sessionsPerDay >= overallAvg * 1.5) return { label: `↗ +${share}%`, direction: "up" };
+  if (sessionsPerDay <= overallAvg * 0.5) return { label: `↘ ${share}%`, direction: "down" };
+  return { label: "→ 0%", direction: "flat" };
+}
+
+function formatShortDate(iso: string): string {
+  if (!iso) return "n/a";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return iso.slice(0, 10);
+  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" }).format(date);
+}
+
+function commandTrendArrow(commandSummary: { command: string; events: number; sessions: number; uniqueDomains: number }, topCommands: Array<{ command: string; events: number; sessions: number; uniqueDomains: number }>, externalSessions: number): string {
+  const share = externalSessions > 0 ? commandSummary.sessions / externalSessions : 0;
+  if (share >= 0.4) return "↗";
+  if (share <= 0.08) return "↘";
+  if (share <= 0.03) return "↘";
+  const rank = topCommands.findIndex((cmd) => cmd.command === commandSummary.command);
+  if (rank <= 1) return "↗";
+  if (rank >= topCommands.length - 2) return "↘";
+  return "→";
+}
+
+function minutesAgo(from: string, to: string): string {
+  if (!from) return "unknown";
+  const fromMs = new Date(from).getTime();
+  const toMs = to ? new Date(to).getTime() : Date.now();
+  if (Number.isNaN(fromMs) || Number.isNaN(toMs)) return "unknown";
+  const diff = Math.max(0, Math.round((toMs - fromMs) / (60 * 1000)));
+  if (diff < 1) return "just now";
+  if (diff < 60) return `${diff} min ago`;
+  const hours = Math.floor(diff / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+}
+
+function dataTrustStatusStrip(model: DashboardModel): string {
+  const latestFinished = model.sourceRuns
+    .map((run) => run.finishedAt)
+    .filter(Boolean)
+    .sort()
+    .reverse()[0] ?? "";
+  const freshness = latestFinished ? minutesAgo(latestFinished, model.generatedAt) : "unknown";
+  const freshnessStatus = freshness.includes("d") || freshness === "unknown" ? "warn" : "ok";
+  const totalSignals = model.telemetry.dataQualitySignals.length;
+  const okSignals = model.telemetry.dataQualitySignals.filter((s) => s.status === "ok").length;
+  const completeness = totalSignals > 0 ? Math.round((okSignals / totalSignals) * 100) : 0;
+  const completenessStatus = completeness >= 80 ? "ok" : completeness >= 50 ? "warn" : "bad";
+
+  return `<div class="trust-strip">
+    <div class="trust-strip-inner">
+      <span class="trust-item trust-${freshnessStatus}">Data freshness: updated ${escapeHtml(freshness)}</span>
+      <span class="trust-separator">|</span>
+      <span class="trust-item trust-ok">Internal filters: active</span>
+      <span class="trust-separator">|</span>
+      <span class="trust-item trust-ok">Bot filtering: active</span>
+      <span class="trust-separator">|</span>
+      <span class="trust-item trust-ok">PII masking: active</span>
+      <span class="trust-separator">|</span>
+      <span class="trust-item trust-${completenessStatus}">Data completeness: ${completeness}%</span>
+    </div>
+  </div>`;
+}
+
+function anomaliesPanel(model: DashboardModel): string {
+  const threshold = 10;
+  const cards: string[] = [];
+
+  const npmTrend = signedPercent(model.npm.downloads7, model.npm.downloadsPrevious7);
+  if (npmTrend.direction !== "flat" && npmTrend.label !== "new") {
+    const npmDelta = model.npm.downloadsPrevious7 > 0
+      ? Math.round(((model.npm.downloads7 - model.npm.downloadsPrevious7) / model.npm.downloadsPrevious7) * 100)
+      : 0;
+    if (Math.abs(npmDelta) >= threshold) {
+      const icon = npmDelta > 0 ? "\u{1F4C8}" : "\u{1F4C9}";
+      const change = npmDelta > 0 ? `up ${npmDelta}%` : `down ${Math.abs(npmDelta)}%`;
+      cards.push(`<article class="anomaly-card">
+        <div class="anomaly-icon">${icon}</div>
+        <strong>NPM downloads ${escapeHtml(change)}</strong>
+        <p>Check package release cadence, registry lag, or weekday seasonality. Compare against GitHub clone trend.</p>
+      </article>`);
+    }
+  }
+
+  const cloneTrend = signedPercent(model.github.clones7, model.github.clonesPrevious7);
+  if (cloneTrend.direction !== "flat" && cloneTrend.label !== "new") {
+    const cloneDelta = model.github.clonesPrevious7 > 0
+      ? Math.round(((model.github.clones7 - model.github.clonesPrevious7) / model.github.clonesPrevious7) * 100)
+      : 0;
+    if (Math.abs(cloneDelta) >= threshold) {
+      const icon = cloneDelta > 0 ? "\u{1F4C8}" : "\u{1F4C9}";
+      const change = cloneDelta > 0 ? `up ${cloneDelta}%` : `down ${Math.abs(cloneDelta)}%`;
+      const topReferrer = model.github.referrers.slice().sort((a, b) => b.uniques - a.uniques)[0];
+      let body = `Identify source repos/referrers. Did installs follow?`;
+      if (topReferrer) {
+        body += `<br>Top referrer: ${escapeHtml(topReferrer.referrer)} (${topReferrer.uniques} uniques)`;
+      }
+      cards.push(`<article class="anomaly-card">
+        <div class="anomaly-icon">${icon}</div>
+        <strong>GitHub clones ${escapeHtml(change)}</strong>
+        <p>${body}</p>
+      </article>`);
+    }
+  }
+
+  const latestVersion = model.telemetry.versionAdoption.find((row) => row.isLatest);
+  if (latestVersion && latestVersion.sessionShare < 10) {
+    cards.push(`<article class="anomaly-card">
+      <div class="anomaly-icon">\u26A0\uFE0F</div>
+      <strong>Latest version adoption only ${latestVersion.sessionShare}%</strong>
+      <p>${formatNumber(latestVersion.sessions)} of ${formatNumber(model.telemetry.totalSessions)} sessions on current version. Consider upgrade prompt, compatibility check, or migration guide.</p>
+    </article>`);
+  }
+
+  if (cards.length === 0) return "";
+
+  return `<article class="panel">
+    <div class="panel-head"><h2>Anomalies &amp; Opportunities</h2><span class="panel-note">surfacing judgment from data</span></div>
+    <div class="anomalies-grid">${cards.join("\n")}</div>
+  </article>`;
+}
+
+function autoGeneratedSummary(model: DashboardModel, points: UsageTrendPoint[]): string {
+  const month = usagePeriodSummary(points, 30);
+  const previousMonth = usagePeriodSummary(points, 30, 30);
+  const monthChangeValue = previousMonth.sessions > 0
+    ? Math.round(((month.sessions - previousMonth.sessions) / previousMonth.sessions) * 100)
+    : month.sessions > 0 ? 999 : 0;
+
+  const channels: Array<{ name: string; delta: number }> = [
+    { name: "external sessions", delta: monthChangeValue },
+    {
+      name: "GitHub clones",
+      delta: previousMonth.clones > 0 ? Math.round(((month.clones - previousMonth.clones) / previousMonth.clones) * 100) : 0,
+    },
+    {
+      name: "NPM downloads",
+      delta: previousMonth.npmDownloads > 0 ? Math.round(((month.npmDownloads - previousMonth.npmDownloads) / previousMonth.npmDownloads) * 100) : 0,
+    },
+  ];
+
+  const topDriver = [...channels].sort((a, b) => b.delta - a.delta)[0];
+  const topConcern = channels.filter((ch) => ch.delta < 0).sort((a, b) => a.delta - b.delta)[0];
+
+  const latestVersion = model.telemetry.versionAdoption.find((row) => row.isLatest);
+  const versionStatus = latestVersion
+    ? latestVersion.sessionShare < 10
+      ? `Latest version adoption at ${latestVersion.sessionShare}% — upgrade conversion is bottleneck.`
+      : `Latest version adoption at ${latestVersion.sessionShare}%.`
+    : "No version telemetry available yet.";
+
+  let summary = "External adoption ";
+  if (monthChangeValue === 999) {
+    summary += "new activity MoM";
+  } else if (monthChangeValue > 0) {
+    summary += `\u2191 ${monthChangeValue}% MoM`;
+  } else if (monthChangeValue < 0) {
+    summary += `\u2193 ${Math.abs(monthChangeValue)}% MoM`;
+  } else {
+    summary += "flat MoM";
+  }
+
+  if (topDriver && topDriver.delta > 0 && topDriver.name !== "external sessions") {
+    summary += `, driven by ${topDriver.name}`;
+  }
+
+  const agentInstall = model.telemetry.commandFunnel.find((row) => row.stage === "Agent install");
+  if (agentInstall && agentInstall.sessions > 0 && monthChangeValue > 0) {
+    summary += " and serve command usage";
+  }
+  summary += ". ";
+
+  const npm7Trend = signedPercent(model.npm.downloads7, model.npm.downloadsPrevious7);
+  if (npm7Trend.direction === "down") {
+    const npm7Delta = model.npm.downloadsPrevious7 > 0
+      ? Math.round(Math.abs(((model.npm.downloads7 - model.npm.downloadsPrevious7) / model.npm.downloadsPrevious7) * 100))
+      : 0;
+    summary += `NPM downloads \u2193 ${npm7Delta}% (7 days). `;
+  }
+
+  if (topConcern) {
+    summary += `${escapeHtml(topConcern.name)} \u2193 ${Math.abs(topConcern.delta)}% — needs attention. `;
+  }
+
+  summary += versionStatus;
+
+  return `<div class="summary-bar">
+    <span class="summary-icon">\u{1F4CB}</span>
+    <div>
+      <strong>What Changed</strong>
+      <p>${escapeHtml(summary)}</p>
+    </div>
+  </div>`;
+}
+
 export function renderDashboardHtml(model: DashboardModel): string {
   const trendPoints = usageTrendPoints(model, TREND_WINDOW_DAYS);
   const allTrendPoints = usageTrendPoints(model, Number.POSITIVE_INFINITY);
   const kpiMomentum = monthlyKpiMetrics(allTrendPoints, model);
-  const cards = kpiCards(trendPoints, model);
+  const adoptionPulse = adoptionPulseCards(trendPoints, model);
   const momentumPanel = kpiMomentumPanel(kpiMomentum);
+  const marketFunnel = marketFunnelPanel(model, trendPoints);
   const growthCommandCenter = growthCommandCenterPanel(model, trendPoints);
   const dailyDirection = dailyDirectionPanel(model);
   const conversions = conversionPanel(model);
   const dataQuality = dataQualityPanel(model);
   const searchRows = detailSearchRows(model, trendPoints);
+  const summaryBar = autoGeneratedSummary(model, trendPoints);
+  const trustStrip = dataTrustStatusStrip(model);
+  const anomaliesHtml = anomaliesPanel(model);
   const day = usagePeriodSummary(trendPoints, 1);
   const month = usagePeriodSummary(trendPoints, 30);
   const previousMonth = usagePeriodSummary(trendPoints, 30, 30);
@@ -2184,12 +2578,38 @@ export function renderDashboardHtml(model: DashboardModel): string {
     { label: "Paid intent", value: model.telemetry.commandFunnel.find((row) => row.stage === "Paid intent")?.sessions ?? 0, color: "#f97316" },
   ];
   const rightAccounts = model.telemetry.topDomainDetails.slice(0, 5);
-  const topCommands = model.telemetry.topCommands.slice(0, 5);
+  const allTopCommands = model.telemetry.topCommands.slice(0, 6);
+  const totalExternalSessions = model.telemetry.externalSessions;
   const latestVersion = model.telemetry.versionAdoption.find((row) => row.isLatest);
   const collectionRows = model.sourceRuns.map((run) => `<tr><td>${escapeHtml(run.source)}</td><td><span class="status ${run.status === "success" ? "ok" : run.status === "failed" ? "bad" : "warn"}">${escapeHtml(run.status)}</span></td><td>${escapeHtml(run.finishedAt || run.startedAt)}</td></tr>`).join("");
   const workflowRows = model.github.workflowRuns.slice(0, 5).map((run) => `<tr><td>${escapeHtml(run.name)}</td><td><span class="status ${run.conclusion === "success" ? "ok" : run.conclusion ? "bad" : "warn"}">${escapeHtml(run.conclusion || run.status)}</span></td><td>${escapeHtml(run.updatedAt)}</td></tr>`).join("");
-  const accountsRows = rightAccounts.map((row) => `<li><span><b>${escapeHtml(row.domain)}</b><small>${escapeHtml(row.topCommand)} · ${escapeHtml(row.latestSeen)}</small></span><em>${formatNumber(row.sessions)}</em></li>`).join("");
-  const commandsRows = topCommands.map((row) => `<li><span><b>${escapeHtml(row.command)}</b><small>${formatNumber(row.events)} events</small></span><em>${formatNumber(row.sessions)}</em></li>`).join("");
+
+  const accountsRows = rightAccounts.map((row) => {
+    const accountType = classifyAccountType(row.domain);
+    const confidence = classifyConfidence(row.domain);
+    const growth = growthBadge(row.sessions, totalExternalSessions, row.firstSeen, row.latestSeen);
+    const growthClass = growth.direction === "up" ? "trend-up" : growth.direction === "down" ? "trend-down" : growth.direction === "new" ? "trend-up" : "trend-flat";
+    return `<div class="account-row">
+      <div class="account-head"><b>${escapeHtml(row.domain)}</b><span class="type-badge type-${accountType.toLowerCase().replace(/\s+/g, "-")}">${escapeHtml(accountType)}</span></div>
+      <div class="account-meta">
+        <span>First: ${formatShortDate(row.firstSeen)}</span>
+        <span>Last: ${formatShortDate(row.latestSeen)}</span>
+        <span>${formatNumber(row.sessions)} sessions</span>
+        <span class="${growthClass}">Growth: ${escapeHtml(growth.label)}</span>
+        <span class="conf-${confidence.toLowerCase()}">Confidence: ${escapeHtml(confidence)}</span>
+      </div>
+    </div>`;
+  }).join("");
+
+  const commandsRows = allTopCommands.map((row) => {
+    const share = totalExternalSessions > 0 ? Math.round((row.sessions / totalExternalSessions) * 100) : 0;
+    const barWidth = Math.max(2, share);
+    const trend = commandTrendArrow(row, allTopCommands, totalExternalSessions);
+    return `<div class="command-row">
+      <div class="command-head"><span class="cmd-name">${escapeHtml(row.command)}</span><span class="cmd-bar" style="width:${barWidth}%"></span><span class="cmd-share">${share}%</span><em class="cmd-arrow">${trend}</em></div>
+      <div class="command-sub">${formatNumber(row.sessions)} sessions<span class="cmd-sep">·</span>${formatNumber(row.uniqueDomains)} unique accounts</div>
+    </div>`;
+  }).join("");
   const releaseLabel = model.github.latestRelease ? `${model.github.latestRelease} · ${model.github.latestReleasePublishedAt.slice(0, 10)}` : "No release seen";
   const visibleRange = `${shortDate(trendPoints[0]?.day ?? "")} - ${shortDate(trendPoints.at(-1)?.day ?? "")}`;
   const monthChange = signedPercent(month.sessions, previousMonth.sessions);
@@ -2240,7 +2660,25 @@ export function renderDashboardHtml(model: DashboardModel): string {
     button:hover { border-color:#7c5cff; }
     button:disabled { opacity:.62; cursor:not-allowed; }
     .refresh-status { color:var(--muted); font-size:12px; min-width:100px; }
-    .kpi-grid { display:grid; grid-template-columns:repeat(6, minmax(0, 1fr)); gap:12px; margin-bottom:16px; }
+    .adoption-pulse { margin-bottom:16px; }
+    .north-star-card { background:linear-gradient(180deg, rgba(14,29,44,.94), rgba(8,18,30,.96)); border:1px solid var(--line); border-radius:10px; box-shadow:0 16px 38px rgba(0,0,0,.22); padding:18px 22px 14px; }
+    .ns-header { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+    .ns-icon { font-size:18px; line-height:1; }
+    .ns-label { color:#e5edf7; font-size:15px; font-weight:650; }
+    .ns-stats { display:flex; align-items:baseline; gap:40px; flex-wrap:wrap; margin:8px 0 4px; }
+    .ns-stat strong { display:block; font-size:28px; line-height:1; }
+    .ns-stat small { display:block; color:var(--muted); font-size:12px; margin-top:3px; }
+    .ns-note { display:block; color:var(--dim); font-size:11px; margin-bottom:2px; }
+    .ns-separator { height:1px; background:var(--line); margin:6px 0 8px; }
+    .ns-sparkline .sparkline { height:40px; }
+    .pulse-grid { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px; margin-top:12px; }
+    .pulse-card { background:linear-gradient(180deg, rgba(14,29,44,.94), rgba(8,18,30,.96)); border:1px solid var(--line); border-radius:8px; box-shadow:0 16px 38px rgba(0,0,0,.22); padding:14px 16px; min-height:112px; display:flex; flex-direction:column; justify-content:space-between; }
+    .pulse-card-label { display:block; color:#cbd5e1; font-size:12px; }
+    .pulse-card-value { display:block; font-size:23px; margin-top:5px; line-height:1.15; }
+    .pulse-card-value small { color:var(--dim); font-size:11px; font-weight:400; }
+    .pulse-card-delta { display:flex; align-items:center; justify-content:space-between; margin-top:6px; }
+    .pulse-card-delta em { font-style:normal; font-size:12px; color:var(--dim); }
+    .pulse-card-arrow { font-size:17px; line-height:1; }
     .kpi-card, .panel, .small-card { background:linear-gradient(180deg, rgba(14,29,44,.94), rgba(8,18,30,.96)); border:1px solid var(--line); border-radius:8px; box-shadow:0 16px 38px rgba(0,0,0,.22); }
     .kpi-card { min-height:132px; padding:15px 16px 12px; overflow:hidden; }
     .kpi-top { display:flex; align-items:center; justify-content:space-between; gap:8px; color:#dbe5f1; font-size:13px; }
@@ -2305,6 +2743,34 @@ export function renderDashboardHtml(model: DashboardModel): string {
     .list b { display:block; font-size:13px; font-weight:620; color:#e5edf7; }
     .list small { display:block; margin-top:3px; color:#94a3b8; font-size:11px; }
     .list em { font-style:normal; color:#e5edf7; font-size:13px; }
+    .filter-chip { cursor:pointer; padding:3px 9px; border:1px solid rgba(51,70,91,.65); border-radius:6px; font-size:11px; background:#071628; }
+    .filter-chip:hover { border-color:#7c5cff; }
+    .account-list, .command-list { padding:4px 0 4px; }
+    .account-row { padding:12px 17px; border-bottom:1px solid rgba(51,70,91,.55); }
+    .account-row:last-child { border-bottom:0; }
+    .account-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; }
+    .account-head b { font-size:13px; font-weight:620; color:#e5edf7; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .account-meta { display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:11px; color:var(--muted); }
+    .account-meta span:not(:first-child)::before { content:"·"; margin-right:10px; color:#3a5068; }
+    .type-badge { display:inline-flex; align-items:center; padding:2px 7px; border-radius:5px; font-size:10.5px; font-weight:580; white-space:nowrap; }
+    .type-company { background:rgba(34,211,238,.14); color:#67e8f9; border:1px solid rgba(34,211,238,.28); }
+    .type-ci-bot { background:rgba(59,130,246,.14); color:#93c5fd; border:1px solid rgba(59,130,246,.28); }
+    .type-github-actions { background:rgba(139,92,246,.14); color:#c4b5fd; border:1px solid rgba(139,92,246,.28); }
+    .type-unknown { background:rgba(100,116,139,.14); color:#94a3b8; border:1px solid rgba(100,116,139,.28); }
+    .type-individual { background:rgba(249,115,22,.14); color:#fdba74; border:1px solid rgba(249,115,22,.28); }
+    .type-internal { background:rgba(239,68,68,.14); color:#fca5a5; border:1px solid rgba(239,68,68,.28); }
+    .conf-high { color:var(--green); }
+    .conf-medium { color:var(--yellow); }
+    .conf-low { color:#ff5c57; }
+    .command-row { padding:14px 17px 11px; border-bottom:1px solid rgba(51,70,91,.55); }
+    .command-row:last-child { border-bottom:0; }
+    .command-head { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+    .cmd-name { font-size:13px; font-weight:620; color:#e5edf7; min-width:72px; }
+    .cmd-bar { display:inline-block; height:7px; background:linear-gradient(90deg, #7c5cff, #a78bfa); border-radius:20px; min-width:4px; }
+    .cmd-share { font-size:12px; color:var(--muted); min-width:36px; text-align:right; white-space:nowrap; }
+    .cmd-arrow { font-style:normal; font-size:13px; color:var(--green); white-space:nowrap; }
+    .command-sub { font-size:11px; color:var(--muted); padding-left:80px; }
+    .cmd-sep { margin:0 6px; color:#3a5068; }
     .table-panel { padding-bottom:6px; }
     table { width:100%; border-collapse:collapse; font-size:12px; line-height:1.25; }
     th, td { padding:9px 14px; border-bottom:1px solid rgba(51,70,91,.55); text-align:left; vertical-align:top; }
@@ -2320,14 +2786,68 @@ export function renderDashboardHtml(model: DashboardModel): string {
     .search-count { color:var(--muted); font-size:12px; min-width:110px; text-align:right; }
     .search-results { max-height:340px; overflow:auto; border:1px solid rgba(51,70,91,.65); border-radius:8px; }
     .empty-row td { color:var(--muted); padding:22px 10px; text-align:center; }
+    /* Market Funnel */
+    .market-funnel-panel { margin-bottom:16px; }
+    .funnel-stages { display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:0; padding:4px 0 16px; align-items:start; position:relative; }
+    .funnel-stage { text-align:center; padding:12px 8px; position:relative; }
+    .funnel-stage:not(:last-child)::after { content:""; position:absolute; right:-1px; top:14px; bottom:14px; width:1px; background:linear-gradient(180deg, transparent, #33465b 30%, #33465b 70%, transparent); }
+    .funnel-arrow-bar { display:flex; align-items:center; justify-content:center; padding:0 12px 6px; color:#33465b; font-size:15px; letter-spacing:1px; }
+    .funnel-label { display:block; font-size:11px; color:#90a4ba; text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px; }
+    .funnel-metric { display:block; font-size:13px; color:#cbd5e1; margin-bottom:2px; }
+    .funnel-value { display:block; font-size:26px; font-weight:690; line-height:1.1; margin:4px 0; }
+    .funnel-sub { display:block; font-size:11px; color:#90a4ba; }
+    .funnel-delta { display:inline-flex; align-items:center; gap:3px; font-size:12px; font-style:normal; margin-top:4px; }
+    .funnel-delta.arrow { margin-top:0; padding:0 4px; }
+    .funnel-connector { display:flex; align-items:center; justify-content:center; }
+    .funnel-connector svg { opacity:.45; }
+    /* Momentum Trend Chart */
+    .momentum-chart-panel { margin-bottom:16px; }
+    .momentum-toggles { display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:8px 16px 2px; }
+    .momentum-toggle { display:flex; align-items:center; gap:5px; font-size:11px; color:#90a4ba; cursor:pointer; padding:4px 10px; border:1px solid rgba(51,70,91,.7); border-radius:12px; background:transparent; font-family:inherit; }
+    .momentum-toggle.active { color:#e5edf7; border-color:var(--purple); background:rgba(139,92,246,.12); }
+    .momentum-toggle i { display:inline-block; width:9px; height:9px; border-radius:3px; }
+    .momentum-toggle[data-series="sessions"] i { background:#8b5cf6; }
+    .momentum-toggle[data-series="clones"] i { background:#f97316; }
+    .momentum-toggle[data-series="downloads"] i { background:#22d3ee; }
+    .momentum-toggle[data-series="installs"] i { background:#3b82f6; }
+    .momentum-toggle[data-series="versionAdoption"] i { background:#5ee85c; }
+    .momentum-chart-wrap { position:relative; padding:0 16px 16px; }
+    .momentum-chart-wrap svg { width:100%; height:auto; display:block; }
+    .momentum-chart-wrap .chart-line { fill:none; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; transition:opacity .15s; }
+    .momentum-chart-wrap .chart-line.hidden { opacity:0; }
+    .chart-tooltip { position:absolute; pointer-events:none; background:rgba(8,18,30,.96); border:1px solid #33465b; border-radius:7px; padding:8px 10px; font-size:11px; color:#e5edf7; white-space:nowrap; box-shadow:0 8px 24px rgba(0,0,0,.4); z-index:2; display:none; }
+    .chart-tooltip b { display:block; font-size:11px; margin-bottom:2px; color:var(--muted); }
+    .chart-tooltip .tip-item { display:flex; align-items:center; gap:5px; padding:1px 0; font-size:12px; }
+    .chart-tooltip .tip-dot { width:8px; height:8px; border-radius:3px; flex-shrink:0; }
+    .chart-tooltip .tip-val { margin-left:8px; color:#cbd5e1; }
+    .chart-axis-left, .chart-axis-right { fill:#7b8ea3; font-size:10px; }
+    .momentum-chart-wrap .chart-grid { stroke:#1d2d3f; stroke-width:1; }
+    .momentum-chart-wrap .chart-label { fill:#7b8ea3; font-size:10px; }
     .integration-grid { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:9px; padding:0 16px 16px; }
     .integration { border:1px solid rgba(51,70,91,.7); border-radius:8px; padding:11px 8px; text-align:center; background:#091522; }
     .integration b { display:block; font-size:12px; margin-top:7px; }
     .integration span { color:var(--green); font-size:11px; }
     .icon { font-size:21px; line-height:1; }
-    @media (max-width: 1320px) { .app-shell { grid-template-columns:210px minmax(0, 1fr); } .kpi-grid { grid-template-columns:repeat(3, minmax(0, 1fr)); } .dashboard-grid { grid-template-columns:1fr; } .right-rail { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 1320px) { .app-shell { grid-template-columns:210px minmax(0, 1fr); } .pulse-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } .dashboard-grid { grid-template-columns:1fr; } .right-rail { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
     @media (max-width: 1100px) { .momentum-grid, .direction-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
-    @media (max-width: 900px) { .app-shell { display:block; } .sidebar { position:relative; height:auto; padding:10px 12px; } .brand { margin:0; min-height:36px; } .logo-pixel { font-size:4.35px; line-height:1.04; } .sidebar .nav-section, .sidebar .nav-item, .index-card, .sidebar-foot { display:none; } main { padding:16px 12px 28px; } header { display:block; } .actions { justify-content:flex-start; margin-top:12px; } .kpi-grid, .two-col, .signal-grid, .right-rail, .integration-grid, .momentum-grid, .direction-grid { grid-template-columns:1fr; } .momentum-card, .conversion-row { grid-template-columns:minmax(0, 1fr); } .momentum-card em { justify-self:start; } .conversion-row strong, .conversion-row em { text-align:left; } .donut-wrap { grid-template-columns:1fr; } }
+    .trust-strip { border:1px solid var(--line); border-radius:8px; background:linear-gradient(90deg, rgba(14,29,44,.92), rgba(11,23,36,.92)); margin-bottom:16px; overflow:hidden; }
+    .trust-strip-inner { display:flex; align-items:center; gap:10px; padding:9px 16px; font-size:12px; color:var(--muted); flex-wrap:wrap; }
+    .trust-item { display:inline-flex; align-items:center; gap:5px; white-space:nowrap; }
+    .trust-item::before { content:""; width:8px; height:8px; border-radius:50%; display:inline-block; flex-shrink:0; }
+    .trust-ok::before { background:var(--green); box-shadow:0 0 6px rgba(94,232,92,.45); }
+    .trust-warn::before { background:var(--yellow); box-shadow:0 0 6px rgba(250,204,21,.45); }
+    .trust-bad::before { background:var(--red); box-shadow:0 0 6px rgba(239,68,68,.45); }
+    .trust-separator { color:#33465b; flex-shrink:0; }
+    .summary-bar { border:1px solid rgba(79,70,229,.4); border-radius:8px; background:linear-gradient(90deg, rgba(79,70,229,.18), rgba(14,29,44,.88)); padding:16px 18px; margin-bottom:16px; display:flex; align-items:flex-start; gap:14px; }
+    .summary-bar .summary-icon { font-size:20px; line-height:1.3; flex-shrink:0; }
+    .summary-bar strong { display:block; font-size:14px; margin-bottom:5px; }
+    .summary-bar p { margin:0; font-size:13px; color:#c6d0dd; line-height:1.4; }
+    .anomalies-grid { padding:4px 16px 16px; display:flex; flex-direction:column; gap:10px; }
+    .anomaly-card { border:1px solid rgba(51,70,91,.7); border-radius:8px; background:#091522; padding:14px 15px; }
+    .anomaly-card .anomaly-icon { font-size:18px; margin-bottom:6px; }
+    .anomaly-card strong { display:block; font-size:16px; margin-bottom:6px; }
+    .anomaly-card p { margin:0; font-size:12px; color:#94a3b8; line-height:1.4; }
+    @media (max-width: 900px) { .app-shell { display:block; } .sidebar { position:relative; height:auto; padding:10px 12px; } .brand { margin:0; min-height:36px; } .logo-pixel { font-size:4.35px; line-height:1.04; } .sidebar .nav-section, .sidebar .nav-item, .index-card, .sidebar-foot { display:none; } main { padding:16px 12px 28px; } header { display:block; } .actions { justify-content:flex-start; margin-top:12px; } .pulse-grid, .two-col, .signal-grid, .right-rail, .integration-grid, .momentum-grid, .direction-grid { grid-template-columns:1fr; } .momentum-card, .conversion-row { grid-template-columns:minmax(0, 1fr); } .momentum-card em { justify-self:start; } .conversion-row strong, .conversion-row em { text-align:left; } .donut-wrap { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
@@ -2363,14 +2883,17 @@ export function renderDashboardHtml(model: DashboardModel): string {
           <span id="refresh-status" class="refresh-status"></span>
         </div>
       </header>
-      <section class="kpi-grid" aria-label="Primary KPIs">
-        ${cards || kpiCard("Market telemetry", "n/a", "Refresh data to build KPI windows", { label: "0%", direction: "flat" }, [0], "#8b5cf6")}
-      </section>
+      ${summaryBar}
+      ${trustStrip}
+      ${adoptionPulse || `<section class="adoption-pulse" aria-label="Adoption Pulse"><article class="north-star-card"><div class="ns-header"><span class="ns-icon">&#x1F9ED;</span><span class="ns-label">External Adoption</span></div><div class="ns-stats"><div class="ns-stat"><strong>0</strong><small>today</small></div><div class="ns-stat"><strong>0</strong><small>this week</small></div><div class="ns-stat trend-flat"><strong>0%</strong><small>vs 30d</small></div></div><small class="ns-note">Refresh data to build adoption windows</small></article></section>`}
+      ${momentumTrendChart(trendPoints)}
       <section class="dashboard-grid">
         <div class="main-grid">
           ${momentumPanel}
           ${growthCommandCenter}
           ${dailyDirection}
+          ${anomaliesHtml}
+          ${marketFunnel}
           <section class="two-col">
             <article class="panel">
               <div class="panel-head">
@@ -2416,13 +2939,13 @@ export function renderDashboardHtml(model: DashboardModel): string {
           </section>
         </div>
         <aside class="right-rail">
-          <section class="panel">
-            <div class="panel-head"><h2>Top Accounts</h2><span class="panel-note">external only</span></div>
-            <ul class="list">${accountsRows || '<li><span><b>No accounts yet</b><small>Search telemetry after refresh</small></span><em>0</em></li>'}</ul>
+          <section class="panel right-account-panel">
+            <div class="panel-head"><h2>Top Accounts</h2><span class="panel-note filter-chip">Filter ▾</span></div>
+            <div class="account-list">${accountsRows || '<div class="account-row"><div class="account-head"><b>No accounts yet</b></div><div class="account-meta"><span>Search telemetry after refresh</span></div></div>'}</div>
           </section>
-          <section class="panel">
-            <div class="panel-head"><h2>Top Commands</h2><span class="panel-note">market usage</span></div>
-            <ul class="list">${commandsRows}</ul>
+          <section class="panel right-command-panel">
+            <div class="panel-head"><h2>Top Commands</h2><span class="panel-note">share · sessions · accounts</span></div>
+            <div class="command-list">${commandsRows || '<div class="command-row"><div class="command-head"><span class="cmd-name">No commands yet</span></div></div>'}</div>
           </section>
           <section class="panel table-panel">
             <div class="panel-head"><h2>Collection Health</h2><span class="panel-note">${escapeHtml(model.generatedAt)}</span></div>
@@ -2499,6 +3022,163 @@ export function renderDashboardHtml(model: DashboardModel): string {
     };
     if (detailSearch) detailSearch.addEventListener("input", applyDetailSearch);
     applyDetailSearch();
+    // --- Momentum Trend Chart interactivity ---
+    (function() {
+      const seriesEl = document.getElementById("momentum-series-data");
+      const daysEl = document.getElementById("momentum-day-labels");
+      const togglesContainer = document.getElementById("momentum-toggles");
+      const chartWrap = document.getElementById("momentum-chart-wrap");
+      const tooltip = document.getElementById("momentum-tooltip");
+      const hitArea = document.getElementById("momentum-hitarea");
+      if (!seriesEl || !daysEl || !togglesContainer || !chartWrap || !tooltip || !hitArea) return;
+
+      let seriesData = [];
+      let dayLabels = [];
+      try { seriesData = JSON.parse(seriesEl.textContent || "[]"); } catch(e) {}
+      try { dayLabels = JSON.parse(daysEl.textContent || "[]"); } catch(e) {}
+
+      const padLeft = 56;
+      const padRight = 44;
+      const padTop = 14;
+      const padBottom = 36;
+      const svgW = 700;
+      const svgH = 300;
+      const plotW = svgW - padLeft - padRight;
+      const plotH = svgH - padTop - padBottom;
+
+      let activeSeries = new Set(seriesData.map(function(s) { return s.key; }));
+
+      const pathEls = chartWrap.querySelectorAll(".chart-line");
+      const leftLabels = chartWrap.querySelectorAll("text[text-anchor='end'].chart-label");
+      const rightLabels = chartWrap.querySelectorAll("text[text-anchor='start'].chart-label");
+
+      function updateVisibility() {
+        pathEls.forEach(function(el) {
+          var k = el.getAttribute("data-series");
+          el.classList.toggle("hidden", !activeSeries.has(k));
+        });
+        updateAxes();
+      }
+
+      function leftMax() {
+        var m = 1;
+        seriesData.forEach(function(s) {
+          if (!activeSeries.has(s.key) || s.axis !== "left") return;
+          s.values.forEach(function(v) { if (v > m) m = v; });
+        });
+        return m;
+      }
+
+      function updateAxes() {
+        var lMax = leftMax();
+        var gridVals = [0, Math.round(lMax * 0.25), Math.round(lMax * 0.5), Math.round(lMax * 0.75), Math.round(lMax)];
+        var rGridVals = [0, 25, 50, 75, 100];
+
+        function toY(v, max, isPct) {
+          if (isPct) return padTop + plotH - (v / 100) * plotH;
+          return padTop + plotH - (v / max) * plotH;
+        }
+
+        var allLabels = chartWrap.querySelectorAll("text.chart-label");
+        allLabels.forEach(function(t) { t.remove(); });
+
+        var svg = chartWrap.querySelector("svg");
+        if (!svg) return;
+
+        // left axis
+        gridVals.forEach(function(v) {
+          var y = toY(v, lMax, false);
+          var txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          txt.setAttribute("x", String(padLeft - 6));
+          txt.setAttribute("y", String(y + 4));
+          txt.setAttribute("text-anchor", "end");
+          txt.setAttribute("class", "chart-label");
+          txt.setAttribute("fill", "#7b8ea3");
+          txt.setAttribute("font-size", "10");
+          txt.textContent = v >= 1000 ? String(Math.round(v / 1000)) + "k" : String(v);
+          svg.appendChild(txt);
+        });
+
+        // right axis
+        rGridVals.forEach(function(v) {
+          var y = toY(v, 100, true);
+          var txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          txt.setAttribute("x", String(svgW - padRight + 6));
+          txt.setAttribute("y", String(y + 4));
+          txt.setAttribute("text-anchor", "start");
+          txt.setAttribute("class", "chart-label");
+          txt.setAttribute("fill", "#7b8ea3");
+          txt.setAttribute("font-size", "10");
+          txt.textContent = String(v) + "%";
+          svg.appendChild(txt);
+        });
+
+        // update grid lines
+        var existingGrids = chartWrap.querySelectorAll(".chart-grid");
+        existingGrids.forEach(function(g) { g.remove(); });
+        var allY = new Set();
+        gridVals.forEach(function(v) { allY.add(Math.round(toY(v, lMax, false))); });
+        rGridVals.forEach(function(v) { allY.add(Math.round(toY(v, 100, true))); });
+        allY.forEach(function(y) {
+          var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          line.setAttribute("x1", String(padLeft));
+          line.setAttribute("x2", String(svgW - padRight));
+          line.setAttribute("y1", String(y));
+          line.setAttribute("y2", String(y));
+          line.setAttribute("class", "chart-grid");
+          line.setAttribute("stroke", "#1d2d3f");
+          line.setAttribute("stroke-width", "1");
+          svg.insertBefore(line, hitArea);
+        });
+      }
+
+      togglesContainer.addEventListener("click", function(e) {
+        var btn = e.target.closest(".momentum-toggle");
+        if (!btn) return;
+        var k = btn.getAttribute("data-series");
+        if (activeSeries.has(k)) activeSeries.delete(k);
+        else activeSeries.add(k);
+        btn.classList.toggle("active", activeSeries.has(k));
+        updateVisibility();
+      });
+
+      function findDataPoint(mouseX) {
+        var rect = hitArea.getBoundingClientRect();
+        var svgRect = hitArea.closest("svg").getBoundingClientRect();
+        var scaleX = svgW / svgRect.width;
+        var svgX = (mouseX - svgRect.left) * scaleX;
+        var frac = (svgX - padLeft) / plotW;
+        var idx = Math.round(frac * (dayLabels.length - 1));
+        idx = Math.max(0, Math.min(dayLabels.length - 1, idx));
+        return { idx: idx, day: dayLabels[idx] || "" };
+      }
+
+      hitArea.addEventListener("mousemove", function(e) {
+        var pt = findDataPoint(e.clientX);
+        tooltip.style.display = "block";
+        var items = "";
+        seriesData.forEach(function(s) {
+          if (!activeSeries.has(s.key)) return;
+          var val = s.values[pt.idx] !== undefined ? s.values[pt.idx] : 0;
+          var suffix = s.axis === "right" ? "%" : "";
+          items += "<div class=\"tip-item\"><span class=\"tip-dot\" style=\"background:" + s.color + "\"></span>" + s.label + "<span class=\"tip-val\">" + String(val) + suffix + "</span></div>";
+        });
+        tooltip.innerHTML = "<b>" + pt.day + "</b>" + items;
+        var wrapRect = chartWrap.getBoundingClientRect();
+        var left = e.clientX - wrapRect.left + 14;
+        var top = e.clientY - wrapRect.top - 10;
+        if (left + 180 > wrapRect.width) left = e.clientX - wrapRect.left - 190;
+        if (top < 0) top = e.clientY - wrapRect.top + 14;
+        tooltip.style.left = left + "px";
+        tooltip.style.top = top + "px";
+      });
+
+      hitArea.addEventListener("mouseleave", function() {
+        tooltip.style.display = "none";
+      });
+
+      updateVisibility();
+    })();
   </script>
 </body>
 </html>
