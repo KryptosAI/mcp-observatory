@@ -6,16 +6,16 @@ Each row links to a reproducible command, an action receipt, a JSON run artifact
 
 The safe attack simulation evidence checks metadata, schemas, and controlled canary surfaces only. It does not execute destructive payloads, contact external callback URLs, or claim exploitability from a static finding alone.
 
-For the rules behind this page, see the [Safety Methodology](./methodology.md), the [MCP Attack Simulator](./mcp-attack-simulator.md), and the generated [MCP Risk Graph](./safety-index/mcp-risk-graph.md).
+For the rules behind this page, see the [Safety Methodology](./methodology.md) and the [MCP Attack Simulator](./mcp-attack-simulator.md). For a smaller server-to-evidence map, see the [MCP Receipt Graph](./receipt-graph.md).
 
 ## Snapshot
 
-- Evaluated servers: 15
+- Evaluated servers: 16
 - Ready for CI: 7
 - Needs review before production: 4
-- Unsafe default posture: 4
+- Unsafe default posture: 5
 - Not reproducible: 0
-- Latest run: 2026-07-06T19:49:58.878Z
+- Latest run: 2026-07-07T03:17:28.113Z
 
 ## Evaluations
 
@@ -36,10 +36,11 @@ For the rules behind this page, see the [Safety Methodology](./methodology.md), 
 | 13 | [AntV chart MCP server](https://github.com/antvis/mcp-server-chart) | Visualization | **Ready for CI** | `allow` | Artifact-producing tools | `npx -y @antv/mcp-server-chart` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y @antv/mcp-server-chart" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/antv-chart-server.json) / [report](./safety-index/artifacts/antv-chart-server.md) | Zero-config public package. [public proof](https://github.com/antvis/mcp-server-chart/pull/312) |
 | 14 | [ExecuteAutomation Playwright MCP](https://github.com/executeautomation/mcp-playwright) | Browser Automation | **Unsafe default posture** | `quarantine` | Startup/listing reproducibility | `npx -y @executeautomation/playwright-mcp-server` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y @executeautomation/playwright-mcp-server" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/executeautomation-playwright-server.json) / [report](./safety-index/artifacts/executeautomation-playwright-server.md) | Evaluated as a public package; current result should be treated as a maintainer conversation starter. [public proof](https://github.com/executeautomation/mcp-playwright/pull/225) |
 | 15 | [Flux159 Kubernetes MCP server](https://github.com/Flux159/mcp-server-kubernetes) | Infrastructure / Kubernetes | **Unsafe default posture** | `quarantine` | Command and cluster mutation boundary | `npx -y mcp-server-kubernetes` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y mcp-server-kubernetes" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/kubernetes-server.json) / [report](./safety-index/artifacts/kubernetes-server.md) | Zero-config public package. Evaluated without cluster credentials; findings are metadata and schema boundary prompts, not exploit claims. |
+| 16 | [Chrome DevTools MCP](https://github.com/ChromeDevTools/chrome-devtools-mcp) | Browser Automation | **Unsafe default posture** | `gate` | Browser/code execution boundary | `npx -y chrome-devtools-mcp` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y chrome-devtools-mcp" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/chrome-devtools-mcp-server.json) / [report](./safety-index/artifacts/chrome-devtools-mcp-server.md) | Zero-config public package; browser-control findings should be treated as policy-review prompts, not vulnerability claims. |
 
 ## Patterns Observed
 
-- Browser/code execution boundary: 2 server(s)
+- Browser/code execution boundary: 3 server(s)
 - Artifact-producing tools: 1 server(s)
 - Broad protocol surface: 1 server(s)
 - Browser-control boundary: 1 server(s)

@@ -264,5 +264,22 @@
     "failureClass": "Command and cluster mutation boundary",
     "whyItMatters": "Kubernetes MCP servers can expose cluster mutation, pod exec, manifest apply/delete, and broad kubectl command surfaces to agents.",
     "reproductionNotes": "Zero-config public package. Evaluated without cluster credentials; findings are metadata and schema boundary prompts, not exploit claims."
+  },
+  {
+    "id": "chrome-devtools-mcp-server",
+    "name": "Chrome DevTools MCP",
+    "repo": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+    "packageName": "chrome-devtools-mcp",
+    "category": "Browser Automation",
+    "command": "npx",
+    "args": [
+      "-y",
+      "chrome-devtools-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Browser control",
+    "failureClass": "Browser/code execution boundary",
+    "whyItMatters": "Coding agents may use Chrome DevTools MCP to inspect pages, network state, console output, and browser behavior before making changes.",
+    "reproductionNotes": "Zero-config public package; browser-control findings should be treated as policy-review prompts, not vulnerability claims."
   }
 ]

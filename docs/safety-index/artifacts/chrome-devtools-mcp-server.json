@@ -1,0 +1,1745 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "fail",
+  "runId": "run_2026-07-07T031728113Z_b22904e8",
+  "createdAt": "2026-07-07T03:17:28.113Z",
+  "toolVersion": "1.28.2",
+  "target": {
+    "targetId": "chrome-devtools-mcp-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "chrome-devtools-mcp"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "chrome-devtools-mcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Browser control",
+      "failureClass": "Browser/code execution boundary",
+      "whyItMatters": "Coding agents may use Chrome DevTools MCP to inspect pages, network state, console output, and browser behavior before making changes."
+    },
+    "serverName": "chrome_devtools",
+    "serverVersion": "1.5.0"
+  },
+  "environment": {
+    "platform": "darwin 24.0.0",
+    "nodeVersion": "v25.8.1"
+  },
+  "summary": {
+    "total": 8,
+    "pass": 2,
+    "fail": 2,
+    "partial": 2,
+    "unsupported": 2,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "fail"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 4.252374999996391,
+      "message": "Advertised capability responded with the minimal expected shape (29 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 29,
+          "identifiers": [
+            "click",
+            "close_page",
+            "drag",
+            "emulate",
+            "evaluate_script",
+            "fill",
+            "fill_form",
+            "get_console_message",
+            "get_network_request",
+            "handle_dialog",
+            "hover",
+            "lighthouse_audit",
+            "list_console_messages",
+            "list_network_requests",
+            "list_pages",
+            "navigate_page",
+            "new_page",
+            "performance_analyze_insight",
+            "performance_start_trace",
+            "performance_stop_trace",
+            "press_key",
+            "resize_page",
+            "select_page",
+            "take_heapsnapshot",
+            "take_screenshot",
+            "take_snapshot",
+            "type_text",
+            "upload_file",
+            "wait_for"
+          ],
+          "diagnostics": [
+            "debug, and modify any data in the browser or DevTools.",
+            "Avoid sharing sensitive or personal information that you do not want to share with MCP clients.",
+            "Performance tools may send trace URLs to the Google CrUX API to fetch real-user experience data. To disable, run with --no-performance-crux.",
+            "Google collects usage statistics to improve Chrome DevTools MCP. To opt-out, run with --no-usage-statistics.",
+            "For more details, visit: https://github.com/ChromeDevTools/chrome-devtools-mcp#usage-statistics"
+          ],
+          "schemas": {
+            "click": {
+              "type": "object",
+              "properties": {
+                "uid": {
+                  "type": "string",
+                  "description": "The uid of an element on the page from the page content snapshot"
+                },
+                "dblClick": {
+                  "type": "boolean",
+                  "description": "Set to true for double clicks. Default is false."
+                },
+                "includeSnapshot": {
+                  "type": "boolean",
+                  "description": "Whether to include a snapshot in the response. Default is false."
+                }
+              },
+              "required": [
+                "uid"
+              ],
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "close_page": {
+              "type": "object",
+              "properties": {
+                "pageId": {
+                  "type": "number",
+                  "description": "The ID of the page to close. Call list_pages to list pages."
+                }
+              },
+              "required": [
+                "pageId"
+              ],
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "drag": {
+              "type": "object",
+              "properties": {
+                "from_uid": {
+                  "type": "string",
+                  "description": "The uid of the element to drag"
+                },
+                "to_uid": {
+                  "type": "string",
+                  "description": "The uid of the element to drop into"
+                },
+                "includeSnapshot": {
+                  "type": "boolean",
+                  "description": "Whether to include a snapshot in the response. Default is false."
+                }
+              },
+              "required": [
+                "from_uid",
+                "to_uid"
+              ],
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "emulate": {
+              "type": "object",
+              "properties": {
+                "networkConditions": {
+                  "type": "string",
+                  "enum": [
+                    "Offline",
+                    "Slow 3G",
+                    "Fast 3G",
+                    "Slow 4G",
+                    "Fast 4G"
+                  ],
+                  "description": "Throttle network. Omit to disable throttling."
+                },
+                "cpuThrottlingRate": {
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 20,
+                  "description": "Represents the CPU slowdown factor. Omit or set the rate to 1 to disable throttling"
+                },
+                "geolocation": {
+                  "type": "string",
+                  "description": "Geolocation (`<latitude>,<longitude>`) to emulate. Latitude between -90 and 90. Longitude between -180 and 180. Omit to clear the geolocation override."
+                },
+                "userAgent": {
+                  "type": "string",
+                  "description": "User agent to emulate. Set to empty string to clear the user agent override."
+                },
+                "colorScheme": {
+                  "type": "string",
+                  "enum": [
+                    "dark",
+                    "light",
+                    "auto"
+                  ],
+                  "description": "Emulate the dark or the light mode. Set to \"auto\" to reset to the default."
+                },
+                "viewport": {
+                  "type": "string",
+                  "description": "Emulate device viewports '<width>x<height>x<devicePixelRatio>[,mobile][,touch][,landscape]'. 'touch' and 'mobile' to emulate mobile devices. 'landscape' to emulate landscape mode."
+                },
+                "extraHttpHeaders": {
+                  "type": "string",
+                  "description": "Extra HTTP headers as a JSON string object, e.g. {\"X-Custom\": \"value\", \"Authorization\": \"Bearer token\"}. Headers are included into every HTTP request originating from the page and persist across navigations until cleared. Pass an empty string to clear all extra headers."
+                }
+              },
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "evaluate_script": {
+              "type": "object",
+              "properties": {
+                "function": {
+                  "type": "string",
+                  "description": "A JavaScript function declaration to be executed by the tool in the currently selected page.\nExample without arguments: `() => document.title` or `async () => await fetch(\"example.com\")`.\nExample with arguments: `(el) => el.innerText`\n"
+                },
+                "args": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "The uid of an element on the page from the page content snapshot"
+                  },
+                  "description": "An optional list of arguments to pass to the function."
+                },
+                "filePath": {
+                  "type": "string",
+                  "description": "The absolute or relative path to a file to save the script output to. If omitted, the output is returned inline."
+                },
+                "dialogAction": {
+                  "type": "string",
+                  "description": "Handle dialogs while execution. \"accept\", \"dismiss\", or string for response of window.prompt. Defaults to accept."
+                }
+              },
+              "required": [
+                "function"
+              ],
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "fill": {
+              "type": "object",
+              "properties": {
+                "uid": {
+                  "type": "string",
+                  "description": "The uid of an element on the page from the page content snapshot"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "The value to fill in. \"true\" or \"false\" for checkboxes and toggles, \"true\" for radio buttons."
+                },
+                "includeSnapshot": {
+                  "type": "boolean",
+                  "description": "Whether to include a snapshot in the response. Default is false."
+                }
+              },
+              "required": [
+                "uid",
+                "value"
+              ],
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "fill_form": {
+              "type": "object",
+              "properties": {
+                "elements": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "uid": {
+                        "type": "string",
+                        "description": "The uid of the element to fill out"
+                      },
+                      "value": {
+                        "type": "string",
+                        "description": "Value for the element. \"true\" or \"false\" for checkboxes and toggles, \"true\" for radio buttons."
+                      }
+                    },
+                    "required": [
+                      "uid",
+                      "value"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Elements from snapshot to fill out."
+                },
+                "includeSnapshot": {
+                  "type": "boolean",
+                  "description": "Whether to include a snapshot in the response. Default is false."
+                }
+              },
+              "required": [
+                "elements"
+              ],
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_console_message": {
+              "type": "object",
+              "properties": {
+                "msgid": {
+                  "type": "number",
+                  "description": "The msgid of a console message on the page from the listed console messages"
+                }
+              },
+              "required": [
+                "msgid"
+              ],
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_network_request": {
+              "type": "object",
+              "properties": {
+                "reqid": {
+                  "type": "number",
+                  "description": "The reqid of the network request. If omitted returns the currently selected request in the DevTools Network panel."
+                },
+                "requestFilePath": {
+                  "type": "string",
+                  "description": "The absolute or relative path to a .network-request file to save the request body to. If omitted, the body is returned inline."
+                },
+                "responseFilePath": {
+                  "type": "string",
+                  "description": "The absolute or relative path to a .network-response file to save the response body to. If omitted, the body is returned inline."
+                }
+              },
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "handle_dialog": {
+              "type": "object",
+              "properties": {
+                "action": {
+                  "type": "string",
+                  "enum": [
+                    "accept",
+                    "dismiss"
+                  ],
+                  "description": "Whether to dismiss or accept the dialog"
+                },
+                "promptText": {
+                  "type": "string",
+                  "description": "Optional prompt text to enter into the dialog."
+                }
+              },
+              "required": [
+                "action"
+              ],
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "hover": {
+              "type": "object",
+              "properties": {
+                "uid": {
+                  "type": "string",
+                  "description": "The uid of an element on the page from the page content snapshot"
+                },
+                "includeSnapshot": {
+                  "type": "boolean",
+                  "description": "Whether to include a snapshot in the response. Default is false."
+                }
+              },
+              "required": [
+                "uid"
+              ],
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "lighthouse_audit": {
+              "type": "object",
+              "properties": {
+                "mode": {
+                  "type": "string",
+                  "enum": [
+                    "navigation",
+                    "snapshot"
+                  ],
+                  "default": "navigation",
+                  "description": "\"navigation\" reloads & audits. \"snapshot\" analyzes current state."
+                },
+                "device": {
+                  "type": "string",
+                  "enum": [
+                    "desktop",
+                    "mobile"
+                  ],
+                  "default": "desktop",
+                  "description": "Device to emulate."
+                },
+                "outputDirPath": {
+                  "type": "string",
+                  "description": "Directory for reports. If omitted, uses temporary files."
+                }
+              },
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "list_console_messages": {
+              "type": "object",
+              "properties": {
+                "pageSize": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "description": "Maximum number of messages to return. When omitted, returns all messages."
+                },
+                "pageIdx": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Page number to return (0-based). When omitted, returns the first page."
+                },
+                "types": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "log",
+                      "debug",
+                      "info",
+                      "error",
+                      "warn",
+                      "dir",
+                      "dirxml",
+                      "table",
+                      "trace",
+                      "clear",
+                      "startGroup",
+                      "startGroupCollapsed",
+                      "endGroup",
+                      "assert",
+                      "profile",
+                      "profileEnd",
+                      "count",
+                      "timeEnd",
+                      "verbose",
+                      "issue"
+                    ]
+                  },
+                  "description": "Filter messages to only return messages of the specified resource types. When omitted or empty, returns all messages."
+                },
+                "includePreservedMessages": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Set to true to return the preserved messages over the last 3 navigations."
+                },
+                "serviceWorkerId": {
+                  "type": "string",
+                  "description": "Filter messages to only return messages of the specified service worker."
+                }
+              },
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "list_network_requests": {
+              "type": "object",
+              "properties": {
+                "pageSize": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "description": "Maximum number of requests to return. When omitted, returns all requests."
+                },
+                "pageIdx": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Page number to return (0-based). When omitted, returns the first page."
+                },
+                "resourceTypes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "document",
+                      "stylesheet",
+                      "image",
+                      "media",
+                      "font",
+                      "script",
+                      "texttrack",
+                      "xhr",
+                      "fetch",
+                      "prefetch",
+                      "eventsource",
+                      "websocket",
+                      "manifest",
+                      "signedexchange",
+                      "ping",
+                      "cspviolationreport",
+                      "preflight",
+                      "fedcm",
+                      "other"
+                    ]
+                  },
+                  "description": "Filter requests to only return requests of the specified resource types. When omitted or empty, returns all requests."
+                },
+                "includePreservedRequests": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Set to true to return the preserved requests over the last 3 navigations."
+                }
+              },
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "list_pages": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "navigate_page": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "url",
+                    "back",
+                    "forward",
+                    "reload"
+                  ],
+                  "description": "Navigate the page by URL, back or forward in history, or reload."
+                },
+                "url": {
+                  "type": "string",
+                  "description": "Target URL (only type=url)"
+                },
+                "ignoreCache": {
+                  "type": "boolean",
+                  "description": "Whether to ignore cache on reload."
+                },
+                "handleBeforeUnload": {
+                  "type": "string",
+                  "enum": [
+                    "accept",
+                    "decline"
+                  ],
+                  "description": "Whether to auto accept or beforeunload dialogs triggered by this navigation. Default is accept."
+                },
+                "initScript": {
+                  "type": "string",
+                  "description": "A JavaScript script to be executed on each new document before any other scripts for the next navigation."
+                },
+                "timeout": {
+                  "type": "integer",
+                  "description": "Maximum wait time in milliseconds. If set to 0, the default timeout will be used."
+                }
+              },
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "new_page": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "description": "URL to load in a new page."
+                },
+                "background": {
+                  "type": "boolean",
+                  "description": "Whether to open the page in the background without bringing it to the front. Default is false (foreground)."
+                },
+                "isolatedContext": {
+                  "type": "string",
+                  "description": "If specified, the page is created in an isolated browser context with the given name. Pages in the same browser context share cookies and storage. Pages in different browser contexts are fully isolated."
+                },
+                "timeout": {
+                  "type": "integer",
+                  "description": "Maximum wait time in milliseconds. If set to 0, the default timeout will be used."
+                }
+              },
+              "required": [
+                "url"
+              ],
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "performance_analyze_insight": {
+              "type": "object",
+              "properties": {
+                "insightSetId": {
+                  "type": "string",
+                  "description": "The id for the specific insight set. Only use the ids given in the \"Available insight sets\" list."
+                },
+                "insightName": {
+                  "type": "string",
+                  "description": "The name of the Insight you want more information on. For example: \"DocumentLatency\" or \"LCPBreakdown\""
+                }
+              },
+              "required": [
+                "insightSetId",
+                "insightName"
+              ],
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "performance_start_trace": {
+              "type": "object",
+              "properties": {
+                "reload": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Determines if, once tracing has started, the current selected page should be automatically reloaded. Navigate the page to the right URL using the navigate_page tool BEFORE starting the trace if reload or autoStop is set to true."
+                },
+                "autoStop": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Determines if the trace recording should be automatically stopped."
+                },
+                "filePath": {
+                  "type": "string",
+                  "description": "The absolute file path, or a file path relative to the current working directory, to save the raw trace data. For example, trace.json.gz (compressed) or trace.json (uncompressed)."
+                }
+              },
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "performance_stop_trace": {
+              "type": "object",
+              "properties": {
+                "filePath": {
+                  "type": "string",
+                  "description": "The absolute file path, or a file path relative to the current working directory, to save the raw trace data. For example, trace.json.gz (compressed) or trace.json (uncompressed)."
+                }
+              },
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "press_key": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "description": "A key or a combination (e.g., \"Enter\", \"Control+A\", \"Control++\", \"Control+Shift+R\"). Modifiers: Control, Shift, Alt, Meta"
+                },
+                "includeSnapshot": {
+                  "type": "boolean",
+                  "description": "Whether to include a snapshot in the response. Default is false."
+                }
+              },
+              "required": [
+                "key"
+              ],
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "resize_page": {
+              "type": "object",
+              "properties": {
+                "width": {
+                  "type": "number",
+                  "description": "Page width"
+                },
+                "height": {
+                  "type": "number",
+                  "description": "Page height"
+                }
+              },
+              "required": [
+                "width",
+                "height"
+              ],
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "select_page": {
+              "type": "object",
+              "properties": {
+                "pageId": {
+                  "type": "number",
+                  "description": "The ID of the page to select. Call list_pages to get available pages."
+                },
+                "bringToFront": {
+                  "type": "boolean",
+                  "description": "Whether to focus the page and bring it to the top."
+                }
+              },
+              "required": [
+                "pageId"
+              ],
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "take_heapsnapshot": {
+              "type": "object",
+              "properties": {
+                "filePath": {
+                  "type": "string",
+                  "description": "A path to a .heapsnapshot file to save the heapsnapshot to."
+                }
+              },
+              "required": [
+                "filePath"
+              ],
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "take_screenshot": {
+              "type": "object",
+              "properties": {
+                "format": {
+                  "type": "string",
+                  "enum": [
+                    "png",
+                    "jpeg",
+                    "webp"
+                  ],
+                  "default": "png",
+                  "description": "Type of format to save the screenshot as. Default is \"png\""
+                },
+                "quality": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Compression quality for JPEG and WebP formats (0-100). Higher values mean better quality but larger file sizes. Ignored for PNG format."
+                },
+                "uid": {
+                  "type": "string",
+                  "description": "The uid of an element on the page from the page content snapshot. If omitted, takes a page screenshot."
+                },
+                "fullPage": {
+                  "type": "boolean",
+                  "description": "If set to true takes a screenshot of the full page instead of the currently visible viewport. Incompatible with uid."
+                },
+                "filePath": {
+                  "type": "string",
+                  "description": "The absolute path, or a path relative to the current working directory, to save the screenshot to instead of attaching it to the response."
+                }
+              },
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "take_snapshot": {
+              "type": "object",
+              "properties": {
+                "verbose": {
+                  "type": "boolean",
+                  "description": "Whether to include all possible information available in the full a11y tree. Default is false."
+                },
+                "filePath": {
+                  "type": "string",
+                  "description": "The absolute path, or a path relative to the current working directory, to save the snapshot to instead of attaching it to the response."
+                }
+              },
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "type_text": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "description": "The text to type"
+                },
+                "submitKey": {
+                  "type": "string",
+                  "description": "Optional key to press after typing. E.g., \"Enter\", \"Tab\", \"Escape\""
+                }
+              },
+              "required": [
+                "text"
+              ],
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "upload_file": {
+              "type": "object",
+              "properties": {
+                "uid": {
+                  "type": "string",
+                  "description": "The uid of the file input element or an element that will open file chooser on the page from the page content snapshot"
+                },
+                "filePath": {
+                  "type": "string",
+                  "description": "The local path of the file to upload"
+                },
+                "includeSnapshot": {
+                  "type": "boolean",
+                  "description": "Whether to include a snapshot in the response. Default is false."
+                }
+              },
+              "required": [
+                "uid",
+                "filePath"
+              ],
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "wait_for": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "description": "Non-empty list of texts. Resolves when any value appears on the page."
+                },
+                "timeout": {
+                  "type": "integer",
+                  "description": "Maximum wait time in milliseconds. If set to 0, the default timeout will be used."
+                }
+              },
+              "required": [
+                "text"
+              ],
+              "additionalProperties": true,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.003541999998560641,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.01095799999893643,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "fail",
+      "durationMs": 0.12920799999847077,
+      "message": "Found 30 security finding(s): 1 high, 7 medium, 22 low.",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 30,
+          "identifiers": [
+            "click",
+            "close_page",
+            "drag",
+            "emulate",
+            "evaluate_script",
+            "fill",
+            "fill_form",
+            "get_network_request",
+            "handle_dialog",
+            "hover",
+            "lighthouse_audit",
+            "navigate_page",
+            "new_page",
+            "performance_start_trace",
+            "performance_stop_trace",
+            "press_key",
+            "resize_page",
+            "take_heapsnapshot",
+            "take_screenshot",
+            "take_snapshot",
+            "type_text",
+            "upload_file"
+          ],
+          "diagnostics": [
+            "[low] Tool \"click\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"close_page\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"drag\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"emulate\" accepts additional properties and is marked as destructive.",
+            "[high] Tool \"evaluate_script\" name suggests command execution capability.",
+            "[medium] Tool \"evaluate_script\" accepts filesystem paths and has destructive capabilities.",
+            "[low] Tool \"evaluate_script\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"fill\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"fill_form\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"get_network_request\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"handle_dialog\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"hover\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"lighthouse_audit\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"navigate_page\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"new_page\" accepts additional properties and is marked as destructive.",
+            "[medium] Tool \"performance_start_trace\" accepts filesystem paths and has destructive capabilities.",
+            "[low] Tool \"performance_start_trace\" accepts additional properties and is marked as destructive.",
+            "[medium] Tool \"performance_stop_trace\" accepts filesystem paths and has destructive capabilities.",
+            "[low] Tool \"performance_stop_trace\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"press_key\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"resize_page\" accepts additional properties and is marked as destructive.",
+            "[medium] Tool \"take_heapsnapshot\" accepts filesystem paths and has destructive capabilities.",
+            "[low] Tool \"take_heapsnapshot\" accepts additional properties and is marked as destructive.",
+            "[medium] Tool \"take_screenshot\" accepts filesystem paths and has destructive capabilities.",
+            "[low] Tool \"take_screenshot\" accepts additional properties and is marked as destructive.",
+            "[medium] Tool \"take_snapshot\" accepts filesystem paths and has destructive capabilities.",
+            "[low] Tool \"take_snapshot\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"type_text\" accepts additional properties and is marked as destructive.",
+            "[medium] Tool \"upload_file\" accepts filesystem paths and has destructive capabilities.",
+            "[low] Tool \"upload_file\" accepts additional properties and is marked as destructive."
+          ],
+          "findings": [
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "click",
+              "message": "Tool \"click\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "close_page",
+              "message": "Tool \"close_page\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "drag",
+              "message": "Tool \"drag\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "emulate",
+              "message": "Tool \"emulate\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "shell-injection",
+              "severity": "high",
+              "toolName": "evaluate_script",
+              "message": "Tool \"evaluate_script\" name suggests command execution capability."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "evaluate_script",
+              "message": "Tool \"evaluate_script\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "evaluate_script",
+              "message": "Tool \"evaluate_script\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "fill",
+              "message": "Tool \"fill\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "fill_form",
+              "message": "Tool \"fill_form\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "get_network_request",
+              "message": "Tool \"get_network_request\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "handle_dialog",
+              "message": "Tool \"handle_dialog\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "hover",
+              "message": "Tool \"hover\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "lighthouse_audit",
+              "message": "Tool \"lighthouse_audit\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "navigate_page",
+              "message": "Tool \"navigate_page\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "new_page",
+              "message": "Tool \"new_page\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "performance_start_trace",
+              "message": "Tool \"performance_start_trace\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "performance_start_trace",
+              "message": "Tool \"performance_start_trace\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "performance_stop_trace",
+              "message": "Tool \"performance_stop_trace\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "performance_stop_trace",
+              "message": "Tool \"performance_stop_trace\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "press_key",
+              "message": "Tool \"press_key\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "resize_page",
+              "message": "Tool \"resize_page\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "take_heapsnapshot",
+              "message": "Tool \"take_heapsnapshot\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "take_heapsnapshot",
+              "message": "Tool \"take_heapsnapshot\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "take_screenshot",
+              "message": "Tool \"take_screenshot\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "take_screenshot",
+              "message": "Tool \"take_screenshot\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "take_snapshot",
+              "message": "Tool \"take_snapshot\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "take_snapshot",
+              "message": "Tool \"take_snapshot\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "type_text",
+              "message": "Tool \"type_text\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "upload_file",
+              "message": "Tool \"upload_file\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "upload_file",
+              "message": "Tool \"upload_file\" accepts additional properties and is marked as destructive."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 961.1100000000006,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 29 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
+            "[pass] tool-response-content: Tool \"emulate\" response has valid content array.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "partial",
+      "durationMs": 0.9069579999995767,
+      "message": "Found 10 quality finding(s) across 29 item(s): 0 warnings, 10 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 10,
+          "identifiers": [
+            "emulate",
+            "get_network_request",
+            "lighthouse_audit",
+            "list_console_messages",
+            "list_network_requests",
+            "navigate_page",
+            "performance_start_trace",
+            "performance_stop_trace",
+            "take_screenshot",
+            "take_snapshot"
+          ],
+          "diagnostics": [
+            "[info] tool \"emulate\": Has properties but no 'required' array declared",
+            "[info] tool \"get_network_request\": Has properties but no 'required' array declared",
+            "[info] tool \"lighthouse_audit\": Has properties but no 'required' array declared",
+            "[info] tool \"list_console_messages\": Has properties but no 'required' array declared",
+            "[info] tool \"list_network_requests\": Has properties but no 'required' array declared",
+            "[info] tool \"navigate_page\": Has properties but no 'required' array declared",
+            "[info] tool \"performance_start_trace\": Has properties but no 'required' array declared",
+            "[info] tool \"performance_stop_trace\": Has properties but no 'required' array declared",
+            "[info] tool \"take_screenshot\": Has properties but no 'required' array declared",
+            "[info] tool \"take_snapshot\": Has properties but no 'required' array declared"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "emulate",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_network_request",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "lighthouse_audit",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "list_console_messages",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "list_network_requests",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "navigate_page",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "performance_start_trace",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "performance_stop_trace",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "take_screenshot",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "take_snapshot",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "fail",
+      "durationMs": 0.7475419999973383,
+      "message": "Found 30 security finding(s): 1 high, 7 medium, 22 low.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 30,
+          "identifiers": [
+            "click",
+            "close_page",
+            "drag",
+            "emulate",
+            "evaluate_script",
+            "fill",
+            "fill_form",
+            "get_network_request",
+            "handle_dialog",
+            "hover",
+            "lighthouse_audit",
+            "navigate_page",
+            "new_page",
+            "performance_start_trace",
+            "performance_stop_trace",
+            "press_key",
+            "resize_page",
+            "take_heapsnapshot",
+            "take_screenshot",
+            "take_snapshot",
+            "type_text",
+            "upload_file"
+          ],
+          "diagnostics": [
+            "[low] Tool \"click\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"close_page\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"drag\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"emulate\" accepts additional properties and is marked as destructive.",
+            "[high] Tool \"evaluate_script\" name suggests command execution capability.",
+            "[medium] Tool \"evaluate_script\" accepts filesystem paths and has destructive capabilities.",
+            "[low] Tool \"evaluate_script\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"fill\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"fill_form\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"get_network_request\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"handle_dialog\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"hover\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"lighthouse_audit\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"navigate_page\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"new_page\" accepts additional properties and is marked as destructive.",
+            "[medium] Tool \"performance_start_trace\" accepts filesystem paths and has destructive capabilities.",
+            "[low] Tool \"performance_start_trace\" accepts additional properties and is marked as destructive.",
+            "[medium] Tool \"performance_stop_trace\" accepts filesystem paths and has destructive capabilities.",
+            "[low] Tool \"performance_stop_trace\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"press_key\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"resize_page\" accepts additional properties and is marked as destructive.",
+            "[medium] Tool \"take_heapsnapshot\" accepts filesystem paths and has destructive capabilities.",
+            "[low] Tool \"take_heapsnapshot\" accepts additional properties and is marked as destructive.",
+            "[medium] Tool \"take_screenshot\" accepts filesystem paths and has destructive capabilities.",
+            "[low] Tool \"take_screenshot\" accepts additional properties and is marked as destructive.",
+            "[medium] Tool \"take_snapshot\" accepts filesystem paths and has destructive capabilities.",
+            "[low] Tool \"take_snapshot\" accepts additional properties and is marked as destructive.",
+            "[low] Tool \"type_text\" accepts additional properties and is marked as destructive.",
+            "[medium] Tool \"upload_file\" accepts filesystem paths and has destructive capabilities.",
+            "[low] Tool \"upload_file\" accepts additional properties and is marked as destructive."
+          ],
+          "findings": [
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "click",
+              "message": "Tool \"click\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "close_page",
+              "message": "Tool \"close_page\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "drag",
+              "message": "Tool \"drag\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "emulate",
+              "message": "Tool \"emulate\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "shell-injection",
+              "severity": "high",
+              "toolName": "evaluate_script",
+              "message": "Tool \"evaluate_script\" name suggests command execution capability."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "evaluate_script",
+              "message": "Tool \"evaluate_script\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "evaluate_script",
+              "message": "Tool \"evaluate_script\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "fill",
+              "message": "Tool \"fill\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "fill_form",
+              "message": "Tool \"fill_form\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "get_network_request",
+              "message": "Tool \"get_network_request\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "handle_dialog",
+              "message": "Tool \"handle_dialog\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "hover",
+              "message": "Tool \"hover\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "lighthouse_audit",
+              "message": "Tool \"lighthouse_audit\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "navigate_page",
+              "message": "Tool \"navigate_page\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "new_page",
+              "message": "Tool \"new_page\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "performance_start_trace",
+              "message": "Tool \"performance_start_trace\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "performance_start_trace",
+              "message": "Tool \"performance_start_trace\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "performance_stop_trace",
+              "message": "Tool \"performance_stop_trace\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "performance_stop_trace",
+              "message": "Tool \"performance_stop_trace\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "press_key",
+              "message": "Tool \"press_key\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "resize_page",
+              "message": "Tool \"resize_page\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "take_heapsnapshot",
+              "message": "Tool \"take_heapsnapshot\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "take_heapsnapshot",
+              "message": "Tool \"take_heapsnapshot\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "take_screenshot",
+              "message": "Tool \"take_screenshot\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "take_screenshot",
+              "message": "Tool \"take_screenshot\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "take_snapshot",
+              "message": "Tool \"take_snapshot\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "take_snapshot",
+              "message": "Tool \"take_snapshot\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "type_text",
+              "message": "Tool \"type_text\" accepts additional properties and is marked as destructive."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "upload_file",
+              "message": "Tool \"upload_file\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "upload_file",
+              "message": "Tool \"upload_file\" accepts additional properties and is marked as destructive."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "partial",
+      "durationMs": 1.1115829999980633,
+      "message": "Safe attack simulation found 9 finding(s): 0 high, 9 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 9,
+          "identifiers": [
+            "evaluate_script",
+            "navigate_page",
+            "new_page",
+            "performance_start_trace",
+            "performance_stop_trace",
+            "take_heapsnapshot",
+            "take_screenshot",
+            "take_snapshot",
+            "upload_file"
+          ],
+          "diagnostics": [
+            "[medium] Tool \"evaluate_script\" combines broad parameters (filePath) with destructive or non-read-only behavior.",
+            "[medium] Tool \"navigate_page\" combines broad parameters (url) with destructive or non-read-only behavior.",
+            "[medium] Tool \"new_page\" combines broad parameters (url) with destructive or non-read-only behavior.",
+            "[medium] Tool \"performance_start_trace\" combines broad parameters (filePath) with destructive or non-read-only behavior.",
+            "[medium] Tool \"performance_stop_trace\" combines broad parameters (filePath) with destructive or non-read-only behavior.",
+            "[medium] Tool \"take_heapsnapshot\" combines broad parameters (filePath) with destructive or non-read-only behavior.",
+            "[medium] Tool \"take_screenshot\" combines broad parameters (filePath) with destructive or non-read-only behavior.",
+            "[medium] Tool \"take_snapshot\" combines broad parameters (filePath) with destructive or non-read-only behavior.",
+            "[medium] Tool \"upload_file\" combines broad parameters (filePath) with destructive or non-read-only behavior."
+          ],
+          "findings": [
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "evaluate_script",
+              "message": "Tool \"evaluate_script\" combines broad parameters (filePath) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "filePath"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Evaluate a JavaScript function inside the currently selected page. Returns the response as JSON, so returned values have to be JSON-serializable."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "navigate_page",
+              "message": "Tool \"navigate_page\" combines broad parameters (url) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "url"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Go to a URL, or back, forward, or reload. Use project URL if not specified otherwise."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "new_page",
+              "message": "Tool \"new_page\" combines broad parameters (url) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "url"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Open a new tab and load a URL. Use project URL if not specified otherwise."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "performance_start_trace",
+              "message": "Tool \"performance_start_trace\" combines broad parameters (filePath) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "filePath"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Start a performance trace on the selected webpage. Use to find frontend performance issues, Core Web Vitals (LCP, INP, CLS), and improve page load speed."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "performance_stop_trace",
+              "message": "Tool \"performance_stop_trace\" combines broad parameters (filePath) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "filePath"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Stop the active performance trace recording on the selected webpage."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "take_heapsnapshot",
+              "message": "Tool \"take_heapsnapshot\" combines broad parameters (filePath) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "filePath"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Capture a heap snapshot of the currently selected page. Use to analyze the memory distribution of JavaScript objects and debug memory leaks."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "take_screenshot",
+              "message": "Tool \"take_screenshot\" combines broad parameters (filePath) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "filePath"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Take a screenshot of the page or element."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "take_snapshot",
+              "message": "Tool \"take_snapshot\" combines broad parameters (filePath) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "filePath"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Take a text snapshot of the currently selected page based on the a11y tree. The snapshot lists page elements along with a unique\nidentifier (uid). Always use the latest snapshot. Prefer taking a snapshot over taking a screenshot. The snapshot indicates the element selected\nin the DevTools Elements panel (if any)."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "upload_file",
+              "message": "Tool \"upload_file\" combines broad parameters (filePath) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "filePath"
+                ],
+                "annotations": {
+                  "readOnlyHint": false
+                },
+                "description": "Upload a file through a provided element."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 69,
+    "grade": "D",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "schema-quality: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 20,
+        "details": [
+          "security-lite: fail (0/100)",
+          "security: fail (0/100)",
+          "attack-sim: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 67,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: unsupported (50/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 1112ms",
+          "p95 latency: 4ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 1112.0312080000003,
+    "toolsListMs": 4.252374999996391,
+    "promptsListMs": 0.003541999998560641,
+    "resourcesListMs": 0.01095799999893643
+  }
+}
