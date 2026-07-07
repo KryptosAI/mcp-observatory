@@ -7,7 +7,7 @@ Official GitHub profile achievements are platform-controlled; this project does 
 See the full recognition path in [MCP Observatory Contributors](./docs/contributor-recognition.md).
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ## Contributors
@@ -19,7 +19,8 @@ See the full recognition path in [MCP Observatory Contributors](./docs/contribut
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/KryptosAI"><img src="https://avatars.githubusercontent.com/u/140749029?s=100" width="100px;" alt="William Weishuhn"/><br /><sub><b>William Weishuhn</b></sub></a><br /><a href="https://github.com/KryptosAI/mcp-observatory/commits?author=KryptosAI" title="Code">💻</a> <a href="https://github.com/KryptosAI/mcp-observatory/commits?author=KryptosAI" title="Documentation">📖</a> <a href="#ideas-KryptosAI" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-KryptosAI" title="Maintenance">🚧</a> <a href="https://github.com/KryptosAI/mcp-observatory/commits?author=KryptosAI" title="Tests">⚠️</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/leemeo3"><img src="https://avatars.githubusercontent.com/u/leemeo3?s=100" width="100px;" alt="Lee Sang Hoon"/><br /><sub><b>Lee Sang Hoon</b></sub></a><br /><a href="https://github.com/KryptosAI/mcp-observatory/commits?author=leemeo3" title="Code">💻</a> <a href="https://github.com/KryptosAI/mcp-observatory/commits?author=leemeo3" title="Documentation">📖</a> <a href="https://github.com/KryptosAI/mcp-observatory/commits?author=leemeo3" title="Tests">⚠️</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/leemeo3"><img src="https://avatars.githubusercontent.com/u/leemeo3?s=100" width="100px;" alt="Lee Sang Hoon"/><br /><sub><b>Lee Sang Hoon</b></sub></a><br /><a href="https://github.com/KryptosAI/mcp-observatory/commits?author=leemeo3" title="Code">💻</a> <a href="https://github.com/KryptosAI/mcp-observatory/commits?author=leemeo3" title="Documentation">📖</a> <a href="https://github.com/KryptosAI/mcp-observatory/commits?author=leemeo3" title="Tests">⚠️</a> <a href="#infra-leemeo3" title="Infrastructure (Hosting, Build-Tools, etc)">🏗</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/tanishxdev"><img src="https://avatars.githubusercontent.com/u/117829203?s=100" width="100px;" alt="Tanish Kumar"/><br /><sub><b>Tanish Kumar</b></sub></a><br /><a href="https://github.com/KryptosAI/mcp-observatory/commits?author=tanishxdev" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
