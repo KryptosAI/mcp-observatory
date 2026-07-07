@@ -154,7 +154,11 @@
     "feishu",
     "lark",
     "schema-drift",
-    "attack-simulation"
+    "attack-simulation",
+    "mcp-observability",
+    "security-scanner",
+    "mcp-server-testing",
+    "tool-call-audit"
   ],
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
