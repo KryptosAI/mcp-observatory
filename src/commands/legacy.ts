@@ -30,6 +30,7 @@ export function registerLegacyCommands(program: Command): void {
     .option("--force", "Overwrite existing generated CI adoption files.", false)
     .option("--no-color", "Disable colored output.")
     .action(async (options: { outDir: string; target?: string; watch: boolean; interval: string; invokeTools: boolean } & SetupCiConversionFlags) => {
+      console.error("run is deprecated. Use test instead.");
       if (options.campaign) options.campaign = normalizeCampaign(options.campaign);
       const target = await resolveTarget(options);
       if (options.watch) {
@@ -89,6 +90,7 @@ export function registerLegacyCommands(program: Command): void {
     .option("--target <config>", "Path to a target config JSON file.")
     .option("--no-color", "Disable colored output.")
     .action(async (capability: string, options: { target?: string }) => {
+      console.error("check is deprecated. Use test instead.");
       const validCapabilities = ["tools", "prompts", "resources", "tools-invoke"];
       if (!validCapabilities.includes(capability)) {
         throw new Error(`Invalid capability '${capability}'. Must be one of: ${validCapabilities.join(", ")}`);
@@ -128,6 +130,7 @@ export function registerLegacyCommands(program: Command): void {
         output?: string;
         run: string;
       }) => {
+        console.error("report is deprecated. Use --format on test, scan, or diff instead.");
         const artifact = await readArtifact(options.run);
         if (artifact.artifactType !== "run") {
           throw new Error("The report command only accepts run artifacts.");
