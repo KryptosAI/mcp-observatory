@@ -32,6 +32,11 @@
 
 **MCP Observatory maps the risk graph of agent toolchains before agents depend on them.** It helps teams validate MCP servers before deployment into sensitive, regulated, or mission-critical agentic AI environments.
 
+<p align="center">
+  <img src="docs/demo.gif" alt="MCP Observatory demo" width="700"/>
+</p>
+
+
 Agents should not depend on tools nobody tests. MCP Observatory turns a local MCP check into portable receipts, risk graphs, release-gate evidence, SARIF for GitHub Code Scanning, GitHub Actions gates, schema drift detection, trust status output, score badges, and agent-accessible diagnostics.
 
 ```bash
