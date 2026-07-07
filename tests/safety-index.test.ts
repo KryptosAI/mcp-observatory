@@ -98,6 +98,25 @@ describe("Safety Index", () => {
     expect(targets[0]?.id).toBe("test-server");
   });
 
+  it("loads targets with a temporary directory argument", async () => {
+    const dir = await tempDir();
+    const file = path.join(dir, "targets.json");
+    await writeFile(file, JSON.stringify([{
+      ...target,
+      id: "temp-dir-server",
+      args: ["-y", "test-server", "<safe-empty-temp-dir>"],
+      tempDirArg: {
+        index: 2,
+        prefix: "mcp-observatory-test",
+        placeholder: "<safe-empty-temp-dir>",
+      },
+    }], null, 2), "utf8");
+
+    const targets = await loadSafetyTargets(file);
+    expect(targets[0]?.tempDirArg?.index).toBe(2);
+    expect(targets[0]?.args[2]).toBe("<safe-empty-temp-dir>");
+  });
+
   it("requires target args", async () => {
     const dir = await tempDir();
     const file = path.join(dir, "targets.json");

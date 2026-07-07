@@ -70,6 +70,29 @@
     "reproductionNotes": "Runs against the checked-in harmless fixture directory."
   },
   {
+    "id": "filesystem-mcp-server",
+    "name": "Filesystem MCP server",
+    "repo": "https://github.com/modelcontextprotocol/servers",
+    "packageName": "@modelcontextprotocol/server-filesystem",
+    "category": "Filesystem",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-filesystem",
+      "<safe-empty-temp-dir>"
+    ],
+    "tempDirArg": {
+      "index": 2,
+      "prefix": "mcp-observatory-filesystem-safety-index",
+      "placeholder": "<safe-empty-temp-dir>"
+    },
+    "timeoutMs": 30000,
+    "riskClass": "Filesystem boundary",
+    "failureClass": "Temporary directory filesystem access",
+    "whyItMatters": "Filesystem MCP is a core agent trust boundary because it exposes read, write, edit, delete, and directory traversal tools.",
+    "reproductionNotes": "Safety Index generation creates an empty temporary directory for the server root and sanitizes that path from public artifacts."
+  },
+  {
     "id": "context7-server",
     "name": "Context7",
     "repo": "https://github.com/upstash/context7",
