@@ -113,6 +113,16 @@ describe("command helper output", () => {
     expect(formatOutput(artifact, "terminal")).toContain("MCP Observatory Run");
   });
 
+  it("warns before falling back to terminal output for unknown formats", () => {
+    const artifact = makeArtifact();
+    const stderr = vi.spyOn(process.stderr, "write").mockImplementation(() => true);
+
+    expect(formatOutput(artifact, "unsupported")).toContain("MCP Observatory Run");
+    expect(stderr).toHaveBeenCalledWith(
+      "Warning: unknown format 'unsupported'. Supported: terminal, markdown, html, sarif, junit. Falling back to terminal.\n",
+    );
+  });
+
   it("writes formatted output to stdout or a file", async () => {
     const stdout = captureStdout();
 

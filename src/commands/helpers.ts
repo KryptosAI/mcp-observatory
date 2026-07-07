@@ -122,15 +122,20 @@ export async function resolveTarget(options: { target?: string }): Promise<Targe
 
 export function formatOutput(
   artifact: Parameters<typeof renderTerminal>[0],
-  format: "html" | "json" | "junit" | "markdown" | "pr-comment" | "sarif" | "terminal",
+  format: string,
   options: { artifactUri?: string } = {},
 ): string {
+  const knownFormats = new Set(["html", "json", "junit", "markdown", "pr-comment", "sarif", "terminal"]);
+
   if (format === "json") return JSON.stringify(artifact, null, 2);
   if (format === "markdown") return renderMarkdown(artifact);
   if (format === "pr-comment") return renderPrComment(artifact);
   if (format === "html") return renderHtml(artifact);
   if (format === "junit" && artifact.artifactType === "run") return renderJUnit(artifact);
   if (format === "sarif" && artifact.artifactType === "run") return renderSarif(artifact, options);
+  if (!knownFormats.has(format)) {
+    process.stderr.write(`Warning: unknown format '${format}'. Supported: terminal, markdown, html, sarif, junit. Falling back to terminal.\n`);
+  }
   return renderTerminal(artifact);
 }
 
