@@ -74,7 +74,7 @@ export async function findLatestSuccessfulRunArtifact(outDir: string): Promise<s
 
 export async function readArtifact(filePath: string): Promise<Artifact> {
   const content = await readFile(filePath, "utf8");
-  const data = JSON.parse(content);
+  const data: unknown = JSON.parse(content);
 
   if (isObject(data)) {
     if (data["artifactType"] === "diff") {
