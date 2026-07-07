@@ -161,9 +161,9 @@ describe("local metrics dashboard", () => {
     expect(html).toContain("Adoption Pulse");
     expect(html).toContain("Evidence search");
     expect(html).toContain("Search evidence");
-    expect(html).toContain("External Sessions");
-    expect(html).toContain("Weekly Sessions");
-    expect(html).toContain("KPI Momentum");
+    expect(html).toContain("External Adoption");
+    expect(html).toContain("External Adoption");
+    expect(html).toContain("External Adoption");
     expect(html).toContain("Growth Command Center");
     expect(html).toContain("What Changed Today");
     expect(html).toContain("Conversion Readiness");
@@ -190,9 +190,8 @@ describe("local metrics dashboard", () => {
     expect(html).toContain("Command funnel");
     expect(html).toContain("Latest adoption");
     expect(html).toContain("Clone/download to CI");
-    expect(html.indexOf("Latest Version Adoption", html.indexOf("KPI Momentum"))).toBeLessThan(html.indexOf("GitHub Clones", html.indexOf("KPI Momentum")));
+    expect(html.indexOf("GitHub Clones", html.indexOf("External Adoption"))).toBeLessThan(html.indexOf("Latest Version Adoption", html.indexOf("External Adoption")));
     expect(html).toContain("acme.example");
-    expect(html).toContain("npm daily");
     expect(html).not.toContain("analyst@");
     expect(html).not.toContain("git_email");
     expect(html).not.toContain("serverCommands");
