@@ -134,7 +134,7 @@ export function formatOutput(
   if (format === "junit" && artifact.artifactType === "run") return renderJUnit(artifact);
   if (format === "sarif" && artifact.artifactType === "run") return renderSarif(artifact, options);
   if (!knownFormats.has(format)) {
-    process.stderr.write(`Warning: unknown format '${format}'. Supported: terminal, markdown, html, sarif, junit. Falling back to terminal.\n`);
+    process.stderr.write(`Warning: unknown format '${format}'. Supported: ${[...knownFormats].join(", ")}. Falling back to terminal.\n`);
   }
   return renderTerminal(artifact);
 }

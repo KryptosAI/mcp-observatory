@@ -119,7 +119,7 @@ describe("command helper output", () => {
 
     expect(formatOutput(artifact, "unsupported")).toContain("MCP Observatory Run");
     expect(stderr).toHaveBeenCalledWith(
-      "Warning: unknown format 'unsupported'. Supported: terminal, markdown, html, sarif, junit. Falling back to terminal.\n",
+      "Warning: unknown format 'unsupported'. Supported: html, json, junit, markdown, pr-comment, sarif, terminal. Falling back to terminal.\n",
     );
   });
 
