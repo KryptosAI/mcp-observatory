@@ -158,7 +158,7 @@ describe("local metrics dashboard", () => {
     expect(html).toContain("MCP Observatory ASCII art logo");
     expect(html).toContain("███╗   ███╗");
     expect(html).toContain("O B S E R V A T O R Y");
-    expect(html).toContain("Primary KPIs");
+    expect(html).toContain("Adoption Pulse");
     expect(html).toContain("Evidence search");
     expect(html).toContain("Search evidence");
     expect(html).toContain("External Sessions");
