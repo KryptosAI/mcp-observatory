@@ -11,6 +11,7 @@ We actively welcome contributors from China, Korea, Japan, and across Asia. This
 - [中文 README](README.zh-CN.md) — Simplified Chinese documentation
 - Bilingual issues welcome: 欢迎提交中文 issues 和 PRs
 - We use `新手友好` (Chinese) and `초보자 환영` (Korean) labels alongside `good first issue`
+- Gitee 镜像: https://gitee.com/williamweishuhn/mcp-observatory
 
 Join us early. Your contributions will define how MCP security tooling evolves.
 

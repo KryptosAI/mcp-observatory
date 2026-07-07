@@ -24,6 +24,8 @@
 [![Smithery](https://smithery.ai/badge/@kryptosai/mcp-observatory)](https://smithery.ai/server/@kryptosai/mcp-observatory)
 [![mcp-observatory MCP server](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory/badges/score.svg)](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory)
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](./CONTRIBUTORS.md)
+[![Gitee Stars](https://gitee.com/williamweishuhn/mcp-observatory/badge/star.svg)](https://gitee.com/williamweishuhn/mcp-observatory)
+[![Gitee Forks](https://gitee.com/williamweishuhn/mcp-observatory/badge/fork.svg)](https://gitee.com/williamweishuhn/mcp-observatory)
 
 **MCP Observatory maps the risk graph of agent toolchains before agents depend on them.** It helps teams validate MCP servers before deployment into sensitive, regulated, or mission-critical agentic AI environments.
 
