@@ -565,7 +565,7 @@ The record/replay/verify pattern is inspired by:
 
 ## Contributing
 
-We welcome contributors! The fastest way to get involved:
+We welcome contributors! This project follows a [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md). The fastest way to get involved:
 
 [![good first issue](https://img.shields.io/github/issues-search/KryptosAI/mcp-observatory?query=is%3Aopen%20label%3A%22good%20first%20issue%22&label=good%20first%20issue&color=green)](https://github.com/KryptosAI/mcp-observatory/issues?q=is%3Aopen+label%3A%22good+first+issue%22)
 

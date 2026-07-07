@@ -3,6 +3,10 @@
 - describe the change
 - explain the user-visible effect
 
+## Code of Conduct
+
+By submitting this pull request, you agree to follow the project's [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md).
+
 ## Validation
 
 - [ ] `npm run lint`
