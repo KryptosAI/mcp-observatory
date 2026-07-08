@@ -1459,14 +1459,6 @@ function sparkline(values: number[], color: string): string {
   return `<svg class="sparkline" viewBox="0 0 ${width} ${height}" aria-hidden="true"><polyline fill="none" stroke="${color}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" points="${points}"/></svg>`;
 }
 
-function kpiCard(label: string, value: string | number, note: string, trend: { label: string; direction: "up" | "down" | "flat" }, values: number[], color: string): string {
-  return `<article class="kpi-card">
-    <div class="kpi-top"><span>${escapeHtml(label)}</span><em class="${trendClass(trend.direction)}">${trend.direction === "down" ? "↓" : trend.direction === "up" ? "↑" : "→"} ${escapeHtml(trend.label)}</em></div>
-    <strong>${escapeHtml(typeof value === "number" ? formatNumber(value) : value)}</strong>
-    <small>${escapeHtml(note)}</small>
-    ${sparkline(values, color)}
-  </article>`;
-}
 
 function linePath(values: number[], width: number, height: number, maxValue: number): string {
   if (values.length === 0) return "";
@@ -2054,7 +2046,7 @@ function momentumTrendChart(points: UsageTrendPoint[]): string {
   </article>`;
 }
 
-function adoptionPulseCards(points: UsageTrendPoint[], model: DashboardModel): string {
+function adoptionPulseCards(points: UsageTrendPoint[]): string {
   if (points.length === 0) return "";
 
   const day = usagePeriodSummary(points, 1);
@@ -2549,7 +2541,7 @@ export function renderDashboardHtml(model: DashboardModel): string {
   const trendPoints = usageTrendPoints(model, TREND_WINDOW_DAYS);
   const allTrendPoints = usageTrendPoints(model, Number.POSITIVE_INFINITY);
   const kpiMomentum = monthlyKpiMetrics(allTrendPoints, model);
-  const adoptionPulse = adoptionPulseCards(trendPoints, model);
+  const adoptionPulse = adoptionPulseCards(trendPoints);
   const momentumPanel = kpiMomentumPanel(kpiMomentum);
   const marketFunnel = marketFunnelPanel(model, trendPoints);
   const growthCommandCenter = growthCommandCenterPanel(model, trendPoints);
@@ -3161,7 +3153,7 @@ export function renderDashboardHtml(model: DashboardModel): string {
           if (!activeSeries.has(s.key)) return;
           var val = s.values[pt.idx] !== undefined ? s.values[pt.idx] : 0;
           var suffix = s.axis === "right" ? "%" : "";
-          items += "<div class=\"tip-item\"><span class=\"tip-dot\" style=\"background:" + s.color + "\"></span>" + s.label + "<span class=\"tip-val\">" + String(val) + suffix + "</span></div>";
+          items += "<div class='tip-item'><span class='tip-dot' style='background:" + s.color + "'></span>" + s.label + "<span class='tip-val'>" + String(val) + suffix + "</span></div>";
         });
         tooltip.innerHTML = "<b>" + pt.day + "</b>" + items;
         var wrapRect = chartWrap.getBoundingClientRect();
