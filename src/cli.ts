@@ -123,7 +123,7 @@ async function showInteractiveMenu(): Promise<string[] | null> {
       }
     }
     lines.push("");
-    lines.push(`  ${c(ANSI.dim, "↑↓ navigate  enter select  q quit")}`);
+    lines.push(`  ${c(ANSI.dim, "↑↓/jk navigate  enter select  q/esc quit")}`);
     return lines.join("\n");
   }
 
