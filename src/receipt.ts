@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 
 import { type AuditReport, type AuditSeverity, type NormalizedSecurityFinding, type TrustStatus, auditScore, renderAuditMarkdown, renderAuditSarif } from "./audit.js";
-import type { TargetConfig } from "./types.js";
+import type { NotObserved, RunArtifact, TargetConfig } from "./types.js";
 
 export type ReceiptEnvironmentClass = "local" | "ci" | "public_safety_index" | "private_fleet";
 export type ReceiptState = "ready_for_ci" | "needs_review" | "blocked" | "could_not_evaluate";
@@ -49,6 +49,7 @@ export interface ReceiptEvidence {
   tool_surface_summary: string;
   attack_simulation_summary: string;
   baseline_or_drift_summary: string;
+  runtime_profile_summary: string;
 }
 
 export interface ReceiptVerdict {
@@ -91,6 +92,7 @@ export interface McpReceipt {
   evidence: ReceiptEvidence;
   verdict: ReceiptVerdict;
   findings: ReceiptFinding[];
+  notObserved: NotObserved[];
   reproduction: ReceiptReproduction;
   maintainer_cta: ReceiptCta[];
   buyer_cta: ReceiptCta[];
@@ -211,6 +213,84 @@ function driftSummary(report: AuditReport): string {
   return `${driftFindings.length} baseline/drift finding(s) summarized.`;
 }
 
+function runtimeProfileSummary(report: AuditReport): string {
+  const profile = report.artifact.runtimeProfile;
+  if (!profile) return "Runtime profile was not generated for this run.";
+  const egressCount = profile.egress?.length ?? 0;
+  const mutationCount = profile.stateMutations?.length ?? 0;
+  if (egressCount === 0 && mutationCount === 0) {
+    return `No egress or state mutation indicators detected (confidence: ${profile.confidence}).`;
+  }
+  const parts: string[] = [];
+  if (egressCount > 0) parts.push(`${egressCount} egress target(s) detected`);
+  if (mutationCount > 0) parts.push(`${mutationCount} state mutation(s) detected`);
+  return `${parts.join(", ")} (confidence: ${profile.confidence}).`;
+}
+
+export function detectNotObserved(artifact: RunArtifact): NotObserved[] {
+  const notObserved: NotObserved[] = [];
+  const allToolIds = new Set<string>();
+  const networkPattern = /url|http|https|fetch|request|api|web|curl|wget|net|socket|connect|download|upload/i;
+  const fsPattern = /read|write|delete|remove|create|mkdir|rmdir|file[_-]|fs[_-]|^cp$|^mv$|^ln$|touch|chmod|chown|move|copy|rename|dir/i;
+
+  for (const check of artifact.checks) {
+    for (const ev of check.evidence) {
+      for (const id of ev.identifiers ?? []) {
+        allToolIds.add(id);
+      }
+      if (ev.endpoint === "tools/list" && typeof ev.responseSnapshots?.tools === "object") {
+        const tools = (ev.responseSnapshots as Record<string, unknown>).tools as Array<{ name: string }> | undefined;
+        if (tools) {
+          for (const tool of tools) {
+            if (typeof tool.name === "string") allToolIds.add(tool.name);
+          }
+        }
+      }
+    }
+  }
+
+  const hasNetworkTool = [...allToolIds].some((t) => networkPattern.test(t));
+  if (!hasNetworkTool) {
+    notObserved.push({
+      category: "network_egress",
+      detail: "No outbound network calls were attempted during scan",
+      severity: "warning",
+    });
+  }
+
+  const hasFsTool = [...allToolIds].some((t) => fsPattern.test(t));
+  if (!hasFsTool) {
+    notObserved.push({
+      category: "filesystem_mutation",
+      detail: "Filesystem write operations were not exercised",
+      severity: "warning",
+    });
+  }
+
+  const securityCheck = artifact.checks.find((c) => c.id === "security" || c.id === "security-lite");
+  if (!securityCheck) {
+    notObserved.push({
+      category: "credential_access",
+      detail: "Credential scanning was not performed",
+      severity: "warning",
+    });
+  } else {
+    notObserved.push({
+      category: "credential_access",
+      detail: "Credential scanning was performed (see security findings)",
+      severity: "info",
+    });
+  }
+
+  notObserved.push({
+    category: "destructive_payloads",
+    detail: "Destructive payloads were not attempted (safe-mode only)",
+    severity: "info",
+  });
+
+  return notObserved;
+}
+
 export function mapStatusToReceiptVerdict(report: AuditReport): ReceiptVerdict {
   if (report.artifact.fatalError) {
     return {
@@ -326,9 +406,11 @@ export async function buildMcpReceipt(report: AuditReport, target: TargetConfig,
       tool_surface_summary: toolSurfaceSummary(report),
       attack_simulation_summary: attackSimulationSummary(report),
       baseline_or_drift_summary: driftSummary(report),
+      runtime_profile_summary: runtimeProfileSummary(report),
     },
     verdict: mapStatusToReceiptVerdict(report),
     findings: receiptFindings(report, options.topFindingsLimit ?? 5),
+    notObserved: detectNotObserved(report.artifact),
     reproduction: {
       rerun_command: rerunCommand(target, report.summary.profile),
       ci_command: ciCommand(target),
@@ -424,6 +506,14 @@ export function renderReceiptMarkdown(receipt: McpReceipt): string {
     `- Tool surface summary: ${receipt.evidence.tool_surface_summary}`,
     `- Attack simulation summary: ${receipt.evidence.attack_simulation_summary}`,
     `- Baseline/drift summary: ${receipt.evidence.baseline_or_drift_summary}`,
+    `- Runtime profile summary: ${receipt.evidence.runtime_profile_summary}`,
+    "",
+    "## What Was Not Tested",
+    "",
+    ...receipt.notObserved.map((entry) => {
+      const icon = entry.severity === "warning" ? "🔒" : "ℹ️";
+      return `- ${icon} ${entry.category}: ${entry.detail}`;
+    }),
     "",
     "## Top Findings",
     "",

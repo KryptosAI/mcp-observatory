@@ -12,11 +12,12 @@ import { runResourcesCheck } from "./checks/resources.js";
 import { runSchemaQualityCheck } from "./checks/schema-quality.js";
 import { runToolsCheck } from "./checks/tools.js";
 import { runLightweightSecurityCheck, runSecurityCheck } from "./checks/security.js";
+import { analyzeRuntimeProfile, runRuntimeProfileCheck } from "./checks/runtime-profile.js";
 import { runToolsInvokeCheck } from "./checks/tools-invoke.js";
 import { computeHealthScore } from "./score.js";
 import { errorMessage } from "./utils/errors.js";
 import { RecordingTransport } from "./transport/recording-transport.js";
-import type { CheckResult, Gate, PerformanceMetrics, RunArtifact, StatusCounts, TargetConfig } from "./types.js";
+import type { CheckResult, Gate, PerformanceMetrics, RunArtifact, RuntimeProfile, StatusCounts, TargetConfig } from "./types.js";
 import { SCHEMA_VERSION } from "./types.js";
 import { buildRunId } from "./utils/ids.js";
 import { TOOL_VERSION } from "./version.js";
@@ -97,6 +98,7 @@ async function runTargetWithRecording(target: TargetConfig, options?: RunOptions
   let serverName: string | undefined;
   let serverVersion: string | undefined;
   let performanceMetrics: PerformanceMetrics | undefined;
+  let runtimeProfile: RuntimeProfile | undefined;
 
   let cassetteEntries: CassetteEntry[] | undefined;
 
@@ -137,6 +139,10 @@ async function runTargetWithRecording(target: TargetConfig, options?: RunOptions
         const toolsResp = await session.client.listTools(undefined, { timeout: checkContext.timeoutMs });
         const liteSecCheck = runLightweightSecurityCheck(toolsResp.tools, target);
         checks.push(liteSecCheck.result);
+
+        const runtimeProfileCheck = runRuntimeProfileCheck(toolsResp.tools);
+        checks.push(runtimeProfileCheck.result);
+        runtimeProfile = analyzeRuntimeProfile(toolsResp.tools);
       } catch {
         // If listing tools fails, skip lightweight security (tools check already reports the error)
       }
@@ -250,6 +256,7 @@ async function runTargetWithRecording(target: TargetConfig, options?: RunOptions
     checks,
     healthScore,
     performanceMetrics,
+    runtimeProfile,
     fatalError
   };
 

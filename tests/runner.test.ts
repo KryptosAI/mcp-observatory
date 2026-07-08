@@ -18,13 +18,14 @@ describe("runTarget", () => {
     expect(artifact.artifactType).toBe("run");
     expect(artifact.schemaVersion).toBe("1.0.0");
     expect(artifact.gate).toBe("pass");
-    expect(artifact.summary.total).toBe(6);
+    expect(artifact.summary.total).toBe(7);
     expect(artifact.summary.fail).toBe(0);
     expect(artifact.checks.map((check) => check.id)).toEqual([
       "tools",
       "prompts",
       "resources",
       "security-lite",
+      "runtime-profile",
       "conformance",
       "schema-quality",
     ]);
