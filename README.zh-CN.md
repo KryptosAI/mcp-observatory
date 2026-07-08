@@ -33,9 +33,13 @@
 [![MCP Hub China](https://img.shields.io/badge/MCP_Hub_China-listed-red)](https://mcp-hub.cn)
 [![OpenTools](https://img.shields.io/badge/OpenTools-listed-green)](https://opentools.ai)
 
-> 我们热烈欢迎中国开发者贡献代码、文档和新的 MCP 服务器安全索引条目。请查看 CONTRIBUTING.md 了解如何参与。
+> 我们热烈欢迎中国开发者贡献代码、文档和新的 MCP 服务器安全索引条目。请查看 [CONTRIBUTING.zh-CN.md](CONTRIBUTING.zh-CN.md) 了解如何参与。
 
 **MCP Observatory 在 AI Agent 依赖 MCP 服务器之前，绘制其风险图谱。** 帮助团队在将 MCP 服务器部署到敏感、受监管或关键任务的 AI Agent 环境之前进行验证。
+
+<p align="center">
+  <img src="docs/demo.gif" alt="MCP Observatory 演示" width="700"/>
+</p>
 
 Agent 不应依赖没人测试过的工具。MCP Observatory 将本地 MCP 检查转化为可移植的验证凭证、风险图谱、发布门禁证据、GitHub Code Scanning 的 SARIF、GitHub Actions 门禁、schema 漂移检测、信任状态输出、评分徽章以及 Agent 可访问的诊断信息。
 
