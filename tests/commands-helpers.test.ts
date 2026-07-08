@@ -75,6 +75,12 @@ describe("command helper formatting", () => {
     expect(useColor()).toBe(false);
   });
 
+  it("returns false after setNoColor(true) is called", () => {
+    setNoColor(true);
+    expect(useColor()).toBe(false);
+    setNoColor(false);
+  });
+
   it("colors known statuses and leaves unknown statuses unchanged", () => {
     process.env["NO_COLOR"] = "1";
     expect(colorStatus("pass")).toBe("pass");
