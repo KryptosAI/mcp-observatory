@@ -1244,12 +1244,18 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
       status: totalSessions.size > 0 && externalSessions.size === 0 ? "warn" : "ok",
       detail: `${formatNumber(externalSessions.size)} market sessions, ${formatNumber(Math.max(totalSessions.size - externalSessions.size, 0))} internal or first-party sessions excluded.`,
     },
-    {
-      label: "Version adoption",
-      status: latestVersionRow && staleSessions > latestVersionRow.sessions ? "warn" : "ok",
-      detail: latestVersionRow ? `${formatNumber(latestVersionRow.sessions)} sessions on ${latestVersionRow.version}; ${formatNumber(staleSessions)} sessions on older versions.` : "No version telemetry yet.",
-    },
   ];
+  // Version adoption is now a separate Product Health Alert, not a data-quality pipe signal.
+  const versionHealthSignal: VersionHealth & { statusDetail: string } = {
+    latestVersion: latestVersionRow?.version ?? "",
+    latestSessions: latestVersionRow?.sessions ?? 0,
+    staleSessions,
+    staleSessionShare: totalSessions.size === 0 ? 0 : Math.round((staleSessions / totalSessions.size) * 1000) / 10,
+    staleVersions: staleVersions.slice(0, 8).map((row) => ({ version: row.version, sessions: row.sessions, events: row.events })),
+    statusDetail: latestVersionRow
+      ? `${formatNumber(latestVersionRow.sessions)} sessions on ${latestVersionRow.version}; ${formatNumber(staleSessions)} sessions on older versions.`
+      : "No version telemetry yet.",
+  };
   return {
     totalEvents: rows.length,
     totalSessions: totalSessions.size,
@@ -1925,18 +1931,30 @@ function marketFunnelPanel(model: DashboardModel, points: UsageTrendPoint[]): st
     },
   ];
 
+  const maxValue = Math.max(...stages.map((s) => {
+    const parsed = parseFloat(s.value.replace(/,/g, "").replace("%", ""));
+    return isNaN(parsed) ? 0 : parsed;
+  }), 1);
+
   return `<article class="panel market-funnel-panel">
-    <div class="panel-head"><h2>Market Funnel</h2><span class="panel-note">30-day cohort flow</span></div>
+    <div class="panel-head"><h2>Market Funnel</h2><span class="panel-note">30-day cohort flow — bar width = relative volume</span></div>
     <div class="funnel-arrow-bar">
       ${stages.map((s) => s.header).join('<span class="funnel-delta arrow">→</span>')}
     </div>
     <div class="funnel-stages">
-      ${stages.map((s) => `<div class="funnel-stage">
-        <span class="funnel-metric" style="color:${s.color}">${escapeHtml(s.label)}</span>
-        <strong class="funnel-value">${escapeHtml(s.value)}</strong>
-        <span class="funnel-sub">${escapeHtml(s.sub)}</span>
-        <em class="funnel-delta ${trendClass(s.trend.direction)}">${s.trend.direction === "down" ? "↓" : s.trend.direction === "up" ? "↑" : "→"} ${escapeHtml(s.trend.label)}</em>
-      </div>`).join("")}
+      ${stages.map((s) => {
+        const parsed = parseFloat(s.value.replace(/,/g, "").replace("%", ""));
+        const width = maxValue > 0 ? Math.max(4, Math.round((parsed / maxValue) * 100)) : 0;
+        return `<div class="funnel-stage">
+          <span class="funnel-metric" style="color:${s.color}">${escapeHtml(s.label)}</span>
+          <div class="funnel-bar-row">
+            <div class="funnel-bar" style="width:${width}%;background:${s.color}"></div>
+            <strong class="funnel-value">${escapeHtml(s.value)}</strong>
+          </div>
+          <span class="funnel-sub">${escapeHtml(s.sub)}</span>
+          <em class="funnel-delta ${trendClass(s.trend.direction)}">${s.trend.direction === "down" ? "↓" : s.trend.direction === "up" ? "↑" : "→"} ${escapeHtml(s.trend.label)}</em>
+        </div>`;
+      }).join("")}
     </div>
   </article>`;
 }
@@ -2101,7 +2119,7 @@ function adoptionPulseCards(points: UsageTrendPoint[]): string {
     card("GitHub Clones", week.clones, "last 7 days", "prev 7 days", clonesTrend),
     card("NPM Downloads", week.npmDownloads, "last 7 days", "prev 7 days", npmTrend),
     card("Active Installs", month.sessions, "last 30 days", "prev 30 days", monthTrend),
-    card("Latest Version", `${currentVersionShare}% adoption`, "all sessions", "prev 30 days", versionTrend),
+    card("Latest Version (Market)", `${currentVersionShare}% adoption`, "market sessions", "prev 30 days", versionTrend),
   ].join("");
 
   return `<section class="adoption-pulse" aria-label="Adoption Pulse">
@@ -2192,21 +2210,47 @@ function conversionPanel(model: DashboardModel): string {
   return `<article class="panel">
     <div class="panel-head"><h2>Conversion Readiness</h2><span class="panel-note">market usage to receipts, CI, paid intent</span></div>
     <div class="conversion-list">
-      ${model.telemetry.funnelConversions.map((row) => `<div class="conversion-row">
-        <span><b>${escapeHtml(row.name)}</b><small>${escapeHtml(row.context)}</small></span>
-        <strong>${escapeHtml(`${row.rate}%`)}</strong>
-        <em>${formatNumber(row.numerator)} / ${formatNumber(row.denominator)}</em>
-      </div>`).join("")}
+      ${model.telemetry.funnelConversions.map((row) => {
+        const zeroHelp = row.numerator === 0 && row.name.toLowerCase().includes("receipt")
+          ? `<span class="zero-tip" title="No active tracking">&#x1F6A7; Run \`observatory receipt\` to generate portable proof</span>`
+          : row.numerator === 0 && row.name.toLowerCase().includes("risk")
+          ? `<span class="zero-tip" title="No active tracking">&#x1F6A7; Run \`observatory risk-graph\` for fleet visibility</span>`
+          : row.numerator === 0
+          ? `<span class="zero-tip" title="No active tracking">&#x2139;&#xFE0F; No activity yet</span>`
+          : "";
+        return `<div class="conversion-row">
+          <span><b>${escapeHtml(row.name)}</b><small>${escapeHtml(row.context)}</small></span>
+          <strong>${escapeHtml(`${row.rate}%`)}</strong>
+          <em>${formatNumber(row.numerator)} / ${formatNumber(row.denominator)} ${zeroHelp}</em>
+        </div>`;
+      }).join("")}
     </div>
   </article>`;
 }
 
 function dataQualityPanel(model: DashboardModel): string {
   return `<article class="panel">
-    <div class="panel-head"><h2>Data Quality</h2><span class="panel-note">dashboard feature health</span></div>
+    <div class="panel-head"><h2>Data Quality</h2><span class="panel-note">pipeline &amp; collector health</span></div>
     <ul class="quality-list">
       ${model.telemetry.dataQualitySignals.map((signal) => `<li><span class="status ${signal.status === "ok" ? "ok" : signal.status === "bad" ? "bad" : "warn"}">${escapeHtml(signal.status)}</span><div><b>${escapeHtml(signal.label)}</b><small>${escapeHtml(signal.detail)}</small></div></li>`).join("")}
       ${model.sourceRuns.map((run) => `<li><span class="status ${run.status === "success" ? "ok" : run.status === "failed" ? "bad" : "warn"}">${escapeHtml(run.status)}</span><div><b>${escapeHtml(`${run.source} collector`)}</b><small>${escapeHtml(`${run.finishedAt || run.startedAt}; ${formatNumber(run.rowsSeen)} rows seen; ${run.error || "no error"}`)}</small></div></li>`).join("")}
+    </ul>
+  </article>`;
+}
+
+function productHealthPanel(model: DashboardModel): string {
+  const vh = model.telemetry.versionHealth;
+  const latest = model.telemetry.versionAdoption.find((row) => row.isLatest);
+  const statusClass = vh.staleSessions > vh.latestSessions ? "warn" : "ok";
+  const statusLabel = vh.staleSessions > vh.latestSessions ? "\u26A0\uFE0F Update lag" : "\u2705 On latest";
+  return `<article class="panel">
+    <div class="panel-head"><h2>Product Health</h2><span class="panel-note">user behavior alerts</span></div>
+    <ul class="quality-list">
+      <li><span class="status ${statusClass}">${statusLabel}</span><div>
+        <b>Version adoption</b>
+        <small>${vh.latestVersion ? `${formatNumber(vh.latestSessions)} active sessions on ${vh.latestVersion} (${latest ? latest.sessionShare : 0}% of fleet); ${formatNumber(vh.staleSessions)} on older versions.` : "No version telemetry yet."}</small>
+      </div></li>
+      ${vh.staleVersions.length > 0 ? `<li><span class="status warn">\u2139\uFE0F</span><div><b>Stale versions in use</b><small>${vh.staleVersions.map((v) => `${v.version} (${v.sessions} sessions)`).join(", ")}</small></div></li>` : ""}
     </ul>
   </article>`;
 }
@@ -2548,6 +2592,7 @@ export function renderDashboardHtml(model: DashboardModel): string {
   const dailyDirection = dailyDirectionPanel(model);
   const conversions = conversionPanel(model);
   const dataQuality = dataQualityPanel(model);
+  const productHealth = productHealthPanel(model);
   const searchRows = detailSearchRows(model, trendPoints);
   const summaryBar = autoGeneratedSummary(model, trendPoints);
   const trustStrip = dataTrustStatusStrip(model);
@@ -2792,6 +2837,10 @@ export function renderDashboardHtml(model: DashboardModel): string {
     .funnel-delta.arrow { margin-top:0; padding:0 4px; }
     .funnel-connector { display:flex; align-items:center; justify-content:center; }
     .funnel-connector svg { opacity:.45; }
+    .funnel-bar-row { display:flex; align-items:center; gap:6px; margin:4px 0; }
+    .funnel-bar { height:18px; border-radius:3px; min-width:2px; transition:width .3s ease; }
+    .funnel-bar-row .funnel-value { font-size:18px; margin:0; }
+    .zero-tip { display:inline-block; color:#f59e0b; font-size:9px; margin-left:4px; cursor:help; }
     /* Momentum Trend Chart */
     .momentum-chart-panel { margin-bottom:16px; }
     .momentum-toggles { display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:8px 16px 2px; }
@@ -2877,6 +2926,7 @@ export function renderDashboardHtml(model: DashboardModel): string {
       </header>
       ${summaryBar}
       ${trustStrip}
+      ${anomaliesHtml}
       ${adoptionPulse || `<section class="adoption-pulse" aria-label="Adoption Pulse"><article class="north-star-card"><div class="ns-header"><span class="ns-icon">&#x1F9ED;</span><span class="ns-label">External Adoption</span></div><div class="ns-stats"><div class="ns-stat"><strong>0</strong><small>today</small></div><div class="ns-stat"><strong>0</strong><small>this week</small></div><div class="ns-stat trend-flat"><strong>0%</strong><small>vs 30d</small></div></div><small class="ns-note">Refresh data to build adoption windows</small></article></section>`}
       ${momentumTrendChart(trendPoints)}
       <section class="dashboard-grid">
@@ -2884,7 +2934,6 @@ export function renderDashboardHtml(model: DashboardModel): string {
           ${momentumPanel}
           ${growthCommandCenter}
           ${dailyDirection}
-          ${anomaliesHtml}
           ${marketFunnel}
           <section class="two-col">
             <article class="panel">
@@ -2923,6 +2972,9 @@ export function renderDashboardHtml(model: DashboardModel): string {
           </section>
           <section class="two-col">
             ${conversions}
+            ${productHealth}
+          </section>
+          <section class="two-col" style="margin-top:0">
             ${dataQuality}
           </section>
           <section class="panel table-panel">
