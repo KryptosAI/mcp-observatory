@@ -14,24 +14,31 @@
 
 [![CI](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/KryptosAI/mcp-observatory/actions/workflows/codeql.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/codeql.yml)
-[![Coverage](https://github.com/KryptosAI/mcp-observatory/actions/workflows/coverage.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/coverage.yml)
+[![覆盖率工作流](https://github.com/KryptosAI/mcp-observatory/actions/workflows/coverage.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/coverage.yml)
+[![npm](https://img.shields.io/npm/v/@kryptosai/mcp-observatory)](https://www.npmjs.com/package/@kryptosai/mcp-observatory)
+[![GitHub stars](https://img.shields.io/github/stars/KryptosAI/mcp-observatory?style=flat)](https://github.com/KryptosAI/mcp-observatory/stargazers)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
+
+<details>
+<summary>更多徽章</summary>
+
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/KryptosAI/mcp-observatory/badge)](https://securityscorecards.dev/viewer/?uri=github.com/KryptosAI/mcp-observatory)
 [![Dependabot](https://img.shields.io/badge/dependabot-enabled-025e8c?logo=dependabot)](./.github/dependabot.yml)
 [![npm provenance workflow](https://img.shields.io/badge/npm%20provenance-workflow-blue)](./.github/workflows/release.yml)
-[![npm](https://img.shields.io/npm/v/@kryptosai/mcp-observatory)](https://www.npmjs.com/package/@kryptosai/mcp-observatory)
 [![npm weekly downloads](https://img.shields.io/npm/dw/@kryptosai/mcp-observatory)](https://www.npmjs.com/package/@kryptosai/mcp-observatory)
-[![GitHub stars](https://img.shields.io/github/stars/KryptosAI/mcp-observatory?style=flat)](https://github.com/KryptosAI/mcp-observatory/stargazers)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 [![Node >= 20](https://img.shields.io/badge/node-%3E%3D20-339933)](./package.json)
 [![Smithery](https://smithery.ai/badge/@kryptosai/mcp-observatory)](https://smithery.ai/server/@kryptosai/mcp-observatory)
 [![mcp-observatory MCP server](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory/badges/score.svg)](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory)
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](./CONTRIBUTORS.md)
+[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](./CONTRIBUTORS.md)
 [![Gitee Stars](https://gitee.com/williamweishuhn/mcp-observatory/badge/star.svg)](https://gitee.com/williamweishuhn/mcp-observatory)
 [![Gitee Forks](https://gitee.com/williamweishuhn/mcp-observatory/badge/fork.svg)](https://gitee.com/williamweishuhn/mcp-observatory)
 [![MCP Registry](https://img.shields.io/badge/MCP_Registry-listed-blue)](https://registry.modelcontextprotocol.io)
 [![MCP Market](https://img.shields.io/badge/MCP_Market-premium-gold)](https://mcpmarket.com)
 [![MCP Hub China](https://img.shields.io/badge/MCP_Hub_China-listed-red)](https://mcp-hub.cn)
 [![OpenTools](https://img.shields.io/badge/OpenTools-listed-green)](https://opentools.ai)
+[![Gitee](https://img.shields.io/badge/Gitee-镜像-orange)](https://gitee.com/williamweishuhn/mcp-observatory)
+
+</details>
 
 > 我们热烈欢迎中国开发者贡献代码、文档和新的 MCP 服务器安全索引条目。请查看 [CONTRIBUTING.zh-CN.md](CONTRIBUTING.zh-CN.md) 了解如何参与。
 
@@ -209,6 +216,20 @@ MCP Observatory 为安全和平台团队提供 MCP 服务器 CI、schema 漂移�
 
 运行 `npx @kryptosai/mcp-observatory cloud`，从 Issue 选择器发起试点请求，或参见 [COMMERCIAL.md](./COMMERCIAL.md)。另见[隐私与遥测](./PRIVACY.md)、[活动归因](./docs/campaign-attribution.md) 和[生产使用条款](./TERMS.md)。
 
+## 工具对比
+
+| 功能 | mcp-observatory | Snyk agent-scan | Cisco mcp-scanner | agent-shield |
+|---|---|---|---|---|
+| MCP原生 | ✓ | ✓ | ✓ | ✓ |
+| 攻击模拟 | ✓ | ✗ | ✗ | ✗ |
+| Schema漂移检测 | ✓ | ✗ | ✗ | ✗ |
+| 录制/回放/验证 | ✓ | ✗ | ✗ | ✗ |
+| 健康评分(0-100) | ✓ | ✗ | ✗ | ✗ |
+| SARIF输出 | ✓ | ✓ | ✓ | ✓ |
+| CI/CD原生(setup-ci) | ✓ | ✓ | ✓ | ✓ |
+| 安全索引(17+服务器) | ✓ | ✗ | ✗ | ✗ |
+| 通过mcp-seatbelt运行时强制执行 | ✓ | ✗ | ✗ | ✗ |
+
 ## 快速开始
 
 扫描 Claude 配置中的所有 MCP 服务器：
@@ -335,6 +356,42 @@ npx @kryptosai/mcp-observatory watch target.json
 - `~/Library/Application Support/Claude/claude_desktop_config.json` (Claude Desktop, macOS)
 - `%APPDATA%/Claude/claude_desktop_config.json` (Claude Desktop, Windows)
 - `.claude.json` 和 `.mcp.json` (当前目录)
+
+## 架构
+
+```
+                    ┌─────────────────────────┐
+                    │   MCP Observatory CLI    │
+                    │  npx @kryptosai/mcp-     │
+                    │     observatory scan     │
+                    └───────────┬─────────────┘
+                                │
+                    ┌───────────▼─────────────┐
+                    │   Config Discovery       │
+                    │  (Claude, Cursor, etc.)  │
+                    └───────────┬─────────────┘
+                                │
+              ┌─────────────────┼─────────────────┐
+              ▼                 ▼                  ▼
+    ┌─────────────────┐ ┌──────────────┐ ┌──────────────────┐
+    │   Security Scan  │ │  Attack Sim  │ │  Schema Drift    │
+    │  (shell, creds)  │ │ (tool poison)│ │  (version diff)  │
+    └────────┬────────┘ └──────┬───────┘ └────────┬─────────┘
+             │                 │                   │
+             └─────────────────┼───────────────────┘
+                               ▼
+                    ┌─────────────────────┐
+                    │   Health Score       │
+                    │  (0-100 + verdict)   │
+                    └──────────┬──────────┘
+                               │
+              ┌────────────────┼────────────────┐
+              ▼                ▼                 ▼
+    ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+    │  SARIF       │  │  Markdown    │  │  CI Gateway  │
+    │  (Code Scan) │  │  Report      │  │  (setup-ci)  │
+    └──────────────┘  └──────────────┘  └──────────────┘
+```
 
 ## CI / GitHub Action
 
@@ -576,6 +633,10 @@ npx @kryptosai/mcp-observatory run --target ./target.json
 - 不支持自定义 WebSocket 传输（如 BrowserTools MCP）
 - 少数服务器超时或在初始化前关闭 — 参见[已知问题](./docs/known-issues.md)和[兼容性](./docs/compatibility.md)
 
+## 与 mcp-seatbelt 协作
+
+扫描后再信任。通过 [mcp-seatbelt](https://github.com/KryptosAI/mcp-seatbelt) 进行运行时强制执行——这是一个 MCP 代理，消费 Observatory 凭证并在生产环境中阻止超出合约的工具调用。Observatory 验证；seatbelt 执行。
+
 ## 贡献
 
 欢迎贡献者！本项目遵循[贡献者公约行为准则](./CODE_OF_CONDUCT.md)。最快的参与方式：
@@ -587,8 +648,6 @@ git clone https://github.com/KryptosAI/mcp-observatory.git && cd mcp-observatory
 ```
 
 最常见的首次贡献是向安全索引添加一个 MCP 服务器（10-15 分钟）。完整的指南、代码标准和贡献者认可阶梯参见 [CONTRIBUTING.md](CONTRIBUTING.md)。
-
-我们特别欢迎来自中国和亚洲开发者社区的贡献。如果你对 MCP 安全感兴趣，这是一个早期参与并影响项目方向的机会。
 
 ---
 
