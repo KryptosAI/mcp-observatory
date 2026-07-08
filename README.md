@@ -14,14 +14,18 @@
 
 [![CI](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/KryptosAI/mcp-observatory/actions/workflows/codeql.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/codeql.yml)
-[![Coverage](https://github.com/KryptosAI/mcp-observatory/actions/workflows/coverage.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/coverage.yml)
+[![Coverage Workflow](https://github.com/KryptosAI/mcp-observatory/actions/workflows/coverage.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/coverage.yml)
+[![npm](https://img.shields.io/npm/v/@kryptosai/mcp-observatory)](https://www.npmjs.com/package/@kryptosai/mcp-observatory)
+[![GitHub stars](https://img.shields.io/github/stars/KryptosAI/mcp-observatory?style=flat)](https://github.com/KryptosAI/mcp-observatory/stargazers)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
+
+<details>
+<summary>More badges</summary>
+
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/KryptosAI/mcp-observatory/badge)](https://securityscorecards.dev/viewer/?uri=github.com/KryptosAI/mcp-observatory)
 [![Dependabot](https://img.shields.io/badge/dependabot-enabled-025e8c?logo=dependabot)](./.github/dependabot.yml)
 [![npm provenance workflow](https://img.shields.io/badge/npm%20provenance-workflow-blue)](./.github/workflows/release.yml)
-[![npm](https://img.shields.io/npm/v/@kryptosai/mcp-observatory)](https://www.npmjs.com/package/@kryptosai/mcp-observatory)
 [![npm weekly downloads](https://img.shields.io/npm/dw/@kryptosai/mcp-observatory)](https://www.npmjs.com/package/@kryptosai/mcp-observatory)
-[![GitHub stars](https://img.shields.io/github/stars/KryptosAI/mcp-observatory?style=flat)](https://github.com/KryptosAI/mcp-observatory/stargazers)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 [![Node >= 20](https://img.shields.io/badge/node-%3E%3D20-339933)](./package.json)
 [![Smithery](https://smithery.ai/badge/@kryptosai/mcp-observatory)](https://smithery.ai/server/@kryptosai/mcp-observatory)
 [![mcp-observatory MCP server](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory/badges/score.svg)](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory)
@@ -33,6 +37,8 @@
 [![MCP Hub China](https://img.shields.io/badge/MCP_Hub_China-listed-red)](https://mcp-hub.cn)
 [![OpenTools](https://img.shields.io/badge/OpenTools-listed-green)](https://opentools.ai)
 [![Gitee](https://img.shields.io/badge/Gitee-镜像-orange)](https://gitee.com/williamweishuhn/mcp-observatory)
+
+</details>
 
 **MCP Observatory maps the risk graph of agent toolchains before agents depend on them.** It helps teams validate MCP servers before deployment into sensitive, regulated, or mission-critical agentic AI environments.
 
@@ -209,6 +215,20 @@ The open source repo is the public evidence engine. Private telemetry intelligen
 
 Run `npx @kryptosai/mcp-observatory cloud`, open a pilot request from the issue chooser, or see [COMMERCIAL.md](./COMMERCIAL.md). Also see [privacy and telemetry](./PRIVACY.md), [campaign attribution](./docs/campaign-attribution.md), and [terms for production use](./TERMS.md).
 
+## How It Compares
+
+| Feature | mcp-observatory | Snyk agent-scan | Cisco mcp-scanner | agent-shield |
+|---|---|---|---|---|
+| MCP-native | ✓ | ✓ | ✓ | ✓ |
+| Attack simulation | ✓ | ✗ | ✗ | ✗ |
+| Schema drift detection | ✓ | ✗ | ✗ | ✗ |
+| Record/replay/verify | ✓ | ✗ | ✗ | ✗ |
+| Health scoring (0-100) | ✓ | ✗ | ✗ | ✗ |
+| SARIF output | ✓ | ✓ | ✓ | ✓ |
+| CI/CD native (setup-ci) | ✓ | ✓ | ✓ | ✓ |
+| Safety index (17+ servers) | ✓ | ✗ | ✗ | ✗ |
+| Runtime enforcement via mcp-seatbelt | ✓ | ✗ | ✗ | ✗ |
+
 ## Quick Start
 
 Scan every MCP server in your Claude config:
@@ -335,6 +355,42 @@ When you run `scan`, it looks for MCP configs in:
 - `~/Library/Application Support/Claude/claude_desktop_config.json` (Claude Desktop, macOS)
 - `%APPDATA%/Claude/claude_desktop_config.json` (Claude Desktop, Windows)
 - `.claude.json` and `.mcp.json` (current directory)
+
+## Architecture
+
+```
+                    ┌─────────────────────────┐
+                    │   MCP Observatory CLI    │
+                    │  npx @kryptosai/mcp-     │
+                    │     observatory scan     │
+                    └───────────┬─────────────┘
+                                │
+                    ┌───────────▼─────────────┐
+                    │   Config Discovery       │
+                    │  (Claude, Cursor, etc.)  │
+                    └───────────┬─────────────┘
+                                │
+              ┌─────────────────┼─────────────────┐
+              ▼                 ▼                  ▼
+    ┌─────────────────┐ ┌──────────────┐ ┌──────────────────┐
+    │   Security Scan  │ │  Attack Sim  │ │  Schema Drift    │
+    │  (shell, creds)  │ │ (tool poison)│ │  (version diff)  │
+    └────────┬────────┘ └──────┬───────┘ └────────┬─────────┘
+             │                 │                   │
+             └─────────────────┼───────────────────┘
+                               ▼
+                    ┌─────────────────────┐
+                    │   Health Score       │
+                    │  (0-100 + verdict)   │
+                    └──────────┬──────────┘
+                               │
+              ┌────────────────┼────────────────┐
+              ▼                ▼                 ▼
+    ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+    │  SARIF       │  │  Markdown    │  │  CI Gateway  │
+    │  (Code Scan) │  │  Report      │  │  (setup-ci)  │
+    └──────────────┘  └──────────────┘  └──────────────┘
+```
 
 ## CI / GitHub Action
 
@@ -556,7 +612,6 @@ Target configs support `${VAR}`, `$VAR`, and `env:VAR` references in `authToken`
 | Response snapshot diffs | ✅ | — | — | — |
 | Benchmarking / latency | — | — | ✅ | — |
 | Jest integration | — | — | — | ✅ |
-| MCP proxy mode | — | ✅ | — | — |
 | **Works as MCP server** | **✅** | — | — | — |
 
 Each tool has strengths. Observatory focuses on regression detection and CI-friendly workflows. mcp-recorder is great as a transparent proxy. MCPBench is the go-to for performance benchmarking. mcp-jest is ideal if you're already in a Jest workflow.
@@ -577,6 +632,10 @@ The record/replay/verify pattern is inspired by:
 - Custom WebSocket transports (e.g., BrowserTools MCP) are not supported
 - A few servers time out or close before init — see [known issues](./docs/known-issues.md) and [compatibility](./docs/compatibility.md)
 
+## Works with mcp-seatbelt
+
+Scan before you trust. Enforce at runtime with [mcp-seatbelt](https://github.com/KryptosAI/mcp-seatbelt) — an MCP proxy that consumes Observatory receipts and blocks out-of-contract tool calls in production. Observatory validates; seatbelt enforces.
+
 ## Contributors ✨
 
 Thanks to these amazing people who have contributed:
@@ -584,7 +643,6 @@ Thanks to these amazing people who have contributed:
 - [leemeo3](https://github.com/leemeo3) — 3 Safety Index targets (Git, Chrome DevTools, Filesystem MCP)
 - [tanishxdev](https://github.com/tanishxdev) — Legacy CLI deprecation warnings (#187)
 - [sansynx](https://github.com/sansynx) — CLI format validation (#182)
-- [tanishxdev](https://github.com/tanishxdev) — Legacy CLI deprecation warnings (#187)
 
 [See all contributors →](CONTRIBUTORS.md)
 
