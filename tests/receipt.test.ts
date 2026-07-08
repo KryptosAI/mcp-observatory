@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import { buildActionReceipt, recommendedActionForFinding, renderActionReceipt } from "../src/action-receipt.js";
 import { buildAuditReport } from "../src/audit.js";
-import { buildMcpReceipt, mapStatusToReceiptVerdict, receiptFormatFromPath, renderReceipt, renderReceiptMarkdown } from "../src/receipt.js";
+import { buildMcpReceipt, detectNotObserved, mapStatusToReceiptVerdict, receiptFormatFromPath, renderReceipt, renderReceiptMarkdown } from "../src/receipt.js";
 import { makeArtifact } from "./fixtures/test-helpers.js";
 
 const target = {
@@ -294,5 +294,186 @@ describe("MCP receipts", () => {
       ruleId: "mcp-observatory/attack-sim/contract-drift/destructive-tool-added",
     });
     expect(renderActionReceipt(artifact)).toContain("Top evidence:");
+  });
+
+  it("detectNotObserved returns network_egress warning when no network tools found", () => {
+    const artifact = makeArtifact([
+      {
+        id: "tools",
+        capability: "tools",
+        status: "pass",
+        durationMs: 5,
+        message: "1 tool",
+        evidence: [{
+          endpoint: "tools/list",
+          advertised: true,
+          responded: true,
+          minimalShapePresent: true,
+          identifiers: ["echo"],
+        }],
+      },
+    ]);
+
+    const result = detectNotObserved(artifact);
+    const networkEntry = result.find((e) => e.category === "network_egress");
+    expect(networkEntry).toBeDefined();
+    expect(networkEntry!.severity).toBe("warning");
+    expect(networkEntry!.detail).toContain("outbound network");
+  });
+
+  it("detectNotObserved returns filesystem_mutation warning when no fs tools found", () => {
+    const artifact = makeArtifact([
+      {
+        id: "tools",
+        capability: "tools",
+        status: "pass",
+        durationMs: 5,
+        message: "1 tool",
+        evidence: [{
+          endpoint: "tools/list",
+          advertised: true,
+          responded: true,
+          minimalShapePresent: true,
+          identifiers: ["echo"],
+        }],
+      },
+    ]);
+
+    const result = detectNotObserved(artifact);
+    const fsEntry = result.find((e) => e.category === "filesystem_mutation");
+    expect(fsEntry).toBeDefined();
+    expect(fsEntry!.severity).toBe("warning");
+    expect(fsEntry!.detail).toContain("Filesystem write");
+  });
+
+  it("detectNotObserved returns credential_access info when security check exists", () => {
+    const artifact = makeArtifact([
+      {
+        id: "security-lite",
+        capability: "security-lite",
+        status: "pass",
+        durationMs: 5,
+        message: "No issues found",
+        evidence: [{
+          endpoint: "security-lite/scan",
+          advertised: true,
+          responded: true,
+          minimalShapePresent: true,
+        }],
+      },
+    ]);
+
+    const result = detectNotObserved(artifact);
+    const credEntry = result.find((e) => e.category === "credential_access");
+    expect(credEntry).toBeDefined();
+    expect(credEntry!.severity).toBe("info");
+    expect(credEntry!.detail).toContain("performed");
+  });
+
+  it("detectNotObserved returns credential_access warning when no security check", () => {
+    const artifact = makeArtifact([]);
+
+    const result = detectNotObserved(artifact);
+    const credEntry = result.find((e) => e.category === "credential_access");
+    expect(credEntry).toBeDefined();
+    expect(credEntry!.severity).toBe("warning");
+    expect(credEntry!.detail).toContain("not performed");
+  });
+
+  it("detectNotObserved always includes destructive_payloads info", () => {
+    const artifact = makeArtifact([]);
+
+    const result = detectNotObserved(artifact);
+    const destructiveEntry = result.find((e) => e.category === "destructive_payloads");
+    expect(destructiveEntry).toBeDefined();
+    expect(destructiveEntry!.severity).toBe("info");
+    expect(destructiveEntry!.detail).toContain("safe-mode");
+  });
+
+  it("detectNotObserved skips network_egress when network tools are present", () => {
+    const artifact = makeArtifact([
+      {
+        id: "tools",
+        capability: "tools",
+        status: "pass",
+        durationMs: 5,
+        message: "2 tools",
+        evidence: [{
+          endpoint: "tools/list",
+          advertised: true,
+          responded: true,
+          minimalShapePresent: true,
+          identifiers: ["fetch_url", "echo"],
+        }],
+      },
+    ]);
+
+    const result = detectNotObserved(artifact);
+    const networkEntry = result.find((e) => e.category === "network_egress");
+    expect(networkEntry).toBeUndefined();
+  });
+
+  it("detectNotObserved skips filesystem_mutation when fs tools are present", () => {
+    const artifact = makeArtifact([
+      {
+        id: "tools",
+        capability: "tools",
+        status: "pass",
+        durationMs: 5,
+        message: "2 tools",
+        evidence: [{
+          endpoint: "tools/list",
+          advertised: true,
+          responded: true,
+          minimalShapePresent: true,
+          identifiers: ["write_file", "echo"],
+        }],
+      },
+    ]);
+
+    const result = detectNotObserved(artifact);
+    const fsEntry = result.find((e) => e.category === "filesystem_mutation");
+    expect(fsEntry).toBeUndefined();
+  });
+
+  it("receipt markdown includes the What Was Not Tested section", async () => {
+    const report = buildAuditReport(makeArtifact([
+      {
+        id: "tools",
+        capability: "tools",
+        status: "pass",
+        durationMs: 5,
+        message: "1 tool",
+        evidence: [{
+          endpoint: "tools/list",
+          advertised: true,
+          responded: true,
+          minimalShapePresent: true,
+          identifiers: ["echo"],
+        }],
+      },
+      {
+        id: "security-lite",
+        capability: "security-lite",
+        status: "pass",
+        durationMs: 5,
+        message: "Clean",
+        evidence: [{
+          endpoint: "security-lite/scan",
+          advertised: true,
+          responded: true,
+          minimalShapePresent: true,
+        }],
+      },
+    ]), { ...target, metadata: { audit: "structured events" } });
+    const receipt = await buildMcpReceipt(report, target);
+    const markdown = renderReceiptMarkdown(receipt);
+
+    expect(markdown).toContain("## What Was Not Tested");
+    expect(markdown).toContain("network_egress");
+    expect(markdown).toContain("filesystem_mutation");
+    expect(markdown).toContain("credential_access");
+    expect(markdown).toContain("destructive_payloads");
+    expect(receipt.notObserved.length).toBeGreaterThanOrEqual(3);
   });
 });

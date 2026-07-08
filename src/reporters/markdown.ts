@@ -1,4 +1,5 @@
-import type { CheckResult, DiffArtifact, EvidenceSummary, RunArtifact } from "../types.js";
+import type { CheckResult, DiffArtifact, EgressEntry, EvidenceSummary, RunArtifact, StateMutation } from "../types.js";
+import { detectNotObserved } from "../receipt.js";
 import {
   describeCheckList,
   findChecksByStatus,
@@ -92,6 +93,42 @@ function renderCheckSection(check: CheckResult): string[] {
   ];
 }
 
+function renderEgressTable(entries: EgressEntry[]): string {
+  return table([
+    ["Target", "Protocol", "Source", "Confidence"],
+    ...entries.map((e) => [e.target, e.protocol, e.source, e.confidence]),
+  ]);
+}
+
+function renderStateMutationsTable(entries: StateMutation[]): string {
+  return table([
+    ["Resource", "Operation", "Scope", "Source"],
+    ...entries.map((m) => [m.resource, m.operation, m.scope, m.source]),
+  ]);
+}
+
+function renderRuntimeProfile(artifact: RunArtifact): string[] {
+  const profile = artifact.runtimeProfile;
+  if (!profile) return [];
+
+  const lines: string[] = ["## Runtime Profile", ""];
+
+  if (profile.egress && profile.egress.length > 0) {
+    lines.push("### Egress Manifest", "");
+    lines.push(`The following targets were identified as potentially reachable by this server (confidence: **${profile.confidence}**):`, "");
+    lines.push(renderEgressTable(profile.egress), "");
+  }
+
+  if (profile.stateMutations && profile.stateMutations.length > 0) {
+    lines.push("### State Mutations", "");
+    lines.push("The following state-modifying operations were identified from tool schemas:", "");
+    lines.push(renderStateMutationsTable(profile.stateMutations), "");
+  }
+
+  lines.push(`_Analyzed at ${profile.analyzedAt}_`, "");
+  return lines;
+}
+
 function renderRunMarkdown(artifact: RunArtifact): string {
   const orderedChecks = sortChecksByActionability(artifact.checks);
   return [
@@ -135,6 +172,14 @@ function renderRunMarkdown(artifact: RunArtifact): string {
     ``,
     renderRunAtAGlance(artifact),
     ``,
+    `## What Was Not Tested`,
+    ``,
+    ...((artifact.notObserved ?? detectNotObserved(artifact)).map((entry) => {
+      const icon = entry.severity === "warning" ? "🔒" : "ℹ️";
+      return `- ${icon} ${entry.category}: ${entry.detail}`;
+    })),
+    ``,
+    ...renderRuntimeProfile(artifact),
     `## Regressions and Recoveries`,
     ``,
     `_Use the \`diff\` command against another run artifact to classify regressions and recoveries over time._`,

@@ -1,4 +1,5 @@
 import type { CheckResult, CheckStatus, DiffArtifact, DiffEntry, RunArtifact } from "../types.js";
+import { detectNotObserved } from "../receipt.js";
 import {
   describeCheckList,
   findChecksByStatus,
@@ -205,6 +206,16 @@ function renderRunTerminal(artifact: RunArtifact): string {
   lines.push("Checks (most actionable first):");
   for (const check of orderedChecks) {
     lines.push(formatCheck(check));
+  }
+
+  const notObserved = artifact.notObserved ?? detectNotObserved(artifact);
+  if (notObserved.length > 0) {
+    lines.push("");
+    lines.push(co(ANSI.bold, "What Was Not Tested:"));
+    for (const entry of notObserved) {
+      const icon = entry.severity === "warning" ? co(ANSI.yellow, "⚠") : co(ANSI.dim, "ℹ");
+      lines.push(`  ${icon} ${entry.category}: ${entry.detail}`);
+    }
   }
 
   // Show security-lite findings prominently even without --security flag

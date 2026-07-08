@@ -43,6 +43,7 @@ export { runConformanceCheck } from "./checks/conformance.js";
 export { runSchemaQualityCheck } from "./checks/schema-quality.js";
 export { runAttackSimulationCheck, type AttackSimulationFinding, type AttackSimulationOptions } from "./checks/attack-sim.js";
 export { runLightweightSecurityCheck, runSecurityCheck } from "./checks/security.js";
+export { analyzeRuntimeProfile, runRuntimeProfileCheck } from "./checks/runtime-profile.js";
 export { SECURITY_RULES, type SecurityFinding, type SecurityRule, type ToolInfo } from "./checks/security-rules.js";
 export { diffArtifacts } from "./diff.js";
 export { scanForTargets } from "./discovery.js";
