@@ -1,4 +1,32 @@
-import type { CheckId, SchemaDriftEntry } from "./types.js";
+import type { CheckId, SchemaDriftEntry, SchemaDriftSeverity } from "./types.js";
+
+const SCHEMA_DRIFT_SEVERITY_RANK: Record<SchemaDriftSeverity, number> = {
+  info: 1,
+  medium: 2,
+  high: 3,
+};
+
+function severityForChange(change: string): SchemaDriftSeverity {
+  if (
+    change === "removed"
+    || change.startsWith("added required field")
+    || change.startsWith("removed property")
+    || change.startsWith("changed ")
+  ) {
+    return "high";
+  }
+  if (change.startsWith("removed required field") || change.startsWith("added (new ")) {
+    return "medium";
+  }
+  return "info";
+}
+
+export function classifySchemaDriftSeverity(changes: string[]): SchemaDriftSeverity {
+  return changes.reduce<SchemaDriftSeverity>((max, change) => {
+    const current = severityForChange(change);
+    return SCHEMA_DRIFT_SEVERITY_RANK[current] > SCHEMA_DRIFT_SEVERITY_RANK[max] ? current : max;
+  }, "info");
+}
 
 /**
  * Compare two schema maps and return human-readable drift descriptions.
@@ -17,11 +45,13 @@ export function diffSchemas(
     const headSchema = head[name] as Record<string, unknown> | undefined;
 
     if (baseSchema === undefined && headSchema !== undefined) {
-      entries.push({ capability, name, changes: [`added (new ${capability.replace("-invoke", "")})`] });
+      const changes = [`added (new ${capability.replace("-invoke", "")})`];
+      entries.push({ capability, name, severity: classifySchemaDriftSeverity(changes), changes });
       continue;
     }
     if (baseSchema !== undefined && headSchema === undefined) {
-      entries.push({ capability, name, changes: [`removed`] });
+      const changes = ["removed"];
+      entries.push({ capability, name, severity: classifySchemaDriftSeverity(changes), changes });
       continue;
     }
     if (baseSchema === undefined || headSchema === undefined) {
@@ -30,7 +60,7 @@ export function diffSchemas(
 
     const changes = compareSchemas(baseSchema, headSchema);
     if (changes.length > 0) {
-      entries.push({ capability, name, changes });
+      entries.push({ capability, name, severity: classifySchemaDriftSeverity(changes), changes });
     }
   }
 

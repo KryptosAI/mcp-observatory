@@ -1,6 +1,16 @@
 import { diffSchemas } from "./schema-diff.js";
-import type { CheckResult, DiffArtifact, DiffEntry, ResponseChangeEntry, RunArtifact, SchemaDriftEntry } from "./types.js";
+import type { CheckResult, DiffArtifact, DiffEntry, ResponseChangeEntry, RunArtifact, SchemaDriftEntry, SchemaDriftSeverity } from "./types.js";
 import { SCHEMA_VERSION, STATUS_RANK } from "./types.js";
+
+export interface DiffOptions {
+  failOnSchemaDrift?: SchemaDriftSeverity;
+}
+
+const SCHEMA_DRIFT_SEVERITY_RANK: Record<SchemaDriftSeverity, number> = {
+  info: 1,
+  medium: 2,
+  high: 3,
+};
 
 function toEntry(base: CheckResult | undefined, head: CheckResult | undefined): DiffEntry {
   const source = head ?? base;
@@ -19,7 +29,7 @@ function toEntry(base: CheckResult | undefined, head: CheckResult | undefined): 
   };
 }
 
-export function diffArtifacts(base: RunArtifact, head: RunArtifact): DiffArtifact {
+export function diffArtifacts(base: RunArtifact, head: RunArtifact, options: DiffOptions = {}): DiffArtifact {
   const baseChecks = new Map(base.checks.map((check) => [check.id, check]));
   const headChecks = new Map(head.checks.map((check) => [check.id, check]));
   const checkIds = Array.from(new Set([...baseChecks.keys(), ...headChecks.keys()]));
@@ -104,6 +114,10 @@ export function diffArtifacts(base: RunArtifact, head: RunArtifact): DiffArtifac
     }
   }
 
+  const schemaDriftSeverityCounts = countSchemaDriftSeverities(schemaDrift);
+  const schemaDriftGateFailed = options.failOnSchemaDrift !== undefined
+    && schemaDrift.some((entry) => SCHEMA_DRIFT_SEVERITY_RANK[entry.severity] >= SCHEMA_DRIFT_SEVERITY_RANK[options.failOnSchemaDrift!]);
+  const gate = regressions.length > 0 || schemaDriftGateFailed ? ("fail" as const) : ("pass" as const);
   const summary = {
     regressions: regressions.length,
     recoveries: recoveries.length,
@@ -111,8 +125,9 @@ export function diffArtifacts(base: RunArtifact, head: RunArtifact): DiffArtifac
     added: added.length,
     removed: removed.length,
     schemaDriftCount: schemaDrift.length > 0 ? schemaDrift.length : undefined,
+    schemaDriftSeverityCounts: schemaDrift.length > 0 ? schemaDriftSeverityCounts : undefined,
     responseChangeCount: responseChanges.length > 0 ? responseChanges.length : undefined,
-    gate: regressions.length > 0 ? ("fail" as const) : ("pass" as const)
+    gate
   };
 
   return {
@@ -149,4 +164,12 @@ function extractResponseSnapshots(check: CheckResult): Record<string, unknown> |
     }
   }
   return undefined;
+}
+
+function countSchemaDriftSeverities(entries: SchemaDriftEntry[]): Record<SchemaDriftSeverity, number> {
+  return {
+    info: entries.filter((entry) => entry.severity === "info").length,
+    medium: entries.filter((entry) => entry.severity === "medium").length,
+    high: entries.filter((entry) => entry.severity === "high").length,
+  };
 }

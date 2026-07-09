@@ -310,7 +310,7 @@ function renderDiffTerminal(artifact: DiffArtifact): string {
   if (artifact.schemaDrift && artifact.schemaDrift.length > 0) {
     lines.push(co(ANSI.yellow, "Schema Drift:"));
     for (const entry of artifact.schemaDrift) {
-      lines.push(co(ANSI.yellow, `- ${entry.name} (${entry.capability}): ${entry.changes.join(", ")}`));
+      lines.push(co(ANSI.yellow, `- ${entry.name} (${entry.capability}, ${entry.severity}): ${entry.changes.join(", ")}`));
     }
   }
   if (artifact.responseChanges && artifact.responseChanges.length > 0) {

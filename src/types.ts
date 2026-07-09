@@ -175,9 +175,12 @@ export interface DiffEntry {
   message: string;
 }
 
+export type SchemaDriftSeverity = "info" | "medium" | "high";
+
 export interface SchemaDriftEntry {
   capability: CheckId;
   name: string;
+  severity: SchemaDriftSeverity;
   changes: string[];
 }
 
@@ -194,6 +197,7 @@ export interface DiffSummary {
   added: number;
   removed: number;
   schemaDriftCount?: number;
+  schemaDriftSeverityCounts?: Record<SchemaDriftSeverity, number>;
   responseChangeCount?: number;
   gate: Gate;
 }

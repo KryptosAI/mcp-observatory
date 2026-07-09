@@ -111,6 +111,7 @@ function schemaDriftSection(drift: SchemaDriftEntry[] | undefined): string {
     <tr>
       <td style="padding:6px 12px;border-bottom:1px solid #e5e7eb">${esc(d.name)}</td>
       <td style="padding:6px 12px;border-bottom:1px solid #e5e7eb">${esc(d.capability)}</td>
+      <td style="padding:6px 12px;border-bottom:1px solid #e5e7eb">${esc(d.severity)}</td>
       <td style="padding:6px 12px;border-bottom:1px solid #e5e7eb;font-size:13px">${esc(d.changes.join(", "))}</td>
     </tr>`).join("");
 
@@ -121,6 +122,7 @@ function schemaDriftSection(drift: SchemaDriftEntry[] | undefined): string {
         <tr style="background:#f9fafb;text-align:left">
           <th style="padding:6px 12px;border-bottom:2px solid #e5e7eb">Name</th>
           <th style="padding:6px 12px;border-bottom:2px solid #e5e7eb">Capability</th>
+          <th style="padding:6px 12px;border-bottom:2px solid #e5e7eb">Severity</th>
           <th style="padding:6px 12px;border-bottom:2px solid #e5e7eb">Changes</th>
         </tr>
       </thead>

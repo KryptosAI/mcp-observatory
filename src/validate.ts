@@ -13,6 +13,7 @@ import type {
   RunArtifact,
   RunSummary,
   SchemaDriftEntry,
+  SchemaDriftSeverity,
   TargetConfig,
   TargetSnapshot,
   SCHEMA_VERSION,
@@ -57,6 +58,19 @@ function requireNumber(obj: Record<string, unknown>, field: string, label: strin
     throw new Error(`${label} is missing required field '${field}'.`);
   }
   return value;
+}
+
+function optionalSchemaDriftSeverity(value: unknown): SchemaDriftSeverity | undefined {
+  return value === "info" || value === "medium" || value === "high" ? value : undefined;
+}
+
+function optionalSchemaDriftSeverityCounts(value: unknown): Record<SchemaDriftSeverity, number> | undefined {
+  if (!isObject(value)) return undefined;
+  return {
+    info: typeof value["info"] === "number" ? value["info"] : 0,
+    medium: typeof value["medium"] === "number" ? value["medium"] : 0,
+    high: typeof value["high"] === "number" ? value["high"] : 0,
+  };
 }
 
 function requireGate(value: unknown, label: string): Gate {
@@ -286,6 +300,15 @@ export function validateRunArtifact(data: unknown): RunArtifact {
   };
 }
 
+function normalizeSchemaDriftEntries(entries: unknown[]): SchemaDriftEntry[] {
+  return entries.filter(isObject).map((entry) => ({
+    capability: entry["capability"] as SchemaDriftEntry["capability"],
+    name: typeof entry["name"] === "string" ? entry["name"] : "unknown",
+    severity: optionalSchemaDriftSeverity(entry["severity"]) ?? "medium",
+    changes: isStringArray(entry["changes"]) ? entry["changes"] : [],
+  }));
+}
+
 export function validateDiffArtifact(data: unknown): DiffArtifact {
   if (!isObject(data)) {
     throw new Error("Expected a diff artifact but got a non-object value.");
@@ -311,6 +334,7 @@ export function validateDiffArtifact(data: unknown): DiffArtifact {
     added: requireNumber(summaryObj, "added", "Diff artifact summary"),
     removed: requireNumber(summaryObj, "removed", "Diff artifact summary"),
     schemaDriftCount: optionalNumber(summaryObj, "schemaDriftCount", "Diff artifact summary"),
+    schemaDriftSeverityCounts: optionalSchemaDriftSeverityCounts(summaryObj["schemaDriftSeverityCounts"]),
     responseChangeCount: optionalNumber(summaryObj, "responseChangeCount", "Diff artifact summary"),
     gate: requireGate(summaryObj["gate"], "Diff artifact summary"),
   };
@@ -320,7 +344,7 @@ export function validateDiffArtifact(data: unknown): DiffArtifact {
   const unchanged = Array.isArray(data["unchanged"]) ? (data["unchanged"] as DiffEntry[]) : [];
   const added = Array.isArray(data["added"]) ? (data["added"] as DiffEntry[]) : [];
   const removed = Array.isArray(data["removed"]) ? (data["removed"] as DiffEntry[]) : [];
-  const schemaDrift = Array.isArray(data["schemaDrift"]) ? (data["schemaDrift"] as SchemaDriftEntry[]) : undefined;
+  const schemaDrift = Array.isArray(data["schemaDrift"]) ? normalizeSchemaDriftEntries(data["schemaDrift"]) : undefined;
   const responseChanges = Array.isArray(data["responseChanges"]) ? (data["responseChanges"] as ResponseChangeEntry[]) : undefined;
 
   return {
