@@ -118,23 +118,7 @@ async function isSeatbeltInstalled(): Promise<boolean> {
 }
 
 async function startSeatbeltProxy(policyPath: string, port: number): Promise<boolean> {
-  try {
-    execSync(`npx @kryptosai/mcp-seatbelt proxy --policy ${policyPath} --port ${port} &`, {
-      stdio: "ignore",
-      timeout: 5_000,
-    });
-    return true;
-  } catch {
-    try {
-      execSync(`mcp-seatbelt proxy --policy ${policyPath} --port ${port} 2>/dev/null &`, {
-        stdio: "ignore",
-        timeout: 5_000,
-      });
-      return true;
-    } catch {
-      return false;
-    }
-  }
+  return false; // Proxy lifecycle management belongs to mcp-seatbelt, not observatory.
 }
 
 export interface EnforceOptions {
@@ -200,20 +184,10 @@ export async function runEnforce(
     const installed = await isSeatbeltInstalled();
 
     if (options.startProxy) {
-      if (installed) {
-        process.stdout.write(`  ${c(ANSI.dim, "⟳")} Starting proxy on port ${proxyPort}...`);
-        const started = await startSeatbeltProxy(path.resolve(policyPath), proxyPort);
-        if (started) {
-          process.stdout.write(`\r  ${c(ANSI.green, "✓")} Proxy started on port ${proxyPort}\n\n`);
-          process.stdout.write(`  ${c(ANSI.dim, `Summary: ${summary} → proxy started on port ${proxyPort}`)}\n\n`);
-        } else {
-          process.stdout.write(`\r  ${c(ANSI.red, "✗")} Failed to start proxy\n`);
-          process.stdout.write(`  ${c(ANSI.dim, `Run manually: npx @kryptosai/mcp-seatbelt proxy --policy ${policyPath}`)}\n\n`);
-        }
-      } else {
-        process.stdout.write(`\n  ${c(ANSI.yellow, "mcp-seatbelt not installed.")}\n`);
-        process.stdout.write(`  ${c(ANSI.dim, `Run: npx @kryptosai/mcp-seatbelt proxy --policy ${policyPath}`)}\n\n`);
-      }
+      const absPolicy = path.resolve(policyPath);
+      process.stdout.write(`\n  ${c(ANSI.bold, "Start the proxy:")}\n`);
+      process.stdout.write(`  ${c(ANSI.cyan, `npx @kryptosai/mcp-seatbelt proxy --policy ${absPolicy} --port ${proxyPort}`)}\n`);
+      process.stdout.write(`  ${c(ANSI.dim, "Block dangerous MCP tool calls at runtime.")}\n\n`);
     } else {
       if (installed) {
         process.stdout.write(`\n  ${c(ANSI.dim, "Proxy ready to start:")} ${c(ANSI.cyan, `npx @kryptosai/mcp-seatbelt proxy --policy ${policyPath}`)}\n\n`);
