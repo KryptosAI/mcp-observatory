@@ -74,6 +74,8 @@ describe("renderSarif", () => {
     expect(sarif.runs[0]!.results[1]!.level).toBe("warning");
     expect(sarif.runs[0]!.results[0]!.partialFingerprints?.["mcp-observatory/finding-id"]).toMatch(/^mcp-observatory\/security\/shell-injection\//);
     expect(sarif.runs[0]!.results[0]!.properties?.["controlRefs"]).toContain("mcp-observatory:command-execution");
+    expect(sarif.runs[0]!.results[0]!.properties?.["riskTaxonomy"]).toMatchObject({ cwe: ["CWE-78"], mitreAttack: ["T1059"] });
+    expect(sarif.runs[0]!.tool.driver.rules[0]!.properties?.["tags"]).toContain("CWE-78");
   });
 
   it("includes rules definitions", () => {

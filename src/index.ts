@@ -92,6 +92,7 @@ export { buildCiReport } from "./commands/ci-report.js";
 export { findExistingIssue, createOrUpdateIssue } from "./ci-issue.js";
 export { extractObservatoryFindings, type ObservatoryFinding, type ObservatoryFindingSeverity } from "./findings.js";
 export { renderSarif } from "./reporters/sarif.js";
+export { taxonomyForFinding, taxonomyForRule, taxonomyTags, type RiskTaxonomy } from "./risk-taxonomy.js";
 export { renderTerminal, renderWatchFirstRun, renderWatchNoChanges, renderWatchChanges } from "./reporters/terminal.js";
 export { runTarget, runTargetRecording, type RunOptions, type RunResult } from "./runner.js";
 export { computeHealthScore, type ScoreWeights, DEFAULT_WEIGHTS } from "./score.js";
