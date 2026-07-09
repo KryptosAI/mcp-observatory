@@ -9,7 +9,7 @@ import {
   discoverFromAmazonQ,
   discoverFromAntigravity,
   discoverFromClaudeCode,
-  discoverFromClaudeDesktop,
+  
   discoverFromCodex,
   discoverFromCursor,
   discoverFromGeminiCli,
@@ -97,11 +97,7 @@ describe("scanForTargets", () => {
 });
 
 describe("defaultConfigPaths — agent coverage", () => {
-  let homeTmp: string;
-  let originalHomedir: () => string;
-
   beforeEach(() => {
-    originalHomedir = os.homedir;
   });
 
   afterEach(() => {
@@ -246,11 +242,8 @@ describe("discoverSkillPaths", () => {
 
 describe("per-agent discovery functions", () => {
   let tmpDir: string;
-  let originalHomedir: () => string;
-
   beforeEach(async () => {
     tmpDir = await mkdtemp(path.join(os.tmpdir(), "mcp-observatory-agent-"));
-    originalHomedir = os.homedir;
   });
 
   afterEach(() => {
