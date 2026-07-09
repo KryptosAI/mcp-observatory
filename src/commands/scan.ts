@@ -24,6 +24,7 @@ async function runScan(
   format?: string,
   attackSim = true,
   conversionFlags: SetupCiConversionFlags = {},
+  skillScanPath?: string,
 ): Promise<void> {
   if (conversionFlags.campaign) conversionFlags.campaign = normalizeCampaign(conversionFlags.campaign);
   const t0 = Date.now();
@@ -245,6 +246,12 @@ async function runScan(
   if (failCount > 0) {
     process.exitCode = 1;
   }
+
+  if (skillScanPath) {
+    process.stdout.write(`\n  ${c(ANSI.bold, "Skill Scan:")}\n`);
+    const { runSkillScan } = await import("./skill-scan.js");
+    await runSkillScan(skillScanPath, { format: format === "terminal" ? "terminal" : "markdown" });
+  }
 }
 
 // ── Register ────────────────────────────────────────────────────────────────
@@ -263,11 +270,12 @@ export function registerScanCommands(program: Command, bin: string): void {
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
     .option("--no-ci-sarif", "Generate post-scan CI without GitHub Code Scanning SARIF upload.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
-    .option("--no-color", "Disable colored output.");
+    .option("--no-color", "Disable colored output.")
+    .option("--skill-scan <path>", "Also scan skills found alongside MCP configs at the given path.");
 
   // `scan` with no subcommand — basic scan
-  scanCmd.action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string } & SetupCiConversionFlags) => {
-    await runScan(bin, options.config, false, options.security, options.format, options.attackSim !== false, options);
+  scanCmd.action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string; skillScan?: string } & SetupCiConversionFlags) => {
+    await runScan(bin, options.config, false, options.security, options.format, options.attackSim !== false, options, options.skillScan);
   });
 
   // `scan deep` — scan + invoke tools
@@ -284,12 +292,13 @@ export function registerScanCommands(program: Command, bin: string): void {
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
     .option("--no-ci-sarif", "Generate post-scan CI without GitHub Code Scanning SARIF upload.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
-    .action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string } & SetupCiConversionFlags) => {
+    .action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string; skillScan?: string } & SetupCiConversionFlags) => {
       // Inherit parent config option if set
       const parentConfig = scanCmd.opts().config as string | undefined;
       const parentSecurity = scanCmd.opts().security as boolean | undefined;
       const parentFormat = scanCmd.opts().format as string;
       const parentAttackSim = scanCmd.opts().attackSim as boolean | undefined;
-      await runScan(bin, options.config ?? parentConfig, true, options.security ?? parentSecurity ?? true, options.format ?? parentFormat, options.attackSim !== false && parentAttackSim !== false, options);
+      const parentSkillScan = scanCmd.opts().skillScan as string | undefined;
+      await runScan(bin, options.config ?? parentConfig, true, options.security ?? parentSecurity ?? true, options.format ?? parentFormat, options.attackSim !== false && parentAttackSim !== false, options, options.skillScan ?? parentSkillScan);
     });
 }

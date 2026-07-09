@@ -58,7 +58,8 @@ function inferMutationOperation(toolName: string, paramName: string): string {
   return "write";
 }
 
-function inferMutationScope(schemaProperties: Record<string, Record<string, unknown>> | undefined, paramName: string, toolName: string): string {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function inferMutationScope(schemaProperties: Record<string, Record<string, unknown>> | undefined, paramName: string, _toolName: string): string {
   if (/^env|^environ/i.test(paramName)) return "global";
   if (/^(command|cmd|exec|shell)$/i.test(paramName)) return "specific_path";
   if (schemaProperties?.[paramName]?.default !== undefined) return "specific_path";

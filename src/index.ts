@@ -45,6 +45,24 @@ export { runAttackSimulationCheck, type AttackSimulationFinding, type AttackSimu
 export { runLightweightSecurityCheck, runSecurityCheck } from "./checks/security.js";
 export { analyzeRuntimeProfile, runRuntimeProfileCheck } from "./checks/runtime-profile.js";
 export { SECURITY_RULES, type SecurityFinding, type SecurityRule, type ToolInfo } from "./checks/security-rules.js";
+export {
+  scanContent,
+  scanFile,
+  scanDirectory,
+  scanPath,
+  computeSkillHealthScore,
+  summarizeScan,
+  renderSkillScanTerminal,
+  renderSkillScanMarkdown,
+  renderSkillScanJson,
+  renderSkillScanSarif,
+  SKILL_SCAN_RULES,
+  type SkillScanRule,
+  type SkillScanFinding,
+  type SkillScanResult,
+  type SkillScanSummary,
+  type SkillScanSeverity,
+} from "./checks/skill-scan.js";
 export { diffArtifacts } from "./diff.js";
 export { scanForTargets } from "./discovery.js";
 export { renderHtml } from "./reporters/html.js";
