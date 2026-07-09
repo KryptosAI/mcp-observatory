@@ -227,6 +227,19 @@ function renderDiffMarkdown(artifact: DiffArtifact): string {
     artifact.recoveries.length > 0
       ? artifact.recoveries.map((entry) => `- ${entry.id}: ${entry.message}`).join("\n")
       : "_None._";
+  const schemaDriftList =
+    artifact.schemaDrift && artifact.schemaDrift.length > 0
+      ? table([
+        ["Severity", "Capability", "Name", "Changes"],
+        ...artifact.schemaDrift.map((entry) => [
+          entry.severity,
+          entry.capability,
+          entry.name,
+          entry.changes.join(", ")
+        ])
+      ])
+      : "_None._";
+  const driftSeverityCounts = artifact.summary.schemaDriftSeverityCounts;
   const suggestedNextStep =
     artifact.regressions.length > 0
       ? `Start with the regressions: ${artifact.regressions.map((entry) => entry.id).join(", ")}.`
@@ -250,14 +263,17 @@ function renderDiffMarkdown(artifact: DiffArtifact): string {
     `Top risks: ${safety.topRisks.join("; ")}`,
     ``,
     table([
-      ["Gate", "Regressions", "Recoveries", "Unchanged", "Added", "Removed"],
+      ["Gate", "Regressions", "Recoveries", "Unchanged", "Added", "Removed", "Schema Drift"],
       [
         artifact.gate,
         String(artifact.summary.regressions),
         String(artifact.summary.recoveries),
         String(artifact.summary.unchanged),
         String(artifact.summary.added),
-        String(artifact.summary.removed)
+        String(artifact.summary.removed),
+        driftSeverityCounts
+          ? `high=${driftSeverityCounts.high}, medium=${driftSeverityCounts.medium}, info=${driftSeverityCounts.info}`
+          : "0"
       ]
     ]),
     ``,
@@ -276,6 +292,10 @@ function renderDiffMarkdown(artifact: DiffArtifact): string {
     `## Recoveries`,
     ``,
     recoveryList,
+    ``,
+    `## Schema Drift`,
+    ``,
+    schemaDriftList,
     ``,
     `## Full Capability Status Table`,
     ``,

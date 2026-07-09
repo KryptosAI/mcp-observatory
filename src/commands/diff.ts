@@ -5,7 +5,28 @@ import {
   readArtifact,
 } from "../index.js";
 import { buildEvent, recordEvent } from "../telemetry.js";
+import type { SchemaDriftEntry, SchemaDriftSeverity } from "../types.js";
 import { formatOutput, printCiConversionCta, writeOutput } from "./helpers.js";
+
+const SCHEMA_DRIFT_SEVERITIES = new Set<SchemaDriftSeverity>(["info", "medium", "high"]);
+const SCHEMA_DRIFT_SEVERITY_RANK: Record<SchemaDriftSeverity, number> = {
+  info: 1,
+  medium: 2,
+  high: 3,
+};
+
+function parseSchemaDriftSeverity(value: string | undefined): SchemaDriftSeverity | undefined {
+  if (value === undefined) return undefined;
+  if (SCHEMA_DRIFT_SEVERITIES.has(value as SchemaDriftSeverity)) {
+    return value as SchemaDriftSeverity;
+  }
+  throw new Error(`Invalid schema drift severity "${value}". Expected one of: info, medium, high.`);
+}
+
+function hasSchemaDriftAtOrAbove(entries: SchemaDriftEntry[] | undefined, severity: SchemaDriftSeverity | undefined): boolean {
+  if (severity === undefined || entries === undefined) return false;
+  return entries.some((entry) => SCHEMA_DRIFT_SEVERITY_RANK[entry.severity] >= SCHEMA_DRIFT_SEVERITY_RANK[severity]);
+}
 
 export function registerDiffCommands(program: Command): void {
   program
@@ -17,9 +38,11 @@ export function registerDiffCommands(program: Command): void {
     .option("--output <file>", "Write to file instead of stdout.")
     .option("--no-color", "Disable colored output.")
     .option("--fail-on-regression", "Exit with code 1 when regressions are present.", false)
+    .option("--fail-on-schema-drift <severity>", "Exit with code 1 when schema drift at or above severity is present: info, medium, or high.")
     .action(
       async (base: string, head: string, options: {
         failOnRegression?: boolean;
+        failOnSchemaDrift?: string;
         format: "html" | "json" | "junit" | "markdown" | "pr-comment" | "sarif" | "terminal";
         output?: string;
       }) => {
@@ -31,7 +54,8 @@ export function registerDiffCommands(program: Command): void {
         }
 
         const t0 = Date.now();
-        const artifact = diffArtifacts(baseArtifact, headArtifact);
+        const failOnSchemaDrift = parseSchemaDriftSeverity(options.failOnSchemaDrift);
+        const artifact = diffArtifacts(baseArtifact, headArtifact, { failOnSchemaDrift });
         const output = formatOutput(artifact, options.format);
         await writeOutput(output, options.format, options.output);
         if (options.format === "terminal" && artifact.gate !== "fail") {
@@ -48,7 +72,10 @@ export function registerDiffCommands(program: Command): void {
           healthGrade: headArtifact.healthScore?.grade,
         }));
 
-        if (options.failOnRegression && artifact.gate === "fail") {
+        if (
+          (options.failOnRegression && artifact.regressions.length > 0)
+          || hasSchemaDriftAtOrAbove(artifact.schemaDrift, failOnSchemaDrift)
+        ) {
           process.exitCode = 1;
         }
       },

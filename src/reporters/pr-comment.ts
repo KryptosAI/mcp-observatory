@@ -266,7 +266,7 @@ function flattenDrift(drift: SchemaDriftEntry[]): string[] {
   const lines: string[] = [];
   for (const entry of drift) {
     for (const change of entry.changes) {
-      lines.push(`**${entry.name}**: ${change}`);
+      lines.push(`\`${entry.severity}\` **${entry.name}**: ${change}`);
     }
   }
   return lines;

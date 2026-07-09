@@ -137,14 +137,24 @@ describe("renderPrComment (DiffArtifact)", () => {
   it("shows schema drift entries", () => {
     const out = renderPrComment(makeDiff({
       gate: "fail",
-      summary: { regressions: 0, recoveries: 0, unchanged: 2, added: 0, removed: 0, schemaDriftCount: 2, gate: "fail" },
+      summary: {
+        regressions: 0,
+        recoveries: 0,
+        unchanged: 2,
+        added: 0,
+        removed: 0,
+        schemaDriftCount: 2,
+        schemaDriftSeverityCounts: { high: 2, medium: 0, info: 0 },
+        gate: "fail",
+      },
       schemaDrift: [
-        { capability: "tools", name: "create_issue", changes: ["added required property 'type'"] },
-        { capability: "tools", name: "search_code", changes: ["removed property 'language'"] },
+        { capability: "tools", name: "create_issue", severity: "high", changes: ["added required property 'type'"] },
+        { capability: "tools", name: "search_code", severity: "high", changes: ["removed property 'language'"] },
       ],
     }));
     expect(out).toContain("SCHEMA DRIFT (2)");
     expect(out).toContain("create_issue");
+    expect(out).toContain("`high`");
     expect(out).toContain("added required property");
   });
 

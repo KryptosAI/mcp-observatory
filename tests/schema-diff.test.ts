@@ -23,6 +23,7 @@ describe("diffSchemas", () => {
     expect(result).toHaveLength(1);
     expect(result[0]!.name).toBe("newTool");
     expect(result[0]!.changes[0]).toContain("added");
+    expect(result[0]!.severity).toBe("medium");
   });
 
   it("detects removed items", () => {
@@ -34,6 +35,7 @@ describe("diffSchemas", () => {
     expect(result).toHaveLength(1);
     expect(result[0]!.name).toBe("oldTool");
     expect(result[0]!.changes[0]).toContain("removed");
+    expect(result[0]!.severity).toBe("high");
   });
 
   it("detects added properties", () => {
@@ -46,6 +48,7 @@ describe("diffSchemas", () => {
     const result = diffSchemas("tools", base, head);
     expect(result).toHaveLength(1);
     expect(result[0]!.changes).toContain("added property 'verbose'");
+    expect(result[0]!.severity).toBe("info");
   });
 
   it("detects removed properties", () => {
@@ -58,6 +61,7 @@ describe("diffSchemas", () => {
     const result = diffSchemas("tools", base, head);
     expect(result).toHaveLength(1);
     expect(result[0]!.changes).toContain("removed property 'debug'");
+    expect(result[0]!.severity).toBe("high");
   });
 
   it("detects type changes", () => {
@@ -70,6 +74,7 @@ describe("diffSchemas", () => {
     const result = diffSchemas("tools", base, head);
     expect(result).toHaveLength(1);
     expect(result[0]!.changes[0]).toContain("changed 'count' type from 'number' to 'string'");
+    expect(result[0]!.severity).toBe("high");
   });
 
   it("detects added and removed required fields", () => {
