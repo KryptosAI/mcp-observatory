@@ -32,6 +32,11 @@
     },
     "healthScore": { "$ref": "#/definitions/healthScore" },
     "performanceMetrics": { "$ref": "#/definitions/performanceMetrics" },
+    "runtimeProfile": { "$ref": "#/definitions/runtimeProfile" },
+    "notObserved": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/notObserved" }
+    },
     "fatalError": { "type": "string" }
   },
   "definitions": {
@@ -51,7 +56,8 @@
         "security-lite",
         "attack-sim",
         "conformance",
-        "schema-quality"
+        "schema-quality",
+        "runtime-profile"
       ]
     },
     "evidenceSummary": {
@@ -205,6 +211,55 @@
           "type": "object",
           "additionalProperties": { "type": "number", "minimum": 0 }
         }
+      }
+    },
+    "egressEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "protocol", "source", "confidence"],
+      "properties": {
+        "target": { "type": "string" },
+        "protocol": { "type": "string" },
+        "source": { "type": "string" },
+        "confidence": { "type": "string", "enum": ["high", "medium", "low"] }
+      }
+    },
+    "stateMutation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resource", "operation", "scope", "source"],
+      "properties": {
+        "resource": { "type": "string" },
+        "operation": { "type": "string" },
+        "scope": { "type": "string" },
+        "source": { "type": "string" }
+      }
+    },
+    "runtimeProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["analyzedAt", "confidence"],
+      "properties": {
+        "egress": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/egressEntry" }
+        },
+        "stateMutations": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/stateMutation" }
+        },
+        "analyzedAt": { "type": "string" },
+        "confidence": { "type": "string", "enum": ["high", "medium", "low"] }
+      }
+    },
+    "notObserved": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category", "detail", "severity"],
+      "properties": {
+        "category": { "type": "string" },
+        "detail": { "type": "string" },
+        "severity": { "type": "string", "enum": ["info", "warning"] }
       }
     }
   }

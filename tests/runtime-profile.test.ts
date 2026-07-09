@@ -222,7 +222,7 @@ describe("runtime-profile check", () => {
 
       const findings = check.result.evidence[0]?.findings;
       expect(findings).toBeDefined();
-      expect(findings!.some((f) => (f as Record<string, unknown>)["source"] === "tool_schema")).toBe(true);
+      expect(findings!.some((f) => f.source === "tool_schema")).toBe(true);
     });
   });
 });
