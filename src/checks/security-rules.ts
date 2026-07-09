@@ -164,6 +164,25 @@ export const SECURITY_RULES: SecurityRule[] = [
       return null;
     },
   },
+
+  {
+    id: "unicode-obfuscation-description",
+    severity: "high",
+    name: "Unicode obfuscation in tool description",
+    match(tool) {
+      const desc = tool.description ?? "";
+      const unicodeRegex = /[\u200B-\u200D\uFEFF\u2060\u00AD\u202A-\u202E\u2066-\u2069\u{E0001}\u{E0020}-\u{E007F}]/gu;
+      if (unicodeRegex.test(desc)) {
+        return {
+          ruleId: this.id,
+          severity: this.severity,
+          toolName: tool.name,
+          message: `Tool "${tool.name}" description contains hidden Unicode characters (zero-width spaces, bidi overrides, or tag sequences) that can obscure true intent.`,
+        };
+      }
+      return null;
+    },
+  },
 ];
 
 /** Credential patterns to scan in tool response content. */

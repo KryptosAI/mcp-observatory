@@ -24,6 +24,7 @@ import { registerAttackSimCommands } from "./commands/attack-sim.js";
 import { registerAuditCommands } from "./commands/audit.js";
 import { registerReceiptCommands } from "./commands/receipt.js";
 import { registerRiskGraphCommands } from "./commands/risk-graph.js";
+import { registerSkillScanCommands } from "./commands/skill-scan.js";
 import { DEFAULT_CLOUD_UPLOAD_ENDPOINT, printCloudInfo } from "./commercial.js";
 import { runTarget } from "./index.js";
 import type { RunArtifact, TargetConfig } from "./types.js";
@@ -53,6 +54,7 @@ const MENU_GROUPS: MenuGroup[] = [
       { command: ["test"],         label: "test <cmd>", outcome: "Test a specific MCP server",                        recommended: true },
       { command: ["scan"],         label: "scan",       outcome: "Check all your configured MCP servers" },
       { command: ["scan", "deep"], label: "scan deep",  outcome: "^ plus invoke tools to verify they work" },
+      { command: ["skill-scan"],   label: "skill-scan <path>", outcome: "Scan skill files for security risks" },
     ],
   },
   {
@@ -294,6 +296,7 @@ async function main(): Promise<void> {
   registerReceiptCommands(program);
   registerRiskGraphCommands(program);
   registerAttackSimCommands(program);
+  registerSkillScanCommands(program);
 
   const cloudCmd = program
     .command("cloud")
