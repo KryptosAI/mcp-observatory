@@ -641,6 +641,7 @@ Scan before you trust. Enforce at runtime with [mcp-seatbelt](https://github.com
 Thanks to these amazing people who have contributed:
 
 - [leemeo3](https://github.com/leemeo3) — 3 Safety Index targets (Git, Chrome DevTools, Filesystem MCP)
+- [albatrossflyon-coder](https://github.com/albatrossflyon-coder) — GitHub MCP Safety Index (#201)
 - [tanishxdev](https://github.com/tanishxdev) — Legacy CLI deprecation warnings (#187)
 - [sansynx](https://github.com/sansynx) — CLI format validation (#182)
 

@@ -1245,7 +1245,8 @@ function summarizeTelemetry(db: DatabaseSync): TelemetrySummary {
       detail: `${formatNumber(externalSessions.size)} market sessions, ${formatNumber(Math.max(totalSessions.size - externalSessions.size, 0))} internal or first-party sessions excluded.`,
     },
   ];
-  const _versionHealthSignal: VersionHealth & { statusDetail: string } = {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _versionHealthSignal = {
     latestVersion: latestVersionRow?.version ?? "",
     latestSessions: latestVersionRow?.sessions ?? 0,
     staleSessions,
@@ -3246,22 +3247,45 @@ async function buildDashboard(db: DatabaseSync, paths: Paths): Promise<void> {
 }
 
 async function acquireLock(paths: Paths): Promise<void> {
-  try {
-    await writeFile(paths.lock, `${process.pid} ${new Date().toISOString()} ${os.hostname()}\n`, { flag: "wx" });
-  } catch (error) {
-    const content = await readFile(paths.lock, "utf8").catch(() => "");
-    throw new Error(`Metrics refresh lock exists at ${paths.lock}${content ? ` (${content.trim()})` : ""}`, { cause: error });
+  const LOCK_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
+  const lockContent = await readFile(paths.lock, "utf8").catch(() => "");
+  if (lockContent) {
+    const match = lockContent.match(/^(\d+)\s+(.+)/);
+    if (match && match[1] && match[2]) {
+      const lockAge = Date.now() - new Date(match[2]).getTime();
+      if (lockAge > LOCK_TIMEOUT_MS) {
+        process.stderr.write(`[metrics] Breaking stale lock (${Math.round(lockAge / 60000)}m old)\n`);
+        await releaseLock(paths);
+      } else {
+        throw new Error(`Refresh already in progress (PID ${match[1]}, ${Math.round(lockAge / 1000)}s ago). Wait and try again.`);
+      }
+    }
   }
+  await writeFile(paths.lock, `${process.pid} ${new Date().toISOString()} ${os.hostname()}\n`, { flag: "wx" });
 }
 
 async function releaseLock(paths: Paths): Promise<void> {
   await rm(paths.lock, { force: true });
 }
 
-async function collectAll(db: DatabaseSync, paths: Paths): Promise<void> {
-  await collectTelemetry(db, paths);
-  await collectGitHub(db);
-  await collectNpm(db);
+async function collectAll(db: DatabaseSync, paths: Paths, onProgress?: (msg: string) => void): Promise<{ ok: string[]; failed: string[] }> {
+  const results: { ok: string[]; failed: string[] } = { ok: [], failed: [] };
+  const sources: [string, () => Promise<void>][] = [
+    ["telemetry", () => collectTelemetry(db, paths)],
+    ["github", () => collectGitHub(db)],
+    ["npm", () => collectNpm(db)],
+  ];
+  for (const [name, collect] of sources) {
+    try {
+      onProgress?.(`Collecting ${name} data...`);
+      await collect();
+      results.ok.push(name);
+    } catch (error) {
+      results.failed.push(`${name}: ${safeErrorMessage(error)}`);
+      process.stderr.write(`[metrics] ${name} collection failed: ${safeErrorMessage(error)}\n`);
+    }
+  }
+  return results;
 }
 
 async function openDashboard(paths: Paths): Promise<void> {
@@ -3298,15 +3322,21 @@ function send(response: ServerResponse, status: number, body: string, contentTyp
   response.end(body);
 }
 
-async function refreshDashboard(paths: Paths): Promise<void> {
+async function refreshDashboard(paths: Paths, onProgress?: (msg: string) => void): Promise<{ collected: string[]; failed: string[] }> {
   const db = openDatabase(paths.db);
   try {
     await acquireLock(paths);
     try {
-      await collectAll(db, paths);
-      await buildDashboard(db, paths);
+      onProgress?.("Acquired lock, collecting data...");
+      const result = await collectAll(db, paths, onProgress);
+      if (result.ok.length > 0) {
+        onProgress?.("Building dashboard...");
+        await buildDashboard(db, paths);
+      }
+      return { collected: result.ok, failed: result.failed };
     } finally {
       await releaseLock(paths);
+      onProgress?.("Lock released.");
     }
   } finally {
     db.close();
@@ -3333,8 +3363,15 @@ async function serveRequest(request: IncomingMessage, response: ServerResponse, 
   }
   if (request.method === "POST" && url.pathname === "/api/refresh") {
     try {
-      await refreshDashboard(paths);
-      send(response, 200, JSON.stringify({ ok: true, refreshedAt: nowIso() }) + "\n", "application/json; charset=utf-8");
+      const messages: string[] = [];
+      const result = await refreshDashboard(paths, (msg) => messages.push(msg));
+      send(response, 200, JSON.stringify({
+        ok: true,
+        refreshedAt: nowIso(),
+        collected: result.collected,
+        failed: result.failed,
+        progress: messages,
+      }) + "\n", "application/json; charset=utf-8");
     } catch (error) {
       send(response, 500, safeErrorMessage(error));
     }

@@ -54,6 +54,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "albatrossflyon-coder",
+      "name": "Chris Brown",
+      "avatar_url": "https://avatars.githubusercontent.com/u/albatrossflyon-coder?v=4",
+      "profile": "https://github.com/albatrossflyon-coder",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
     }
   ]
 }
