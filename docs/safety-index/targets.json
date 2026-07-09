@@ -181,6 +181,23 @@
     "reproductionNotes": "Zero-config package; tool listing succeeds without a real GitHub token, so this check is safe to run in CI. Note: npm currently flags this package as deprecated/no longer supported by the publisher — treat this target as compatibility evidence, not an endorsement of the package's maintenance status."
   },
   {
+    "id": "ui5-mcp-server",
+    "name": "UI5 MCP Server",
+    "repo": "https://github.com/UI5/mcp-server",
+    "packageName": "@ui5/mcp-server",
+    "category": "Developer Tools",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@ui5/mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "UI5 project scaffolding and analysis",
+    "failureClass": "Framework tooling boundary",
+    "whyItMatters": "UI5 agents can scaffold applications, run UI5-specific analysis, and fetch framework guidance, so teams need reproducible evidence before trusting the tool surface.",
+    "reproductionNotes": "Zero-config public package; tool listing works without private credentials or a project fixture."
+  },
+  {
     "id": "opentofu-server",
     "name": "OpenTofu MCP server",
     "repo": "https://github.com/opentofu/opentofu-mcp-server",

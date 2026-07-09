@@ -75,7 +75,7 @@ function requireStatus(value: unknown, label: string): CheckStatus {
 }
 
 function requireCheckId(value: unknown, label: string): string {
-  const ids = new Set(["tools", "prompts", "resources", "tools-invoke", "security", "security-lite", "attack-sim", "conformance", "schema-quality"]);
+  const ids = new Set(["tools", "prompts", "resources", "tools-invoke", "security", "security-lite", "attack-sim", "conformance", "schema-quality", "runtime-profile"]);
   if (typeof value !== "string" || !ids.has(value)) {
     throw new Error(`${label} has invalid check id '${String(value)}'.`);
   }
@@ -257,6 +257,14 @@ export function validateRunArtifact(data: unknown): RunArtifact {
     ? data["performanceMetrics"] as unknown as PerformanceMetrics
     : undefined;
 
+  const runtimeProfile: RunArtifact["runtimeProfile"] | undefined = isObject(data["runtimeProfile"])
+    ? data["runtimeProfile"] as unknown as RunArtifact["runtimeProfile"]
+    : undefined;
+
+  const notObserved: RunArtifact["notObserved"] | undefined = Array.isArray(data["notObserved"])
+    ? data["notObserved"] as RunArtifact["notObserved"]
+    : undefined;
+
   const fatalError: string | undefined = typeof data["fatalError"] === "string" ? data["fatalError"] : undefined;
 
   return {
@@ -272,6 +280,8 @@ export function validateRunArtifact(data: unknown): RunArtifact {
     checks,
     healthScore,
     performanceMetrics,
+    runtimeProfile,
+    notObserved,
     fatalError,
   };
 }

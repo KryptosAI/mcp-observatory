@@ -116,7 +116,7 @@ export function analyzeRuntimeProfile(tools: Tool[]): RuntimeProfile {
         mutations.push({
           resource: inferMutationResource(paramName),
           operation: inferMutationOperation(tool.name, paramName),
-          scope: inferMutationScope(normalized.properties, paramName, tool.name),
+          scope: inferMutationScope(normalized.properties, paramName),
           source: "tool_schema",
         });
       }
