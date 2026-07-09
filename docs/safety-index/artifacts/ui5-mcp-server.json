@@ -1,0 +1,842 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-07-09T151505224Z_052ab101",
+  "createdAt": "2026-07-09T15:15:05.224Z",
+  "toolVersion": "1.28.2",
+  "target": {
+    "targetId": "ui5-mcp-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@ui5/mcp-server"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "@ui5/mcp-server",
+      "purpose": "mcp-safety-index",
+      "riskClass": "UI5 project scaffolding and analysis",
+      "failureClass": "Framework tooling boundary",
+      "whyItMatters": "UI5 agents can scaffold applications, run UI5-specific analysis, and fetch framework guidance, so teams need reproducible evidence before trusting the tool surface."
+    },
+    "serverName": "UI5",
+    "serverVersion": "0.2.14"
+  },
+  "environment": {
+    "platform": "darwin 24.0.0",
+    "nodeVersion": "v25.8.1"
+  },
+  "summary": {
+    "total": 9,
+    "pass": 7,
+    "fail": 0,
+    "partial": 0,
+    "unsupported": 2,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 6.683124999999563,
+      "message": "Advertised capability responded with the minimal expected shape (10 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 10,
+          "identifiers": [
+            "get_guidelines",
+            "run_ui5_linter",
+            "get_api_reference",
+            "get_project_info",
+            "create_ui5_app",
+            "get_version_info",
+            "get_integration_cards_guidelines",
+            "create_integration_card",
+            "run_manifest_validation",
+            "get_typescript_conversion_guidelines"
+          ],
+          "diagnostics": [],
+          "schemas": {
+            "get_guidelines": {
+              "type": "object",
+              "properties": {}
+            },
+            "run_ui5_linter": {
+              "type": "object",
+              "properties": {
+                "projectDir": {
+                  "type": "string",
+                  "description": "Root directory of the UI5 project to analyze. Must be an absolute path. Typically this the directory where the 'package.json' and 'ui5.yaml' files are located."
+                },
+                "fix": {
+                  "default": false,
+                  "description": "Attempt to automatically correct certain findings in the files. Only the remaining findings will be returned.",
+                  "type": "boolean"
+                },
+                "filePatterns": {
+                  "description": "File paths or patterns to lint. If not provided, all files in the project will be linted.",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "provideContextInformation": {
+                  "default": true,
+                  "description": "Whether to include supplementary information in the output. This includes UI5 API reference and documentation resources. When calling the tool multiple times for the same file or project, refrain from requesting additional context every time.",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "projectDir"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_api_reference": {
+              "type": "object",
+              "properties": {
+                "projectDir": {
+                  "type": "string",
+                  "description": "The root directory of the UI5 project, containing the 'package.json' and 'ui5.yaml' files. This is used to determine the UI5 framework version and libraries used in the project. "
+                },
+                "query": {
+                  "type": "string",
+                  "pattern": "^[^<>\"'()]+$",
+                  "description": "Name of the UI5 module or symbol using either dot or slash notation. Examples: 'sap.m.Button', 'sap/ui/core/Core'. Individual symbols can be requested as well, e.g. 'sap.m.Button#text', 'sap.ui.core.Core#init'"
+                }
+              },
+              "required": [
+                "projectDir",
+                "query"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_project_info": {
+              "type": "object",
+              "properties": {
+                "projectDir": {
+                  "type": "string",
+                  "description": "Root directory of the UI5 project to analyze. Must be an absolute path. If a path to a file is provided, the root directory will be determined automatically."
+                }
+              },
+              "required": [
+                "projectDir"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "create_ui5_app": {
+              "type": "object",
+              "properties": {
+                "appNamespace": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9_.]*$",
+                  "description": "The namespace for the application, e.g. com.myorg.myapp. Only lowercase alpha-numeric characters, underscores and dots are allowed."
+                },
+                "basePath": {
+                  "type": "string",
+                  "description": "Absolute base path for the creation. The application will be created either immediately inside this path or in a subdirectory (its name equals the application namespace), depending on the 'createAppDirectory' parameter. This base path must be absolute, not just 'app' or '.' or './something'!"
+                },
+                "createAppDirectory": {
+                  "default": true,
+                  "description": "Whether to create a new directory (name equals the application namespace) inside the base path. Set this to 'false' when you want to place the 'app' directly in the given base path. In SAP CAP applications, typically give the path to the 'app' folder as basePath and set this to 'true' to create an application folder. Default: true.",
+                  "type": "boolean"
+                },
+                "framework": {
+                  "default": "SAPUI5",
+                  "description": "Framework to use (OpenUI5 or SAPUI5), defaults to SAPUI5",
+                  "type": "string",
+                  "enum": [
+                    "OpenUI5",
+                    "SAPUI5"
+                  ]
+                },
+                "frameworkVersion": {
+                  "description": "Framework version, defaults to latest version. Omit this when in doubt. When provided, it must be a concrete semantic version, like e.g. 1.136.0. Versions older than 1.96.0 are not supported.",
+                  "type": "string",
+                  "pattern": "^\\d+\\.\\d+\\.\\d+$"
+                },
+                "author": {
+                  "description": "Author of the application (auto-detected if not provided)",
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9 .,'@_-]+$"
+                },
+                "oDataV4Url": {
+                  "description": "OData V4 service URL parameter; public artifact redacts local URL examples from the upstream tool description.",
+                  "type": "string"
+                },
+                "oDataEntitySet": {
+                  "description": "Entity set of the OData V4 service to display. Only has an effect when 'oDataV4Url' is set as well. This is optional, but setting an entity set is beneficial, as it will configure a basic UI in the application which displays the entity set.",
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9_]+$"
+                },
+                "entityProperties": {
+                  "description": "Properties of the OData entity set to display. Only has an effect when 'oDataV4Url' and'oDataEntitySet' are set. This parameter is optional, but useful to display initial data, when the names of existing properties are known. If not provided and the service is active and reachable at tool execution time, some random properties will be displayed.",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9_]+$"
+                  }
+                },
+                "initializeGitRepository": {
+                  "default": true,
+                  "description": "Initialize a local git repository for the application, default is 'true'",
+                  "type": "boolean"
+                },
+                "runNpmInstall": {
+                  "default": true,
+                  "description": "Execute npm install after creating the application, default is 'true'",
+                  "type": "boolean"
+                },
+                "typescript": {
+                  "default": true,
+                  "description": "Whether to create a TypeScript application (true) or JavaScript application (false), default is 'true'. Although the default is preferred, the user MUST know about this option before generation, but you should not require an active decision. Also, if an overall project already exists, this should influence the language choice to keep things consistent.",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "appNamespace",
+                "basePath"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_version_info": {
+              "type": "object",
+              "properties": {
+                "frameworkName": {
+                  "type": "string",
+                  "enum": [
+                    "OpenUI5",
+                    "SAPUI5"
+                  ],
+                  "description": "The UI5 framework to get version information for"
+                }
+              },
+              "required": [
+                "frameworkName"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_integration_cards_guidelines": {
+              "type": "object",
+              "properties": {}
+            },
+            "create_integration_card": {
+              "type": "object",
+              "properties": {
+                "basePath": {
+                  "type": "string",
+                  "description": "Absolute base path for the creation."
+                },
+                "cardFolderName": {
+                  "default": "card",
+                  "type": "string",
+                  "description": "Name of the folder to create the card in, inside the base path."
+                },
+                "cardType": {
+                  "default": "List",
+                  "type": "string",
+                  "enum": [
+                    "Analytical",
+                    "Calendar",
+                    "List",
+                    "Object",
+                    "Table",
+                    "Timeline"
+                  ],
+                  "description": "Type of the Integration Card to create."
+                },
+                "destinations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "pattern": "^[a-zA-Z0-9 .,'@_-]+$",
+                        "description": "Name of the destination."
+                      },
+                      "defaultUrl": {
+                        "type": "string",
+                        "description": "Default URL of the destination."
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "defaultUrl"
+                    ]
+                  },
+                  "description": "List of destinations to be included in the card configuration."
+                }
+              },
+              "required": [
+                "basePath"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "run_manifest_validation": {
+              "type": "object",
+              "properties": {
+                "manifestPath": {
+                  "type": "string",
+                  "description": "Absolute path to the manifest file to validate."
+                }
+              },
+              "required": [
+                "manifestPath"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_typescript_conversion_guidelines": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.0013330000001587905,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.0037920000013400568,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.045041999999739346,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "pass",
+      "durationMs": 0.20004200000039418,
+      "message": "Detected 4 potential egress target(s) and 23 potential state mutation(s) with low confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 27,
+          "diagnostics": [
+            "Egress entries: 4",
+            "State mutations: 23",
+            "Confidence: medium"
+          ],
+          "findings": [
+            {
+              "target": "Whether to include supplementary information in the output. This includes UI5 API reference and documentation resources. When calling the tool multiple times for the same file or project, refrain from requesting additional context every time.",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "run_ui5_linter",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "get_api_reference",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "OData V4 service URL parameter; public artifact redacts local URL examples from the upstream tool description.",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "execute",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "execute",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 11.027541999999812,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 10 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
+            "[pass] tool-response-content: Tool \"get_guidelines\" response has valid content array.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "pass",
+      "durationMs": 7.388416999998299,
+      "message": "All 10 item(s) have good schema quality.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "pass",
+      "durationMs": 3.974833000000217,
+      "message": "No security issues detected.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "pass",
+      "durationMs": 3.8867500000014843,
+      "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 93,
+    "grade": "A",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "schema-quality: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "security-lite: pass (100/100)",
+          "security: pass (100/100)",
+          "attack-sim: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 67,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: unsupported (50/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 1287ms",
+          "p95 latency: 7ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 1286.6761250000018,
+    "toolsListMs": 6.683124999999563,
+    "promptsListMs": 0.0013330000001587905,
+    "resourcesListMs": 0.0037920000013400568
+  },
+  "runtimeProfile": {
+    "egress": [
+      {
+        "target": "Whether to include supplementary information in the output. This includes UI5 API reference and documentation resources. When calling the tool multiple times for the same file or project, refrain from requesting additional context every time.",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "run_ui5_linter",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "get_api_reference",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "OData V4 service URL parameter; public artifact redacts local URL examples from the upstream tool description.",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      }
+    ],
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "execute",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "execute",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-09T15:15:06.521Z",
+    "confidence": "medium"
+  }
+}
