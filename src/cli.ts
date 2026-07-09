@@ -250,7 +250,9 @@ async function main(): Promise<void> {
     .description("Test your MCP servers for breaking changes.")
     .version(TOOL_VERSION)
     .addHelpText("before", useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n` : LOGO + `  v${TOOL_VERSION}\n`)
+    .option("--quiet", "Suppress logo and informational output.", false)
     .addHelpText("after", (() => {
+    .option("--quiet", "Suppress logo and informational output.", false)
       const lines = [
         "",
         `  ${c(ANSI.bold, "Quick Start")}`,
