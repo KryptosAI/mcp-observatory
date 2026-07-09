@@ -8,6 +8,8 @@ import type {
   EvidenceSummary,
   Gate,
   HealthScore,
+  PermissionDeltaEntry,
+  PermissionDeltaRisk,
   PerformanceMetrics,
   ResponseChangeEntry,
   RunArtifact,
@@ -336,6 +338,8 @@ export function validateDiffArtifact(data: unknown): DiffArtifact {
     schemaDriftCount: optionalNumber(summaryObj, "schemaDriftCount", "Diff artifact summary"),
     schemaDriftSeverityCounts: optionalSchemaDriftSeverityCounts(summaryObj["schemaDriftSeverityCounts"]),
     responseChangeCount: optionalNumber(summaryObj, "responseChangeCount", "Diff artifact summary"),
+    permissionDeltaCount: optionalNumber(summaryObj, "permissionDeltaCount", "Diff artifact summary"),
+    permissionDeltaRiskCounts: optionalPermissionDeltaRiskCounts(summaryObj["permissionDeltaRiskCounts"]),
     gate: requireGate(summaryObj["gate"], "Diff artifact summary"),
   };
 
@@ -346,6 +350,7 @@ export function validateDiffArtifact(data: unknown): DiffArtifact {
   const removed = Array.isArray(data["removed"]) ? (data["removed"] as DiffEntry[]) : [];
   const schemaDrift = Array.isArray(data["schemaDrift"]) ? normalizeSchemaDriftEntries(data["schemaDrift"]) : undefined;
   const responseChanges = Array.isArray(data["responseChanges"]) ? (data["responseChanges"] as ResponseChangeEntry[]) : undefined;
+  const permissionDeltas = Array.isArray(data["permissionDeltas"]) ? (data["permissionDeltas"] as PermissionDeltaEntry[]) : undefined;
 
   return {
     artifactType: "diff",
@@ -362,5 +367,6 @@ export function validateDiffArtifact(data: unknown): DiffArtifact {
     removed,
     schemaDrift,
     responseChanges,
+    permissionDeltas,
   };
 }

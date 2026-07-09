@@ -1,3 +1,4 @@
+import { detectPermissionDeltas } from "./permission-delta.js";
 import { diffSchemas } from "./schema-diff.js";
 import type { CheckResult, DiffArtifact, DiffEntry, ResponseChangeEntry, RunArtifact, SchemaDriftEntry, SchemaDriftSeverity } from "./types.js";
 import { SCHEMA_VERSION, STATUS_RANK } from "./types.js";
@@ -71,6 +72,7 @@ export function diffArtifacts(base: RunArtifact, head: RunArtifact, options: Dif
 
   // Schema drift detection
   const schemaDrift: SchemaDriftEntry[] = [];
+  const permissionDeltas: PermissionDeltaEntry[] = [];
   for (const checkId of checkIds) {
     const baseCheck = baseChecks.get(checkId);
     const headCheck = headChecks.get(checkId);
@@ -82,6 +84,7 @@ export function diffArtifacts(base: RunArtifact, head: RunArtifact, options: Dif
 
     const drift = diffSchemas(checkId, baseSchemas ?? {}, headSchemas ?? {});
     schemaDrift.push(...drift);
+    permissionDeltas.push(...detectPermissionDeltas(checkId, baseSchemas ?? {}, headSchemas ?? {}));
   }
 
   // Response snapshot comparison
@@ -145,6 +148,7 @@ export function diffArtifacts(base: RunArtifact, head: RunArtifact, options: Dif
     removed,
     schemaDrift: schemaDrift.length > 0 ? schemaDrift : undefined,
     responseChanges: responseChanges.length > 0 ? responseChanges : undefined,
+    permissionDeltas: permissionDeltas.length > 0 ? permissionDeltas : undefined,
   };
 }
 

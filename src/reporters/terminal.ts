@@ -313,14 +313,20 @@ function renderDiffTerminal(artifact: DiffArtifact): string {
       lines.push(co(ANSI.yellow, `- ${entry.name} (${entry.capability}, ${entry.severity}): ${entry.changes.join(", ")}`));
     }
   }
+  if (artifact.permissionDeltas && artifact.permissionDeltas.length > 0) {
+    lines.push(co(ANSI.yellow, "Permission Deltas:"));
+    for (const entry of artifact.permissionDeltas) {
+      lines.push(co(ANSI.yellow, `- ${entry.name} (${entry.capability}, ${entry.risk}): ${entry.change} - ${entry.reason}`));
+    }
+  }
   if (artifact.responseChanges && artifact.responseChanges.length > 0) {
     lines.push(co(ANSI.yellow, "Response Changes:"));
     for (const entry of artifact.responseChanges) {
       lines.push(co(ANSI.yellow, `- ${entry.name} (${entry.capability}): ${entry.change}`));
     }
   }
-  if (artifact.regressions.length === 0 && artifact.recoveries.length === 0 && (!artifact.schemaDrift || artifact.schemaDrift.length === 0) && (!artifact.responseChanges || artifact.responseChanges.length === 0)) {
-    lines.push(co(ANSI.dim, "No regressions, recoveries, schema drift, or response changes detected."));
+  if (artifact.regressions.length === 0 && artifact.recoveries.length === 0 && (!artifact.schemaDrift || artifact.schemaDrift.length === 0) && (!artifact.permissionDeltas || artifact.permissionDeltas.length === 0) && (!artifact.responseChanges || artifact.responseChanges.length === 0)) {
+    lines.push(co(ANSI.dim, "No regressions, recoveries, schema drift, permission deltas, or response changes detected."));
   }
 
   return lines.join("\n");
