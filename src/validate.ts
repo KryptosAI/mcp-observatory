@@ -8,6 +8,8 @@ import type {
   EvidenceSummary,
   Gate,
   HealthScore,
+  PermissionDeltaEntry,
+  PermissionDeltaRisk,
   PerformanceMetrics,
   ResponseChangeEntry,
   RunArtifact,
@@ -57,6 +59,15 @@ function requireNumber(obj: Record<string, unknown>, field: string, label: strin
     throw new Error(`${label} is missing required field '${field}'.`);
   }
   return value;
+}
+
+function optionalPermissionDeltaRiskCounts(value: unknown): Record<PermissionDeltaRisk, number> | undefined {
+  if (!isObject(value)) return undefined;
+  return {
+    neutral: typeof value["neutral"] === "number" ? value["neutral"] : 0,
+    review: typeof value["review"] === "number" ? value["review"] : 0,
+    widening: typeof value["widening"] === "number" ? value["widening"] : 0,
+  };
 }
 
 function requireGate(value: unknown, label: string): Gate {
@@ -302,6 +313,8 @@ export function validateDiffArtifact(data: unknown): DiffArtifact {
     removed: requireNumber(summaryObj, "removed", "Diff artifact summary"),
     schemaDriftCount: optionalNumber(summaryObj, "schemaDriftCount", "Diff artifact summary"),
     responseChangeCount: optionalNumber(summaryObj, "responseChangeCount", "Diff artifact summary"),
+    permissionDeltaCount: optionalNumber(summaryObj, "permissionDeltaCount", "Diff artifact summary"),
+    permissionDeltaRiskCounts: optionalPermissionDeltaRiskCounts(summaryObj["permissionDeltaRiskCounts"]),
     gate: requireGate(summaryObj["gate"], "Diff artifact summary"),
   };
 
@@ -312,6 +325,7 @@ export function validateDiffArtifact(data: unknown): DiffArtifact {
   const removed = Array.isArray(data["removed"]) ? (data["removed"] as DiffEntry[]) : [];
   const schemaDrift = Array.isArray(data["schemaDrift"]) ? (data["schemaDrift"] as SchemaDriftEntry[]) : undefined;
   const responseChanges = Array.isArray(data["responseChanges"]) ? (data["responseChanges"] as ResponseChangeEntry[]) : undefined;
+  const permissionDeltas = Array.isArray(data["permissionDeltas"]) ? (data["permissionDeltas"] as PermissionDeltaEntry[]) : undefined;
 
   return {
     artifactType: "diff",
@@ -328,5 +342,6 @@ export function validateDiffArtifact(data: unknown): DiffArtifact {
     removed,
     schemaDrift,
     responseChanges,
+    permissionDeltas,
   };
 }

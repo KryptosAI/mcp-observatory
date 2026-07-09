@@ -152,7 +152,7 @@ describe("terminal reporters", () => {
       schemaDrift: [],
       responseChanges: [],
     }));
-    expect(clean).toContain("No regressions, recoveries, schema drift, or response changes detected.");
+    expect(clean).toContain("No regressions, recoveries, schema drift, permission deltas, or response changes detected.");
   });
 });
 
@@ -279,7 +279,8 @@ describe("markdown and html reporters", () => {
       added: [],
       removed: [],
       schemaDrift: [],
+      responseChanges: [],
     }));
-    expect(clean).toContain("No regressions, recoveries, or schema drift detected.");
+    expect(clean).toContain("No regressions, recoveries, schema drift, permission deltas, or response changes detected.");
   });
 });

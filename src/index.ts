@@ -91,6 +91,7 @@ export { buildStatusDescription, buildCommitStatusContext } from "./commit-statu
 export { buildCiReport } from "./commands/ci-report.js";
 export { findExistingIssue, createOrUpdateIssue } from "./ci-issue.js";
 export { extractObservatoryFindings, type ObservatoryFinding, type ObservatoryFindingSeverity } from "./findings.js";
+export { detectPermissionDeltas } from "./permission-delta.js";
 export { renderSarif } from "./reporters/sarif.js";
 export { renderTerminal, renderWatchFirstRun, renderWatchNoChanges, renderWatchChanges } from "./reporters/terminal.js";
 export { runTarget, runTargetRecording, type RunOptions, type RunResult } from "./runner.js";

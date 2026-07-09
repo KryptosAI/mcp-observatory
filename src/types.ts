@@ -187,6 +187,17 @@ export interface ResponseChangeEntry {
   change: string;
 }
 
+export type PermissionDeltaRisk = "neutral" | "review" | "widening";
+
+export interface PermissionDeltaEntry {
+  capability: CheckId;
+  name: string;
+  risk: PermissionDeltaRisk;
+  change: string;
+  reason: string;
+  field?: string;
+}
+
 export interface DiffSummary {
   regressions: number;
   recoveries: number;
@@ -195,6 +206,8 @@ export interface DiffSummary {
   removed: number;
   schemaDriftCount?: number;
   responseChangeCount?: number;
+  permissionDeltaCount?: number;
+  permissionDeltaRiskCounts?: Record<PermissionDeltaRisk, number>;
   gate: Gate;
 }
 
@@ -213,6 +226,7 @@ export interface DiffArtifact {
   removed: DiffEntry[];
   schemaDrift?: SchemaDriftEntry[];
   responseChanges?: ResponseChangeEntry[];
+  permissionDeltas?: PermissionDeltaEntry[];
 }
 
 // ── History / Trend Types ───────────────────────────────────────────────────

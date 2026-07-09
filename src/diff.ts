@@ -1,5 +1,6 @@
+import { detectPermissionDeltas } from "./permission-delta.js";
 import { diffSchemas } from "./schema-diff.js";
-import type { CheckResult, DiffArtifact, DiffEntry, ResponseChangeEntry, RunArtifact, SchemaDriftEntry } from "./types.js";
+import type { CheckResult, DiffArtifact, DiffEntry, PermissionDeltaEntry, PermissionDeltaRisk, ResponseChangeEntry, RunArtifact, SchemaDriftEntry } from "./types.js";
 import { SCHEMA_VERSION, STATUS_RANK } from "./types.js";
 
 function toEntry(base: CheckResult | undefined, head: CheckResult | undefined): DiffEntry {
@@ -61,6 +62,7 @@ export function diffArtifacts(base: RunArtifact, head: RunArtifact): DiffArtifac
 
   // Schema drift detection
   const schemaDrift: SchemaDriftEntry[] = [];
+  const permissionDeltas: PermissionDeltaEntry[] = [];
   for (const checkId of checkIds) {
     const baseCheck = baseChecks.get(checkId);
     const headCheck = headChecks.get(checkId);
@@ -72,6 +74,7 @@ export function diffArtifacts(base: RunArtifact, head: RunArtifact): DiffArtifac
 
     const drift = diffSchemas(checkId, baseSchemas ?? {}, headSchemas ?? {});
     schemaDrift.push(...drift);
+    permissionDeltas.push(...detectPermissionDeltas(checkId, baseSchemas ?? {}, headSchemas ?? {}));
   }
 
   // Response snapshot comparison
@@ -112,6 +115,8 @@ export function diffArtifacts(base: RunArtifact, head: RunArtifact): DiffArtifac
     removed: removed.length,
     schemaDriftCount: schemaDrift.length > 0 ? schemaDrift.length : undefined,
     responseChangeCount: responseChanges.length > 0 ? responseChanges.length : undefined,
+    permissionDeltaCount: permissionDeltas.length > 0 ? permissionDeltas.length : undefined,
+    permissionDeltaRiskCounts: permissionDeltas.length > 0 ? countPermissionDeltaRisks(permissionDeltas) : undefined,
     gate: regressions.length > 0 ? ("fail" as const) : ("pass" as const)
   };
 
@@ -130,6 +135,7 @@ export function diffArtifacts(base: RunArtifact, head: RunArtifact): DiffArtifac
     removed,
     schemaDrift: schemaDrift.length > 0 ? schemaDrift : undefined,
     responseChanges: responseChanges.length > 0 ? responseChanges : undefined,
+    permissionDeltas: permissionDeltas.length > 0 ? permissionDeltas : undefined,
   };
 }
 
@@ -149,4 +155,12 @@ function extractResponseSnapshots(check: CheckResult): Record<string, unknown> |
     }
   }
   return undefined;
+}
+
+function countPermissionDeltaRisks(entries: PermissionDeltaEntry[]): Record<PermissionDeltaRisk, number> {
+  return {
+    neutral: entries.filter((entry) => entry.risk === "neutral").length,
+    review: entries.filter((entry) => entry.risk === "review").length,
+    widening: entries.filter((entry) => entry.risk === "widening").length,
+  };
 }

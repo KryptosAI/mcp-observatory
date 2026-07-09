@@ -227,6 +227,21 @@ function renderDiffMarkdown(artifact: DiffArtifact): string {
     artifact.recoveries.length > 0
       ? artifact.recoveries.map((entry) => `- ${entry.id}: ${entry.message}`).join("\n")
       : "_None._";
+  const permissionDeltaList =
+    artifact.permissionDeltas && artifact.permissionDeltas.length > 0
+      ? table([
+        ["Risk", "Capability", "Name", "Field", "Change", "Reason"],
+        ...artifact.permissionDeltas.map((entry) => [
+          entry.risk,
+          entry.capability,
+          entry.name,
+          entry.field ?? "n/a",
+          entry.change,
+          entry.reason
+        ])
+      ])
+      : "_None._";
+  const permissionDeltaRiskCounts = artifact.summary.permissionDeltaRiskCounts;
   const suggestedNextStep =
     artifact.regressions.length > 0
       ? `Start with the regressions: ${artifact.regressions.map((entry) => entry.id).join(", ")}.`
@@ -250,14 +265,17 @@ function renderDiffMarkdown(artifact: DiffArtifact): string {
     `Top risks: ${safety.topRisks.join("; ")}`,
     ``,
     table([
-      ["Gate", "Regressions", "Recoveries", "Unchanged", "Added", "Removed"],
+      ["Gate", "Regressions", "Recoveries", "Unchanged", "Added", "Removed", "Permission Deltas"],
       [
         artifact.gate,
         String(artifact.summary.regressions),
         String(artifact.summary.recoveries),
         String(artifact.summary.unchanged),
         String(artifact.summary.added),
-        String(artifact.summary.removed)
+        String(artifact.summary.removed),
+        permissionDeltaRiskCounts
+          ? `widening=${permissionDeltaRiskCounts.widening}, review=${permissionDeltaRiskCounts.review}, neutral=${permissionDeltaRiskCounts.neutral}`
+          : "0"
       ]
     ]),
     ``,
@@ -276,6 +294,10 @@ function renderDiffMarkdown(artifact: DiffArtifact): string {
     `## Recoveries`,
     ``,
     recoveryList,
+    ``,
+    `## Permission Deltas`,
+    ``,
+    permissionDeltaList,
     ``,
     `## Full Capability Status Table`,
     ``,
