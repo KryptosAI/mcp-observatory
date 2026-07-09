@@ -159,6 +159,23 @@ export function registerScoreCommands(program: Command): void {
         }
       }
       process.stdout.write("\n");
+
+      const enforceTargetCmd = target.adapter === "local-process"
+        ? `${target.command} ${(target.args ?? []).join(" ")}`
+        : target.targetId;
+
+      const boxWidth = 40;
+      const scoreLine = `Score: ${score.grade} (${score.overall}/100)`;
+      const protectLine = "Protect this server at runtime:";
+      const enforceLine = `npx @kryptosai/mcp-observatory enforce ${enforceTargetCmd}`;
+      const pad = (s: string, w: number) => s + " ".repeat(Math.max(0, w - s.length));
+      process.stdout.write(`  ${c(ANSI.bold, "╔")}${"═".repeat(boxWidth)}${c(ANSI.bold, "╗")}\n`);
+      process.stdout.write(`  ${c(ANSI.bold, "║")}  ${pad(scoreLine, boxWidth - 2)}${c(ANSI.bold, "║")}\n`);
+      process.stdout.write(`  ${c(ANSI.bold, "║")}  ${pad(protectLine, boxWidth - 2)}${c(ANSI.bold, "║")}\n`);
+      process.stdout.write(`  ${c(ANSI.bold, "║")}  ${pad(enforceLine, boxWidth - 2)}${c(ANSI.bold, "║")}\n`);
+      process.stdout.write(`  ${c(ANSI.bold, "╚")}${"═".repeat(boxWidth)}${c(ANSI.bold, "╝")}\n`);
+      process.stdout.write("\n");
+
       if (artifact.gate !== "fail") {
         printCiConversionCta({
           context: "turn this score into a public trust signal:",

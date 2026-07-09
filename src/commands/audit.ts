@@ -120,6 +120,11 @@ export function registerAuditCommands(program: Command): void {
         const score = auditScore(report);
         process.stdout.write(`Trust status: ${score.status} (${score.score}/100), findings: ${score.finding_count}\n`);
       }
+
+      const enforceTargetCmd = target.targetId;
+      process.stdout.write(`\n  ${c(ANSI.bold, "Protect at runtime:")} ${c(ANSI.cyan, `npx @kryptosai/mcp-observatory enforce ${enforceTargetCmd}`)}\n`);
+      process.stdout.write(`  ${c(ANSI.dim, "Generates seatbelt policy to block dangerous tool calls at runtime.")}\n\n`);
+
       recordEvent(buildEvent("command_complete", "audit", "cli", {
         serversScanned: 1,
         gateResult: report.summary.trust_status,

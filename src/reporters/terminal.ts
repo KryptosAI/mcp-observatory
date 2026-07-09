@@ -13,7 +13,7 @@ import {
 let _seatbeltChecked = false;
 let _seatbeltAvailable = false;
 
-function isSeatbeltAvailable(): boolean {
+export function isSeatbeltAvailable(): boolean {
   if (_seatbeltChecked) return _seatbeltAvailable;
   _seatbeltChecked = true;
   try {
@@ -29,13 +29,9 @@ function isSeatbeltAvailable(): boolean {
 }
 
 function renderNextActions(artifact: RunArtifact): string {
-  const hasSecurityCheck = artifact.checks.some(
-    (ch) => (ch.id === "security" || ch.id === "security-lite" || ch.id === "attack-sim") &&
-      (ch.status === "fail" || ch.status === "partial")
-  );
-  const hasFailures = artifact.gate === "fail" || !!artifact.fatalError;
+  const isPerfect = artifact.gate === "pass" && !artifact.fatalError;
 
-  if (!hasSecurityCheck && !hasFailures) return "";
+  if (isPerfect) return "";
 
   const targetCmd = artifact.target.adapter === "local-process"
     ? `${artifact.target.command} ${(artifact.target.args ?? []).join(" ")}`
@@ -45,11 +41,11 @@ function renderNextActions(artifact: RunArtifact): string {
   lines.push("");
   lines.push(co(ANSI.bold, "Next Actions:"));
 
+  lines.push(`  → Auto-enforce: ${co(ANSI.bold, `npx @kryptosai/mcp-observatory enforce ${targetCmd}`)}`);
+
   if (isSeatbeltAvailable()) {
-    lines.push(co(ANSI.dim, `  → Auto-enforce: npx @kryptosai/mcp-observatory enforce ${targetCmd} --start-proxy`));
     lines.push(co(ANSI.dim, "  → This generates a policy AND starts the proxy — protecting you immediately"));
   } else {
-    lines.push(co(ANSI.dim, `  → Generate runtime policy: npx @kryptosai/mcp-observatory enforce ${targetCmd}`));
     lines.push(co(ANSI.dim, "  → Already know the risks? Enforce at runtime with mcp-seatbelt"));
   }
 

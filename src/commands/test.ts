@@ -1,3 +1,5 @@
+import { createInterface } from "node:readline";
+import { execSync } from "node:child_process";
 import type { Command } from "commander";
 
 import {
@@ -19,6 +21,7 @@ interface TestCommandFlags extends SetupCiConversionFlags {
   attackSim?: boolean;
   sarif?: string;
   enforce?: boolean;
+  autoEnforce?: boolean;
 }
 
 function extractTrailingConversionFlags(
@@ -48,6 +51,8 @@ function extractTrailingConversionFlags(
       i += 1;
     } else if (arg === "--enforce") {
       flags.enforce = true;
+    } else if (arg === "--auto-enforce") {
+      flags.autoEnforce = true;
     } else if (arg === "--campaign") {
       const next = commandArgs[i + 1];
       if (!next) throw new Error("--campaign requires a campaign slug.");
@@ -80,6 +85,7 @@ export function registerTestCommands(program: Command): void {
     .option("--no-ci-sarif", "Generate post-check CI without GitHub Code Scanning SARIF upload.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
     .option("--enforce", "After testing, generate seatbelt policy and optionally start proxy.", false)
+    .option("--auto-enforce", "Skip interactive prompt and always enforce after testing.", false)
     .option("--no-color", "Disable colored output.")
     .action(async (commandArgs: string[], options: { deep?: boolean; invokeTools?: boolean; security?: boolean; target?: string; attackSim?: boolean } & TestCommandFlags) => {
       const extracted = extractTrailingConversionFlags(commandArgs, options);
@@ -167,7 +173,41 @@ export function registerTestCommands(program: Command): void {
           campaign: conversionFlags.campaign,
         });
       }
-      if (options.enforce || conversionFlags.enforce) {
+      const securityFindings = artifact.checks.filter(
+        (ch) => (ch.id === "security" || ch.id === "security-lite" || ch.id === "attack-sim") &&
+          (ch.status === "fail" || ch.status === "partial")
+      );
+      const findingCount = securityFindings.reduce((sum, ch) => sum + (ch.evidence[0]?.itemCount ?? 1), 0);
+
+      let shouldEnforce = options.enforce || conversionFlags.enforce || conversionFlags.autoEnforce;
+
+      if (!shouldEnforce && findingCount > 0) {
+        let seatbeltAvailable = false;
+        try {
+          execSync("command -v mcp-seatbelt 2>/dev/null || npx @kryptosai/mcp-seatbelt --version 2>/dev/null", {
+            stdio: "pipe",
+            timeout: 5_000,
+          });
+          seatbeltAvailable = true;
+        } catch {
+          seatbeltAvailable = false;
+        }
+
+        if (seatbeltAvailable) {
+          const rl = createInterface({ input: process.stdin, output: process.stdout });
+          const answer = await new Promise<string>((resolve) => {
+            rl.question(`\n  ${c(ANSI.yellow, `Found ${findingCount} security finding${findingCount === 1 ? "" : "s"}. Generate runtime policy?`)} ${c(ANSI.dim, "[Y/n]: ")}`, (ans) => {
+              resolve(ans.trim().toLowerCase());
+            });
+          });
+          rl.close();
+          if (answer === "" || answer === "y" || answer === "yes") {
+            shouldEnforce = true;
+          }
+        }
+      }
+
+      if (shouldEnforce) {
         await runEnforce(target, commandArgs, {
           security: options.security,
           deep: options.deep || options.invokeTools,

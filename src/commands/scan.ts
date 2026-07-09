@@ -181,6 +181,15 @@ async function runScan(
     }
   }
 
+  // ── Enforce CTA ─────────────────────────────────────────────────────
+  if (targets.length > 0 && targets[0]) {
+    const firstTarget = targets[0].config;
+    const firstServerCmd = firstTarget.adapter === "local-process"
+      ? `${firstTarget.command} ${(firstTarget.args ?? []).join(" ")}`
+      : firstTarget.targetId;
+    process.stdout.write(`\n  ${c(ANSI.bold, "Protect at runtime:")} ${c(ANSI.cyan, `npx @kryptosai/mcp-observatory enforce ${firstServerCmd}`)}\n`);
+  }
+
   // ── Next step ────────────────────────────────────────────────────────
   process.stdout.write("\n");
   if (!invokeTools && totalTools > 0) {
