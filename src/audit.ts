@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 
 import { extractObservatoryFindings, type ObservatoryFinding } from "./findings.js";
+import { taxonomyForFinding, taxonomyForRule, taxonomyTags, type RiskTaxonomy } from "./risk-taxonomy.js";
 import { runTarget } from "./runner.js";
 import { loadSecurityProfile, type SecurityControlArea, type SecurityProfile } from "./security-profiles.js";
 import type { RunArtifact, TargetConfig } from "./types.js";
@@ -30,6 +31,7 @@ export interface NormalizedSecurityFinding {
   confidence: "low" | "medium" | "high";
   fingerprint: string;
   control_mappings: SecurityControlArea[];
+  risk_taxonomy?: RiskTaxonomy;
   generated_at: string;
 }
 
@@ -96,6 +98,7 @@ function normalizeFinding(
 ): NormalizedSecurityFinding {
   const severity = severityFromObservatory(finding);
   const controlMappings = controlsForFinding(profile, finding);
+  const riskTaxonomy = taxonomyForFinding(finding);
   const fingerprint = stableHash({
     target: artifact.target.targetId,
     rule: finding.ruleId,
@@ -120,6 +123,7 @@ function normalizeFinding(
     confidence: severity === "info" ? "medium" : "high",
     fingerprint,
     control_mappings: controlMappings,
+    risk_taxonomy: riskTaxonomy,
     generated_at: generatedAt,
   };
 }
@@ -143,6 +147,7 @@ function envSecretFindings(profile: SecurityProfile, target: TargetConfig, gener
       confidence: "high",
       fingerprint,
       control_mappings: profile.ruleControls["mcp-observatory/security/credential-pattern"] ?? ["secrets_exposure", "auditability"],
+      risk_taxonomy: taxonomyForRule("mcp-observatory/audit/env-secret", "secrets_exposure"),
       generated_at: generatedAt,
     };
   });
@@ -285,6 +290,15 @@ function escapeCell(value: unknown): string {
   return text.replaceAll("|", "\\|").replaceAll("\n", " ");
 }
 
+function formatTaxonomy(taxonomy: RiskTaxonomy): string {
+  return [
+    ...(taxonomy.cwe ?? []),
+    ...(taxonomy.owasp ?? []),
+    ...(taxonomy.mitreAttack ?? []),
+    taxonomy.cvssVector,
+  ].filter((entry): entry is string => typeof entry === "string" && entry.length > 0).join("; ");
+}
+
 export function renderAuditMarkdown(report: AuditReport): string {
   const grouped = new Map<SecurityControlArea, NormalizedSecurityFinding[]>();
   for (const control of report.profile.controlAreas) grouped.set(control, []);
@@ -336,6 +350,7 @@ export function renderAuditMarkdown(report: AuditReport): string {
         `- Target: \`${finding.target.subject_name ?? finding.target.target_id}\``,
         `- Confidence: \`${finding.confidence}\``,
         `- Fingerprint: \`${finding.fingerprint}\``,
+        ...(finding.risk_taxonomy ? [`- Taxonomy: ${formatTaxonomy(finding.risk_taxonomy)}`] : []),
         `- Evidence: \`${escapeCell(JSON.stringify(finding.evidence))}\``,
         `- Recommendation: ${finding.recommendation}`,
         "",
@@ -362,6 +377,7 @@ export function renderAuditSarif(report: AuditReport, artifactUri = "mcp-observa
   const rules = [];
   const results = [];
   for (const finding of report.findings) {
+    const tags = ["mcp", "mcp-observatory", report.profile.id, ...finding.control_mappings, ...taxonomyTags(finding.risk_taxonomy)];
     if (!seenRules.has(finding.rule_id)) {
       seenRules.add(finding.rule_id);
       rules.push({
@@ -372,8 +388,9 @@ export function renderAuditSarif(report: AuditReport, artifactUri = "mcp-observa
         defaultConfiguration: { level: sarifLevel(finding.severity) },
         help: { text: `${finding.recommendation}\n\nTrust status: ${report.summary.trust_status}. Controls: ${finding.control_mappings.join(", ")}.` },
         properties: {
-          tags: ["mcp", "mcp-observatory", report.profile.id, ...finding.control_mappings],
+          tags,
           control_mappings: finding.control_mappings,
+          risk_taxonomy: finding.risk_taxonomy,
           confidence: finding.confidence,
         },
       });
@@ -398,8 +415,9 @@ export function renderAuditSarif(report: AuditReport, artifactUri = "mcp-observa
         category: finding.category,
         target: finding.target,
         control_mappings: finding.control_mappings,
+        risk_taxonomy: finding.risk_taxonomy,
         confidence: finding.confidence,
-        tags: ["mcp", "mcp-observatory", report.profile.id, ...finding.control_mappings],
+        tags,
       },
     });
   }

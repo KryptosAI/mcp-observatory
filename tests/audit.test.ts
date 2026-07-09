@@ -57,7 +57,12 @@ describe("NSA-MCP audit reports", () => {
     const shell = report.findings.find((finding) => finding.rule_id === "mcp-observatory/security/shell-injection");
     expect(shell?.control_mappings).toContain("tool_permissions");
     expect(shell?.control_mappings).toContain("runtime_safety");
+    expect(shell?.risk_taxonomy?.cwe).toContain("CWE-78");
+    expect(shell?.risk_taxonomy?.mitreAttack).toContain("T1059");
     expect(shell?.fingerprint).toMatch(/^[a-f0-9]{24}$/);
+    const sarif = JSON.parse(renderAuditSarif(report)) as { runs: Array<{ results: Array<{ ruleId: string; properties?: Record<string, unknown> }> }> };
+    const shellSarif = sarif.runs[0]!.results.find((result) => result.ruleId === "mcp-observatory/security/shell-injection");
+    expect(shellSarif?.properties?.["risk_taxonomy"]).toMatchObject({ cwe: ["CWE-78"], mitreAttack: ["T1059"] });
   });
 
   it("computes trust status and score", () => {
@@ -107,7 +112,13 @@ describe("NSA-MCP audit reports", () => {
     const markdown = renderAuditMarkdown(report);
     expect(markdown).toContain("MCP Observatory Security Audit");
     expect(markdown).toContain("tool_description_integrity");
-    const sarif = JSON.parse(renderAuditSarif(report)) as { version: string; runs: Array<{ results: unknown[]; tool: { driver: { rules: unknown[] } } }> };
+    const sarif = JSON.parse(renderAuditSarif(report)) as {
+      version: string;
+      runs: Array<{
+        results: Array<{ properties?: Record<string, unknown> }>;
+        tool: { driver: { rules: Array<{ properties?: Record<string, unknown> }> } };
+      }>;
+    };
     expect(sarif.version).toBe("2.1.0");
     expect(sarif.runs[0]!.results.length).toBeGreaterThan(0);
     expect(sarif.runs[0]!.tool.driver.rules.length).toBeGreaterThan(0);

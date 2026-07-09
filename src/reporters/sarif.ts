@@ -1,4 +1,5 @@
 import { extractObservatoryFindings, type ObservatoryFinding } from "../findings.js";
+import { taxonomyForFinding, taxonomyTags } from "../risk-taxonomy.js";
 import type { RunArtifact } from "../types.js";
 import { TOOL_VERSION } from "../version.js";
 
@@ -60,6 +61,8 @@ export function renderSarif(artifact: RunArtifact, options: RenderSarifOptions =
   const artifactUri = options.artifactUri ?? defaultArtifactUri(artifact);
 
   for (const finding of findings) {
+    const taxonomy = taxonomyForFinding(finding);
+    const tags = ["mcp", "mcp-observatory", finding.category, ...finding.controlRefs, ...taxonomyTags(taxonomy)];
     if (!seenRules.has(finding.ruleId)) {
       seenRules.add(finding.ruleId);
       const ruleHelp = helpText(finding);
@@ -75,7 +78,8 @@ export function renderSarif(artifact: RunArtifact, options: RenderSarifOptions =
           checkId: finding.checkId,
           recommendedAction: finding.recommendedAction,
           controlRefs: finding.controlRefs,
-          tags: ["mcp", "mcp-observatory", finding.category, ...finding.controlRefs],
+          riskTaxonomy: taxonomy,
+          tags,
         },
       });
     }
@@ -102,7 +106,8 @@ export function renderSarif(artifact: RunArtifact, options: RenderSarifOptions =
         severity: finding.severity,
         recommendedAction: finding.recommendedAction,
         controlRefs: finding.controlRefs,
-        tags: ["mcp", "mcp-observatory", finding.category, ...finding.controlRefs],
+        riskTaxonomy: taxonomy,
+        tags,
       },
     });
   }
