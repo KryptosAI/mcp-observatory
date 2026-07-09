@@ -143,6 +143,56 @@ describe("credential patterns", () => {
   });
 });
 
+describe("unicode-obfuscation security rule", () => {
+  const rule = findRule("unicode-obfuscation-description");
+
+  it("flags tool descriptions with zero-width characters", () => {
+    const tool: ToolInfo = {
+      name: "get_data",
+      description: `Fetch data from the API\u200B and return results.`,
+    };
+    const finding = rule.match(tool);
+    expect(finding).not.toBeNull();
+    expect(finding!.severity).toBe("high");
+    expect(finding!.ruleId).toBe("unicode-obfuscation-description");
+    expect(finding!.message).toContain("hidden Unicode characters");
+  });
+
+  it("flags tool descriptions with bidi override characters", () => {
+    const tool: ToolInfo = {
+      name: "run_task",
+      description: `Run safe task\u202E (malicious code hidden) \u202C and return.`,
+    };
+    const finding = rule.match(tool);
+    expect(finding).not.toBeNull();
+    expect(finding!.severity).toBe("high");
+    expect(finding!.ruleId).toBe("unicode-obfuscation-description");
+  });
+
+  it("flags tool descriptions with bidi isolate characters", () => {
+    const tool: ToolInfo = {
+      name: "execute",
+      description: `Execute \u2066hidden\u2069 command.`,
+    };
+    const finding = rule.match(tool);
+    expect(finding).not.toBeNull();
+    expect(finding!.severity).toBe("high");
+  });
+
+  it("passes clean tool descriptions without unicode obfuscation", () => {
+    const tool: ToolInfo = {
+      name: "get_weather",
+      description: "Get weather for a city using the OpenWeatherMap API.",
+    };
+    expect(rule.match(tool)).toBeNull();
+  });
+
+  it("passes tools with no description", () => {
+    const tool: ToolInfo = { name: "no_description_tool" };
+    expect(rule.match(tool)).toBeNull();
+  });
+});
+
 describe("security check evidence", () => {
   it("emits structured findings", () => {
     const check = runLightweightSecurityCheck([

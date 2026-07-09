@@ -164,6 +164,23 @@
     "reproductionNotes": "Zero-config public package. Keep tool invocation read-only unless a harmless fixture repository is added."
   },
   {
+    "id": "github-mcp-server",
+    "name": "Official GitHub MCP server",
+    "repo": "https://github.com/modelcontextprotocol/servers",
+    "packageName": "@modelcontextprotocol/server-github",
+    "category": "Developer Tools",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-github"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Repository mutation and PR control",
+    "failureClass": "Write/merge tool boundary",
+    "whyItMatters": "Exposes 26 tools to agents, including file writes, branch creation, issue/PR creation, and PR merges across any repo a token can reach — high-stakes write access that needs a visible boundary before an agent is trusted with it.",
+    "reproductionNotes": "Zero-config package; tool listing succeeds without a real GitHub token, so this check is safe to run in CI. Note: npm currently flags this package as deprecated/no longer supported by the publisher — treat this target as compatibility evidence, not an endorsement of the package's maintenance status."
+  },
+  {
     "id": "opentofu-server",
     "name": "OpenTofu MCP server",
     "repo": "https://github.com/opentofu/opentofu-mcp-server",

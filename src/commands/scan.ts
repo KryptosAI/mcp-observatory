@@ -1,7 +1,7 @@
 import { access } from "node:fs/promises";
 import type { Command } from "commander";
 
-import { scanForTargets } from "../discovery.js";
+import { discoverSkillPaths, scanForTargets } from "../discovery.js";
 import {
   runTarget,
 } from "../index.js";
@@ -13,8 +13,11 @@ import { maybePrintCloudCta } from "../commercial.js";
 import { renderActionReceipt } from "../action-receipt.js";
 import { ANSI, LOGO, c, setupCiHint, useColor } from "./helpers.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
+import { runEnforce } from "./enforce.js";
 
 // ── Scan implementation ─────────────────────────────────────────────────────
+
+type SkillScanOption = string | boolean | undefined;
 
 async function runScan(
   bin: string,
@@ -24,6 +27,7 @@ async function runScan(
   format?: string,
   attackSim = true,
   conversionFlags: SetupCiConversionFlags = {},
+  skillScanOption?: SkillScanOption,
 ): Promise<void> {
   if (conversionFlags.campaign) conversionFlags.campaign = normalizeCampaign(conversionFlags.campaign);
   const t0 = Date.now();
@@ -43,7 +47,7 @@ async function runScan(
 
   if (targets.length === 0) {
     process.stdout.write(c(ANSI.yellow, "  No MCP servers found.\n\n"));
-    process.stdout.write(c(ANSI.dim, "  Looked in ~/.claude.json, Claude Desktop config, .mcp.json (+ parent dirs)\n\n"));
+    process.stdout.write(c(ANSI.dim, "  Looked in ~/.claude.json, Claude Desktop, Cursor, Windsurf, VS Code, OpenCode, Codex, Gemini CLI, Kiro, Antigravity, Amazon Q, and project-level .mcp.json\n\n"));
     process.stdout.write("  Test a specific server:\n");
     process.stdout.write(`    ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} test npx -y @modelcontextprotocol/server-filesystem .`)}\n\n`);
     return;
@@ -245,6 +249,24 @@ async function runScan(
   if (failCount > 0) {
     process.exitCode = 1;
   }
+
+  if (skillScanOption !== undefined) {
+    const { runSkillScan } = await import("./skill-scan.js");
+    const explicitPath = typeof skillScanOption === "string" ? skillScanOption : undefined;
+    const skillPaths = await discoverSkillPaths(explicitPath);
+
+    if (skillPaths.length === 0) {
+      process.stdout.write(`\n  ${c(ANSI.yellow, "No skill directories found to scan.")}\n`);
+      if (explicitPath) {
+        process.stdout.write(c(ANSI.dim, `  Path not found: ${explicitPath}\n`));
+      }
+    } else {
+      for (const skillPath of skillPaths) {
+        process.stdout.write(`\n  ${c(ANSI.bold, "Skill Scan:")} ${c(ANSI.dim, skillPath)}\n`);
+        await runSkillScan(skillPath, { format: format === "terminal" ? "terminal" : "markdown" });
+      }
+    }
+  }
 }
 
 // ── Register ────────────────────────────────────────────────────────────────
@@ -252,7 +274,7 @@ async function runScan(
 export function registerScanCommands(program: Command, bin: string): void {
   const scanCmd = program
     .command("scan")
-    .description("Check all MCP servers in your Claude configs.")
+    .description("Check all MCP servers in your agent configs (Claude, Cursor, Windsurf, VS Code, OpenCode, Codex, Gemini, Kiro, Antigravity, Amazon Q).")
     .option("--config <path>", "Path to a specific MCP config file.")
     .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
     .option("--no-attack-sim", "Skip the default safe attack-readiness simulation.")
@@ -263,11 +285,17 @@ export function registerScanCommands(program: Command, bin: string): void {
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
     .option("--no-ci-sarif", "Generate post-scan CI without GitHub Code Scanning SARIF upload.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
-    .option("--no-color", "Disable colored output.");
+    .option("--no-color", "Disable colored output.")
+    .option("--skill-scan [path]", "Also scan skill directories for security risks. Auto-discovers from agent skill paths when no path given.")
+    .option("--enforce", "After scan, show the enforce command for the first target.");
 
   // `scan` with no subcommand — basic scan
-  scanCmd.action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string } & SetupCiConversionFlags) => {
-    await runScan(bin, options.config, false, options.security, options.format, options.attackSim !== false, options);
+  scanCmd.action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string; skillScan?: SkillScanOption; enforce?: boolean } & SetupCiConversionFlags) => {
+    await runScan(bin, options.config, false, options.security, options.format, options.attackSim !== false, options, options.skillScan);
+    if (options.enforce) {
+      process.stdout.write(`\n  ${c(ANSI.bold, "Next:")} ${c(ANSI.cyan, `npx @kryptosai/mcp-observatory enforce --deep npx -y <your-server>`)}\n`);
+      process.stdout.write(`  ${c(ANSI.dim, "Enforce mode runs a scan AND auto-generates seatbelt policy for runtime protection.")}\n\n`);
+    }
   });
 
   // `scan deep` — scan + invoke tools
@@ -284,12 +312,17 @@ export function registerScanCommands(program: Command, bin: string): void {
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
     .option("--no-ci-sarif", "Generate post-scan CI without GitHub Code Scanning SARIF upload.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
-    .action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string } & SetupCiConversionFlags) => {
-      // Inherit parent config option if set
+    .action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string; skillScan?: SkillScanOption; enforce?: boolean } & SetupCiConversionFlags) => {
       const parentConfig = scanCmd.opts().config as string | undefined;
       const parentSecurity = scanCmd.opts().security as boolean | undefined;
       const parentFormat = scanCmd.opts().format as string;
       const parentAttackSim = scanCmd.opts().attackSim as boolean | undefined;
-      await runScan(bin, options.config ?? parentConfig, true, options.security ?? parentSecurity ?? true, options.format ?? parentFormat, options.attackSim !== false && parentAttackSim !== false, options);
+      const parentSkillScan = scanCmd.opts().skillScan as SkillScanOption;
+      const resolvedSkillScan = options.skillScan !== undefined ? options.skillScan : parentSkillScan;
+      await runScan(bin, options.config ?? parentConfig, true, options.security ?? parentSecurity ?? true, options.format ?? parentFormat, options.attackSim !== false && parentAttackSim !== false, options, resolvedSkillScan);
+      if (options.enforce) {
+        process.stdout.write(`\n  ${c(ANSI.bold, "Next:")} ${c(ANSI.cyan, `npx @kryptosai/mcp-observatory enforce --deep npx -y <your-server>`)}\n`);
+        process.stdout.write(`  ${c(ANSI.dim, "Enforce mode runs a scan AND auto-generates seatbelt policy for runtime protection.")}\n\n`);
+      }
     });
 }

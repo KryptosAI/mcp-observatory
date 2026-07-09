@@ -9,7 +9,7 @@ export type CheckStatus =
   | "unsupported"
   | "flaky"
   | "skipped";
-export type CheckId = "tools" | "prompts" | "resources" | "tools-invoke" | "security" | "security-lite" | "attack-sim" | "conformance" | "schema-quality";
+export type CheckId = "tools" | "prompts" | "resources" | "tools-invoke" | "security" | "security-lite" | "attack-sim" | "conformance" | "schema-quality" | "runtime-profile";
 
 export const STATUS_RANK: Record<CheckStatus, number> = {
   pass: 6, partial: 5, flaky: 4, unsupported: 3, skipped: 2, fail: 1
@@ -112,7 +112,9 @@ export interface RunArtifact {
   checks: CheckResult[];
   healthScore?: HealthScore;
   performanceMetrics?: PerformanceMetrics;
+  runtimeProfile?: RuntimeProfile;
   fatalError?: string;
+  notObserved?: NotObserved[];
 }
 
 export type HealthGrade = "A" | "B" | "C" | "D" | "F";
@@ -128,6 +130,33 @@ export interface HealthScore {
   overall: number;
   grade: HealthGrade;
   dimensions: ScoreDimension[];
+}
+
+export interface NotObserved {
+  category: string;
+  detail: string;
+  severity: "info" | "warning";
+}
+
+export interface EgressEntry {
+  target: string;
+  protocol: string;
+  source: string;
+  confidence: "high" | "medium" | "low";
+}
+
+export interface StateMutation {
+  resource: string;
+  operation: string;
+  scope: string;
+  source: string;
+}
+
+export interface RuntimeProfile {
+  egress?: EgressEntry[];
+  stateMutations?: StateMutation[];
+  analyzedAt: string;
+  confidence: "high" | "medium" | "low";
 }
 
 export interface PerformanceMetrics {

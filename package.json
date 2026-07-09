@@ -1,6 +1,6 @@
 {
   "name": "@kryptosai/mcp-observatory",
-  "version": "1.28.2",
+  "version": "1.30.0",
   "description": "GitHub-native CI, SARIF, Code Scanning, and security gates for MCP servers before agents depend on them.",
   "mcpName": "io.github.KryptosAI/mcp-observatory",
   "license": "MIT",
@@ -172,11 +172,11 @@
     "@types/node": "26.1.0",
     "@typescript-eslint/eslint-plugin": "8.63.0",
     "@typescript-eslint/parser": "8.63.0",
+    "@vitest/coverage-v8": "4.1.10",
     "ajv": "8.20.0",
     "eslint": "10.6.0",
     "globals": "17.7.0",
     "tsx": "4.23.0",
-    "@vitest/coverage-v8": "4.1.10",
     "typescript": "6.0.3",
     "typescript-eslint": "8.63.0",
     "vitest": "4.1.10"
