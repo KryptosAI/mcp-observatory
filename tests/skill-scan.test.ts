@@ -200,7 +200,9 @@ describe("skill-scan renderers", () => {
     const parsed = JSON.parse(output) as { version: string; runs: Array<{ results: Array<unknown> }> };
     expect(parsed.version).toBe("2.1.0");
     expect(parsed.runs).toBeDefined();
-    expect(parsed.runs[0].results.length).toBeGreaterThan(0);
+    const firstRun = parsed.runs[0];
+    expect(firstRun).toBeDefined();
+    expect(firstRun!.results.length).toBeGreaterThan(0);
   });
 });
 
@@ -226,6 +228,155 @@ describe("skill-scan file scanning", () => {
   it("scanPath handles a directory containing skill files", async () => {
     const results = await scanPath(FIXTURES);
     expect(results.length).toBeGreaterThanOrEqual(4);
+  });
+});
+
+describe("skill-scan unicode obfuscation", () => {
+  it("detects zero-width characters in skill file", () => {
+    const content = readFixture("skill-unicode-zero-width.md");
+    const findings = scanContent("skill-unicode-zero-width.md", content, SKILL_SCAN_RULES);
+    const unicodeFinding = findings.find((f) => f.ruleId === "unicode-obfuscation");
+    expect(unicodeFinding).toBeDefined();
+    expect(unicodeFinding!.severity).toBe("high");
+    expect(unicodeFinding!.matches.length).toBeGreaterThanOrEqual(5);
+  });
+
+  it("reports character name and codepoint for zero-width matches", () => {
+    const content = readFixture("skill-unicode-zero-width.md");
+    const findings = scanContent("skill-unicode-zero-width.md", content, SKILL_SCAN_RULES);
+    const unicodeFinding = findings.find((f) => f.ruleId === "unicode-obfuscation");
+    expect(unicodeFinding).toBeDefined();
+    const texts = unicodeFinding!.matches.map((m) => m.matchText);
+    expect(texts.some((t) => t.includes("Zero Width Space"))).toBe(true);
+    expect(texts.some((t) => t.includes("U+200B"))).toBe(true);
+    expect(texts.some((t) => t.includes("U+FEFF"))).toBe(true);
+  });
+
+  it("reports correct line:column for each hidden character", () => {
+    const content = readFixture("skill-unicode-zero-width.md");
+    const findings = scanContent("skill-unicode-zero-width.md", content, SKILL_SCAN_RULES);
+    const unicodeFinding = findings.find((f) => f.ruleId === "unicode-obfuscation");
+    expect(unicodeFinding).toBeDefined();
+    for (const match of unicodeFinding!.matches) {
+      expect(match.line).toBeGreaterThan(0);
+      expect(match.column).toBeGreaterThan(0);
+    }
+  });
+
+  it("detects bidirectional override characters in skill file", () => {
+    const content = readFixture("skill-unicode-bidi.md");
+    const findings = scanContent("skill-unicode-bidi.md", content, SKILL_SCAN_RULES);
+    const unicodeFinding = findings.find((f) => f.ruleId === "unicode-obfuscation");
+    expect(unicodeFinding).toBeDefined();
+    expect(unicodeFinding!.severity).toBe("high");
+    expect(unicodeFinding!.matches.length).toBeGreaterThanOrEqual(5);
+  });
+
+  it("identifies bidi override characters by name", () => {
+    const content = readFixture("skill-unicode-bidi.md");
+    const findings = scanContent("skill-unicode-bidi.md", content, SKILL_SCAN_RULES);
+    const unicodeFinding = findings.find((f) => f.ruleId === "unicode-obfuscation");
+    expect(unicodeFinding).toBeDefined();
+    const texts = unicodeFinding!.matches.map((m) => m.matchText);
+    expect(texts.some((t) => t.includes("Right-to-Left Override"))).toBe(true);
+    expect(texts.some((t) => t.includes("U+202E"))).toBe(true);
+    expect(texts.some((t) => t.includes("Left-to-Right Isolate"))).toBe(true);
+  });
+
+  it("does not flag clean files without unicode obfuscation", () => {
+    const content = readFixture("skill-clean.md");
+    const findings = scanContent("skill-clean.md", content, SKILL_SCAN_RULES);
+    const unicodeFinding = findings.find((f) => f.ruleId === "unicode-obfuscation");
+    expect(unicodeFinding).toBeUndefined();
+  });
+});
+
+describe("skill-scan compound rules", () => {
+  it("detects credential-exfiltration when credential and exfil patterns are near each other", () => {
+    const content = readFixture("skill-compound-credential-exfiltration.md");
+    const findings = scanContent("skill-compound-credential-exfiltration.md", content, SKILL_SCAN_RULES);
+    const compound = findings.find((f) => f.ruleId === "credential-exfiltration");
+    expect(compound).toBeDefined();
+    expect(compound!.severity).toBe("high");
+    expect(compound!.matches.length).toBeGreaterThan(0);
+  });
+
+  it("detects supply-chain-hijack when install hooks and network calls are near each other", () => {
+    const content = readFixture("skill-compound-supply-chain.md");
+    const findings = scanContent("skill-compound-supply-chain.md", content, SKILL_SCAN_RULES);
+    const compound = findings.find((f) => f.ruleId === "supply-chain-hijack");
+    expect(compound).toBeDefined();
+    expect(compound!.severity).toBe("high");
+    expect(compound!.matches.length).toBeGreaterThan(0);
+  });
+
+  it("detects remote-execute-with-env when remote execution and env access are near each other", () => {
+    const content = readFixture("skill-compound-remote-exec-env.md");
+    const findings = scanContent("skill-compound-remote-exec-env.md", content, SKILL_SCAN_RULES);
+    const compound = findings.find((f) => f.ruleId === "remote-execute-with-env");
+    expect(compound).toBeDefined();
+    expect(compound!.severity).toBe("high");
+    expect(compound!.matches.length).toBeGreaterThan(0);
+  });
+
+  it("detects hidden-execution when obfuscation and execution patterns are near each other", () => {
+    const content = readFixture("skill-compound-hidden-execution.md");
+    const findings = scanContent("skill-compound-hidden-execution.md", content, SKILL_SCAN_RULES);
+    const compound = findings.find((f) => f.ruleId === "hidden-execution");
+    expect(compound).toBeDefined();
+    expect(compound!.severity).toBe("medium");
+    expect(compound!.matches.length).toBeGreaterThan(0);
+  });
+
+  it("detects social-engineering when urgency language and credential requests are near each other", () => {
+    const content = readFixture("skill-compound-social-engineering.md");
+    const findings = scanContent("skill-compound-social-engineering.md", content, SKILL_SCAN_RULES);
+    const compound = findings.find((f) => f.ruleId === "social-engineering");
+    expect(compound).toBeDefined();
+    expect(compound!.severity).toBe("medium");
+    expect(compound!.matches.length).toBeGreaterThan(0);
+  });
+
+  it("does NOT trigger compound rule when patterns are far apart (>50 lines)", () => {
+    const content = readFixture("skill-compound-far-apart.md");
+    const findings = scanContent("skill-compound-far-apart.md", content, SKILL_SCAN_RULES);
+
+    const simpleCredAccess = findings.find((f) => f.ruleId === "credential-access");
+    expect(simpleCredAccess).toBeDefined();
+
+    const simpleExfil = findings.find((f) => f.ruleId === "exfiltration-vector");
+    expect(simpleExfil).toBeDefined();
+
+    const compound = findings.find((f) => f.ruleId === "credential-exfiltration");
+    expect(compound).toBeUndefined();
+  });
+
+  it("detects compound rules in the existing dangerous skill fixture", () => {
+    const content = readFixture("skill-dangerous.md");
+    const findings = scanContent("skill-dangerous.md", content, SKILL_SCAN_RULES);
+
+    const credExfil = findings.find((f) => f.ruleId === "credential-exfiltration");
+    expect(credExfil).toBeDefined();
+    expect(credExfil!.severity).toBe("high");
+
+    const remoteExecEnv = findings.find((f) => f.ruleId === "remote-execute-with-env");
+    expect(remoteExecEnv).toBeDefined();
+    expect(remoteExecEnv!.severity).toBe("high");
+  });
+
+  it("does NOT trigger compound rules on clean skill files", () => {
+    const content = readFixture("skill-clean.md");
+    const findings = scanContent("skill-clean.md", content, SKILL_SCAN_RULES);
+    const compoundRuleIds = [
+      "credential-exfiltration",
+      "supply-chain-hijack",
+      "remote-execute-with-env",
+      "hidden-execution",
+      "social-engineering",
+    ];
+    for (const id of compoundRuleIds) {
+      expect(findings.find((f) => f.ruleId === id)).toBeUndefined();
+    }
   });
 });
 

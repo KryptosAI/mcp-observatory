@@ -140,6 +140,60 @@ const FILESYSTEM_PATTERNS: RegExp[] = [
   /import\s+.*\s+from\s+['"`]fs['"`]/gi,
 ];
 
+const INSTALL_HOOK_PATTERNS: RegExp[] = [
+  /"postinstall"\s*:/gi,
+  /"preinstall"\s*:/gi,
+];
+
+const NETWORK_CALL_PATTERNS: RegExp[] = [
+  /curl\s+/gi,
+  /wget\s+/gi,
+  /fetch\s*\(/gi,
+];
+
+const OBFUSCATION_PATTERNS: RegExp[] = [
+  /base64/gi,
+  /atob\s*\(/gi,
+  /Buffer\.from\s*\(.*base64/gi,
+  /String\.fromCharCode/gi,
+  /0x[0-9a-fA-F]{4,}/g,
+  /gzip|gunzip|inflate|deflate/gi,
+];
+
+const SUB_EXECUTION_PATTERNS: RegExp[] = [
+  /eval\s*\(/gi,
+  /exec\s*\(/gi,
+  /execSync\s*\(/gi,
+  /spawn\s*\(/gi,
+  /new\s+Function\s*\(/gi,
+  /child_process/gi,
+];
+
+const URGENCY_PATTERNS: RegExp[] = [
+  /\bURGENT\b/gi,
+  /\bIMPORTANT\b/gi,
+  /\bWARNING\b/gi,
+  /\bCRITICAL\b/gi,
+  /\bmandatory\b/gi,
+  /won't work/gi,
+  /will fail/gi,
+  /must (?:set|add|enter|provide|configure|put)/gi,
+];
+
+const CREDENTIAL_REQUEST_PATTERNS: RegExp[] = [
+  /API[_\s]?[Kk]ey/gi,
+  /(?:put|set|add|enter|paste|provide)\s+(?:your\s+)?(?:API|secret|token|password|credential)/gi,
+  /\.env\b/gi,
+  /\bcredentials?\b/gi,
+  /\bsecrets?\b/gi,
+];
+
+const ENV_ACCESS_PATTERNS: RegExp[] = [
+  /process\.env/gi,
+  /dotenv/gi,
+  /\.env\b/gi,
+];
+
 export const SKILL_SCAN_RULES: SkillScanRule[] = [
   {
     id: "credential-access",
@@ -172,6 +226,182 @@ export const SKILL_SCAN_RULES: SkillScanRule[] = [
     patterns: FILESYSTEM_PATTERNS,
   },
 ];
+
+// ── Compound Rules ───────────────────────────────────────────────────────────
+
+interface CompoundRuleDef {
+  id: string;
+  severity: SkillScanSeverity;
+  name: string;
+  patternsA: RegExp[];
+  patternsB: RegExp[];
+  maxLineDistance: number;
+  message: string;
+}
+
+const COMPOUND_RULES: CompoundRuleDef[] = [
+  {
+    id: "credential-exfiltration",
+    severity: "high",
+    name: "Credential access combined with exfiltration",
+    patternsA: CREDENTIAL_PATTERNS,
+    patternsB: EXFILTRATION_PATTERNS,
+    maxLineDistance: 50,
+    message: "Credential access patterns found near exfiltration vectors — possible data theft.",
+  },
+  {
+    id: "supply-chain-hijack",
+    severity: "high",
+    name: "Install hooks combined with network calls",
+    patternsA: INSTALL_HOOK_PATTERNS,
+    patternsB: NETWORK_CALL_PATTERNS,
+    maxLineDistance: 50,
+    message: "Package install hooks (postinstall/preinstall) found near network calls — possible supply chain attack.",
+  },
+  {
+    id: "remote-execute-with-env",
+    severity: "high",
+    name: "Remote execution combined with environment access",
+    patternsA: REMOTE_EXEC_PATTERNS,
+    patternsB: ENV_ACCESS_PATTERNS,
+    maxLineDistance: 50,
+    message: "Remote execution patterns found near environment variable access — possible credential theft for payload delivery.",
+  },
+  {
+    id: "hidden-execution",
+    severity: "medium",
+    name: "Obfuscation combined with code execution",
+    patternsA: OBFUSCATION_PATTERNS,
+    patternsB: SUB_EXECUTION_PATTERNS,
+    maxLineDistance: 50,
+    message: "Obfuscation patterns (base64, hex, compression) found near code execution — possible hidden malicious code.",
+  },
+  {
+    id: "social-engineering",
+    severity: "medium",
+    name: "Urgency language combined with credential requests",
+    patternsA: URGENCY_PATTERNS,
+    patternsB: CREDENTIAL_REQUEST_PATTERNS,
+    maxLineDistance: 50,
+    message: "Urgency/fear language found near credential/secret patterns — possible social engineering attack.",
+  },
+];
+
+function findCompoundPatternMatches(
+  content: string,
+  lines: string[],
+  patterns: RegExp[],
+): SkillScanMatch[] {
+  const matches: SkillScanMatch[] = [];
+  for (const pattern of patterns) {
+    pattern.lastIndex = 0;
+    let m: RegExpExecArray | null;
+    while ((m = pattern.exec(content)) !== null) {
+      const { line, column } = findLineColumn(content, m.index);
+      matches.push({
+        line,
+        column,
+        pattern: pattern.source,
+        matchText: lines[line - 1]?.trim().slice(0, 120) ?? m[0].slice(0, 120),
+      });
+    }
+  }
+  return matches;
+}
+
+function applyCompoundRules(
+  filePath: string,
+  content: string,
+  lines: string[],
+): SkillScanFinding[] {
+  const findings: SkillScanFinding[] = [];
+  for (const rule of COMPOUND_RULES) {
+    const matchesA = findCompoundPatternMatches(content, lines, rule.patternsA);
+    const matchesB = findCompoundPatternMatches(content, lines, rule.patternsB);
+    if (matchesA.length === 0 || matchesB.length === 0) continue;
+
+    const hasProximity = matchesA.some((a) =>
+      matchesB.some((b) => Math.abs(a.line - b.line) <= rule.maxLineDistance),
+    );
+    if (!hasProximity) continue;
+
+    findings.push({
+      ruleId: rule.id,
+      severity: rule.severity,
+      filePath,
+      message: rule.message,
+      matches: [...matchesA, ...matchesB],
+    });
+  }
+  return findings;
+}
+
+// ── Unicode Obfuscation Detection ────────────────────────────────────────────
+
+const UNICODE_OBFUSCATION_REGEX =
+  /[\u200B-\u200D\uFEFF\u2060\u00AD\u202A-\u202E\u2066-\u2069\u{E0001}\u{E0020}-\u{E007F}]/gu;
+
+interface UnicodeCharInfo {
+  name: string;
+  danger: string;
+}
+
+function getUnicodeCharInfo(char: string): UnicodeCharInfo {
+  const cp = char.codePointAt(0)!;
+  const hex = cp.toString(16).toUpperCase().padStart(cp > 0xFFFF ? 5 : 4, "0");
+
+  if (cp === 0x200B) return { name: `Zero Width Space (U+${hex})`, danger: "Can hide malicious code or alter how text is interpreted" };
+  if (cp === 0x200C) return { name: `Zero Width Non-Joiner (U+${hex})`, danger: "Can hide malicious code or alter how text is interpreted" };
+  if (cp === 0x200D) return { name: `Zero Width Joiner (U+${hex})`, danger: "Can hide malicious code or alter how text is interpreted" };
+  if (cp === 0xFEFF) return { name: `Zero Width No-Break Space / BOM (U+${hex})`, danger: "Can hide malicious code or alter how text is interpreted" };
+  if (cp === 0x2060) return { name: `Word Joiner (U+${hex})`, danger: "Can hide malicious code or alter how text is interpreted" };
+  if (cp === 0x00AD) return { name: `Soft Hyphen (U+${hex})`, danger: "Can hide malicious code or alter how text is interpreted" };
+
+  if (cp === 0x202A) return { name: `Left-to-Right Embedding (U+${hex})`, danger: "Bidi override can reverse or reorder text to hide true intent" };
+  if (cp === 0x202B) return { name: `Right-to-Left Embedding (U+${hex})`, danger: "Bidi override can reverse or reorder text to hide true intent" };
+  if (cp === 0x202C) return { name: `Pop Directional Formatting (U+${hex})`, danger: "Bidi override can reverse or reorder text to hide true intent" };
+  if (cp === 0x202D) return { name: `Left-to-Right Override (U+${hex})`, danger: "Bidi override can reverse or reorder text to hide true intent" };
+  if (cp === 0x202E) return { name: `Right-to-Left Override (U+${hex})`, danger: "Bidi override can reverse text to obscure true intent" };
+  if (cp === 0x2066) return { name: `Left-to-Right Isolate (U+${hex})`, danger: "Bidi override can reverse or reorder text to hide true intent" };
+  if (cp === 0x2067) return { name: `Right-to-Left Isolate (U+${hex})`, danger: "Bidi override can reverse or reorder text to hide true intent" };
+  if (cp === 0x2068) return { name: `First Strong Isolate (U+${hex})`, danger: "Bidi override can reverse or reorder text to hide true intent" };
+  if (cp === 0x2069) return { name: `Pop Directional Isolate (U+${hex})`, danger: "Bidi override can reverse or reorder text to hide true intent" };
+
+  if (cp === 0xE0001) return { name: `Language Tag (U+${hex})`, danger: "Unicode tag sequence can embed hidden metadata or tracking information" };
+  if (cp >= 0xE0020 && cp <= 0xE007E) return { name: `Tag Character (U+${hex})`, danger: "Unicode tag sequence can embed hidden metadata or tracking information" };
+  if (cp === 0xE007F) return { name: `Cancel Tag (U+${hex})`, danger: "Unicode tag sequence can embed hidden metadata or tracking information" };
+
+  return { name: `Unknown Hidden Character (U+${hex})`, danger: "Hidden Unicode character with unknown intent" };
+}
+
+function checkUnicodeObfuscation(filePath: string, content: string): SkillScanFinding | undefined {
+  UNICODE_OBFUSCATION_REGEX.lastIndex = 0;
+  const matches: SkillScanMatch[] = [];
+
+  let m: RegExpExecArray | null;
+  while ((m = UNICODE_OBFUSCATION_REGEX.exec(content)) !== null) {
+    const { line, column } = findLineColumn(content, m.index);
+    const info = getUnicodeCharInfo(m[0]);
+    matches.push({
+      line,
+      column,
+      pattern: UNICODE_OBFUSCATION_REGEX.source,
+      matchText: `${info.name}: ${info.danger}`,
+    });
+  }
+
+  if (matches.length > 0) {
+    return {
+      ruleId: "unicode-obfuscation",
+      severity: "high",
+      filePath,
+      message: `Found ${matches.length} hidden Unicode character(s) in ${basename(filePath)}. These can hide malicious code, obscure true intent, or embed tracking information.`,
+      matches,
+    };
+  }
+
+  return undefined;
+}
 
 // ── Unsigned/unaudited check ─────────────────────────────────────────────────
 
@@ -309,6 +539,12 @@ export function scanContent(
 
   const unsigned = checkUnsigned(filePath, content);
   if (unsigned) findings.push(unsigned);
+
+  const unicodeObfuscation = checkUnicodeObfuscation(filePath, content);
+  if (unicodeObfuscation) findings.push(unicodeObfuscation);
+
+  const compoundFindings = applyCompoundRules(filePath, content, lines);
+  findings.push(...compoundFindings);
 
   return findings;
 }

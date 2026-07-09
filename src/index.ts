@@ -64,7 +64,21 @@ export {
   type SkillScanSeverity,
 } from "./checks/skill-scan.js";
 export { diffArtifacts } from "./diff.js";
-export { scanForTargets } from "./discovery.js";
+export {
+  scanForTargets,
+  discoverSkillPaths,
+  discoverFromCursor,
+  discoverFromWindsurf,
+  discoverFromVSCode,
+  discoverFromOpenCode,
+  discoverFromCodex,
+  discoverFromGeminiCli,
+  discoverFromKiro,
+  discoverFromAntigravity,
+  discoverFromAmazonQ,
+  discoverFromClaudeDesktop,
+  discoverFromClaudeCode,
+} from "./discovery.js";
 export { renderHtml } from "./reporters/html.js";
 export { renderJUnit } from "./reporters/junit.js";
 export { renderMarkdown } from "./reporters/markdown.js";
