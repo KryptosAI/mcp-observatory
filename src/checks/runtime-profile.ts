@@ -58,7 +58,7 @@ function inferMutationOperation(toolName: string, paramName: string): string {
   return "write";
 }
 
-function inferMutationScope(schemaProperties: Record<string, Record<string, unknown>> | undefined, paramName: string, toolName: string): string {
+function inferMutationScope(schemaProperties: Record<string, Record<string, unknown>> | undefined, paramName: string): string {
   if (/^env|^environ/i.test(paramName)) return "global";
   if (/^(command|cmd|exec|shell)$/i.test(paramName)) return "specific_path";
   if (schemaProperties?.[paramName]?.default !== undefined) return "specific_path";
@@ -115,7 +115,7 @@ export function analyzeRuntimeProfile(tools: Tool[]): RuntimeProfile {
         mutations.push({
           resource: inferMutationResource(paramName),
           operation: inferMutationOperation(tool.name, paramName),
-          scope: inferMutationScope(normalized.properties, paramName, tool.name),
+          scope: inferMutationScope(normalized.properties, paramName),
           source: "tool_schema",
         });
       }

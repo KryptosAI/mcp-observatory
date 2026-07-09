@@ -239,7 +239,7 @@ export function detectNotObserved(artifact: RunArtifact): NotObserved[] {
         allToolIds.add(id);
       }
       if (ev.endpoint === "tools/list" && typeof ev.responseSnapshots?.tools === "object") {
-        const tools = (ev.responseSnapshots as Record<string, unknown>).tools as Array<{ name: string }> | undefined;
+        const tools = ev.responseSnapshots.tools as Array<{ name: string }> | undefined;
         if (tools) {
           for (const tool of tools) {
             if (typeof tool.name === "string") allToolIds.add(tool.name);

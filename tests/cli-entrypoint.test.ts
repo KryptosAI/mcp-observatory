@@ -60,6 +60,13 @@ describe("CLI entrypoint", () => {
     expect(stdout).toContain("scan");
     expect(stdout).toContain("test");
     expect(stdout).toContain("MCP");
+    expect(stdout).toContain("--quiet");
+  });
+
+  it("parses the global quiet flag", () => {
+    const { stdout, exitCode } = runCli(["--quiet", "--version"]);
+    expect(exitCode).toBe(0);
+    expect(stdout.trim()).toMatch(/^\d+\.\d+\.\d+$/);
   });
 
   it("scan subcommand shows help", () => {

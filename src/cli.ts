@@ -245,6 +245,7 @@ async function main(): Promise<void> {
     .name(bin)
     .enablePositionalOptions()
     .description("Test your MCP servers for breaking changes.")
+    .option("--quiet", "Suppress logo and informational output.", false)
     .version(TOOL_VERSION)
     .addHelpText("before", useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n` : LOGO + `  v${TOOL_VERSION}\n`)
     .addHelpText("after", (() => {
