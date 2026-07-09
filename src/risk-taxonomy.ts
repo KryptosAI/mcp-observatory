@@ -10,7 +10,7 @@ interface TaxonomySource {
   category?: string;
 }
 
-const RULE_TAXONOMY: Record<string, RiskTaxonomy> = {
+export const RULE_TAXONOMY: Record<string, RiskTaxonomy> = {
   "mcp-observatory/security/shell-injection": {
     cwe: ["CWE-78"],
     owasp: ["OWASP Top 10 2021 A03: Injection"],
@@ -70,7 +70,7 @@ const RULE_TAXONOMY: Record<string, RiskTaxonomy> = {
   },
 };
 
-const CATEGORY_TAXONOMY: Record<string, RiskTaxonomy> = {
+export const CATEGORY_TAXONOMY: Record<string, RiskTaxonomy> = {
   "schema-quality": {
     cwe: ["CWE-20"],
     owasp: ["OWASP API Security Top 10 2023 API8: Security Misconfiguration"],
