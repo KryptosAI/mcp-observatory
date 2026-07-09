@@ -10,12 +10,15 @@ import { renderSarif } from "../reporters/sarif.js";
 import { buildEvent, normalizeCampaign, recordEvent } from "../telemetry.js";
 import { maybePrintCloudCta } from "../commercial.js";
 import { renderActionReceipt } from "../action-receipt.js";
+import { runEnforce } from "./enforce.js";
+import { renderNextActions } from "../reporters/terminal.js";
 import { ANSI, c, resolveTarget, targetFromCommand, writeOutput } from "./helpers.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
 
 interface TestCommandFlags extends SetupCiConversionFlags {
   attackSim?: boolean;
   sarif?: string;
+  enforce?: boolean;
 }
 
 function extractTrailingConversionFlags(
@@ -43,6 +46,8 @@ function extractTrailingConversionFlags(
       if (!next) throw new Error("--sarif requires an output file.");
       flags.sarif = next;
       i += 1;
+    } else if (arg === "--enforce") {
+      flags.enforce = true;
     } else if (arg === "--campaign") {
       const next = commandArgs[i + 1];
       if (!next) throw new Error("--campaign requires a campaign slug.");
@@ -74,6 +79,7 @@ export function registerTestCommands(program: Command): void {
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
     .option("--no-ci-sarif", "Generate post-check CI without GitHub Code Scanning SARIF upload.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
+    .option("--enforce", "After testing, generate seatbelt policy and optionally start proxy.", false)
     .option("--no-color", "Disable colored output.")
     .action(async (commandArgs: string[], options: { deep?: boolean; invokeTools?: boolean; security?: boolean; target?: string; attackSim?: boolean } & TestCommandFlags) => {
       const extracted = extractTrailingConversionFlags(commandArgs, options);
@@ -113,6 +119,7 @@ export function registerTestCommands(program: Command): void {
       process.stdout.write(`    ${c(ANSI.dim, "→")} ${renderActionReceipt(artifact).split("\n")[0]}\n`);
 
       process.stdout.write(`\n  ${c(ANSI.dim, `Artifact: ${outPath}`)}\n\n`);
+      process.stdout.write(renderNextActions(artifact) + "\n");
 
       // Track history
       const historyEntry = buildHistoryEntry(artifact);
@@ -159,6 +166,12 @@ export function registerTestCommands(program: Command): void {
           force: conversionFlags.force,
           campaign: conversionFlags.campaign,
         });
+      }
+      if (options.enforce || conversionFlags.enforce) {
+        await runEnforce(target, commandArgs, {
+          security: options.security,
+          deep: options.deep || options.invokeTools,
+        }, "mcp-observatory");
       }
       maybePrintCloudCta(options.security ? "security" : "general");
     });

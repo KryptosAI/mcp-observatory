@@ -13,6 +13,7 @@ import { maybePrintCloudCta } from "../commercial.js";
 import { renderActionReceipt } from "../action-receipt.js";
 import { ANSI, LOGO, c, setupCiHint, useColor } from "./helpers.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
+import { runEnforce } from "./enforce.js";
 
 // ── Scan implementation ─────────────────────────────────────────────────────
 
@@ -285,11 +286,16 @@ export function registerScanCommands(program: Command, bin: string): void {
     .option("--no-ci-sarif", "Generate post-scan CI without GitHub Code Scanning SARIF upload.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
     .option("--no-color", "Disable colored output.")
-    .option("--skill-scan [path]", "Also scan skill directories for security risks. Auto-discovers from agent skill paths when no path given.");
+    .option("--skill-scan [path]", "Also scan skill directories for security risks. Auto-discovers from agent skill paths when no path given.")
+    .option("--enforce", "After scan, show the enforce command for the first target.");
 
   // `scan` with no subcommand — basic scan
-  scanCmd.action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string; skillScan?: SkillScanOption } & SetupCiConversionFlags) => {
+  scanCmd.action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string; skillScan?: SkillScanOption; enforce?: boolean } & SetupCiConversionFlags) => {
     await runScan(bin, options.config, false, options.security, options.format, options.attackSim !== false, options, options.skillScan);
+    if (options.enforce) {
+      process.stdout.write(`\n  ${c(ANSI.bold, "Next:")} ${c(ANSI.cyan, `npx @kryptosai/mcp-observatory enforce --deep npx -y <your-server>`)}\n`);
+      process.stdout.write(`  ${c(ANSI.dim, "Enforce mode runs a scan AND auto-generates seatbelt policy for runtime protection.")}\n\n`);
+    }
   });
 
   // `scan deep` — scan + invoke tools
@@ -306,8 +312,7 @@ export function registerScanCommands(program: Command, bin: string): void {
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
     .option("--no-ci-sarif", "Generate post-scan CI without GitHub Code Scanning SARIF upload.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
-    .action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string; skillScan?: SkillScanOption } & SetupCiConversionFlags) => {
-      // Inherit parent config option if set
+    .action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string; skillScan?: SkillScanOption; enforce?: boolean } & SetupCiConversionFlags) => {
       const parentConfig = scanCmd.opts().config as string | undefined;
       const parentSecurity = scanCmd.opts().security as boolean | undefined;
       const parentFormat = scanCmd.opts().format as string;
@@ -315,5 +320,9 @@ export function registerScanCommands(program: Command, bin: string): void {
       const parentSkillScan = scanCmd.opts().skillScan as SkillScanOption;
       const resolvedSkillScan = options.skillScan !== undefined ? options.skillScan : parentSkillScan;
       await runScan(bin, options.config ?? parentConfig, true, options.security ?? parentSecurity ?? true, options.format ?? parentFormat, options.attackSim !== false && parentAttackSim !== false, options, resolvedSkillScan);
+      if (options.enforce) {
+        process.stdout.write(`\n  ${c(ANSI.bold, "Next:")} ${c(ANSI.cyan, `npx @kryptosai/mcp-observatory enforce --deep npx -y <your-server>`)}\n`);
+        process.stdout.write(`  ${c(ANSI.dim, "Enforce mode runs a scan AND auto-generates seatbelt policy for runtime protection.")}\n\n`);
+      }
     });
 }
