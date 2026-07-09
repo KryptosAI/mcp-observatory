@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import type { CheckResult, CheckStatus, DiffArtifact, DiffEntry, RunArtifact } from "../types.js";
 import { detectNotObserved } from "../receipt.js";
 import {
@@ -8,6 +9,54 @@ import {
   summarizeRunSafety,
   sortChecksByActionability
 } from "./common.js";
+
+let _seatbeltChecked = false;
+let _seatbeltAvailable = false;
+
+function isSeatbeltAvailable(): boolean {
+  if (_seatbeltChecked) return _seatbeltAvailable;
+  _seatbeltChecked = true;
+  try {
+    execSync("command -v mcp-seatbelt 2>/dev/null || npx @kryptosai/mcp-seatbelt --version 2>/dev/null", {
+      stdio: "pipe",
+      timeout: 5_000,
+    });
+    _seatbeltAvailable = true;
+  } catch {
+    _seatbeltAvailable = false;
+  }
+  return _seatbeltAvailable;
+}
+
+function renderNextActions(artifact: RunArtifact): string {
+  const hasSecurityCheck = artifact.checks.some(
+    (ch) => (ch.id === "security" || ch.id === "security-lite" || ch.id === "attack-sim") &&
+      (ch.status === "fail" || ch.status === "partial")
+  );
+  const hasFailures = artifact.gate === "fail" || !!artifact.fatalError;
+
+  if (!hasSecurityCheck && !hasFailures) return "";
+
+  const targetCmd = artifact.target.adapter === "local-process"
+    ? `${artifact.target.command} ${(artifact.target.args ?? []).join(" ")}`
+    : artifact.target.targetId ?? artifact.target.command ?? "server";
+
+  const lines: string[] = [];
+  lines.push("");
+  lines.push(co(ANSI.bold, "Next Actions:"));
+
+  if (isSeatbeltAvailable()) {
+    lines.push(co(ANSI.dim, `  → Auto-enforce: npx @kryptosai/mcp-observatory enforce ${targetCmd} --start-proxy`));
+    lines.push(co(ANSI.dim, "  → This generates a policy AND starts the proxy — protecting you immediately"));
+  } else {
+    lines.push(co(ANSI.dim, `  → Generate runtime policy: npx @kryptosai/mcp-observatory enforce ${targetCmd}`));
+    lines.push(co(ANSI.dim, "  → Already know the risks? Enforce at runtime with mcp-seatbelt"));
+  }
+
+  return lines.join("\n");
+}
+
+export { renderNextActions };
 
 // ── Watch-specific compact renderers ────────────────────────────────────────
 
@@ -234,7 +283,7 @@ function renderRunTerminal(artifact: RunArtifact): string {
     }
   }
 
-  return lines.join("\n");
+  return lines.join("\n") + renderNextActions(artifact);
 }
 
 function renderDiffTerminal(artifact: DiffArtifact): string {

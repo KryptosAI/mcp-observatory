@@ -22,6 +22,7 @@ import { registerInitCiCommands } from "./commands/init-ci.js";
 import { registerLockCommands } from "./commands/lock.js";
 import { registerAttackSimCommands } from "./commands/attack-sim.js";
 import { registerAuditCommands } from "./commands/audit.js";
+import { registerEnforceCommands } from "./commands/enforce.js";
 import { registerReceiptCommands } from "./commands/receipt.js";
 import { registerRiskGraphCommands } from "./commands/risk-graph.js";
 import { registerSkillScanCommands } from "./commands/skill-scan.js";
@@ -293,6 +294,7 @@ async function main(): Promise<void> {
   registerInitCiCommands(program);
   registerLockCommands(program);
   registerAuditCommands(program);
+  registerEnforceCommands(program, bin);
   registerReceiptCommands(program);
   registerRiskGraphCommands(program);
   registerAttackSimCommands(program);
