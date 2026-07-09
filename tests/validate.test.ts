@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
+import type { RunArtifact } from "../src/types.js";
 import { validateRunArtifact, validateTargetConfig } from "../src/validate.js";
 
 describe("validateTargetConfig", () => {
@@ -121,6 +122,27 @@ describe("validateRunArtifact", () => {
 
   it("validates nested run artifact fields", () => {
     expect(validateRunArtifact(validRun).runId).toBe("run_test");
+  });
+
+  it("accepts runtime-profile check results", () => {
+    const run = structuredClone(validRun) as typeof validRun & { runtimeProfile?: RunArtifact["runtimeProfile"] };
+    run.checks[0]!.id = "runtime-profile";
+    run.checks[0]!.capability = "runtime-profile";
+    run.runtimeProfile = {
+      analyzedAt: "2026-06-21T00:00:01.000Z",
+      confidence: "low",
+      egress: [
+        {
+          target: "api.example.com",
+          protocol: "HTTPS",
+          source: "tool_schema",
+          confidence: "low",
+        },
+      ],
+    };
+    const validated = validateRunArtifact(run);
+    expect(validated.checks[0]?.id).toBe("runtime-profile");
+    expect(validated.runtimeProfile?.confidence).toBe("low");
   });
 
   it("rejects invalid nested check statuses", () => {
