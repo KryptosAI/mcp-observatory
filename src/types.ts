@@ -119,6 +119,9 @@ export interface RunArtifact {
 
 export type HealthGrade = "A" | "B" | "C" | "D" | "F";
 
+/** Safety Index score bucketed for at-a-glance communication (badges, CLI display). */
+export type TrustTier = "platinum" | "gold" | "silver" | "bronze" | "unrated";
+
 export interface ScoreDimension {
   name: string;
   weight: number;

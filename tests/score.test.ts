@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { computeHealthScore, gradeFromScore } from "../src/score.js";
+import { computeHealthScore, getTrustTier, gradeFromScore } from "../src/score.js";
 import type { CheckResult, PerformanceMetrics } from "../src/types.js";
 
 function makeCheck(id: string, status: string): CheckResult {
@@ -24,6 +24,26 @@ describe("gradeFromScore", () => {
     expect(gradeFromScore(65)).toBe("D");
     expect(gradeFromScore(55)).toBe("F");
     expect(gradeFromScore(0)).toBe("F");
+  });
+});
+
+describe("getTrustTier", () => {
+  it("buckets scores into tiers at the documented thresholds", () => {
+    expect(getTrustTier(100)).toBe("platinum");
+    expect(getTrustTier(92)).toBe("platinum");
+    expect(getTrustTier(90)).toBe("platinum"); // boundary
+    expect(getTrustTier(89)).toBe("gold");
+    expect(getTrustTier(81)).toBe("gold");
+    expect(getTrustTier(80)).toBe("gold"); // boundary
+    expect(getTrustTier(79)).toBe("silver");
+    expect(getTrustTier(67)).toBe("silver");
+    expect(getTrustTier(65)).toBe("silver"); // boundary
+    expect(getTrustTier(64)).toBe("bronze");
+    expect(getTrustTier(52)).toBe("bronze");
+    expect(getTrustTier(50)).toBe("bronze"); // boundary
+    expect(getTrustTier(49)).toBe("unrated");
+    expect(getTrustTier(30)).toBe("unrated");
+    expect(getTrustTier(0)).toBe("unrated");
   });
 });
 
