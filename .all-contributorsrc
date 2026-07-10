@@ -65,6 +65,16 @@
         "doc",
         "test"
       ]
+    },
+    {
+      "login": "Cryptoteep",
+      "name": "GG",
+      "avatar_url": "https://avatars.githubusercontent.com/u/Cryptoteep?v=4",
+      "profile": "https://github.com/Cryptoteep",
+      "contributions": [
+        "code",
+        "maintenance"
+      ]
     }
   ]
 }
