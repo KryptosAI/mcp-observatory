@@ -1,5 +1,5 @@
 import type { Command } from "commander";
-import { readHistory, getTrend, renderTrendLabel } from "../history.js";
+import { readHistory, filterHistory, getTrend, renderTrendLabel } from "../history.js";
 import { buildEvent, recordEvent } from "../telemetry.js";
 import { ANSI, c } from "./helpers.js";
 
@@ -14,7 +14,8 @@ export function registerHistoryCommands(program: Command): void {
       const history = await readHistory();
 
       if (options.json) {
-        process.stdout.write(JSON.stringify(history, null, 2) + "\n");
+        // --target applies to JSON output too (it used to be silently ignored here).
+        process.stdout.write(JSON.stringify(filterHistory(history, options.target), null, 2) + "\n");
         return;
       }
 

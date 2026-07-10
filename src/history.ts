@@ -81,6 +81,13 @@ export function buildHistoryEntry(artifact: RunArtifact): HistoryEntry {
   };
 }
 
+/** The history restricted to one target (same shape, so JSON output stays parseable
+ *  the same way whether or not a filter was applied). No target = the input unchanged. */
+export function filterHistory(history: HistoryFile, targetId?: string): HistoryFile {
+  if (!targetId) return history;
+  return { ...history, entries: history.entries.filter((e) => e.targetId === targetId) };
+}
+
 // ── Trend computation ────────────────────────────────────────────────────────
 
 export function getTrend(

@@ -7,6 +7,7 @@ import {
   readHistory,
   appendHistory,
   buildHistoryEntry,
+  filterHistory,
   getTrend,
   renderTrendLabel,
   type HistoryEntry,
@@ -124,6 +125,37 @@ describe("buildHistoryEntry", () => {
     expect(entry.promptCount).toBe(3);
     expect(entry.resourceCount).toBe(5);
     expect(entry.gate).toBe("pass");
+  });
+});
+
+describe("filterHistory", () => {
+  const history: HistoryFile = {
+    version: 1,
+    entries: [
+      makeEntry({ targetId: "a", healthScore: 90 }),
+      makeEntry({ targetId: "b", healthScore: 70 }),
+      makeEntry({ targetId: "a", healthScore: 95 }),
+    ],
+  };
+
+  it("keeps only the requested target, preserving order and shape", () => {
+    const filtered = filterHistory(history, "a");
+    expect(filtered.version).toBe(1);
+    expect(filtered.entries.map((e) => e.healthScore)).toEqual([90, 95]);
+    expect(filtered.entries.every((e) => e.targetId === "a")).toBe(true);
+  });
+
+  it("returns the input unchanged when no target is given", () => {
+    expect(filterHistory(history)).toBe(history);
+  });
+
+  it("yields an empty entries list for an unknown target", () => {
+    expect(filterHistory(history, "nope").entries).toEqual([]);
+  });
+
+  it("does not mutate the original history", () => {
+    filterHistory(history, "a");
+    expect(history.entries).toHaveLength(3);
   });
 });
 
