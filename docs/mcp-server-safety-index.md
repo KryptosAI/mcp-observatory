@@ -10,12 +10,12 @@ For the rules behind this page, see the [Safety Methodology](./methodology.md) a
 
 ## Snapshot
 
-- Evaluated servers: 41
+- Evaluated servers: 50
 - Ready for CI: 9
 - Needs review before production: 10
 - Unsafe default posture: 8
-- Not reproducible: 14
-- Latest run: 2026-07-12T23:36:11.599Z
+- Not reproducible: 23
+- Latest run: 2026-07-12T23:44:36.895Z
 
 ## Evaluations
 
@@ -62,6 +62,15 @@ For the rules behind this page, see the [Safety Methodology](./methodology.md) a
 | 39 | [Official Fetch MCP server](https://github.com/modelcontextprotocol/servers) | Web Content / Search | **Not reproducible** | `rerun` | Web fetch boundary | `npx -y @modelcontextprotocol/server-fetch` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y @modelcontextprotocol/server-fetch" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/fetch-server.json) / [report](./safety-index/artifacts/fetch-server.md) | Package not published on npm (404). Available in the servers monorepo. Use community packages like mcp-fetch-server or build from source. |
 | 40 | [Official Brave Search MCP server](https://github.com/modelcontextprotocol/servers) | Search | **Ready for CI** | `allow` | Search result boundary | `npx -y @modelcontextprotocol/server-brave-search` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y @modelcontextprotocol/server-brave-search" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/brave-search-server.json) / [report](./safety-index/artifacts/brave-search-server.md) | Scanned with dummy API key for schema/tool discovery. Full search execution requires a valid Brave Search API key. Note: npm flags this package as deprecated by the publisher. |
 | 41 | [Official GitLab MCP server](https://github.com/modelcontextprotocol/servers) | Developer Tools | **Not reproducible** | `gate` | Merge/CI pipeline boundary | `npx -y @modelcontextprotocol/server-gitlab` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y @modelcontextprotocol/server-gitlab" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/gitlab-server.json) / [report](./safety-index/artifacts/gitlab-server.md) | Scanned with dummy token for schema/tool discovery. Server responds but tools have schema validation issues preventing full listing. Note: npm flags this package as deprecated by the publisher. |
+| 42 | [Anthropic Gmail MCP server](https://www.npmjs.com/package/@anthropic/mcp-server-gmail) | Email | **Not reproducible** | `rerun` | Email read/write boundary | `npx -y @anthropic/mcp-server-gmail` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y @anthropic/mcp-server-gmail" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/gmail-server.json) / [report](./safety-index/artifacts/gmail-server.md) | Schema-only evaluation; requires Gmail OAuth credentials. Note: @anthropic/mcp-server-gmail has not been published to npm. Community equivalent: gmail-mcp. |
+| 43 | [Anthropic Jina AI MCP server](https://www.npmjs.com/package/@anthropic/mcp-server-jina) | Search / AI | **Not reproducible** | `rerun` | Web search/reader boundary | `npx -y @anthropic/mcp-server-jina` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y @anthropic/mcp-server-jina" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/jina-server.json) / [report](./safety-index/artifacts/jina-server.md) | Schema-only evaluation; requires Jina AI API key. Note: @anthropic/mcp-server-jina has not been published to npm. Community equivalent: jina-mcp-tools. |
+| 44 | [Anthropic Google Sheets MCP server](https://www.npmjs.com/package/@anthropic/mcp-server-google-sheets) | Productivity / Spreadsheets | **Not reproducible** | `rerun` | Spreadsheet read/write boundary | `npx -y @anthropic/mcp-server-google-sheets` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y @anthropic/mcp-server-google-sheets" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/google-sheets-server.json) / [report](./safety-index/artifacts/google-sheets-server.md) | Schema-only evaluation; requires Google Sheets OAuth credentials. Note: @anthropic/mcp-server-google-sheets has not been published to npm. Community equivalent: google-sheets-mcp. |
+| 45 | [Anthropic Google Calendar MCP server](https://www.npmjs.com/package/@anthropic/mcp-server-google-calendar) | Productivity / Calendar | **Not reproducible** | `rerun` | Calendar event boundary | `npx -y @anthropic/mcp-server-google-calendar` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y @anthropic/mcp-server-google-calendar" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/google-calendar-server.json) / [report](./safety-index/artifacts/google-calendar-server.md) | Schema-only evaluation; requires Google Calendar OAuth credentials. Note: @anthropic/mcp-server-google-calendar has not been published to npm. Community equivalent: @cocal/google-calendar-mcp. |
+| 46 | [Anthropic Google Tasks MCP server](https://www.npmjs.com/package/@anthropic/mcp-server-google-tasks) | Productivity / Tasks | **Not reproducible** | `rerun` | Task list mutation boundary | `npx -y @anthropic/mcp-server-google-tasks` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y @anthropic/mcp-server-google-tasks" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/google-tasks-server.json) / [report](./safety-index/artifacts/google-tasks-server.md) | Schema-only evaluation; requires Google Tasks OAuth credentials. Note: @anthropic/mcp-server-google-tasks has not been published to npm. Community equivalent: @overlay-one/google-tasks-mcp-server. |
+| 47 | [Anthropic HuggingFace MCP server](https://www.npmjs.com/package/@anthropic/mcp-server-huggingface) | AI / ML Platform | **Not reproducible** | `rerun` | Model/inference boundary | `npx -y @anthropic/mcp-server-huggingface` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y @anthropic/mcp-server-huggingface" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/huggingface-server.json) / [report](./safety-index/artifacts/huggingface-server.md) | Schema-only evaluation; requires HuggingFace API token. Note: @anthropic/mcp-server-huggingface has not been published to npm. Community equivalent: huggingface-mcp-server. |
+| 48 | [Anthropic Reddit MCP server](https://www.npmjs.com/package/@anthropic/mcp-server-reddit) | Social Media | **Not reproducible** | `rerun` | Content posting/reading boundary | `npx -y @anthropic/mcp-server-reddit` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y @anthropic/mcp-server-reddit" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/reddit-server.json) / [report](./safety-index/artifacts/reddit-server.md) | Schema-only evaluation; requires Reddit API credentials. Note: @anthropic/mcp-server-reddit has not been published to npm. Community equivalent: reddit-mcp. |
+| 49 | [Anthropic OneSignal MCP server](https://www.npmjs.com/package/@anthropic/mcp-server-onesignal) | Notifications / Messaging | **Not reproducible** | `rerun` | Notification/audience boundary | `npx -y @anthropic/mcp-server-onesignal` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y @anthropic/mcp-server-onesignal" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/onesignal-server.json) / [report](./safety-index/artifacts/onesignal-server.md) | Schema-only evaluation; requires OneSignal API credentials. Note: @anthropic/mcp-server-onesignal has not been published to npm. No community MCP equivalent found as of this writing. |
+| 50 | [Anthropic Clay MCP server](https://www.npmjs.com/package/@anthropic/mcp-server-clay) | CRM / Contact Management | **Not reproducible** | `rerun` | Contact/relationship boundary | `npx -y @anthropic/mcp-server-clay` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y @anthropic/mcp-server-clay" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/clay-server.json) / [report](./safety-index/artifacts/clay-server.md) | Schema-only evaluation; requires Clay API credentials. Note: @anthropic/mcp-server-clay has not been published to npm. Community equivalent: @clayhq/clay-mcp. |
 
 ## Patterns Observed
 
@@ -70,9 +79,12 @@ For the rules behind this page, see the [Safety Methodology](./methodology.md) a
 - Artifact-producing tools: 1 server(s)
 - Broad protocol surface: 1 server(s)
 - Browser-control boundary: 1 server(s)
+- Calendar event boundary: 1 server(s)
 - Collection/point boundary: 1 server(s)
 - Command and cluster mutation boundary: 1 server(s)
+- Contact/relationship boundary: 1 server(s)
 - Container/image boundary: 1 server(s)
+- Content posting/reading boundary: 1 server(s)
 - Data query/collection boundary: 1 server(s)
 - Database/auth/admin boundary: 1 server(s)
 - Database/branch boundary: 1 server(s)
@@ -80,6 +92,7 @@ For the rules behind this page, see the [Safety Methodology](./methodology.md) a
 - Design/file boundary: 1 server(s)
 - DNS/worker/deployment boundary: 1 server(s)
 - Document/permission boundary: 1 server(s)
+- Email read/write boundary: 1 server(s)
 - Financial transaction tool boundary: 1 server(s)
 - Framework tooling boundary: 1 server(s)
 - Git tool boundary: 1 server(s)
@@ -88,19 +101,24 @@ For the rules behind this page, see the [Safety Methodology](./methodology.md) a
 - Issue/project boundary: 1 server(s)
 - Merge/CI pipeline boundary: 1 server(s)
 - Message/channel boundary: 1 server(s)
+- Model/inference boundary: 1 server(s)
+- Notification/audience boundary: 1 server(s)
 - Page/database boundary: 1 server(s)
 - Persistent state tools: 1 server(s)
 - Prompt-injection-sensitive retrieval: 1 server(s)
 - Prompt/resource contract: 1 server(s)
 - Prompt/tool inventory: 1 server(s)
 - Sandboxed filesystem access: 1 server(s)
+- Spreadsheet read/write boundary: 1 server(s)
 - SQL query boundary: 1 server(s)
 - SQLite file boundary: 1 server(s)
 - Startup/listing reproducibility: 1 server(s)
+- Task list mutation boundary: 1 server(s)
 - Temporary directory filesystem access: 1 server(s)
 - Tool schema clarity: 1 server(s)
 - Web content ingestion boundary: 1 server(s)
 - Web fetch boundary: 1 server(s)
+- Web search/reader boundary: 1 server(s)
 - Write/merge tool boundary: 1 server(s)
 
 ## Publication Rules

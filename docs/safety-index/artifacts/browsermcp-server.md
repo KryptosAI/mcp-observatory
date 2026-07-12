@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-12T23:35:50.710Z
+Generated at 2026-07-12T23:44:09.514Z
 
 ## Target and Environment Metadata
 
@@ -58,7 +58,7 @@ The following targets were identified as potentially reachable by this server (c
 | The URL to navigate to | unknown | description_analysis | medium |
 | browser_navigate | unknown | description_analysis | low |
 
-_Analyzed at 2026-07-12T23:35:51.515Z_
+_Analyzed at 2026-07-12T23:44:10.385Z_
 
 ## Regressions and Recoveries
 
@@ -68,14 +68,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.48 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 1.59 | All 7 conformance checks passed. |
-| healthy | resources | pass | 0.46 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
-| healthy | schema-quality | pass | 0.43 | All 12 item(s) have good schema quality. |
+| healthy | attack-sim | pass | 0.52 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 1.64 | All 7 conformance checks passed. |
+| healthy | resources | pass | 0.49 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
+| healthy | schema-quality | pass | 0.44 | All 12 item(s) have good schema quality. |
 | healthy | security | pass | 0.16 | No security issues detected. |
 | healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 0.85 | Advertised capability responded with the minimal expected shape (12 items). |
-| review | runtime-profile | partial | 0.08 | Detected 3 potential egress target(s) and 0 potential state mutation(s) with high confidence. |
+| healthy | tools | pass | 0.96 | Advertised capability responded with the minimal expected shape (12 items). |
+| review | runtime-profile | partial | 0.09 | Detected 3 potential egress target(s) and 0 potential state mutation(s) with high confidence. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 
 ## Evidence Snippets
@@ -206,5 +206,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-12T233550710Z_b3d14826`
+- Run ID: `run_2026-07-12T234409514Z_67c87a4e`
 - Gate: `pass`

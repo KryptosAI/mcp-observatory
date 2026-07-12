@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-12T23:36:10.680Z
+Generated at 2026-07-12T23:44:31.584Z
 
 ## Target and Environment Metadata
 
@@ -56,7 +56,7 @@ The following targets were identified as potentially reachable by this server (c
 | brave_web_search | unknown | description_analysis | low |
 | brave_local_search | unknown | description_analysis | low |
 
-_Analyzed at 2026-07-12T23:36:11.591Z_
+_Analyzed at 2026-07-12T23:44:32.348Z_
 
 ## Regressions and Recoveries
 
@@ -67,12 +67,12 @@ _Use the `diff` command against another run artifact to classify regressions and
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
 | healthy | attack-sim | pass | 0.31 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 0.52 | All 7 conformance checks passed. |
-| healthy | runtime-profile | pass | 0.05 | Detected 2 potential egress target(s) and 0 potential state mutation(s) with low confidence. |
-| healthy | schema-quality | pass | 0.32 | All 2 item(s) have good schema quality. |
-| healthy | security | pass | 0.18 | No security issues detected. |
+| healthy | conformance | pass | 0.51 | All 7 conformance checks passed. |
+| healthy | runtime-profile | pass | 0.06 | Detected 2 potential egress target(s) and 0 potential state mutation(s) with low confidence. |
+| healthy | schema-quality | pass | 0.22 | All 2 item(s) have good schema quality. |
+| healthy | security | pass | 0.13 | No security issues detected. |
 | healthy | security-lite | pass | 0.02 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 0.43 | Advertised capability responded with the minimal expected shape (2 items). |
+| healthy | tools | pass | 0.41 | Advertised capability responded with the minimal expected shape (2 items). |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -197,5 +197,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-12T233610680Z_a094a883`
+- Run ID: `run_2026-07-12T234431584Z_0c1cf559`
 - Gate: `pass`

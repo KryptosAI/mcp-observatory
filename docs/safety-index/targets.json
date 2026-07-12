@@ -720,5 +720,158 @@
     "failureClass": "Merge/CI pipeline boundary",
     "whyItMatters": "GitLab MCP servers expose repository operations, merge requests, issues, and CI pipeline controls — high-stakes write access across repos.",
     "reproductionNotes": "Scanned with dummy token for schema/tool discovery. Server responds but tools have schema validation issues preventing full listing. Note: npm flags this package as deprecated by the publisher."
+  },
+  {
+    "id": "gmail-server",
+    "name": "Anthropic Gmail MCP server",
+    "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-gmail",
+    "packageName": "@anthropic/mcp-server-gmail",
+    "category": "Email",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@anthropic/mcp-server-gmail"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Email platform access",
+    "failureClass": "Email read/write boundary",
+    "whyItMatters": "Gmail MCP servers can read, send, archive, and manage emails on behalf of users — high-stakes message access that needs visible boundaries before agents are trusted with inbox control.",
+    "reproductionNotes": "Schema-only evaluation; requires Gmail OAuth credentials. Note: @anthropic/mcp-server-gmail has not been published to npm. Community equivalent: gmail-mcp."
+  },
+  {
+    "id": "jina-server",
+    "name": "Anthropic Jina AI MCP server",
+    "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-jina",
+    "packageName": "@anthropic/mcp-server-jina",
+    "category": "Search / AI",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@anthropic/mcp-server-jina"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Untrusted content retrieval",
+    "failureClass": "Web search/reader boundary",
+    "whyItMatters": "Jina AI MCP servers can perform web search and content reading — untrusted content ingestion into agent context.",
+    "reproductionNotes": "Schema-only evaluation; requires Jina AI API key. Note: @anthropic/mcp-server-jina has not been published to npm. Community equivalent: jina-mcp-tools."
+  },
+  {
+    "id": "google-sheets-server",
+    "name": "Anthropic Google Sheets MCP server",
+    "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-google-sheets",
+    "packageName": "@anthropic/mcp-server-google-sheets",
+    "category": "Productivity / Spreadsheets",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@anthropic/mcp-server-google-sheets"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Spreadsheet data access",
+    "failureClass": "Spreadsheet read/write boundary",
+    "whyItMatters": "Google Sheets MCP servers can read, write, and query spreadsheet data — agents with sheet access can modify business-critical data.",
+    "reproductionNotes": "Schema-only evaluation; requires Google Sheets OAuth credentials. Note: @anthropic/mcp-server-google-sheets has not been published to npm. Community equivalent: google-sheets-mcp."
+  },
+  {
+    "id": "google-calendar-server",
+    "name": "Anthropic Google Calendar MCP server",
+    "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-google-calendar",
+    "packageName": "@anthropic/mcp-server-google-calendar",
+    "category": "Productivity / Calendar",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@anthropic/mcp-server-google-calendar"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Calendar data access",
+    "failureClass": "Calendar event boundary",
+    "whyItMatters": "Google Calendar MCP servers can create, read, update, and delete calendar events — agents can schedule meetings and modify availability.",
+    "reproductionNotes": "Schema-only evaluation; requires Google Calendar OAuth credentials. Note: @anthropic/mcp-server-google-calendar has not been published to npm. Community equivalent: @cocal/google-calendar-mcp."
+  },
+  {
+    "id": "google-tasks-server",
+    "name": "Anthropic Google Tasks MCP server",
+    "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-google-tasks",
+    "packageName": "@anthropic/mcp-server-google-tasks",
+    "category": "Productivity / Tasks",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@anthropic/mcp-server-google-tasks"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Task management access",
+    "failureClass": "Task list mutation boundary",
+    "whyItMatters": "Google Tasks MCP servers can create, list, update, and delete user tasks — agents can manage personal task lists with real user data.",
+    "reproductionNotes": "Schema-only evaluation; requires Google Tasks OAuth credentials. Note: @anthropic/mcp-server-google-tasks has not been published to npm. Community equivalent: @overlay-one/google-tasks-mcp-server."
+  },
+  {
+    "id": "huggingface-server",
+    "name": "Anthropic HuggingFace MCP server",
+    "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-huggingface",
+    "packageName": "@anthropic/mcp-server-huggingface",
+    "category": "AI / ML Platform",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@anthropic/mcp-server-huggingface"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "ML model and dataset access",
+    "failureClass": "Model/inference boundary",
+    "whyItMatters": "HuggingFace MCP servers can access models, datasets, and inference endpoints — agents could download or interact with ML artifacts.",
+    "reproductionNotes": "Schema-only evaluation; requires HuggingFace API token. Note: @anthropic/mcp-server-huggingface has not been published to npm. Community equivalent: huggingface-mcp-server."
+  },
+  {
+    "id": "reddit-server",
+    "name": "Anthropic Reddit MCP server",
+    "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-reddit",
+    "packageName": "@anthropic/mcp-server-reddit",
+    "category": "Social Media",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@anthropic/mcp-server-reddit"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Social platform access",
+    "failureClass": "Content posting/reading boundary",
+    "whyItMatters": "Reddit MCP servers can browse posts, search content, and interact with subreddits — agents could post or retrieve content from social platforms.",
+    "reproductionNotes": "Schema-only evaluation; requires Reddit API credentials. Note: @anthropic/mcp-server-reddit has not been published to npm. Community equivalent: reddit-mcp."
+  },
+  {
+    "id": "onesignal-server",
+    "name": "Anthropic OneSignal MCP server",
+    "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-onesignal",
+    "packageName": "@anthropic/mcp-server-onesignal",
+    "category": "Notifications / Messaging",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@anthropic/mcp-server-onesignal"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Push notification platform access",
+    "failureClass": "Notification/audience boundary",
+    "whyItMatters": "OneSignal MCP servers can send push notifications, manage segments, and configure messaging campaigns — agent-triggered notifications to real users is a high-stakes boundary.",
+    "reproductionNotes": "Schema-only evaluation; requires OneSignal API credentials. Note: @anthropic/mcp-server-onesignal has not been published to npm. No community MCP equivalent found as of this writing."
+  },
+  {
+    "id": "clay-server",
+    "name": "Anthropic Clay MCP server",
+    "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-clay",
+    "packageName": "@anthropic/mcp-server-clay",
+    "category": "CRM / Contact Management",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@anthropic/mcp-server-clay"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "CRM data access",
+    "failureClass": "Contact/relationship boundary",
+    "whyItMatters": "Clay MCP servers can access contact data, enrichment, and relationship intelligence — agents could read or modify CRM records with personal and business contact data.",
+    "reproductionNotes": "Schema-only evaluation; requires Clay API credentials. Note: @anthropic/mcp-server-clay has not been published to npm. Community equivalent: @clayhq/clay-mcp."
   }
 ]

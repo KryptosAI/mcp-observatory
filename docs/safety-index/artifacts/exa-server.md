@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-12T23:36:05.399Z
+Generated at 2026-07-12T23:44:25.958Z
 
 ## Target and Environment Metadata
 
@@ -55,7 +55,7 @@ The following targets were identified as potentially reachable by this server (c
 | --- | --- | --- | --- |
 | web_fetch_exa | unknown | description_analysis | low |
 
-_Analyzed at 2026-07-12T23:36:06.162Z_
+_Analyzed at 2026-07-12T23:44:26.739Z_
 
 ## Regressions and Recoveries
 
@@ -65,14 +65,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 0.81 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 0.24 | Advertised capability responded with the minimal expected shape (1 item). |
-| healthy | resources | pass | 0.64 | Advertised capability responded with the minimal expected shape (1 items). |
-| healthy | runtime-profile | pass | 0.05 | Detected 1 potential egress target(s) and 0 potential state mutation(s) with low confidence. |
-| healthy | schema-quality | pass | 0.64 | All 4 item(s) have good schema quality. |
-| healthy | security | pass | 0.21 | No security issues detected. |
+| healthy | conformance | pass | 0.82 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 0.27 | Advertised capability responded with the minimal expected shape (1 item). |
+| healthy | resources | pass | 0.68 | Advertised capability responded with the minimal expected shape (1 items). |
+| healthy | runtime-profile | pass | 0.06 | Detected 1 potential egress target(s) and 0 potential state mutation(s) with low confidence. |
+| healthy | schema-quality | pass | 0.73 | All 4 item(s) have good schema quality. |
+| healthy | security | pass | 0.20 | No security issues detected. |
 | healthy | security-lite | pass | 0.02 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 1.53 | Advertised capability responded with the minimal expected shape (2 items). |
+| healthy | tools | pass | 1.62 | Advertised capability responded with the minimal expected shape (2 items). |
 | review | attack-sim | partial | 0.49 | Safe attack simulation found 1 finding(s): 0 high, 1 medium, 0 low. |
 
 ## Evidence Snippets
@@ -99,7 +99,7 @@ Summary: Advertised capability responded with the minimal expected shape (1 item
   - Minimal shape present: `true`
   - Item count: `1`
   - Identifiers: web_search_help
-  - Diagnostics: [EXA-MCP-DEBUG] Server initialized with modern MCP SDK and Smithery CLI support, (node:19852) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead., (Use `node --trace-deprecation ...` to show where the warning was created) (+2 more)
+  - Diagnostics: [EXA-MCP-DEBUG] Server initialized with modern MCP SDK and Smithery CLI support, (node:26156) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead., (Use `node --trace-deprecation ...` to show where the warning was created) (+2 more)
 
 ### resources — pass
 
@@ -111,14 +111,14 @@ Summary: Advertised capability responded with the minimal expected shape (1 item
   - Minimal shape present: `true`
   - Item count: `1`
   - Identifiers: exa://tools/list
-  - Diagnostics: [EXA-MCP-DEBUG] Server initialized with modern MCP SDK and Smithery CLI support, (node:19852) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead., (Use `node --trace-deprecation ...` to show where the warning was created) (+2 more)
+  - Diagnostics: [EXA-MCP-DEBUG] Server initialized with modern MCP SDK and Smithery CLI support, (node:26156) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead., (Use `node --trace-deprecation ...` to show where the warning was created) (+2 more)
 - Endpoint: `resources/templates/list`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
   - Item count: `0`
   - Identifiers: none
-  - Diagnostics: [EXA-MCP-DEBUG] Server initialized with modern MCP SDK and Smithery CLI support, (node:19852) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead., (Use `node --trace-deprecation ...` to show where the warning was created) (+2 more)
+  - Diagnostics: [EXA-MCP-DEBUG] Server initialized with modern MCP SDK and Smithery CLI support, (node:26156) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead., (Use `node --trace-deprecation ...` to show where the warning was created) (+2 more)
 
 ### runtime-profile — pass
 
@@ -178,7 +178,7 @@ Summary: Advertised capability responded with the minimal expected shape (2 item
   - Minimal shape present: `true`
   - Item count: `2`
   - Identifiers: web_search_exa, web_fetch_exa
-  - Diagnostics: [EXA-MCP-DEBUG] Server initialized with modern MCP SDK and Smithery CLI support, (node:19852) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead., (Use `node --trace-deprecation ...` to show where the warning was created) (+2 more)
+  - Diagnostics: [EXA-MCP-DEBUG] Server initialized with modern MCP SDK and Smithery CLI support, (node:26156) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead., (Use `node --trace-deprecation ...` to show where the warning was created) (+2 more)
 
 ### attack-sim — partial
 
@@ -203,5 +203,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-12T233605399Z_5c8b6dec`
+- Run ID: `run_2026-07-12T234425958Z_416e109a`
 - Gate: `pass`

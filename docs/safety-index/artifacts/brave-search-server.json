@@ -2,8 +2,8 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-12T233610680Z_a094a883",
-  "createdAt": "2026-07-12T23:36:10.680Z",
+  "runId": "run_2026-07-12T234431584Z_0c1cf559",
+  "createdAt": "2026-07-12T23:44:31.584Z",
   "toolVersion": "1.31.0",
   "target": {
     "targetId": "brave-search-server",
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 0.4264580000017304,
+      "durationMs": 0.4080420000027516,
       "message": "Advertised capability responded with the minimal expected shape (2 items).",
       "evidence": [
         {
@@ -107,7 +107,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0008329999982379377,
+      "durationMs": 0.0007909999985713512,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -123,7 +123,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.0005000000019208528,
+      "durationMs": 0.0005840000012540258,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -139,7 +139,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.018750000002910383,
+      "durationMs": 0.02145800000289455,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -155,7 +155,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "pass",
-      "durationMs": 0.04550000000017462,
+      "durationMs": 0.05570799999986775,
       "message": "Detected 2 potential egress target(s) and 0 potential state mutation(s) with low confidence.",
       "evidence": [
         {
@@ -190,7 +190,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 0.5152079999970738,
+      "durationMs": 0.5054579999996349,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -216,7 +216,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "pass",
-      "durationMs": 0.315374999998312,
+      "durationMs": 0.21558299999742303,
       "message": "All 2 item(s) have good schema quality.",
       "evidence": [
         {
@@ -233,7 +233,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 0.17979100000229664,
+      "durationMs": 0.13141600000381004,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -249,7 +249,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "pass",
-      "durationMs": 0.30512499999895226,
+      "durationMs": 0.3077080000002752,
       "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
       "evidence": [
         {
@@ -308,17 +308,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 910ms",
+          "Connect: 763ms",
           "p95 latency: 0ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 910.0431659999958,
-    "toolsListMs": 0.4264580000017304,
-    "promptsListMs": 0.0008329999982379377,
-    "resourcesListMs": 0.0005000000019208528
+    "connectMs": 763.0463339999988,
+    "toolsListMs": 0.4080420000027516,
+    "promptsListMs": 0.0007909999985713512,
+    "resourcesListMs": 0.0005840000012540258
   },
   "runtimeProfile": {
     "egress": [
@@ -335,7 +335,7 @@
         "confidence": "low"
       }
     ],
-    "analyzedAt": "2026-07-12T23:36:11.591Z",
+    "analyzedAt": "2026-07-12T23:44:32.348Z",
     "confidence": "medium"
   }
 }

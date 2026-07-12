@@ -2,8 +2,8 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-12T233608306Z_a7a8aaf1",
-  "createdAt": "2026-07-12T23:36:08.306Z",
+  "runId": "run_2026-07-12T234429245Z_f8164ad4",
+  "createdAt": "2026-07-12T23:44:29.245Z",
   "toolVersion": "1.31.0",
   "target": {
     "targetId": "docker-server",
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 0.43400000000110595,
+      "durationMs": 0.4344160000036936,
       "message": "Advertised capability responded with the minimal expected shape (1 item).",
       "evidence": [
         {
@@ -86,7 +86,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0008330000055138953,
+      "durationMs": 0.0008750000051804818,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -102,7 +102,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.00045899999531684443,
+      "durationMs": 0.0005840000012540258,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -118,7 +118,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "fail",
-      "durationMs": 0.01429199999984121,
+      "durationMs": 0.01445899999816902,
       "message": "Found 1 security finding(s): 1 high, 0 medium, 0 low.",
       "evidence": [
         {
@@ -148,7 +148,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "partial",
-      "durationMs": 0.03954099999828031,
+      "durationMs": 0.0400420000005397,
       "message": "Detected 0 potential egress target(s) and 4 potential state mutation(s) with high confidence.",
       "evidence": [
         {
@@ -195,7 +195,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 0.7368750000023283,
+      "durationMs": 0.5411660000027041,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -221,7 +221,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "pass",
-      "durationMs": 0.21279100000538165,
+      "durationMs": 0.23166700000001583,
       "message": "All 1 item(s) have good schema quality.",
       "evidence": [
         {
@@ -238,7 +238,7 @@
       "id": "security",
       "capability": "security",
       "status": "fail",
-      "durationMs": 0.2477500000022701,
+      "durationMs": 0.1275000000023283,
       "message": "Found 1 security finding(s): 1 high, 0 medium, 0 low.",
       "evidence": [
         {
@@ -268,7 +268,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "fail",
-      "durationMs": 0.18829099999857135,
+      "durationMs": 0.21908399999665562,
       "message": "Safe attack simulation found 1 finding(s): 1 high, 0 medium, 0 low.",
       "evidence": [
         {
@@ -357,10 +357,10 @@
     ]
   },
   "performanceMetrics": {
-    "connectMs": 694.1615840000013,
-    "toolsListMs": 0.43400000000110595,
-    "promptsListMs": 0.0008330000055138953,
-    "resourcesListMs": 0.00045899999531684443
+    "connectMs": 694.3836250000022,
+    "toolsListMs": 0.4344160000036936,
+    "promptsListMs": 0.0008750000051804818,
+    "resourcesListMs": 0.0005840000012540258
   },
   "runtimeProfile": {
     "stateMutations": [
@@ -389,7 +389,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-12T23:36:09.001Z",
+    "analyzedAt": "2026-07-12T23:44:29.940Z",
     "confidence": "high"
   }
 }

@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-12T23:36:03.014Z
+Generated at 2026-07-12T23:44:23.094Z
 
 ## Target and Environment Metadata
 
@@ -92,7 +92,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-12T23:36:03.810Z_
+_Analyzed at 2026-07-12T23:44:24.026Z_
 
 ## Regressions and Recoveries
 
@@ -102,14 +102,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.77 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | attack-sim | pass | 0.51 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
 | healthy | runtime-profile | pass | 0.17 | Detected 1 potential egress target(s) and 30 potential state mutation(s) with low confidence. |
-| healthy | tools | pass | 1.06 | Advertised capability responded with the minimal expected shape (24 items). |
-| review | conformance | partial | 1.58 | 6/7 conformance checks passed, 1 failed. |
+| healthy | tools | pass | 1.08 | Advertised capability responded with the minimal expected shape (24 items). |
+| review | conformance | partial | 1.42 | 6/7 conformance checks passed, 1 failed. |
 | review | schema-quality | partial | 0.51 | Found 5 quality finding(s) across 24 item(s): 0 warnings, 5 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
-| act now | security | fail | 0.51 | Found 1 security finding(s): 1 high, 0 medium, 0 low. |
+| act now | security | fail | 0.44 | Found 1 security finding(s): 1 high, 0 medium, 0 low. |
 | act now | security-lite | fail | 0.05 | Found 1 security finding(s): 1 high, 0 medium, 0 low. |
 
 ## Evidence Snippets
@@ -233,5 +233,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-12T233603014Z_61aedc2b`
+- Run ID: `run_2026-07-12T234423094Z_34be3205`
 - Gate: `fail`

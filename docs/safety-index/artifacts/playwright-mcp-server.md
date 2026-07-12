@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-12T23:35:51.528Z
+Generated at 2026-07-12T23:44:10.399Z
 
 ## Target and Environment Metadata
 
@@ -88,7 +88,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-12T23:35:52.353Z_
+_Analyzed at 2026-07-12T23:44:11.239Z_
 
 ## Regressions and Recoveries
 
@@ -98,14 +98,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 701.37 | All 7 conformance checks passed. |
-| healthy | tools | pass | 2.89 | Advertised capability responded with the minimal expected shape (24 items). |
+| healthy | conformance | pass | 717.02 | All 7 conformance checks passed. |
+| healthy | tools | pass | 2.85 | Advertised capability responded with the minimal expected shape (24 items). |
 | review | runtime-profile | partial | 0.21 | Detected 7 potential egress target(s) and 21 potential state mutation(s) with high confidence. |
-| review | schema-quality | partial | 1.93 | Found 5 quality finding(s) across 24 item(s): 0 warnings, 5 info. |
+| review | schema-quality | partial | 1.38 | Found 5 quality finding(s) across 24 item(s): 0 warnings, 5 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
-| act now | attack-sim | fail | 2.47 | Safe attack simulation found 4 finding(s): 1 high, 3 medium, 0 low. |
-| act now | security | fail | 8.11 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
+| act now | attack-sim | fail | 1.05 | Safe attack simulation found 4 finding(s): 1 high, 3 medium, 0 low. |
+| act now | security | fail | 0.89 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
 | act now | security-lite | fail | 0.06 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
 
 ## Evidence Snippets
@@ -229,5 +229,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-12T233551528Z_76eafaad`
+- Run ID: `run_2026-07-12T234410399Z_1a4faea8`
 - Gate: `fail`

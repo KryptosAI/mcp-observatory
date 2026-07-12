@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-12T23:35:48.193Z
+Generated at 2026-07-12T23:44:06.388Z
 
 ## Target and Environment Metadata
 
@@ -48,7 +48,7 @@ Generated at 2026-07-12T23:35:48.193Z
 
 ## Runtime Profile
 
-_Analyzed at 2026-07-12T23:35:49.122Z_
+_Analyzed at 2026-07-12T23:44:07.386Z_
 
 ## Regressions and Recoveries
 
@@ -58,14 +58,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.56 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 0.77 | All 7 conformance checks passed. |
-| healthy | resources | pass | 0.99 | Advertised capability responded with the minimal expected shape (1 items). |
-| healthy | runtime-profile | pass | 0.07 | No egress or state mutation indicators detected in tool schemas. |
-| healthy | security | pass | 0.28 | No security issues detected. |
+| healthy | attack-sim | pass | 0.38 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 0.74 | All 7 conformance checks passed. |
+| healthy | resources | pass | 0.67 | Advertised capability responded with the minimal expected shape (1 items). |
+| healthy | runtime-profile | pass | 0.08 | No egress or state mutation indicators detected in tool schemas. |
+| healthy | security | pass | 0.16 | No security issues detected. |
 | healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 2.81 | Advertised capability responded with the minimal expected shape (5 items). |
-| review | schema-quality | partial | 0.50 | Found 1 quality finding(s) across 6 item(s): 1 warnings, 0 info. |
+| healthy | tools | pass | 2.51 | Advertised capability responded with the minimal expected shape (5 items). |
+| review | schema-quality | partial | 0.48 | Found 1 quality finding(s) across 6 item(s): 1 warnings, 0 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 
 ## Evidence Snippets
@@ -190,5 +190,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-12T233548193Z_953ae05f`
+- Run ID: `run_2026-07-12T234406388Z_5a29ef6f`
 - Gate: `pass`

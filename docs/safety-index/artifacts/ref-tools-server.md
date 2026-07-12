@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-12T23:35:43.891Z
+Generated at 2026-07-12T23:44:02.182Z
 
 ## Target and Environment Metadata
 
@@ -57,7 +57,7 @@ The following targets were identified as potentially reachable by this server (c
 | The URL of the webpage to read. | unknown | description_analysis | medium |
 | ref_read_url | unknown | description_analysis | low |
 
-_Analyzed at 2026-07-12T23:35:44.664Z_
+_Analyzed at 2026-07-12T23:44:02.958Z_
 
 ## Regressions and Recoveries
 
@@ -67,13 +67,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.37 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 0.50 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 0.27 | Advertised capability responded with the minimal expected shape (2 items). |
-| healthy | schema-quality | pass | 0.51 | All 4 item(s) have good schema quality. |
-| healthy | security | pass | 0.27 | No security issues detected. |
+| healthy | attack-sim | pass | 0.29 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 0.46 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 0.20 | Advertised capability responded with the minimal expected shape (2 items). |
+| healthy | schema-quality | pass | 0.55 | All 4 item(s) have good schema quality. |
+| healthy | security | pass | 0.20 | No security issues detected. |
 | healthy | security-lite | pass | 0.02 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 1.01 | Advertised capability responded with the minimal expected shape (2 items). |
+| healthy | tools | pass | 0.91 | Advertised capability responded with the minimal expected shape (2 items). |
 | review | runtime-profile | partial | 0.11 | Detected 4 potential egress target(s) and 0 potential state mutation(s) with high confidence. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -198,5 +198,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-12T233543891Z_2758811c`
+- Run ID: `run_2026-07-12T234402182Z_8b188092`
 - Gate: `pass`

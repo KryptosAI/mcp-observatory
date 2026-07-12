@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-12T23:36:11.599Z
+Generated at 2026-07-12T23:44:32.356Z
 
 ## Target and Environment Metadata
 
@@ -172,13 +172,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.23 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | schema-quality | pass | 0.15 | All 0 item(s) have good schema quality. |
-| healthy | security | pass | 0.37 | No security issues detected. |
-| review | conformance | partial | 0.53 | 5/7 conformance checks passed, 2 failed. |
+| healthy | attack-sim | pass | 0.20 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | schema-quality | pass | 0.13 | All 0 item(s) have good schema quality. |
+| healthy | security | pass | 0.25 | No security issues detected. |
+| review | conformance | partial | 0.57 | 5/7 conformance checks passed, 2 failed. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
-| act now | tools | fail | 1.86 | Advertised capability failed during tools/list: [
+| act now | tools | fail | 1.05 | Advertised capability failed during tools/list: [
   {
     "code": "invalid_value",
     "values": [
@@ -749,5 +749,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-12T233611599Z_faae287f`
+- Run ID: `run_2026-07-12T234432356Z_5fb3b8bf`
 - Gate: `fail`

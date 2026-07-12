@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-12T23:35:54.941Z
+Generated at 2026-07-12T23:44:14.092Z
 
 ## Target and Environment Metadata
 
@@ -143,7 +143,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-12T23:35:56.127Z_
+_Analyzed at 2026-07-12T23:44:15.479Z_
 
 ## Regressions and Recoveries
 
@@ -153,14 +153,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 1.91 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 0.33 | Advertised capability responded with the minimal expected shape (1 item). |
-| healthy | resources | pass | 0.48 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
-| healthy | tools | pass | 1.41 | Advertised capability responded with the minimal expected shape (23 items). |
-| review | runtime-profile | partial | 0.42 | Detected 8 potential egress target(s) and 75 potential state mutation(s) with high confidence. |
-| review | schema-quality | partial | 0.67 | Found 7 quality finding(s) across 29 item(s): 0 warnings, 7 info. |
-| act now | attack-sim | fail | 2.15 | Safe attack simulation found 5 finding(s): 3 high, 2 medium, 0 low. |
-| act now | security | fail | 0.47 | Found 8 security finding(s): 3 high, 3 medium, 2 low. |
+| healthy | conformance | pass | 1.68 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 0.31 | Advertised capability responded with the minimal expected shape (1 item). |
+| healthy | resources | pass | 0.44 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
+| healthy | tools | pass | 1.19 | Advertised capability responded with the minimal expected shape (23 items). |
+| review | runtime-profile | partial | 0.31 | Detected 8 potential egress target(s) and 75 potential state mutation(s) with high confidence. |
+| review | schema-quality | partial | 1.03 | Found 7 quality finding(s) across 29 item(s): 0 warnings, 7 info. |
+| act now | attack-sim | fail | 1.01 | Safe attack simulation found 5 finding(s): 3 high, 2 medium, 0 low. |
+| act now | security | fail | 0.36 | Found 8 security finding(s): 3 high, 3 medium, 2 low. |
 | act now | security-lite | fail | 0.07 | Found 8 security finding(s): 3 high, 3 medium, 2 low. |
 
 ## Evidence Snippets
@@ -187,7 +187,7 @@ Summary: Advertised capability responded with the minimal expected shape (1 item
   - Minimal shape present: `true`
   - Item count: `1`
   - Identifiers: k8s-diagnose
-  - Diagnostics: Starting Kubernetes MCP server v4.0.1, handling commands..., Telemetry: Disabled, (node:19183) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. (+1 more)
+  - Diagnostics: Starting Kubernetes MCP server v4.0.1, handling commands..., Telemetry: Disabled, (node:25430) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. (+1 more)
 
 ### resources — pass
 
@@ -199,7 +199,7 @@ Summary: Advertised capability responded with the minimal expected shape, but on
   - Minimal shape present: `true`
   - Item count: `5`
   - Identifiers: k8s://default/pods, k8s://default/deployments, k8s://default/services, k8s://namespaces, k8s://nodes
-  - Diagnostics: Starting Kubernetes MCP server v4.0.1, handling commands..., Telemetry: Disabled, (node:19183) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. (+1 more)
+  - Diagnostics: Starting Kubernetes MCP server v4.0.1, handling commands..., Telemetry: Disabled, (node:25430) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. (+1 more)
 - Endpoint: `resources/templates/list`
   - Advertised: `true`
   - Responded: `false`
@@ -218,7 +218,7 @@ Summary: Advertised capability responded with the minimal expected shape (23 ite
   - Minimal shape present: `true`
   - Item count: `23`
   - Identifiers: cleanup, kubectl_get, kubectl_describe, kubectl_apply, kubectl_delete (+18 more)
-  - Diagnostics: Starting Kubernetes MCP server v4.0.1, handling commands..., Telemetry: Disabled, (node:19183) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. (+1 more)
+  - Diagnostics: Starting Kubernetes MCP server v4.0.1, handling commands..., Telemetry: Disabled, (node:25430) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. (+1 more)
 
 ### runtime-profile — partial
 
@@ -291,5 +291,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-12T233554941Z_473b2ef2`
+- Run ID: `run_2026-07-12T234414092Z_d12ccaeb`
 - Gate: `fail`

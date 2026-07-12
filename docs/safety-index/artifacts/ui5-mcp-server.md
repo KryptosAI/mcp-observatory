@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-12T23:35:46.943Z
+Generated at 2026-07-12T23:44:04.910Z
 
 ## Target and Environment Metadata
 
@@ -87,7 +87,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | execute | working_directory | description_analysis |
 
-_Analyzed at 2026-07-12T23:35:48.164Z_
+_Analyzed at 2026-07-12T23:44:06.359Z_
 
 ## Regressions and Recoveries
 
@@ -97,13 +97,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 3.20 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 7.69 | All 7 conformance checks passed. |
-| healthy | runtime-profile | pass | 0.15 | Detected 4 potential egress target(s) and 23 potential state mutation(s) with low confidence. |
-| healthy | schema-quality | pass | 3.35 | All 10 item(s) have good schema quality. |
-| healthy | security | pass | 2.86 | No security issues detected. |
-| healthy | security-lite | pass | 0.05 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 5.86 | Advertised capability responded with the minimal expected shape (10 items). |
+| healthy | attack-sim | pass | 3.51 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 7.13 | All 7 conformance checks passed. |
+| healthy | runtime-profile | pass | 0.14 | Detected 4 potential egress target(s) and 23 potential state mutation(s) with low confidence. |
+| healthy | schema-quality | pass | 3.92 | All 10 item(s) have good schema quality. |
+| healthy | security | pass | 3.33 | No security issues detected. |
+| healthy | security-lite | pass | 0.04 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 6.43 | Advertised capability responded with the minimal expected shape (10 items). |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -228,5 +228,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-12T233546943Z_d6448a31`
+- Run ID: `run_2026-07-12T234404910Z_de50bf29`
 - Gate: `pass`

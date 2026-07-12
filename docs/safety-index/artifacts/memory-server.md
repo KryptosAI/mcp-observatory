@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-12T23:35:38.028Z
+Generated at 2026-07-12T23:43:55.682Z
 
 ## Target and Environment Metadata
 
@@ -66,7 +66,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | delete | working_directory | description_analysis |
 
-_Analyzed at 2026-07-12T23:35:38.749Z_
+_Analyzed at 2026-07-12T23:43:56.485Z_
 
 ## Regressions and Recoveries
 
@@ -76,14 +76,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 3.63 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 8.35 | All 7 conformance checks passed. |
-| healthy | resources | pass | 1.22 | Advertised capability responded with the minimal expected shape (1 items). |
-| healthy | runtime-profile | pass | 0.06 | Detected 0 potential egress target(s) and 12 potential state mutation(s) with low confidence. |
-| healthy | security | pass | 3.94 | No security issues detected. |
-| healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 7.62 | Advertised capability responded with the minimal expected shape (9 items). |
-| review | schema-quality | partial | 7.68 | Found 4 quality finding(s) across 10 item(s): 0 warnings, 4 info. |
+| healthy | attack-sim | pass | 4.25 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 8.83 | All 7 conformance checks passed. |
+| healthy | resources | pass | 0.75 | Advertised capability responded with the minimal expected shape (1 items). |
+| healthy | runtime-profile | pass | 0.08 | Detected 0 potential egress target(s) and 12 potential state mutation(s) with low confidence. |
+| healthy | security | pass | 4.07 | No security issues detected. |
+| healthy | security-lite | pass | 0.04 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 7.79 | Advertised capability responded with the minimal expected shape (9 items). |
+| review | schema-quality | partial | 3.99 | Found 4 quality finding(s) across 10 item(s): 0 warnings, 4 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 
 ## Evidence Snippets
@@ -214,5 +214,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-12T233538028Z_74c23d92`
+- Run ID: `run_2026-07-12T234355682Z_37a2cec6`
 - Gate: `pass`

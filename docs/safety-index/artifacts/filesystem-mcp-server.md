@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-12T23:35:39.531Z
+Generated at 2026-07-12T23:43:57.332Z
 
 ## Target and Environment Metadata
 
@@ -85,7 +85,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | tool_schema |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-12T23:35:40.247Z_
+_Analyzed at 2026-07-12T23:43:58.202Z_
 
 ## Regressions and Recoveries
 
@@ -95,13 +95,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 6.02 | All 7 conformance checks passed. |
-| healthy | tools | pass | 5.21 | Advertised capability responded with the minimal expected shape (14 items). |
-| review | attack-sim | partial | 2.27 | Safe attack simulation found 3 finding(s): 0 high, 3 medium, 0 low. |
-| review | runtime-profile | partial | 0.12 | Detected 0 potential egress target(s) and 31 potential state mutation(s) with high confidence. |
+| healthy | conformance | pass | 6.27 | All 7 conformance checks passed. |
+| healthy | tools | pass | 5.52 | Advertised capability responded with the minimal expected shape (14 items). |
+| review | attack-sim | partial | 2.24 | Safe attack simulation found 3 finding(s): 0 high, 3 medium, 0 low. |
+| review | runtime-profile | partial | 0.15 | Detected 0 potential egress target(s) and 31 potential state mutation(s) with high confidence. |
 | review | schema-quality | partial | 2.32 | Found 18 quality finding(s) across 14 item(s): 0 warnings, 18 info. |
-| review | security | partial | 2.10 | Found 3 security finding(s): 0 high, 3 medium, 0 low. |
-| review | security-lite | partial | 0.05 | Found 3 security finding(s): 0 high, 3 medium, 0 low. |
+| review | security | partial | 2.06 | Found 3 security finding(s): 0 high, 3 medium, 0 low. |
+| review | security-lite | partial | 0.07 | Found 3 security finding(s): 0 high, 3 medium, 0 low. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -226,5 +226,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-12T233539531Z_8099492d`
+- Run ID: `run_2026-07-12T234357332Z_a8909e32`
 - Gate: `pass`
