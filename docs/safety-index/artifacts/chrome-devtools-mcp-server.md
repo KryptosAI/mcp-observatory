@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-07T03:17:28.113Z
+Generated at 2026-07-12T23:35:56.143Z
 
 ## Target and Environment Metadata
 
@@ -8,8 +8,8 @@ Generated at 2026-07-07T03:17:28.113Z
 - Adapter: `local-process`
 - Command: `npx -y chrome-devtools-mcp`
 - Server: `chrome_devtools 1.5.0`
-- Platform: `darwin 24.0.0`
-- Node: `v25.8.1`
+- Platform: `darwin 25.5.0`
+- Node: `v22.22.1`
 
 ## Executive Summary
 
@@ -25,19 +25,88 @@ Generated at 2026-07-07T03:17:28.113Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| fail | 8 | 2 | 2 | 2 | 2 | 0 | 0 |
+| fail | 9 | 2 | 2 | 3 | 2 | 0 | 0 |
 
 ## At a Glance
 
 - Safety verdict: **Blocked** — One or more checks can break agent dependence and should be fixed before production use.
-- Top risks: attack-sim: Safe attack simulation found 9 finding(s): 0 high, 9 medium, 0 low.; schema-quality: Found 10 quality finding(s) across 29 item(s): 0 warnings, 10 info.; security: Found 30 security finding(s): 1 high, 7 medium, 22 low.
+- Top risks: attack-sim: Safe attack simulation found 9 finding(s): 0 high, 9 medium, 0 low.; runtime-profile: Detected 9 potential egress target(s) and 36 potential state mutation(s) with high confidence.; schema-quality: Found 10 quality finding(s) across 29 item(s): 0 warnings, 10 info.
 - Regression/schema drift: Run `mcp-observatory diff <previous-run.json> <current-run.json>` to classify regressions and schema drift.
 - Failing checks: security-lite, security
-- Partial or flaky checks: schema-quality, attack-sim
+- Partial or flaky checks: runtime-profile, schema-quality, attack-sim
 - Skipped checks: none
 - Unsupported checks: prompts, resources
 - Suggested next step: Start with the failing checks: security-lite, security.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
+
+## What Was Not Tested
+
+- 🔒 filesystem_mutation: Filesystem write operations were not exercised
+- ℹ️ credential_access: Credential scanning was performed (see security findings)
+- ℹ️ destructive_payloads: Destructive payloads were not attempted (safe-mode only)
+
+## Runtime Profile
+
+### Egress Manifest
+
+The following targets were identified as potentially reachable by this server (confidence: **high**):
+
+| Target | Protocol | Source | Confidence |
+| --- | --- | --- | --- |
+| Extra HTTP headers as a JSON string object, e.g. {"X-Custom": "value", "Authorization": "Bearer token"}. Headers are included into every HTTP request originating from the page and persist across navigations until cleared. Pass an empty string to clear all extra headers. | unknown | description_analysis | medium |
+| url | unknown | tool_schema | high |
+| Navigate the page by URL, back or forward in history, or reload. | unknown | description_analysis | medium |
+| Target URL (only type=url) | unknown | description_analysis | medium |
+| navigate_page | unknown | description_analysis | low |
+| url | unknown | tool_schema | high |
+| URL to load in a new page. | unknown | description_analysis | medium |
+| new_page | unknown | description_analysis | low |
+| Determines if, once tracing has started, the current selected page should be automatically reloaded. Navigate the page to the right URL using the navigate_page tool BEFORE starting the trace if reload or autoStop is set to true. | unknown | description_analysis | medium |
+
+### State Mutations
+
+The following state-modifying operations were identified from tool schemas:
+
+| Resource | Operation | Scope | Source |
+| --- | --- | --- | --- |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+
+_Analyzed at 2026-07-12T23:35:57.148Z_
 
 ## Regressions and Recoveries
 
@@ -47,14 +116,15 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 961.11 | All 7 conformance checks passed. |
-| healthy | tools | pass | 4.25 | Advertised capability responded with the minimal expected shape (29 items). |
-| review | attack-sim | partial | 1.11 | Safe attack simulation found 9 finding(s): 0 high, 9 medium, 0 low. |
-| review | schema-quality | partial | 0.91 | Found 10 quality finding(s) across 29 item(s): 0 warnings, 10 info. |
+| healthy | conformance | pass | 525.75 | All 7 conformance checks passed. |
+| healthy | tools | pass | 3.31 | Advertised capability responded with the minimal expected shape (29 items). |
+| review | attack-sim | partial | 0.98 | Safe attack simulation found 9 finding(s): 0 high, 9 medium, 0 low. |
+| review | runtime-profile | partial | 0.31 | Detected 9 potential egress target(s) and 36 potential state mutation(s) with high confidence. |
+| review | schema-quality | partial | 0.96 | Found 10 quality finding(s) across 29 item(s): 0 warnings, 10 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
-| confirm intent | resources | unsupported | 0.01 | Resources are not advertised by the target. |
-| act now | security | fail | 0.75 | Found 30 security finding(s): 1 high, 7 medium, 22 low. |
-| act now | security-lite | fail | 0.13 | Found 30 security finding(s): 1 high, 7 medium, 22 low. |
+| confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
+| act now | security | fail | 0.70 | Found 30 security finding(s): 1 high, 7 medium, 22 low. |
+| act now | security-lite | fail | 0.09 | Found 30 security finding(s): 1 high, 7 medium, 22 low. |
 
 ## Evidence Snippets
 
@@ -93,6 +163,18 @@ Summary: Safe attack simulation found 9 finding(s): 0 high, 9 medium, 0 low.
   - Item count: `9`
   - Identifiers: evaluate_script, navigate_page, new_page, performance_start_trace, performance_stop_trace (+4 more)
   - Diagnostics: [medium] Tool "evaluate_script" combines broad parameters (filePath) with destructive or non-read-only behavior., [medium] Tool "navigate_page" combines broad parameters (url) with destructive or non-read-only behavior., [medium] Tool "new_page" combines broad parameters (url) with destructive or non-read-only behavior. (+6 more)
+
+### runtime-profile — partial
+
+Summary: Detected 9 potential egress target(s) and 36 potential state mutation(s) with high confidence.
+
+- Endpoint: `runtime-profile/analyze`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `45`
+  - Identifiers: none
+  - Diagnostics: Egress entries: 9, State mutations: 36, Confidence: high
 
 ### schema-quality — partial
 
@@ -165,5 +247,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-07T031728113Z_b22904e8`
+- Run ID: `run_2026-07-12T233556143Z_2a4fa3d9`
 - Gate: `fail`

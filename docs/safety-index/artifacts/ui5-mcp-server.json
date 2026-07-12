@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-09T151505224Z_052ab101",
-  "createdAt": "2026-07-09T15:15:05.224Z",
-  "toolVersion": "1.28.2",
+  "runId": "run_2026-07-12T233546943Z_d6448a31",
+  "createdAt": "2026-07-12T23:35:46.943Z",
+  "toolVersion": "1.31.0",
   "target": {
     "targetId": "ui5-mcp-server",
     "adapter": "local-process",
@@ -25,8 +25,8 @@
     "serverVersion": "0.2.14"
   },
   "environment": {
-    "platform": "darwin 24.0.0",
-    "nodeVersion": "v25.8.1"
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
   },
   "summary": {
     "total": 9,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 6.683124999999563,
+      "durationMs": 5.861291999999594,
       "message": "Advertised capability responded with the minimal expected shape (10 items).",
       "evidence": [
         {
@@ -169,7 +169,7 @@
                   "pattern": "^[a-zA-Z0-9 .,'@_-]+$"
                 },
                 "oDataV4Url": {
-                  "description": "OData V4 service URL parameter; public artifact redacts local URL examples from the upstream tool description.",
+                  "description": "URL of an OData V4 service, if applicable. This is entirely optional, but without it, the generated app UI will have no OData Model configured. Setting an URL will configure an OData V4 model in the application. Only works for OData V4 services, not for OData V2. The URL must be either a valid complete URL starting with http:// or https:// or a server-root-relative URL like '/odata/v4/serviceName' when the OData service is running on the same server. In this case, the prefix 'http://localhost:4004/' will be assumed and used by this tool for inquiries about the service. When the port is not 4004, a complete 'http://localhost:<port>...' URL must be provided. In the generated application, any 'http://localhost:<port>' prefix will be removed. HINT: when the project is a SAP CAP project and CAP/CDS tools are available, you **MUST** use them to search for OData services and entities and properties **BEFORE** calling this tool. This will help you find the correct service URL.",
                   "type": "string"
                 },
                 "oDataEntitySet": {
@@ -306,7 +306,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0013330000001587905,
+      "durationMs": 0.0006659999999101274,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -322,7 +322,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.0037920000013400568,
+      "durationMs": 0.00204200000007404,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -338,7 +338,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.045041999999739346,
+      "durationMs": 0.046542000000044936,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -354,7 +354,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "pass",
-      "durationMs": 0.20004200000039418,
+      "durationMs": 0.14641699999992852,
       "message": "Detected 4 potential egress target(s) and 23 potential state mutation(s) with low confidence.",
       "evidence": [
         {
@@ -388,7 +388,7 @@
               "confidence": "low"
             },
             {
-              "target": "OData V4 service URL parameter; public artifact redacts local URL examples from the upstream tool description.",
+              "target": "URL of an OData V4 service, if applicable. This is entirely optional, but without it, the generated app UI will have no OData Model configured. Setting an URL will configure an OData V4 model in the application. Only works for OData V4 services, not for OData V2. The URL must be either a valid complete URL starting with http:// or https:// or a server-root-relative URL like '/odata/v4/serviceName' when the OData service is running on the same server. In this case, the prefix 'http://localhost:4004/' will be assumed and used by this tool for inquiries about the service. When the port is not 4004, a complete 'http://localhost:<port>...' URL must be provided. In the generated application, any 'http://localhost:<port>' prefix will be removed. HINT: when the project is a SAP CAP project and CAP/CDS tools are available, you **MUST** use them to search for OData services and entities and properties **BEFORE** calling this tool. This will help you find the correct service URL.",
               "protocol": "unknown",
               "source": "description_analysis",
               "confidence": "medium"
@@ -539,7 +539,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 11.027541999999812,
+      "durationMs": 7.69341600000007,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -565,7 +565,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "pass",
-      "durationMs": 7.388416999998299,
+      "durationMs": 3.345707999998922,
       "message": "All 10 item(s) have good schema quality.",
       "evidence": [
         {
@@ -582,7 +582,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 3.974833000000217,
+      "durationMs": 2.861417000000074,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -598,7 +598,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "pass",
-      "durationMs": 3.8867500000014843,
+      "durationMs": 3.202832999999373,
       "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
       "evidence": [
         {
@@ -657,17 +657,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 1287ms",
-          "p95 latency: 7ms (3 operations)"
+          "Connect: 1212ms",
+          "p95 latency: 6ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 1286.6761250000018,
-    "toolsListMs": 6.683124999999563,
-    "promptsListMs": 0.0013330000001587905,
-    "resourcesListMs": 0.0037920000013400568
+    "connectMs": 1211.8801250000015,
+    "toolsListMs": 5.861291999999594,
+    "promptsListMs": 0.0006659999999101274,
+    "resourcesListMs": 0.00204200000007404
   },
   "runtimeProfile": {
     "egress": [
@@ -690,7 +690,7 @@
         "confidence": "low"
       },
       {
-        "target": "OData V4 service URL parameter; public artifact redacts local URL examples from the upstream tool description.",
+        "target": "URL of an OData V4 service, if applicable. This is entirely optional, but without it, the generated app UI will have no OData Model configured. Setting an URL will configure an OData V4 model in the application. Only works for OData V4 services, not for OData V2. The URL must be either a valid complete URL starting with http:// or https:// or a server-root-relative URL like '/odata/v4/serviceName' when the OData service is running on the same server. In this case, the prefix 'http://localhost:4004/' will be assumed and used by this tool for inquiries about the service. When the port is not 4004, a complete 'http://localhost:<port>...' URL must be provided. In the generated application, any 'http://localhost:<port>' prefix will be removed. HINT: when the project is a SAP CAP project and CAP/CDS tools are available, you **MUST** use them to search for OData services and entities and properties **BEFORE** calling this tool. This will help you find the correct service URL.",
         "protocol": "unknown",
         "source": "description_analysis",
         "confidence": "medium"
@@ -836,7 +836,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-09T15:15:06.521Z",
+    "analyzedAt": "2026-07-12T23:35:48.164Z",
     "confidence": "medium"
   }
 }

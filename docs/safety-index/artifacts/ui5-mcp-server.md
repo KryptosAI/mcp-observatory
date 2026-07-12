@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-09T15:15:05.224Z
+Generated at 2026-07-12T23:35:46.943Z
 
 ## Target and Environment Metadata
 
@@ -8,8 +8,8 @@ Generated at 2026-07-09T15:15:05.224Z
 - Adapter: `local-process`
 - Command: `npx -y @ui5/mcp-server`
 - Server: `UI5 0.2.14`
-- Platform: `darwin 24.0.0`
-- Node: `v25.8.1`
+- Platform: `darwin 25.5.0`
+- Node: `v22.22.1`
 
 ## Executive Summary
 
@@ -55,7 +55,7 @@ The following targets were identified as potentially reachable by this server (c
 | Whether to include supplementary information in the output. This includes UI5 API reference and documentation resources. When calling the tool multiple times for the same file or project, refrain from requesting additional context every time. | unknown | description_analysis | medium |
 | run_ui5_linter | unknown | description_analysis | low |
 | get_api_reference | unknown | description_analysis | low |
-| OData V4 service URL parameter; public artifact redacts local URL examples from the upstream tool description. | unknown | description_analysis | medium |
+| URL of an OData V4 service, if applicable. This is entirely optional, but without it, the generated app UI will have no OData Model configured. Setting an URL will configure an OData V4 model in the application. Only works for OData V4 services, not for OData V2. The URL must be either a valid complete URL starting with http:// or https:// or a server-root-relative URL like '/odata/v4/serviceName' when the OData service is running on the same server. In this case, the prefix 'http://localhost:4004/' will be assumed and used by this tool for inquiries about the service. When the port is not 4004, a complete 'http://localhost:<port>...' URL must be provided. In the generated application, any 'http://localhost:<port>' prefix will be removed. HINT: when the project is a SAP CAP project and CAP/CDS tools are available, you **MUST** use them to search for OData services and entities and properties **BEFORE** calling this tool. This will help you find the correct service URL. | unknown | description_analysis | medium |
 
 ### State Mutations
 
@@ -87,7 +87,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | execute | working_directory | description_analysis |
 
-_Analyzed at 2026-07-09T15:15:06.521Z_
+_Analyzed at 2026-07-12T23:35:48.164Z_
 
 ## Regressions and Recoveries
 
@@ -97,13 +97,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 3.89 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 11.03 | All 7 conformance checks passed. |
-| healthy | runtime-profile | pass | 0.20 | Detected 4 potential egress target(s) and 23 potential state mutation(s) with low confidence. |
-| healthy | schema-quality | pass | 7.39 | All 10 item(s) have good schema quality. |
-| healthy | security | pass | 3.97 | No security issues detected. |
+| healthy | attack-sim | pass | 3.20 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 7.69 | All 7 conformance checks passed. |
+| healthy | runtime-profile | pass | 0.15 | Detected 4 potential egress target(s) and 23 potential state mutation(s) with low confidence. |
+| healthy | schema-quality | pass | 3.35 | All 10 item(s) have good schema quality. |
+| healthy | security | pass | 2.86 | No security issues detected. |
 | healthy | security-lite | pass | 0.05 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 6.68 | Advertised capability responded with the minimal expected shape (10 items). |
+| healthy | tools | pass | 5.86 | Advertised capability responded with the minimal expected shape (10 items). |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -228,5 +228,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-09T151505224Z_052ab101`
+- Run ID: `run_2026-07-12T233546943Z_d6448a31`
 - Gate: `pass`

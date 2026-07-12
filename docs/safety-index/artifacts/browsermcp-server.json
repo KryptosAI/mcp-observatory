@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-06T194954693Z_39638a36",
-  "createdAt": "2026-07-06T19:49:54.694Z",
-  "toolVersion": "0.28.0",
+  "runId": "run_2026-07-12T233550710Z_b3d14826",
+  "createdAt": "2026-07-12T23:35:50.710Z",
+  "toolVersion": "1.31.0",
   "target": {
     "targetId": "browsermcp-server",
     "adapter": "local-process",
@@ -29,10 +29,10 @@
     "nodeVersion": "v22.22.1"
   },
   "summary": {
-    "total": 8,
+    "total": 9,
     "pass": 7,
     "fail": 0,
-    "partial": 0,
+    "partial": 1,
     "unsupported": 1,
     "flaky": 0,
     "skipped": 0,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 0.8151659999984986,
+      "durationMs": 0.8519169999999576,
       "message": "Advertised capability responded with the minimal expected shape (12 items).",
       "evidence": [
         {
@@ -242,7 +242,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0005419999997684499,
+      "durationMs": 0.0013330000001587905,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -258,7 +258,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 0.4444999999996071,
+      "durationMs": 0.4565419999998994,
       "message": "Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported.",
       "evidence": [
         {
@@ -285,7 +285,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.025958000000173342,
+      "durationMs": 0.02529099999992468,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -298,10 +298,51 @@
       ]
     },
     {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "partial",
+      "durationMs": 0.07537499999853026,
+      "message": "Detected 3 potential egress target(s) and 0 potential state mutation(s) with high confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 3,
+          "diagnostics": [
+            "Egress entries: 3",
+            "State mutations: 0",
+            "Confidence: high"
+          ],
+          "findings": [
+            {
+              "target": "url",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "The URL to navigate to",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "browser_navigate",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 1.574958000001061,
+      "durationMs": 1.5881250000002183,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -327,7 +368,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "pass",
-      "durationMs": 0.36616700000013225,
+      "durationMs": 0.42845800000031886,
       "message": "All 12 item(s) have good schema quality.",
       "evidence": [
         {
@@ -344,7 +385,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 0.15450000000055297,
+      "durationMs": 0.15533399999912945,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -360,7 +401,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "pass",
-      "durationMs": 0.5073330000013812,
+      "durationMs": 0.4799169999987498,
       "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
       "evidence": [
         {
@@ -419,16 +460,40 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 652ms",
+          "Connect: 803ms",
           "p95 latency: 1ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 651.8255829999998,
-    "toolsListMs": 0.8151659999984986,
-    "promptsListMs": 0.0005419999997684499,
-    "resourcesListMs": 0.4444999999996071
+    "connectMs": 803.0307080000002,
+    "toolsListMs": 0.8519169999999576,
+    "promptsListMs": 0.0013330000001587905,
+    "resourcesListMs": 0.4565419999998994
+  },
+  "runtimeProfile": {
+    "egress": [
+      {
+        "target": "url",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "The URL to navigate to",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "browser_navigate",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      }
+    ],
+    "analyzedAt": "2026-07-12T23:35:51.515Z",
+    "confidence": "high"
   }
 }

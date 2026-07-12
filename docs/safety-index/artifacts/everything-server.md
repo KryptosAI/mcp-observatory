@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T19:49:44.860Z
+Generated at 2026-07-12T23:35:36.111Z
 
 ## Target and Environment Metadata
 
@@ -25,7 +25,7 @@ Generated at 2026-07-06T19:49:44.860Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| pass | 8 | 7 | 0 | 1 | 0 | 0 | 0 |
+| pass | 9 | 8 | 0 | 1 | 0 | 0 | 0 |
 
 ## At a Glance
 
@@ -39,6 +39,38 @@ Generated at 2026-07-06T19:49:44.860Z
 - Suggested next step: Review the caveated checks next: schema-quality.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
 
+## What Was Not Tested
+
+- 🔒 network_egress: No outbound network calls were attempted during scan
+- ℹ️ credential_access: Credential scanning was performed (see security findings)
+- ℹ️ destructive_payloads: Destructive payloads were not attempted (safe-mode only)
+
+## Runtime Profile
+
+### Egress Manifest
+
+The following targets were identified as potentially reachable by this server (confidence: **medium**):
+
+| Target | Protocol | Source | Confidence |
+| --- | --- | --- | --- |
+| URL or data URI of the file content to compress | unknown | description_analysis | medium |
+
+### State Mutations
+
+The following state-modifying operations were identified from tool schemas:
+
+| Resource | Operation | Scope | Source |
+| --- | --- | --- | --- |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | execute | working_directory | description_analysis |
+
+_Analyzed at 2026-07-12T23:35:36.918Z_
+
 ## Regressions and Recoveries
 
 _Use the `diff` command against another run artifact to classify regressions and recoveries over time._
@@ -47,14 +79,15 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 2.65 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 3.46 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 0.66 | Advertised capability responded with the minimal expected shape (4 items). |
-| healthy | resources | pass | 1.08 | Advertised capability responded with the minimal expected shape (9 items). |
-| healthy | security | pass | 0.90 | Found 2 security finding(s): 0 high, 0 medium, 2 low. |
-| healthy | security-lite | pass | 0.50 | Found 2 security finding(s): 0 high, 0 medium, 2 low. |
-| healthy | tools | pass | 6.71 | Advertised capability responded with the minimal expected shape (13 items). |
-| review | schema-quality | partial | 1.34 | Found 6 quality finding(s) across 24 item(s): 0 warnings, 6 info. |
+| healthy | attack-sim | pass | 2.67 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 3.52 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 0.64 | Advertised capability responded with the minimal expected shape (4 items). |
+| healthy | resources | pass | 0.98 | Advertised capability responded with the minimal expected shape (9 items). |
+| healthy | runtime-profile | pass | 1.18 | Detected 1 potential egress target(s) and 7 potential state mutation(s) with low confidence. |
+| healthy | security | pass | 0.85 | Found 2 security finding(s): 0 high, 0 medium, 2 low. |
+| healthy | security-lite | pass | 0.55 | Found 2 security finding(s): 0 high, 0 medium, 2 low. |
+| healthy | tools | pass | 6.69 | Advertised capability responded with the minimal expected shape (13 items). |
+| review | schema-quality | partial | 1.45 | Found 6 quality finding(s) across 24 item(s): 0 warnings, 6 info. |
 
 ## Evidence Snippets
 
@@ -112,6 +145,18 @@ Summary: Advertised capability responded with the minimal expected shape (9 item
   - Item count: `2`
   - Identifiers: demo://resource/dynamic/text/{resourceId}, demo://resource/dynamic/blob/{resourceId}
   - Diagnostics: Starting default (STDIO) server...
+
+### runtime-profile — pass
+
+Summary: Detected 1 potential egress target(s) and 7 potential state mutation(s) with low confidence.
+
+- Endpoint: `runtime-profile/analyze`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `8`
+  - Identifiers: none
+  - Diagnostics: Egress entries: 1, State mutations: 7, Confidence: medium
 
 ### security — pass
 
@@ -172,5 +217,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T194944859Z_dd0288c3`
+- Run ID: `run_2026-07-12T233536110Z_0cd2855a`
 - Gate: `pass`

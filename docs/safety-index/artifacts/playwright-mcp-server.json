@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-06T194955359Z_d769bb31",
-  "createdAt": "2026-07-06T19:49:55.359Z",
-  "toolVersion": "0.28.0",
+  "runId": "run_2026-07-12T233551528Z_76eafaad",
+  "createdAt": "2026-07-12T23:35:51.528Z",
+  "toolVersion": "1.31.0",
   "target": {
     "targetId": "playwright-mcp-server",
     "adapter": "local-process",
@@ -22,17 +22,17 @@
       "whyItMatters": "Popular browser automation servers need explicit review around navigation, screenshots, and code evaluation."
     },
     "serverName": "Playwright",
-    "serverVersion": "1.62.0-alpha-2026-06-29"
+    "serverVersion": "1.62.0-alpha-1783623505000"
   },
   "environment": {
     "platform": "darwin 25.5.0",
     "nodeVersion": "v22.22.1"
   },
   "summary": {
-    "total": 8,
+    "total": 9,
     "pass": 2,
     "fail": 3,
-    "partial": 1,
+    "partial": 2,
     "unsupported": 2,
     "flaky": 0,
     "skipped": 0,
@@ -43,15 +43,15 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 2.8597500000014406,
-      "message": "Advertised capability responded with the minimal expected shape (23 items).",
+      "durationMs": 2.8869999999988067,
+      "message": "Advertised capability responded with the minimal expected shape (24 items).",
       "evidence": [
         {
           "endpoint": "tools/list",
           "advertised": true,
           "responded": true,
           "minimalShapePresent": true,
-          "itemCount": 23,
+          "itemCount": 24,
           "identifiers": [
             "browser_close",
             "browser_resize",
@@ -60,6 +60,7 @@
             "browser_evaluate",
             "browser_file_upload",
             "browser_drop",
+            "browser_find",
             "browser_fill_form",
             "browser_press_key",
             "browser_type",
@@ -223,6 +224,21 @@
               "required": [
                 "target"
               ],
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "additionalProperties": false
+            },
+            "browser_find": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "description": "Plain text to search for in the page snapshot (case-insensitive substring match). Provide either text or regex, not both.",
+                  "type": "string"
+                },
+                "regex": {
+                  "description": "Regular expression to search for in the page snapshot. Matching is case-sensitive by default; wrap the pattern in slashes to add flags, e.g. \"/error/i\" for case-insensitive. Provide either text or regex, not both.",
+                  "type": "string"
+                }
+              },
               "$schema": "https://json-schema.org/draft/2020-12/schema",
               "additionalProperties": false
             },
@@ -651,7 +667,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0011660000000119908,
+      "durationMs": 0.0009169999975711107,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -667,7 +683,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.0022920000010344665,
+      "durationMs": 0.00225000000136788,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -683,7 +699,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "fail",
-      "durationMs": 0.05433400000038091,
+      "durationMs": 0.057499999998981366,
       "message": "Found 6 security finding(s): 2 high, 2 medium, 2 low.",
       "evidence": [
         {
@@ -748,10 +764,201 @@
       ]
     },
     {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "partial",
+      "durationMs": 0.20533399999840185,
+      "message": "Detected 7 potential egress target(s) and 21 potential state mutation(s) with high confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 28,
+          "diagnostics": [
+            "Egress entries: 7",
+            "State mutations: 21",
+            "Confidence: high"
+          ],
+          "findings": [
+            {
+              "target": "Data to drop, as a map of MIME type to string value (e.g. {\"text/plain\": \"hello\", \"text/uri-list\": \"https://example.com\"}).",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "url",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "The URL to navigate to",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "browser_navigate",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "Only return requests whose URL matches this regexp (e.g. \"/api/.*user\").",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "url",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "URL to navigate to in the new tab, used for new.",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "execute",
+              "scope": "working_directory",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "execute",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 987.085916,
+      "durationMs": 701.3707079999986,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -764,7 +971,7 @@
           "diagnostics": [
             "[pass] capabilities-present: Server returned capabilities object.",
             "[pass] server-info: Server provided initialization info.",
-            "[pass] tools-capability-match: tools/list returned 23 tool(s).",
+            "[pass] tools-capability-match: tools/list returned 24 tool(s).",
             "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
             "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
             "[pass] tool-response-content: Tool \"browser_close\" response has valid content array.",
@@ -777,23 +984,25 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 1.854709000001094,
-      "message": "Found 4 quality finding(s) across 23 item(s): 0 warnings, 4 info.",
+      "durationMs": 1.9274999999979627,
+      "message": "Found 5 quality finding(s) across 24 item(s): 0 warnings, 5 info.",
       "evidence": [
         {
           "endpoint": "schema-quality/scan",
           "advertised": true,
           "responded": true,
           "minimalShapePresent": true,
-          "itemCount": 4,
+          "itemCount": 5,
           "identifiers": [
             "browser_file_upload",
+            "browser_find",
             "browser_run_code_unsafe",
             "browser_snapshot",
             "browser_wait_for"
           ],
           "diagnostics": [
             "[info] tool \"browser_file_upload\": Has properties but no 'required' array declared",
+            "[info] tool \"browser_find\": Has properties but no 'required' array declared",
             "[info] tool \"browser_run_code_unsafe\": Has properties but no 'required' array declared",
             "[info] tool \"browser_snapshot\": Has properties but no 'required' array declared",
             "[info] tool \"browser_wait_for\": Has properties but no 'required' array declared"
@@ -802,6 +1011,12 @@
             {
               "itemType": "tool",
               "itemName": "browser_file_upload",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "browser_find",
               "issue": "Has properties but no 'required' array declared",
               "severity": "info"
             },
@@ -831,7 +1046,7 @@
       "id": "security",
       "capability": "security",
       "status": "fail",
-      "durationMs": 2.534332999999606,
+      "durationMs": 8.108125000002474,
       "message": "Found 6 security finding(s): 2 high, 2 medium, 2 low.",
       "evidence": [
         {
@@ -899,7 +1114,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "fail",
-      "durationMs": 1.0038750000003347,
+      "durationMs": 2.4670420000002196,
       "message": "Safe attack simulation found 4 finding(s): 1 high, 3 medium, 0 low.",
       "evidence": [
         {
@@ -1060,16 +1275,192 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 683ms",
+          "Connect: 821ms",
           "p95 latency: 3ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 683.3468749999993,
-    "toolsListMs": 2.8597500000014406,
-    "promptsListMs": 0.0011660000000119908,
-    "resourcesListMs": 0.0022920000010344665
+    "connectMs": 820.9972079999989,
+    "toolsListMs": 2.8869999999988067,
+    "promptsListMs": 0.0009169999975711107,
+    "resourcesListMs": 0.00225000000136788
+  },
+  "runtimeProfile": {
+    "egress": [
+      {
+        "target": "Data to drop, as a map of MIME type to string value (e.g. {\"text/plain\": \"hello\", \"text/uri-list\": \"https://example.com\"}).",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "url",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "The URL to navigate to",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "browser_navigate",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "Only return requests whose URL matches this regexp (e.g. \"/api/.*user\").",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "url",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "URL to navigate to in the new tab, used for new.",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      }
+    ],
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "execute",
+        "scope": "working_directory",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "execute",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-12T23:35:52.353Z",
+    "confidence": "high"
   }
 }

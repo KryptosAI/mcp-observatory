@@ -1,0 +1,1494 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "fail",
+  "runId": "run_2026-07-12T233603014Z_61aedc2b",
+  "createdAt": "2026-07-12T23:36:03.014Z",
+  "toolVersion": "1.31.0",
+  "target": {
+    "targetId": "linear-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "mcp-server-linear"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "mcp-server-linear",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Issue tracking mutation",
+      "failureClass": "Issue/project boundary",
+      "whyItMatters": "Linear MCP servers expose issue creation, team management, and cycle tracking to agents."
+    },
+    "serverName": "linear-server",
+    "serverVersion": "0.1.0"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 9,
+    "pass": 3,
+    "fail": 2,
+    "partial": 2,
+    "unsupported": 2,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "fail"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 1.0573750000003201,
+      "message": "Advertised capability responded with the minimal expected shape (24 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 24,
+          "identifiers": [
+            "linear_auth_callback",
+            "linear_create_issue",
+            "linear_create_project_with_issues",
+            "linear_bulk_update_issues",
+            "linear_edit_issue",
+            "linear_search_issues",
+            "linear_search_issues_by_identifier",
+            "linear_get_issue",
+            "linear_get_teams",
+            "linear_get_user",
+            "linear_delete_issue",
+            "linear_get_project",
+            "linear_list_projects",
+            "linear_create_issues",
+            "linear_create_comment",
+            "linear_update_comment",
+            "linear_delete_comment",
+            "linear_resolve_comment",
+            "linear_unresolve_comment",
+            "linear_create_customer_need_from_attachment",
+            "linear_get_project_milestones",
+            "linear_create_project_milestone",
+            "linear_update_project_milestone",
+            "linear_delete_project_milestone"
+          ],
+          "diagnostics": [
+            "Linear MCP server running on stdio"
+          ],
+          "schemas": {
+            "linear_auth_callback": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "OAuth authorization code"
+                }
+              },
+              "required": [
+                "code"
+              ]
+            },
+            "linear_create_issue": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "Issue title"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Issue description"
+                },
+                "teamId": {
+                  "type": "string",
+                  "description": "Team ID (UUID)"
+                },
+                "parentId": {
+                  "type": "string",
+                  "description": "Parent issue ID (UUID, not issue identifier)",
+                  "optional": true
+                },
+                "labelIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Label UUIDs to apply, eg ['a1eb5aed-7425-4ea5-98ec-dfab52381e0e']",
+                  "optional": true
+                },
+                "assigneeId": {
+                  "type": "string",
+                  "description": "Assignee user ID (UUID)",
+                  "optional": true
+                },
+                "priority": {
+                  "type": "number",
+                  "description": "Issue priority (0-4)",
+                  "optional": true
+                },
+                "createAsUser": {
+                  "type": "string",
+                  "description": "Name to display for the created issue",
+                  "optional": true
+                },
+                "displayIconUrl": {
+                  "type": "string",
+                  "description": "URL of the avatar to display",
+                  "optional": true
+                }
+              },
+              "required": [
+                "title",
+                "description",
+                "teamId"
+              ]
+            },
+            "linear_create_project_with_issues": {
+              "type": "object",
+              "properties": {
+                "project": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Project name"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Project description (optional)"
+                    },
+                    "teamIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Array of team IDs this project belongs to (Required). Use linear_get_teams to get available team IDs.",
+                      "minItems": 1
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "teamIds"
+                  ]
+                },
+                "issues": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "type": "string",
+                        "description": "Issue title"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Issue description"
+                      },
+                      "teamId": {
+                        "type": "string",
+                        "description": "Team ID (must match one of the project teamIds)"
+                      }
+                    },
+                    "required": [
+                      "title",
+                      "description",
+                      "teamId"
+                    ]
+                  },
+                  "description": "List of issues to create with this project"
+                }
+              },
+              "required": [
+                "project",
+                "issues"
+              ]
+            },
+            "linear_bulk_update_issues": {
+              "type": "object",
+              "properties": {
+                "issueIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "List of issue UUIDs to update (not issue identifiers like 'ENG-123')"
+                },
+                "update": {
+                  "type": "object",
+                  "properties": {
+                    "stateId": {
+                      "type": "string",
+                      "description": "New state ID",
+                      "optional": true
+                    },
+                    "assigneeId": {
+                      "type": "string",
+                      "description": "New assignee ID",
+                      "optional": true
+                    },
+                    "priority": {
+                      "type": "number",
+                      "description": "New priority (0-4)",
+                      "optional": true
+                    }
+                  }
+                }
+              },
+              "required": [
+                "issueIds",
+                "update"
+              ]
+            },
+            "linear_edit_issue": {
+              "type": "object",
+              "properties": {
+                "issueId": {
+                  "type": "string",
+                  "description": "Required: The UUID of the issue to update"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "The issue title",
+                  "optional": true
+                },
+                "description": {
+                  "type": "string",
+                  "description": "The issue description in markdown format",
+                  "optional": true
+                },
+                "stateId": {
+                  "type": "string",
+                  "description": "UUID of the target state",
+                  "optional": true
+                },
+                "priority": {
+                  "type": "number",
+                  "description": "Issue priority (0=No priority, 1=Urgent, 2=High, 3=Normal, 4=Low)",
+                  "optional": true
+                },
+                "assigneeId": {
+                  "type": "string",
+                  "description": "UUID of the user to assign the issue to",
+                  "optional": true
+                },
+                "labelIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Array of label UUIDs (replaces existing labels)",
+                  "optional": true
+                },
+                "projectId": {
+                  "type": "string",
+                  "description": "UUID of the project to associate with the issue",
+                  "optional": true
+                },
+                "projectMilestoneId": {
+                  "type": "string",
+                  "description": "UUID of the project milestone to associate with the issue. Note: Requires projectId to be set when using this field",
+                  "optional": true
+                },
+                "estimate": {
+                  "type": "number",
+                  "description": "The estimated complexity points for the issue",
+                  "optional": true
+                },
+                "dueDate": {
+                  "type": "string",
+                  "description": "The due date in YYYY-MM-DD format",
+                  "optional": true
+                },
+                "parentId": {
+                  "type": "string",
+                  "description": "UUID of the parent issue",
+                  "optional": true
+                },
+                "sortOrder": {
+                  "type": "number",
+                  "description": "Position of the issue relative to other issues",
+                  "optional": true
+                }
+              },
+              "required": [
+                "issueId"
+              ]
+            },
+            "linear_search_issues": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "description": "Search query string",
+                  "optional": true
+                },
+                "teamIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Filter by team IDs",
+                  "optional": true
+                },
+                "assigneeIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Filter by assignee IDs",
+                  "optional": true
+                },
+                "states": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Filter by state names",
+                  "optional": true
+                },
+                "priority": {
+                  "type": "number",
+                  "description": "Filter by priority (0-4)",
+                  "optional": true
+                },
+                "first": {
+                  "type": "number",
+                  "description": "Number of issues to return (default: 50)",
+                  "optional": true
+                },
+                "after": {
+                  "type": "string",
+                  "description": "Cursor for pagination",
+                  "optional": true
+                },
+                "orderBy": {
+                  "type": "string",
+                  "description": "Field to order by (default: updatedAt)",
+                  "optional": true
+                }
+              }
+            },
+            "linear_search_issues_by_identifier": {
+              "type": "object",
+              "properties": {
+                "identifiers": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Array of issue identifiers to search for"
+                }
+              },
+              "required": [
+                "identifiers"
+              ]
+            },
+            "linear_get_issue": {
+              "type": "object",
+              "properties": {
+                "identifier": {
+                  "type": "string",
+                  "description": "Issue identifier (e.g., 'ENG-123')"
+                }
+              },
+              "required": [
+                "identifier"
+              ]
+            },
+            "linear_get_teams": {
+              "type": "object",
+              "properties": {}
+            },
+            "linear_get_user": {
+              "type": "object",
+              "properties": {}
+            },
+            "linear_delete_issue": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Issue UUID (not issue identifier like 'ENG-123')"
+                }
+              },
+              "required": [
+                "id"
+              ]
+            },
+            "linear_get_project": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Project identifier"
+                }
+              },
+              "required": [
+                "id"
+              ]
+            },
+            "linear_list_projects": {
+              "type": "object",
+              "properties": {
+                "filter": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "object",
+                      "properties": {
+                        "eq": {
+                          "type": "string",
+                          "description": "Equal to"
+                        },
+                        "in": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "In array of values"
+                        },
+                        "neq": {
+                          "type": "string",
+                          "description": "Not equal to"
+                        },
+                        "nin": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Not in array of values"
+                        }
+                      },
+                      "description": "Filter by project status"
+                    },
+                    "projectMilestones": {
+                      "type": "object",
+                      "description": "Filter by project milestones"
+                    },
+                    "projectUpdates": {
+                      "type": "object",
+                      "description": "Filter by project updates"
+                    },
+                    "nextProjectMilestone": {
+                      "type": "object",
+                      "description": "Filter by next project milestone"
+                    },
+                    "completedProjectMilestones": {
+                      "type": "object",
+                      "description": "Filter by completed project milestones"
+                    }
+                  },
+                  "description": "Optional filter criteria for projects"
+                }
+              }
+            },
+            "linear_create_issues": {
+              "type": "object",
+              "properties": {
+                "issues": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "type": "string",
+                        "description": "Issue title"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Issue description"
+                      },
+                      "teamId": {
+                        "type": "string",
+                        "description": "Team ID (UUID)"
+                      },
+                      "parentId": {
+                        "type": "string",
+                        "description": "Parent issue ID (UUID, not issue identifier)",
+                        "optional": true
+                      },
+                      "labelIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "Label UUIDs to apply, eg ['a1eb5aed-7425-4ea5-98ec-dfab52381e0e']",
+                        "optional": true
+                      },
+                      "assigneeId": {
+                        "type": "string",
+                        "description": "Assignee user ID (UUID)",
+                        "optional": true
+                      },
+                      "priority": {
+                        "type": "number",
+                        "description": "Issue priority (0-4)",
+                        "optional": true
+                      },
+                      "projectId": {
+                        "type": "string",
+                        "description": "Project ID",
+                        "optional": true
+                      },
+                      "createAsUser": {
+                        "type": "string",
+                        "description": "Name to display for the created issue",
+                        "optional": true
+                      },
+                      "displayIconUrl": {
+                        "type": "string",
+                        "description": "URL of the avatar to display",
+                        "optional": true
+                      }
+                    },
+                    "required": [
+                      "title",
+                      "description",
+                      "teamId"
+                    ]
+                  },
+                  "description": "List of issues to create"
+                }
+              },
+              "required": [
+                "issues"
+              ]
+            },
+            "linear_create_comment": {
+              "type": "object",
+              "properties": {
+                "body": {
+                  "type": "string",
+                  "description": "Comment text content"
+                },
+                "issueId": {
+                  "type": "string",
+                  "description": "ID of the issue to comment on"
+                }
+              },
+              "required": [
+                "body",
+                "issueId"
+              ]
+            },
+            "linear_update_comment": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Comment ID"
+                },
+                "input": {
+                  "type": "object",
+                  "properties": {
+                    "body": {
+                      "type": "string",
+                      "description": "Updated comment text"
+                    }
+                  },
+                  "required": [
+                    "body"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "input"
+              ]
+            },
+            "linear_delete_comment": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Comment ID to delete"
+                }
+              },
+              "required": [
+                "id"
+              ]
+            },
+            "linear_resolve_comment": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Comment ID to resolve"
+                },
+                "resolvingCommentId": {
+                  "type": "string",
+                  "description": "Optional ID of a resolving comment",
+                  "optional": true
+                }
+              },
+              "required": [
+                "id"
+              ]
+            },
+            "linear_unresolve_comment": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Comment ID to unresolve"
+                }
+              },
+              "required": [
+                "id"
+              ]
+            },
+            "linear_create_customer_need_from_attachment": {
+              "type": "object",
+              "properties": {
+                "attachmentId": {
+                  "type": "string",
+                  "description": "ID of the attachment"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Title for the customer need",
+                  "optional": true
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description for the customer need",
+                  "optional": true
+                },
+                "teamId": {
+                  "type": "string",
+                  "description": "Team ID for the customer need",
+                  "optional": true
+                }
+              },
+              "required": [
+                "attachmentId"
+              ]
+            },
+            "linear_get_project_milestones": {
+              "type": "object",
+              "properties": {
+                "projectId": {
+                  "type": "string",
+                  "description": "Project ID to get milestones for"
+                },
+                "filter": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "object",
+                      "properties": {
+                        "eq": {
+                          "type": "string",
+                          "description": "Equal to"
+                        },
+                        "contains": {
+                          "type": "string",
+                          "description": "Contains string"
+                        }
+                      },
+                      "description": "Filter by milestone name"
+                    },
+                    "targetDate": {
+                      "type": "object",
+                      "properties": {
+                        "lt": {
+                          "type": "string",
+                          "description": "Less than date"
+                        },
+                        "gt": {
+                          "type": "string",
+                          "description": "Greater than date"
+                        }
+                      },
+                      "description": "Filter by target date"
+                    },
+                    "completed": {
+                      "type": "boolean",
+                      "description": "Filter by completion status"
+                    }
+                  },
+                  "description": "Optional filter criteria",
+                  "optional": true
+                },
+                "first": {
+                  "type": "number",
+                  "description": "Number of items to return (used with after)",
+                  "optional": true
+                },
+                "after": {
+                  "type": "string",
+                  "description": "Cursor for forward pagination",
+                  "optional": true
+                },
+                "last": {
+                  "type": "number",
+                  "description": "Number of items to return (used with before)",
+                  "optional": true
+                },
+                "before": {
+                  "type": "string",
+                  "description": "Cursor for backward pagination",
+                  "optional": true
+                },
+                "includeArchived": {
+                  "type": "boolean",
+                  "description": "Include archived milestones",
+                  "optional": true
+                },
+                "orderBy": {
+                  "type": "string",
+                  "description": "Field to order by (createdAt or updatedAt)",
+                  "optional": true
+                }
+              },
+              "required": [
+                "projectId"
+              ]
+            },
+            "linear_create_project_milestone": {
+              "type": "object",
+              "properties": {
+                "projectId": {
+                  "type": "string",
+                  "description": "Project ID to create milestone for"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Milestone name"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Milestone description",
+                  "optional": true
+                },
+                "targetDate": {
+                  "type": "string",
+                  "description": "Target completion date (ISO format)",
+                  "optional": true
+                },
+                "sortOrder": {
+                  "type": "number",
+                  "description": "Sort order for the milestone",
+                  "optional": true
+                }
+              },
+              "required": [
+                "projectId",
+                "name"
+              ]
+            },
+            "linear_update_project_milestone": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Milestone ID to update"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "New milestone name",
+                  "optional": true
+                },
+                "description": {
+                  "type": "string",
+                  "description": "New milestone description",
+                  "optional": true
+                },
+                "targetDate": {
+                  "type": "string",
+                  "description": "New target completion date (ISO format)",
+                  "optional": true
+                },
+                "sortOrder": {
+                  "type": "number",
+                  "description": "New sort order",
+                  "optional": true
+                }
+              },
+              "required": [
+                "id"
+              ]
+            },
+            "linear_delete_project_milestone": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Milestone ID to delete"
+                }
+              },
+              "required": [
+                "id"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.0010000000002037268,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.0005410000012489036,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "fail",
+      "durationMs": 0.048875000000407454,
+      "message": "Found 1 security finding(s): 1 high, 0 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "linear_auth_callback"
+          ],
+          "diagnostics": [
+            "[high] Tool \"linear_auth_callback\" has parameter \"code\" which may allow arbitrary command execution."
+          ],
+          "findings": [
+            {
+              "ruleId": "shell-injection",
+              "severity": "high",
+              "toolName": "linear_auth_callback",
+              "message": "Tool \"linear_auth_callback\" has parameter \"code\" which may allow arbitrary command execution."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "pass",
+      "durationMs": 0.16829199999847333,
+      "message": "Detected 1 potential egress target(s) and 30 potential state mutation(s) with low confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 31,
+          "diagnostics": [
+            "Egress entries: 1",
+            "State mutations: 30",
+            "Confidence: medium"
+          ],
+          "findings": [
+            {
+              "target": "URL of the avatar to display",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "partial",
+      "durationMs": 1.5776249999980791,
+      "message": "6/7 conformance checks passed, 1 failed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": false,
+          "itemCount": 7,
+          "identifiers": [
+            "tool-response-content"
+          ],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 24 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
+            "[FAIL] tool-response-content: Tool response content check failed: MCP error -32603: MCP error -32603: Failed to search issues: MCP error -32600: Not authenticated. Call linear_auth first.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "partial",
+      "durationMs": 0.5080420000012964,
+      "message": "Found 5 quality finding(s) across 24 item(s): 0 warnings, 5 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 5,
+          "identifiers": [
+            "linear_create_project_with_issues",
+            "linear_bulk_update_issues",
+            "linear_search_issues",
+            "linear_list_projects",
+            "linear_update_comment"
+          ],
+          "diagnostics": [
+            "[info] tool \"linear_create_project_with_issues\": Property 'project' missing description",
+            "[info] tool \"linear_bulk_update_issues\": Property 'update' missing description",
+            "[info] tool \"linear_search_issues\": Has properties but no 'required' array declared",
+            "[info] tool \"linear_list_projects\": Has properties but no 'required' array declared",
+            "[info] tool \"linear_update_comment\": Property 'input' missing description"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "linear_create_project_with_issues",
+              "issue": "Property 'project' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "linear_bulk_update_issues",
+              "issue": "Property 'update' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "linear_search_issues",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "linear_list_projects",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "linear_update_comment",
+              "issue": "Property 'input' missing description",
+              "severity": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "fail",
+      "durationMs": 0.5107089999983145,
+      "message": "Found 1 security finding(s): 1 high, 0 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "linear_auth_callback"
+          ],
+          "diagnostics": [
+            "[high] Tool \"linear_auth_callback\" has parameter \"code\" which may allow arbitrary command execution."
+          ],
+          "findings": [
+            {
+              "ruleId": "shell-injection",
+              "severity": "high",
+              "toolName": "linear_auth_callback",
+              "message": "Tool \"linear_auth_callback\" has parameter \"code\" which may allow arbitrary command execution."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "pass",
+      "durationMs": 0.7711250000029395,
+      "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 60,
+    "grade": "D",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 60,
+        "details": [
+          "conformance: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "schema-quality: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 33,
+        "details": [
+          "security-lite: fail (0/100)",
+          "security: fail (0/100)",
+          "attack-sim: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 67,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: unsupported (50/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 794ms",
+          "p95 latency: 1ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 794.283875000001,
+    "toolsListMs": 1.0573750000003201,
+    "promptsListMs": 0.0010000000002037268,
+    "resourcesListMs": 0.0005410000012489036
+  },
+  "runtimeProfile": {
+    "egress": [
+      {
+        "target": "URL of the avatar to display",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      }
+    ],
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-12T23:36:03.810Z",
+    "confidence": "medium"
+  }
+}

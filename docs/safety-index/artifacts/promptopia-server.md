@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T19:49:48.899Z
+Generated at 2026-07-12T23:35:41.121Z
 
 ## Target and Environment Metadata
 
@@ -25,7 +25,7 @@ Generated at 2026-07-06T19:49:48.899Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| pass | 8 | 6 | 0 | 1 | 1 | 0 | 0 |
+| pass | 9 | 7 | 0 | 1 | 1 | 0 | 0 |
 
 ## At a Glance
 
@@ -39,6 +39,27 @@ Generated at 2026-07-06T19:49:48.899Z
 - Suggested next step: Review the caveated checks next: schema-quality.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
 
+## What Was Not Tested
+
+- 🔒 network_egress: No outbound network calls were attempted during scan
+- ℹ️ credential_access: Credential scanning was performed (see security findings)
+- ℹ️ destructive_payloads: Destructive payloads were not attempted (safe-mode only)
+
+## Runtime Profile
+
+### State Mutations
+
+The following state-modifying operations were identified from tool schemas:
+
+| Resource | Operation | Scope | Source |
+| --- | --- | --- | --- |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | delete | working_directory | description_analysis |
+
+_Analyzed at 2026-07-12T23:35:41.866Z_
+
 ## Regressions and Recoveries
 
 _Use the `diff` command against another run artifact to classify regressions and recoveries over time._
@@ -47,13 +68,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.42 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 1.59 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 1.08 | Advertised capability responded with the minimal expected shape (1 item). |
-| healthy | security | pass | 0.19 | No security issues detected. |
+| healthy | attack-sim | pass | 0.52 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 1.56 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 0.87 | Advertised capability responded with the minimal expected shape (1 item). |
+| healthy | runtime-profile | pass | 0.08 | Detected 0 potential egress target(s) and 4 potential state mutation(s) with low confidence. |
+| healthy | security | pass | 0.21 | No security issues detected. |
 | healthy | security-lite | pass | 0.02 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 2.47 | Advertised capability responded with the minimal expected shape (7 items). |
-| review | schema-quality | partial | 0.59 | Found 1 quality finding(s) across 8 item(s): 0 warnings, 1 info. |
+| healthy | tools | pass | 2.11 | Advertised capability responded with the minimal expected shape (7 items). |
+| review | schema-quality | partial | 0.61 | Found 1 quality finding(s) across 8 item(s): 0 warnings, 1 info. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
 ## Evidence Snippets
@@ -93,6 +115,18 @@ Summary: Advertised capability responded with the minimal expected shape (1 item
   - Item count: `1`
   - Identifiers: demo_welcome
   - Diagnostics: Watching for changes in prompts directory: /Users/williamweishuhn/Documents/New project/mcp-observatory/examples/promptopia-prompts, promptopia-mcp MCP server running (v1.1.0)
+
+### runtime-profile — pass
+
+Summary: Detected 0 potential egress target(s) and 4 potential state mutation(s) with low confidence.
+
+- Endpoint: `runtime-profile/analyze`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `4`
+  - Identifiers: none
+  - Diagnostics: Egress entries: 0, State mutations: 4, Confidence: medium
 
 ### security — pass
 
@@ -165,5 +199,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T194948899Z_ab0f7d29`
+- Run ID: `run_2026-07-12T233541121Z_0dca8c5f`
 - Gate: `pass`

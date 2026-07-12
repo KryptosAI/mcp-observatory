@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T19:49:53.996Z
+Generated at 2026-07-12T23:35:49.132Z
 
 ## Target and Environment Metadata
 
@@ -13,11 +13,11 @@ Generated at 2026-07-06T19:49:53.996Z
 
 ## Executive Summary
 
-**Health Score: 70/100 (C)**
+**Health Score: 82/100 (B)**
 
 | Dimension | Score | Weight |
 | --- | --- | --- |
-| Protocol Compliance | 60/100 | 30% |
+| Protocol Compliance | 100/100 | 30% |
 | Schema Quality | 60/100 | 20% |
 | Security | 67/100 | 20% |
 | Reliability | 83/100 | 20% |
@@ -25,19 +25,48 @@ Generated at 2026-07-06T19:49:53.996Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| fail | 8 | 4 | 1 | 2 | 1 | 0 | 0 |
+| fail | 9 | 5 | 1 | 2 | 1 | 0 | 0 |
 
 ## At a Glance
 
 - Safety verdict: **Blocked** — One or more checks can break agent dependence and should be fixed before production use.
-- Top risks: conformance: 6/7 conformance checks passed, 1 failed.; schema-quality: Found 2 quality finding(s) across 9 item(s): 1 warnings, 1 info.; attack-sim: Safe attack simulation found 1 finding(s): 1 high, 0 medium, 0 low.
+- Top risks: runtime-profile: Detected 3 potential egress target(s) and 2 potential state mutation(s) with high confidence.; schema-quality: Found 2 quality finding(s) across 9 item(s): 1 warnings, 1 info.; attack-sim: Safe attack simulation found 1 finding(s): 1 high, 0 medium, 0 low.
 - Regression/schema drift: Run `mcp-observatory diff <previous-run.json> <current-run.json>` to classify regressions and schema drift.
 - Failing checks: attack-sim
-- Partial or flaky checks: conformance, schema-quality
+- Partial or flaky checks: runtime-profile, schema-quality
 - Skipped checks: none
 - Unsupported checks: prompts
 - Suggested next step: Start with the failing checks: attack-sim.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
+
+## What Was Not Tested
+
+- 🔒 filesystem_mutation: Filesystem write operations were not exercised
+- ℹ️ credential_access: Credential scanning was performed (see security findings)
+- ℹ️ destructive_payloads: Destructive payloads were not attempted (safe-mode only)
+
+## Runtime Profile
+
+### Egress Manifest
+
+The following targets were identified as potentially reachable by this server (confidence: **high**):
+
+| Target | Protocol | Source | Confidence |
+| --- | --- | --- | --- |
+| Optional URL of the target tab to connect to. If not provided, connects to the first available tab. | unknown | description_analysis | medium |
+| url | unknown | tool_schema | high |
+| puppeteer_navigate | unknown | description_analysis | low |
+
+### State Mutations
+
+The following state-modifying operations were identified from tool schemas:
+
+| Resource | Operation | Scope | Source |
+| --- | --- | --- | --- |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+
+_Analyzed at 2026-07-12T23:35:49.998Z_
 
 ## Regressions and Recoveries
 
@@ -47,16 +76,29 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | resources | pass | 0.65 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
-| healthy | security | pass | 0.15 | No security issues detected. |
+| healthy | conformance | pass | 595.60 | All 7 conformance checks passed. |
+| healthy | resources | pass | 0.87 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
+| healthy | security | pass | 0.16 | No security issues detected. |
 | healthy | security-lite | pass | 0.04 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 0.42 | Advertised capability responded with the minimal expected shape (8 items). |
-| review | conformance | partial | 2.33 | 6/7 conformance checks passed, 1 failed. |
-| review | schema-quality | partial | 0.27 | Found 2 quality finding(s) across 9 item(s): 1 warnings, 1 info. |
+| healthy | tools | pass | 0.53 | Advertised capability responded with the minimal expected shape (8 items). |
+| review | runtime-profile | partial | 0.07 | Detected 3 potential egress target(s) and 2 potential state mutation(s) with high confidence. |
+| review | schema-quality | partial | 0.48 | Found 2 quality finding(s) across 9 item(s): 1 warnings, 1 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
-| act now | attack-sim | fail | 0.36 | Safe attack simulation found 1 finding(s): 1 high, 0 medium, 0 low. |
+| act now | attack-sim | fail | 0.75 | Safe attack simulation found 1 finding(s): 1 high, 0 medium, 0 low. |
 
 ## Evidence Snippets
+
+### conformance — pass
+
+Summary: All 7 conformance checks passed.
+
+- Endpoint: `conformance/check`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `7`
+  - Identifiers: none
+  - Diagnostics: [pass] capabilities-present: Server returned capabilities object., [pass] server-info: Server provided initialization info., [pass] tools-capability-match: tools/list returned 8 tool(s). (+4 more)
 
 ### resources — pass
 
@@ -113,17 +155,17 @@ Summary: Advertised capability responded with the minimal expected shape (8 item
   - Identifiers: puppeteer_connect_active_tab, puppeteer_navigate, puppeteer_screenshot, puppeteer_click, puppeteer_fill (+3 more)
   - Diagnostics: none
 
-### conformance — partial
+### runtime-profile — partial
 
-Summary: 6/7 conformance checks passed, 1 failed.
+Summary: Detected 3 potential egress target(s) and 2 potential state mutation(s) with high confidence.
 
-- Endpoint: `conformance/check`
+- Endpoint: `runtime-profile/analyze`
   - Advertised: `true`
   - Responded: `true`
-  - Minimal shape present: `false`
-  - Item count: `7`
-  - Identifiers: tool-response-content
-  - Diagnostics: [pass] capabilities-present: Server returned capabilities object., [pass] server-info: Server provided initialization info., [pass] tools-capability-match: tools/list returned 8 tool(s). (+4 more)
+  - Minimal shape present: `true`
+  - Item count: `5`
+  - Identifiers: none
+  - Diagnostics: Egress entries: 3, State mutations: 2, Confidence: high
 
 ### schema-quality — partial
 
@@ -172,5 +214,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T194953996Z_3a6d7344`
+- Run ID: `run_2026-07-12T233549132Z_3b479e29`
 - Gate: `fail`

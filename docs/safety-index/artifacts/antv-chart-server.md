@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T19:49:57.048Z
+Generated at 2026-07-12T23:35:53.081Z
 
 ## Target and Environment Metadata
 
@@ -25,7 +25,7 @@ Generated at 2026-07-06T19:49:57.048Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| pass | 8 | 6 | 0 | 0 | 2 | 0 | 0 |
+| pass | 9 | 7 | 0 | 0 | 2 | 0 | 0 |
 
 ## At a Glance
 
@@ -39,6 +39,139 @@ Generated at 2026-07-06T19:49:57.048Z
 - Suggested next step: Confirm that unsupported capabilities are intentional for this target: prompts, resources.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
 
+## What Was Not Tested
+
+- ℹ️ credential_access: Credential scanning was performed (see security findings)
+- ℹ️ destructive_payloads: Destructive payloads were not attempted (safe-mode only)
+
+## Runtime Profile
+
+### State Mutations
+
+The following state-modifying operations were identified from tool schemas:
+
+| Resource | Operation | Scope | Source |
+| --- | --- | --- | --- |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+
+_Analyzed at 2026-07-12T23:35:53.975Z_
+
 ## Regressions and Recoveries
 
 _Use the `diff` command against another run artifact to classify regressions and recoveries over time._
@@ -47,12 +180,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 1.90 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 1.36 | All 7 conformance checks passed. |
-| healthy | schema-quality | pass | 2.78 | All 27 item(s) have good schema quality. |
-| healthy | security | pass | 0.91 | No security issues detected. |
+| healthy | attack-sim | pass | 1.45 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 1.12 | All 7 conformance checks passed. |
+| healthy | runtime-profile | pass | 0.40 | Detected 0 potential egress target(s) and 117 potential state mutation(s) with low confidence. |
+| healthy | schema-quality | pass | 0.70 | All 27 item(s) have good schema quality. |
+| healthy | security | pass | 1.36 | No security issues detected. |
 | healthy | security-lite | pass | 0.07 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 1.71 | Advertised capability responded with the minimal expected shape (27 items). |
+| healthy | tools | pass | 1.63 | Advertised capability responded with the minimal expected shape (27 items). |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -81,6 +215,18 @@ Summary: All 7 conformance checks passed.
   - Item count: `7`
   - Identifiers: none
   - Diagnostics: [pass] capabilities-present: Server returned capabilities object., [pass] server-info: Server provided initialization info., [pass] tools-capability-match: tools/list returned 27 tool(s). (+4 more)
+
+### runtime-profile — pass
+
+Summary: Detected 0 potential egress target(s) and 117 potential state mutation(s) with low confidence.
+
+- Endpoint: `runtime-profile/analyze`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `117`
+  - Identifiers: none
+  - Diagnostics: Egress entries: 0, State mutations: 117, Confidence: medium
 
 ### schema-quality — pass
 
@@ -128,7 +274,7 @@ Summary: Advertised capability responded with the minimal expected shape (27 ite
   - Minimal shape present: `true`
   - Item count: `27`
   - Identifiers: generate_area_chart, generate_bar_chart, generate_boxplot_chart, generate_column_chart, generate_district_map (+22 more)
-  - Diagnostics: [MCP-Server-Chart] 2026-07-06T19:49:57.931Z ℹ️  setting up tool handlers..., [MCP-Server-Chart] 2026-07-06T19:49:57.932Z ℹ️  tool handlers set up, [MCP-Server-Chart] 2026-07-06T19:49:57.933Z ✅ Stdio MCP Server started
+  - Diagnostics: [MCP-Server-Chart] 2026-07-12T23:35:53.968Z ℹ️  setting up tool handlers..., [MCP-Server-Chart] 2026-07-12T23:35:53.969Z ℹ️  tool handlers set up, [MCP-Server-Chart] 2026-07-12T23:35:53.970Z ✅ Stdio MCP Server started
 
 ### prompts — unsupported
 
@@ -165,5 +311,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T194957048Z_8266b9f7`
+- Run ID: `run_2026-07-12T233553081Z_02ca024e`
 - Gate: `pass`

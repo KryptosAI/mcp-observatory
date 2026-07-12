@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T19:49:54.694Z
+Generated at 2026-07-12T23:35:50.710Z
 
 ## Target and Environment Metadata
 
@@ -25,19 +25,40 @@ Generated at 2026-07-06T19:49:54.694Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| pass | 8 | 7 | 0 | 0 | 1 | 0 | 0 |
+| pass | 9 | 7 | 0 | 1 | 1 | 0 | 0 |
 
 ## At a Glance
 
 - Safety verdict: **Needs review** — The server is usable, but caveated checks should be reviewed before agents depend on it.
-- Top risks: No high-priority risks detected.
+- Top risks: runtime-profile: Detected 3 potential egress target(s) and 0 potential state mutation(s) with high confidence.
 - Regression/schema drift: Run `mcp-observatory diff <previous-run.json> <current-run.json>` to classify regressions and schema drift.
 - Failing checks: none
-- Partial or flaky checks: none
+- Partial or flaky checks: runtime-profile
 - Skipped checks: none
 - Unsupported checks: prompts
-- Suggested next step: Confirm that unsupported capabilities are intentional for this target: prompts.
+- Suggested next step: Review the caveated checks next: runtime-profile.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
+
+## What Was Not Tested
+
+- 🔒 network_egress: No outbound network calls were attempted during scan
+- 🔒 filesystem_mutation: Filesystem write operations were not exercised
+- ℹ️ credential_access: Credential scanning was performed (see security findings)
+- ℹ️ destructive_payloads: Destructive payloads were not attempted (safe-mode only)
+
+## Runtime Profile
+
+### Egress Manifest
+
+The following targets were identified as potentially reachable by this server (confidence: **high**):
+
+| Target | Protocol | Source | Confidence |
+| --- | --- | --- | --- |
+| url | unknown | tool_schema | high |
+| The URL to navigate to | unknown | description_analysis | medium |
+| browser_navigate | unknown | description_analysis | low |
+
+_Analyzed at 2026-07-12T23:35:51.515Z_
 
 ## Regressions and Recoveries
 
@@ -47,13 +68,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.51 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 1.57 | All 7 conformance checks passed. |
-| healthy | resources | pass | 0.44 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
-| healthy | schema-quality | pass | 0.37 | All 12 item(s) have good schema quality. |
-| healthy | security | pass | 0.15 | No security issues detected. |
+| healthy | attack-sim | pass | 0.48 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 1.59 | All 7 conformance checks passed. |
+| healthy | resources | pass | 0.46 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
+| healthy | schema-quality | pass | 0.43 | All 12 item(s) have good schema quality. |
+| healthy | security | pass | 0.16 | No security issues detected. |
 | healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 0.82 | Advertised capability responded with the minimal expected shape (12 items). |
+| healthy | tools | pass | 0.85 | Advertised capability responded with the minimal expected shape (12 items). |
+| review | runtime-profile | partial | 0.08 | Detected 3 potential egress target(s) and 0 potential state mutation(s) with high confidence. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 
 ## Evidence Snippets
@@ -149,6 +171,18 @@ Summary: Advertised capability responded with the minimal expected shape (12 ite
   - Identifiers: browser_navigate, browser_go_back, browser_go_forward, browser_snapshot, browser_click (+7 more)
   - Diagnostics: none
 
+### runtime-profile — partial
+
+Summary: Detected 3 potential egress target(s) and 0 potential state mutation(s) with high confidence.
+
+- Endpoint: `runtime-profile/analyze`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `3`
+  - Identifiers: none
+  - Diagnostics: Egress entries: 3, State mutations: 0, Confidence: high
+
 ### prompts — unsupported
 
 Summary: Prompts are not advertised by the target.
@@ -172,5 +206,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T194954693Z_39638a36`
+- Run ID: `run_2026-07-12T233550710Z_b3d14826`
 - Gate: `pass`

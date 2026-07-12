@@ -1,13 +1,13 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T19:49:55.359Z
+Generated at 2026-07-12T23:35:51.528Z
 
 ## Target and Environment Metadata
 
 - Target: `playwright-mcp-server`
 - Adapter: `local-process`
 - Command: `npx -y @playwright/mcp`
-- Server: `Playwright 1.62.0-alpha-2026-06-29`
+- Server: `Playwright 1.62.0-alpha-1783623505000`
 - Platform: `darwin 25.5.0`
 - Node: `v22.22.1`
 
@@ -25,19 +25,70 @@ Generated at 2026-07-06T19:49:55.359Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| fail | 8 | 2 | 3 | 1 | 2 | 0 | 0 |
+| fail | 9 | 2 | 3 | 2 | 2 | 0 | 0 |
 
 ## At a Glance
 
 - Safety verdict: **Blocked** — One or more checks can break agent dependence and should be fixed before production use.
-- Top risks: schema-quality: Found 4 quality finding(s) across 23 item(s): 0 warnings, 4 info.; attack-sim: Safe attack simulation found 4 finding(s): 1 high, 3 medium, 0 low.; security: Found 6 security finding(s): 2 high, 2 medium, 2 low.
+- Top risks: runtime-profile: Detected 7 potential egress target(s) and 21 potential state mutation(s) with high confidence.; schema-quality: Found 5 quality finding(s) across 24 item(s): 0 warnings, 5 info.; attack-sim: Safe attack simulation found 4 finding(s): 1 high, 3 medium, 0 low.
 - Regression/schema drift: Run `mcp-observatory diff <previous-run.json> <current-run.json>` to classify regressions and schema drift.
 - Failing checks: security-lite, security, attack-sim
-- Partial or flaky checks: schema-quality
+- Partial or flaky checks: runtime-profile, schema-quality
 - Skipped checks: none
 - Unsupported checks: prompts, resources
 - Suggested next step: Start with the failing checks: security-lite, security, attack-sim.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
+
+## What Was Not Tested
+
+- ℹ️ credential_access: Credential scanning was performed (see security findings)
+- ℹ️ destructive_payloads: Destructive payloads were not attempted (safe-mode only)
+
+## Runtime Profile
+
+### Egress Manifest
+
+The following targets were identified as potentially reachable by this server (confidence: **high**):
+
+| Target | Protocol | Source | Confidence |
+| --- | --- | --- | --- |
+| Data to drop, as a map of MIME type to string value (e.g. {"text/plain": "hello", "text/uri-list": "https://example.com"}). | unknown | description_analysis | medium |
+| url | unknown | tool_schema | high |
+| The URL to navigate to | unknown | description_analysis | medium |
+| browser_navigate | unknown | description_analysis | low |
+| Only return requests whose URL matches this regexp (e.g. "/api/.*user"). | unknown | description_analysis | medium |
+| url | unknown | tool_schema | high |
+| URL to navigate to in the new tab, used for new. | unknown | description_analysis | medium |
+
+### State Mutations
+
+The following state-modifying operations were identified from tool schemas:
+
+| Resource | Operation | Scope | Source |
+| --- | --- | --- | --- |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | execute | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | execute | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+
+_Analyzed at 2026-07-12T23:35:52.353Z_
 
 ## Regressions and Recoveries
 
@@ -47,14 +98,15 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 987.09 | All 7 conformance checks passed. |
-| healthy | tools | pass | 2.86 | Advertised capability responded with the minimal expected shape (23 items). |
-| review | schema-quality | partial | 1.85 | Found 4 quality finding(s) across 23 item(s): 0 warnings, 4 info. |
+| healthy | conformance | pass | 701.37 | All 7 conformance checks passed. |
+| healthy | tools | pass | 2.89 | Advertised capability responded with the minimal expected shape (24 items). |
+| review | runtime-profile | partial | 0.21 | Detected 7 potential egress target(s) and 21 potential state mutation(s) with high confidence. |
+| review | schema-quality | partial | 1.93 | Found 5 quality finding(s) across 24 item(s): 0 warnings, 5 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
-| act now | attack-sim | fail | 1.00 | Safe attack simulation found 4 finding(s): 1 high, 3 medium, 0 low. |
-| act now | security | fail | 2.53 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
-| act now | security-lite | fail | 0.05 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
+| act now | attack-sim | fail | 2.47 | Safe attack simulation found 4 finding(s): 1 high, 3 medium, 0 low. |
+| act now | security | fail | 8.11 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
+| act now | security-lite | fail | 0.06 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
 
 ## Evidence Snippets
 
@@ -68,31 +120,43 @@ Summary: All 7 conformance checks passed.
   - Minimal shape present: `true`
   - Item count: `7`
   - Identifiers: none
-  - Diagnostics: [pass] capabilities-present: Server returned capabilities object., [pass] server-info: Server provided initialization info., [pass] tools-capability-match: tools/list returned 23 tool(s). (+4 more)
+  - Diagnostics: [pass] capabilities-present: Server returned capabilities object., [pass] server-info: Server provided initialization info., [pass] tools-capability-match: tools/list returned 24 tool(s). (+4 more)
 
 ### tools — pass
 
-Summary: Advertised capability responded with the minimal expected shape (23 items).
+Summary: Advertised capability responded with the minimal expected shape (24 items).
 
 - Endpoint: `tools/list`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
-  - Item count: `23`
-  - Identifiers: browser_close, browser_resize, browser_console_messages, browser_handle_dialog, browser_evaluate (+18 more)
+  - Item count: `24`
+  - Identifiers: browser_close, browser_resize, browser_console_messages, browser_handle_dialog, browser_evaluate (+19 more)
   - Diagnostics: none
+
+### runtime-profile — partial
+
+Summary: Detected 7 potential egress target(s) and 21 potential state mutation(s) with high confidence.
+
+- Endpoint: `runtime-profile/analyze`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `28`
+  - Identifiers: none
+  - Diagnostics: Egress entries: 7, State mutations: 21, Confidence: high
 
 ### schema-quality — partial
 
-Summary: Found 4 quality finding(s) across 23 item(s): 0 warnings, 4 info.
+Summary: Found 5 quality finding(s) across 24 item(s): 0 warnings, 5 info.
 
 - Endpoint: `schema-quality/scan`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
-  - Item count: `4`
-  - Identifiers: browser_file_upload, browser_run_code_unsafe, browser_snapshot, browser_wait_for
-  - Diagnostics: [info] tool "browser_file_upload": Has properties but no 'required' array declared, [info] tool "browser_run_code_unsafe": Has properties but no 'required' array declared, [info] tool "browser_snapshot": Has properties but no 'required' array declared (+1 more)
+  - Item count: `5`
+  - Identifiers: browser_file_upload, browser_find, browser_run_code_unsafe, browser_snapshot, browser_wait_for
+  - Diagnostics: [info] tool "browser_file_upload": Has properties but no 'required' array declared, [info] tool "browser_find": Has properties but no 'required' array declared, [info] tool "browser_run_code_unsafe": Has properties but no 'required' array declared (+2 more)
 
 ### prompts — unsupported
 
@@ -165,5 +229,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T194955359Z_d769bb31`
+- Run ID: `run_2026-07-12T233551528Z_76eafaad`
 - Gate: `fail`

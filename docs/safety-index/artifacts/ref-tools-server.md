@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T19:49:51.606Z
+Generated at 2026-07-12T23:35:43.891Z
 
 ## Target and Environment Metadata
 
@@ -25,19 +25,39 @@ Generated at 2026-07-06T19:49:51.606Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| pass | 8 | 7 | 0 | 0 | 1 | 0 | 0 |
+| pass | 9 | 7 | 0 | 1 | 1 | 0 | 0 |
 
 ## At a Glance
 
 - Safety verdict: **Needs review** — The server is usable, but caveated checks should be reviewed before agents depend on it.
-- Top risks: No high-priority risks detected.
+- Top risks: runtime-profile: Detected 4 potential egress target(s) and 0 potential state mutation(s) with high confidence.
 - Regression/schema drift: Run `mcp-observatory diff <previous-run.json> <current-run.json>` to classify regressions and schema drift.
 - Failing checks: none
-- Partial or flaky checks: none
+- Partial or flaky checks: runtime-profile
 - Skipped checks: none
 - Unsupported checks: resources
-- Suggested next step: Confirm that unsupported capabilities are intentional for this target: resources.
+- Suggested next step: Review the caveated checks next: runtime-profile.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
+
+## What Was Not Tested
+
+- ℹ️ credential_access: Credential scanning was performed (see security findings)
+- ℹ️ destructive_payloads: Destructive payloads were not attempted (safe-mode only)
+
+## Runtime Profile
+
+### Egress Manifest
+
+The following targets were identified as potentially reachable by this server (confidence: **high**):
+
+| Target | Protocol | Source | Confidence |
+| --- | --- | --- | --- |
+| ref_search_documentation | unknown | description_analysis | low |
+| url | unknown | tool_schema | high |
+| The URL of the webpage to read. | unknown | description_analysis | medium |
+| ref_read_url | unknown | description_analysis | low |
+
+_Analyzed at 2026-07-12T23:35:44.664Z_
 
 ## Regressions and Recoveries
 
@@ -47,13 +67,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.25 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 0.51 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 0.19 | Advertised capability responded with the minimal expected shape (2 items). |
-| healthy | schema-quality | pass | 0.50 | All 4 item(s) have good schema quality. |
-| healthy | security | pass | 0.19 | No security issues detected. |
+| healthy | attack-sim | pass | 0.37 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 0.50 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 0.27 | Advertised capability responded with the minimal expected shape (2 items). |
+| healthy | schema-quality | pass | 0.51 | All 4 item(s) have good schema quality. |
+| healthy | security | pass | 0.27 | No security issues detected. |
 | healthy | security-lite | pass | 0.02 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 0.89 | Advertised capability responded with the minimal expected shape (2 items). |
+| healthy | tools | pass | 1.01 | Advertised capability responded with the minimal expected shape (2 items). |
+| review | runtime-profile | partial | 0.11 | Detected 4 potential egress target(s) and 0 potential state mutation(s) with high confidence. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
 ## Evidence Snippets
@@ -142,6 +163,18 @@ Summary: Advertised capability responded with the minimal expected shape (2 item
   - Identifiers: ref_search_documentation, ref_read_url
   - Diagnostics: Ref MCP Server running on stdio
 
+### runtime-profile — partial
+
+Summary: Detected 4 potential egress target(s) and 0 potential state mutation(s) with high confidence.
+
+- Endpoint: `runtime-profile/analyze`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `4`
+  - Identifiers: none
+  - Diagnostics: Egress entries: 4, State mutations: 0, Confidence: high
+
 ### resources — unsupported
 
 Summary: Resources are not advertised by the target.
@@ -165,5 +198,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T194951606Z_e657d5a4`
+- Run ID: `run_2026-07-12T233543891Z_2758811c`
 - Gate: `pass`

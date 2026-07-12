@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T19:49:47.442Z
+Generated at 2026-07-12T23:35:38.781Z
 
 ## Target and Environment Metadata
 
@@ -25,19 +25,67 @@ Generated at 2026-07-06T19:49:47.442Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| pass | 8 | 2 | 0 | 4 | 2 | 0 | 0 |
+| pass | 9 | 2 | 0 | 5 | 2 | 0 | 0 |
 
 ## At a Glance
 
 - Safety verdict: **Needs review** — The server is usable, but caveated checks should be reviewed before agents depend on it.
-- Top risks: attack-sim: Safe attack simulation found 3 finding(s): 0 high, 3 medium, 0 low.; schema-quality: Found 18 quality finding(s) across 14 item(s): 0 warnings, 18 info.; security: Found 3 security finding(s): 0 high, 3 medium, 0 low.
+- Top risks: attack-sim: Safe attack simulation found 3 finding(s): 0 high, 3 medium, 0 low.; runtime-profile: Detected 0 potential egress target(s) and 31 potential state mutation(s) with high confidence.; schema-quality: Found 18 quality finding(s) across 14 item(s): 0 warnings, 18 info.
 - Regression/schema drift: Run `mcp-observatory diff <previous-run.json> <current-run.json>` to classify regressions and schema drift.
 - Failing checks: none
-- Partial or flaky checks: security-lite, schema-quality, security, attack-sim
+- Partial or flaky checks: security-lite, runtime-profile, schema-quality, security, attack-sim
 - Skipped checks: none
 - Unsupported checks: prompts, resources
-- Suggested next step: Review the caveated checks next: security-lite, schema-quality, security, attack-sim.
+- Suggested next step: Review the caveated checks next: security-lite, runtime-profile, schema-quality, security, attack-sim.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
+
+## What Was Not Tested
+
+- 🔒 network_egress: No outbound network calls were attempted during scan
+- ℹ️ credential_access: Credential scanning was performed (see security findings)
+- ℹ️ destructive_payloads: Destructive payloads were not attempted (safe-mode only)
+
+## Runtime Profile
+
+### State Mutations
+
+The following state-modifying operations were identified from tool schemas:
+
+| Resource | Operation | Scope | Source |
+| --- | --- | --- | --- |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+
+_Analyzed at 2026-07-12T23:35:39.509Z_
 
 ## Regressions and Recoveries
 
@@ -47,11 +95,12 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 5.46 | All 7 conformance checks passed. |
-| healthy | tools | pass | 5.03 | Advertised capability responded with the minimal expected shape (14 items). |
-| review | attack-sim | partial | 2.60 | Safe attack simulation found 3 finding(s): 0 high, 3 medium, 0 low. |
-| review | schema-quality | partial | 2.50 | Found 18 quality finding(s) across 14 item(s): 0 warnings, 18 info. |
-| review | security | partial | 2.20 | Found 3 security finding(s): 0 high, 3 medium, 0 low. |
+| healthy | conformance | pass | 6.01 | All 7 conformance checks passed. |
+| healthy | tools | pass | 5.84 | Advertised capability responded with the minimal expected shape (14 items). |
+| review | attack-sim | partial | 2.63 | Safe attack simulation found 3 finding(s): 0 high, 3 medium, 0 low. |
+| review | runtime-profile | partial | 0.25 | Detected 0 potential egress target(s) and 31 potential state mutation(s) with high confidence. |
+| review | schema-quality | partial | 2.68 | Found 18 quality finding(s) across 14 item(s): 0 warnings, 18 info. |
+| review | security | partial | 2.43 | Found 3 security finding(s): 0 high, 3 medium, 0 low. |
 | review | security-lite | partial | 0.14 | Found 3 security finding(s): 0 high, 3 medium, 0 low. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
@@ -93,6 +142,18 @@ Summary: Safe attack simulation found 3 finding(s): 0 high, 3 medium, 0 low.
   - Item count: `3`
   - Identifiers: write_file, edit_file, create_directory
   - Diagnostics: [medium] Tool "write_file" combines broad parameters (path) with destructive or non-read-only behavior., [medium] Tool "edit_file" combines broad parameters (path) with destructive or non-read-only behavior., [medium] Tool "create_directory" combines broad parameters (path) with destructive or non-read-only behavior.
+
+### runtime-profile — partial
+
+Summary: Detected 0 potential egress target(s) and 31 potential state mutation(s) with high confidence.
+
+- Endpoint: `runtime-profile/analyze`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `31`
+  - Identifiers: none
+  - Diagnostics: Egress entries: 0, State mutations: 31, Confidence: high
 
 ### schema-quality — partial
 
@@ -165,5 +226,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T194947442Z_4e90392b`
+- Run ID: `run_2026-07-12T233538781Z_6660ebe3`
 - Gate: `pass`

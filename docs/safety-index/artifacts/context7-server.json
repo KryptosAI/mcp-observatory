@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-06T194948132Z_cb0c4915",
-  "createdAt": "2026-07-06T19:49:48.132Z",
-  "toolVersion": "0.28.0",
+  "runId": "run_2026-07-12T233540269Z_6b58af34",
+  "createdAt": "2026-07-12T23:35:40.269Z",
+  "toolVersion": "1.31.0",
   "target": {
     "targetId": "context7-server",
     "adapter": "local-process",
@@ -29,8 +29,8 @@
     "nodeVersion": "v22.22.1"
   },
   "summary": {
-    "total": 8,
-    "pass": 7,
+    "total": 9,
+    "pass": 8,
     "fail": 0,
     "partial": 1,
     "unsupported": 0,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 1.788749999999709,
+      "durationMs": 1.5490419999996448,
       "message": "Advertised capability responded with the minimal expected shape (2 items).",
       "evidence": [
         {
@@ -104,7 +104,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "pass",
-      "durationMs": 0.2839160000003176,
+      "durationMs": 0.2750420000002123,
       "message": "Advertised capability responded with the minimal expected shape (0 items).",
       "evidence": [
         {
@@ -124,7 +124,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 0.4017499999999927,
+      "durationMs": 0.5049580000004426,
       "message": "Advertised capability responded with the minimal expected shape (0 items).",
       "evidence": [
         {
@@ -155,7 +155,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.02495900000030815,
+      "durationMs": 0.027417000000241387,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -168,10 +168,51 @@
       ]
     },
     {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "pass",
+      "durationMs": 0.27016700000058336,
+      "message": "Detected 2 potential egress target(s) and 1 potential state mutation(s) with low confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 3,
+          "diagnostics": [
+            "Egress entries: 2",
+            "State mutations: 1",
+            "Confidence: medium"
+          ],
+          "findings": [
+            {
+              "target": "The question or task you need help with. This is used to rank library results by relevance to what the user is trying to accomplish. The query is sent to the Context7 API for processing. Do not include any sensitive or confidential information such as API keys, passwords, credentials, personal data, or proprietary code in your query.",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "The question or task you need help with, scoped to a single concept. Be specific and include relevant details, but keep each query to one topic — if the user's question spans multiple distinct concepts, make a separate call per concept instead of combining them, unless the question is about how the concepts interact. Good: 'How to set up authentication with JWT in Express.js' or 'React useEffect cleanup function examples'. Bad (too vague): 'auth' or 'hooks'. Bad (too broad): 'routing and auth and caching in Next.js'. The query is sent to the Context7 API for processing. Do not include any sensitive or confidential information such as API keys, passwords, credentials, personal data, or proprietary code in your query.",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 1.094916000000012,
+      "durationMs": 1.0739579999999478,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -197,7 +238,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "pass",
-      "durationMs": 0.5149579999997513,
+      "durationMs": 0.587666000000354,
       "message": "All 2 item(s) have good schema quality.",
       "evidence": [
         {
@@ -214,7 +255,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 0.20175000000017462,
+      "durationMs": 0.2391250000000582,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -230,7 +271,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "partial",
-      "durationMs": 1.0464579999998023,
+      "durationMs": 1.000042000000576,
       "message": "Safe attack simulation found 2 finding(s): 0 high, 2 medium, 0 low.",
       "evidence": [
         {
@@ -328,16 +369,42 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 753ms",
+          "Connect: 839ms",
           "p95 latency: 2ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 753.3337500000002,
-    "toolsListMs": 1.788749999999709,
-    "promptsListMs": 0.2839160000003176,
-    "resourcesListMs": 0.4017499999999927
+    "connectMs": 839.125583,
+    "toolsListMs": 1.5490419999996448,
+    "promptsListMs": 0.2750420000002123,
+    "resourcesListMs": 0.5049580000004426
+  },
+  "runtimeProfile": {
+    "egress": [
+      {
+        "target": "The question or task you need help with. This is used to rank library results by relevance to what the user is trying to accomplish. The query is sent to the Context7 API for processing. Do not include any sensitive or confidential information such as API keys, passwords, credentials, personal data, or proprietary code in your query.",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "The question or task you need help with, scoped to a single concept. Be specific and include relevant details, but keep each query to one topic — if the user's question spans multiple distinct concepts, make a separate call per concept instead of combining them, unless the question is about how the concepts interact. Good: 'How to set up authentication with JWT in Express.js' or 'React useEffect cleanup function examples'. Bad (too vague): 'auth' or 'hooks'. Bad (too broad): 'routing and auth and caching in Next.js'. The query is sent to the Context7 API for processing. Do not include any sensitive or confidential information such as API keys, passwords, credentials, personal data, or proprietary code in your query.",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      }
+    ],
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-12T23:35:41.111Z",
+    "confidence": "medium"
   }
 }

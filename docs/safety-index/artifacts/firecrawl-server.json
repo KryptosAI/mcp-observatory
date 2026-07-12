@@ -1,0 +1,4056 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "fail",
+  "runId": "run_2026-07-12T233604490Z_986e0b29",
+  "createdAt": "2026-07-12T23:36:04.490Z",
+  "toolVersion": "1.31.0",
+  "target": {
+    "targetId": "firecrawl-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "firecrawl-mcp"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "firecrawl-mcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Web scraping and crawling",
+      "failureClass": "Web content ingestion boundary",
+      "whyItMatters": "Firecrawl MCP servers expose web scraping, crawling, and content extraction tools that can pull untrusted content into agent context."
+    },
+    "serverName": "firecrawl-fastmcp",
+    "serverVersion": "3.22.3"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 9,
+    "pass": 1,
+    "fail": 3,
+    "partial": 3,
+    "unsupported": 2,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "fail"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 7.258999999998196,
+      "message": "Advertised capability responded with the minimal expected shape (26 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 26,
+          "identifiers": [
+            "firecrawl_scrape",
+            "firecrawl_map",
+            "firecrawl_search",
+            "firecrawl_search_feedback",
+            "firecrawl_feedback",
+            "firecrawl_crawl",
+            "firecrawl_check_crawl_status",
+            "firecrawl_extract",
+            "firecrawl_agent",
+            "firecrawl_agent_status",
+            "firecrawl_interact",
+            "firecrawl_interact_stop",
+            "firecrawl_parse",
+            "firecrawl_monitor_create",
+            "firecrawl_monitor_list",
+            "firecrawl_monitor_get",
+            "firecrawl_monitor_update",
+            "firecrawl_monitor_delete",
+            "firecrawl_monitor_run",
+            "firecrawl_monitor_checks",
+            "firecrawl_monitor_check",
+            "firecrawl_research_search_papers",
+            "firecrawl_research_inspect_paper",
+            "firecrawl_research_related_papers",
+            "firecrawl_research_read_paper",
+            "firecrawl_research_search_github"
+          ],
+          "diagnostics": [
+            "No FIRECRAWL_API_KEY or FIRECRAWL_API_URL set — running in keyless mode. firecrawl_scrape and firecrawl_search are free (rate-limited per IP) against the Firecrawl cloud; other tools require an API key (get one free at https://firecrawl.dev)."
+          ],
+          "schemas": {
+            "firecrawl_scrape": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "formats": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "markdown",
+                      "html",
+                      "rawHtml",
+                      "screenshot",
+                      "links",
+                      "summary",
+                      "changeTracking",
+                      "branding",
+                      "json",
+                      "query",
+                      "audio"
+                    ]
+                  }
+                },
+                "jsonOptions": {
+                  "type": "object",
+                  "properties": {
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "schema": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "queryOptions": {
+                  "type": "object",
+                  "properties": {
+                    "prompt": {
+                      "type": "string",
+                      "maxLength": 10000
+                    },
+                    "mode": {
+                      "default": "freeform",
+                      "type": "string",
+                      "enum": [
+                        "directQuote",
+                        "freeform"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "prompt"
+                  ],
+                  "additionalProperties": false
+                },
+                "screenshotOptions": {
+                  "type": "object",
+                  "properties": {
+                    "fullPage": {
+                      "type": "boolean"
+                    },
+                    "quality": {
+                      "type": "number"
+                    },
+                    "viewport": {
+                      "type": "object",
+                      "properties": {
+                        "width": {
+                          "type": "number"
+                        },
+                        "height": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "width",
+                        "height"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "parsers": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "pdf"
+                    ]
+                  }
+                },
+                "pdfOptions": {
+                  "type": "object",
+                  "properties": {
+                    "maxPages": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 10000
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "onlyMainContent": {
+                  "type": "boolean"
+                },
+                "redactPII": {
+                  "type": "boolean"
+                },
+                "includeTags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "excludeTags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "waitFor": {
+                  "type": "number"
+                },
+                "actions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "wait",
+                          "screenshot",
+                          "scroll",
+                          "scrape",
+                          "click",
+                          "write",
+                          "press",
+                          "executeJavascript",
+                          "generatePDF"
+                        ]
+                      },
+                      "selector": {
+                        "type": "string"
+                      },
+                      "milliseconds": {
+                        "type": "number"
+                      },
+                      "text": {
+                        "type": "string"
+                      },
+                      "key": {
+                        "type": "string"
+                      },
+                      "direction": {
+                        "type": "string",
+                        "enum": [
+                          "up",
+                          "down"
+                        ]
+                      },
+                      "script": {
+                        "type": "string"
+                      },
+                      "fullPage": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  }
+                },
+                "mobile": {
+                  "type": "boolean"
+                },
+                "skipTlsVerification": {
+                  "type": "boolean"
+                },
+                "removeBase64Images": {
+                  "type": "boolean"
+                },
+                "location": {
+                  "type": "object",
+                  "properties": {
+                    "country": {
+                      "type": "string"
+                    },
+                    "languages": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "storeInCache": {
+                  "type": "boolean"
+                },
+                "zeroDataRetention": {
+                  "type": "boolean"
+                },
+                "maxAge": {
+                  "type": "number"
+                },
+                "lockdown": {
+                  "type": "boolean"
+                },
+                "proxy": {
+                  "type": "string",
+                  "enum": [
+                    "basic",
+                    "stealth",
+                    "enhanced",
+                    "auto"
+                  ]
+                },
+                "profile": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "saveChanges": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "name"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "url"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_map": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "search": {
+                  "type": "string"
+                },
+                "sitemap": {
+                  "type": "string",
+                  "enum": [
+                    "include",
+                    "skip",
+                    "only"
+                  ]
+                },
+                "includeSubdomains": {
+                  "type": "boolean"
+                },
+                "limit": {
+                  "type": "number"
+                },
+                "ignoreQueryParameters": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "url"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_search": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "limit": {
+                  "type": "number"
+                },
+                "tbs": {
+                  "type": "string"
+                },
+                "filter": {
+                  "type": "string"
+                },
+                "location": {
+                  "type": "string"
+                },
+                "includeDomains": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 253,
+                    "pattern": "^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$"
+                  }
+                },
+                "excludeDomains": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 253,
+                    "pattern": "^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$"
+                  }
+                },
+                "sources": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "web",
+                          "images",
+                          "news"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  }
+                },
+                "categories": {
+                  "description": "Limit results to specific source types. `github` searches GitHub repositories, code, issues, and docs; `research` searches academic and research sources; `pdf` searches PDF results.",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "github",
+                      "research",
+                      "pdf"
+                    ]
+                  }
+                },
+                "scrapeOptions": {
+                  "type": "object",
+                  "properties": {
+                    "formats": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "markdown",
+                          "html",
+                          "rawHtml",
+                          "screenshot",
+                          "links",
+                          "summary",
+                          "changeTracking",
+                          "branding",
+                          "json",
+                          "query",
+                          "audio"
+                        ]
+                      }
+                    },
+                    "jsonOptions": {
+                      "type": "object",
+                      "properties": {
+                        "prompt": {
+                          "type": "string"
+                        },
+                        "schema": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": false
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "queryOptions": {
+                      "type": "object",
+                      "properties": {
+                        "prompt": {
+                          "type": "string",
+                          "maxLength": 10000
+                        },
+                        "mode": {
+                          "default": "freeform",
+                          "type": "string",
+                          "enum": [
+                            "directQuote",
+                            "freeform"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "prompt"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "screenshotOptions": {
+                      "type": "object",
+                      "properties": {
+                        "fullPage": {
+                          "type": "boolean"
+                        },
+                        "quality": {
+                          "type": "number"
+                        },
+                        "viewport": {
+                          "type": "object",
+                          "properties": {
+                            "width": {
+                              "type": "number"
+                            },
+                            "height": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "width",
+                            "height"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "parsers": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "pdf"
+                        ]
+                      }
+                    },
+                    "pdfOptions": {
+                      "type": "object",
+                      "properties": {
+                        "maxPages": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 10000
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "onlyMainContent": {
+                      "type": "boolean"
+                    },
+                    "redactPII": {
+                      "type": "boolean"
+                    },
+                    "includeTags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "excludeTags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "waitFor": {
+                      "type": "number"
+                    },
+                    "actions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "wait",
+                              "screenshot",
+                              "scroll",
+                              "scrape",
+                              "click",
+                              "write",
+                              "press",
+                              "executeJavascript",
+                              "generatePDF"
+                            ]
+                          },
+                          "selector": {
+                            "type": "string"
+                          },
+                          "milliseconds": {
+                            "type": "number"
+                          },
+                          "text": {
+                            "type": "string"
+                          },
+                          "key": {
+                            "type": "string"
+                          },
+                          "direction": {
+                            "type": "string",
+                            "enum": [
+                              "up",
+                              "down"
+                            ]
+                          },
+                          "script": {
+                            "type": "string"
+                          },
+                          "fullPage": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "type"
+                        ]
+                      }
+                    },
+                    "mobile": {
+                      "type": "boolean"
+                    },
+                    "skipTlsVerification": {
+                      "type": "boolean"
+                    },
+                    "removeBase64Images": {
+                      "type": "boolean"
+                    },
+                    "location": {
+                      "type": "object",
+                      "properties": {
+                        "country": {
+                          "type": "string"
+                        },
+                        "languages": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "storeInCache": {
+                      "type": "boolean"
+                    },
+                    "zeroDataRetention": {
+                      "type": "boolean"
+                    },
+                    "maxAge": {
+                      "type": "number"
+                    },
+                    "lockdown": {
+                      "type": "boolean"
+                    },
+                    "proxy": {
+                      "type": "string",
+                      "enum": [
+                        "basic",
+                        "stealth",
+                        "enhanced",
+                        "auto"
+                      ]
+                    },
+                    "profile": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "saveChanges": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "enterprise": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "default",
+                      "anon",
+                      "zdr"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "query"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_search_feedback": {
+              "type": "object",
+              "properties": {
+                "searchId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "rating": {
+                  "type": "string",
+                  "enum": [
+                    "good",
+                    "bad",
+                    "partial"
+                  ]
+                },
+                "valuableSources": {
+                  "maxItems": 50,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "url": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "reason": {
+                        "type": "string",
+                        "maxLength": 1000
+                      }
+                    },
+                    "required": [
+                      "url"
+                    ]
+                  }
+                },
+                "missingContent": {
+                  "description": "Array of specific pieces of content the agent expected to find but did not. One entry per distinct topic. Each entry has a short `topic` and optional longer `description`.",
+                  "maxItems": 20,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "topic": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                      },
+                      "description": {
+                        "type": "string",
+                        "maxLength": 2000
+                      }
+                    },
+                    "required": [
+                      "topic"
+                    ]
+                  }
+                },
+                "querySuggestions": {
+                  "type": "string",
+                  "maxLength": 2000
+                }
+              },
+              "required": [
+                "searchId",
+                "rating"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_feedback": {
+              "type": "object",
+              "properties": {
+                "endpoint": {
+                  "type": "string",
+                  "enum": [
+                    "search",
+                    "scrape",
+                    "parse",
+                    "map"
+                  ]
+                },
+                "jobId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "rating": {
+                  "type": "string",
+                  "enum": [
+                    "good",
+                    "bad",
+                    "partial"
+                  ]
+                },
+                "issues": {
+                  "maxItems": 20,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80,
+                    "pattern": "^[a-z0-9][a-z0-9_-]*$"
+                  }
+                },
+                "tags": {
+                  "maxItems": 20,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80,
+                    "pattern": "^[a-z0-9][a-z0-9_-]*$"
+                  }
+                },
+                "note": {
+                  "type": "string",
+                  "maxLength": 4000
+                },
+                "valuableSources": {
+                  "maxItems": 50,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "url": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "reason": {
+                        "type": "string",
+                        "maxLength": 1000
+                      }
+                    },
+                    "required": [
+                      "url"
+                    ]
+                  }
+                },
+                "missingContent": {
+                  "maxItems": 50,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "topic": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                      },
+                      "description": {
+                        "type": "string",
+                        "maxLength": 2000
+                      }
+                    },
+                    "required": [
+                      "topic"
+                    ]
+                  }
+                },
+                "querySuggestions": {
+                  "type": "string",
+                  "maxLength": 2000
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "pageNumbers": {
+                  "maxItems": 100,
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "metadata": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "endpoint",
+                "jobId",
+                "rating"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_crawl": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string"
+                },
+                "prompt": {
+                  "type": "string"
+                },
+                "excludePaths": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "includePaths": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "maxDiscoveryDepth": {
+                  "type": "number"
+                },
+                "sitemap": {
+                  "type": "string",
+                  "enum": [
+                    "skip",
+                    "include",
+                    "only"
+                  ]
+                },
+                "limit": {
+                  "type": "number"
+                },
+                "allowExternalLinks": {
+                  "type": "boolean"
+                },
+                "allowSubdomains": {
+                  "type": "boolean"
+                },
+                "crawlEntireDomain": {
+                  "type": "boolean"
+                },
+                "delay": {
+                  "type": "number"
+                },
+                "maxConcurrency": {
+                  "type": "number"
+                },
+                "webhook": {
+                  "type": "string"
+                },
+                "webhookHeaders": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": false
+                },
+                "deduplicateSimilarURLs": {
+                  "type": "boolean"
+                },
+                "ignoreQueryParameters": {
+                  "type": "boolean"
+                },
+                "scrapeOptions": {
+                  "type": "object",
+                  "properties": {
+                    "formats": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "markdown",
+                          "html",
+                          "rawHtml",
+                          "screenshot",
+                          "links",
+                          "summary",
+                          "changeTracking",
+                          "branding",
+                          "json",
+                          "query",
+                          "audio"
+                        ]
+                      }
+                    },
+                    "jsonOptions": {
+                      "type": "object",
+                      "properties": {
+                        "prompt": {
+                          "type": "string"
+                        },
+                        "schema": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": false
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "queryOptions": {
+                      "type": "object",
+                      "properties": {
+                        "prompt": {
+                          "type": "string",
+                          "maxLength": 10000
+                        },
+                        "mode": {
+                          "default": "freeform",
+                          "type": "string",
+                          "enum": [
+                            "directQuote",
+                            "freeform"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "prompt"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "screenshotOptions": {
+                      "type": "object",
+                      "properties": {
+                        "fullPage": {
+                          "type": "boolean"
+                        },
+                        "quality": {
+                          "type": "number"
+                        },
+                        "viewport": {
+                          "type": "object",
+                          "properties": {
+                            "width": {
+                              "type": "number"
+                            },
+                            "height": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "width",
+                            "height"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "parsers": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "pdf"
+                        ]
+                      }
+                    },
+                    "pdfOptions": {
+                      "type": "object",
+                      "properties": {
+                        "maxPages": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 10000
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "onlyMainContent": {
+                      "type": "boolean"
+                    },
+                    "redactPII": {
+                      "type": "boolean"
+                    },
+                    "includeTags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "excludeTags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "waitFor": {
+                      "type": "number"
+                    },
+                    "actions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "wait",
+                              "screenshot",
+                              "scroll",
+                              "scrape",
+                              "click",
+                              "write",
+                              "press",
+                              "executeJavascript",
+                              "generatePDF"
+                            ]
+                          },
+                          "selector": {
+                            "type": "string"
+                          },
+                          "milliseconds": {
+                            "type": "number"
+                          },
+                          "text": {
+                            "type": "string"
+                          },
+                          "key": {
+                            "type": "string"
+                          },
+                          "direction": {
+                            "type": "string",
+                            "enum": [
+                              "up",
+                              "down"
+                            ]
+                          },
+                          "script": {
+                            "type": "string"
+                          },
+                          "fullPage": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "type"
+                        ]
+                      }
+                    },
+                    "mobile": {
+                      "type": "boolean"
+                    },
+                    "skipTlsVerification": {
+                      "type": "boolean"
+                    },
+                    "removeBase64Images": {
+                      "type": "boolean"
+                    },
+                    "location": {
+                      "type": "object",
+                      "properties": {
+                        "country": {
+                          "type": "string"
+                        },
+                        "languages": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "storeInCache": {
+                      "type": "boolean"
+                    },
+                    "zeroDataRetention": {
+                      "type": "boolean"
+                    },
+                    "maxAge": {
+                      "type": "number"
+                    },
+                    "lockdown": {
+                      "type": "boolean"
+                    },
+                    "proxy": {
+                      "type": "string",
+                      "enum": [
+                        "basic",
+                        "stealth",
+                        "enhanced",
+                        "auto"
+                      ]
+                    },
+                    "profile": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "saveChanges": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "url"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_check_crawl_status": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_extract": {
+              "type": "object",
+              "properties": {
+                "urls": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "prompt": {
+                  "type": "string"
+                },
+                "schema": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": false
+                },
+                "allowExternalLinks": {
+                  "type": "boolean"
+                },
+                "enableWebSearch": {
+                  "type": "boolean"
+                },
+                "includeSubdomains": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "urls"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_agent": {
+              "type": "object",
+              "properties": {
+                "prompt": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 10000
+                },
+                "urls": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "prompt"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_agent_status": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_interact": {
+              "type": "object",
+              "properties": {
+                "scrapeId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "prompt": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "code": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "language": {
+                  "type": "string",
+                  "enum": [
+                    "bash",
+                    "python",
+                    "node"
+                  ]
+                },
+                "timeout": {
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 300
+                },
+                "scrapeOptions": {
+                  "type": "object",
+                  "properties": {
+                    "formats": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "markdown",
+                          "html",
+                          "rawHtml",
+                          "screenshot",
+                          "links",
+                          "summary",
+                          "changeTracking",
+                          "branding",
+                          "json",
+                          "query",
+                          "audio"
+                        ]
+                      }
+                    },
+                    "jsonOptions": {
+                      "type": "object",
+                      "properties": {
+                        "prompt": {
+                          "type": "string"
+                        },
+                        "schema": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": false
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "queryOptions": {
+                      "type": "object",
+                      "properties": {
+                        "prompt": {
+                          "type": "string",
+                          "maxLength": 10000
+                        },
+                        "mode": {
+                          "default": "freeform",
+                          "type": "string",
+                          "enum": [
+                            "directQuote",
+                            "freeform"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "prompt"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "screenshotOptions": {
+                      "type": "object",
+                      "properties": {
+                        "fullPage": {
+                          "type": "boolean"
+                        },
+                        "quality": {
+                          "type": "number"
+                        },
+                        "viewport": {
+                          "type": "object",
+                          "properties": {
+                            "width": {
+                              "type": "number"
+                            },
+                            "height": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "width",
+                            "height"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "parsers": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "pdf"
+                        ]
+                      }
+                    },
+                    "pdfOptions": {
+                      "type": "object",
+                      "properties": {
+                        "maxPages": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 10000
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "onlyMainContent": {
+                      "type": "boolean"
+                    },
+                    "redactPII": {
+                      "type": "boolean"
+                    },
+                    "includeTags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "excludeTags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "waitFor": {
+                      "type": "number"
+                    },
+                    "actions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "wait",
+                              "screenshot",
+                              "scroll",
+                              "scrape",
+                              "click",
+                              "write",
+                              "press",
+                              "executeJavascript",
+                              "generatePDF"
+                            ]
+                          },
+                          "selector": {
+                            "type": "string"
+                          },
+                          "milliseconds": {
+                            "type": "number"
+                          },
+                          "text": {
+                            "type": "string"
+                          },
+                          "key": {
+                            "type": "string"
+                          },
+                          "direction": {
+                            "type": "string",
+                            "enum": [
+                              "up",
+                              "down"
+                            ]
+                          },
+                          "script": {
+                            "type": "string"
+                          },
+                          "fullPage": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "type"
+                        ]
+                      }
+                    },
+                    "mobile": {
+                      "type": "boolean"
+                    },
+                    "skipTlsVerification": {
+                      "type": "boolean"
+                    },
+                    "removeBase64Images": {
+                      "type": "boolean"
+                    },
+                    "location": {
+                      "type": "object",
+                      "properties": {
+                        "country": {
+                          "type": "string"
+                        },
+                        "languages": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "storeInCache": {
+                      "type": "boolean"
+                    },
+                    "zeroDataRetention": {
+                      "type": "boolean"
+                    },
+                    "maxAge": {
+                      "type": "number"
+                    },
+                    "lockdown": {
+                      "type": "boolean"
+                    },
+                    "proxy": {
+                      "type": "string",
+                      "enum": [
+                        "basic",
+                        "stealth",
+                        "enhanced",
+                        "auto"
+                      ]
+                    },
+                    "profile": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "saveChanges": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_interact_stop": {
+              "type": "object",
+              "properties": {
+                "scrapeId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "scrapeId"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_parse": {
+              "type": "object",
+              "properties": {
+                "formats": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "markdown",
+                      "html",
+                      "rawHtml",
+                      "links",
+                      "summary",
+                      "json",
+                      "query"
+                    ]
+                  }
+                },
+                "jsonOptions": {
+                  "type": "object",
+                  "properties": {
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "schema": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "queryOptions": {
+                  "type": "object",
+                  "properties": {
+                    "prompt": {
+                      "type": "string",
+                      "maxLength": 10000
+                    },
+                    "mode": {
+                      "default": "freeform",
+                      "type": "string",
+                      "enum": [
+                        "directQuote",
+                        "freeform"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "prompt"
+                  ],
+                  "additionalProperties": false
+                },
+                "parsers": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "pdf"
+                    ]
+                  }
+                },
+                "pdfOptions": {
+                  "type": "object",
+                  "properties": {
+                    "maxPages": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 10000
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "onlyMainContent": {
+                  "type": "boolean"
+                },
+                "redactPII": {
+                  "type": "boolean"
+                },
+                "includeTags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "excludeTags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "removeBase64Images": {
+                  "type": "boolean"
+                },
+                "skipTlsVerification": {
+                  "type": "boolean"
+                },
+                "storeInCache": {
+                  "type": "boolean"
+                },
+                "zeroDataRetention": {
+                  "type": "boolean"
+                },
+                "maxAge": {
+                  "type": "number"
+                },
+                "proxy": {
+                  "type": "string",
+                  "enum": [
+                    "basic",
+                    "auto"
+                  ]
+                },
+                "filePath": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Absolute or relative path to a local file to parse. Supported: .html, .htm, .pdf, .docx, .doc, .odt, .rtf, .xlsx, .xls"
+                },
+                "contentType": {
+                  "description": "Optional MIME type override. If omitted, the server infers the file kind from the extension.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "filePath"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_monitor_create": {
+              "type": "object",
+              "properties": {
+                "body": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": false
+                },
+                "page": {
+                  "type": "string"
+                },
+                "pages": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "queries": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "searchWindow": {
+                  "type": "string",
+                  "enum": [
+                    "5m",
+                    "15m",
+                    "1h",
+                    "6h",
+                    "24h",
+                    "7d"
+                  ]
+                },
+                "maxResults": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 50
+                },
+                "includeDomains": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "excludeDomains": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "scheduleText": {
+                  "type": "string"
+                },
+                "timezone": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "includeDiffs": {
+                  "type": "boolean"
+                },
+                "webhookUrl": {
+                  "type": "string"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_monitor_list": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "offset": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_monitor_get": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_monitor_update": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "id",
+                "body"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_monitor_delete": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_monitor_run": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_monitor_checks": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "limit": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "offset": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "queued",
+                    "running",
+                    "completed",
+                    "failed",
+                    "partial",
+                    "skipped_overlap"
+                  ]
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_monitor_check": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "checkId": {
+                  "type": "string"
+                },
+                "limit": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "skip": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "pageStatus": {
+                  "type": "string",
+                  "enum": [
+                    "same",
+                    "new",
+                    "changed",
+                    "removed",
+                    "error"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "checkId"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_research_search_papers": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Natural-language research topic or question, including methods, systems, conditions, populations, interventions, or outcomes when relevant."
+                },
+                "k": {
+                  "description": "Number of ranked papers to return (default 40).",
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 500
+                },
+                "authors": {
+                  "description": "Author substring filter(s); ALL must match (case-insensitive).",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "categories": {
+                  "description": "Paper category filter(s) (e.g. `cs.LG`); ALL provided values must match.",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "from": {
+                  "description": "Inclusive lower bound on created/updated date (`YYYY-MM-DD`).",
+                  "type": "string"
+                },
+                "to": {
+                  "description": "Inclusive upper bound on created/updated date (`YYYY-MM-DD`).",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "query"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_research_inspect_paper": {
+              "type": "object",
+              "properties": {
+                "paperId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Canonical paperId or primaryId such as `arxiv:1706.03762`, `pmcid:PMC12530322`, `pmid:40953549`, or `doi:10.1016/j.neunet.2025.108095`."
+                }
+              },
+              "required": [
+                "paperId"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_research_related_papers": {
+              "type": "object",
+              "properties": {
+                "seed_ids": {
+                  "minItems": 1,
+                  "maxItems": 10,
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "intent": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "mode": {
+                  "type": "string",
+                  "enum": [
+                    "similar",
+                    "citers",
+                    "references"
+                  ]
+                },
+                "k": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 500
+                },
+                "rerank": {
+                  "description": "Apply an additional rerank over the fused candidates.",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "seed_ids",
+                "intent"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_research_read_paper": {
+              "type": "object",
+              "properties": {
+                "paperId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Canonical paperId or primaryId such as `arxiv:1706.03762`, `pmcid:PMC12530322`, `pmid:40953549`, or `doi:10.1016/j.neunet.2025.108095`."
+                },
+                "question": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "k": {
+                  "description": "Number of passages to return (default 4).",
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 50
+                }
+              },
+              "required": [
+                "paperId",
+                "question"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            },
+            "firecrawl_research_search_github": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "k": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 100
+                }
+              },
+              "required": [
+                "query"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#",
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.0015410000014526304,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.0006250000005820766,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "fail",
+      "durationMs": 0.3936250000006112,
+      "message": "Found 1 security finding(s): 1 high, 0 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "firecrawl_interact"
+          ],
+          "diagnostics": [
+            "[high] Tool \"firecrawl_interact\" has parameter \"code\" which may allow arbitrary command execution."
+          ],
+          "findings": [
+            {
+              "ruleId": "shell-injection",
+              "severity": "high",
+              "toolName": "firecrawl_interact",
+              "message": "Tool \"firecrawl_interact\" has parameter \"code\" which may allow arbitrary command execution."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "partial",
+      "durationMs": 0.3656670000018494,
+      "message": "Detected 21 potential egress target(s) and 16 potential state mutation(s) with high confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 37,
+          "diagnostics": [
+            "Egress entries: 21",
+            "State mutations: 16",
+            "Confidence: high"
+          ],
+          "findings": [
+            {
+              "target": "url",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "firecrawl_scrape",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "url",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "firecrawl_map",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "firecrawl_search",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "firecrawl_search_feedback",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "endpoint",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "url",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "firecrawl_feedback",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "url",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "webhook",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "firecrawl_crawl",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "firecrawl_extract",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "firecrawl_agent",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "url",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "firecrawl_interact",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "firecrawl_parse",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "firecrawl_monitor_create",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "firecrawl_monitor_update",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "firecrawl_monitor_check",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "firecrawl_research_search_github",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "execute",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "partial",
+      "durationMs": 2.9809580000001006,
+      "message": "6/7 conformance checks passed, 1 failed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": false,
+          "itemCount": 7,
+          "identifiers": [
+            "tool-response-content"
+          ],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 26 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
+            "[FAIL] tool-response-content: Tool response content check failed: MCP error -32602: MCP error -32602: Tool 'firecrawl_interact' parameter validation failed: root: Provide either 'url' (interact directly) or 'scrapeId' (reuse a previous scrape), not both., root: Either 'code' or 'prompt' must be provided.. Please check the parameter types and values according to the tool's schema.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "partial",
+      "durationMs": 1.0780830000003334,
+      "message": "Found 147 quality finding(s) across 26 item(s): 0 warnings, 147 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 147,
+          "identifiers": [
+            "firecrawl_scrape",
+            "firecrawl_map",
+            "firecrawl_search",
+            "firecrawl_search_feedback",
+            "firecrawl_feedback",
+            "firecrawl_crawl",
+            "firecrawl_check_crawl_status",
+            "firecrawl_extract",
+            "firecrawl_agent",
+            "firecrawl_agent_status",
+            "firecrawl_interact",
+            "firecrawl_interact_stop",
+            "firecrawl_parse",
+            "firecrawl_monitor_create",
+            "firecrawl_monitor_list",
+            "firecrawl_monitor_get",
+            "firecrawl_monitor_update",
+            "firecrawl_monitor_delete",
+            "firecrawl_monitor_run",
+            "firecrawl_monitor_checks",
+            "firecrawl_monitor_check",
+            "firecrawl_research_related_papers",
+            "firecrawl_research_read_paper",
+            "firecrawl_research_search_github"
+          ],
+          "diagnostics": [
+            "[info] tool \"firecrawl_scrape\": Property 'url' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'formats' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'jsonOptions' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'queryOptions' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'screenshotOptions' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'parsers' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'pdfOptions' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'onlyMainContent' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'redactPII' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'includeTags' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'excludeTags' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'waitFor' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'actions' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'mobile' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'skipTlsVerification' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'removeBase64Images' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'location' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'storeInCache' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'zeroDataRetention' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'maxAge' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'lockdown' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'proxy' missing description",
+            "[info] tool \"firecrawl_scrape\": Property 'profile' missing description",
+            "[info] tool \"firecrawl_map\": Property 'url' missing description",
+            "[info] tool \"firecrawl_map\": Property 'search' missing description",
+            "[info] tool \"firecrawl_map\": Property 'sitemap' missing description",
+            "[info] tool \"firecrawl_map\": Property 'includeSubdomains' missing description",
+            "[info] tool \"firecrawl_map\": Property 'limit' missing description",
+            "[info] tool \"firecrawl_map\": Property 'ignoreQueryParameters' missing description",
+            "[info] tool \"firecrawl_search\": Property 'query' missing description",
+            "[info] tool \"firecrawl_search\": Property 'limit' missing description",
+            "[info] tool \"firecrawl_search\": Property 'tbs' missing description",
+            "[info] tool \"firecrawl_search\": Property 'filter' missing description",
+            "[info] tool \"firecrawl_search\": Property 'location' missing description",
+            "[info] tool \"firecrawl_search\": Property 'includeDomains' missing description",
+            "[info] tool \"firecrawl_search\": Property 'excludeDomains' missing description",
+            "[info] tool \"firecrawl_search\": Property 'sources' missing description",
+            "[info] tool \"firecrawl_search\": Property 'scrapeOptions' missing description",
+            "[info] tool \"firecrawl_search\": Property 'enterprise' missing description",
+            "[info] tool \"firecrawl_search_feedback\": Property 'searchId' missing description",
+            "[info] tool \"firecrawl_search_feedback\": Property 'rating' missing description",
+            "[info] tool \"firecrawl_search_feedback\": Property 'valuableSources' missing description",
+            "[info] tool \"firecrawl_search_feedback\": Property 'querySuggestions' missing description",
+            "[info] tool \"firecrawl_feedback\": Property 'endpoint' missing description",
+            "[info] tool \"firecrawl_feedback\": Property 'jobId' missing description",
+            "[info] tool \"firecrawl_feedback\": Property 'rating' missing description",
+            "[info] tool \"firecrawl_feedback\": Property 'issues' missing description",
+            "[info] tool \"firecrawl_feedback\": Property 'tags' missing description",
+            "[info] tool \"firecrawl_feedback\": Property 'note' missing description",
+            "[info] tool \"firecrawl_feedback\": Property 'valuableSources' missing description",
+            "[info] tool \"firecrawl_feedback\": Property 'missingContent' missing description",
+            "[info] tool \"firecrawl_feedback\": Property 'querySuggestions' missing description",
+            "[info] tool \"firecrawl_feedback\": Property 'url' missing description",
+            "[info] tool \"firecrawl_feedback\": Property 'pageNumbers' missing description",
+            "[info] tool \"firecrawl_feedback\": Property 'metadata' missing description",
+            "[info] tool \"firecrawl_crawl\": Property 'url' missing description",
+            "[info] tool \"firecrawl_crawl\": Property 'prompt' missing description",
+            "[info] tool \"firecrawl_crawl\": Property 'excludePaths' missing description",
+            "[info] tool \"firecrawl_crawl\": Property 'includePaths' missing description",
+            "[info] tool \"firecrawl_crawl\": Property 'maxDiscoveryDepth' missing description",
+            "[info] tool \"firecrawl_crawl\": Property 'sitemap' missing description",
+            "[info] tool \"firecrawl_crawl\": Property 'limit' missing description",
+            "[info] tool \"firecrawl_crawl\": Property 'allowExternalLinks' missing description",
+            "[info] tool \"firecrawl_crawl\": Property 'allowSubdomains' missing description",
+            "[info] tool \"firecrawl_crawl\": Property 'crawlEntireDomain' missing description",
+            "[info] tool \"firecrawl_crawl\": Property 'delay' missing description",
+            "[info] tool \"firecrawl_crawl\": Property 'maxConcurrency' missing description",
+            "[info] tool \"firecrawl_crawl\": Property 'webhook' missing description",
+            "[info] tool \"firecrawl_crawl\": Property 'webhookHeaders' missing description",
+            "[info] tool \"firecrawl_crawl\": Property 'deduplicateSimilarURLs' missing description",
+            "[info] tool \"firecrawl_crawl\": Property 'ignoreQueryParameters' missing description",
+            "[info] tool \"firecrawl_crawl\": Property 'scrapeOptions' missing description",
+            "[info] tool \"firecrawl_check_crawl_status\": Property 'id' missing description",
+            "[info] tool \"firecrawl_extract\": Property 'urls' missing description",
+            "[info] tool \"firecrawl_extract\": Property 'prompt' missing description",
+            "[info] tool \"firecrawl_extract\": Property 'schema' missing description",
+            "[info] tool \"firecrawl_extract\": Property 'allowExternalLinks' missing description",
+            "[info] tool \"firecrawl_extract\": Property 'enableWebSearch' missing description",
+            "[info] tool \"firecrawl_extract\": Property 'includeSubdomains' missing description",
+            "[info] tool \"firecrawl_agent\": Property 'prompt' missing description",
+            "[info] tool \"firecrawl_agent\": Property 'urls' missing description",
+            "[info] tool \"firecrawl_agent\": Property 'schema' missing description",
+            "[info] tool \"firecrawl_agent_status\": Property 'id' missing description",
+            "[info] tool \"firecrawl_interact\": Has properties but no 'required' array declared",
+            "[info] tool \"firecrawl_interact\": Property 'scrapeId' missing description",
+            "[info] tool \"firecrawl_interact\": Property 'url' missing description",
+            "[info] tool \"firecrawl_interact\": Property 'prompt' missing description",
+            "[info] tool \"firecrawl_interact\": Property 'code' missing description",
+            "[info] tool \"firecrawl_interact\": Property 'language' missing description",
+            "[info] tool \"firecrawl_interact\": Property 'timeout' missing description",
+            "[info] tool \"firecrawl_interact\": Property 'scrapeOptions' missing description",
+            "[info] tool \"firecrawl_interact_stop\": Property 'scrapeId' missing description",
+            "[info] tool \"firecrawl_parse\": Property 'formats' missing description",
+            "[info] tool \"firecrawl_parse\": Property 'jsonOptions' missing description",
+            "[info] tool \"firecrawl_parse\": Property 'queryOptions' missing description",
+            "[info] tool \"firecrawl_parse\": Property 'parsers' missing description",
+            "[info] tool \"firecrawl_parse\": Property 'pdfOptions' missing description",
+            "[info] tool \"firecrawl_parse\": Property 'onlyMainContent' missing description",
+            "[info] tool \"firecrawl_parse\": Property 'redactPII' missing description",
+            "[info] tool \"firecrawl_parse\": Property 'includeTags' missing description",
+            "[info] tool \"firecrawl_parse\": Property 'excludeTags' missing description",
+            "[info] tool \"firecrawl_parse\": Property 'removeBase64Images' missing description",
+            "[info] tool \"firecrawl_parse\": Property 'skipTlsVerification' missing description",
+            "[info] tool \"firecrawl_parse\": Property 'storeInCache' missing description",
+            "[info] tool \"firecrawl_parse\": Property 'zeroDataRetention' missing description",
+            "[info] tool \"firecrawl_parse\": Property 'maxAge' missing description",
+            "[info] tool \"firecrawl_parse\": Property 'proxy' missing description",
+            "[info] tool \"firecrawl_monitor_create\": Has properties but no 'required' array declared",
+            "[info] tool \"firecrawl_monitor_create\": Property 'body' missing description",
+            "[info] tool \"firecrawl_monitor_create\": Property 'page' missing description",
+            "[info] tool \"firecrawl_monitor_create\": Property 'pages' missing description",
+            "[info] tool \"firecrawl_monitor_create\": Property 'queries' missing description",
+            "[info] tool \"firecrawl_monitor_create\": Property 'searchWindow' missing description",
+            "[info] tool \"firecrawl_monitor_create\": Property 'maxResults' missing description",
+            "[info] tool \"firecrawl_monitor_create\": Property 'includeDomains' missing description",
+            "[info] tool \"firecrawl_monitor_create\": Property 'excludeDomains' missing description",
+            "[info] tool \"firecrawl_monitor_create\": Property 'goal' missing description",
+            "[info] tool \"firecrawl_monitor_create\": Property 'name' missing description",
+            "[info] tool \"firecrawl_monitor_create\": Property 'scheduleText' missing description",
+            "[info] tool \"firecrawl_monitor_create\": Property 'timezone' missing description",
+            "[info] tool \"firecrawl_monitor_create\": Property 'email' missing description",
+            "[info] tool \"firecrawl_monitor_create\": Property 'includeDiffs' missing description",
+            "[info] tool \"firecrawl_monitor_create\": Property 'webhookUrl' missing description",
+            "[info] tool \"firecrawl_monitor_list\": Has properties but no 'required' array declared",
+            "[info] tool \"firecrawl_monitor_list\": Property 'limit' missing description",
+            "[info] tool \"firecrawl_monitor_list\": Property 'offset' missing description",
+            "[info] tool \"firecrawl_monitor_get\": Property 'id' missing description",
+            "[info] tool \"firecrawl_monitor_update\": Property 'id' missing description",
+            "[info] tool \"firecrawl_monitor_update\": Property 'body' missing description",
+            "[info] tool \"firecrawl_monitor_delete\": Property 'id' missing description",
+            "[info] tool \"firecrawl_monitor_run\": Property 'id' missing description",
+            "[info] tool \"firecrawl_monitor_checks\": Property 'id' missing description",
+            "[info] tool \"firecrawl_monitor_checks\": Property 'limit' missing description",
+            "[info] tool \"firecrawl_monitor_checks\": Property 'offset' missing description",
+            "[info] tool \"firecrawl_monitor_checks\": Property 'status' missing description",
+            "[info] tool \"firecrawl_monitor_check\": Property 'id' missing description",
+            "[info] tool \"firecrawl_monitor_check\": Property 'checkId' missing description",
+            "[info] tool \"firecrawl_monitor_check\": Property 'limit' missing description",
+            "[info] tool \"firecrawl_monitor_check\": Property 'skip' missing description",
+            "[info] tool \"firecrawl_monitor_check\": Property 'pageStatus' missing description",
+            "[info] tool \"firecrawl_research_related_papers\": Property 'seed_ids' missing description",
+            "[info] tool \"firecrawl_research_related_papers\": Property 'intent' missing description",
+            "[info] tool \"firecrawl_research_related_papers\": Property 'mode' missing description",
+            "[info] tool \"firecrawl_research_related_papers\": Property 'k' missing description",
+            "[info] tool \"firecrawl_research_read_paper\": Property 'question' missing description",
+            "[info] tool \"firecrawl_research_search_github\": Property 'query' missing description",
+            "[info] tool \"firecrawl_research_search_github\": Property 'k' missing description"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'url' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'formats' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'jsonOptions' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'queryOptions' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'screenshotOptions' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'parsers' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'pdfOptions' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'onlyMainContent' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'redactPII' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'includeTags' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'excludeTags' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'waitFor' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'actions' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'mobile' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'skipTlsVerification' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'removeBase64Images' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'location' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'storeInCache' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'zeroDataRetention' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'maxAge' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'lockdown' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'proxy' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "issue": "Property 'profile' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_map",
+              "issue": "Property 'url' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_map",
+              "issue": "Property 'search' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_map",
+              "issue": "Property 'sitemap' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_map",
+              "issue": "Property 'includeSubdomains' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_map",
+              "issue": "Property 'limit' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_map",
+              "issue": "Property 'ignoreQueryParameters' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_search",
+              "issue": "Property 'query' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_search",
+              "issue": "Property 'limit' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_search",
+              "issue": "Property 'tbs' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_search",
+              "issue": "Property 'filter' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_search",
+              "issue": "Property 'location' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_search",
+              "issue": "Property 'includeDomains' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_search",
+              "issue": "Property 'excludeDomains' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_search",
+              "issue": "Property 'sources' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_search",
+              "issue": "Property 'scrapeOptions' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_search",
+              "issue": "Property 'enterprise' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_search_feedback",
+              "issue": "Property 'searchId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_search_feedback",
+              "issue": "Property 'rating' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_search_feedback",
+              "issue": "Property 'valuableSources' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_search_feedback",
+              "issue": "Property 'querySuggestions' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_feedback",
+              "issue": "Property 'endpoint' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_feedback",
+              "issue": "Property 'jobId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_feedback",
+              "issue": "Property 'rating' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_feedback",
+              "issue": "Property 'issues' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_feedback",
+              "issue": "Property 'tags' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_feedback",
+              "issue": "Property 'note' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_feedback",
+              "issue": "Property 'valuableSources' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_feedback",
+              "issue": "Property 'missingContent' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_feedback",
+              "issue": "Property 'querySuggestions' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_feedback",
+              "issue": "Property 'url' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_feedback",
+              "issue": "Property 'pageNumbers' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_feedback",
+              "issue": "Property 'metadata' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_crawl",
+              "issue": "Property 'url' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_crawl",
+              "issue": "Property 'prompt' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_crawl",
+              "issue": "Property 'excludePaths' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_crawl",
+              "issue": "Property 'includePaths' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_crawl",
+              "issue": "Property 'maxDiscoveryDepth' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_crawl",
+              "issue": "Property 'sitemap' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_crawl",
+              "issue": "Property 'limit' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_crawl",
+              "issue": "Property 'allowExternalLinks' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_crawl",
+              "issue": "Property 'allowSubdomains' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_crawl",
+              "issue": "Property 'crawlEntireDomain' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_crawl",
+              "issue": "Property 'delay' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_crawl",
+              "issue": "Property 'maxConcurrency' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_crawl",
+              "issue": "Property 'webhook' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_crawl",
+              "issue": "Property 'webhookHeaders' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_crawl",
+              "issue": "Property 'deduplicateSimilarURLs' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_crawl",
+              "issue": "Property 'ignoreQueryParameters' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_crawl",
+              "issue": "Property 'scrapeOptions' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_check_crawl_status",
+              "issue": "Property 'id' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_extract",
+              "issue": "Property 'urls' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_extract",
+              "issue": "Property 'prompt' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_extract",
+              "issue": "Property 'schema' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_extract",
+              "issue": "Property 'allowExternalLinks' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_extract",
+              "issue": "Property 'enableWebSearch' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_extract",
+              "issue": "Property 'includeSubdomains' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_agent",
+              "issue": "Property 'prompt' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_agent",
+              "issue": "Property 'urls' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_agent",
+              "issue": "Property 'schema' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_agent_status",
+              "issue": "Property 'id' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_interact",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_interact",
+              "issue": "Property 'scrapeId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_interact",
+              "issue": "Property 'url' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_interact",
+              "issue": "Property 'prompt' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_interact",
+              "issue": "Property 'code' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_interact",
+              "issue": "Property 'language' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_interact",
+              "issue": "Property 'timeout' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_interact",
+              "issue": "Property 'scrapeOptions' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_interact_stop",
+              "issue": "Property 'scrapeId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_parse",
+              "issue": "Property 'formats' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_parse",
+              "issue": "Property 'jsonOptions' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_parse",
+              "issue": "Property 'queryOptions' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_parse",
+              "issue": "Property 'parsers' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_parse",
+              "issue": "Property 'pdfOptions' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_parse",
+              "issue": "Property 'onlyMainContent' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_parse",
+              "issue": "Property 'redactPII' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_parse",
+              "issue": "Property 'includeTags' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_parse",
+              "issue": "Property 'excludeTags' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_parse",
+              "issue": "Property 'removeBase64Images' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_parse",
+              "issue": "Property 'skipTlsVerification' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_parse",
+              "issue": "Property 'storeInCache' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_parse",
+              "issue": "Property 'zeroDataRetention' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_parse",
+              "issue": "Property 'maxAge' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_parse",
+              "issue": "Property 'proxy' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_create",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_create",
+              "issue": "Property 'body' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_create",
+              "issue": "Property 'page' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_create",
+              "issue": "Property 'pages' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_create",
+              "issue": "Property 'queries' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_create",
+              "issue": "Property 'searchWindow' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_create",
+              "issue": "Property 'maxResults' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_create",
+              "issue": "Property 'includeDomains' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_create",
+              "issue": "Property 'excludeDomains' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_create",
+              "issue": "Property 'goal' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_create",
+              "issue": "Property 'name' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_create",
+              "issue": "Property 'scheduleText' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_create",
+              "issue": "Property 'timezone' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_create",
+              "issue": "Property 'email' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_create",
+              "issue": "Property 'includeDiffs' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_create",
+              "issue": "Property 'webhookUrl' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_list",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_list",
+              "issue": "Property 'limit' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_list",
+              "issue": "Property 'offset' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_get",
+              "issue": "Property 'id' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_update",
+              "issue": "Property 'id' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_update",
+              "issue": "Property 'body' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_delete",
+              "issue": "Property 'id' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_run",
+              "issue": "Property 'id' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_checks",
+              "issue": "Property 'id' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_checks",
+              "issue": "Property 'limit' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_checks",
+              "issue": "Property 'offset' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_checks",
+              "issue": "Property 'status' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_check",
+              "issue": "Property 'id' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_check",
+              "issue": "Property 'checkId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_check",
+              "issue": "Property 'limit' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_check",
+              "issue": "Property 'skip' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_check",
+              "issue": "Property 'pageStatus' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_research_related_papers",
+              "issue": "Property 'seed_ids' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_research_related_papers",
+              "issue": "Property 'intent' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_research_related_papers",
+              "issue": "Property 'mode' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_research_related_papers",
+              "issue": "Property 'k' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_research_read_paper",
+              "issue": "Property 'question' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_research_search_github",
+              "issue": "Property 'query' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "firecrawl_research_search_github",
+              "issue": "Property 'k' missing description",
+              "severity": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "fail",
+      "durationMs": 1.0928749999984575,
+      "message": "Found 1 security finding(s): 1 high, 0 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "firecrawl_interact"
+          ],
+          "diagnostics": [
+            "[high] Tool \"firecrawl_interact\" has parameter \"code\" which may allow arbitrary command execution."
+          ],
+          "findings": [
+            {
+              "ruleId": "shell-injection",
+              "severity": "high",
+              "toolName": "firecrawl_interact",
+              "message": "Tool \"firecrawl_interact\" has parameter \"code\" which may allow arbitrary command execution."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "fail",
+      "durationMs": 1.8433750000003783,
+      "message": "Safe attack simulation found 9 finding(s): 1 high, 8 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 9,
+          "identifiers": [
+            "firecrawl_scrape",
+            "firecrawl_search",
+            "firecrawl_feedback",
+            "firecrawl_crawl",
+            "firecrawl_interact",
+            "firecrawl_parse",
+            "firecrawl_monitor_create",
+            "firecrawl_monitor_update",
+            "firecrawl_research_search_papers"
+          ],
+          "diagnostics": [
+            "[medium] Tool \"firecrawl_scrape\" combines broad parameters (url) with destructive or non-read-only behavior.",
+            "[medium] Tool \"firecrawl_search\" combines broad parameters (query) with destructive or non-read-only behavior.",
+            "[medium] Tool \"firecrawl_feedback\" combines broad parameters (endpoint, url) with destructive or non-read-only behavior.",
+            "[medium] Tool \"firecrawl_crawl\" combines broad parameters (url) with destructive or non-read-only behavior.",
+            "[high] Tool \"firecrawl_interact\" combines broad parameters (url, code) with destructive or non-read-only behavior.",
+            "[medium] Tool \"firecrawl_parse\" combines broad parameters (filePath) with destructive or non-read-only behavior.",
+            "[medium] Tool \"firecrawl_monitor_create\" combines broad parameters (body) with destructive or non-read-only behavior.",
+            "[medium] Tool \"firecrawl_monitor_update\" combines broad parameters (body) with destructive or non-read-only behavior.",
+            "[medium] Tool \"firecrawl_research_search_papers\" combines broad parameters (query) with destructive or non-read-only behavior."
+          ],
+          "findings": [
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "firecrawl_scrape",
+              "message": "Tool \"firecrawl_scrape\" combines broad parameters (url) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "url"
+                ],
+                "annotations": {
+                  "title": "Scrape a URL",
+                  "readOnlyHint": false,
+                  "destructiveHint": false,
+                  "openWorldHint": true
+                },
+                "description": "\nScrape content from a single URL with advanced options.\nThis is the most powerful, fastest and most reliable scraper tool, if available you should always default to using this tool for any web scraping needs.\n\n**Best for:** Single page content extraction, when you know exactly which page contains the information.\n**Not recommended for:** Multiple pages (call scrape multiple times or use crawl), unknown page location (use search).\n**Common mistakes:** Using markdown format when extracting specific data points (use JSON instead).\n**Other Features:** Use 'branding' format to extract brand identity (colors, fonts, typography, spacing, UI components) for design analysis or style replication.\n\n**CRITICAL - Format Selection (you MUST follow this):**\nWhen the user asks for SPECIFIC data points, you MUST use JSON format with a schema. Only use markdown when the user needs the ENTIRE page content.\n\n**Use JSON format when user asks for:**\n- Parameters, fields, or specifications (e.g., \"get the header parameters\", \"what are the required fields\")\n- Prices, numbers, or structured data (e.g., \"extract the pricing\", \"get the product details\")\n- API details, endpoints, or technical specs (e.g., \"find the authentication endpoint\")\n- Lists of items or properties (e.g., \"list the features\", \"get all the options\")\n- Any specific piece of information from a page\n\n**Use markdown format ONLY when:**\n- User wants to read/summarize an entire article or blog post\n- User needs to see all content on a page without specific extraction\n- User explicitly asks for the full page content\n\n**Handling JavaScript-rendered pages (SPAs):**\nIf JSON extraction returns empty, minimal, or just navigation content, the page is likely JavaScript-rendered or the content is on a different URL. Try these steps IN ORDER:\n1. **Add waitFor parameter:** Set `waitFor: 5000` to `waitFor: 10000` to allow JavaScript to render before extraction\n2. **Try a different URL:** If the URL has a hash fragment (#section), try the base URL or look for a direct page URL\n3. **Use firecrawl_map to find the correct page:** Large documentation sites or SPAs often spread content across multiple URLs. Use `firecrawl_map` with a `search` parameter to discover the specific page containing your target content, then scrape that URL directly.\n   Example: If scraping \"https://docs.example.com/reference\" fails to find webhook parameters, use `firecrawl_map` with `{\"url\": \"https://docs.example.com/reference\", \"search\": \"webhook\"}` to find URLs like \"/reference/webhook-events\", then scrape that specific page.\n4. **Use firecrawl_agent:** As a last resort for heavily dynamic pages where map+scrape still fails, use the agent which can autonomously navigate and research\n\n**Usage Example (JSON format - REQUIRED for specific data extraction):**\n```json\n{\n  \"name\": \"firecrawl_scrape\",\n  \"arguments\": {\n    \"url\": \"https://example.com/api-docs\",\n    \"formats\": [\"json\"],\n    \"jsonOptions\": {\n      \"prompt\": \"Extract the header parameters for the authentication endpoint\",\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"parameters\": {\n            \"type\": \"array\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"name\": { \"type\": \"string\" },\n                \"type\": { \"type\": \"string\" },\n                \"required\": { \"type\": \"boolean\" },\n                \"description\": { \"type\": \"string\" }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n```\n\n**Prefer markdown format by default.** You can read and reason over the full page content directly — no need for an intermediate query step. Use markdown for questions about page content, factual lookups, and any task where you need to understand the page.\n\n**Use JSON format when user needs:**\n- Structured data with specific fields (extract all products with name, price, description)\n- Data in a specific schema for downstream processing\n\n**Use query format only when:**\n- The page is extremely long and you need a single targeted answer without processing the full content\n- You want a quick factual answer and don't need to retain the page content\n- Set `queryOptions.mode` to `\"directQuote\"` when you need verbatim page text; otherwise it defaults to `\"freeform\"`\n\n**Usage Example (markdown format - default for most tasks):**\n```json\n{\n  \"name\": \"firecrawl_scrape\",\n  \"arguments\": {\n    \"url\": \"https://example.com/article\",\n    \"formats\": [\"markdown\"],\n    \"onlyMainContent\": true\n  }\n}\n```\n**Usage Example (branding format - extract brand identity):**\n```json\n{\n  \"name\": \"firecrawl_scrape\",\n  \"arguments\": {\n    \"url\": \"https://example.com\",\n    \"formats\": [\"branding\"]\n  }\n}\n```\n**Branding format:** Extracts comprehensive brand identity (colors, fonts, typography, spacing, logo, UI components) for design analysis or style replication.\n**Performance:** Add maxAge parameter for 500% faster scrapes using cached data.\n**Lockdown mode:** Set `lockdown: true` to serve the request only from the existing index/cache without any outbound network request. For air-gapped or compliance-constrained use where the request URL itself is considered sensitive. Errors on cache miss. Billed at 5 credits.\n**Privacy:** Set `redactPII: true` to return content with personally identifiable information redacted.\n**Returns:** JSON structured data, markdown, branding profile, or other formats as specified.\n\n"
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "firecrawl_search",
+              "message": "Tool \"firecrawl_search\" combines broad parameters (query) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "query"
+                ],
+                "annotations": {
+                  "title": "Search the web",
+                  "readOnlyHint": true,
+                  "destructiveHint": false,
+                  "openWorldHint": true
+                },
+                "description": "\nSearch the web and optionally extract content from search results. This is the most powerful web search tool available, and if available you should always default to using this tool for any web search needs.\n\nThe query also supports search operators, that you can use if needed to refine the search:\n| Operator | Functionality | Examples |\n---|-|-|\n| `\"` | Non-fuzzy matches a string of text | `\"Firecrawl\"`\n| `-` | Excludes certain keywords or negates other operators | `-bad`, `-site:firecrawl.dev`\n| `site:` | Only returns results from a specified website | `site:firecrawl.dev`\n| `inurl:` | Only returns results that include a word in the URL | `inurl:firecrawl`\n| `allinurl:` | Only returns results that include multiple words in the URL | `allinurl:git firecrawl`\n| `intitle:` | Only returns results that include a word in the title of the page | `intitle:Firecrawl`\n| `allintitle:` | Only returns results that include multiple words in the title of the page | `allintitle:firecrawl playground`\n| `related:` | Only returns results that are related to a specific domain | `related:firecrawl.dev`\n| `imagesize:` | Only returns images with exact dimensions | `imagesize:1920x1080`\n| `larger:` | Only returns images larger than specified dimensions | `larger:1920x1080`\n\n**Best for:** Finding specific information across multiple websites, when you don't know which website has the information; when you need the most relevant content for a query.\n**Not recommended for:** When you need to search the filesystem. When you already know which website to scrape (use scrape); when you need comprehensive coverage of a single website (use map or crawl.\n**Common mistakes:** Using crawl or map for open-ended questions (use search instead).\n**Prompt Example:** \"Find the latest research papers on AI published in 2023.\"\n**Sources:** web, images, news, default to web unless needed images or news.\n**Categories:** Optional filter to limit result types: `github` (GitHub repositories, code, issues, and docs), `research` (academic and research sources), `pdf` (PDF results). Example: `categories: [\"github\", \"research\"]`.\n**Domain filters:** Use includeDomains to restrict results to specific domains, or excludeDomains to remove domains. Do not use both in the same request. Domains must be hostnames only, without protocol or path.\n**Scrape Options:** Only use scrapeOptions when you think it is absolutely necessary. When you do so default to a lower limit to avoid timeouts, 5 or lower.\n**Optimal Workflow:** Search first using firecrawl_search without formats, then after fetching the results, use the scrape tool to get the content of the relevantpage(s) that you want to scrape\n**After the search:** Once you have processed the results (or decided they were not useful), call `firecrawl_search_feedback` with the `id` from this response. The first feedback per search refunds 1 credit and helps Firecrawl improve search quality.\n\n**Usage Example without formats (Preferred):**\n```json\n{\n  \"name\": \"firecrawl_search\",\n  \"arguments\": {\n    \"query\": \"top AI companies\",\n    \"limit\": 5,\n    \"includeDomains\": [\"example.com\"],\n    \"sources\": [\n      { \"type\": \"web\" }\n    ]\n  }\n}\n```\n**Usage Example with formats:**\n```json\n{\n  \"name\": \"firecrawl_search\",\n  \"arguments\": {\n    \"query\": \"latest AI research papers 2023\",\n    \"limit\": 5,\n    \"categories\": [\"github\", \"research\"],\n    \"lang\": \"en\",\n    \"country\": \"us\",\n    \"sources\": [\n      { \"type\": \"web\" },\n      { \"type\": \"images\" },\n      { \"type\": \"news\" }\n    ],\n    \"scrapeOptions\": {\n      \"formats\": [\"markdown\"],\n      \"onlyMainContent\": true\n    }\n  }\n}\n```\n**Returns:** A JSON envelope of the form `{ success, data: { web?, images?, news? }, id, creditsUsed }`. Each result array contains the search results (with optional scraped content). Pass the top-level `id` to `firecrawl_search_feedback` after you've used the results.\n"
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "firecrawl_feedback",
+              "message": "Tool \"firecrawl_feedback\" combines broad parameters (endpoint, url) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "endpoint",
+                  "url"
+                ],
+                "annotations": {
+                  "title": "Send feedback on a Firecrawl job",
+                  "readOnlyHint": false,
+                  "destructiveHint": false,
+                  "openWorldHint": true
+                },
+                "description": "\nSend structured feedback for a completed Firecrawl v2 job. Use this for endpoint-level feedback on `scrape`, `parse`, `map`, or `search` jobs when the job result was useful, partially useful, or failed to meet expectations.\n\nFor search-result quality specifically, prefer `firecrawl_search_feedback` when available because it has search-focused guidance. This generic tool posts to `/v2/feedback` and accepts endpoint-wide signals:\n\n- **endpoint** — one of `search`, `scrape`, `parse`, or `map`.\n- **jobId** — the id returned by that endpoint.\n- **rating** — overall result quality: `good`, `partial`, or `bad`.\n- **issues** — stable lowercase issue codes such as `missing_markdown`, `bad_pdf_parse`, or `wrong_links`.\n- **tags** — optional lowercase tags for grouping feedback.\n- **note** — short human-readable context. Do not include huge page contents or raw scrape results.\n- **url**, **pageNumbers**, and **metadata** — small contextual fields that identify what the feedback refers to.\n\nDo not store multi-MB outputs in feedback. Use concise notes, issue codes, URLs, and page numbers.\n\n**Returns:** `{ success, feedbackId, creditsRefunded, creditsRefundedToday?, dailyRefundCap?, dailyCapReached?, alreadySubmitted?, warning? }` JSON.\n"
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "firecrawl_crawl",
+              "message": "Tool \"firecrawl_crawl\" combines broad parameters (url) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "url"
+                ],
+                "annotations": {
+                  "title": "Run a site crawl",
+                  "readOnlyHint": false,
+                  "destructiveHint": false,
+                  "openWorldHint": true
+                },
+                "description": "\n Starts a crawl job on a website, polls until it reaches a terminal state, and returns the final crawl status/data.\n \n **Best for:** Extracting content from multiple related pages, when you need comprehensive coverage.\n **Not recommended for:** Extracting content from a single page (use scrape); when token limits are a concern (use map + scrape for tighter control); when you need fast results (crawling can be slow).\n **Warning:** Crawl responses can be very large and may exceed token limits. Limit the crawl depth and number of pages, or use map + scrape for tighter control.\n **Common mistakes:** Setting limit or maxDiscoveryDepth too high (causes token overflow) or too low (causes missing pages); using crawl for a single page (use scrape instead). Using a /* wildcard is not recommended.\n **Prompt Example:** \"Get all blog posts from the first two levels of example.com/blog.\"\n **Usage Example:**\n ```json\n {\n   \"name\": \"firecrawl_crawl\",\n   \"arguments\": {\n     \"url\": \"https://example.com/blog/*\",\n     \"maxDiscoveryDepth\": 5,\n     \"limit\": 20,\n     \"allowExternalLinks\": false,\n     \"deduplicateSimilarURLs\": true,\n     \"sitemap\": \"include\"\n   }\n }\n ```\n **Returns:** Final crawl status and data after internal polling, including the crawl id. Use firecrawl_check_crawl_status only when you need to re-check an existing crawl ID later.\n \n "
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "high",
+              "itemType": "tool",
+              "itemName": "firecrawl_interact",
+              "message": "Tool \"firecrawl_interact\" combines broad parameters (url, code) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "url",
+                  "code"
+                ],
+                "annotations": {
+                  "title": "Interact with a scraped page",
+                  "readOnlyHint": false,
+                  "destructiveHint": false,
+                  "openWorldHint": true
+                },
+                "description": "\nInteract with a page in a live browser session: click buttons, fill forms, extract dynamic content, or navigate deeper.\n\n**Best for:** Multi-step workflows on a single page — searching a site, clicking through results, filling forms, extracting data that requires interaction.\n**Two ways to target a page:**\n- Pass a `url` to interact directly. The session is opened for you in one call (use this for a fresh page).\n- Pass a `scrapeId` from a previous firecrawl_scrape to reuse that already-loaded page (cheaper when you just scraped it).\n\n**Arguments:**\n- url: Page to interact with; opens a session for you (use this OR scrapeId)\n- scrapeId: Scrape job ID from a previous scrape, found in its metadata (use this OR url)\n- prompt: Natural language instruction describing the action to take (use this OR code)\n- code: Code to execute in the browser session (use this OR prompt)\n- language: \"bash\", \"python\", or \"node\" (optional, defaults to \"node\", only used with code)\n- timeout: Interact execution timeout in seconds, 1-300 (optional, defaults to 30)\n- scrapeOptions: Optional scrape controls used only with url mode, such as waitFor, maxAge, proxy, or zeroDataRetention\n\n**Usage Example (prompt, direct via url):**\n```json\n{\n  \"name\": \"firecrawl_interact\",\n  \"arguments\": {\n    \"url\": \"https://example.com/products\",\n    \"prompt\": \"Click on the first product and tell me its price\"\n  }\n}\n```\n\n**Usage Example (code):**\n```json\n{\n  \"name\": \"firecrawl_interact\",\n  \"arguments\": {\n    \"scrapeId\": \"scrape-id-from-previous-scrape\",\n    \"code\": \"agent-browser click @e5\",\n    \"language\": \"bash\"\n  }\n}\n```\n**Returns:** Execution result including output, stdout, stderr, exit code, and live view URLs.\n"
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "quarantine"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "firecrawl_parse",
+              "message": "Tool \"firecrawl_parse\" combines broad parameters (filePath) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "filePath"
+                ],
+                "annotations": {
+                  "title": "Parse a local file",
+                  "readOnlyHint": true,
+                  "destructiveHint": false,
+                  "openWorldHint": false
+                },
+                "description": "\nParse a file using Firecrawl's /v2/parse endpoint.\n\nIn local/non-cloud MCP mode, this tool reads filePath from the MCP server filesystem and posts multipart data to the configured self-hosted FIRECRAWL_API_URL, preserving the existing direct-read behavior.\n\nIn hosted CLOUD_SERVICE mode, this tool is a two-call flow because hosted MCP cannot read your local filesystem:\n1. Call with filePath, contentType, parse options, and optional declaredSizeBytes. The hosted server mints a short-lived upload URL and returns a safe local curl PUT command plus nextToolCall.\n2. Run the returned curl command locally, then call firecrawl_parse again with uploadRef and the desired parse options. The hosted server calls /v2/parse server-side with your session credential.\n\n**Best for:** Extracting content from a local document (PDF, Word, Excel, HTML, etc.); pulling structured data out of a file with JSON format; converting binary documents into markdown for downstream reasoning.\n**Not recommended for:** Remote URLs (use firecrawl_scrape); multiple files at once (call parse multiple times); documents that require interactive actions, screenshots, or change tracking — those aren't supported by the parse endpoint.\n**Common mistakes:** In hosted mode, do not pass both filePath and uploadRef. Phase 1 uses filePath only to generate upload instructions; phase 2 uses uploadRef only to parse server-side.\n\n**Supported file types:** .html, .htm, .xhtml, .pdf, .docx, .doc, .odt, .rtf, .xlsx, .xls\n**Unsupported options:** actions, screenshot/branding/changeTracking formats, waitFor > 0, location, mobile, proxy values other than \"auto\" or \"basic\".\n**Privacy:** Set `redactPII: true` to return content with personally identifiable information redacted.\n\n**CRITICAL - Format Selection (same rules as firecrawl_scrape):**\nWhen the user asks for SPECIFIC data points from a document, you MUST use JSON format with a schema. Only use markdown when the user needs the ENTIRE document content.\n\n**Handling PDFs:**\nAdd `\"parsers\": [\"pdf\"]` (optionally with `pdfOptions.maxPages`) when parsing a PDF so the PDF engine is invoked explicitly. For very long documents, cap `maxPages` to keep the response within token limits.\n\n**Hosted phase 1 example:**\n```json\n{\n  \"name\": \"firecrawl_parse\",\n  \"arguments\": {\n    \"filePath\": \"/absolute/path/to/document.pdf\",\n    \"contentType\": \"application/pdf\",\n    \"formats\": [\"markdown\"],\n    \"parsers\": [\"pdf\"],\n    \"zeroDataRetention\": true\n  }\n}\n```\n\n**Hosted phase 2 example:**\n```json\n{\n  \"name\": \"firecrawl_parse\",\n  \"arguments\": {\n    \"uploadRef\": \"upload-ref-from-phase-1\",\n    \"formats\": [\"markdown\"],\n    \"parsers\": [\"pdf\"],\n    \"zeroDataRetention\": true\n  }\n}\n```\n\n**Returns:** Phase 1 hosted upload instructions or a parsed document with markdown, html, links, summary, json, or query results depending on the requested formats.\n"
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_create",
+              "message": "Tool \"firecrawl_monitor_create\" combines broad parameters (body) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "body"
+                ],
+                "annotations": {
+                  "title": "Create monitor",
+                  "readOnlyHint": false,
+                  "destructiveHint": false,
+                  "openWorldHint": true
+                },
+                "description": "\nCreate a Firecrawl monitor — a recurring scrape, crawl, or search that diffs each result against the last retained snapshot.\n\nPrefer the simple path: pass `page` or `pages` plus `goal` to monitor specific URLs, OR pass `queries` plus `goal` to monitor web search results for new/changed hits. The tool will create the monitor with a 30-minute schedule and meaningful-change judging enabled by the API. Use `body` only for advanced requests such as crawl targets, JSON change tracking, custom retention, or manual `judgeEnabled` control.\n\nMeaningful-change judge: set `goal` to a plain-language description of what the user actually cares about. `judgeEnabled` defaults to true when `goal` is set, so providing `goal` is enough. Page webhooks expose `isMeaningful` and `judgment` on `monitor.page` events.\n\nSimple fields:\n- `page`: one page URL to monitor.\n- `pages`: multiple page URLs to monitor.\n- `queries`: one or more search queries (1-12) to monitor instead of fixed URLs. Each check runs the searches and diffs the result set, so you get alerted when new or changed results appear. Mutually exclusive with `page`/`pages` in the simple path.\n- `searchWindow`: optional recency window for search targets — one of `5m`, `15m`, `1h`, `6h`, `24h`, `7d` (default `24h`).\n- `maxResults`: optional max results per search, 1-50 (default 10).\n- `includeDomains` / `excludeDomains`: optional domain allow/deny lists for search targets.\n- `goal`: plain-English instruction for what changes matter. Required for the simple path (and always required when `queries` are set — web monitors must have a goal).\n- `scheduleText`: optional natural-language schedule, default `every 30 minutes`.\n- `email`: optional email recipient for summaries.\n- `webhookUrl`: optional webhook URL. Configures `monitor.page` and `monitor.check.completed`.\n\n**Search-mode example:**\n\n```json\n{\n  \"name\": \"firecrawl_monitor_create\",\n  \"arguments\": {\n    \"queries\": [\"new LLM release\", \"frontier model launch\"],\n    \"goal\": \"Notify me about major new LLM model releases.\",\n    \"searchWindow\": \"24h\",\n    \"maxResults\": 10\n  }\n}\n```\n\nGoal guidance:\n- Expand the user's one-line monitoring intent into a concise 2-3 sentence monitor goal.\n- State what should trigger an alert, restate any scope the user gave, and include intent-specific exclusions only when obvious from the user's request.\n- Generic noise such as whitespace, formatting-only changes, request IDs, tracking params, generic metadata, and unrelated page chrome is already handled by the judge; do not repeat it in every goal.\n- If the user is vague, keep the goal broad rather than guessing exclusions. If the user asks for broad monitoring or \"any change\", preserve that and do not add exclusions that hide changes.\n- If the user says they do not care about something, include that explicitly. It is okay to ask whether they want to ignore specific noise when it is likely to matter.\n- Do not invent page-specific sections, thresholds, entities, or business rules unless the user mentioned them.\n\nQuery guidance (web monitors): `queries` control recall (what search retrieves) and `goal` controls precision (which results alert) — tune both.\n- Write keywords, not sentences: `OpenAI new model release`, not `tell me when OpenAI releases a new model`.\n- Quote multi-word entities (`\"Llama 4\"`); group synonyms with `OR` (`launch OR release OR announcement`).\n- Keep each query tight (~2-6 terms). One broad query usually beats several narrow ones — extra queries split the `maxResults` budget. Use one query per distinct entity; do not emit one per facet of a single subject.\n- Keep `site:` operators out of queries — use `includeDomains` / `excludeDomains`.\n- A healthy web monitor mostly returns `new: 0` and alerts only on genuinely new, on-goal results. Many `ignored` results ⇒ queries too broad (tighten them); nothing for long stretches ⇒ queries too narrow or window too tight (broaden); dismissed alerts ⇒ goal too broad (add an intent-specific Ignore). Aim for high precision with enough recall.\n\nFull `body` requests require: `name`, `schedule` (with `cron` or `text`), and `targets` (one or more `{ type: 'scrape', urls: [...] }`, `{ type: 'crawl', url: '...' }`, or `{ type: 'search', queries: [...], searchWindow?, maxResults?, includeDomains?, excludeDomains? }`). Optional: `goal` (required when any search target is present), `judgeEnabled`, `webhook`, `notification`, `retentionDays`.\n\n**Markdown-mode (default):** Each check produces a unified text diff of the page's markdown. No extra configuration needed.\n\n```json\n{\n  \"name\": \"firecrawl_monitor_create\",\n  \"arguments\": {\n    \"page\": \"https://example.com/blog\",\n    \"goal\": \"Alert when a new blog post is published or an existing headline changes.\",\n    \"email\": \"[redacted-email]\"\n  }\n}\n```\n\n**Multiple pages:**\n\n```json\n{\n  \"name\": \"firecrawl_monitor_create\",\n  \"arguments\": {\n    \"pages\": [\"https://example.com/pricing\", \"https://example.com/changelog\"],\n    \"goal\": \"Alert when pricing, packaging, or launch messaging changes.\",\n    \"webhookUrl\": \"https://example.com/webhooks/firecrawl\"\n  }\n}\n```\n\n**JSON-mode change tracking:** To detect changes in **specific structured fields** (price, headline, in-stock flag, list items) instead of the whole page, add a `changeTracking` format with `modes: [\"json\"]` and a JSON schema to the target's `scrapeOptions.formats`. The check response will then carry a per-field diff (keyed by JSON path, e.g. `plans[0].price`) and a `snapshot.json` with the full current extraction. See `firecrawl_monitor_check` for the response shape.\n\n```json\n{\n  \"name\": \"firecrawl_monitor_create\",\n  \"arguments\": {\n    \"body\": {\n      \"name\": \"Pricing watch\",\n      \"schedule\": { \"text\": \"hourly\", \"timezone\": \"UTC\" },\n      \"goal\": \"Alert when a pricing tier, price, billing period, limit, or headline feature changes. Ignore unrelated marketing copy unless it changes the pricing offer.\",\n      \"targets\": [{\n        \"type\": \"scrape\",\n        \"urls\": [\"https://example.com/pricing\"],\n        \"scrapeOptions\": {\n          \"formats\": [{\n            \"type\": \"changeTracking\",\n            \"modes\": [\"json\"],\n            \"prompt\": \"Extract pricing tiers and headline features for each plan.\",\n            \"schema\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"plans\": {\n                  \"type\": \"array\",\n                  \"items\": {\n                    \"type\": \"object\",\n                    \"properties\": {\n                      \"name\":     { \"type\": \"string\" },\n                      \"price\":    { \"type\": \"string\" },\n                      \"features\": { \"type\": \"array\", \"items\": { \"type\": \"string\" } }\n                    }\n                  }\n                }\n              }\n            }\n          }]\n        }\n      }]\n    }\n  }\n}\n```\n\n**Mixed mode (JSON + git-diff):** Use `modes: [\"json\", \"git-diff\"]` to get both per-field diffs and a markdown sidecar. The page is marked `changed` whenever either surface changed.\n"
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "firecrawl_monitor_update",
+              "message": "Tool \"firecrawl_monitor_update\" combines broad parameters (body) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "body"
+                ],
+                "annotations": {
+                  "title": "Update monitor",
+                  "readOnlyHint": false,
+                  "destructiveHint": true,
+                  "openWorldHint": true
+                },
+                "description": "\nUpdate a monitor. Pass any subset of fields to patch: `name`, `status` (\"active\" | \"paused\"), `schedule`, `targets`, `goal`, `judgeEnabled`, `webhook`, `notification`, `retentionDays`.\n\n**Usage Example:**\n```json\n{\n  \"name\": \"firecrawl_monitor_update\",\n  \"arguments\": {\n    \"id\": \"mon_abc123\",\n    \"body\": { \"status\": \"paused\" }\n  }\n}\n```\n"
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "firecrawl_research_search_papers",
+              "message": "Tool \"firecrawl_research_search_papers\" combines broad parameters (query) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "query"
+                ],
+                "annotations": {
+                  "title": "Search research papers",
+                  "readOnlyHint": true,
+                  "destructiveHint": false,
+                  "openWorldHint": true
+                },
+                "description": "Primary entry point for finding research papers by topic across AI/ML, computer science, math, physics, biomedical, life sciences, and clinical literature. Semantic (HyDE) search over indexed paper metadata and abstracts; returns ranked papers with paper id, title, authors, and abstract. The query should be a natural-language research topic or question. Run SEVERAL distinct framings of the question (sibling domains, rival methods, dataset or benchmark names, conditions, populations, interventions, or outcomes) rather than one query — recall improves markedly with diverse framings."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 53,
+    "grade": "F",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 60,
+        "details": [
+          "conformance: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "schema-quality: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 0,
+        "details": [
+          "security-lite: fail (0/100)",
+          "security: fail (0/100)",
+          "attack-sim: fail (0/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 67,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: unsupported (50/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 797ms",
+          "p95 latency: 7ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 796.885374999998,
+    "toolsListMs": 7.258999999998196,
+    "promptsListMs": 0.0015410000014526304,
+    "resourcesListMs": 0.0006250000005820766
+  },
+  "runtimeProfile": {
+    "egress": [
+      {
+        "target": "url",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "firecrawl_scrape",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "url",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "firecrawl_map",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "firecrawl_search",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "firecrawl_search_feedback",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "endpoint",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "url",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "firecrawl_feedback",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "url",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "webhook",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "firecrawl_crawl",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "firecrawl_extract",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "firecrawl_agent",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "url",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "firecrawl_interact",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "firecrawl_parse",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "firecrawl_monitor_create",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "firecrawl_monitor_update",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "firecrawl_monitor_check",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "firecrawl_research_search_github",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      }
+    ],
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "execute",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-12T23:36:05.296Z",
+    "confidence": "high"
+  }
+}

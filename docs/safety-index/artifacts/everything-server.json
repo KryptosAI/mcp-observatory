@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-06T194944859Z_dd0288c3",
-  "createdAt": "2026-07-06T19:49:44.860Z",
-  "toolVersion": "0.28.0",
+  "runId": "run_2026-07-12T233536110Z_0cd2855a",
+  "createdAt": "2026-07-12T23:35:36.111Z",
+  "toolVersion": "1.31.0",
   "target": {
     "targetId": "everything-server",
     "adapter": "local-process",
@@ -29,8 +29,8 @@
     "nodeVersion": "v22.22.1"
   },
   "summary": {
-    "total": 8,
-    "pass": 7,
+    "total": 9,
+    "pass": 8,
     "fail": 0,
     "partial": 1,
     "unsupported": 0,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 6.7089169999999285,
+      "durationMs": 6.686833000000092,
       "message": "Advertised capability responded with the minimal expected shape (13 items).",
       "evidence": [
         {
@@ -263,7 +263,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "pass",
-      "durationMs": 0.6612079999999878,
+      "durationMs": 0.6355420000001004,
       "message": "Advertised capability responded with the minimal expected shape (4 items).",
       "evidence": [
         {
@@ -288,7 +288,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 1.076082999999926,
+      "durationMs": 0.9819580000000769,
       "message": "Advertised capability responded with the minimal expected shape (9 items).",
       "evidence": [
         {
@@ -330,7 +330,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.5017080000000078,
+      "durationMs": 0.5523749999999836,
       "message": "Found 2 security finding(s): 0 high, 0 medium, 2 low.",
       "evidence": [
         {
@@ -365,10 +365,81 @@
       ]
     },
     {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "pass",
+      "durationMs": 1.1772919999999658,
+      "message": "Detected 1 potential egress target(s) and 7 potential state mutation(s) with low confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 8,
+          "diagnostics": [
+            "Egress entries: 1",
+            "State mutations: 7",
+            "Confidence: medium"
+          ],
+          "findings": [
+            {
+              "target": "URL or data URI of the file content to compress",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "execute",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 3.4615420000000086,
+      "durationMs": 3.5233749999999873,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -394,7 +465,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 1.3427919999999176,
+      "durationMs": 1.4483750000000555,
       "message": "Found 6 quality finding(s) across 24 item(s): 0 warnings, 6 info.",
       "evidence": [
         {
@@ -463,7 +534,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 0.8974590000000262,
+      "durationMs": 0.8507080000000542,
       "message": "Found 2 security finding(s): 0 high, 0 medium, 2 low.",
       "evidence": [
         {
@@ -501,7 +572,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "pass",
-      "durationMs": 2.646041999999852,
+      "durationMs": 2.6746669999999995,
       "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
       "evidence": [
         {
@@ -560,16 +631,72 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 891ms",
+          "Connect: 795ms",
           "p95 latency: 7ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 890.503833,
-    "toolsListMs": 6.7089169999999285,
-    "promptsListMs": 0.6612079999999878,
-    "resourcesListMs": 1.076082999999926
+    "connectMs": 795.300459,
+    "toolsListMs": 6.686833000000092,
+    "promptsListMs": 0.6355420000001004,
+    "resourcesListMs": 0.9819580000000769
+  },
+  "runtimeProfile": {
+    "egress": [
+      {
+        "target": "URL or data URI of the file content to compress",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      }
+    ],
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "execute",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-12T23:35:36.918Z",
+    "confidence": "medium"
   }
 }

@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-06T194946771Z_35b0da26",
-  "createdAt": "2026-07-06T19:49:46.771Z",
-  "toolVersion": "0.28.0",
+  "runId": "run_2026-07-12T233538028Z_74c23d92",
+  "createdAt": "2026-07-12T23:35:38.028Z",
+  "toolVersion": "1.31.0",
   "target": {
     "targetId": "memory-server",
     "adapter": "local-process",
@@ -29,8 +29,8 @@
     "nodeVersion": "v22.22.1"
   },
   "summary": {
-    "total": 8,
-    "pass": 6,
+    "total": 9,
+    "pass": 7,
     "fail": 0,
     "partial": 1,
     "unsupported": 1,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 7.618457999999919,
+      "durationMs": 7.6249589999997625,
       "message": "Advertised capability responded with the minimal expected shape (9 items).",
       "evidence": [
         {
@@ -295,7 +295,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0020410000001902517,
+      "durationMs": 0.0019580000002861198,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -311,7 +311,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 1.1717079999998532,
+      "durationMs": 1.224999999999909,
       "message": "Advertised capability responded with the minimal expected shape (1 items).",
       "evidence": [
         {
@@ -344,7 +344,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.04383400000006077,
+      "durationMs": 0.02654099999972459,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -357,10 +357,105 @@
       ]
     },
     {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "pass",
+      "durationMs": 0.06137499999977081,
+      "message": "Detected 0 potential egress target(s) and 12 potential state mutation(s) with low confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 12,
+          "diagnostics": [
+            "Egress entries: 0",
+            "State mutations: 12",
+            "Confidence: medium"
+          ],
+          "findings": [
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "delete",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "delete",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "delete",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 9.354083000000173,
+      "durationMs": 8.351750000000266,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -386,7 +481,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 4.083458000000064,
+      "durationMs": 7.677374999999756,
       "message": "Found 4 quality finding(s) across 10 item(s): 0 warnings, 4 info.",
       "evidence": [
         {
@@ -440,7 +535,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 3.6132500000003347,
+      "durationMs": 3.9406659999999647,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -456,7 +551,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "pass",
-      "durationMs": 3.8723329999997986,
+      "durationMs": 3.6293329999998605,
       "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
       "evidence": [
         {
@@ -515,16 +610,94 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 628ms",
+          "Connect: 709ms",
           "p95 latency: 8ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 628.0643749999999,
-    "toolsListMs": 7.618457999999919,
-    "promptsListMs": 0.0020410000001902517,
-    "resourcesListMs": 1.1717079999998532
+    "connectMs": 708.6022909999997,
+    "toolsListMs": 7.6249589999997625,
+    "promptsListMs": 0.0019580000002861198,
+    "resourcesListMs": 1.224999999999909
+  },
+  "runtimeProfile": {
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "delete",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "delete",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "delete",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-12T23:35:38.749Z",
+    "confidence": "medium"
   }
 }

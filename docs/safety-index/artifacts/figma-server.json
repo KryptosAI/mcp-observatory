@@ -1,0 +1,1766 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-07-12T233603823Z_7ecaa33e",
+  "createdAt": "2026-07-12T23:36:03.823Z",
+  "toolVersion": "1.31.0",
+  "target": {
+    "targetId": "figma-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "figma-mcp-express"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "figma-mcp-express",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Design system access",
+      "failureClass": "Design/file boundary",
+      "whyItMatters": "Figma MCP servers can expose design files, components, and styles to agents for design-to-code workflows."
+    },
+    "serverName": "figma-mcp-express",
+    "serverVersion": "2.8.0"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 9,
+    "pass": 6,
+    "fail": 0,
+    "partial": 2,
+    "unsupported": 1,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 1.8875829999997222,
+      "message": "Advertised capability responded with the minimal expected shape (22 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 22,
+          "identifiers": [
+            "batch",
+            "export_frames_to_pdf",
+            "export_tokens",
+            "fetch_library_catalog",
+            "get_batch_op_spec",
+            "get_design_context",
+            "get_local_components",
+            "get_metadata",
+            "get_node",
+            "get_nodes_info",
+            "get_pages",
+            "get_selection",
+            "get_styles",
+            "get_variable_defs",
+            "list_channels",
+            "list_library_variable_collections",
+            "save_screenshots",
+            "scan_nodes_by_types",
+            "scan_text_nodes",
+            "search_batch_ops",
+            "search_nodes",
+            "set_presence"
+          ],
+          "diagnostics": [
+            "[leader] listening on 127.0.0.1:1994",
+            "[node] became LEADER",
+            "Starting figma-mcp-express 2.8.0 (role: LEADER)"
+          ],
+          "schemas": {
+            "batch": {
+              "type": "object",
+              "properties": {
+                "channel": {
+                  "description": "Optional. Target a specific connected file by its channel id...",
+                  "type": "string"
+                },
+                "continueOnError": {
+                  "description": "Override the default stop policy: true = run all ops and report...",
+                  "type": "boolean"
+                },
+                "ops": {
+                  "description": "Ordered ops. Each: {type: BatchOpCatalog op name, nodeIds?:...",
+                  "items": {
+                    "properties": {
+                      "nodeIds": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      "params": {
+                        "type": "object"
+                      },
+                      "type": {
+                        "description": "BatchOpCatalog op name, e.g. create_frame, set_fills, get_node",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "origin": {
+                  "description": "Origin: orchestrator/self=wolfgang; workers use assigned name....",
+                  "enum": [
+                    "wolfgang",
+                    "grace",
+                    "theo",
+                    "sunho",
+                    "zoe",
+                    "taewon",
+                    "emma",
+                    "alex",
+                    "rick"
+                  ],
+                  "type": "string"
+                },
+                "validateOnly": {
+                  "description": "Validate the declarative batch/FigmaPlan payload and return a...",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "ops",
+                "origin"
+              ]
+            },
+            "export_frames_to_pdf": {
+              "type": "object",
+              "properties": {
+                "channel": {
+                  "description": "Optional. Target a specific connected file by its channel id...",
+                  "type": "string"
+                },
+                "nodeIds": {
+                  "description": "Ordered list of frame node IDs to export as PDF pages, colon...",
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "origin": {
+                  "description": "Origin: orchestrator/self=wolfgang; workers use assigned name....",
+                  "enum": [
+                    "wolfgang",
+                    "grace",
+                    "theo",
+                    "sunho",
+                    "zoe",
+                    "taewon",
+                    "emma",
+                    "alex",
+                    "rick"
+                  ],
+                  "type": "string"
+                },
+                "outputPath": {
+                  "description": "File path to write the PDF to, must end in .pdf (relative to...",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "nodeIds",
+                "outputPath",
+                "origin"
+              ]
+            },
+            "export_tokens": {
+              "type": "object",
+              "properties": {
+                "channel": {
+                  "description": "Optional. Target a specific connected file by its channel id...",
+                  "type": "string"
+                },
+                "format": {
+                  "description": "Output format: json (default) or css",
+                  "type": "string"
+                },
+                "origin": {
+                  "description": "Origin: orchestrator/self=wolfgang; workers use assigned name....",
+                  "enum": [
+                    "wolfgang",
+                    "grace",
+                    "theo",
+                    "sunho",
+                    "zoe",
+                    "taewon",
+                    "emma",
+                    "alex",
+                    "rick"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "origin"
+              ]
+            },
+            "fetch_library_catalog": {
+              "type": "object",
+              "properties": {
+                "fileKey": {
+                  "description": "Figma file key — the path segment after /design/ in the file...",
+                  "type": "string"
+                },
+                "outPath": {
+                  "description": "File path to write the full catalog JSON to (relative to...",
+                  "type": "string"
+                },
+                "scope": {
+                  "description": "Which endpoints to fetch: all (default), components,...",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "fileKey",
+                "outPath"
+              ]
+            },
+            "get_batch_op_spec": {
+              "type": "object",
+              "properties": {
+                "includeExamples": {
+                  "description": "Include example op payloads when available. Default false.",
+                  "type": "boolean"
+                },
+                "op": {
+                  "description": "Batch op name, e.g. create_frame, set_fills, rename_node, map.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "op"
+              ]
+            },
+            "get_design_context": {
+              "type": "object",
+              "properties": {
+                "channel": {
+                  "description": "Optional. Target a specific connected file by its channel id...",
+                  "type": "string"
+                },
+                "codeConnectMap": {
+                  "description": "Optional Code-Connect map keyed by published component key →...",
+                  "properties": {},
+                  "type": "object"
+                },
+                "dedupe_components": {
+                  "description": "When true, INSTANCE nodes are serialized compactly...",
+                  "type": "boolean"
+                },
+                "depth": {
+                  "description": "How many levels deep to traverse (default 2)",
+                  "type": "number"
+                },
+                "detail": {
+                  "description": "Property verbosity: minimal (id/name/type/bounds only), compact...",
+                  "type": "string"
+                },
+                "nodeId": {
+                  "description": "Optional. Scope to this node's subtree (e.g. 4029:12345). Omit...",
+                  "type": "string"
+                },
+                "origin": {
+                  "description": "Origin: orchestrator/self=wolfgang; workers use assigned name....",
+                  "enum": [
+                    "wolfgang",
+                    "grace",
+                    "theo",
+                    "sunho",
+                    "zoe",
+                    "taewon",
+                    "emma",
+                    "alex",
+                    "rick"
+                  ],
+                  "type": "string"
+                },
+                "skipInvisibleInstanceChildren": {
+                  "description": "Optional. true = skip hidden instances' children during...",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "origin"
+              ]
+            },
+            "get_local_components": {
+              "type": "object",
+              "properties": {
+                "channel": {
+                  "description": "Optional. Target a specific connected file by its channel id...",
+                  "type": "string"
+                },
+                "origin": {
+                  "description": "Origin: orchestrator/self=wolfgang; workers use assigned name....",
+                  "enum": [
+                    "wolfgang",
+                    "grace",
+                    "theo",
+                    "sunho",
+                    "zoe",
+                    "taewon",
+                    "emma",
+                    "alex",
+                    "rick"
+                  ],
+                  "type": "string"
+                },
+                "pageId": {
+                  "description": "Optional — scope scan to a single page by its node ID (colon...",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "origin"
+              ]
+            },
+            "get_metadata": {
+              "type": "object",
+              "properties": {
+                "channel": {
+                  "description": "Optional. Target a specific connected file by its channel id...",
+                  "type": "string"
+                },
+                "origin": {
+                  "description": "Origin: orchestrator/self=wolfgang; workers use assigned name....",
+                  "enum": [
+                    "wolfgang",
+                    "grace",
+                    "theo",
+                    "sunho",
+                    "zoe",
+                    "taewon",
+                    "emma",
+                    "alex",
+                    "rick"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "origin"
+              ]
+            },
+            "get_node": {
+              "type": "object",
+              "properties": {
+                "channel": {
+                  "description": "Optional. Target a specific connected file by its channel id...",
+                  "type": "string"
+                },
+                "depth": {
+                  "description": "How many levels deep to traverse (default: full depth). depth:0...",
+                  "type": "number"
+                },
+                "nodeId": {
+                  "description": "Node ID in colon format e.g. '4029:12345'",
+                  "type": "string"
+                },
+                "origin": {
+                  "description": "Origin: orchestrator/self=wolfgang; workers use assigned name....",
+                  "enum": [
+                    "wolfgang",
+                    "grace",
+                    "theo",
+                    "sunho",
+                    "zoe",
+                    "taewon",
+                    "emma",
+                    "alex",
+                    "rick"
+                  ],
+                  "type": "string"
+                },
+                "skipInvisibleInstanceChildren": {
+                  "description": "Optional. true = skip hidden instances' children during...",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "nodeId",
+                "origin"
+              ]
+            },
+            "get_nodes_info": {
+              "type": "object",
+              "properties": {
+                "channel": {
+                  "description": "Optional. Target a specific connected file by its channel id...",
+                  "type": "string"
+                },
+                "depth": {
+                  "description": "How many levels deep to traverse per node (default 50,...",
+                  "type": "number"
+                },
+                "nodeIds": {
+                  "description": "List of node IDs in colon format e.g. ['4029:12345',...",
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "origin": {
+                  "description": "Origin: orchestrator/self=wolfgang; workers use assigned name....",
+                  "enum": [
+                    "wolfgang",
+                    "grace",
+                    "theo",
+                    "sunho",
+                    "zoe",
+                    "taewon",
+                    "emma",
+                    "alex",
+                    "rick"
+                  ],
+                  "type": "string"
+                },
+                "skipInvisibleInstanceChildren": {
+                  "description": "Optional. true = skip hidden instances' children during...",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "nodeIds",
+                "origin"
+              ]
+            },
+            "get_pages": {
+              "type": "object",
+              "properties": {
+                "channel": {
+                  "description": "Optional. Target a specific connected file by its channel id...",
+                  "type": "string"
+                },
+                "origin": {
+                  "description": "Origin: orchestrator/self=wolfgang; workers use assigned name....",
+                  "enum": [
+                    "wolfgang",
+                    "grace",
+                    "theo",
+                    "sunho",
+                    "zoe",
+                    "taewon",
+                    "emma",
+                    "alex",
+                    "rick"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "origin"
+              ]
+            },
+            "get_selection": {
+              "type": "object",
+              "properties": {
+                "channel": {
+                  "description": "Optional. Target a specific connected file by its channel id...",
+                  "type": "string"
+                },
+                "origin": {
+                  "description": "Origin: orchestrator/self=wolfgang; workers use assigned name....",
+                  "enum": [
+                    "wolfgang",
+                    "grace",
+                    "theo",
+                    "sunho",
+                    "zoe",
+                    "taewon",
+                    "emma",
+                    "alex",
+                    "rick"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "origin"
+              ]
+            },
+            "get_styles": {
+              "type": "object",
+              "properties": {
+                "channel": {
+                  "description": "Optional. Target a specific connected file by its channel id...",
+                  "type": "string"
+                },
+                "origin": {
+                  "description": "Origin: orchestrator/self=wolfgang; workers use assigned name....",
+                  "enum": [
+                    "wolfgang",
+                    "grace",
+                    "theo",
+                    "sunho",
+                    "zoe",
+                    "taewon",
+                    "emma",
+                    "alex",
+                    "rick"
+                  ],
+                  "type": "string"
+                },
+                "skipInvisibleInstanceChildren": {
+                  "description": "Optional. true = skip hidden instances' children during...",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "origin"
+              ]
+            },
+            "get_variable_defs": {
+              "type": "object",
+              "properties": {
+                "channel": {
+                  "description": "Optional. Target a specific connected file by its channel id...",
+                  "type": "string"
+                },
+                "origin": {
+                  "description": "Origin: orchestrator/self=wolfgang; workers use assigned name....",
+                  "enum": [
+                    "wolfgang",
+                    "grace",
+                    "theo",
+                    "sunho",
+                    "zoe",
+                    "taewon",
+                    "emma",
+                    "alex",
+                    "rick"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "origin"
+              ]
+            },
+            "list_channels": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            },
+            "list_library_variable_collections": {
+              "type": "object",
+              "properties": {
+                "channel": {
+                  "description": "Optional. Target a specific connected file by its channel id...",
+                  "type": "string"
+                },
+                "origin": {
+                  "description": "Origin: orchestrator/self=wolfgang; workers use assigned name....",
+                  "enum": [
+                    "wolfgang",
+                    "grace",
+                    "theo",
+                    "sunho",
+                    "zoe",
+                    "taewon",
+                    "emma",
+                    "alex",
+                    "rick"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "origin"
+              ]
+            },
+            "save_screenshots": {
+              "type": "object",
+              "properties": {
+                "channel": {
+                  "description": "Optional. Target a specific connected file by its channel id...",
+                  "type": "string"
+                },
+                "format": {
+                  "description": "Default export format: PNG (default), SVG, JPG, or PDF",
+                  "type": "string"
+                },
+                "items": {
+                  "description": "List of {nodeId, outputPath, format?, scale?} objects",
+                  "items": {
+                    "properties": {
+                      "format": {
+                        "description": "Export format: PNG, SVG, JPG, or PDF",
+                        "type": "string"
+                      },
+                      "nodeId": {
+                        "description": "Node ID in colon format e.g. '4029:12345'",
+                        "type": "string"
+                      },
+                      "outputPath": {
+                        "description": "File path to write the image to",
+                        "type": "string"
+                      },
+                      "scale": {
+                        "description": "Export scale for raster formats",
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "nodeId",
+                      "outputPath"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "origin": {
+                  "description": "Origin: orchestrator/self=wolfgang; workers use assigned name....",
+                  "enum": [
+                    "wolfgang",
+                    "grace",
+                    "theo",
+                    "sunho",
+                    "zoe",
+                    "taewon",
+                    "emma",
+                    "alex",
+                    "rick"
+                  ],
+                  "type": "string"
+                },
+                "scale": {
+                  "description": "Default export scale for raster formats (default 2)",
+                  "type": "number"
+                }
+              },
+              "required": [
+                "items",
+                "origin"
+              ]
+            },
+            "scan_nodes_by_types": {
+              "type": "object",
+              "properties": {
+                "channel": {
+                  "description": "Optional. Target a specific connected file by its channel id...",
+                  "type": "string"
+                },
+                "nodeId": {
+                  "description": "Root node ID to scan from, colon format e.g. '4029:12345'",
+                  "type": "string"
+                },
+                "origin": {
+                  "description": "Origin: orchestrator/self=wolfgang; workers use assigned name....",
+                  "enum": [
+                    "wolfgang",
+                    "grace",
+                    "theo",
+                    "sunho",
+                    "zoe",
+                    "taewon",
+                    "emma",
+                    "alex",
+                    "rick"
+                  ],
+                  "type": "string"
+                },
+                "skipInvisibleInstanceChildren": {
+                  "description": "Optional. true = skip hidden instances' children during...",
+                  "type": "boolean"
+                },
+                "types": {
+                  "description": "Node types to find e.g. ['FRAME', 'COMPONENT', 'INSTANCE']",
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "nodeId",
+                "types",
+                "origin"
+              ]
+            },
+            "scan_text_nodes": {
+              "type": "object",
+              "properties": {
+                "channel": {
+                  "description": "Optional. Target a specific connected file by its channel id...",
+                  "type": "string"
+                },
+                "nodeId": {
+                  "description": "Root node ID to scan from, colon format e.g. '4029:12345'",
+                  "type": "string"
+                },
+                "origin": {
+                  "description": "Origin: orchestrator/self=wolfgang; workers use assigned name....",
+                  "enum": [
+                    "wolfgang",
+                    "grace",
+                    "theo",
+                    "sunho",
+                    "zoe",
+                    "taewon",
+                    "emma",
+                    "alex",
+                    "rick"
+                  ],
+                  "type": "string"
+                },
+                "skipInvisibleInstanceChildren": {
+                  "description": "Optional. true = skip hidden instances' children during...",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "nodeId",
+                "origin"
+              ]
+            },
+            "search_batch_ops": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "description": "Optional intent category filter. Featured (advanced): effects,...",
+                  "type": "string"
+                },
+                "limit": {
+                  "description": "Maximum matches to return. Default 20, max 100.",
+                  "type": "number"
+                },
+                "mutates": {
+                  "description": "Optional. true returns mutating ops; false returns non-mutating...",
+                  "type": "boolean"
+                },
+                "query": {
+                  "description": "Optional capability/op/param words to search. Tolerates...",
+                  "type": "string"
+                },
+                "readOnly": {
+                  "description": "Optional. true returns read-only ops; false returns...",
+                  "type": "boolean"
+                }
+              },
+              "required": []
+            },
+            "search_nodes": {
+              "type": "object",
+              "properties": {
+                "channel": {
+                  "description": "Optional. Target a specific connected file by its channel id...",
+                  "type": "string"
+                },
+                "limit": {
+                  "description": "Maximum results to return (default: 50)",
+                  "type": "number"
+                },
+                "nodeId": {
+                  "description": "Scope search to this subtree (default: current page), colon...",
+                  "type": "string"
+                },
+                "origin": {
+                  "description": "Origin: orchestrator/self=wolfgang; workers use assigned name....",
+                  "enum": [
+                    "wolfgang",
+                    "grace",
+                    "theo",
+                    "sunho",
+                    "zoe",
+                    "taewon",
+                    "emma",
+                    "alex",
+                    "rick"
+                  ],
+                  "type": "string"
+                },
+                "query": {
+                  "description": "Name substring to match (case-insensitive)",
+                  "type": "string"
+                },
+                "skipInvisibleInstanceChildren": {
+                  "description": "Optional. true = skip hidden instances' children during...",
+                  "type": "boolean"
+                },
+                "types": {
+                  "description": "Filter by Figma node type e.g. ['TEXT', 'FRAME', 'COMPONENT']",
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "query",
+                "origin"
+              ]
+            },
+            "set_presence": {
+              "type": "object",
+              "properties": {
+                "channel": {
+                  "description": "Optional. Target a specific connected file by its channel id...",
+                  "type": "string"
+                },
+                "origin": {
+                  "description": "Origin: orchestrator/self=wolfgang; workers use assigned name....",
+                  "enum": [
+                    "wolfgang",
+                    "grace",
+                    "theo",
+                    "sunho",
+                    "zoe",
+                    "taewon",
+                    "emma",
+                    "alex",
+                    "rick"
+                  ],
+                  "type": "string"
+                },
+                "status": {
+                  "description": "Optional presence status — the acting agent's current...",
+                  "enum": [
+                    "thinking",
+                    "waiting_review",
+                    "reviewing",
+                    "approved",
+                    "escalated",
+                    "done"
+                  ],
+                  "type": "string"
+                },
+                "task": {
+                  "description": "Optional one-sentence description of what you are working on...",
+                  "maxLength": 80,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "origin"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "pass",
+      "durationMs": 0.31645799999751034,
+      "message": "Advertised capability responded with the minimal expected shape (4 items).",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 4,
+          "identifiers": [
+            "design_token_generation_strategy",
+            "generate_color_palette",
+            "generate_component_variants",
+            "generate_type_scale"
+          ],
+          "diagnostics": [
+            "[leader] listening on 127.0.0.1:1994",
+            "[node] became LEADER",
+            "Starting figma-mcp-express 2.8.0 (role: LEADER)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.0010000000002037268,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.05012500000157161,
+      "message": "Found 1 security finding(s): 0 high, 0 medium, 1 low.",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "list_channels"
+          ],
+          "diagnostics": [
+            "[low] Tool \"list_channels\" has an empty schema but is marked as destructive."
+          ],
+          "findings": [
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "list_channels",
+              "message": "Tool \"list_channels\" has an empty schema but is marked as destructive."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "partial",
+      "durationMs": 0.19987500000206637,
+      "message": "Detected 18 potential egress target(s) and 32 potential state mutation(s) with high confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 50,
+          "diagnostics": [
+            "Egress entries: 18",
+            "State mutations: 32",
+            "Confidence: high"
+          ],
+          "findings": [
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 2.1653750000004948,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 22 tool(s).",
+            "[pass] prompts-capability-match: prompts/list returned 4 prompt(s).",
+            "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
+            "[pass] tool-response-content: Tool \"list_channels\" response has valid content array.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "pass",
+      "durationMs": 1.015332999999373,
+      "message": "All 26 item(s) have good schema quality.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "pass",
+      "durationMs": 1.045458000000508,
+      "message": "Found 1 security finding(s): 0 high, 0 medium, 1 low.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "list_channels"
+          ],
+          "diagnostics": [
+            "[low] Tool \"list_channels\" has an empty schema but is marked as destructive."
+          ],
+          "findings": [
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "list_channels",
+              "message": "Tool \"list_channels\" has an empty schema but is marked as destructive."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "partial",
+      "durationMs": 1.54979099999764,
+      "message": "Safe attack simulation found 2 finding(s): 0 high, 2 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 2,
+          "identifiers": [
+            "search_batch_ops",
+            "search_nodes"
+          ],
+          "diagnostics": [
+            "[medium] Tool \"search_batch_ops\" combines broad parameters (query) with destructive or non-read-only behavior.",
+            "[medium] Tool \"search_nodes\" combines broad parameters (query) with destructive or non-read-only behavior."
+          ],
+          "findings": [
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "search_batch_ops",
+              "message": "Tool \"search_batch_ops\" combines broad parameters (query) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "query"
+                ],
+                "annotations": {
+                  "readOnlyHint": false,
+                  "destructiveHint": true,
+                  "idempotentHint": false,
+                  "openWorldHint": true
+                },
+                "description": "Search BatchOpCatalog by intent, op name, category, read/write flag, or param key before get_batch_op_spec."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "search_nodes",
+              "message": "Tool \"search_nodes\" combines broad parameters (query) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "query"
+                ],
+                "annotations": {
+                  "readOnlyHint": false,
+                  "destructiveHint": true,
+                  "idempotentHint": false,
+                  "openWorldHint": true
+                },
+                "description": "Find nodes by name substring and optional type filter. Scope with nodeId and limit."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 94,
+    "grade": "A",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "schema-quality: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 87,
+        "details": [
+          "security-lite: pass (100/100)",
+          "security: pass (100/100)",
+          "attack-sim: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 83,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: pass (100/100)",
+          "resources: unsupported (50/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 650ms",
+          "p95 latency: 2ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 649.7093749999985,
+    "toolsListMs": 1.8875829999997222,
+    "promptsListMs": 0.31645799999751034,
+    "resourcesListMs": 0.0010000000002037268
+  },
+  "runtimeProfile": {
+    "egress": [
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      }
+    ],
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-12T23:36:04.476Z",
+    "confidence": "high"
+  }
+}

@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T19:49:53.212Z
+Generated at 2026-07-12T23:35:48.193Z
 
 ## Target and Environment Metadata
 
@@ -25,7 +25,7 @@ Generated at 2026-07-06T19:49:53.212Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| pass | 8 | 6 | 0 | 1 | 1 | 0 | 0 |
+| pass | 9 | 7 | 0 | 1 | 1 | 0 | 0 |
 
 ## At a Glance
 
@@ -39,6 +39,17 @@ Generated at 2026-07-06T19:49:53.212Z
 - Suggested next step: Review the caveated checks next: schema-quality.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
 
+## What Was Not Tested
+
+- 🔒 network_egress: No outbound network calls were attempted during scan
+- 🔒 filesystem_mutation: Filesystem write operations were not exercised
+- ℹ️ credential_access: Credential scanning was performed (see security findings)
+- ℹ️ destructive_payloads: Destructive payloads were not attempted (safe-mode only)
+
+## Runtime Profile
+
+_Analyzed at 2026-07-12T23:35:49.122Z_
+
 ## Regressions and Recoveries
 
 _Use the `diff` command against another run artifact to classify regressions and recoveries over time._
@@ -47,14 +58,15 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.45 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 0.71 | All 7 conformance checks passed. |
-| healthy | resources | pass | 0.54 | Advertised capability responded with the minimal expected shape (1 items). |
-| healthy | security | pass | 0.16 | No security issues detected. |
-| healthy | security-lite | pass | 0.02 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 1.90 | Advertised capability responded with the minimal expected shape (5 items). |
-| review | schema-quality | partial | 0.49 | Found 1 quality finding(s) across 6 item(s): 1 warnings, 0 info. |
-| confirm intent | prompts | unsupported | 0.01 | Prompts are not advertised by the target. |
+| healthy | attack-sim | pass | 0.56 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 0.77 | All 7 conformance checks passed. |
+| healthy | resources | pass | 0.99 | Advertised capability responded with the minimal expected shape (1 items). |
+| healthy | runtime-profile | pass | 0.07 | No egress or state mutation indicators detected in tool schemas. |
+| healthy | security | pass | 0.28 | No security issues detected. |
+| healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 2.81 | Advertised capability responded with the minimal expected shape (5 items). |
+| review | schema-quality | partial | 0.50 | Found 1 quality finding(s) across 6 item(s): 1 warnings, 0 info. |
+| confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 
 ## Evidence Snippets
 
@@ -100,6 +112,12 @@ Summary: Advertised capability responded with the minimal expected shape (1 item
   - Item count: `0`
   - Identifiers: none
   - Diagnostics: none
+
+### runtime-profile — pass
+
+Summary: No egress or state mutation indicators detected in tool schemas.
+
+_No evidence was captured._
 
 ### security — pass
 
@@ -172,5 +190,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T194953212Z_e649da15`
+- Run ID: `run_2026-07-12T233548193Z_953ae05f`
 - Gate: `pass`

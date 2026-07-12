@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T19:49:57.956Z
+Generated at 2026-07-12T23:35:53.989Z
 
 ## Target and Environment Metadata
 
@@ -25,19 +25,90 @@ Generated at 2026-07-06T19:49:57.956Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| fail | 8 | 3 | 3 | 1 | 1 | 0 | 0 |
+| fail | 9 | 3 | 3 | 2 | 1 | 0 | 0 |
 
 ## At a Glance
 
 - Safety verdict: **Blocked** — One or more checks can break agent dependence and should be fixed before production use.
-- Top risks: schema-quality: Found 1 quality finding(s) across 34 item(s): 1 warnings, 0 info.; attack-sim: Safe attack simulation found 6 finding(s): 1 high, 5 medium, 0 low.; security: Found 1 security finding(s): 1 high, 0 medium, 0 low.
+- Top risks: runtime-profile: Detected 24 potential egress target(s) and 24 potential state mutation(s) with high confidence.; schema-quality: Found 1 quality finding(s) across 34 item(s): 1 warnings, 0 info.; attack-sim: Safe attack simulation found 6 finding(s): 1 high, 5 medium, 0 low.
 - Regression/schema drift: Run `mcp-observatory diff <previous-run.json> <current-run.json>` to classify regressions and schema drift.
 - Failing checks: security-lite, security, attack-sim
-- Partial or flaky checks: schema-quality
+- Partial or flaky checks: runtime-profile, schema-quality
 - Skipped checks: none
 - Unsupported checks: prompts
 - Suggested next step: Start with the failing checks: security-lite, security, attack-sim.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
+
+## What Was Not Tested
+
+- ℹ️ credential_access: Credential scanning was performed (see security findings)
+- ℹ️ destructive_payloads: Destructive payloads were not attempted (safe-mode only)
+
+## Runtime Profile
+
+### Egress Manifest
+
+The following targets were identified as potentially reachable by this server (confidence: **high**):
+
+| Target | Protocol | Source | Confidence |
+| --- | --- | --- | --- |
+| url | unknown | tool_schema | high |
+| URL to navigate to the website specified | unknown | description_analysis | medium |
+| playwright_navigate | unknown | description_analysis | low |
+| url | unknown | tool_schema | high |
+| URL to perform GET operation | unknown | description_analysis | medium |
+| playwright_get | unknown | description_analysis | low |
+| url | unknown | tool_schema | high |
+| URL to perform POST operation | unknown | description_analysis | medium |
+| playwright_post | unknown | description_analysis | low |
+| url | unknown | tool_schema | high |
+| URL to perform PUT operation | unknown | description_analysis | medium |
+| playwright_put | unknown | description_analysis | low |
+| url | unknown | tool_schema | high |
+| URL to perform PATCH operation | unknown | description_analysis | medium |
+| playwright_patch | unknown | description_analysis | low |
+| url | unknown | tool_schema | high |
+| URL to perform DELETE operation | unknown | description_analysis | medium |
+| playwright_delete | unknown | description_analysis | low |
+| url | unknown | tool_schema | high |
+| URL pattern to match in the response. | unknown | description_analysis | medium |
+| playwright_expect_response | unknown | description_analysis | low |
+| Identifier of the HTTP response initially expected using `Playwright_expect_response`. | unknown | description_analysis | medium |
+| Data to expect in the body of the HTTP response. If provided, the assertion will fail if this value is not found in the response body. | unknown | description_analysis | medium |
+| playwright_assert_response | unknown | description_analysis | low |
+
+### State Mutations
+
+The following state-modifying operations were identified from tool schemas:
+
+| Resource | Operation | Scope | Source |
+| --- | --- | --- | --- |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+
+_Analyzed at 2026-07-12T23:35:54.928Z_
 
 ## Regressions and Recoveries
 
@@ -47,13 +118,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 2.29 | All 7 conformance checks passed. |
-| healthy | resources | pass | 0.61 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
-| healthy | tools | pass | 1.18 | Advertised capability responded with the minimal expected shape (33 items). |
-| review | schema-quality | partial | 0.62 | Found 1 quality finding(s) across 34 item(s): 1 warnings, 0 info. |
+| healthy | conformance | pass | 2.07 | All 7 conformance checks passed. |
+| healthy | resources | pass | 0.58 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
+| healthy | tools | pass | 1.21 | Advertised capability responded with the minimal expected shape (33 items). |
+| review | runtime-profile | partial | 0.23 | Detected 24 potential egress target(s) and 24 potential state mutation(s) with high confidence. |
+| review | schema-quality | partial | 1.48 | Found 1 quality finding(s) across 34 item(s): 1 warnings, 0 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
-| act now | attack-sim | fail | 1.44 | Safe attack simulation found 6 finding(s): 1 high, 5 medium, 0 low. |
-| act now | security | fail | 0.29 | Found 1 security finding(s): 1 high, 0 medium, 0 low. |
+| act now | attack-sim | fail | 0.75 | Safe attack simulation found 6 finding(s): 1 high, 5 medium, 0 low. |
+| act now | security | fail | 0.34 | Found 1 security finding(s): 1 high, 0 medium, 0 low. |
 | act now | security-lite | fail | 0.06 | Found 1 security finding(s): 1 high, 0 medium, 0 low. |
 
 ## Evidence Snippets
@@ -100,6 +172,18 @@ Summary: Advertised capability responded with the minimal expected shape (33 ite
   - Item count: `33`
   - Identifiers: start_codegen_session, end_codegen_session, get_codegen_session, clear_codegen_session, playwright_navigate (+28 more)
   - Diagnostics: none
+
+### runtime-profile — partial
+
+Summary: Detected 24 potential egress target(s) and 24 potential state mutation(s) with high confidence.
+
+- Endpoint: `runtime-profile/analyze`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `48`
+  - Identifiers: none
+  - Diagnostics: Egress entries: 24, State mutations: 24, Confidence: high
 
 ### schema-quality — partial
 
@@ -172,5 +256,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T194957955Z_4eaf8a90`
+- Run ID: `run_2026-07-12T233553989Z_cfdf1042`
 - Gate: `fail`

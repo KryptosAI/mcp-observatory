@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-06T194948899Z_ab0f7d29",
-  "createdAt": "2026-07-06T19:49:48.899Z",
-  "toolVersion": "0.28.0",
+  "runId": "run_2026-07-12T233541121Z_0dca8c5f",
+  "createdAt": "2026-07-12T23:35:41.121Z",
+  "toolVersion": "1.31.0",
   "target": {
     "targetId": "promptopia-server",
     "adapter": "local-process",
@@ -29,8 +29,8 @@
     "nodeVersion": "v22.22.1"
   },
   "summary": {
-    "total": 8,
-    "pass": 6,
+    "total": 9,
+    "pass": 7,
     "fail": 0,
     "partial": 1,
     "unsupported": 1,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 2.4714169999997466,
+      "durationMs": 2.1099160000003394,
       "message": "Advertised capability responded with the minimal expected shape (7 items).",
       "evidence": [
         {
@@ -267,7 +267,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "pass",
-      "durationMs": 1.0759590000006938,
+      "durationMs": 0.8747919999996157,
       "message": "Advertised capability responded with the minimal expected shape (1 item).",
       "evidence": [
         {
@@ -290,7 +290,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.0035409999991316,
+      "durationMs": 0.001959000000169908,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -306,7 +306,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.02491699999973207,
+      "durationMs": 0.024416999999630207,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -319,10 +319,57 @@
       ]
     },
     {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "pass",
+      "durationMs": 0.07625000000007276,
+      "message": "Detected 0 potential egress target(s) and 4 potential state mutation(s) with low confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 4,
+          "diagnostics": [
+            "Egress entries: 0",
+            "State mutations: 4",
+            "Confidence: medium"
+          ],
+          "findings": [
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "delete",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 1.5870000000004438,
+      "durationMs": 1.5612080000000788,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -348,7 +395,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 0.5944589999999152,
+      "durationMs": 0.6077089999998861,
       "message": "Found 1 quality finding(s) across 8 item(s): 0 warnings, 1 info.",
       "evidence": [
         {
@@ -378,7 +425,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 0.19179199999962293,
+      "durationMs": 0.2082090000003518,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -394,7 +441,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "pass",
-      "durationMs": 0.4236670000000231,
+      "durationMs": 0.5242499999994834,
       "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
       "evidence": [
         {
@@ -453,16 +500,46 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 678ms",
+          "Connect: 742ms",
           "p95 latency: 2ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 678.1046249999999,
-    "toolsListMs": 2.4714169999997466,
-    "promptsListMs": 1.0759590000006938,
-    "resourcesListMs": 0.0035409999991316
+    "connectMs": 741.9629999999997,
+    "toolsListMs": 2.1099160000003394,
+    "promptsListMs": 0.8747919999996157,
+    "resourcesListMs": 0.001959000000169908
+  },
+  "runtimeProfile": {
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "delete",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-12T23:35:41.866Z",
+    "confidence": "medium"
   }
 }

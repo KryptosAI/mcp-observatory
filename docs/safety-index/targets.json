@@ -338,5 +338,387 @@
     "failureClass": "Browser/code execution boundary",
     "whyItMatters": "Coding agents may use Chrome DevTools MCP to inspect pages, network state, console output, and browser behavior before making changes.",
     "reproductionNotes": "Zero-config public package; browser-control findings should be treated as policy-review prompts, not vulnerability claims."
+  },
+  {
+    "id": "slack-server",
+    "name": "Official Slack MCP server",
+    "repo": "https://github.com/modelcontextprotocol/servers",
+    "packageName": "@modelcontextprotocol/server-slack",
+    "category": "Communication",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-slack"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Messaging platform access",
+    "failureClass": "Message/channel boundary",
+    "whyItMatters": "Slack MCP servers can expose channel history, message posting, and workspace search capabilities to agents.",
+    "reproductionNotes": "Schema-only evaluation; full tool invocation requires a Slack token."
+  },
+  {
+    "id": "google-drive-server",
+    "name": "Official Google Drive MCP server",
+    "repo": "https://github.com/modelcontextprotocol/servers",
+    "packageName": "@modelcontextprotocol/server-google-drive",
+    "category": "Cloud Storage",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-google-drive"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Cloud file access",
+    "failureClass": "Document/permission boundary",
+    "whyItMatters": "Google Drive agents can read, write, search, and manage permissions on cloud documents the token can reach.",
+    "reproductionNotes": "Schema-only evaluation; full tool invocation requires Google OAuth credentials."
+  },
+  {
+    "id": "mongodb-server",
+    "name": "Anthropic MongoDB MCP server",
+    "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-mongodb",
+    "packageName": "@anthropic/mcp-server-mongodb",
+    "category": "Database",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@anthropic/mcp-server-mongodb"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Database mutation",
+    "failureClass": "Data query/collection boundary",
+    "whyItMatters": "MongoDB MCP servers can expose collection queries, document CRUD, and index management to agents.",
+    "reproductionNotes": "Schema-only evaluation; full tool invocation requires a MongoDB connection string."
+  },
+  {
+    "id": "cloudflare-server",
+    "name": "Anthropic Cloudflare MCP server",
+    "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-cloudflare",
+    "packageName": "@anthropic/mcp-server-cloudflare",
+    "category": "Infrastructure",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@anthropic/mcp-server-cloudflare"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Infrastructure control",
+    "failureClass": "DNS/worker/deployment boundary",
+    "whyItMatters": "Cloudflare MCP servers can expose DNS records, Workers, KV stores, and deployment pipelines to agents.",
+    "reproductionNotes": "Schema-only evaluation; full tool invocation requires Cloudflare API credentials."
+  },
+  {
+    "id": "qdrant-server",
+    "name": "Anthropic Qdrant MCP server",
+    "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-qdrant",
+    "packageName": "@anthropic/mcp-server-qdrant",
+    "category": "Vector Database",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@anthropic/mcp-server-qdrant"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Vector database mutation",
+    "failureClass": "Collection/point boundary",
+    "whyItMatters": "Qdrant MCP servers can expose vector search, collection management, and point CRUD to agents.",
+    "reproductionNotes": "Schema-only evaluation; full tool invocation requires a Qdrant cluster URL and API key."
+  },
+  {
+    "id": "vercel-ai-server",
+    "name": "Anthropic Vercel AI SDK MCP server",
+    "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-vercel-ai",
+    "packageName": "@anthropic/mcp-server-vercel-ai",
+    "category": "AI/LLM Platform",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@anthropic/mcp-server-vercel-ai"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "AI platform access",
+    "failureClass": "Deployment/project boundary",
+    "whyItMatters": "Vercel AI SDK MCP servers can expose project management, deployment triggers, and AI model configuration to agents.",
+    "reproductionNotes": "Schema-only evaluation; full tool invocation may require Vercel API credentials."
+  },
+  {
+    "id": "tavily-search-server",
+    "name": "Anthropic Tavily Search MCP server",
+    "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-tavily",
+    "packageName": "@anthropic/mcp-server-tavily",
+    "category": "Search",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@anthropic/mcp-server-tavily"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Untrusted content retrieval",
+    "failureClass": "Search result boundary",
+    "whyItMatters": "Tavily search MCP servers can return untrusted web search results directly into agent context.",
+    "reproductionNotes": "Schema-only evaluation; full tool invocation may require a Tavily API key."
+  },
+  {
+    "id": "stripe-server",
+    "name": "Stripe MCP",
+    "repo": "https://www.npmjs.com/package/@stripe/mcp",
+    "packageName": "@stripe/mcp",
+    "category": "Payments / SaaS",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@stripe/mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Payment API boundary",
+    "failureClass": "Financial transaction tool boundary",
+    "whyItMatters": "Stripe tools can create customers, process payments, and manage subscriptions — financial mutation surfaces that need visible boundaries.",
+    "reproductionNotes": "Schema-only; requires Stripe API key for full scan. Tool listing exposes payment operations."
+  },
+  {
+    "id": "notion-server",
+    "name": "Notion MCP",
+    "repo": "https://www.npmjs.com/package/@notionhq/notion-mcp-server",
+    "packageName": "@notionhq/notion-mcp-server",
+    "category": "Productivity / Docs",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@notionhq/notion-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Workspace document access",
+    "failureClass": "Page/database boundary",
+    "whyItMatters": "Notion MCP servers can read, write, and search across workspace pages, databases, and comments.",
+    "reproductionNotes": "Schema-only; requires Notion API integration token for full scan."
+  },
+  {
+    "id": "linear-server",
+    "name": "Linear MCP",
+    "repo": "https://www.npmjs.com/package/mcp-server-linear",
+    "packageName": "mcp-server-linear",
+    "category": "Project Management",
+    "command": "npx",
+    "args": [
+      "-y",
+      "mcp-server-linear"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Issue tracking mutation",
+    "failureClass": "Issue/project boundary",
+    "whyItMatters": "Linear MCP servers expose issue creation, team management, and cycle tracking to agents.",
+    "reproductionNotes": "Schema-only; requires Linear API key for full scan."
+  },
+  {
+    "id": "figma-server",
+    "name": "Figma MCP",
+    "repo": "https://www.npmjs.com/package/figma-mcp-express",
+    "packageName": "figma-mcp-express",
+    "category": "Design",
+    "command": "npx",
+    "args": [
+      "-y",
+      "figma-mcp-express"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Design system access",
+    "failureClass": "Design/file boundary",
+    "whyItMatters": "Figma MCP servers can expose design files, components, and styles to agents for design-to-code workflows.",
+    "reproductionNotes": "Schema-only; requires Figma access token for full scan."
+  },
+  {
+    "id": "firecrawl-server",
+    "name": "Firecrawl MCP",
+    "repo": "https://www.npmjs.com/package/firecrawl-mcp",
+    "packageName": "firecrawl-mcp",
+    "category": "Web Data / Search",
+    "command": "npx",
+    "args": [
+      "-y",
+      "firecrawl-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Web scraping and crawling",
+    "failureClass": "Web content ingestion boundary",
+    "whyItMatters": "Firecrawl MCP servers expose web scraping, crawling, and content extraction tools that can pull untrusted content into agent context.",
+    "reproductionNotes": "May work without auth for tool listing; full crawl operations require a Firecrawl API key."
+  },
+  {
+    "id": "exa-server",
+    "name": "Exa Search MCP",
+    "repo": "https://www.npmjs.com/package/exa-mcp-server",
+    "packageName": "exa-mcp-server",
+    "category": "Search",
+    "command": "npx",
+    "args": [
+      "-y",
+      "exa-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Untrusted content retrieval",
+    "failureClass": "Search result boundary",
+    "whyItMatters": "Exa MCP servers return web search and crawling results into agent context from untrusted sources.",
+    "reproductionNotes": "Schema-only; full search requires an Exa API key."
+  },
+  {
+    "id": "sentry-server",
+    "name": "Sentry MCP",
+    "repo": "https://www.npmjs.com/package/@sentry/mcp-server",
+    "packageName": "@sentry/mcp-server",
+    "category": "Observability",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@sentry/mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Error/performance data access",
+    "failureClass": "Issue/event boundary",
+    "whyItMatters": "Sentry MCP servers expose error, performance, and release data to agents, which can reveal sensitive stack traces and PII fields.",
+    "reproductionNotes": "Schema-only; requires Sentry auth token for full scan."
+  },
+  {
+    "id": "neon-server",
+    "name": "Neon MCP",
+    "repo": "https://www.npmjs.com/package/mcp-server-neon",
+    "packageName": "mcp-server-neon",
+    "category": "Database",
+    "command": "npx",
+    "args": [
+      "-y",
+      "mcp-server-neon"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Database provisioning",
+    "failureClass": "Database/branch boundary",
+    "whyItMatters": "Neon MCP servers can provision databases, manage branches, and run SQL — cloud database operations with production implications.",
+    "reproductionNotes": "Schema-only; requires Neon API key and project ID for full scan."
+  },
+  {
+    "id": "supabase-server",
+    "name": "Supabase MCP",
+    "repo": "https://www.npmjs.com/package/@supabase/mcp-server-supabase",
+    "packageName": "@supabase/mcp-server-supabase",
+    "category": "Backend / Database",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@supabase/mcp-server-supabase"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Database and auth management",
+    "failureClass": "Database/auth/admin boundary",
+    "whyItMatters": "Supabase MCP servers can manage tables, run SQL, manage auth users, and control Edge Functions — broad backend control surface.",
+    "reproductionNotes": "Schema-only; requires Supabase access token for full scan."
+  },
+  {
+    "id": "docker-server",
+    "name": "Docker MCP",
+    "repo": "https://www.npmjs.com/package/mcp-server-docker",
+    "packageName": "mcp-server-docker",
+    "category": "Containers",
+    "command": "npx",
+    "args": [
+      "-y",
+      "mcp-server-docker"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Container orchestration",
+    "failureClass": "Container/image boundary",
+    "whyItMatters": "Docker MCP servers expose container run, exec, and image management tools — container-level command execution is a high-trust boundary.",
+    "reproductionNotes": "Schema-only; requires Docker Desktop running for full scan. Tool listing may succeed without a running daemon."
+  },
+  {
+    "id": "postgres-server",
+    "name": "Official PostgreSQL MCP server",
+    "repo": "https://github.com/modelcontextprotocol/servers",
+    "packageName": "@modelcontextprotocol/server-postgres",
+    "category": "Database",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-postgres",
+      "postgres://localhost:5432/db"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Database mutation",
+    "failureClass": "SQL query boundary",
+    "whyItMatters": "PostgreSQL MCP servers can run arbitrary SQL queries against connected databases — a high-trust data mutation surface.",
+    "reproductionNotes": "Scanned with dummy connection string for schema discovery. Full query execution requires a real PostgreSQL connection. Note: npm flags this package as deprecated by the publisher."
+  },
+  {
+    "id": "sqlite-server",
+    "name": "Official SQLite MCP server",
+    "repo": "https://github.com/modelcontextprotocol/servers",
+    "packageName": "@modelcontextprotocol/server-sqlite",
+    "category": "Database",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-sqlite",
+      "/tmp/test.db"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Local database mutation",
+    "failureClass": "SQLite file boundary",
+    "whyItMatters": "SQLite MCP servers can grant agents read/write/query access to local database files with SQL execution capabilities.",
+    "reproductionNotes": "Package not published on npm (404). Available in the servers monorepo. Use community packages like mcp-sqlite or build from source."
+  },
+  {
+    "id": "fetch-server",
+    "name": "Official Fetch MCP server",
+    "repo": "https://github.com/modelcontextprotocol/servers",
+    "packageName": "@modelcontextprotocol/server-fetch",
+    "category": "Web Content / Search",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-fetch"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Untrusted content retrieval",
+    "failureClass": "Web fetch boundary",
+    "whyItMatters": "Fetch MCP servers can retrieve arbitrary web content and feed it into agent context — a prompt injection and content trust boundary.",
+    "reproductionNotes": "Package not published on npm (404). Available in the servers monorepo. Use community packages like mcp-fetch-server or build from source."
+  },
+  {
+    "id": "brave-search-server",
+    "name": "Official Brave Search MCP server",
+    "repo": "https://github.com/modelcontextprotocol/servers",
+    "packageName": "@modelcontextprotocol/server-brave-search",
+    "category": "Search",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-brave-search"
+    ],
+    "env": {
+      "BRAVE_API_KEY": "BSA-dummy-key-for-schema-scan-only"
+    },
+    "timeoutMs": 60000,
+    "riskClass": "Untrusted content retrieval",
+    "failureClass": "Search result boundary",
+    "whyItMatters": "Brave Search MCP servers return web and local search results into agent context — untrusted content ingestion vector.",
+    "reproductionNotes": "Scanned with dummy API key for schema/tool discovery. Full search execution requires a valid Brave Search API key. Note: npm flags this package as deprecated by the publisher."
+  },
+  {
+    "id": "gitlab-server",
+    "name": "Official GitLab MCP server",
+    "repo": "https://github.com/modelcontextprotocol/servers",
+    "packageName": "@modelcontextprotocol/server-gitlab",
+    "category": "Developer Tools",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-gitlab"
+    ],
+    "env": {
+      "GITLAB_PERSONAL_ACCESS_TOKEN": "glpat-dummy-token-for-schema-scan-only"
+    },
+    "timeoutMs": 60000,
+    "riskClass": "Repository mutation and CI control",
+    "failureClass": "Merge/CI pipeline boundary",
+    "whyItMatters": "GitLab MCP servers expose repository operations, merge requests, issues, and CI pipeline controls — high-stakes write access across repos.",
+    "reproductionNotes": "Scanned with dummy token for schema/tool discovery. Server responds but tools have schema validation issues preventing full listing. Note: npm flags this package as deprecated by the publisher."
   }
 ]

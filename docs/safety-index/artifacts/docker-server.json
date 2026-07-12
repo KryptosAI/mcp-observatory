@@ -1,0 +1,395 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "fail",
+  "runId": "run_2026-07-12T233608306Z_a7a8aaf1",
+  "createdAt": "2026-07-12T23:36:08.306Z",
+  "toolVersion": "1.31.0",
+  "target": {
+    "targetId": "docker-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "mcp-server-docker"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "mcp-server-docker",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Container orchestration",
+      "failureClass": "Container/image boundary",
+      "whyItMatters": "Docker MCP servers expose container run, exec, and image management tools — container-level command execution is a high-trust boundary."
+    },
+    "serverName": "mcp-server-docker",
+    "serverVersion": "1.0.0"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 9,
+    "pass": 3,
+    "fail": 3,
+    "partial": 1,
+    "unsupported": 2,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "fail"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 0.43400000000110595,
+      "message": "Advertised capability responded with the minimal expected shape (1 item).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "run_command"
+          ],
+          "diagnostics": [
+            "Warning: No allowed containers specified in ALLOWED_CONTAINERS environment variable",
+            "MCP Server Docker started",
+            "Default service: laravel_app",
+            "Allowed containers: laravel_app"
+          ],
+          "schemas": {
+            "run_command": {
+              "type": "object",
+              "properties": {
+                "command": {
+                  "type": "string",
+                  "description": "The command to execute in the container"
+                },
+                "service": {
+                  "type": "string",
+                  "description": "Docker Compose service name (optional, uses default: laravel_app if not specified)"
+                }
+              },
+              "required": [
+                "command"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.0008330000055138953,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.00045899999531684443,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "fail",
+      "durationMs": 0.01429199999984121,
+      "message": "Found 1 security finding(s): 1 high, 0 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "run_command"
+          ],
+          "diagnostics": [
+            "[high] Tool \"run_command\" has parameter \"command\" which may allow arbitrary command execution."
+          ],
+          "findings": [
+            {
+              "ruleId": "shell-injection",
+              "severity": "high",
+              "toolName": "run_command",
+              "message": "Tool \"run_command\" has parameter \"command\" which may allow arbitrary command execution."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "partial",
+      "durationMs": 0.03954099999828031,
+      "message": "Detected 0 potential egress target(s) and 4 potential state mutation(s) with high confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 4,
+          "diagnostics": [
+            "Egress entries: 0",
+            "State mutations: 4",
+            "Confidence: high"
+          ],
+          "findings": [
+            {
+              "resource": "network",
+              "operation": "execute",
+              "scope": "specific_path",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "execute",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 0.7368750000023283,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 1 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
+            "[pass] tool-response-content: No safe tool to invoke — content validation skipped.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "pass",
+      "durationMs": 0.21279100000538165,
+      "message": "All 1 item(s) have good schema quality.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "fail",
+      "durationMs": 0.2477500000022701,
+      "message": "Found 1 security finding(s): 1 high, 0 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "run_command"
+          ],
+          "diagnostics": [
+            "[high] Tool \"run_command\" has parameter \"command\" which may allow arbitrary command execution."
+          ],
+          "findings": [
+            {
+              "ruleId": "shell-injection",
+              "severity": "high",
+              "toolName": "run_command",
+              "message": "Tool \"run_command\" has parameter \"command\" which may allow arbitrary command execution."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "fail",
+      "durationMs": 0.18829099999857135,
+      "message": "Safe attack simulation found 1 finding(s): 1 high, 0 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "run_command"
+          ],
+          "diagnostics": [
+            "[high] Tool \"run_command\" combines broad parameters (command) with destructive or non-read-only behavior."
+          ],
+          "findings": [
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "high",
+              "itemType": "tool",
+              "itemName": "run_command",
+              "message": "Tool \"run_command\" combines broad parameters (command) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "command"
+                ],
+                "description": "Execute a command inside a Docker container service"
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "quarantine"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 73,
+    "grade": "C",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "schema-quality: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 0,
+        "details": [
+          "security-lite: fail (0/100)",
+          "security: fail (0/100)",
+          "attack-sim: fail (0/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 67,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: unsupported (50/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 694ms",
+          "p95 latency: 0ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 694.1615840000013,
+    "toolsListMs": 0.43400000000110595,
+    "promptsListMs": 0.0008330000055138953,
+    "resourcesListMs": 0.00045899999531684443
+  },
+  "runtimeProfile": {
+    "stateMutations": [
+      {
+        "resource": "network",
+        "operation": "execute",
+        "scope": "specific_path",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "execute",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-12T23:36:09.001Z",
+    "confidence": "high"
+  }
+}

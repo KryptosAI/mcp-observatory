@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-06T19:49:48.132Z
+Generated at 2026-07-12T23:35:40.269Z
 
 ## Target and Environment Metadata
 
@@ -25,7 +25,7 @@ Generated at 2026-07-06T19:49:48.132Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| pass | 8 | 7 | 0 | 1 | 0 | 0 | 0 |
+| pass | 9 | 8 | 0 | 1 | 0 | 0 | 0 |
 
 ## At a Glance
 
@@ -39,6 +39,34 @@ Generated at 2026-07-06T19:49:48.132Z
 - Suggested next step: Review the caveated checks next: attack-sim.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
 
+## What Was Not Tested
+
+- 🔒 network_egress: No outbound network calls were attempted during scan
+- 🔒 filesystem_mutation: Filesystem write operations were not exercised
+- ℹ️ credential_access: Credential scanning was performed (see security findings)
+- ℹ️ destructive_payloads: Destructive payloads were not attempted (safe-mode only)
+
+## Runtime Profile
+
+### Egress Manifest
+
+The following targets were identified as potentially reachable by this server (confidence: **medium**):
+
+| Target | Protocol | Source | Confidence |
+| --- | --- | --- | --- |
+| The question or task you need help with. This is used to rank library results by relevance to what the user is trying to accomplish. The query is sent to the Context7 API for processing. Do not include any sensitive or confidential information such as API keys, passwords, credentials, personal data, or proprietary code in your query. | unknown | description_analysis | medium |
+| The question or task you need help with, scoped to a single concept. Be specific and include relevant details, but keep each query to one topic — if the user's question spans multiple distinct concepts, make a separate call per concept instead of combining them, unless the question is about how the concepts interact. Good: 'How to set up authentication with JWT in Express.js' or 'React useEffect cleanup function examples'. Bad (too vague): 'auth' or 'hooks'. Bad (too broad): 'routing and auth and caching in Next.js'. The query is sent to the Context7 API for processing. Do not include any sensitive or confidential information such as API keys, passwords, credentials, personal data, or proprietary code in your query. | unknown | description_analysis | medium |
+
+### State Mutations
+
+The following state-modifying operations were identified from tool schemas:
+
+| Resource | Operation | Scope | Source |
+| --- | --- | --- | --- |
+| filesystem | write | working_directory | description_analysis |
+
+_Analyzed at 2026-07-12T23:35:41.111Z_
+
 ## Regressions and Recoveries
 
 _Use the `diff` command against another run artifact to classify regressions and recoveries over time._
@@ -47,14 +75,15 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 1.09 | All 7 conformance checks passed. |
+| healthy | conformance | pass | 1.07 | All 7 conformance checks passed. |
 | healthy | prompts | pass | 0.28 | Advertised capability responded with the minimal expected shape (0 items). |
-| healthy | resources | pass | 0.40 | Advertised capability responded with the minimal expected shape (0 items). |
-| healthy | schema-quality | pass | 0.51 | All 2 item(s) have good schema quality. |
-| healthy | security | pass | 0.20 | No security issues detected. |
-| healthy | security-lite | pass | 0.02 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 1.79 | Advertised capability responded with the minimal expected shape (2 items). |
-| review | attack-sim | partial | 1.05 | Safe attack simulation found 2 finding(s): 0 high, 2 medium, 0 low. |
+| healthy | resources | pass | 0.50 | Advertised capability responded with the minimal expected shape (0 items). |
+| healthy | runtime-profile | pass | 0.27 | Detected 2 potential egress target(s) and 1 potential state mutation(s) with low confidence. |
+| healthy | schema-quality | pass | 0.59 | All 2 item(s) have good schema quality. |
+| healthy | security | pass | 0.24 | No security issues detected. |
+| healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 1.55 | Advertised capability responded with the minimal expected shape (2 items). |
+| review | attack-sim | partial | 1.00 | Safe attack simulation found 2 finding(s): 0 high, 2 medium, 0 low. |
 
 ## Evidence Snippets
 
@@ -100,6 +129,18 @@ Summary: Advertised capability responded with the minimal expected shape (0 item
   - Item count: `0`
   - Identifiers: none
   - Diagnostics: Context7 Documentation MCP Server v3.2.3 running on stdio
+
+### runtime-profile — pass
+
+Summary: Detected 2 potential egress target(s) and 1 potential state mutation(s) with low confidence.
+
+- Endpoint: `runtime-profile/analyze`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `3`
+  - Identifiers: none
+  - Diagnostics: Egress entries: 2, State mutations: 1, Confidence: medium
 
 ### schema-quality — pass
 
@@ -172,5 +213,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-06T194948132Z_cb0c4915`
+- Run ID: `run_2026-07-12T233540269Z_6b58af34`
 - Gate: `pass`
