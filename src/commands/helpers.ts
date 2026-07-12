@@ -199,3 +199,23 @@ export function printCiConversionCta(options: {
   process.stdout.write(`  ${c(ANSI.dim, `Check adoption: ${bin} setup-ci --doctor`)}\n`);
   process.stdout.write(`  ${c(ANSI.dim, "Public trust: add the badge, and star https://github.com/KryptosAI/mcp-observatory if it saved time.")}\n\n`);
 }
+
+// ── Remediation hints ───────────────────────────────────────────────────────
+
+/**
+ * Map a raw error message to a short, actionable remediation hint.
+ * Returns undefined when no known pattern matches, so callers can skip
+ * printing a hint line entirely.
+ */
+export function suggestFix(message: string): string | undefined {
+  if (message.includes("timed out") || message.includes("timeout")) {
+    return "Try increasing timeout with --timeout 30000";
+  }
+  if (message.includes("ECONNREFUSED") || /connection refused/i.test(message)) {
+    return "Check that the server is running. Try: npx -y <server-package>";
+  }
+  if (/invalid config/i.test(message)) {
+    return "Check target JSON format. Run: cat <config-file>";
+  }
+  return undefined;
+}

@@ -4,7 +4,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { Command } from "commander";
 
 import { isCI } from "./ci.js";
-import { ANSI, LOGO, c, getBinName, setNoColor, useColor } from "./commands/helpers.js";
+import { ANSI, LOGO, c, getBinName, setNoColor, suggestFix, useColor } from "./commands/helpers.js";
 import { registerDiffCommands } from "./commands/diff.js";
 import { registerLegacyCommands } from "./commands/legacy.js";
 import { registerRecordReplayCommands } from "./commands/record-replay.js";
@@ -447,12 +447,17 @@ async function main(): Promise<void> {
 
 void main().catch((error: unknown) => {
   const message = error instanceof Error ? error.message : String(error);
+  const hint = suggestFix(message);
   let friendly = message;
   if (message.includes("Unexpected end of JSON") || message.includes("Unexpected token")) {
     friendly = "Invalid config file — expected valid JSON. Check the file path and contents.";
   } else if (message.includes("ENOENT")) {
     friendly = `File not found: ${message.replace(/.*ENOENT[^']*'([^']*)'.*/, "$1")}`;
   }
-  process.stderr.write(`\n  ${useColor() ? `\x1b[31m✗\x1b[0m` : "✗"} ${friendly}\n\n`);
+  process.stderr.write(`\n  ${useColor() ? `\x1b[31m✗\x1b[0m` : "✗"} ${friendly}\n`);
+  if (hint) {
+    process.stderr.write(`  ${useColor() ? "\x1b[2m" : ""}Hint: ${hint}${useColor() ? "\x1b[0m" : ""}\n`);
+  }
+  process.stderr.write("\n");
   process.exitCode = 1;
 });

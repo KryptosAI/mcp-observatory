@@ -12,6 +12,7 @@ import {
   quoteShell,
   setNoColor,
   setupCiHint,
+  suggestFix,
   targetFromCommand,
   useColor,
   writeOutput,
@@ -110,6 +111,29 @@ describe("command helper formatting", () => {
 
     process.argv = ["node", "/repo/dist/cli.js"];
     expect(getBinName()).toBe("mcp-observatory");
+  });
+});
+
+describe("suggestFix", () => {
+  it("suggests raising the timeout for timeout errors", () => {
+    expect(suggestFix("Server timed out after 15000ms")).toBe("Try increasing timeout with --timeout 30000");
+    expect(suggestFix("connect timeout")).toBe("Try increasing timeout with --timeout 30000");
+  });
+
+  it("suggests checking the server for connection-refused errors", () => {
+    expect(suggestFix("connect ECONNREFUSED 127.0.0.1:3000")).toBe(
+      "Check that the server is running. Try: npx -y <server-package>",
+    );
+    expect(suggestFix("Connection refused")).toBe("Check that the server is running. Try: npx -y <server-package>");
+  });
+
+  it("suggests checking the config format for invalid-config errors, case-insensitively", () => {
+    expect(suggestFix("invalid config: missing targetId")).toBe("Check target JSON format. Run: cat <config-file>");
+    expect(suggestFix("Invalid Config file")).toBe("Check target JSON format. Run: cat <config-file>");
+  });
+
+  it("returns undefined for messages with no known remediation", () => {
+    expect(suggestFix("something unexpected happened")).toBeUndefined();
   });
 });
 

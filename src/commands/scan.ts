@@ -11,7 +11,7 @@ import type { RunArtifact } from "../types.js";
 import { TOOL_VERSION } from "../version.js";
 import { maybePrintCloudCta } from "../commercial.js";
 import { renderActionReceipt } from "../action-receipt.js";
-import { ANSI, LOGO, c, setupCiHint, useColor } from "./helpers.js";
+import { ANSI, LOGO, c, setupCiHint, suggestFix, useColor } from "./helpers.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
 import { runEnforce } from "./enforce.js";
 
@@ -130,6 +130,7 @@ async function runScan(
       if (artifact.gate === "pass") passCount++; else failCount++;
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
+      const hint = suggestFix(msg);
       let friendlyMsg = msg;
       if (msg.includes("ENOENT") || msg.includes("not found")) {
         const cmd = t.config.adapter === "http" ? (t.config as { url: string }).url : (t.config as { command: string }).command;
@@ -142,6 +143,9 @@ async function runScan(
 
       process.stdout.write(`\r  ${c(ANSI.red, "✗")} ${c(ANSI.bold, t.config.targetId)}\n`);
       process.stdout.write(`    ${c(ANSI.red, friendlyMsg)}\n`);
+      if (hint) {
+        process.stdout.write(`    ${c(ANSI.dim, `Hint: ${hint}`)}\n`);
+      }
 
       // Docker-specific hint
       const serverCmd = t.config.adapter === "local-process" ? (t.config as { command: string }).command : "";
