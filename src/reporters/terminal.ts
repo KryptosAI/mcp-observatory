@@ -332,6 +332,51 @@ function renderDiffTerminal(artifact: DiffArtifact): string {
   return lines.join("\n");
 }
 
+// ── Scan summary ─────────────────────────────────────────────────────
+
+type ScanOverallStatus = "passed" | "failed" | "warnings";
+
+// Classify a server by
+function classifyServerStatus(artifact: RunArtifact): ScanOverallStatus {
+  if (artifact.fatalError !== undefined || artifact.gate === "fail") return "failed";
+  const hasWarn = artifact.checks.some(c => c.status === "partial" || c.status === "flaky");
+  if (hasWarn) return "warnings";
+  return "passed";
+}
+
+export interface ScanSummaryCounts {
+  total: number;
+  passed: number;
+  failed: number;
+  warnings: number;
+}
+
+export function computeScanSummary(artifacts: RunArtifact[]): ScanSummaryCounts {
+  const counts: ScanSummaryCounts = { total: artifacts.length, passed: 0, failed: 0, warnings: 0 };
+  for (const artifact of artifacts) {
+    const status = classifyServerStatus(artifact);
+    if (status === "passed") counts.passed++;
+    else if (status === "failed") counts.failed++;
+    else counts.warnings++;
+  }
+  return counts;
+}
+
+export function renderScanSummaryTerminal(artifacts: RunArtifact[]): string {
+  const DIVIDER_WIDTH = 29;
+  const { total, passed, failed, warnings } = computeScanSummary(artifacts);
+  const divider = co(ANSI.dim, "─".repeat(DIVIDER_WIDTH));
+  const line = [
+    `${total} servers scanned: `,
+    co(ANSI.green, `${passed} passed`),
+    ", ",
+    co(ANSI.red, `${failed} failed`),
+    ", ",
+    co(ANSI.yellow, `${warnings} warnings`)
+  ].join("");
+  return `${divider}\n${line}`;
+}
+
 export function renderTerminal(artifact: RunArtifact | DiffArtifact): string {
   return artifact.artifactType === "run"
     ? renderRunTerminal(artifact)
