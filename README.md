@@ -34,14 +34,14 @@
 
 </details>
 
-**MCP Observatory maps the risk graph of agent toolchains before agents depend on them.** It helps teams validate MCP servers before deployment into sensitive, regulated, or mission-critical agentic AI environments.
+**Secure the MCP servers you're building.** MCP Observatory is the CI-native security tool for teams shipping custom MCP servers. Test during development, catch schema drift, simulate attacks, and generate compliance evidence — before agents depend on your servers.
 
 <p align="center">
   <img src="docs/demo.gif" alt="MCP Observatory demo" width="700"/>
 </p>
 
 
-Agents should not depend on tools nobody tests. MCP Observatory turns a local MCP check into portable receipts, risk graphs, release-gate evidence, SARIF for GitHub Code Scanning, GitHub Actions gates, schema drift detection, trust status output, score badges, and agent-accessible diagnostics.
+Agents should not depend on tools nobody tests. Build your MCP server, test it with MCP Observatory, and ship with confidence. Get security scores, attack simulation results, schema drift alerts, SARIF reports for GitHub Code Scanning, lock files, compliance receipts, and CI-native gating — all from the command line.
 
 ```bash
 npx @kryptosai/mcp-observatory audit npx -y my-mcp-server --profile nsa-mcp --format markdown --output mcp-audit.md
@@ -199,7 +199,7 @@ See the [launch page](./docs/launch.md), [GitHub Code Scanning for MCP servers](
 
 MCP servers are becoming part of the AI software supply chain. Agents need reliable, testable, auditable tools before those tools become dependencies in mission-critical workflows.
 
-MCP Observatory gives security and platform teams MCP server CI, schema drift detection, security findings, SARIF/HTML/Markdown reports, GitHub Code Scanning upload, and a path toward certification or fleet visibility. Local OSS use stays free; production, private repo, and fleet usage can move through a paid MCP Readiness Review.
+Whether you're shipping one MCP server or running a fleet, MCP Observatory gives you CI-native security scoring, attack simulation, schema drift detection, SARIF/HTML/Markdown reports, and GitHub Code Scanning — from your first `npx` command to production deployment. Local development stays free; teams running private repos, fleets, or compliance pipelines can upgrade through a paid MCP Readiness Review.
 
 ## Production Support
 

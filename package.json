@@ -1,7 +1,7 @@
 {
   "name": "@kryptosai/mcp-observatory",
   "version": "1.32.1",
-  "description": "GitHub-native CI, SARIF, Code Scanning, and security gates for MCP servers before agents depend on them.",
+  "description": "Ship safer MCP servers. Test, secure, and monitor the MCP servers you're building — CI-native scanning, attack simulation, and security gates.",
   "mcpName": "io.github.KryptosAI/mcp-observatory",
   "license": "MIT",
   "type": "module",
