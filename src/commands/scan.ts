@@ -13,7 +13,7 @@ import { maybePrintCloudCta } from "../commercial.js";
 import { renderActionReceipt } from "../action-receipt.js";
 import { ANSI, LOGO, c, setupCiHint, useColor } from "./helpers.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
-import { runEnforce } from "./enforce.js";
+import { renderScanSummaryTerminal } from "../reporters/terminal.js";
 
 // ── Scan implementation ─────────────────────────────────────────────────────
 

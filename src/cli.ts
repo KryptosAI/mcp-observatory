@@ -295,7 +295,7 @@ async function main(): Promise<void> {
   registerInitCiCommands(program);
   registerLockCommands(program);
   registerAuditCommands(program);
-  registerEnforceCommands(program, bin);
+  registerEnforceCommands(program);
   registerReceiptCommands(program);
   registerRiskGraphCommands(program);
   registerAttackSimCommands(program);

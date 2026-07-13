@@ -190,7 +190,7 @@ export function registerTestCommands(program: Command): void {
           });
           seatbeltAvailable = true;
         } catch {
-          seatbeltAvailable = false;
+          // Keep the default false value when seatbelt is unavailable.
         }
 
         if (seatbeltAvailable) {
@@ -211,7 +211,7 @@ export function registerTestCommands(program: Command): void {
         await runEnforce(target, commandArgs, {
           security: options.security,
           deep: options.deep || options.invokeTools,
-        }, "mcp-observatory");
+        });
       }
       maybePrintCloudCta(options.security ? "security" : "general");
     });

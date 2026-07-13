@@ -1,6 +1,6 @@
 import { detectPermissionDeltas } from "./permission-delta.js";
 import { diffSchemas } from "./schema-diff.js";
-import type { CheckResult, DiffArtifact, DiffEntry, ResponseChangeEntry, RunArtifact, SchemaDriftEntry, SchemaDriftSeverity } from "./types.js";
+import type { CheckResult, DiffArtifact, DiffEntry, PermissionDeltaEntry, ResponseChangeEntry, RunArtifact, SchemaDriftEntry, SchemaDriftSeverity } from "./types.js";
 import { SCHEMA_VERSION, STATUS_RANK } from "./types.js";
 
 export interface DiffOptions {

@@ -75,6 +75,15 @@ function optionalSchemaDriftSeverityCounts(value: unknown): Record<SchemaDriftSe
   };
 }
 
+function optionalPermissionDeltaRiskCounts(value: unknown): Record<PermissionDeltaRisk, number> | undefined {
+  if (!isObject(value)) return undefined;
+  return {
+    neutral: typeof value["neutral"] === "number" ? value["neutral"] : 0,
+    review: typeof value["review"] === "number" ? value["review"] : 0,
+    widening: typeof value["widening"] === "number" ? value["widening"] : 0,
+  };
+}
+
 function requireGate(value: unknown, label: string): Gate {
   if (value !== "pass" && value !== "fail") {
     throw new Error(`${label} has invalid gate '${String(value)}'.`);
