@@ -196,7 +196,8 @@ export function _resetConfigCache(): void {
 }
 
 export function computeFingerprint(): string {
-  const input = `${process.platform}-${process.arch}-${process.version}-${os.homedir()}`;
+  const repo = process.env["GITHUB_REPOSITORY"] || "";
+  const input = `${process.platform}-${process.arch}-${process.version}-${os.homedir()}-${repo}`;
   return createHash("sha256").update(input).digest("hex").slice(0, 16);
 }
 
