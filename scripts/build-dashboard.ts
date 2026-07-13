@@ -136,11 +136,11 @@ function buildHtml(current: MatrixSummaryEntry[], history: HistoryEntry[], safet
   <meta name="description" content="Live, reproducible health and compatibility evidence for Model Context Protocol servers.">
   <meta property="og:title" content="MCP Observatory — Trust your tools before your agents do">
   <meta property="og:description" content="Independent compatibility evidence for the MCP ecosystem.">
-  <meta property="og:image" content="https://mcp-observatory.com/logo.png">
+  <meta property="og:image" content="https://mcp-observatory.com/mcp-observatory-logo-v2.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://mcp-observatory.com/logo.png">
+  <meta name="twitter:image" content="https://mcp-observatory.com/mcp-observatory-logo-v2.png">
   <link rel="canonical" href="https://mcp-observatory.com">
-  <link rel="icon" href="/logo.png" type="image/png">
+  <link rel="icon" href="/mcp-observatory-logo-v2.png" type="image/png">
   <title>MCP Observatory — Live MCP Safety Index</title>
   <style>
     :root{color-scheme:dark;--bg:#070b14;--panel:rgba(16,24,40,.76);--line:rgba(148,163,184,.16);--muted:#91a0b6;--text:#eef4ff;--cyan:#58e6ff;--violet:#9b8cff;--green:#47e6a4;--red:#ff6b7a}
@@ -156,7 +156,7 @@ function buildHtml(current: MatrixSummaryEntry[], history: HistoryEntry[], safet
 </head>
 <body>
   <div class="container">
-    <nav class="nav"><a class="brand" href="/" aria-label="MCP Observatory home"><img src="/logo.png" alt="MCP Observatory"></a><div class="navlinks"><a href="#index">Safety Index</a><a href="https://github.com/KryptosAI/mcp-observatory">Documentation</a><a class="button" href="https://www.npmjs.com/package/@kryptosai/mcp-observatory">Install ↗</a></div></nav>
+    <nav class="nav"><a class="brand" href="/" aria-label="MCP Observatory home"><img src="/mcp-observatory-logo-v2.png" alt="MCP Observatory"></a><div class="navlinks"><a href="#index">Safety Index</a><a href="https://github.com/KryptosAI/mcp-observatory">Documentation</a><a class="button" href="https://www.npmjs.com/package/@kryptosai/mcp-observatory">Install ↗</a></div></nav>
     <section class="hero"><div><div class="eyebrow"><i class="pulse"></i>Open-source MCP security</div><h1>Audit MCP servers <span>before agents depend on them.</span></h1><p class="subtitle">One command discovers risky tool surfaces, schema drift, prompt injection exposure, and unsafe defaults—then produces portable evidence your CI and agents can act on.</p><div class="hero-actions"><a class="button primary" href="https://github.com/KryptosAI/mcp-observatory">Start on GitHub ↗</a><a class="button" href="#demo">Watch a real scan</a></div><div class="try-command"><code>npx @kryptosai/mcp-observatory</code><span>Try it now</span></div></div><aside class="proof"><strong>PUBLIC SAFETY INDEX · LIVE</strong><div class="score">${safetyTargets.length} <small>servers indexed</small></div><div class="bar"><span></span></div></aside></section>
     <section class="social-proof" aria-label="Project adoption"><div class="proof-stat"><strong>142</strong><span>GitHub stars</span></div><div class="proof-stat"><strong>27</strong><span>Forks</span></div><div class="proof-stat"><strong>8</strong><span>Contributors</span></div><div class="proof-stat"><strong>50</strong><span>Public evaluations</span></div><div class="proof-stat"><strong>MIT</strong><span>Open source</span></div></section>
     <section class="product-intro"><div class="eyebrow" style="justify-content:center">From uncertainty to evidence</div><h2>Security proof your agent stack can use.</h2><p>MCP Observatory turns a server command into a repeatable trust decision—not another badge or opaque score.</p></section>
@@ -237,7 +237,7 @@ async function main(): Promise<void> {
   const html = buildHtml(current, history, safetyTargets);
   await writeFile(path.join(dashboardDir, "index.html"), html, "utf8");
   await copyFile(demoPath, path.join(dashboardDir, "demo.gif"));
-  await copyFile(logoPath, path.join(dashboardDir, "logo.png"));
+  await copyFile(logoPath, path.join(dashboardDir, "mcp-observatory-logo-v2.png"));
   await writeFile(path.join(dashboardDir, "directory.js"), `(() => {
   const cards = [...document.querySelectorAll(".server-card")];
   const search = document.querySelector("#server-search");
