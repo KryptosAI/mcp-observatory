@@ -13,7 +13,8 @@ import { maybePrintCloudCta } from "../commercial.js";
 import { renderActionReceipt } from "../action-receipt.js";
 import { ANSI, LOGO, c, setupCiHint, useColor } from "./helpers.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
-import { runEnforce } from "./enforce.js";
+import { renderScanSummaryTerminal } from "../reporters/terminal.js";
+
 
 // ── Scan implementation ─────────────────────────────────────────────────────
 
@@ -152,6 +153,10 @@ async function runScan(
       results.push({ targetId: t.config.targetId, gate: "fail", toolCount: 0, promptCount: 0, resourceCount: 0, error: friendlyMsg, diagnostics: [] });
       failCount++;
     }
+  }
+
+  if (format === "terminal" && artifacts.length > 0) {
+    process.stdout.write("\n" + renderScanSummaryTerminal(artifacts) + "\n");
   }
 
   // ── Summary ──────────────────────────────────────────────────────────
