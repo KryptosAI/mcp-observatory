@@ -1,7 +1,7 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { randomUUID } from "node:crypto";
+import { randomUUID, createHash } from "node:crypto";
 import os from "node:os";
 import path from "node:path";
 import { isCI as _isCI, ciName as _ciName } from "./ci.js";
@@ -17,6 +17,12 @@ export interface TelemetryConfig {
   sessionId: string;
   noticeShown: boolean;
   statsToken?: string;
+  machineId?: string;
+  createdAt?: string;
+  featureChain?: string[];
+  commandSequence?: string[];
+  optedInEmail?: string;
+  firstContactChannel?: string;
 }
 
 export interface TelemetryEnrichment {
@@ -103,6 +109,7 @@ export interface TelemetryEnrichment {
   githubActor?: string;
   isFirstParty?: boolean;
   telemetrySource?: TelemetrySource;
+  optedInEmail?: string;
 }
 
 export type TelemetrySource = "first_party_ci" | "external_ci" | "local" | "mcp" | "unknown";
@@ -117,6 +124,13 @@ export interface TelemetryEvent extends TelemetryEnrichment {
   isCI: boolean;
   ciName?: string | null;
   transport: "cli" | "mcp";
+  machineFingerprint?: string;
+  sessionId?: string;
+  featureChain?: string[];
+  commandSequence?: string[];
+  stage?: string;
+  referrer?: string;
+  optedInEmail?: string;
 }
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -146,6 +160,12 @@ export async function loadTelemetryConfig(): Promise<TelemetryConfig> {
       sessionId: typeof parsed.sessionId === "string" ? parsed.sessionId : randomUUID(),
       noticeShown: parsed.noticeShown === true,
       statsToken: typeof parsed.statsToken === "string" ? parsed.statsToken : undefined,
+      machineId: typeof parsed.machineId === "string" ? parsed.machineId : randomUUID(),
+      createdAt: typeof parsed.createdAt === "string" ? parsed.createdAt : new Date().toISOString(),
+      featureChain: Array.isArray(parsed.featureChain) ? parsed.featureChain : [],
+      commandSequence: Array.isArray(parsed.commandSequence) ? parsed.commandSequence : [],
+      optedInEmail: typeof parsed.optedInEmail === "string" ? parsed.optedInEmail : undefined,
+      firstContactChannel: typeof parsed.firstContactChannel === "string" ? parsed.firstContactChannel : undefined,
     };
   } catch {
     // First run or corrupted config — create defaults
@@ -153,6 +173,11 @@ export async function loadTelemetryConfig(): Promise<TelemetryConfig> {
       telemetryEnabled: true,
       sessionId: randomUUID(),
       noticeShown: false,
+      machineId: randomUUID(),
+      createdAt: new Date().toISOString(),
+      featureChain: [],
+      commandSequence: [],
+      firstContactChannel: detectReferrer(),
     };
   }
 
@@ -168,6 +193,45 @@ export async function saveTelemetryConfig(config: TelemetryConfig): Promise<void
 /** Reset cached config (for testing). */
 export function _resetConfigCache(): void {
   _cachedConfig = null;
+}
+
+export function computeFingerprint(): string {
+  const input = `${process.platform}-${process.arch}-${process.version}-${os.homedir()}`;
+  return createHash("sha256").update(input).digest("hex").slice(0, 16);
+}
+
+export async function updateFeatureChain(command: string): Promise<void> {
+  const config = await loadTelemetryConfig();
+  const chain = config.featureChain || [];
+  if (!chain.includes(command)) {
+    chain.push(command);
+  }
+  const seq = config.commandSequence || [];
+  seq.push(command);
+  if (seq.length > 5) seq.shift();
+  await saveTelemetryConfig({
+    ...config,
+    featureChain: chain,
+    commandSequence: seq,
+  });
+}
+
+export function deriveStage(chain: string[]): string {
+  if (!chain || chain.length === 0) return "install";
+  const has = (c: string) => chain.some(x => x === c || x.includes(c));
+  if (has("cloud") || has("receipt")) return "paid_intent";
+  if (has("risk-graph") || has("attack-sim")) return "power_user";
+  if (has("setup-ci") || has("ci-report")) return "ci_setup";
+  if (chain.length >= 3) return "recurring";
+  if (has("scan") || has("test")) return "first_scan";
+  return "install";
+}
+
+function detectReferrer(): string | undefined {
+  if (process.env.GITHUB_ACTIONS) return "github-ci";
+  if (process.env.npm_config_user_agent) return "npm";
+  if (process.env._ && process.env._.includes("node_modules/.bin")) return "npm-global";
+  return undefined;
 }
 
 // ── Opt-out checks ───────────────────────────────────────────────────────────
@@ -227,9 +291,12 @@ export function recordEvent(event: TelemetryEvent): void {
   );
 
   const config = _cachedConfig;
+  const machineId = config?.machineId || config?.sessionId;
   const body = JSON.stringify({
     ...event,
-    sessionId: config?.sessionId ?? "unknown",
+    sessionId: machineId,
+    featureChain: Array.isArray(event.featureChain) ? JSON.stringify(event.featureChain) : event.featureChain,
+    commandSequence: Array.isArray(event.commandSequence) ? JSON.stringify(event.commandSequence) : event.commandSequence,
     timestamp: new Date().toISOString(),
   });
 
@@ -371,6 +438,7 @@ export function buildEvent(
 ): TelemetryEvent {
   const ci = detectCI();
   const identity = _cachedIdentity;
+  const config = _cachedConfig;
   const campaign = enrichment?.campaign ?? campaignFromEnv();
   const ciProvider = enrichment?.ciProvider ?? detectCiProvider();
   const github = ciProvider === "github-actions" ? collectGitHubActionsMetadata() : {};
@@ -403,5 +471,12 @@ export function buildEvent(
     telemetrySource: enrichment?.telemetrySource ?? classification.telemetrySource,
     ...enrichment,
     campaign,
+    machineFingerprint: computeFingerprint(),
+    sessionId: config?.machineId || config?.sessionId,
+    featureChain: config?.featureChain,
+    commandSequence: config?.commandSequence,
+    stage: deriveStage(config?.featureChain || []),
+    referrer: config?.firstContactChannel,
+    optedInEmail: config?.optedInEmail,
   };
 }

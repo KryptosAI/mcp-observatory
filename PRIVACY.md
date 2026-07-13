@@ -12,10 +12,26 @@ MCP Observatory collects product usage telemetry unless telemetry is disabled. T
 - Declared account attribution from `MCP_OBSERVATORY_ORG` and `MCP_OBSERVATORY_CONTACT` when operators set them
 - Git identity and remote metadata when available
 - Hostname and operating system metadata
+- Machine fingerprint (anonymous hash of platform, arch, Node version, and home directory — no PII)
+- Feature chain (list of commands this machine has used over time)
+- Command sequence (last 5 commands run)
+- User journey stage (install → first_scan → recurring → ci_setup → power_user → paid_intent)
+- Referrer channel (how the tool was first discovered: npm, GitHub CI, etc.)
+- Opt-in email when provided via `telemetry identify`
 - Session identifiers and timestamps
 - Error categories, check statuses, security finding counts, health scores, and scan outcomes
 
 Telemetry does not intentionally collect secrets, tool response bodies, environment variable values, cassette contents, or full private source code.
+
+## Identity Exchange (Opt-In)
+
+You can optionally associate an email with your usage to receive benchmarks, insights, and early access:
+
+```bash
+npx @kryptosai/mcp-observatory telemetry identify
+```
+
+This is entirely optional. Without it, your usage remains associated only with an anonymous machine fingerprint.
 
 ## Opt Out
 
