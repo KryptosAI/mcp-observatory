@@ -369,9 +369,9 @@ CREATE INDEX IF NOT EXISTS idx_collection_runs_source_started ON collection_runs
 `);
 
   // Migrate existing databases to add new columns (safe to run multiple times)
-  try { db.exec("ALTER TABLE telemetry_events ADD COLUMN machine_fingerprint TEXT"); } catch (_) {}
-  try { db.exec("ALTER TABLE telemetry_events ADD COLUMN stage TEXT"); } catch (_) {}
-  try { db.exec("ALTER TABLE telemetry_events ADD COLUMN feature_chain TEXT"); } catch (_) {}
+  try { db.exec("ALTER TABLE telemetry_events ADD COLUMN machine_fingerprint TEXT"); } catch { /* column may already exist */ }
+  try { db.exec("ALTER TABLE telemetry_events ADD COLUMN stage TEXT"); } catch { /* column may already exist */ }
+  try { db.exec("ALTER TABLE telemetry_events ADD COLUMN feature_chain TEXT"); } catch { /* column may already exist */ }
 
   return db;
 }
