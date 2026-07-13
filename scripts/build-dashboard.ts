@@ -7,6 +7,7 @@ const matrixHistoryPath = path.join(root, "examples", "matrix-history.json");
 const safetyTargetsPath = path.join(root, "docs", "safety-index", "targets.json");
 const demoPath = path.join(root, "docs", "demo.gif");
 const logoPath = path.join(root, "docs", "assets", "mcp-observatory-logo.png");
+const faviconPath = path.join(root, "docs", "assets", "mcp-observatory-favicon-v1.png");
 const dashboardDir = path.join(root, "dashboard");
 const badgesDir = path.join(dashboardDir, "badges");
 const apiDir = path.join(dashboardDir, "api");
@@ -140,7 +141,8 @@ function buildHtml(current: MatrixSummaryEntry[], history: HistoryEntry[], safet
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://mcp-observatory.com/mcp-observatory-logo-v2.png">
   <link rel="canonical" href="https://mcp-observatory.com">
-  <link rel="icon" href="/mcp-observatory-logo-v2.png" type="image/png">
+  <link rel="icon" href="/mcp-observatory-favicon-v1.png" type="image/png" sizes="512x512">
+  <link rel="apple-touch-icon" href="/mcp-observatory-favicon-v1.png">
   <title>MCP Observatory — Live MCP Safety Index</title>
   <style>
     :root{color-scheme:dark;--bg:#070b14;--panel:rgba(16,24,40,.76);--line:rgba(148,163,184,.16);--muted:#91a0b6;--text:#eef4ff;--cyan:#58e6ff;--violet:#9b8cff;--green:#47e6a4;--red:#ff6b7a}
@@ -238,6 +240,7 @@ async function main(): Promise<void> {
   await writeFile(path.join(dashboardDir, "index.html"), html, "utf8");
   await copyFile(demoPath, path.join(dashboardDir, "demo.gif"));
   await copyFile(logoPath, path.join(dashboardDir, "mcp-observatory-logo-v2.png"));
+  await copyFile(faviconPath, path.join(dashboardDir, "mcp-observatory-favicon-v1.png"));
   await writeFile(path.join(dashboardDir, "directory.js"), `(() => {
   const cards = [...document.querySelectorAll(".server-card")];
   const search = document.querySelector("#server-search");
