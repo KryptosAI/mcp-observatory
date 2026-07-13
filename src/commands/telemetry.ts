@@ -1,6 +1,8 @@
 import type { Command } from "commander";
 
-import { loadTelemetryConfig, saveTelemetryConfig, isTelemetryEnabled } from "../telemetry.js";
+import * as readline from "node:readline";
+
+import { loadTelemetryConfig, saveTelemetryConfig, isTelemetryEnabled, buildEvent, recordEvent } from "../telemetry.js";
 import { appendQuery, requireHttpUrl } from "../utils/url.js";
 
 const TELEMETRY_FIELDS = [
@@ -100,6 +102,7 @@ export function registerTelemetryCommands(program: Command): void {
       } else {
         const effective = isTelemetryEnabled();
         process.stdout.write(`  Telemetry: ${effective ? "enabled" : "disabled"}\n`);
+        process.stdout.write("  You can opt into identity exchange: mcp-observatory telemetry identify\n");
         process.stdout.write(`  Config:    telemetryEnabled=${String(config.telemetryEnabled)}\n`);
         if (envDisabled) {
           process.stdout.write(`  Override:  disabled via environment variable\n`);
@@ -113,5 +116,51 @@ export function registerTelemetryCommands(program: Command): void {
           process.stdout.write("\n  See PRIVACY.md for details and opt-out options.\n\n");
         }
       }
+    })
+    .command("identify")
+    .description("Share your email to receive benchmarks and insights")
+    .option("-e, --email <email>", "Email address to associate with your usage")
+    .action(async (options: { email?: string }) => {
+      const config = await loadTelemetryConfig();
+
+      if (options.email) {
+        config.optedInEmail = options.email;
+        await saveTelemetryConfig(config);
+        console.log("\n✓ Thank you! Your email has been associated with your usage data.");
+        console.log("  You'll receive periodic benchmarks and early access to features.\n");
+        return;
+      }
+
+      console.log("\n  Want to see how your MCP security compares to other teams?");
+      console.log("  Share your email to receive:");
+      console.log("  • Industry benchmark (how you rank vs peers)");
+      console.log("  • Weekly security digest");
+      console.log("  • Early access to enterprise features");
+      console.log("");
+
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+      });
+
+      const email: string = await new Promise((resolve) => {
+        rl.question("  Email: ", (answer) => {
+          rl.close();
+          resolve(answer.trim());
+        });
+      });
+
+      if (!email || !email.includes("@")) {
+        console.log("\n  No valid email provided. Run again when ready.\n");
+        return;
+      }
+
+      config.optedInEmail = email;
+      await saveTelemetryConfig(config);
+
+      console.log(`\n  ✓ Thank you, ${email}!`);
+      console.log("  You'll receive your first benchmark report within 48 hours.\n");
+
+      recordEvent(buildEvent("identity_exchange", "telemetry", "cli"));
     });
 }

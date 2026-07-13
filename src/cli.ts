@@ -29,7 +29,7 @@ import { registerSkillScanCommands } from "./commands/skill-scan.js";
 import { DEFAULT_CLOUD_UPLOAD_ENDPOINT, printCloudInfo } from "./commercial.js";
 import { runTarget } from "./index.js";
 import type { RunArtifact, TargetConfig } from "./types.js";
-import { loadTelemetryConfig, collectUserIdentity, recordEvent, buildEvent } from "./telemetry.js";
+import { loadTelemetryConfig, collectUserIdentity, recordEvent, buildEvent, updateFeatureChain } from "./telemetry.js";
 import { requireHttpUrl } from "./utils/url.js";
 import { validateRunArtifact } from "./validate.js";
 import { TOOL_VERSION } from "./version.js";
@@ -441,6 +441,7 @@ async function main(): Promise<void> {
   // Telemetry: record command usage
   const commandName = process.argv[2] ?? "interactive";
   recordEvent(buildEvent("command_run", commandName, "cli"));
+  updateFeatureChain(commandName).catch(() => {});
 
   await program.parseAsync(process.argv);
 }

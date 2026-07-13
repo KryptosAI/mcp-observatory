@@ -59,6 +59,13 @@ interface TelemetryRow {
   github_actor: string | null;
   is_first_party: number | null;
   telemetry_source: string | null;
+  machineFingerprint: string | null;
+  featureChain: string | null;
+  commandSequence: string | null;
+  stage: string | null;
+  referrer: string | null;
+  optedInEmail: string | null;
+  firstContactChannel: string | null;
 }
 
 interface ExecFailure extends Error {
@@ -184,7 +191,9 @@ SELECT
   server_commands, check_statuses, suggested_servers, detected_languages,
   detected_frameworks, org, contact,
   github_repository, github_workflow, github_run_id, github_run_number,
-  github_event_name, github_ref, github_actor, is_first_party, telemetry_source
+  github_event_name, github_ref, github_actor, is_first_party, telemetry_source,
+  machineFingerprint, featureChain, commandSequence, stage, referrer,
+  optedInEmail, firstContactChannel
 FROM events
 ${where}
 ORDER BY id ASC`;

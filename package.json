@@ -1,6 +1,6 @@
 {
   "name": "@kryptosai/mcp-observatory",
-  "version": "1.31.0",
+  "version": "1.32.0",
   "description": "GitHub-native CI, SARIF, Code Scanning, and security gates for MCP servers before agents depend on them.",
   "mcpName": "io.github.KryptosAI/mcp-observatory",
   "license": "MIT",
