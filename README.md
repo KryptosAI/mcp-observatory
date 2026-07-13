@@ -1,16 +1,10 @@
 > 🇨🇳 中文文档: [README.zh-CN.md](README.zh-CN.md) | 欢迎中国开发者贡献!
 
-# MCP Observatory
+<p align="center">
+  <img src="docs/assets/mcp-observatory-logo.png" alt="MCP Observatory" width="482"/>
+</p>
 
-```
-  ███╗   ███╗ ██████╗██████╗
-  ████╗ ████║██╔════╝██╔══██╗
-  ██╔████╔██║██║     ██████╔╝
-  ██║╚██╔╝██║██║     ██╔═══╝
-  ██║ ╚═╝ ██║╚██████╗██║
-  ╚═╝     ╚═╝ ╚═════╝╚═╝
-     O B S E R V A T O R Y
-```
+<h1 align="center">MCP Observatory</h1>
 
 [![CI](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/KryptosAI/mcp-observatory/actions/workflows/codeql.yml/badge.svg)](https://github.com/KryptosAI/mcp-observatory/actions/workflows/codeql.yml)
