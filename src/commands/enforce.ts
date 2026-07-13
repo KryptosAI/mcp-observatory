@@ -100,7 +100,7 @@ function countBySeverity(findings: ObservatoryFinding[], severity: ObservatoryFi
   return findings.filter((f) => f.severity === severity).length;
 }
 
-async function isSeatbeltInstalled(): Promise<boolean> {
+function isSeatbeltInstalled(): boolean {
   try {
     execSync("npx @kryptosai/mcp-seatbelt --version 2>/dev/null || npx mcp-seatbelt --version 2>/dev/null", {
       stdio: "pipe",
@@ -117,10 +117,6 @@ async function isSeatbeltInstalled(): Promise<boolean> {
   }
 }
 
-async function startSeatbeltProxy(policyPath: string, port: number): Promise<boolean> {
-  return false; // Proxy lifecycle management belongs to mcp-seatbelt, not observatory.
-}
-
 export interface EnforceOptions {
   policy?: string;
   startProxy?: boolean;
@@ -134,7 +130,6 @@ export async function runEnforce(
   target: TargetConfig,
   commandArgs: string[],
   options: EnforceOptions,
-  bin: string,
 ): Promise<void> {
   const t0 = Date.now();
   const policyPath = options.policy ?? ".mcp-seatbelt/policy.yml";
@@ -181,7 +176,7 @@ export async function runEnforce(
   if (options.noProxy) {
     process.stdout.write(`\n  ${c(ANSI.dim, "Policy generated. No proxy started.")}\n\n`);
   } else {
-    const installed = await isSeatbeltInstalled();
+    const installed = isSeatbeltInstalled();
 
     if (options.startProxy) {
       const absPolicy = path.resolve(policyPath);
@@ -208,7 +203,7 @@ export async function runEnforce(
   }));
 }
 
-export function registerEnforceCommands(program: Command, bin: string): void {
+export function registerEnforceCommands(program: Command): void {
   program
     .command("enforce")
     .passThroughOptions()
@@ -239,6 +234,6 @@ export function registerEnforceCommands(program: Command, bin: string): void {
         noProxy: options.noProxy,
         security: options.security,
         deep: options.deep,
-      }, bin);
+      });
     });
 }
