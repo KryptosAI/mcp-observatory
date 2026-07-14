@@ -14,6 +14,7 @@ import {
   setNoColor,
   setQuiet,
   setupCiHint,
+  suggestFix,
   targetFromCommand,
   useColor,
   writeOutput,
@@ -91,7 +92,39 @@ describe("command helper formatting", () => {
     setQuiet(false);
     expect(isQuiet()).toBe(false);
   });
+});
 
+describe("suggestFix", () => {
+  it("suggests raising the timeout for timeout errors", () => {
+    expect(suggestFix("Server timed out after 15000ms")).toBe(
+      "Try increasing timeout with --timeout 30000",
+    );
+  });
+
+  it("suggests checking the server is running for connection-refused errors", () => {
+    expect(suggestFix("connect ECONNREFUSED 127.0.0.1:3000")).toBe(
+      "Check that the server is running. Try: npx -y <server-package>",
+    );
+  });
+
+  it("suggests checking PATH for ENOENT / spawn errors", () => {
+    expect(suggestFix("spawn some-cli ENOENT")).toBe(
+      "Check that the command is installed and on PATH. Try: npx -y <server-package>",
+    );
+  });
+
+  it("suggests checking JSON format for config parsing errors", () => {
+    expect(suggestFix("Unexpected token } in JSON at position 42")).toBe(
+      "Check target JSON format. Run: cat <config-file>",
+    );
+  });
+
+  it("returns undefined for messages that don't match a known pattern", () => {
+    expect(suggestFix("something completely unrelated happened")).toBeUndefined();
+  });
+});
+
+describe("command helper formatting continued", () => {
   it("colors known statuses and leaves unknown statuses unchanged", () => {
     process.env["NO_COLOR"] = "1";
     expect(colorStatus("pass")).toBe("pass");
