@@ -12,7 +12,7 @@ import {
   summarizeScan,
   type SkillScanResult,
 } from "../checks/skill-scan.js";
-import { ANSI, c, LOGO, useColor } from "./helpers.js";
+import { ANSI, c, LOGO, isQuiet, useColor } from "./helpers.js";
 import { TOOL_VERSION } from "../version.js";
 
 export async function runSkillScan(
@@ -30,8 +30,10 @@ export async function runSkillScan(
     return;
   }
 
-  process.stdout.write(useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n\n` : LOGO + `  v${TOOL_VERSION}\n\n`);
-  process.stdout.write(c(ANSI.bold, `  Scanning skills at: ${inputPath}\n\n`));
+  if (!isQuiet()) {
+    process.stdout.write(useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n\n` : LOGO + `  v${TOOL_VERSION}\n\n`);
+    process.stdout.write(c(ANSI.bold, `  Scanning skills at: ${inputPath}\n\n`));
+  }
 
   const results: SkillScanResult[] = await scanPath(inputPath);
   const healthScore = computeSkillHealthScore(results);

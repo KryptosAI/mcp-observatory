@@ -49,6 +49,16 @@ export function useColor(): boolean {
   return !process.env["NO_COLOR"] && !_noColor;
 }
 
+let _quiet = false;
+
+export function setQuiet(value: boolean): void {
+  _quiet = value;
+}
+
+export function isQuiet(): boolean {
+  return _quiet;
+}
+
 export function c(code: string, text: string): string {
   return useColor() ? `${code}${text}${ANSI.reset}` : text;
 }
@@ -192,7 +202,7 @@ export function printCiConversionCta(options: {
   target?: TargetConfig;
   targetPath?: string;
 }): void {
-  if (!shouldPrintConversionCta()) return;
+  if (isQuiet() || !shouldPrintConversionCta()) return;
   const bin = options.bin ?? "npx @kryptosai/mcp-observatory";
   process.stdout.write(`  ${c(ANSI.bold, "Next:")} ${options.context ?? "keep this passing in CI"}\n`);
   process.stdout.write(`  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, setupCiHint(options.target, options.targetPath, bin))}\n`);

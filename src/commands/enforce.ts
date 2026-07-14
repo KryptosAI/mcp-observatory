@@ -11,7 +11,7 @@ import { extractObservatoryFindings, type ObservatoryFinding, type ObservatoryFi
 import { defaultRunsDirectory } from "../storage.js";
 import { buildEvent, recordEvent } from "../telemetry.js";
 import type { RunArtifact, TargetConfig } from "../types.js";
-import { ANSI, c, resolveTarget, targetFromCommand, useColor } from "./helpers.js";
+import { ANSI, c, isQuiet, resolveTarget, targetFromCommand, useColor } from "./helpers.js";
 
 interface SeatbeltPolicyRule {
   id: string;
@@ -218,7 +218,7 @@ export function registerEnforceCommands(program: Command): void {
     .option("--no-proxy", "Just generate policy, don't mention proxy.", false)
     .option("--no-color", "Disable colored output.")
     .action(async (commandArgs: string[], options: { target?: string; deep?: boolean; security?: boolean; policy?: string; startProxy?: boolean; proxyPort?: string; noProxy?: boolean }) => {
-      if (useColor()) {
+      if (!isQuiet() && useColor()) {
         const { LOGO } = await import("./helpers.js");
         process.stdout.write(`${c(ANSI.cyan, LOGO)}  ${c(ANSI.dim, `enforce mode`)}\n\n`);
       }

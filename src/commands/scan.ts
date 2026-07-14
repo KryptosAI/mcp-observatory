@@ -11,7 +11,7 @@ import type { RunArtifact } from "../types.js";
 import { TOOL_VERSION } from "../version.js";
 import { maybePrintCloudCta } from "../commercial.js";
 import { renderActionReceipt } from "../action-receipt.js";
-import { ANSI, LOGO, c, setupCiHint, useColor } from "./helpers.js";
+import { ANSI, LOGO, c, isQuiet, setupCiHint, useColor } from "./helpers.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
 // ── Scan implementation ─────────────────────────────────────────────────────
 
@@ -29,7 +29,9 @@ async function runScan(
 ): Promise<void> {
   if (conversionFlags.campaign) conversionFlags.campaign = normalizeCampaign(conversionFlags.campaign);
   const t0 = Date.now();
-  process.stdout.write(useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n\n` : LOGO + `  v${TOOL_VERSION}\n\n`);
+  if (!isQuiet()) {
+    process.stdout.write(useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n\n` : LOGO + `  v${TOOL_VERSION}\n\n`);
+  }
 
   if (configPath) {
     try {
@@ -293,6 +295,7 @@ export function registerScanCommands(program: Command, bin: string): void {
     .option("--no-ci-sarif", "Generate post-scan CI without GitHub Code Scanning SARIF upload.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
     .option("--no-color", "Disable colored output.")
+    .option("--quiet", "Suppress logo and informational output.", false)
     .option("--skill-scan [path]", "Also scan skill directories for security risks. Auto-discovers from agent skill paths when no path given.")
     .option("--enforce", "After scan, show the enforce command for the first target.");
 
@@ -319,6 +322,7 @@ export function registerScanCommands(program: Command, bin: string): void {
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
     .option("--no-ci-sarif", "Generate post-scan CI without GitHub Code Scanning SARIF upload.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
+    .option("--quiet", "Suppress logo and informational output.", false)
     .action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string; skillScan?: SkillScanOption; enforce?: boolean } & SetupCiConversionFlags) => {
       const parentConfig = scanCmd.opts().config as string | undefined;
       const parentSecurity = scanCmd.opts().security as boolean | undefined;

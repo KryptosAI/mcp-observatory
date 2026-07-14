@@ -9,8 +9,10 @@ import {
   colorStatus,
   formatOutput,
   getBinName,
+  isQuiet,
   quoteShell,
   setNoColor,
+  setQuiet,
   setupCiHint,
   targetFromCommand,
   useColor,
@@ -25,6 +27,7 @@ afterEach(() => {
   process.argv = [...originalArgv];
   process.env = { ...originalEnv };
   setNoColor(false);
+  setQuiet(false);
   vi.restoreAllMocks();
 });
 
@@ -79,6 +82,14 @@ describe("command helper formatting", () => {
     setNoColor(true);
     expect(useColor()).toBe(false);
     setNoColor(false);
+  });
+
+  it("isQuiet reflects setQuiet, defaulting to false", () => {
+    expect(isQuiet()).toBe(false);
+    setQuiet(true);
+    expect(isQuiet()).toBe(true);
+    setQuiet(false);
+    expect(isQuiet()).toBe(false);
   });
 
   it("colors known statuses and leaves unknown statuses unchanged", () => {
