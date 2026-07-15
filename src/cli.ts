@@ -4,7 +4,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { Command } from "commander";
 
 import { isCI } from "./ci.js";
-import { ANSI, LOGO, c, getBinName, setNoColor, useColor } from "./commands/helpers.js";
+import { ANSI, LOGO, c, getBinName, setNoColor, setQuiet, useColor } from "./commands/helpers.js";
 import { registerDiffCommands } from "./commands/diff.js";
 import { registerLegacyCommands } from "./commands/legacy.js";
 import { registerRecordReplayCommands } from "./commands/record-replay.js";
@@ -218,6 +218,12 @@ async function main(): Promise<void> {
   // Capture --no-color before Commander strips it from process.argv
   if (process.argv.includes("--no-color")) {
     setNoColor(true);
+  }
+  // Capture --quiet the same way -- subcommands print their own logo/CTAs
+  // before their own local options are parsed, so this needs to be read
+  // from argv up front, same as --no-color above.
+  if (process.argv.includes("--quiet")) {
+    setQuiet(true);
   }
 
   const bin = getBinName();

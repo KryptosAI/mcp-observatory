@@ -1,11 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { cloudUpgradeLine, hasCloudToken, maybePrintCloudCta, printCloudInfo } from "../src/commercial.js";
+import { setQuiet } from "../src/commands/helpers.js";
 
 const originalEnv = { ...process.env };
 
 afterEach(() => {
   process.env = { ...originalEnv };
+  setQuiet(false);
   vi.restoreAllMocks();
 });
 
@@ -54,6 +56,17 @@ describe("commercial cloud messaging", () => {
     maybePrintCloudCta("ci");
 
     expect(second.output()).toBe("");
+  });
+
+  it("suppresses the CTA in quiet mode even without a cloud token", () => {
+    process.env["NO_COLOR"] = "1";
+    delete process.env["MCP_OBSERVATORY_CLOUD_TOKEN"];
+    setQuiet(true);
+    const stdout = captureStdout();
+
+    maybePrintCloudCta("ci");
+
+    expect(stdout.output()).toBe("");
   });
 
   it("prints cloud pricing and upload guidance", () => {

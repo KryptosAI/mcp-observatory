@@ -1,4 +1,4 @@
-import { ANSI, c, getBinName } from "./commands/helpers.js";
+import { ANSI, c, getBinName, isQuiet } from "./commands/helpers.js";
 
 const CONTACT = "william@banksey.com";
 export const DEFAULT_CLOUD_UPLOAD_ENDPOINT = "https://mcp-observatory-api.kryptosai.workers.dev/api/v1/artifacts";
@@ -25,7 +25,7 @@ export function cloudUpgradeLine(context: "ci" | "security" | "fleet" | "general
 }
 
 export function maybePrintCloudCta(context: "ci" | "security" | "fleet" | "general" = "general"): void {
-  if (hasCloudToken()) return;
+  if (isQuiet() || hasCloudToken()) return;
   process.stdout.write(`${cloudUpgradeLine(context)}\n\n`);
 }
 
