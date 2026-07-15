@@ -142,9 +142,6 @@ export interface TelemetryEvent extends TelemetryEnrichment {
   findingSeverityCounts?: string | null;
   sessionDurationMs?: number | null;
   referrer?: string;
-  optedInEmail?: string;
-  targetServer?: string;
-  findingSeverityCounts?: Record<string, number>;
 }
 
 // ── Constants ────────────────────────────────────────────────────────────────
