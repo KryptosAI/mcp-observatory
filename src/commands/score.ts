@@ -92,6 +92,7 @@ export function registerScoreCommands(program: Command): void {
       }
       const target = targetFromCommand(commandArgs);
       process.stdout.write(`${c(ANSI.dim, "⟳")} Scoring ${c(ANSI.bold, target.targetId)}...\n\n`);
+      recordSessionStart();
       const artifact = await runTarget(target, { invokeTools: true, securityCheck: true });
       await writeRunArtifact(artifact, defaultRunsDirectory(process.cwd()));
 

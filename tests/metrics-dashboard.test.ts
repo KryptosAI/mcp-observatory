@@ -40,7 +40,8 @@ describe("local metrics dashboard", () => {
     db.close();
   });
 
-  it("renders sanitized dashboard HTML without raw telemetry identifiers", () => {
+  it("renders sanitized dashboard HTML without raw telemetry identifiers", async () => {
+    const { db } = await tempDb();
     const html = renderDashboardHtml({
       generatedAt: "2026-06-21T12:00:00.000Z",
       dbPath: "/tmp/observatory.sqlite",
@@ -152,7 +153,8 @@ describe("local metrics dashboard", () => {
       },
       sourceRuns: [],
       recentFailures: [],
-    });
+    }, db);
+    db.close();
 
     expect(html).toContain("MCP Observatory Local Metrics");
     expect(html).toContain("MCP Observatory ASCII art logo");

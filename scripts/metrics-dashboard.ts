@@ -372,6 +372,17 @@ CREATE INDEX IF NOT EXISTS idx_collection_runs_source_started ON collection_runs
   try { db.exec("ALTER TABLE telemetry_events ADD COLUMN machine_fingerprint TEXT"); } catch { /* column may already exist */ }
   try { db.exec("ALTER TABLE telemetry_events ADD COLUMN stage TEXT"); } catch { /* column may already exist */ }
   try { db.exec("ALTER TABLE telemetry_events ADD COLUMN feature_chain TEXT"); } catch { /* column may already exist */ }
+  try { db.exec("ALTER TABLE telemetry_events ADD COLUMN target_server TEXT"); } catch { /* column may already exist */ }
+  try { db.exec("ALTER TABLE telemetry_events ADD COLUMN finding_severity_counts TEXT"); } catch { /* column may already exist */ }
+  try { db.exec("ALTER TABLE telemetry_events ADD COLUMN session_duration_ms INTEGER"); } catch { /* column may already exist */ }
+  try { db.exec("ALTER TABLE telemetry_events ADD COLUMN os TEXT"); } catch { /* column may already exist */ }
+  try { db.exec("ALTER TABLE telemetry_events ADD COLUMN arch TEXT"); } catch { /* column may already exist */ }
+  try { db.exec("ALTER TABLE telemetry_events ADD COLUMN node_version TEXT"); } catch { /* column may already exist */ }
+
+  // Ensure indexes exist
+  db.exec("CREATE INDEX IF NOT EXISTS idx_telemetry_session ON telemetry_events(session_id)");
+  db.exec("CREATE INDEX IF NOT EXISTS idx_telemetry_command ON telemetry_events(command)");
+  db.exec("CREATE INDEX IF NOT EXISTS idx_telemetry_timestamp ON telemetry_events(timestamp)");
 
   return db;
 }
@@ -523,8 +534,11 @@ export function ingestTelemetryRows(db: DatabaseSync, rows: TelemetryRow[]): { r
 INSERT INTO telemetry_events (
   id, source_id, event, command, version, session_id, created_at, timestamp,
   telemetry_source, is_first_party, is_ci, ci_provider, transport, github_repository,
-  github_workflow, github_actor, health_score, health_grade, raw_json
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  github_workflow, github_actor, health_score, health_grade,
+  machine_fingerprint, stage, feature_chain,
+  target_server, finding_severity_counts, session_duration_ms, os, arch, node_version,
+  raw_json
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ON CONFLICT(id) DO UPDATE SET
   source_id = excluded.source_id,
   event = excluded.event,
@@ -543,9 +557,19 @@ ON CONFLICT(id) DO UPDATE SET
   github_actor = excluded.github_actor,
   health_score = excluded.health_score,
   health_grade = excluded.health_grade,
+  machine_fingerprint = excluded.machine_fingerprint,
+  stage = excluded.stage,
+  feature_chain = excluded.feature_chain,
+  target_server = excluded.target_server,
+  finding_severity_counts = excluded.finding_severity_counts,
+  session_duration_ms = excluded.session_duration_ms,
+  os = excluded.os,
+  arch = excluded.arch,
+  node_version = excluded.node_version,
   raw_json = excluded.raw_json
 `);
   let rowsInserted = 0;
+  let rowsSkippedBloat = 0;
   db.exec("BEGIN");
   try {
     for (const row of rows) {
@@ -555,9 +579,74 @@ ON CONFLICT(id) DO UPDATE SET
         version?: string | null;
         health_score?: number | null;
         health_grade?: string | null;
+        machine_fingerprint?: string | null;
+        machineFingerprint?: string | null;
+        stage?: string | null;
+        feature_chain?: string | string[] | null;
+        featureChain?: string[] | null;
+        target_server?: string | null;
+        targetServer?: string | null;
+        finding_severity_counts?: string | Record<string, number> | null;
+        findingSeverityCounts?: Record<string, number> | null;
+        session_duration_ms?: number | null;
+        sessionDurationMs?: number | null;
+        os?: string | null;
+        arch?: string | null;
+        node_version?: string | null;
+        nodeVersion?: string | null;
       };
+      const rawJson = JSON.stringify(row);
+      const rawLen = rawJson.length;
+
+      if (rawLen > 10_240) {
+        rowsSkippedBloat += 1;
+        process.stderr.write(`[metrics] bloat skip: event=${raw.event ?? row.command ?? "unknown"}, size=${rawLen}\n`);
+        continue;
+      }
+
       const id = raw.id === undefined || raw.id === null ? stableId("telemetry", row) : String(raw.id);
       if (!existing.get(id)) rowsInserted += 1;
+
+      const machineFingerprint = raw.machine_fingerprint ?? raw.machineFingerprint ?? null;
+      const rawStage = raw.stage ?? null;
+      const featureChainStr = raw.feature_chain
+        ? (typeof raw.feature_chain === "string" ? raw.feature_chain : raw.feature_chain.join("→"))
+        : (raw.featureChain ? raw.featureChain.join("→") : null);
+      const targetServer = raw.target_server ?? raw.targetServer ?? null;
+      const findingSeverityCounts = raw.finding_severity_counts
+        ? (typeof raw.finding_severity_counts === "string" ? raw.finding_severity_counts : JSON.stringify(raw.finding_severity_counts))
+        : (raw.findingSeverityCounts ? JSON.stringify(raw.findingSeverityCounts) : null);
+      const sessionDurationMs = raw.session_duration_ms ?? raw.sessionDurationMs ?? null;
+      const osVal = raw.os ?? process.platform;
+      const archVal = raw.arch ?? process.arch;
+      const nodeVersionVal = raw.node_version ?? raw.nodeVersion ?? process.version;
+
+      const allInColumns =
+        (raw.command || raw.event) &&
+        (raw.session_id || raw.sessionId) &&
+        (raw.timestamp || raw.created_at) &&
+        (raw.telemetry_source || raw.telemetrySource || true);
+
+      const condensedRawJson = allInColumns
+        ? JSON.stringify({
+            event: raw.event ?? row.command,
+            command: row.command,
+            version: raw.version,
+            session_id: rowSession(row),
+            timestamp: row.timestamp ?? row.created_at,
+            telemetry_source: row.telemetry_source ?? row.telemetrySource,
+            machine_fingerprint: machineFingerprint,
+            stage: rawStage,
+            feature_chain: featureChainStr,
+            target_server: targetServer,
+            finding_severity_counts: findingSeverityCounts ? JSON.parse(findingSeverityCounts) : null,
+            session_duration_ms: sessionDurationMs,
+            os: osVal,
+            arch: archVal,
+            node_version: nodeVersionVal,
+          })
+        : rawJson;
+
       insert.run(
         id,
         raw.id === undefined || raw.id === null ? null : String(raw.id),
@@ -577,7 +666,16 @@ ON CONFLICT(id) DO UPDATE SET
         row.github_actor ?? row.githubActor ?? null,
         raw.health_score ?? null,
         raw.health_grade ?? null,
-        JSON.stringify(row),
+        machineFingerprint,
+        rawStage,
+        featureChainStr,
+        targetServer,
+        findingSeverityCounts,
+        sessionDurationMs,
+        osVal,
+        archVal,
+        nodeVersionVal,
+        condensedRawJson,
       );
     }
     db.exec("COMMIT");
@@ -2833,7 +2931,249 @@ function revenuePanel(model: DashboardModel): string {
   </section>`;
 }
 
-export function renderDashboardHtml(model: DashboardModel): string {
+function conversionFunnelPanel(model: DashboardModel, db: DatabaseSync): string {
+  const cutoff = dateDaysAgo(30);
+  const prevCutoff = dateDaysAgo(60);
+
+  const currentRows = (db.prepare(`
+    SELECT stage, COUNT(DISTINCT session_id) as sessions
+    FROM telemetry_events
+    WHERE stage IS NOT NULL AND is_first_party=0 AND timestamp >= ?
+    GROUP BY stage
+  `).all(cutoff) as unknown as Array<{ stage: string; sessions: number }>).map((row) => ({
+    stage: getString(row, "stage"),
+    sessions: getNumber(row, "sessions"),
+  }));
+
+  const prevRows = (db.prepare(`
+    SELECT stage, COUNT(DISTINCT session_id) as sessions
+    FROM telemetry_events
+    WHERE stage IS NOT NULL AND is_first_party=0 AND timestamp >= ? AND timestamp < ?
+    GROUP BY stage
+  `).all(prevCutoff, cutoff) as unknown as Array<{ stage: string; sessions: number }>).map((row) => ({
+    stage: getString(row, "stage"),
+    sessions: getNumber(row, "sessions"),
+  }));
+
+  if (currentRows.length === 0) return "";
+
+  const prevMap = new Map(prevRows.map((r) => [r.stage, r.sessions]));
+
+  const stageConfig: Record<string, { label: string; header: string; color: string }> = {
+    discovery: { label: "Vulnerability Discovery", header: "Discovery", color: "#f97316" },
+    validation: { label: "Server Validation", header: "Validation", color: "#3b82f6" },
+    assessment: { label: "Risk Assessment", header: "Assessment", color: "#8b5cf6" },
+    protection: { label: "Protection Rules", header: "Protection", color: "#22c55e" },
+    ci: { label: "CI Integration", header: "CI", color: "#22d3ee" },
+    enforce: { label: "Policy Enforcement", header: "Enforce", color: "#ef4444" },
+  };
+
+  const stages = currentRows.map((row) => {
+    const config = stageConfig[row.stage] ?? { label: row.stage, header: row.stage, color: "#64748b" };
+    const prev = prevMap.get(row.stage) ?? 0;
+    const trend = signedPercent(row.sessions, prev);
+    return { ...config, value: row.sessions, prev, trend };
+  });
+
+  const maxValue = Math.max(...stages.map((s) => s.value), 1);
+
+  return `<article class="panel security-funnel-panel">
+    <div class="panel-head"><h2>Security Workflow Funnel</h2><span class="panel-note">scan → score → enforce → CI</span></div>
+    <div class="funnel-arrow-bar">
+      ${stages.map((s) => s.header).join('<span class="funnel-delta arrow">→</span>')}
+    </div>
+    <div class="funnel-stages" style="grid-template-columns:repeat(${stages.length}, minmax(0, 1fr))">
+      ${stages.map((s) => {
+        const width = maxValue > 0 ? Math.max(4, Math.round((s.value / maxValue) * 100)) : 0;
+        return `<div class="funnel-stage">
+          <span class="funnel-metric" style="color:${s.color}">${escapeHtml(s.label)}</span>
+          <div class="funnel-bar-row">
+            <div class="funnel-bar" style="width:${width}%;background:${s.color}"></div>
+            <strong class="funnel-value">${formatNumber(s.value)}</strong>
+          </div>
+          <span class="funnel-sub">${s.prev > 0 ? formatNumber(s.prev) : "n/a"} prior</span>
+          <em class="funnel-delta ${trendClass(s.trend.direction)}">${s.trend.direction === "down" ? "\u2193" : s.trend.direction === "up" ? "\u2191" : "\u2192"} ${escapeHtml(s.trend.label)}</em>
+        </div>`;
+      }).join("")}
+    </div>
+  </article>`;
+}
+
+function topServersPanel(db: DatabaseSync): string {
+  const rows = (db.prepare(`
+    SELECT target_server, COUNT(*) as scans, AVG(health_score) as avg_score
+    FROM telemetry_events
+    WHERE target_server IS NOT NULL AND is_first_party=0
+    GROUP BY target_server
+    ORDER BY scans DESC
+    LIMIT 10
+  `).all() as unknown as Array<{ target_server: string; scans: number; avg_score: number }>).map((row) => ({
+    target_server: getString(row, "target_server"),
+    scans: getNumber(row, "scans"),
+    avg_score: getNumber(row, "avg_score"),
+  }));
+
+  if (rows.length === 0) return "";
+
+  const maxScans = Math.max(...rows.map((r) => r.scans), 1);
+
+  return `<article class="panel">
+    <div class="panel-head"><h2>Top Scanned MCP Servers</h2><span class="panel-note">by scan count</span></div>
+    <div style="padding:4px 16px 16px">
+      ${rows.map((row) => {
+        const width = Math.max(4, Math.round((row.scans / maxScans) * 100));
+        const scoreColor = row.avg_score >= 90 ? "#22c55e" : row.avg_score >= 70 ? "#f59e0b" : "#ef4444";
+        return `<div class="server-bar-row">
+          <span class="server-name">${escapeHtml(row.target_server)}</span>
+          <div class="server-bar-wrap"><div class="server-bar" style="width:${width}%;background:${scoreColor}"></div></div>
+          <span class="server-scans">${formatNumber(row.scans)}</span>
+          <span class="server-score" style="color:${scoreColor}">${Math.round(row.avg_score)}</span>
+        </div>`;
+      }).join("")}
+    </div>
+  </article>`;
+}
+
+function enterpriseSignalsPanel(db: DatabaseSync): string {
+  const rows = (db.prepare(`
+    SELECT session_id, COUNT(*) as events, MAX(command) as top_command
+    FROM telemetry_events
+    WHERE is_first_party=0 AND command IN ('audit','setup-ci','enforce','enterprise-report')
+    GROUP BY session_id
+    ORDER BY events DESC
+    LIMIT 15
+  `).all() as unknown as Array<{ session_id: string; events: number; top_command: string }>).map((row) => ({
+    session_id: getString(row, "session_id"),
+    events: getNumber(row, "events"),
+    top_command: getString(row, "top_command"),
+  }));
+
+  if (rows.length === 0) return "";
+
+  const commandColors: Record<string, string> = {
+    audit: "#f97316",
+    "setup-ci": "#22c55e",
+    enforce: "#ef4444",
+    "enterprise-report": "#8b5cf6",
+  };
+
+  return `<article class="panel">
+    <div class="panel-head"><h2>Enterprise Signals</h2><span class="panel-note">sessions with enterprise actions</span></div>
+    <div class="enterprise-signals-grid">
+      ${rows.map((row) => {
+        const cmd = row.top_command ?? "";
+        const color = commandColors[cmd] ?? "#64748b";
+        return `<div class="enterprise-card">
+          <span class="enterprise-session">${escapeHtml(row.session_id.slice(0, 8))}</span>
+          <strong>${formatNumber(row.events)} events</strong>
+          <span class="enterprise-badge" style="background:${color};color:#fff">${escapeHtml(cmd)}</span>
+        </div>`;
+      }).join("")}
+    </div>
+  </article>`;
+}
+
+function enforceAdoptionWidget(db: DatabaseSync): string {
+  const currentRow = db.prepare(`
+    SELECT COUNT(DISTINCT session_id) as cnt
+    FROM telemetry_events
+    WHERE command='enforce' AND is_first_party=0 AND timestamp >= ?
+  `).get(dateDaysAgo(30)) as unknown as { cnt: number } | undefined;
+
+  const prevRow = db.prepare(`
+    SELECT COUNT(DISTINCT session_id) as cnt
+    FROM telemetry_events
+    WHERE command='enforce' AND is_first_party=0 AND timestamp >= ? AND timestamp < ?
+  `).get(dateDaysAgo(60), dateDaysAgo(30)) as unknown as { cnt: number } | undefined;
+
+  const currentCount = currentRow?.cnt ?? 0;
+  const prevCount = prevRow?.cnt ?? 0;
+
+  let body = "";
+  if (currentCount === 0) {
+    body = `<div class="enforce-empty">New — awaiting adoption</div>
+      <div class="enforce-cta"><code>npx @kryptosai/mcp-observatory enforce</code></div>`;
+  } else {
+    const trendLabel = currentCount > prevCount ? "\u2191 growing" : currentCount < prevCount ? "\u2193 declining" : "\u2192 stable";
+    const trendCls = currentCount > prevCount ? "trend-up" : currentCount < prevCount ? "trend-down" : "trend-flat";
+    body = `<span class="${trendCls}">${trendLabel}</span>`;
+  }
+
+  return `<article class="panel enforce-panel">
+    <div class="panel-head"><h2>Enforce Adoption</h2><span class="panel-note">sessions using enforce command (30d)</span></div>
+    <div class="enforce-widget">
+      <strong class="enforce-count">${formatNumber(currentCount)}</strong>
+      ${body}
+    </div>
+  </article>`;
+}
+
+function findingDistributionPanel(db: DatabaseSync): string {
+  const rows = (db.prepare(`
+    SELECT target_server, finding_severity_counts
+    FROM telemetry_events
+    WHERE finding_severity_counts IS NOT NULL AND is_first_party=0
+    ORDER BY timestamp DESC
+    LIMIT 50
+  `).all() as unknown as Array<{ target_server: string; finding_severity_counts: string }>).map((row) => ({
+    target_server: getString(row, "target_server"),
+    finding_severity_counts: getString(row, "finding_severity_counts"),
+  }));
+
+  if (rows.length === 0) return "";
+
+  const serverFindings = new Map<string, { high: number; medium: number; low: number }>();
+
+  for (const row of rows) {
+    if (!row.target_server) continue;
+    let parsed: Record<string, number> = {};
+    try {
+      parsed = JSON.parse(row.finding_severity_counts) as Record<string, number>;
+    } catch {
+      continue;
+    }
+    const entry = serverFindings.get(row.target_server) ?? { high: 0, medium: 0, low: 0 };
+    entry.high += parsed["HIGH"] ?? parsed["high"] ?? 0;
+    entry.medium += parsed["MEDIUM"] ?? parsed["medium"] ?? 0;
+    entry.low += parsed["LOW"] ?? parsed["low"] ?? 0;
+    serverFindings.set(row.target_server, entry);
+  }
+
+  if (serverFindings.size === 0) return "";
+
+  const serverList = [...serverFindings.entries()]
+    .map(([server, findings]) => ({ server, ...findings, total: findings.high + findings.medium + findings.low }))
+    .sort((a, b) => b.total - a.total);
+
+  const maxTotal = Math.max(...serverList.map((s) => s.total), 1);
+
+  return `<article class="panel">
+    <div class="panel-head"><h2>Security Findings by Server</h2><span class="panel-note">HIGH / MEDIUM / LOW distribution</span></div>
+    <div style="padding:4px 16px 16px">
+      ${serverList.map((s) => {
+        const highPct = maxTotal > 0 ? (s.high / maxTotal) * 100 : 0;
+        const medPct = maxTotal > 0 ? (s.medium / maxTotal) * 100 : 0;
+        const lowPct = maxTotal > 0 ? (s.low / maxTotal) * 100 : 0;
+        return `<div class="finding-row">
+          <span class="finding-server">${escapeHtml(s.server)}</span>
+          <div class="finding-bar-wrap">
+            <div class="finding-bar finding-high" style="width:${Math.max(1, highPct)}%"></div>
+            <div class="finding-bar finding-medium" style="width:${Math.max(1, medPct)}%"></div>
+            <div class="finding-bar finding-low" style="width:${Math.max(1, lowPct)}%"></div>
+          </div>
+          <span class="finding-total">${formatNumber(s.total)}</span>
+        </div>`;
+      }).join("")}
+    </div>
+    <div style="padding:0 16px 12px;display:flex;gap:12px;font-size:11px;color:var(--muted)">
+      <span><i style="display:inline-block;width:10px;height:10px;background:#ef4444;border-radius:2px;margin-right:4px"></i>High</span>
+      <span><i style="display:inline-block;width:10px;height:10px;background:#f59e0b;border-radius:2px;margin-right:4px"></i>Medium</span>
+      <span><i style="display:inline-block;width:10px;height:10px;background:#3b82f6;border-radius:2px;margin-right:4px"></i>Low</span>
+    </div>
+  </article>`;
+}
+
+export function renderDashboardHtml(model: DashboardModel, db: DatabaseSync): string {
   const trendPoints = usageTrendPoints(model, TREND_WINDOW_DAYS);
   const allTrendPoints = usageTrendPoints(model, Number.POSITIVE_INFINITY);
   const kpiMomentum = monthlyKpiMetrics(allTrendPoints, model);
@@ -3161,6 +3501,32 @@ export function renderDashboardHtml(model: DashboardModel): string {
     .type-enterprise { background: rgba(245,158,11,.15); color: #f59e0b; }
     .type-business { background: rgba(59,130,246,.15); color: #3b82f6; }
     .type-team { background: rgba(139,92,246,.15); color: #8b5cf6; }
+    .server-bar-row { display:grid; grid-template-columns:1.5fr 2fr 0.6fr 0.6fr; gap:10px; align-items:center; padding:8px 0; border-bottom:1px solid rgba(51,70,91,.35); }
+    .server-bar-row:last-child { border-bottom:0; }
+    .server-name { font-size:12px; color:#e5edf7; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .server-bar-wrap { height:10px; background:#172435; border-radius:20px; overflow:hidden; }
+    .server-bar { height:100%; border-radius:20px; min-width:2px; }
+    .server-scans { font-size:12px; color:var(--muted); text-align:right; }
+    .server-score { font-size:12px; font-weight:600; text-align:right; }
+    .enterprise-signals-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:10px; padding:4px 16px 16px; }
+    .enterprise-card { border:1px solid rgba(51,70,91,.7); border-radius:8px; background:#091522; padding:12px; display:flex; flex-direction:column; gap:6px; }
+    .enterprise-session { font-size:11px; color:var(--muted); font-family:ui-monospace, monospace; }
+    .enterprise-card strong { font-size:18px; }
+    .enterprise-badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:600; text-transform:uppercase; align-self:flex-start; }
+    .enforce-widget { padding:8px 16px 20px; text-align:center; }
+    .enforce-count { font-size:48px; font-weight:700; display:block; line-height:1; }
+    .enforce-empty { color:var(--muted); font-size:13px; margin-top:6px; }
+    .enforce-cta { margin-top:10px; }
+    .enforce-cta code { background:#071628; padding:6px 12px; border-radius:6px; font-size:12px; color:var(--cyan); border:1px solid var(--line); }
+    .finding-row { display:grid; grid-template-columns:1.5fr 3fr 0.6fr; gap:10px; align-items:center; padding:8px 0; border-bottom:1px solid rgba(51,70,91,.35); }
+    .finding-row:last-child { border-bottom:0; }
+    .finding-server { font-size:12px; color:#e5edf7; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .finding-bar-wrap { height:14px; background:#172435; border-radius:7px; overflow:hidden; display:flex; }
+    .finding-bar { height:100%; }
+    .finding-high { background:#ef4444; }
+    .finding-medium { background:#f59e0b; }
+    .finding-low { background:#3b82f6; }
+    .finding-total { font-size:12px; color:var(--muted); text-align:right; }
   </style>
 </head>
 <body>
@@ -3216,6 +3582,13 @@ export function renderDashboardHtml(model: DashboardModel): string {
           ${userJourneyPanel(model)}
           ${featureStickinessPanel(model)}
           ${revenuePanel(model)}
+          ${conversionFunnelPanel(model, db)}
+          ${topServersPanel(db)}
+          <section class="two-col">
+            ${enterpriseSignalsPanel(db)}
+            ${enforceAdoptionWidget(db)}
+          </section>
+          ${findingDistributionPanel(db)}
           <section class="two-col">
             <article class="panel">
               <div class="panel-head">
@@ -3514,12 +3887,12 @@ async function buildDashboard(db: DatabaseSync, paths: Paths): Promise<void> {
   const run = startRun(db, "dashboard");
   try {
     let model = buildModel(db, paths);
-    let html = renderDashboardHtml(model);
+    let html = renderDashboardHtml(model, db);
     await mkdir(paths.dashboardDir, { recursive: true });
     await writeTextFileAtomic(paths.dashboard, html);
     finishRun(db, run, "success", 1, 1);
     model = buildModel(db, paths);
-    html = renderDashboardHtml(model);
+    html = renderDashboardHtml(model, db);
     await writeTextFileAtomic(paths.dashboard, html);
     await writeTextFileAtomic(path.join(paths.dashboardDir, "latest.json"), JSON.stringify(model, null, 2) + "\n");
   } catch (error) {
@@ -3565,6 +3938,10 @@ async function collectAll(db: DatabaseSync, paths: Paths, onProgress?: (msg: str
       results.failed.push(`${name}: ${safeErrorMessage(error)}`);
       process.stderr.write(`[metrics] ${name} collection failed: ${safeErrorMessage(error)}\n`);
     }
+  }
+  onProgress?.("Vacuuming database...");
+  try { db.exec("VACUUM"); } catch { /* vacuum may fail on busy db * */
+    try { db.exec("PRAGMA auto_vacuum = FULL"); } catch { /* ok */ }
   }
   return results;
 }

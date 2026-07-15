@@ -135,6 +135,8 @@ export async function runEnforce(
   const policyPath = options.policy ?? ".mcp-seatbelt/policy.yml";
   const proxyPort = parseInt(options.proxyPort ?? "9420", 10);
 
+  recordSessionStart();
+
   process.stdout.write(`  ${c(ANSI.dim, "⟳")} Checking ${c(ANSI.bold, target.targetId)}...`);
 
   const artifact = await runTarget(target, {

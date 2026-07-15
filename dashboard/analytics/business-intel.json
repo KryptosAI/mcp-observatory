@@ -1,0 +1,289 @@
+{
+  "generated_at": "2026-07-15T21:53:22.469Z",
+  "lead_pipeline": {
+    "tier1_enterprise": {
+      "count": 2,
+      "mrr_per": 999,
+      "total": 1998
+    },
+    "tier2_team": {
+      "count": 48,
+      "mrr_per": 299,
+      "total": 14352
+    },
+    "tier3_conversion": {
+      "count": 0
+    },
+    "tier4_free": {
+      "count": 8488
+    }
+  },
+  "mrr_potential": 16350,
+  "retention": {
+    "active_7d": 1000,
+    "active_30d": 4322,
+    "total": 8538
+  },
+  "competitive_opportunities": [],
+  "top_leads": [
+    {
+      "session_id": "20226c8c-6209-402c-bc9f-dfd6fc5d17c9",
+      "lead_score": 100,
+      "events": 12512,
+      "signals": [
+        "audit",
+        "setup-ci",
+        "enterprise-report",
+        "ci:github-actions",
+        "power-user",
+        "3+ score targets",
+        "5+ scanned servers"
+      ]
+    },
+    {
+      "session_id": "8439f79b-253f-4500-bfa7-67c693573df6",
+      "lead_score": 75,
+      "events": 191,
+      "signals": [
+        "audit",
+        "setup-ci",
+        "ci:github-actions",
+        "power-user",
+        "5+ scanned servers"
+      ]
+    },
+    {
+      "session_id": "unknown",
+      "lead_score": 45,
+      "events": 390,
+      "signals": [
+        "setup-ci",
+        "ci:github-actions",
+        "power-user"
+      ]
+    },
+    {
+      "session_id": "033a3e41-afc4-4a40-8293-c917cfaef0e8",
+      "lead_score": 35,
+      "events": 3,
+      "signals": [
+        "setup-ci",
+        "ci:github-actions"
+      ]
+    },
+    {
+      "session_id": "0386bf8e-bc25-485f-ba10-e00a88cbcb34",
+      "lead_score": 35,
+      "events": 3,
+      "signals": [
+        "setup-ci",
+        "ci:github-actions"
+      ]
+    },
+    {
+      "session_id": "04a52b3a-5416-49e5-9a25-cc5ec15f3666",
+      "lead_score": 35,
+      "events": 3,
+      "signals": [
+        "setup-ci",
+        "ci:github-actions"
+      ]
+    },
+    {
+      "session_id": "0519e767-827f-426e-b0b8-c5a13fcb743d",
+      "lead_score": 35,
+      "events": 3,
+      "signals": [
+        "setup-ci",
+        "ci:github-actions"
+      ]
+    },
+    {
+      "session_id": "062657c3-5ca3-4286-9f76-bc1b3bc067e6",
+      "lead_score": 35,
+      "events": 3,
+      "signals": [
+        "setup-ci",
+        "ci:github-actions"
+      ]
+    },
+    {
+      "session_id": "0812f0dd-56d7-47ec-9104-90a48fb5b829",
+      "lead_score": 35,
+      "events": 3,
+      "signals": [
+        "setup-ci",
+        "ci:github-actions"
+      ]
+    },
+    {
+      "session_id": "083ded47-3566-4858-80cb-d36a208c2ce6",
+      "lead_score": 35,
+      "events": 3,
+      "signals": [
+        "setup-ci",
+        "ci:github-actions"
+      ]
+    },
+    {
+      "session_id": "09eb9e28-6165-4dbc-8812-ed50d10aa9dd",
+      "lead_score": 35,
+      "events": 3,
+      "signals": [
+        "setup-ci",
+        "ci:github-actions"
+      ]
+    },
+    {
+      "session_id": "0a26ea82-1838-49ab-abf8-d32286884f7f",
+      "lead_score": 35,
+      "events": 3,
+      "signals": [
+        "setup-ci",
+        "ci:github-actions"
+      ]
+    },
+    {
+      "session_id": "0c054ae9-fb3c-4e8e-8a18-931d660fba39",
+      "lead_score": 35,
+      "events": 3,
+      "signals": [
+        "setup-ci",
+        "ci:github-actions"
+      ]
+    },
+    {
+      "session_id": "0c508958-39da-413e-9a57-edb7b85c1530",
+      "lead_score": 35,
+      "events": 3,
+      "signals": [
+        "setup-ci",
+        "ci:github-actions"
+      ]
+    },
+    {
+      "session_id": "0cb9f3a4-61a8-4113-b423-fc19c3e595b8",
+      "lead_score": 35,
+      "events": 3,
+      "signals": [
+        "setup-ci",
+        "ci:github-actions"
+      ]
+    },
+    {
+      "session_id": "0cd16bcb-2e7a-4f20-9c8c-3e9e1481bf04",
+      "lead_score": 35,
+      "events": 3,
+      "signals": [
+        "setup-ci",
+        "ci:github-actions"
+      ]
+    },
+    {
+      "session_id": "0e8322bc-95d3-4d1b-956d-86da5c294d9c",
+      "lead_score": 35,
+      "events": 3,
+      "signals": [
+        "setup-ci",
+        "ci:github-actions"
+      ]
+    },
+    {
+      "session_id": "0ea664fb-b687-418b-9790-afea3e4c4915",
+      "lead_score": 35,
+      "events": 3,
+      "signals": [
+        "setup-ci",
+        "ci:github-actions"
+      ]
+    },
+    {
+      "session_id": "0eaf9fa6-55a6-4b4f-a478-ec904c00c2f9",
+      "lead_score": 35,
+      "events": 3,
+      "signals": [
+        "setup-ci",
+        "ci:github-actions"
+      ]
+    },
+    {
+      "session_id": "0f809ed2-25b2-4ade-9fc4-0c92e2e482ab",
+      "lead_score": 35,
+      "events": 3,
+      "signals": [
+        "setup-ci",
+        "ci:github-actions"
+      ]
+    }
+  ],
+  "tier_groups": {
+    "tier1_enterprise": {
+      "count": 2,
+      "sessions": [
+        "20226c8c-6209-402c-bc9f-dfd6fc5d17c9",
+        "8439f79b-253f-4500-bfa7-67c693573df6"
+      ]
+    },
+    "tier2_team": {
+      "count": 48,
+      "sessions": [
+        "unknown",
+        "033a3e41-afc4-4a40-8293-c917cfaef0e8",
+        "0386bf8e-bc25-485f-ba10-e00a88cbcb34",
+        "04a52b3a-5416-49e5-9a25-cc5ec15f3666",
+        "0519e767-827f-426e-b0b8-c5a13fcb743d",
+        "062657c3-5ca3-4286-9f76-bc1b3bc067e6",
+        "0812f0dd-56d7-47ec-9104-90a48fb5b829",
+        "083ded47-3566-4858-80cb-d36a208c2ce6",
+        "09eb9e28-6165-4dbc-8812-ed50d10aa9dd",
+        "0a26ea82-1838-49ab-abf8-d32286884f7f",
+        "0c054ae9-fb3c-4e8e-8a18-931d660fba39",
+        "0c508958-39da-413e-9a57-edb7b85c1530",
+        "0cb9f3a4-61a8-4113-b423-fc19c3e595b8",
+        "0cd16bcb-2e7a-4f20-9c8c-3e9e1481bf04",
+        "0e8322bc-95d3-4d1b-956d-86da5c294d9c",
+        "0ea664fb-b687-418b-9790-afea3e4c4915",
+        "0eaf9fa6-55a6-4b4f-a478-ec904c00c2f9",
+        "0f809ed2-25b2-4ade-9fc4-0c92e2e482ab",
+        "0f8a44bc-a131-48e8-a57f-97297cc63c1b",
+        "10ef7ad4-777e-4fad-ac68-89bded7fbf46",
+        "13abed3b-76d0-46b3-9c6f-88a218d8534d",
+        "1636b4d3-c9de-4ebe-a322-4a31dc3fc6d4",
+        "18b73f26-0e31-421a-ba5b-03c5e09b1643",
+        "197620a2-4146-480c-8993-f5ff43ad17e1",
+        "19ad0e95-d1f9-425d-945c-45707ceb586f",
+        "1d070f07-584f-42d8-8755-858428465ec1",
+        "1d94492c-e7b0-417a-be9b-34515f3da0ef",
+        "1e952fc3-5c21-437a-be4d-ae020cf26124",
+        "1f24c6ad-999c-4688-89ff-64e2646e0aa9",
+        "1f5346a8-8eb1-4fe8-87f9-008e68258ac6",
+        "1f5368b7-9711-44f0-90ff-db41ee87836d",
+        "2091e9f0-924d-4746-99c8-f8a8dd716ff3",
+        "21fd32cb-0d8d-49f0-a7e1-6ef8bbedb8b2",
+        "220e7a69-cd06-489c-9f2c-91023cab1444",
+        "225e40e8-d5cd-468b-ae2e-4885d8155a6c",
+        "24510c2c-2874-4fef-b538-6eeb48c2cc79",
+        "25fc8738-9af2-4574-b4eb-a0c71129a09e",
+        "27fbd087-a2b8-44d3-bc9e-695872982baf",
+        "29563ef3-4d25-451d-95da-5a8cff120296",
+        "2a315223-1681-4708-a54e-b1adc01e7107",
+        "2b13ecd2-628d-4bf0-80f8-4659d3e4a80f",
+        "2ed6ea4b-dbe1-4404-a42c-23ca9b264994",
+        "2f04e143-6741-448d-8c3d-e61b7d97b75c",
+        "30f40c96-0604-4d75-9471-4fc25fc62953",
+        "3226ee2d-55c7-41ae-a4ad-fe487db162b1",
+        "339eede8-b1b3-4939-91b9-2df8f9b3f577",
+        "34afc9cc-f31d-423c-bca2-4cd8e8806017",
+        "35527261-5cbd-485e-8db7-12a532e7be4e"
+      ]
+    },
+    "tier3_conversion": {
+      "count": 0,
+      "sessions": []
+    },
+    "tier4_free": {
+      "count": 8488,
+      "sessions": []
+    }
+  }
+}

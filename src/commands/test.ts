@@ -145,6 +145,7 @@ export function registerTestCommands(program: Command): void {
       commandArgs = extracted.commandArgs;
       const conversionFlags = extracted.flags;
       const t0 = Date.now();
+      recordSessionStart();
       const target = options.target ? await resolveTarget({ target: options.target }) : targetFromCommand(commandArgs);
       process.stdout.write(`  ${c(ANSI.dim, "⟳")} Checking ${c(ANSI.bold, target.targetId)}...`);
       const attackSim = conversionFlags.attackSim !== false && options.attackSim !== false;

@@ -102,6 +102,7 @@
     "metrics:open": "tsx scripts/metrics-dashboard.ts open",
     "metrics:serve": "tsx scripts/metrics-dashboard.ts serve",
     "integration:real": "tsx scripts/run-real-server-matrix.ts",
+    "intel:run": "tsx scripts/enterprise-intel.ts",
     "safety-index": "tsx scripts/run-safety-index.ts",
     "lint": "eslint .",
     "prepack": "npm run build",

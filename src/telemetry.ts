@@ -143,6 +143,9 @@ export interface TelemetryEvent extends TelemetryEnrichment {
   sessionDurationMs?: number | null;
   referrer?: string;
   optedInEmail?: string;
+  targetServer?: string;
+  findingSeverityCounts?: Record<string, number>;
+  sessionDurationMs?: number;
 }
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -208,9 +211,8 @@ export function _resetConfigCache(): void {
 }
 
 export function computeFingerprint(): string {
-  const repo = process.env["GITHUB_REPOSITORY"] || "";
-  const input = `${process.platform}-${process.arch}-${process.version}-${os.homedir()}-${repo}`;
-  return createHash("sha256").update(input).digest("hex").slice(0, 16);
+  const input = `${os.hostname()}:${os.userInfo().username}`;
+  return createHash("sha256").update(input).digest("hex");
 }
 
 export function computeTelemetryFingerprint(): string {
@@ -522,6 +524,8 @@ export function buildEvent(
     stage: enrichment?.stageOverride ?? deriveStage(config?.featureChain || []),
     referrer: config?.firstContactChannel,
     optedInEmail: config?.optedInEmail,
+    targetServer: enrichment?.targetServer,
+    findingSeverityCounts: enrichment?.findingSeverityCounts,
   };
 }
 
