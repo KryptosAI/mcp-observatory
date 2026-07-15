@@ -17,6 +17,29 @@ import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./set
 
 type SkillScanOption = string | boolean | undefined;
 
+export type ScanServerCategory = "passed" | "failed" | "warning";
+
+/**
+ * Categorizes a single server's scan result by its worst outcome:
+ * any failing check → "failed"; no failures but a partial/flaky check →
+ * "warning"; everything passed → "passed".
+ */
+export function categorizeServerResult(artifact: RunArtifact): ScanServerCategory {
+  if (artifact.gate === "fail") return "failed";
+  if (artifact.summary.partial > 0 || artifact.summary.flaky > 0) return "warning";
+  return "passed";
+}
+
+/** "3 servers scanned: 1 passed, 1 failed, 1 warnings" */
+export function formatScanSummaryLine(counts: {
+  passed: number;
+  failed: number;
+  warning: number;
+}): string {
+  const total = counts.passed + counts.failed + counts.warning;
+  return `${total} server${total === 1 ? "" : "s"} scanned: ${counts.passed} passed, ${counts.failed} failed, ${counts.warning} warnings`;
+}
+
 async function runScan(
   bin: string,
   configPath: string | undefined,
@@ -75,6 +98,7 @@ async function runScan(
   let totalTools = 0;
   let totalPrompts = 0;
   let totalResources = 0;
+  const categoryCounts: Record<ScanServerCategory, number> = { passed: 0, failed: 0, warning: 0 };
 
   for (const t of targets) {
     process.stdout.write(`  ${c(ANSI.dim, "⟳")} Checking ${c(ANSI.bold, t.config.targetId)}...`);
@@ -126,6 +150,7 @@ async function runScan(
 
       results.push({ targetId: t.config.targetId, gate: artifact.gate, toolCount, promptCount, resourceCount, diagnostics });
       if (artifact.gate === "pass") passCount++; else failCount++;
+      categoryCounts[categorizeServerResult(artifact)]++;
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
       let friendlyMsg = msg;
@@ -149,6 +174,7 @@ async function runScan(
 
       results.push({ targetId: t.config.targetId, gate: "fail", toolCount: 0, promptCount: 0, resourceCount: 0, error: friendlyMsg, diagnostics: [] });
       failCount++;
+      categoryCounts.failed++;
     }
   }
 
@@ -166,6 +192,15 @@ async function runScan(
       process.stdout.write("\n");
     }
   }
+
+  const scanTotal = categoryCounts.passed + categoryCounts.failed + categoryCounts.warning;
+  process.stdout.write(c(ANSI.dim, "  ─────────────────────────────\n"));
+  process.stdout.write(
+    `  ${scanTotal} server${scanTotal === 1 ? "" : "s"} scanned: ` +
+      `${c(ANSI.green, `${categoryCounts.passed} passed`)}, ` +
+      `${c(ANSI.red, `${categoryCounts.failed} failed`)}, ` +
+      `${c(ANSI.yellow, `${categoryCounts.warning} warnings`)}\n`,
+  );
 
   // Show diagnostics for failures or notable partials
   const issues = results.filter((r) => r.diagnostics.length > 0 && !r.error);
