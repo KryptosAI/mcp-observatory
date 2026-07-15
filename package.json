@@ -1,6 +1,6 @@
 {
   "name": "@kryptosai/mcp-observatory",
-  "version": "1.32.1",
+  "version": "1.33.0",
   "description": "Ship safer MCP servers. Test, secure, and monitor the MCP servers you're building — CI-native scanning, attack simulation, and security gates.",
   "mcpName": "io.github.KryptosAI/mcp-observatory",
   "license": "MIT",
