@@ -145,7 +145,6 @@ export interface TelemetryEvent extends TelemetryEnrichment {
   optedInEmail?: string;
   targetServer?: string;
   findingSeverityCounts?: Record<string, number>;
-  sessionDurationMs?: number;
 }
 
 // ── Constants ────────────────────────────────────────────────────────────────
