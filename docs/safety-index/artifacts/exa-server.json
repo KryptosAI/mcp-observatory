@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-12T234425958Z_416e109a",
-  "createdAt": "2026-07-12T23:44:25.958Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T175551658Z_6015ee2c",
+  "createdAt": "2026-07-15T17:55:51.658Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "exa-server",
     "adapter": "local-process",
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 1.6167910000003758,
+      "durationMs": 1.5583750000005239,
       "message": "Advertised capability responded with the minimal expected shape (2 items).",
       "evidence": [
         {
@@ -58,7 +58,7 @@
           ],
           "diagnostics": [
             "[EXA-MCP-DEBUG] Server initialized with modern MCP SDK and Smithery CLI support",
-            "(node:26156) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(node:27473) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
             "(Use `node --trace-deprecation ...` to show where the warning was created)",
             "[smithery] MCP server connected to stdio transport",
             "[smithery] Configuration loaded: { debug: false }"
@@ -114,7 +114,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "pass",
-      "durationMs": 0.26758300000074087,
+      "durationMs": 0.24808299999858718,
       "message": "Advertised capability responded with the minimal expected shape (1 item).",
       "evidence": [
         {
@@ -128,7 +128,7 @@
           ],
           "diagnostics": [
             "[EXA-MCP-DEBUG] Server initialized with modern MCP SDK and Smithery CLI support",
-            "(node:26156) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(node:27473) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
             "(Use `node --trace-deprecation ...` to show where the warning was created)",
             "[smithery] MCP server connected to stdio transport",
             "[smithery] Configuration loaded: { debug: false }"
@@ -140,7 +140,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 0.675083000001905,
+      "durationMs": 0.693583000000217,
       "message": "Advertised capability responded with the minimal expected shape (1 items).",
       "evidence": [
         {
@@ -154,7 +154,7 @@
           ],
           "diagnostics": [
             "[EXA-MCP-DEBUG] Server initialized with modern MCP SDK and Smithery CLI support",
-            "(node:26156) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(node:27473) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
             "(Use `node --trace-deprecation ...` to show where the warning was created)",
             "[smithery] MCP server connected to stdio transport",
             "[smithery] Configuration loaded: { debug: false }"
@@ -169,7 +169,7 @@
           "identifiers": [],
           "diagnostics": [
             "[EXA-MCP-DEBUG] Server initialized with modern MCP SDK and Smithery CLI support",
-            "(node:26156) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(node:27473) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
             "(Use `node --trace-deprecation ...` to show where the warning was created)",
             "[smithery] MCP server connected to stdio transport",
             "[smithery] Configuration loaded: { debug: false }"
@@ -181,7 +181,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.018791000002238434,
+      "durationMs": 0.018917000001238193,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -197,7 +197,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "pass",
-      "durationMs": 0.05749999999534339,
+      "durationMs": 0.056750000003376044,
       "message": "Detected 1 potential egress target(s) and 0 potential state mutation(s) with low confidence.",
       "evidence": [
         {
@@ -226,7 +226,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 0.8234580000062124,
+      "durationMs": 0.8568749999976717,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -252,7 +252,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "pass",
-      "durationMs": 0.7324589999989257,
+      "durationMs": 0.7965409999960684,
       "message": "All 4 item(s) have good schema quality.",
       "evidence": [
         {
@@ -269,7 +269,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 0.20249999999941792,
+      "durationMs": 0.21270799999911105,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -285,7 +285,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "partial",
-      "durationMs": 0.4944589999940945,
+      "durationMs": 0.5255829999950947,
       "message": "Safe attack simulation found 1 finding(s): 0 high, 1 medium, 0 low.",
       "evidence": [
         {
@@ -373,17 +373,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 778ms",
+          "Connect: 820ms",
           "p95 latency: 2ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 777.9551670000001,
-    "toolsListMs": 1.6167910000003758,
-    "promptsListMs": 0.26758300000074087,
-    "resourcesListMs": 0.675083000001905
+    "connectMs": 819.8055419999946,
+    "toolsListMs": 1.5583750000005239,
+    "promptsListMs": 0.24808299999858718,
+    "resourcesListMs": 0.693583000000217
   },
   "runtimeProfile": {
     "egress": [
@@ -394,7 +394,7 @@
         "confidence": "low"
       }
     ],
-    "analyzedAt": "2026-07-12T23:44:26.739Z",
+    "analyzedAt": "2026-07-15T17:55:52.481Z",
     "confidence": "medium"
   }
 }

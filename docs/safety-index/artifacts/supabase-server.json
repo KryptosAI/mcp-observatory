@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-12T234428257Z_83154625",
-  "createdAt": "2026-07-12T23:44:28.257Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T175554165Z_f57c9a2e",
+  "createdAt": "2026-07-15T17:55:54.165Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "supabase-server",
     "adapter": "local-process",

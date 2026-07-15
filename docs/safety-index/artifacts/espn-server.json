@@ -1,0 +1,394 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-07-15T175618585Z_6d2ea355",
+  "createdAt": "2026-07-15T17:56:18.585Z",
+  "toolVersion": "1.32.1",
+  "target": {
+    "targetId": "espn-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "espn-mcp-server"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "espn-mcp-server",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Sports data retrieval",
+      "failureClass": "Sports content boundary",
+      "whyItMatters": "ESPN MCP servers retrieve scores, schedules, standings, and news — agents serving sports data need content licensing and accuracy boundaries."
+    },
+    "serverName": "espn-mcp-server",
+    "serverVersion": "1.0.0"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 9,
+    "pass": 7,
+    "fail": 0,
+    "partial": 0,
+    "unsupported": 2,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 2.2634170000019367,
+      "message": "Advertised capability responded with the minimal expected shape (6 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 6,
+          "identifiers": [
+            "get_standings",
+            "get_scoreboard",
+            "get_team",
+            "get_schedule",
+            "get_game",
+            "get_playoffs"
+          ],
+          "diagnostics": [
+            "ESPN MCP Server running on stdio"
+          ],
+          "schemas": {
+            "get_standings": {
+              "type": "object",
+              "properties": {
+                "league": {
+                  "type": "string",
+                  "enum": [
+                    "nfl",
+                    "nhl",
+                    "nba"
+                  ],
+                  "description": "The sports league"
+                },
+                "group": {
+                  "type": "string",
+                  "description": "Optional: conference (afc, nfc, eastern, western) or division (afc-east, nfc-north, atlantic, pacific, etc.)"
+                }
+              },
+              "required": [
+                "league"
+              ]
+            },
+            "get_scoreboard": {
+              "type": "object",
+              "properties": {
+                "league": {
+                  "type": "string",
+                  "enum": [
+                    "nfl",
+                    "nhl",
+                    "nba"
+                  ],
+                  "description": "The sports league"
+                },
+                "week": {
+                  "type": "number",
+                  "description": "NFL only: week number (1-18 regular season, 19+ playoffs)"
+                },
+                "date": {
+                  "type": "string",
+                  "description": "Optional: specific date in YYYYMMDD format"
+                }
+              },
+              "required": [
+                "league"
+              ]
+            },
+            "get_team": {
+              "type": "object",
+              "properties": {
+                "league": {
+                  "type": "string",
+                  "enum": [
+                    "nfl",
+                    "nhl",
+                    "nba"
+                  ],
+                  "description": "The sports league"
+                },
+                "team": {
+                  "type": "string",
+                  "description": "Team name, city, or abbreviation (e.g., 'Patriots', 'New England', 'NE')"
+                }
+              },
+              "required": [
+                "league",
+                "team"
+              ]
+            },
+            "get_schedule": {
+              "type": "object",
+              "properties": {
+                "league": {
+                  "type": "string",
+                  "enum": [
+                    "nfl",
+                    "nhl",
+                    "nba"
+                  ],
+                  "description": "The sports league"
+                },
+                "team": {
+                  "type": "string",
+                  "description": "Team name, city, or abbreviation"
+                }
+              },
+              "required": [
+                "league",
+                "team"
+              ]
+            },
+            "get_game": {
+              "type": "object",
+              "properties": {
+                "league": {
+                  "type": "string",
+                  "enum": [
+                    "nfl",
+                    "nhl",
+                    "nba"
+                  ],
+                  "description": "The sports league"
+                },
+                "gameId": {
+                  "type": "string",
+                  "description": "ESPN game ID"
+                }
+              },
+              "required": [
+                "league",
+                "gameId"
+              ]
+            },
+            "get_playoffs": {
+              "type": "object",
+              "properties": {
+                "league": {
+                  "type": "string",
+                  "enum": [
+                    "nfl",
+                    "nhl",
+                    "nba"
+                  ],
+                  "description": "The sports league"
+                }
+              },
+              "required": [
+                "league"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.0012080000014975667,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.0005420000015874393,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.021500000002561137,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "pass",
+      "durationMs": 0.055750000006810296,
+      "message": "No egress or state mutation indicators detected in tool schemas.",
+      "evidence": []
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 0.437792000004265,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 6 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
+            "[pass] tool-response-content: No safe tool to invoke — content validation skipped.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "pass",
+      "durationMs": 0.213540999997349,
+      "message": "All 6 item(s) have good schema quality.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "pass",
+      "durationMs": 0.43266700000094716,
+      "message": "No security issues detected.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "pass",
+      "durationMs": 0.33187500000349246,
+      "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 93,
+    "grade": "A",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "schema-quality: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "security-lite: pass (100/100)",
+          "security: pass (100/100)",
+          "attack-sim: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 67,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: unsupported (50/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 774ms",
+          "p95 latency: 2ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 774.4456250000003,
+    "toolsListMs": 2.2634170000019367,
+    "promptsListMs": 0.0012080000014975667,
+    "resourcesListMs": 0.0005420000015874393
+  },
+  "runtimeProfile": {
+    "analyzedAt": "2026-07-15T17:56:19.362Z",
+    "confidence": "low"
+  }
+}

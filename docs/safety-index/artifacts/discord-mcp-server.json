@@ -1,0 +1,1297 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-07-15T172945563Z_da7ae263",
+  "createdAt": "2026-07-15T17:29:45.563Z",
+  "toolVersion": "1.31.0",
+  "target": {
+    "targetId": "mcp-server-discord",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "mcp-server-discord"
+    ],
+    "serverName": "MCP-Discord",
+    "serverVersion": "1.0.0"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 8,
+    "pass": 5,
+    "fail": 0,
+    "partial": 1,
+    "unsupported": 2,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 1.887749999999869,
+      "message": "Advertised capability responded with the minimal expected shape (22 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 22,
+          "identifiers": [
+            "discord_create_category",
+            "discord_edit_category",
+            "discord_delete_category",
+            "discord_login",
+            "discord_send",
+            "discord_get_forum_channels",
+            "discord_create_forum_post",
+            "discord_get_forum_post",
+            "discord_reply_to_forum",
+            "discord_create_text_channel",
+            "discord_delete_channel",
+            "discord_read_messages",
+            "discord_get_server_info",
+            "discord_add_reaction",
+            "discord_add_multiple_reactions",
+            "discord_remove_reaction",
+            "discord_delete_forum_post",
+            "discord_delete_message",
+            "discord_create_webhook",
+            "discord_send_webhook_message",
+            "discord_edit_webhook",
+            "discord_delete_webhook"
+          ],
+          "diagnostics": [],
+          "schemas": {
+            "discord_create_category": {
+              "type": "object",
+              "properties": {
+                "guildId": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "position": {
+                  "type": "number"
+                },
+                "reason": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "guildId",
+                "name"
+              ]
+            },
+            "discord_edit_category": {
+              "type": "object",
+              "properties": {
+                "categoryId": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "position": {
+                  "type": "number"
+                },
+                "reason": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "categoryId"
+              ]
+            },
+            "discord_delete_category": {
+              "type": "object",
+              "properties": {
+                "categoryId": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "categoryId"
+              ]
+            },
+            "discord_login": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "string"
+                }
+              },
+              "required": []
+            },
+            "discord_send": {
+              "type": "object",
+              "properties": {
+                "channelId": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "channelId",
+                "message"
+              ]
+            },
+            "discord_get_forum_channels": {
+              "type": "object",
+              "properties": {
+                "guildId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "guildId"
+              ]
+            },
+            "discord_create_forum_post": {
+              "type": "object",
+              "properties": {
+                "forumChannelId": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "forumChannelId",
+                "title",
+                "content"
+              ]
+            },
+            "discord_get_forum_post": {
+              "type": "object",
+              "properties": {
+                "threadId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "threadId"
+              ]
+            },
+            "discord_reply_to_forum": {
+              "type": "object",
+              "properties": {
+                "threadId": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "threadId",
+                "message"
+              ]
+            },
+            "discord_create_text_channel": {
+              "type": "object",
+              "properties": {
+                "guildId": {
+                  "type": "string"
+                },
+                "channelName": {
+                  "type": "string"
+                },
+                "topic": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "guildId",
+                "channelName"
+              ]
+            },
+            "discord_delete_channel": {
+              "type": "object",
+              "properties": {
+                "channelId": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "channelId"
+              ]
+            },
+            "discord_read_messages": {
+              "type": "object",
+              "properties": {
+                "channelId": {
+                  "type": "string"
+                },
+                "limit": {
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100,
+                  "default": 50
+                }
+              },
+              "required": [
+                "channelId"
+              ]
+            },
+            "discord_get_server_info": {
+              "type": "object",
+              "properties": {
+                "guildId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "guildId"
+              ]
+            },
+            "discord_add_reaction": {
+              "type": "object",
+              "properties": {
+                "channelId": {
+                  "type": "string"
+                },
+                "messageId": {
+                  "type": "string"
+                },
+                "emoji": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "channelId",
+                "messageId",
+                "emoji"
+              ]
+            },
+            "discord_add_multiple_reactions": {
+              "type": "object",
+              "properties": {
+                "channelId": {
+                  "type": "string"
+                },
+                "messageId": {
+                  "type": "string"
+                },
+                "emojis": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "channelId",
+                "messageId",
+                "emojis"
+              ]
+            },
+            "discord_remove_reaction": {
+              "type": "object",
+              "properties": {
+                "channelId": {
+                  "type": "string"
+                },
+                "messageId": {
+                  "type": "string"
+                },
+                "emoji": {
+                  "type": "string"
+                },
+                "userId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "channelId",
+                "messageId",
+                "emoji"
+              ]
+            },
+            "discord_delete_forum_post": {
+              "type": "object",
+              "properties": {
+                "threadId": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "threadId"
+              ]
+            },
+            "discord_delete_message": {
+              "type": "object",
+              "properties": {
+                "channelId": {
+                  "type": "string"
+                },
+                "messageId": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "channelId",
+                "messageId"
+              ]
+            },
+            "discord_create_webhook": {
+              "type": "object",
+              "properties": {
+                "channelId": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "avatar": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "channelId",
+                "name"
+              ]
+            },
+            "discord_send_webhook_message": {
+              "type": "object",
+              "properties": {
+                "webhookId": {
+                  "type": "string"
+                },
+                "webhookToken": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "avatarURL": {
+                  "type": "string"
+                },
+                "threadId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "webhookId",
+                "webhookToken",
+                "content"
+              ]
+            },
+            "discord_edit_webhook": {
+              "type": "object",
+              "properties": {
+                "webhookId": {
+                  "type": "string"
+                },
+                "webhookToken": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "avatar": {
+                  "type": "string"
+                },
+                "channelId": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "webhookId"
+              ]
+            },
+            "discord_delete_webhook": {
+              "type": "object",
+              "properties": {
+                "webhookId": {
+                  "type": "string"
+                },
+                "webhookToken": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "webhookId"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.005084000000351807,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.0015419999999721767,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.581040999999459,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "pass",
+      "durationMs": 1.2267500000016298,
+      "message": "Detected 4 potential egress target(s) and 10 potential state mutation(s) with low confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 14,
+          "diagnostics": [
+            "Egress entries: 4",
+            "State mutations: 10",
+            "Confidence: medium"
+          ],
+          "findings": [
+            {
+              "target": "discord_create_webhook",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "discord_send_webhook_message",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "discord_edit_webhook",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "discord_delete_webhook",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 2.3135419999998703,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 22 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
+            "[pass] tool-response-content: Tool \"discord_login\" response has valid content array.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "partial",
+      "durationMs": 0.6193750000002183,
+      "message": "Found 63 quality finding(s) across 22 item(s): 0 warnings, 63 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 63,
+          "identifiers": [
+            "discord_create_category",
+            "discord_edit_category",
+            "discord_delete_category",
+            "discord_login",
+            "discord_send",
+            "discord_get_forum_channels",
+            "discord_create_forum_post",
+            "discord_get_forum_post",
+            "discord_reply_to_forum",
+            "discord_create_text_channel",
+            "discord_delete_channel",
+            "discord_read_messages",
+            "discord_get_server_info",
+            "discord_add_reaction",
+            "discord_add_multiple_reactions",
+            "discord_remove_reaction",
+            "discord_delete_forum_post",
+            "discord_delete_message",
+            "discord_create_webhook",
+            "discord_send_webhook_message",
+            "discord_edit_webhook",
+            "discord_delete_webhook"
+          ],
+          "diagnostics": [
+            "[info] tool \"discord_create_category\": Property 'guildId' missing description",
+            "[info] tool \"discord_create_category\": Property 'name' missing description",
+            "[info] tool \"discord_create_category\": Property 'position' missing description",
+            "[info] tool \"discord_create_category\": Property 'reason' missing description",
+            "[info] tool \"discord_edit_category\": Property 'categoryId' missing description",
+            "[info] tool \"discord_edit_category\": Property 'name' missing description",
+            "[info] tool \"discord_edit_category\": Property 'position' missing description",
+            "[info] tool \"discord_edit_category\": Property 'reason' missing description",
+            "[info] tool \"discord_delete_category\": Property 'categoryId' missing description",
+            "[info] tool \"discord_delete_category\": Property 'reason' missing description",
+            "[info] tool \"discord_login\": Property 'token' missing description",
+            "[info] tool \"discord_send\": Property 'channelId' missing description",
+            "[info] tool \"discord_send\": Property 'message' missing description",
+            "[info] tool \"discord_get_forum_channels\": Property 'guildId' missing description",
+            "[info] tool \"discord_create_forum_post\": Property 'forumChannelId' missing description",
+            "[info] tool \"discord_create_forum_post\": Property 'title' missing description",
+            "[info] tool \"discord_create_forum_post\": Property 'content' missing description",
+            "[info] tool \"discord_create_forum_post\": Property 'tags' missing description",
+            "[info] tool \"discord_get_forum_post\": Property 'threadId' missing description",
+            "[info] tool \"discord_reply_to_forum\": Property 'threadId' missing description",
+            "[info] tool \"discord_reply_to_forum\": Property 'message' missing description",
+            "[info] tool \"discord_create_text_channel\": Property 'guildId' missing description",
+            "[info] tool \"discord_create_text_channel\": Property 'channelName' missing description",
+            "[info] tool \"discord_create_text_channel\": Property 'topic' missing description",
+            "[info] tool \"discord_delete_channel\": Property 'channelId' missing description",
+            "[info] tool \"discord_delete_channel\": Property 'reason' missing description",
+            "[info] tool \"discord_read_messages\": Property 'channelId' missing description",
+            "[info] tool \"discord_read_messages\": Property 'limit' missing description",
+            "[info] tool \"discord_get_server_info\": Property 'guildId' missing description",
+            "[info] tool \"discord_add_reaction\": Property 'channelId' missing description",
+            "[info] tool \"discord_add_reaction\": Property 'messageId' missing description",
+            "[info] tool \"discord_add_reaction\": Property 'emoji' missing description",
+            "[info] tool \"discord_add_multiple_reactions\": Property 'channelId' missing description",
+            "[info] tool \"discord_add_multiple_reactions\": Property 'messageId' missing description",
+            "[info] tool \"discord_add_multiple_reactions\": Property 'emojis' missing description",
+            "[info] tool \"discord_remove_reaction\": Property 'channelId' missing description",
+            "[info] tool \"discord_remove_reaction\": Property 'messageId' missing description",
+            "[info] tool \"discord_remove_reaction\": Property 'emoji' missing description",
+            "[info] tool \"discord_remove_reaction\": Property 'userId' missing description",
+            "[info] tool \"discord_delete_forum_post\": Property 'threadId' missing description",
+            "[info] tool \"discord_delete_forum_post\": Property 'reason' missing description",
+            "[info] tool \"discord_delete_message\": Property 'channelId' missing description",
+            "[info] tool \"discord_delete_message\": Property 'messageId' missing description",
+            "[info] tool \"discord_delete_message\": Property 'reason' missing description",
+            "[info] tool \"discord_create_webhook\": Property 'channelId' missing description",
+            "[info] tool \"discord_create_webhook\": Property 'name' missing description",
+            "[info] tool \"discord_create_webhook\": Property 'avatar' missing description",
+            "[info] tool \"discord_create_webhook\": Property 'reason' missing description",
+            "[info] tool \"discord_send_webhook_message\": Property 'webhookId' missing description",
+            "[info] tool \"discord_send_webhook_message\": Property 'webhookToken' missing description",
+            "[info] tool \"discord_send_webhook_message\": Property 'content' missing description",
+            "[info] tool \"discord_send_webhook_message\": Property 'username' missing description",
+            "[info] tool \"discord_send_webhook_message\": Property 'avatarURL' missing description",
+            "[info] tool \"discord_send_webhook_message\": Property 'threadId' missing description",
+            "[info] tool \"discord_edit_webhook\": Property 'webhookId' missing description",
+            "[info] tool \"discord_edit_webhook\": Property 'webhookToken' missing description",
+            "[info] tool \"discord_edit_webhook\": Property 'name' missing description",
+            "[info] tool \"discord_edit_webhook\": Property 'avatar' missing description",
+            "[info] tool \"discord_edit_webhook\": Property 'channelId' missing description",
+            "[info] tool \"discord_edit_webhook\": Property 'reason' missing description",
+            "[info] tool \"discord_delete_webhook\": Property 'webhookId' missing description",
+            "[info] tool \"discord_delete_webhook\": Property 'webhookToken' missing description",
+            "[info] tool \"discord_delete_webhook\": Property 'reason' missing description"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "discord_create_category",
+              "issue": "Property 'guildId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_create_category",
+              "issue": "Property 'name' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_create_category",
+              "issue": "Property 'position' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_create_category",
+              "issue": "Property 'reason' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_edit_category",
+              "issue": "Property 'categoryId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_edit_category",
+              "issue": "Property 'name' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_edit_category",
+              "issue": "Property 'position' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_edit_category",
+              "issue": "Property 'reason' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_delete_category",
+              "issue": "Property 'categoryId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_delete_category",
+              "issue": "Property 'reason' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_login",
+              "issue": "Property 'token' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_send",
+              "issue": "Property 'channelId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_send",
+              "issue": "Property 'message' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_get_forum_channels",
+              "issue": "Property 'guildId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_create_forum_post",
+              "issue": "Property 'forumChannelId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_create_forum_post",
+              "issue": "Property 'title' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_create_forum_post",
+              "issue": "Property 'content' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_create_forum_post",
+              "issue": "Property 'tags' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_get_forum_post",
+              "issue": "Property 'threadId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_reply_to_forum",
+              "issue": "Property 'threadId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_reply_to_forum",
+              "issue": "Property 'message' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_create_text_channel",
+              "issue": "Property 'guildId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_create_text_channel",
+              "issue": "Property 'channelName' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_create_text_channel",
+              "issue": "Property 'topic' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_delete_channel",
+              "issue": "Property 'channelId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_delete_channel",
+              "issue": "Property 'reason' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_read_messages",
+              "issue": "Property 'channelId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_read_messages",
+              "issue": "Property 'limit' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_get_server_info",
+              "issue": "Property 'guildId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_add_reaction",
+              "issue": "Property 'channelId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_add_reaction",
+              "issue": "Property 'messageId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_add_reaction",
+              "issue": "Property 'emoji' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_add_multiple_reactions",
+              "issue": "Property 'channelId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_add_multiple_reactions",
+              "issue": "Property 'messageId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_add_multiple_reactions",
+              "issue": "Property 'emojis' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_remove_reaction",
+              "issue": "Property 'channelId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_remove_reaction",
+              "issue": "Property 'messageId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_remove_reaction",
+              "issue": "Property 'emoji' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_remove_reaction",
+              "issue": "Property 'userId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_delete_forum_post",
+              "issue": "Property 'threadId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_delete_forum_post",
+              "issue": "Property 'reason' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_delete_message",
+              "issue": "Property 'channelId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_delete_message",
+              "issue": "Property 'messageId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_delete_message",
+              "issue": "Property 'reason' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_create_webhook",
+              "issue": "Property 'channelId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_create_webhook",
+              "issue": "Property 'name' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_create_webhook",
+              "issue": "Property 'avatar' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_create_webhook",
+              "issue": "Property 'reason' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_send_webhook_message",
+              "issue": "Property 'webhookId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_send_webhook_message",
+              "issue": "Property 'webhookToken' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_send_webhook_message",
+              "issue": "Property 'content' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_send_webhook_message",
+              "issue": "Property 'username' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_send_webhook_message",
+              "issue": "Property 'avatarURL' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_send_webhook_message",
+              "issue": "Property 'threadId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_edit_webhook",
+              "issue": "Property 'webhookId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_edit_webhook",
+              "issue": "Property 'webhookToken' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_edit_webhook",
+              "issue": "Property 'name' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_edit_webhook",
+              "issue": "Property 'avatar' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_edit_webhook",
+              "issue": "Property 'channelId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_edit_webhook",
+              "issue": "Property 'reason' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_delete_webhook",
+              "issue": "Property 'webhookId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_delete_webhook",
+              "issue": "Property 'webhookToken' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discord_delete_webhook",
+              "issue": "Property 'reason' missing description",
+              "severity": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "pass",
+      "durationMs": 1.9619169999987207,
+      "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 85,
+    "grade": "B",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "schema-quality: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "security-lite: pass (100/100)",
+          "attack-sim: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 67,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: unsupported (50/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 9143ms",
+          "p95 latency: 2ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 9142.680583000001,
+    "toolsListMs": 1.887749999999869,
+    "promptsListMs": 0.005084000000351807,
+    "resourcesListMs": 0.0015419999999721767
+  },
+  "runtimeProfile": {
+    "egress": [
+      {
+        "target": "discord_create_webhook",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "discord_send_webhook_message",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "discord_edit_webhook",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "discord_delete_webhook",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      }
+    ],
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-15T17:29:54.711Z",
+    "confidence": "medium"
+  }
+}

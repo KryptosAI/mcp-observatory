@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-12T23:44:24.039Z
+Generated at 2026-07-15T17:55:49.753Z
 
 ## Target and Environment Metadata
 
@@ -111,7 +111,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-12T23:44:24.914Z_
+_Analyzed at 2026-07-15T17:55:50.587Z_
 
 ## Regressions and Recoveries
 
@@ -121,14 +121,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 2.22 | All 7 conformance checks passed. |
+| healthy | conformance | pass | 1.84 | All 7 conformance checks passed. |
 | healthy | prompts | pass | 0.12 | Advertised capability responded with the minimal expected shape (4 items). |
-| healthy | schema-quality | pass | 1.75 | All 26 item(s) have good schema quality. |
-| healthy | security | pass | 1.24 | Found 1 security finding(s): 0 high, 0 medium, 1 low. |
-| healthy | security-lite | pass | 0.06 | Found 1 security finding(s): 0 high, 0 medium, 1 low. |
-| healthy | tools | pass | 1.61 | Advertised capability responded with the minimal expected shape (22 items). |
-| review | attack-sim | partial | 2.76 | Safe attack simulation found 2 finding(s): 0 high, 2 medium, 0 low. |
-| review | runtime-profile | partial | 0.21 | Detected 18 potential egress target(s) and 32 potential state mutation(s) with high confidence. |
+| healthy | schema-quality | pass | 0.93 | All 26 item(s) have good schema quality. |
+| healthy | security | pass | 0.73 | Found 1 security finding(s): 0 high, 0 medium, 1 low. |
+| healthy | security-lite | pass | 0.05 | Found 1 security finding(s): 0 high, 0 medium, 1 low. |
+| healthy | tools | pass | 2.10 | Advertised capability responded with the minimal expected shape (22 items). |
+| review | attack-sim | partial | 1.00 | Safe attack simulation found 2 finding(s): 0 high, 2 medium, 0 low. |
+| review | runtime-profile | partial | 0.20 | Detected 18 potential egress target(s) and 32 potential state mutation(s) with high confidence. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
 ## Evidence Snippets
@@ -252,5 +252,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-12T234424039Z_199e1d13`
+- Run ID: `run_2026-07-15T175549753Z_5630b757`
 - Gate: `pass`

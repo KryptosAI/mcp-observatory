@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-12T234414092Z_d12ccaeb",
-  "createdAt": "2026-07-12T23:44:14.092Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T175539041Z_eb29c5b7",
+  "createdAt": "2026-07-15T17:55:39.041Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "kubernetes-server",
     "adapter": "local-process",
@@ -22,7 +22,7 @@
       "whyItMatters": "Kubernetes MCP servers can expose cluster mutation, pod exec, manifest apply/delete, and broad kubectl command surfaces to agents."
     },
     "serverName": "kubernetes",
-    "serverVersion": "4.0.1"
+    "serverVersion": "4.0.4"
   },
   "environment": {
     "platform": "darwin 25.5.0",
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 1.1932080000005953,
+      "durationMs": 1.196749999999156,
       "message": "Advertised capability responded with the minimal expected shape (23 items).",
       "evidence": [
         {
@@ -78,9 +78,9 @@
             "ping"
           ],
           "diagnostics": [
-            "Starting Kubernetes MCP server v4.0.1, handling commands...",
+            "Starting Kubernetes MCP server v4.0.4, handling commands...",
             "Telemetry: Disabled",
-            "(node:25430) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(node:26495) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
             "(Use `node --trace-deprecation ...` to show where the warning was created)"
           ],
           "schemas": {
@@ -295,7 +295,7 @@
                 },
                 "filename": {
                   "type": "string",
-                  "description": "Path to a YAML file to create resources from"
+                  "description": "Path to a YAML file to create resources from. The path is read on the machine running the MCP server, so it is rejected when the server runs over a remote (SSE/Streamable HTTP) transport; use 'manifest' to pass the file's contents instead."
                 },
                 "resourceType": {
                   "type": "string",
@@ -322,7 +322,29 @@
                   "items": {
                     "type": "string"
                   },
-                  "description": "Path to file for creating configmap (e.g. [\"key1=/path/to/file1\", \"key2=/path/to/file2\"])"
+                  "description": "Path to file for creating configmap/secret (e.g. [\"key1=/path/to/file1\", \"key2=/path/to/file2\"]). The path is read on the machine running the MCP server, so it is rejected when the server runs over a remote (SSE/Streamable HTTP) transport; use \"fromFileContent\" to pass file contents directly instead."
+                },
+                "fromFileContent": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "key": {
+                        "type": "string",
+                        "description": "Key to store the content under in the configmap/secret"
+                      },
+                      "content": {
+                        "type": "string",
+                        "description": "The file content to store"
+                      }
+                    },
+                    "required": [
+                      "key",
+                      "content"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Inline file contents for creating a configmap/secret, provided by the client instead of a server-side path (e.g. [{\"key\": \"app.conf\", \"content\": \"...\"}]). Safe on all transports; use this instead of \"fromFile\" on remote (SSE/Streamable HTTP) servers."
                 },
                 "secretType": {
                   "type": "string",
@@ -1054,7 +1076,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "pass",
-      "durationMs": 0.30749999999898137,
+      "durationMs": 0.2985420000004524,
       "message": "Advertised capability responded with the minimal expected shape (1 item).",
       "evidence": [
         {
@@ -1067,9 +1089,9 @@
             "k8s-diagnose"
           ],
           "diagnostics": [
-            "Starting Kubernetes MCP server v4.0.1, handling commands...",
+            "Starting Kubernetes MCP server v4.0.4, handling commands...",
             "Telemetry: Disabled",
-            "(node:25430) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(node:26495) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
             "(Use `node --trace-deprecation ...` to show where the warning was created)"
           ]
         }
@@ -1079,7 +1101,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 0.4366660000014235,
+      "durationMs": 0.37920799999847077,
       "message": "Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported.",
       "evidence": [
         {
@@ -1096,9 +1118,9 @@
             "k8s://nodes"
           ],
           "diagnostics": [
-            "Starting Kubernetes MCP server v4.0.1, handling commands...",
+            "Starting Kubernetes MCP server v4.0.4, handling commands...",
             "Telemetry: Disabled",
-            "(node:25430) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(node:26495) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
             "(Use `node --trace-deprecation ...` to show where the warning was created)"
           ]
         },
@@ -1109,9 +1131,9 @@
           "minimalShapePresent": false,
           "diagnostics": [
             "MCP error -32601: Method not found",
-            "Starting Kubernetes MCP server v4.0.1, handling commands...",
+            "Starting Kubernetes MCP server v4.0.4, handling commands...",
             "Telemetry: Disabled",
-            "(node:25430) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(node:26495) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
             "(Use `node --trace-deprecation ...` to show where the warning was created)"
           ]
         }
@@ -1121,7 +1143,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "fail",
-      "durationMs": 0.06962500000008731,
+      "durationMs": 0.0635839999995369,
       "message": "Found 8 security finding(s): 3 high, 3 medium, 2 low.",
       "evidence": [
         {
@@ -1206,18 +1228,18 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "partial",
-      "durationMs": 0.30574999999953434,
-      "message": "Detected 8 potential egress target(s) and 75 potential state mutation(s) with high confidence.",
+      "durationMs": 0.29579200000080164,
+      "message": "Detected 11 potential egress target(s) and 76 potential state mutation(s) with high confidence.",
       "evidence": [
         {
           "endpoint": "runtime-profile/analyze",
           "advertised": true,
           "responded": true,
           "minimalShapePresent": true,
-          "itemCount": 83,
+          "itemCount": 87,
           "diagnostics": [
-            "Egress entries: 8",
-            "State mutations: 75",
+            "Egress entries: 11",
+            "State mutations: 76",
             "Confidence: high"
           ],
           "findings": [
@@ -1229,6 +1251,24 @@
             },
             {
               "target": "If true, immediately remove resources from API and bypass graceful deletion",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "Path to a YAML file to create resources from. The path is read on the machine running the MCP server, so it is rejected when the server runs over a remote (SSE/Streamable HTTP) transport; use 'manifest' to pass the file's contents instead.",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "Path to file for creating configmap/secret (e.g. [\"key1=/path/to/file1\", \"key2=/path/to/file2\"]). The path is read on the machine running the MCP server, so it is rejected when the server runs over a remote (SSE/Streamable HTTP) transport; use \"fromFileContent\" to pass file contents directly instead.",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "Inline file contents for creating a configmap/secret, provided by the client instead of a server-side path (e.g. [{\"key\": \"app.conf\", \"content\": \"...\"}]). Safe on all transports; use this instead of \"fromFile\" on remote (SSE/Streamable HTTP) servers.",
               "protocol": "unknown",
               "source": "description_analysis",
               "confidence": "medium"
@@ -1630,6 +1670,12 @@
               "source": "description_analysis"
             },
             {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
               "resource": "network",
               "operation": "execute",
               "scope": "specific_path",
@@ -1727,7 +1773,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 1.6792500000010477,
+      "durationMs": 1.6803749999999127,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -1753,7 +1799,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 1.0298750000001746,
+      "durationMs": 0.6522919999988517,
       "message": "Found 7 quality finding(s) across 29 item(s): 0 warnings, 7 info.",
       "evidence": [
         {
@@ -1827,7 +1873,7 @@
       "id": "security",
       "capability": "security",
       "status": "fail",
-      "durationMs": 0.35829200000080164,
+      "durationMs": 0.3766250000007858,
       "message": "Found 8 security finding(s): 3 high, 3 medium, 2 low.",
       "evidence": [
         {
@@ -1912,7 +1958,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "fail",
-      "durationMs": 1.0105000000003201,
+      "durationMs": 1.152749999997468,
       "message": "Safe attack simulation found 5 finding(s): 3 high, 2 medium, 0 low.",
       "evidence": [
         {
@@ -2079,17 +2125,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 1384ms",
+          "Connect: 2475ms",
           "p95 latency: 1ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 1384.2913750000007,
-    "toolsListMs": 1.1932080000005953,
-    "promptsListMs": 0.30749999999898137,
-    "resourcesListMs": 0.4366660000014235
+    "connectMs": 2474.866291999999,
+    "toolsListMs": 1.196749999999156,
+    "promptsListMs": 0.2985420000004524,
+    "resourcesListMs": 0.37920799999847077
   },
   "runtimeProfile": {
     "egress": [
@@ -2101,6 +2147,24 @@
       },
       {
         "target": "If true, immediately remove resources from API and bypass graceful deletion",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "Path to a YAML file to create resources from. The path is read on the machine running the MCP server, so it is rejected when the server runs over a remote (SSE/Streamable HTTP) transport; use 'manifest' to pass the file's contents instead.",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "Path to file for creating configmap/secret (e.g. [\"key1=/path/to/file1\", \"key2=/path/to/file2\"]). The path is read on the machine running the MCP server, so it is rejected when the server runs over a remote (SSE/Streamable HTTP) transport; use \"fromFileContent\" to pass file contents directly instead.",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "Inline file contents for creating a configmap/secret, provided by the client instead of a server-side path (e.g. [{\"key\": \"app.conf\", \"content\": \"...\"}]). Safe on all transports; use this instead of \"fromFile\" on remote (SSE/Streamable HTTP) servers.",
         "protocol": "unknown",
         "source": "description_analysis",
         "confidence": "medium"
@@ -2504,6 +2568,12 @@
         "source": "description_analysis"
       },
       {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
         "resource": "network",
         "operation": "execute",
         "scope": "specific_path",
@@ -2594,7 +2664,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-12T23:44:15.479Z",
+    "analyzedAt": "2026-07-15T17:55:41.519Z",
     "confidence": "high"
   }
 }

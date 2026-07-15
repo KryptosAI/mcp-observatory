@@ -1,0 +1,320 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-07-15T175621648Z_d1bd3e70",
+  "createdAt": "2026-07-15T17:56:21.648Z",
+  "toolVersion": "1.32.1",
+  "target": {
+    "targetId": "eslint-mcp-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@eslint/mcp"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "@eslint/mcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Code quality enforcement",
+      "failureClass": "Lint result boundary",
+      "whyItMatters": "ESLint MCP servers can lint code and enforce rules, potentially flagging or modifying coding patterns in agent workflows."
+    },
+    "serverName": "ESLint",
+    "serverVersion": "0.3.9"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 9,
+    "pass": 6,
+    "fail": 0,
+    "partial": 1,
+    "unsupported": 2,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 1.4519580000051064,
+      "message": "Advertised capability responded with the minimal expected shape (1 item).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "lint-files"
+          ],
+          "diagnostics": [
+            "ESLint MCP server is running. cwd: /Users/williamweishuhn/Documents/New project/mcp-observatory"
+          ],
+          "schemas": {
+            "lint-files": {
+              "type": "object",
+              "properties": {
+                "filePaths": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 1
+                }
+              },
+              "required": [
+                "filePaths"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.0008329999982379377,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.0004579999949783087,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.01395899998897221,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "pass",
+      "durationMs": 0.03133299999171868,
+      "message": "Detected 0 potential egress target(s) and 1 potential state mutation(s) with low confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "diagnostics": [
+            "Egress entries: 0",
+            "State mutations: 1",
+            "Confidence: medium"
+          ],
+          "findings": [
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 0.4509579999867128,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 1 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
+            "[pass] tool-response-content: No safe tool to invoke — content validation skipped.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "partial",
+      "durationMs": 0.36304199999722186,
+      "message": "Found 1 quality finding(s) across 1 item(s): 0 warnings, 1 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "lint-files"
+          ],
+          "diagnostics": [
+            "[info] tool \"lint-files\": Property 'filePaths' missing description"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "lint-files",
+              "issue": "Property 'filePaths' missing description",
+              "severity": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "pass",
+      "durationMs": 0.24912500000209548,
+      "message": "No security issues detected.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "pass",
+      "durationMs": 0.4010419999976875,
+      "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 85,
+    "grade": "B",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "schema-quality: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "security-lite: pass (100/100)",
+          "security: pass (100/100)",
+          "attack-sim: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 67,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: unsupported (50/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 1144ms",
+          "p95 latency: 1ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 1143.7549579999904,
+    "toolsListMs": 1.4519580000051064,
+    "promptsListMs": 0.0008329999982379377,
+    "resourcesListMs": 0.0004579999949783087
+  },
+  "runtimeProfile": {
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-15T17:56:22.794Z",
+    "confidence": "medium"
+  }
+}

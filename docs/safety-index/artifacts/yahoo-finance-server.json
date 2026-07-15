@@ -1,0 +1,626 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-07-15T175605780Z_7298d455",
+  "createdAt": "2026-07-15T17:56:05.780Z",
+  "toolVersion": "1.32.1",
+  "target": {
+    "targetId": "yahoo-finance-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "yahoo-finance-mcp"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "yahoo-finance-mcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Financial data retrieval",
+      "failureClass": "Market data boundary",
+      "whyItMatters": "Yahoo Finance MCP servers expose stock quotes, historical data, and market analytics — agents consuming financial data need visibility into data sources and freshness."
+    },
+    "serverName": "yahoo-finance-mcp",
+    "serverVersion": "1.4.1"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 9,
+    "pass": 6,
+    "fail": 0,
+    "partial": 1,
+    "unsupported": 2,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 3.224167000000307,
+      "message": "Advertised capability responded with the minimal expected shape (15 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 15,
+          "identifiers": [
+            "get_quote",
+            "get_historical_data",
+            "search_symbols",
+            "get_company_info",
+            "get_recommendations",
+            "get_trending_symbols",
+            "get_market_summary",
+            "get_news",
+            "get_options",
+            "get_insights",
+            "get_daily_gainers",
+            "get_daily_losers",
+            "get_chart",
+            "get_quote_summary",
+            "get_fundamentals_time_series"
+          ],
+          "diagnostics": [
+            "Yahoo Finance MCP server running on stdio"
+          ],
+          "schemas": {
+            "get_quote": {
+              "type": "object",
+              "properties": {
+                "symbol": {
+                  "type": "string",
+                  "description": "Stock symbol (e.g., AAPL, GOOGL)"
+                }
+              },
+              "required": [
+                "symbol"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_historical_data": {
+              "type": "object",
+              "properties": {
+                "symbol": {
+                  "type": "string",
+                  "description": "Stock symbol"
+                },
+                "period1": {
+                  "type": "string",
+                  "default": "1y",
+                  "description": "Start date (YYYY-MM-DD) or period like '1mo', '1y'"
+                },
+                "period2": {
+                  "type": "string",
+                  "default": "now",
+                  "description": "End date (YYYY-MM-DD) or 'now'"
+                },
+                "interval": {
+                  "type": "string",
+                  "default": "1d",
+                  "description": "Data interval (1m, 2m, 5m, 15m, 30m, 60m, 90m, 1h, 1d, 5d, 1wk, 1mo, 3mo)"
+                }
+              },
+              "required": [
+                "symbol"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "search_symbols": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "description": "Search query"
+                }
+              },
+              "required": [
+                "query"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_company_info": {
+              "type": "object",
+              "properties": {
+                "symbol": {
+                  "type": "string",
+                  "description": "Stock symbol"
+                }
+              },
+              "required": [
+                "symbol"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_recommendations": {
+              "type": "object",
+              "properties": {
+                "symbol": {
+                  "type": "string",
+                  "description": "Stock symbol"
+                }
+              },
+              "required": [
+                "symbol"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_trending_symbols": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_market_summary": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_news": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "description": "Search query for news"
+                },
+                "newsCount": {
+                  "type": "number",
+                  "default": 10,
+                  "description": "Number of news articles to return"
+                }
+              },
+              "required": [
+                "query"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_options": {
+              "type": "object",
+              "properties": {
+                "symbol": {
+                  "type": "string",
+                  "description": "Stock symbol"
+                },
+                "date": {
+                  "type": "string",
+                  "description": "Expiration date for options (YYYY-MM-DD format)"
+                },
+                "formatted": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Whether to format the data"
+                }
+              },
+              "required": [
+                "symbol"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_insights": {
+              "type": "object",
+              "properties": {
+                "symbol": {
+                  "type": "string",
+                  "description": "Stock symbol"
+                },
+                "reportsCount": {
+                  "type": "number",
+                  "default": 5,
+                  "description": "Number of reports to return"
+                }
+              },
+              "required": [
+                "symbol"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_daily_gainers": {
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "number",
+                  "default": 10,
+                  "description": "Number of gainers to return"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_daily_losers": {
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "number",
+                  "default": 10,
+                  "description": "Number of losers to return"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_chart": {
+              "type": "object",
+              "properties": {
+                "symbol": {
+                  "type": "string",
+                  "description": "Stock symbol"
+                },
+                "period1": {
+                  "type": "string",
+                  "default": "1mo",
+                  "description": "Start date (YYYY-MM-DD) or period like '1mo', '1y'"
+                },
+                "period2": {
+                  "type": "string",
+                  "default": "now",
+                  "description": "End date (YYYY-MM-DD) or 'now'"
+                },
+                "interval": {
+                  "type": "string",
+                  "default": "1d",
+                  "description": "Data interval (1m, 2m, 5m, 15m, 30m, 60m, 90m, 1h, 1d, 5d, 1wk, 1mo, 3mo)"
+                },
+                "events": {
+                  "type": "string",
+                  "default": "div|split|earn",
+                  "description": "Event types to return (div|split|earn)"
+                }
+              },
+              "required": [
+                "symbol"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_quote_summary": {
+              "type": "object",
+              "properties": {
+                "symbol": {
+                  "type": "string",
+                  "description": "Stock symbol"
+                },
+                "modules": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "assetProfile",
+                          "balanceSheetHistory",
+                          "balanceSheetHistoryQuarterly",
+                          "calendarEvents",
+                          "cashflowStatementHistory",
+                          "cashflowStatementHistoryQuarterly",
+                          "defaultKeyStatistics",
+                          "earnings",
+                          "earningsHistory",
+                          "earningsTrend",
+                          "financialData",
+                          "fundOwnership",
+                          "fundPerformance",
+                          "fundProfile",
+                          "incomeStatementHistory",
+                          "incomeStatementHistoryQuarterly",
+                          "indexTrend",
+                          "industryTrend",
+                          "insiderHolders",
+                          "insiderTransactions",
+                          "institutionOwnership",
+                          "majorDirectHolders",
+                          "majorHoldersBreakdown",
+                          "netSharePurchaseActivity",
+                          "price",
+                          "quoteType",
+                          "recommendationTrend",
+                          "secFilings",
+                          "sectorTrend",
+                          "summaryDetail",
+                          "summaryProfile",
+                          "topHoldings",
+                          "upgradeDowngradeHistory"
+                        ]
+                      }
+                    },
+                    {
+                      "type": "string",
+                      "const": "all"
+                    }
+                  ],
+                  "default": [
+                    "price",
+                    "summaryDetail"
+                  ],
+                  "description": "List of specific modules to include, or 'all' for all available modules. Available modules: assetProfile (company info), summaryDetail (key metrics), financialData (financial ratios), price (current price data), recommendationTrend (analyst recommendations), defaultKeyStatistics (key statistics), earnings (earnings data), calendarEvents (upcoming events), etc."
+                },
+                "formatted": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Whether to return formatted strings instead of raw numbers (e.g., '1.00M' instead of 1000000)"
+                }
+              },
+              "required": [
+                "symbol"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_fundamentals_time_series": {
+              "type": "object",
+              "properties": {
+                "symbol": {
+                  "type": "string",
+                  "description": "Stock symbol (e.g., AAPL, GOOGL)"
+                },
+                "period1": {
+                  "type": "string",
+                  "description": "Start date (YYYY-MM-DD format, e.g., '2020-01-01')"
+                },
+                "period2": {
+                  "type": "string",
+                  "description": "End date (YYYY-MM-DD format, defaults to current date if not provided)"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "quarterly",
+                    "annual",
+                    "trailing"
+                  ],
+                  "default": "quarterly",
+                  "description": "Time period type: 'quarterly' for quarter data, 'annual' for yearly data, 'trailing' for trailing 12-month data"
+                },
+                "module": {
+                  "type": "string",
+                  "enum": [
+                    "financials",
+                    "balance-sheet",
+                    "cash-flow",
+                    "all"
+                  ],
+                  "description": "Financial statement module: 'financials' for income statement, 'balance-sheet' for balance sheet, 'cash-flow' for cash flow statement, 'all' for all modules combined"
+                }
+              },
+              "required": [
+                "symbol",
+                "period1",
+                "module"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.0008749999979045242,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.0005420000015874393,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.033000000003085006,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "pass",
+      "durationMs": 0.10274999999819556,
+      "message": "No egress or state mutation indicators detected in tool schemas.",
+      "evidence": []
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 84.34391699999833,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 15 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
+            "[pass] tool-response-content: Tool \"get_trending_symbols\" response has valid content array.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "partial",
+      "durationMs": 1.3875409999964177,
+      "message": "Found 2 quality finding(s) across 15 item(s): 0 warnings, 2 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 2,
+          "identifiers": [
+            "get_daily_gainers",
+            "get_daily_losers"
+          ],
+          "diagnostics": [
+            "[info] tool \"get_daily_gainers\": Has properties but no 'required' array declared",
+            "[info] tool \"get_daily_losers\": Has properties but no 'required' array declared"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "get_daily_gainers",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_daily_losers",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "pass",
+      "durationMs": 0.5368749999979627,
+      "message": "No security issues detected.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "pass",
+      "durationMs": 0.4999169999937294,
+      "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 85,
+    "grade": "B",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "schema-quality: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "security-lite: pass (100/100)",
+          "security: pass (100/100)",
+          "attack-sim: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 67,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: unsupported (50/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 995ms",
+          "p95 latency: 3ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 994.7652499999967,
+    "toolsListMs": 3.224167000000307,
+    "promptsListMs": 0.0008749999979045242,
+    "resourcesListMs": 0.0005420000015874393
+  },
+  "runtimeProfile": {
+    "analyzedAt": "2026-07-15T17:56:06.779Z",
+    "confidence": "low"
+  }
+}

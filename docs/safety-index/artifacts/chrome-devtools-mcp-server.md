@@ -1,13 +1,13 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-12T23:44:15.494Z
+Generated at 2026-07-15T17:55:41.535Z
 
 ## Target and Environment Metadata
 
 - Target: `chrome-devtools-mcp-server`
 - Adapter: `local-process`
 - Command: `npx -y chrome-devtools-mcp`
-- Server: `chrome_devtools 1.5.0`
+- Server: `chrome_devtools 1.6.0`
 - Platform: `darwin 25.5.0`
 - Node: `v22.22.1`
 
@@ -106,7 +106,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-12T23:44:16.468Z_
+_Analyzed at 2026-07-15T17:55:42.492Z_
 
 ## Regressions and Recoveries
 
@@ -116,15 +116,15 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 585.52 | All 7 conformance checks passed. |
-| healthy | tools | pass | 3.24 | Advertised capability responded with the minimal expected shape (29 items). |
-| review | attack-sim | partial | 0.96 | Safe attack simulation found 9 finding(s): 0 high, 9 medium, 0 low. |
-| review | runtime-profile | partial | 0.30 | Detected 9 potential egress target(s) and 36 potential state mutation(s) with high confidence. |
-| review | schema-quality | partial | 1.03 | Found 10 quality finding(s) across 29 item(s): 0 warnings, 10 info. |
+| healthy | conformance | pass | 659.00 | All 7 conformance checks passed. |
+| healthy | tools | pass | 4.28 | Advertised capability responded with the minimal expected shape (29 items). |
+| review | attack-sim | partial | 1.09 | Safe attack simulation found 9 finding(s): 0 high, 9 medium, 0 low. |
+| review | runtime-profile | partial | 0.39 | Detected 9 potential egress target(s) and 36 potential state mutation(s) with high confidence. |
+| review | schema-quality | partial | 1.08 | Found 10 quality finding(s) across 29 item(s): 0 warnings, 10 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
-| act now | security | fail | 0.82 | Found 30 security finding(s): 1 high, 7 medium, 22 low. |
-| act now | security-lite | fail | 0.08 | Found 30 security finding(s): 1 high, 7 medium, 22 low. |
+| act now | security | fail | 0.69 | Found 30 security finding(s): 1 high, 7 medium, 22 low. |
+| act now | security-lite | fail | 0.09 | Found 30 security finding(s): 1 high, 7 medium, 22 low. |
 
 ## Evidence Snippets
 
@@ -150,7 +150,7 @@ Summary: Advertised capability responded with the minimal expected shape (29 ite
   - Minimal shape present: `true`
   - Item count: `29`
   - Identifiers: click, close_page, drag, emulate, evaluate_script (+24 more)
-  - Diagnostics: debug, and modify any data in the browser or DevTools., Avoid sharing sensitive or personal information that you do not want to share with MCP clients., Performance tools may send trace URLs to the Google CrUX API to fetch real-user experience data. To disable, run with --no-performance-crux. (+2 more)
+  - Diagnostics: Avoid sharing sensitive or personal information that you do not want to share with MCP clients., Performance tools may send trace URLs to the Google CrUX API to fetch real-user experience data. To disable, run with --no-performance-crux., Google collects usage statistics to improve Chrome DevTools MCP. To opt-out, run with --no-usage-statistics. (+2 more)
 
 ### attack-sim — partial
 
@@ -247,5 +247,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-12T234415494Z_abf0d9f2`
+- Run ID: `run_2026-07-15T175541535Z_668bb0c4`
 - Gate: `fail`

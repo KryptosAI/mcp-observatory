@@ -1,0 +1,2046 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-07-15T173042478Z_023ec01f",
+  "createdAt": "2026-07-15T17:30:42.478Z",
+  "toolVersion": "1.31.0",
+  "target": {
+    "targetId": "spotify-mcp",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "spotify-mcp"
+    ],
+    "serverName": "spotify-mcp",
+    "serverVersion": "1.0.0"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 8,
+    "pass": 6,
+    "fail": 0,
+    "partial": 2,
+    "unsupported": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 6.008041000000048,
+      "message": "Advertised capability responded with the minimal expected shape (47 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 47,
+          "identifiers": [
+            "get_now_playing",
+            "play",
+            "pause",
+            "skip_next",
+            "skip_previous",
+            "seek",
+            "set_volume",
+            "set_shuffle",
+            "set_repeat",
+            "get_queue",
+            "add_to_queue",
+            "get_devices",
+            "transfer_playback",
+            "search",
+            "get_track",
+            "get_artist",
+            "get_artist_albums",
+            "get_album",
+            "get_audio_features",
+            "get_audio_analysis",
+            "get_show",
+            "get_episode",
+            "get_top_tracks",
+            "get_top_artists",
+            "get_recently_played",
+            "get_recommendations",
+            "get_related_artists",
+            "get_available_genres",
+            "get_featured_playlists",
+            "get_saved_tracks",
+            "get_saved_albums",
+            "get_saved_shows",
+            "get_saved_episodes",
+            "save_items",
+            "remove_saved_items",
+            "check_saved_items",
+            "follow_artist",
+            "unfollow_artist",
+            "get_followed_artists",
+            "check_following_artists",
+            "get_user_playlists",
+            "get_playlist",
+            "create_playlist",
+            "add_to_playlist",
+            "remove_from_playlist",
+            "update_playlist",
+            "reorder_playlist_items"
+          ],
+          "diagnostics": [],
+          "schemas": {
+            "get_now_playing": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "play": {
+              "type": "object",
+              "properties": {
+                "context_uri": {
+                  "type": "string",
+                  "description": "Spotify URI for an album, artist, or playlist"
+                },
+                "uris": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Up to 100 track/episode URIs to play as an ad-hoc queue"
+                },
+                "offset": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Index within context to start from"
+                },
+                "position_ms": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Seek position to start at (ms)"
+                },
+                "device_id": {
+                  "type": "string",
+                  "description": "Target device ID; uses active device if omitted"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "pause": {
+              "type": "object",
+              "properties": {
+                "device_id": {
+                  "type": "string",
+                  "description": "Target device ID"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "skip_next": {
+              "type": "object",
+              "properties": {
+                "device_id": {
+                  "type": "string",
+                  "description": "Target device ID"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "skip_previous": {
+              "type": "object",
+              "properties": {
+                "device_id": {
+                  "type": "string",
+                  "description": "Target device ID"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "seek": {
+              "type": "object",
+              "properties": {
+                "position_ms": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Position in milliseconds"
+                },
+                "device_id": {
+                  "type": "string",
+                  "description": "Target device ID"
+                }
+              },
+              "required": [
+                "position_ms"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "set_volume": {
+              "type": "object",
+              "properties": {
+                "volume_percent": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Volume level 0–100"
+                },
+                "device_id": {
+                  "type": "string",
+                  "description": "Target device ID"
+                }
+              },
+              "required": [
+                "volume_percent"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "set_shuffle": {
+              "type": "object",
+              "properties": {
+                "state": {
+                  "type": "boolean",
+                  "description": "true = shuffle on, false = shuffle off"
+                },
+                "device_id": {
+                  "type": "string",
+                  "description": "Target device ID"
+                }
+              },
+              "required": [
+                "state"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "set_repeat": {
+              "type": "object",
+              "properties": {
+                "state": {
+                  "type": "string",
+                  "enum": [
+                    "off",
+                    "context",
+                    "track"
+                  ],
+                  "description": "Repeat mode"
+                },
+                "device_id": {
+                  "type": "string",
+                  "description": "Target device ID"
+                }
+              },
+              "required": [
+                "state"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_queue": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "add_to_queue": {
+              "type": "object",
+              "properties": {
+                "uri": {
+                  "type": "string",
+                  "description": "Spotify track or episode URI (e.g. spotify:track:...)"
+                },
+                "device_id": {
+                  "type": "string",
+                  "description": "Target device ID"
+                }
+              },
+              "required": [
+                "uri"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_devices": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "transfer_playback": {
+              "type": "object",
+              "properties": {
+                "device_id": {
+                  "type": "string",
+                  "description": "Target device ID to transfer playback to"
+                },
+                "play": {
+                  "type": "boolean",
+                  "description": "Force play immediately (default: maintain current state)"
+                }
+              },
+              "required": [
+                "device_id"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "search": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "description": "Search query"
+                },
+                "types": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "track",
+                      "artist",
+                      "album",
+                      "playlist",
+                      "show",
+                      "episode"
+                    ]
+                  },
+                  "description": "Content types to search. Default: [\"track\",\"artist\",\"album\"]"
+                },
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10,
+                  "description": "Results per type, 1–10. Default: 5"
+                },
+                "market": {
+                  "type": "string",
+                  "description": "ISO 3166-1 alpha-2 country code"
+                }
+              },
+              "required": [
+                "query"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_track": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Spotify track ID"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_artist": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Spotify artist ID"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_artist_albums": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Spotify artist ID"
+                },
+                "include_groups": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "album",
+                      "single",
+                      "appears_on",
+                      "compilation"
+                    ]
+                  },
+                  "description": "Album types to include. Default: [\"album\",\"single\"]"
+                },
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 50,
+                  "description": "Results per page, 1–50. Default: 20"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_album": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Spotify album ID"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_audio_features": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Spotify track ID"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_audio_analysis": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Spotify track ID"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_show": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Spotify show ID"
+                },
+                "market": {
+                  "type": "string",
+                  "description": "ISO 3166-1 alpha-2 country code"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_episode": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Spotify episode ID"
+                },
+                "market": {
+                  "type": "string",
+                  "description": "ISO 3166-1 alpha-2 country code"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_top_tracks": {
+              "type": "object",
+              "properties": {
+                "time_range": {
+                  "type": "string",
+                  "enum": [
+                    "short_term",
+                    "medium_term",
+                    "long_term"
+                  ],
+                  "description": "~4 weeks / ~6 months / all time. Default: medium_term"
+                },
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 50,
+                  "description": "1–50. Default: 20"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_top_artists": {
+              "type": "object",
+              "properties": {
+                "time_range": {
+                  "type": "string",
+                  "enum": [
+                    "short_term",
+                    "medium_term",
+                    "long_term"
+                  ],
+                  "description": "~4 weeks / ~6 months / all time. Default: medium_term"
+                },
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 50,
+                  "description": "1–50. Default: 20"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_recently_played": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 50,
+                  "description": "1–50. Default: 20"
+                },
+                "after": {
+                  "type": "integer",
+                  "description": "Unix timestamp ms — return tracks played after this time"
+                },
+                "before": {
+                  "type": "integer",
+                  "description": "Unix timestamp ms — return tracks played before this time"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_recommendations": {
+              "type": "object",
+              "properties": {
+                "seed_tracks": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 5,
+                  "description": "Up to 5 track IDs as recommendation seeds"
+                },
+                "seed_artists": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 5,
+                  "description": "Up to 5 artist IDs as recommendation seeds"
+                },
+                "seed_genres": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 5,
+                  "description": "Up to 5 genre strings (from get_available_genres) as recommendation seeds"
+                },
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 100,
+                  "description": "1–100. Default: 20"
+                },
+                "market": {
+                  "type": "string",
+                  "description": "ISO 3166-1 alpha-2 country code"
+                },
+                "min_acousticness": {
+                  "type": "number"
+                },
+                "max_acousticness": {
+                  "type": "number"
+                },
+                "target_acousticness": {
+                  "type": "number"
+                },
+                "min_danceability": {
+                  "type": "number"
+                },
+                "max_danceability": {
+                  "type": "number"
+                },
+                "target_danceability": {
+                  "type": "number"
+                },
+                "min_energy": {
+                  "type": "number"
+                },
+                "max_energy": {
+                  "type": "number"
+                },
+                "target_energy": {
+                  "type": "number"
+                },
+                "min_instrumentalness": {
+                  "type": "number"
+                },
+                "max_instrumentalness": {
+                  "type": "number"
+                },
+                "target_instrumentalness": {
+                  "type": "number"
+                },
+                "min_liveness": {
+                  "type": "number"
+                },
+                "max_liveness": {
+                  "type": "number"
+                },
+                "target_liveness": {
+                  "type": "number"
+                },
+                "min_loudness": {
+                  "type": "number"
+                },
+                "max_loudness": {
+                  "type": "number"
+                },
+                "target_loudness": {
+                  "type": "number"
+                },
+                "min_speechiness": {
+                  "type": "number"
+                },
+                "max_speechiness": {
+                  "type": "number"
+                },
+                "target_speechiness": {
+                  "type": "number"
+                },
+                "min_tempo": {
+                  "type": "number"
+                },
+                "max_tempo": {
+                  "type": "number"
+                },
+                "target_tempo": {
+                  "type": "number"
+                },
+                "min_valence": {
+                  "type": "number"
+                },
+                "max_valence": {
+                  "type": "number"
+                },
+                "target_valence": {
+                  "type": "number"
+                },
+                "min_duration_ms": {
+                  "type": "integer"
+                },
+                "max_duration_ms": {
+                  "type": "integer"
+                },
+                "target_duration_ms": {
+                  "type": "integer"
+                },
+                "min_key": {
+                  "type": "integer"
+                },
+                "max_key": {
+                  "type": "integer"
+                },
+                "target_key": {
+                  "type": "integer"
+                },
+                "min_mode": {
+                  "type": "integer"
+                },
+                "max_mode": {
+                  "type": "integer"
+                },
+                "target_mode": {
+                  "type": "integer"
+                },
+                "min_time_signature": {
+                  "type": "integer"
+                },
+                "max_time_signature": {
+                  "type": "integer"
+                },
+                "target_time_signature": {
+                  "type": "integer"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_related_artists": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Spotify artist ID"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_available_genres": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_featured_playlists": {
+              "type": "object",
+              "properties": {
+                "locale": {
+                  "type": "string",
+                  "description": "BCP 47 language tag (e.g. \"en_US\") for localized names"
+                },
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 50,
+                  "description": "1–50. Default: 20"
+                },
+                "offset": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Pagination offset. Default: 0"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_saved_tracks": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 50,
+                  "description": "1–50. Default: 20"
+                },
+                "offset": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Pagination offset. Default: 0"
+                },
+                "market": {
+                  "type": "string",
+                  "description": "ISO 3166-1 alpha-2 country code"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_saved_albums": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 50,
+                  "description": "1–50. Default: 20"
+                },
+                "offset": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Pagination offset. Default: 0"
+                },
+                "market": {
+                  "type": "string",
+                  "description": "ISO 3166-1 alpha-2 country code"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_saved_shows": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 50,
+                  "description": "1–50. Default: 20"
+                },
+                "offset": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Pagination offset. Default: 0"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_saved_episodes": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 50,
+                  "description": "1–50. Default: 20"
+                },
+                "offset": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Pagination offset. Default: 0"
+                },
+                "market": {
+                  "type": "string",
+                  "description": "ISO 3166-1 alpha-2 country code"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "save_items": {
+              "type": "object",
+              "properties": {
+                "uris": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "maxItems": 50,
+                  "description": "Spotify URIs to save (e.g. [\"spotify:track:abc\", \"spotify:album:xyz\"])"
+                }
+              },
+              "required": [
+                "uris"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "remove_saved_items": {
+              "type": "object",
+              "properties": {
+                "uris": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "maxItems": 50,
+                  "description": "Spotify URIs to remove"
+                }
+              },
+              "required": [
+                "uris"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "check_saved_items": {
+              "type": "object",
+              "properties": {
+                "uris": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "maxItems": 40,
+                  "description": "Spotify URIs to check (accepts tracks, albums, shows, episodes, artists, playlists)"
+                }
+              },
+              "required": [
+                "uris"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "follow_artist": {
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "maxItems": 50,
+                  "description": "Spotify artist IDs to follow"
+                }
+              },
+              "required": [
+                "ids"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "unfollow_artist": {
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "maxItems": 50,
+                  "description": "Spotify artist IDs to unfollow"
+                }
+              },
+              "required": [
+                "ids"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_followed_artists": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 50,
+                  "description": "1–50. Default: 20"
+                },
+                "after": {
+                  "type": "string",
+                  "description": "Artist ID cursor for pagination (from previous response)"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "check_following_artists": {
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "maxItems": 50,
+                  "description": "Spotify artist IDs to check"
+                }
+              },
+              "required": [
+                "ids"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_user_playlists": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 50,
+                  "description": "1–50. Default: 20"
+                },
+                "offset": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Pagination offset. Default: 0"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_playlist": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Playlist ID"
+                },
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 100,
+                  "description": "Items per page, 1–100. Default: 50"
+                },
+                "offset": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Pagination offset for items. Default: 0"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "create_playlist": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Playlist name"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Playlist description"
+                },
+                "public": {
+                  "type": "boolean",
+                  "description": "Whether the playlist is public. Default: false"
+                },
+                "collaborative": {
+                  "type": "boolean",
+                  "description": "Whether the playlist is collaborative. Default: false"
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "add_to_playlist": {
+              "type": "object",
+              "properties": {
+                "playlist_id": {
+                  "type": "string",
+                  "description": "Playlist ID"
+                },
+                "uris": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "maxItems": 100,
+                  "description": "Track or episode URIs to add"
+                },
+                "position": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Insert at index; appends if omitted"
+                }
+              },
+              "required": [
+                "playlist_id",
+                "uris"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "remove_from_playlist": {
+              "type": "object",
+              "properties": {
+                "playlist_id": {
+                  "type": "string",
+                  "description": "Playlist ID"
+                },
+                "uris": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "description": "URIs to remove"
+                }
+              },
+              "required": [
+                "playlist_id",
+                "uris"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "update_playlist": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Playlist ID"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "New name"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "New description"
+                },
+                "public": {
+                  "type": "boolean",
+                  "description": "New public state"
+                },
+                "collaborative": {
+                  "type": "boolean",
+                  "description": "New collaborative state"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "reorder_playlist_items": {
+              "type": "object",
+              "properties": {
+                "playlist_id": {
+                  "type": "string",
+                  "description": "Playlist ID"
+                },
+                "range_start": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Index of the first item to move"
+                },
+                "range_length": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "Number of items to move. Default: 1"
+                },
+                "insert_before": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Index to insert the range before"
+                }
+              },
+              "required": [
+                "playlist_id",
+                "range_start",
+                "insert_before"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "pass",
+      "durationMs": 2.1097920000001977,
+      "message": "Advertised capability responded with the minimal expected shape (4 items).",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 4,
+          "identifiers": [
+            "dj",
+            "playlist_from_mood",
+            "music_taste_summary",
+            "discover_weekly_alternative"
+          ],
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "pass",
+      "durationMs": 1.7353750000002037,
+      "message": "Advertised capability responded with the minimal expected shape (8 items).",
+      "evidence": [
+        {
+          "endpoint": "resources/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 8,
+          "identifiers": [
+            "spotify://me",
+            "spotify://player/state",
+            "spotify://player/queue",
+            "spotify://me/top/tracks",
+            "spotify://me/top/artists",
+            "spotify://me/recently-played",
+            "spotify://me/playlists",
+            "spotify://genres"
+          ],
+          "diagnostics": []
+        },
+        {
+          "endpoint": "resources/templates/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": [],
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.769416000000092,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "partial",
+      "durationMs": 1.783458000000337,
+      "message": "Detected 1 potential egress target(s) and 23 potential state mutation(s) with high confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 24,
+          "diagnostics": [
+            "Egress entries: 1",
+            "State mutations: 23",
+            "Confidence: high"
+          ],
+          "findings": [
+            {
+              "target": "uri",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 5.862749999999778,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 47 tool(s).",
+            "[pass] prompts-capability-match: prompts/list returned 4 prompt(s).",
+            "[pass] resources-capability-match: resources/list returned 8 resource(s).",
+            "[pass] tool-response-content: Tool \"get_now_playing\" response has valid content array.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "partial",
+      "durationMs": 1.8921249999998508,
+      "message": "Found 54 quality finding(s) across 59 item(s): 0 warnings, 54 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 54,
+          "identifiers": [
+            "play",
+            "pause",
+            "skip_next",
+            "skip_previous",
+            "get_top_tracks",
+            "get_top_artists",
+            "get_recently_played",
+            "get_recommendations",
+            "get_featured_playlists",
+            "get_saved_tracks",
+            "get_saved_albums",
+            "get_saved_shows",
+            "get_saved_episodes",
+            "get_followed_artists",
+            "get_user_playlists"
+          ],
+          "diagnostics": [
+            "[info] tool \"play\": Has properties but no 'required' array declared",
+            "[info] tool \"pause\": Has properties but no 'required' array declared",
+            "[info] tool \"skip_next\": Has properties but no 'required' array declared",
+            "[info] tool \"skip_previous\": Has properties but no 'required' array declared",
+            "[info] tool \"get_top_tracks\": Has properties but no 'required' array declared",
+            "[info] tool \"get_top_artists\": Has properties but no 'required' array declared",
+            "[info] tool \"get_recently_played\": Has properties but no 'required' array declared",
+            "[info] tool \"get_recommendations\": Has properties but no 'required' array declared",
+            "[info] tool \"get_recommendations\": Property 'min_acousticness' missing description",
+            "[info] tool \"get_recommendations\": Property 'max_acousticness' missing description",
+            "[info] tool \"get_recommendations\": Property 'target_acousticness' missing description",
+            "[info] tool \"get_recommendations\": Property 'min_danceability' missing description",
+            "[info] tool \"get_recommendations\": Property 'max_danceability' missing description",
+            "[info] tool \"get_recommendations\": Property 'target_danceability' missing description",
+            "[info] tool \"get_recommendations\": Property 'min_energy' missing description",
+            "[info] tool \"get_recommendations\": Property 'max_energy' missing description",
+            "[info] tool \"get_recommendations\": Property 'target_energy' missing description",
+            "[info] tool \"get_recommendations\": Property 'min_instrumentalness' missing description",
+            "[info] tool \"get_recommendations\": Property 'max_instrumentalness' missing description",
+            "[info] tool \"get_recommendations\": Property 'target_instrumentalness' missing description",
+            "[info] tool \"get_recommendations\": Property 'min_liveness' missing description",
+            "[info] tool \"get_recommendations\": Property 'max_liveness' missing description",
+            "[info] tool \"get_recommendations\": Property 'target_liveness' missing description",
+            "[info] tool \"get_recommendations\": Property 'min_loudness' missing description",
+            "[info] tool \"get_recommendations\": Property 'max_loudness' missing description",
+            "[info] tool \"get_recommendations\": Property 'target_loudness' missing description",
+            "[info] tool \"get_recommendations\": Property 'min_speechiness' missing description",
+            "[info] tool \"get_recommendations\": Property 'max_speechiness' missing description",
+            "[info] tool \"get_recommendations\": Property 'target_speechiness' missing description",
+            "[info] tool \"get_recommendations\": Property 'min_tempo' missing description",
+            "[info] tool \"get_recommendations\": Property 'max_tempo' missing description",
+            "[info] tool \"get_recommendations\": Property 'target_tempo' missing description",
+            "[info] tool \"get_recommendations\": Property 'min_valence' missing description",
+            "[info] tool \"get_recommendations\": Property 'max_valence' missing description",
+            "[info] tool \"get_recommendations\": Property 'target_valence' missing description",
+            "[info] tool \"get_recommendations\": Property 'min_duration_ms' missing description",
+            "[info] tool \"get_recommendations\": Property 'max_duration_ms' missing description",
+            "[info] tool \"get_recommendations\": Property 'target_duration_ms' missing description",
+            "[info] tool \"get_recommendations\": Property 'min_key' missing description",
+            "[info] tool \"get_recommendations\": Property 'max_key' missing description",
+            "[info] tool \"get_recommendations\": Property 'target_key' missing description",
+            "[info] tool \"get_recommendations\": Property 'min_mode' missing description",
+            "[info] tool \"get_recommendations\": Property 'max_mode' missing description",
+            "[info] tool \"get_recommendations\": Property 'target_mode' missing description",
+            "[info] tool \"get_recommendations\": Property 'min_time_signature' missing description",
+            "[info] tool \"get_recommendations\": Property 'max_time_signature' missing description",
+            "[info] tool \"get_recommendations\": Property 'target_time_signature' missing description",
+            "[info] tool \"get_featured_playlists\": Has properties but no 'required' array declared",
+            "[info] tool \"get_saved_tracks\": Has properties but no 'required' array declared",
+            "[info] tool \"get_saved_albums\": Has properties but no 'required' array declared",
+            "[info] tool \"get_saved_shows\": Has properties but no 'required' array declared",
+            "[info] tool \"get_saved_episodes\": Has properties but no 'required' array declared",
+            "[info] tool \"get_followed_artists\": Has properties but no 'required' array declared",
+            "[info] tool \"get_user_playlists\": Has properties but no 'required' array declared"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "play",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "pause",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "skip_next",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "skip_previous",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_top_tracks",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_top_artists",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recently_played",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'min_acousticness' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'max_acousticness' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'target_acousticness' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'min_danceability' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'max_danceability' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'target_danceability' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'min_energy' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'max_energy' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'target_energy' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'min_instrumentalness' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'max_instrumentalness' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'target_instrumentalness' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'min_liveness' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'max_liveness' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'target_liveness' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'min_loudness' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'max_loudness' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'target_loudness' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'min_speechiness' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'max_speechiness' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'target_speechiness' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'min_tempo' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'max_tempo' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'target_tempo' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'min_valence' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'max_valence' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'target_valence' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'min_duration_ms' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'max_duration_ms' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'target_duration_ms' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'min_key' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'max_key' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'target_key' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'min_mode' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'max_mode' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'target_mode' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'min_time_signature' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'max_time_signature' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recommendations",
+              "issue": "Property 'target_time_signature' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_featured_playlists",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_saved_tracks",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_saved_albums",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_saved_shows",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_saved_episodes",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_followed_artists",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_user_playlists",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "pass",
+      "durationMs": 4.02475000000004,
+      "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 92,
+    "grade": "A",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "schema-quality: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "security-lite: pass (100/100)",
+          "attack-sim: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: pass (100/100)",
+          "resources: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 3196ms",
+          "p95 latency: 6ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 3195.764583,
+    "toolsListMs": 6.008041000000048,
+    "promptsListMs": 2.1097920000001977,
+    "resourcesListMs": 1.7353750000002037
+  },
+  "runtimeProfile": {
+    "egress": [
+      {
+        "target": "uri",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      }
+    ],
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-15T17:30:45.689Z",
+    "confidence": "high"
+  }
+}

@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-12T234436428Z_a347e581",
-  "createdAt": "2026-07-12T23:44:36.428Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T175603783Z_a5b83856",
+  "createdAt": "2026-07-15T17:56:03.783Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "onesignal-server",
     "adapter": "local-process",
@@ -62,5 +62,5 @@
       "evidence": []
     }
   ],
-  "fatalError": "Could not establish a plain stdio MCP session for target `onesignal-server`.\nCommand: npx -y @anthropic/mcp-server-onesignal\nDiagnosis: The process exited or detached before MCP initialization completed.\nRaw error: MCP error -32000: Connection closed\nLikely causes:\n- The package may expect extra startup arguments or environment variables.\n- The package may not behave like a plain local-process stdio target under this invocation.\n- The server may be crashing immediately and only leaving clues on stderr.\nNext steps:\n- Run the command manually and look for usage output, auth prompts, or crash text.\n- Check whether the package expects a different transport or an app-oriented startup flow.\n- Use the recent stderr lines below before assuming this is a harness bug.\nRecent stderr:\n- npm error 404  '@anthropic/mcp-server-onesignal@*' is not in this registry.\n- npm error 404\n- npm error 404 Note that you can also install from a\n- npm error 404 tarball, folder, http url, or git url.\n- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-12T23_44_36_512Z-debug-0.log"
+  "fatalError": "Could not establish a plain stdio MCP session for target `onesignal-server`.\nCommand: npx -y @anthropic/mcp-server-onesignal\nDiagnosis: The process exited or detached before MCP initialization completed.\nRaw error: MCP error -32000: Connection closed\nLikely causes:\n- The package may expect extra startup arguments or environment variables.\n- The package may not behave like a plain local-process stdio target under this invocation.\n- The server may be crashing immediately and only leaving clues on stderr.\nNext steps:\n- Run the command manually and look for usage output, auth prompts, or crash text.\n- Check whether the package expects a different transport or an app-oriented startup flow.\n- Use the recent stderr lines below before assuming this is a harness bug.\nRecent stderr:\n- npm error 404  '@anthropic/mcp-server-onesignal@*' is not in this registry.\n- npm error 404\n- npm error 404 Note that you can also install from a\n- npm error 404 tarball, folder, http url, or git url.\n- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-15T17_56_03_878Z-debug-0.log"
 }

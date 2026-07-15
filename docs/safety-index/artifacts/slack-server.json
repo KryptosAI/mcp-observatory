@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-12T234417152Z_b9951b3e",
-  "createdAt": "2026-07-12T23:44:17.152Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T175543258Z_9f59c13c",
+  "createdAt": "2026-07-15T17:55:43.259Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "slack-server",
     "adapter": "local-process",

@@ -1,13 +1,13 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-12T23:44:14.092Z
+Generated at 2026-07-15T17:55:39.041Z
 
 ## Target and Environment Metadata
 
 - Target: `kubernetes-server`
 - Adapter: `local-process`
 - Command: `npx -y mcp-server-kubernetes`
-- Server: `kubernetes 4.0.1`
+- Server: `kubernetes 4.0.4`
 - Platform: `darwin 25.5.0`
 - Node: `v22.22.1`
 
@@ -30,7 +30,7 @@ Generated at 2026-07-12T23:44:14.092Z
 ## At a Glance
 
 - Safety verdict: **Blocked** — One or more checks can break agent dependence and should be fixed before production use.
-- Top risks: runtime-profile: Detected 8 potential egress target(s) and 75 potential state mutation(s) with high confidence.; schema-quality: Found 7 quality finding(s) across 29 item(s): 0 warnings, 7 info.; attack-sim: Safe attack simulation found 5 finding(s): 3 high, 2 medium, 0 low.
+- Top risks: runtime-profile: Detected 11 potential egress target(s) and 76 potential state mutation(s) with high confidence.; schema-quality: Found 7 quality finding(s) across 29 item(s): 0 warnings, 7 info.; attack-sim: Safe attack simulation found 5 finding(s): 3 high, 2 medium, 0 low.
 - Regression/schema drift: Run `mcp-observatory diff <previous-run.json> <current-run.json>` to classify regressions and schema drift.
 - Failing checks: security-lite, security, attack-sim
 - Partial or flaky checks: runtime-profile, schema-quality
@@ -54,6 +54,9 @@ The following targets were identified as potentially reachable by this server (c
 | --- | --- | --- | --- |
 | If true, immediately remove resources from API and bypass graceful deletion | unknown | description_analysis | medium |
 | If true, immediately remove resources from API and bypass graceful deletion | unknown | description_analysis | medium |
+| Path to a YAML file to create resources from. The path is read on the machine running the MCP server, so it is rejected when the server runs over a remote (SSE/Streamable HTTP) transport; use 'manifest' to pass the file's contents instead. | unknown | description_analysis | medium |
+| Path to file for creating configmap/secret (e.g. ["key1=/path/to/file1", "key2=/path/to/file2"]). The path is read on the machine running the MCP server, so it is rejected when the server runs over a remote (SSE/Streamable HTTP) transport; use "fromFileContent" to pass file contents directly instead. | unknown | description_analysis | medium |
+| Inline file contents for creating a configmap/secret, provided by the client instead of a server-side path (e.g. [{"key": "app.conf", "content": "..."}]). Safe on all transports; use this instead of "fromFile" on remote (SSE/Streamable HTTP) servers. | unknown | description_analysis | medium |
 | kubectl_reconnect | unknown | description_analysis | low |
 | API version to use (e.g. 'apps/v1') | unknown | description_analysis | medium |
 | Helm repository URL (optional if using local chart path) | unknown | description_analysis | medium |
@@ -127,6 +130,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
 | network | execute | specific_path | tool_schema |
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
@@ -143,7 +147,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-12T23:44:15.479Z_
+_Analyzed at 2026-07-15T17:55:41.519Z_
 
 ## Regressions and Recoveries
 
@@ -154,14 +158,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
 | healthy | conformance | pass | 1.68 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 0.31 | Advertised capability responded with the minimal expected shape (1 item). |
-| healthy | resources | pass | 0.44 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
-| healthy | tools | pass | 1.19 | Advertised capability responded with the minimal expected shape (23 items). |
-| review | runtime-profile | partial | 0.31 | Detected 8 potential egress target(s) and 75 potential state mutation(s) with high confidence. |
-| review | schema-quality | partial | 1.03 | Found 7 quality finding(s) across 29 item(s): 0 warnings, 7 info. |
-| act now | attack-sim | fail | 1.01 | Safe attack simulation found 5 finding(s): 3 high, 2 medium, 0 low. |
-| act now | security | fail | 0.36 | Found 8 security finding(s): 3 high, 3 medium, 2 low. |
-| act now | security-lite | fail | 0.07 | Found 8 security finding(s): 3 high, 3 medium, 2 low. |
+| healthy | prompts | pass | 0.30 | Advertised capability responded with the minimal expected shape (1 item). |
+| healthy | resources | pass | 0.38 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
+| healthy | tools | pass | 1.20 | Advertised capability responded with the minimal expected shape (23 items). |
+| review | runtime-profile | partial | 0.30 | Detected 11 potential egress target(s) and 76 potential state mutation(s) with high confidence. |
+| review | schema-quality | partial | 0.65 | Found 7 quality finding(s) across 29 item(s): 0 warnings, 7 info. |
+| act now | attack-sim | fail | 1.15 | Safe attack simulation found 5 finding(s): 3 high, 2 medium, 0 low. |
+| act now | security | fail | 0.38 | Found 8 security finding(s): 3 high, 3 medium, 2 low. |
+| act now | security-lite | fail | 0.06 | Found 8 security finding(s): 3 high, 3 medium, 2 low. |
 
 ## Evidence Snippets
 
@@ -187,7 +191,7 @@ Summary: Advertised capability responded with the minimal expected shape (1 item
   - Minimal shape present: `true`
   - Item count: `1`
   - Identifiers: k8s-diagnose
-  - Diagnostics: Starting Kubernetes MCP server v4.0.1, handling commands..., Telemetry: Disabled, (node:25430) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. (+1 more)
+  - Diagnostics: Starting Kubernetes MCP server v4.0.4, handling commands..., Telemetry: Disabled, (node:26495) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. (+1 more)
 
 ### resources — pass
 
@@ -199,14 +203,14 @@ Summary: Advertised capability responded with the minimal expected shape, but on
   - Minimal shape present: `true`
   - Item count: `5`
   - Identifiers: k8s://default/pods, k8s://default/deployments, k8s://default/services, k8s://namespaces, k8s://nodes
-  - Diagnostics: Starting Kubernetes MCP server v4.0.1, handling commands..., Telemetry: Disabled, (node:25430) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. (+1 more)
+  - Diagnostics: Starting Kubernetes MCP server v4.0.4, handling commands..., Telemetry: Disabled, (node:26495) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. (+1 more)
 - Endpoint: `resources/templates/list`
   - Advertised: `true`
   - Responded: `false`
   - Minimal shape present: `false`
   - Item count: `0`
   - Identifiers: none
-  - Diagnostics: MCP error -32601: Method not found, Starting Kubernetes MCP server v4.0.1, handling commands..., Telemetry: Disabled (+2 more)
+  - Diagnostics: MCP error -32601: Method not found, Starting Kubernetes MCP server v4.0.4, handling commands..., Telemetry: Disabled (+2 more)
 
 ### tools — pass
 
@@ -218,19 +222,19 @@ Summary: Advertised capability responded with the minimal expected shape (23 ite
   - Minimal shape present: `true`
   - Item count: `23`
   - Identifiers: cleanup, kubectl_get, kubectl_describe, kubectl_apply, kubectl_delete (+18 more)
-  - Diagnostics: Starting Kubernetes MCP server v4.0.1, handling commands..., Telemetry: Disabled, (node:25430) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. (+1 more)
+  - Diagnostics: Starting Kubernetes MCP server v4.0.4, handling commands..., Telemetry: Disabled, (node:26495) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. (+1 more)
 
 ### runtime-profile — partial
 
-Summary: Detected 8 potential egress target(s) and 75 potential state mutation(s) with high confidence.
+Summary: Detected 11 potential egress target(s) and 76 potential state mutation(s) with high confidence.
 
 - Endpoint: `runtime-profile/analyze`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
-  - Item count: `83`
+  - Item count: `87`
   - Identifiers: none
-  - Diagnostics: Egress entries: 8, State mutations: 75, Confidence: high
+  - Diagnostics: Egress entries: 11, State mutations: 76, Confidence: high
 
 ### schema-quality — partial
 
@@ -291,5 +295,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-12T234414092Z_d12ccaeb`
+- Run ID: `run_2026-07-15T175539041Z_eb29c5b7`
 - Gate: `fail`

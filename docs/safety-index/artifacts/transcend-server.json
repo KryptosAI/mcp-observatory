@@ -1,0 +1,3438 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-07-15T175633978Z_51ecd8c7",
+  "createdAt": "2026-07-15T17:56:33.978Z",
+  "toolVersion": "1.32.1",
+  "target": {
+    "targetId": "transcend-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@transcend-io/mcp"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "@transcend-io/mcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Privacy and data governance",
+      "failureClass": "DSR/consent/data boundary",
+      "whyItMatters": "Transcend MCP servers expose 73 tools for data subject requests, consent management, data inventory, and privacy assessments — agents with access could trigger privacy-sensitive operations across all data stores."
+    },
+    "serverName": "transcend-mcp",
+    "serverVersion": "0.6.8"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 9,
+    "pass": 5,
+    "fail": 0,
+    "partial": 2,
+    "unsupported": 2,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 2.703917000006186,
+      "message": "Advertised capability responded with the minimal expected shape (73 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 73,
+          "identifiers": [
+            "docs_list",
+            "docs_fetch",
+            "dsr_submit",
+            "dsr_poll_status",
+            "dsr_list",
+            "dsr_get_details",
+            "dsr_download_keys",
+            "dsr_list_identifiers",
+            "dsr_enrich_identifiers",
+            "dsr_respond_access",
+            "dsr_respond_erasure",
+            "dsr_cancel",
+            "dsr_submit_on_behalf",
+            "dsr_analyze",
+            "consent_get_preferences",
+            "consent_set_preferences",
+            "consent_list_purposes",
+            "consent_list_data_flows",
+            "consent_list_cookies",
+            "consent_list_airgap_bundles",
+            "consent_list_regimes",
+            "consent_get_inventory_stats",
+            "consent_get_aggregate_analytics",
+            "consent_get_timeseries_analytics",
+            "consent_get_analytics_data",
+            "consent_update_cookies",
+            "consent_update_data_flows",
+            "consent_bulk_triage",
+            "preferences_query",
+            "preferences_upsert",
+            "preferences_delete",
+            "preferences_append_identifiers",
+            "preferences_update_identifiers",
+            "preferences_delete_identifiers",
+            "inventory_list_data_silos",
+            "inventory_get_data_silo",
+            "inventory_create_data_silo",
+            "inventory_update_data_silo",
+            "inventory_list_vendors",
+            "inventory_list_data_points",
+            "inventory_list_sub_data_points",
+            "inventory_list_identifiers",
+            "inventory_list_categories",
+            "inventory_analyze",
+            "discovery_classify_text",
+            "discovery_ner_extract",
+            "discovery_list_scans",
+            "discovery_list_plugins",
+            "assessments_list",
+            "assessments_get",
+            "assessments_create",
+            "assessments_create_group",
+            "assessments_list_groups",
+            "assessments_update",
+            "assessments_list_templates",
+            "assessments_update_assignees",
+            "assessments_answer_question",
+            "assessments_submit_response",
+            "assessments_create_template",
+            "assessments_add_section",
+            "assessments_export_template",
+            "assessments_prefill",
+            "workflows_list",
+            "workflows_update_config",
+            "workflows_list_email_templates",
+            "admin_get_organization",
+            "admin_get_current_user",
+            "admin_list_users",
+            "admin_list_teams",
+            "admin_list_api_keys",
+            "admin_create_api_key",
+            "admin_get_privacy_center",
+            "admin_test_connection"
+          ],
+          "diagnostics": [
+            "{\"level\":\"info\",\"message\":\"Starting Transcend MCP Server v0.6.8...\",\"data\":{\"toolCount\":73,\"categories\":[\"Documentation\",\"DSR Automation\",\"Consent Management\",\"Preference Management\",\"Data Inventory\",\"Data Discovery\",\"Assessments\",\"Workflows\",\"Admin\"]},\"timestamp\":\"2026-07-15T17:56:35.429Z\"}",
+            "{\"level\":\"info\",\"message\":\"Transcend MCP Server started successfully\",\"data\":{\"sombraUrl\":\"https://multi-tenant.sombra.transcend.io\",\"graphqlUrl\":\"https://api.transcend.io\",\"dashboardUrl\":\"https://app.transcend.io\",\"tools\":73},\"timestamp\":\"2026-07-15T17:56:35.429Z\"}",
+            "(node:30405) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(Use `node --trace-deprecation ...` to show where the warning was created)",
+            "{\"level\":\"info\",\"message\":\"Returning 73 tools\",\"timestamp\":\"2026-07-15T17:56:35.434Z\"}"
+          ],
+          "schemas": {
+            "docs_list": {
+              "type": "object",
+              "properties": {
+                "section": {
+                  "description": "Filter articles to this llms.txt section name (exact match).",
+                  "type": "string"
+                },
+                "keyword": {
+                  "description": "Case-insensitive substring filter applied to article titles.",
+                  "type": "string"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "docs_fetch": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "Absolute https URL of a docs.transcend.io article (.md) from docs_list."
+                }
+              },
+              "required": [
+                "url"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "dsr_submit": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "AUTOMATED_DECISION_MAKING_OPT_OUT",
+                    "USE_OF_SENSITIVE_INFORMATION_OPT_OUT",
+                    "CONTACT_OPT_OUT",
+                    "SALE_OPT_OUT",
+                    "TRACKING_OPT_OUT",
+                    "CUSTOM_OPT_OUT",
+                    "AUTOMATED_DECISION_MAKING_OPT_IN",
+                    "USE_OF_SENSITIVE_INFORMATION_OPT_IN",
+                    "SALE_OPT_IN",
+                    "TRACKING_OPT_IN",
+                    "CONTACT_OPT_IN",
+                    "CUSTOM_OPT_IN",
+                    "ACCESS",
+                    "ERASURE",
+                    "RECTIFICATION",
+                    "RESTRICTION",
+                    "BUSINESS_PURPOSE",
+                    "PLACE_ON_LEGAL_HOLD",
+                    "REMOVE_FROM_LEGAL_HOLD"
+                  ],
+                  "description": "Type of DSR request"
+                },
+                "email": {
+                  "type": "string",
+                  "description": "Email address of the data subject"
+                },
+                "subjectType": {
+                  "type": "string",
+                  "description": "Type of data subject (e.g., customer, employee, prospect). Required by the Transcend API."
+                },
+                "coreIdentifier": {
+                  "description": "Core identifier for the data subject (defaults to email if not provided)",
+                  "type": "string"
+                },
+                "name": {
+                  "description": "Name of the data subject (optional)",
+                  "type": "string"
+                },
+                "locale": {
+                  "description": "Locale for communications (e.g., en-US)",
+                  "type": "string"
+                },
+                "isSilent": {
+                  "description": "Whether to suppress email notifications",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "type",
+                "email",
+                "subjectType"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "dsr_poll_status": {
+              "type": "object",
+              "properties": {
+                "requestId": {
+                  "type": "string",
+                  "description": "ID of the DSR to check"
+                }
+              },
+              "required": [
+                "requestId"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "dsr_list": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "default": 50,
+                  "description": "Results per page (1-100, default: 50)",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "cursor": {
+                  "description": "Pagination cursor from previous response",
+                  "type": "string"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "dsr_get_details": {
+              "type": "object",
+              "properties": {
+                "requestId": {
+                  "type": "string",
+                  "description": "ID of the DSR to retrieve"
+                }
+              },
+              "required": [
+                "requestId"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "dsr_download_keys": {
+              "type": "object",
+              "properties": {
+                "requestId": {
+                  "type": "string",
+                  "description": "ID of the completed DSR"
+                }
+              },
+              "required": [
+                "requestId"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "dsr_list_identifiers": {
+              "type": "object",
+              "properties": {
+                "requestId": {
+                  "type": "string",
+                  "description": "ID of the DSR"
+                },
+                "limit": {
+                  "default": 50,
+                  "description": "Results per page (1-100, default: 50)",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "cursor": {
+                  "description": "Pagination cursor from previous response",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "requestId"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "dsr_enrich_identifiers": {
+              "type": "object",
+              "properties": {
+                "requestId": {
+                  "type": "string",
+                  "description": "ID of the DSR to enrich"
+                },
+                "identifiers": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "description": "Key-value pairs of identifier names and values to add"
+                }
+              },
+              "required": [
+                "requestId",
+                "identifiers"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "dsr_respond_access": {
+              "type": "object",
+              "properties": {
+                "requestId": {
+                  "type": "string",
+                  "description": "ID of the DSR"
+                },
+                "dataSiloId": {
+                  "type": "string",
+                  "description": "ID of the data silo responding"
+                },
+                "profiles": {
+                  "description": "Array of profile data objects to return",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {}
+                  }
+                }
+              },
+              "required": [
+                "requestId",
+                "dataSiloId"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "dsr_respond_erasure": {
+              "type": "object",
+              "properties": {
+                "requestId": {
+                  "type": "string",
+                  "description": "ID of the DSR"
+                },
+                "dataSiloId": {
+                  "type": "string",
+                  "description": "ID of the data silo that completed erasure"
+                },
+                "profileIds": {
+                  "description": "IDs of profiles that were erased (optional)",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "requestId",
+                "dataSiloId"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "dsr_cancel": {
+              "type": "object",
+              "properties": {
+                "requestId": {
+                  "type": "string",
+                  "description": "ID of the DSR to cancel"
+                },
+                "reason": {
+                  "description": "Reason for cancellation (optional)",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "requestId"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "dsr_submit_on_behalf": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "AUTOMATED_DECISION_MAKING_OPT_OUT",
+                    "USE_OF_SENSITIVE_INFORMATION_OPT_OUT",
+                    "CONTACT_OPT_OUT",
+                    "SALE_OPT_OUT",
+                    "TRACKING_OPT_OUT",
+                    "CUSTOM_OPT_OUT",
+                    "AUTOMATED_DECISION_MAKING_OPT_IN",
+                    "USE_OF_SENSITIVE_INFORMATION_OPT_IN",
+                    "SALE_OPT_IN",
+                    "TRACKING_OPT_IN",
+                    "CONTACT_OPT_IN",
+                    "CUSTOM_OPT_IN",
+                    "ACCESS",
+                    "ERASURE",
+                    "RECTIFICATION",
+                    "RESTRICTION",
+                    "BUSINESS_PURPOSE",
+                    "PLACE_ON_LEGAL_HOLD",
+                    "REMOVE_FROM_LEGAL_HOLD"
+                  ],
+                  "description": "Type of DSR request"
+                },
+                "email": {
+                  "type": "string",
+                  "description": "Email address of the data subject"
+                },
+                "subjectType": {
+                  "type": "string",
+                  "description": "Type of data subject (e.g., customer, employee). Required by the Transcend API."
+                },
+                "coreIdentifier": {
+                  "description": "Core identifier for the data subject (optional)",
+                  "type": "string"
+                },
+                "locale": {
+                  "description": "Locale for communications (e.g., en-US)",
+                  "type": "string"
+                },
+                "isSilent": {
+                  "description": "Whether to suppress email notifications",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "type",
+                "email",
+                "subjectType"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "dsr_analyze": {
+              "type": "object",
+              "properties": {
+                "days": {
+                  "description": "Filter analysis to requests within N days (default: 30). Only analyzes from the 100 most recent requests.",
+                  "type": "number"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "consent_get_preferences": {
+              "type": "object",
+              "properties": {
+                "identifier": {
+                  "type": "string",
+                  "description": "User identifier (e.g., email, user ID)"
+                },
+                "partition": {
+                  "description": "Partition/organization context (optional)",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "identifier"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "consent_set_preferences": {
+              "type": "object",
+              "properties": {
+                "identifier": {
+                  "description": "User identifier",
+                  "type": "string"
+                },
+                "partition": {
+                  "type": "string",
+                  "description": "Partition/organization context"
+                },
+                "purposes": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "purpose": {
+                        "type": "string",
+                        "description": "Purpose slug"
+                      },
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "Whether consent is granted"
+                      }
+                    },
+                    "required": [
+                      "purpose",
+                      "enabled"
+                    ]
+                  },
+                  "description": "Array of purpose consent settings"
+                },
+                "confirmed": {
+                  "description": "Whether consent was explicitly confirmed",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "partition",
+                "purposes"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "consent_list_purposes": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "default": 50,
+                  "description": "Maximum number of purposes to return (1-100, default 50).",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "consent_list_data_flows": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "default": 50,
+                  "description": "Maximum number of data flows to return per page (1-200, default 50).",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 200
+                },
+                "offset": {
+                  "default": 0,
+                  "description": "Number of results to skip for pagination (default 0).",
+                  "type": "number",
+                  "minimum": 0
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "LIVE",
+                    "NEEDS_REVIEW"
+                  ],
+                  "description": "Filter by status: NEEDS_REVIEW (triage) or LIVE (approved)"
+                },
+                "isJunk": {
+                  "description": "Filter by junk status",
+                  "type": "boolean"
+                },
+                "showZeroActivity": {
+                  "description": "Include items with zero activity",
+                  "type": "boolean"
+                },
+                "text": {
+                  "description": "Search text filter",
+                  "type": "string"
+                },
+                "service": {
+                  "description": "Filter by service name",
+                  "type": "string"
+                },
+                "orderField": {
+                  "description": "Field to sort by",
+                  "type": "string",
+                  "enum": [
+                    "value",
+                    "createdAt",
+                    "updatedAt",
+                    "occurrences",
+                    "service"
+                  ]
+                },
+                "orderDirection": {
+                  "description": "Sort direction: ASC or DESC",
+                  "type": "string",
+                  "enum": [
+                    "ASC",
+                    "DESC"
+                  ]
+                }
+              },
+              "required": [
+                "status"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "consent_list_cookies": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "default": 50,
+                  "description": "Maximum number of cookies to return per page (1-200, default 50).",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 200
+                },
+                "offset": {
+                  "default": 0,
+                  "description": "Number of results to skip for pagination (default 0).",
+                  "type": "number",
+                  "minimum": 0
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "LIVE",
+                    "NEEDS_REVIEW"
+                  ],
+                  "description": "Filter by status: NEEDS_REVIEW (triage) or LIVE (approved)"
+                },
+                "isJunk": {
+                  "description": "Filter by junk status",
+                  "type": "boolean"
+                },
+                "showZeroActivity": {
+                  "description": "Include items with zero activity",
+                  "type": "boolean"
+                },
+                "text": {
+                  "description": "Search text filter",
+                  "type": "string"
+                },
+                "service": {
+                  "description": "Filter by service name",
+                  "type": "string"
+                },
+                "orderField": {
+                  "description": "Field to sort by",
+                  "type": "string",
+                  "enum": [
+                    "name",
+                    "createdAt",
+                    "updatedAt"
+                  ]
+                },
+                "orderDirection": {
+                  "description": "Sort direction: ASC or DESC",
+                  "type": "string",
+                  "enum": [
+                    "ASC",
+                    "DESC"
+                  ]
+                }
+              },
+              "required": [
+                "status"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "consent_list_airgap_bundles": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "consent_list_regimes": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "default": 50,
+                  "description": "Maximum number of regimes to return per page (1-100, default 50).",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "offset": {
+                  "default": 0,
+                  "description": "Number of results to skip for pagination (default 0).",
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "consent_get_inventory_stats": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "consent_get_aggregate_analytics": {
+              "type": "object",
+              "properties": {
+                "metric": {
+                  "description": "Analytics metric to query. CONSENT_CHANGED for opt-in/out counts; SITE_SESSIONS or PAGE_VIEWS for traffic totals.",
+                  "type": "string",
+                  "enum": [
+                    "CONSENT_CHANGED",
+                    "SIGNAL_DETECTED",
+                    "SITE_SESSIONS",
+                    "PAGE_VIEWS"
+                  ]
+                },
+                "start": {
+                  "description": "Start datetime (ISO 8601). Defaults to `days` lookback from end.",
+                  "type": "string"
+                },
+                "end": {
+                  "description": "End datetime (ISO 8601). Defaults to now.",
+                  "type": "string"
+                },
+                "days": {
+                  "description": "Lookback window in days when start is omitted (default: 7).",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 365
+                },
+                "include_dimensions": {
+                  "description": "Dimension breakdowns (e.g. NEW_VALUE, REGIME, PURPOSE). Recommended for CONSENT_CHANGED.",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "NEW_VALUE",
+                      "REGIME",
+                      "PURPOSE"
+                    ]
+                  }
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "consent_get_timeseries_analytics": {
+              "type": "object",
+              "properties": {
+                "metric": {
+                  "description": "Analytics metric to query. PAGE_VIEWS for daily page-view volume; SITE_SESSIONS for sessions; SIGNAL_DETECTED for GPC/DNT signal counts over time.",
+                  "type": "string",
+                  "enum": [
+                    "CONSENT_CHANGED",
+                    "SIGNAL_DETECTED",
+                    "SITE_SESSIONS",
+                    "PAGE_VIEWS"
+                  ]
+                },
+                "start": {
+                  "description": "Start datetime (ISO 8601). Defaults to `days` lookback from end.",
+                  "type": "string"
+                },
+                "end": {
+                  "description": "End datetime (ISO 8601). Defaults to now.",
+                  "type": "string"
+                },
+                "days": {
+                  "description": "Lookback window in days when start is omitted (default: 7).",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 365
+                },
+                "bin_interval": {
+                  "default": "1h",
+                  "description": "Time bin size: 1m, 1h, or 1d (default: 1h).",
+                  "type": "string",
+                  "enum": [
+                    "1m",
+                    "1h",
+                    "1d"
+                  ]
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "consent_get_analytics_data": {
+              "type": "object",
+              "properties": {
+                "data_source": {
+                  "type": "string",
+                  "enum": [
+                    "PRIVACY_SIGNAL_TIMESERIES",
+                    "CONSENT_CHANGES_TIMESERIES",
+                    "CONSENT_SESSIONS_BY_REGIME"
+                  ],
+                  "description": "analyticsData source: PRIVACY_SIGNAL_TIMESERIES (DNT/GPC), CONSENT_CHANGES_TIMESERIES (opt-in/out), or CONSENT_SESSIONS_BY_REGIME."
+                },
+                "start": {
+                  "description": "Start datetime (ISO 8601). Defaults to `days` lookback from end.",
+                  "type": "string"
+                },
+                "end": {
+                  "description": "End datetime (ISO 8601). Defaults to now.",
+                  "type": "string"
+                },
+                "days": {
+                  "description": "Lookback window in days when start is omitted (default: 7).",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 365
+                },
+                "bin": {
+                  "default": "1d",
+                  "description": "Time bin size for analyticsData (1h or 1d, default: 1d).",
+                  "type": "string",
+                  "enum": [
+                    "1h",
+                    "1d"
+                  ]
+                }
+              },
+              "required": [
+                "data_source"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "consent_update_cookies": {
+              "type": "object",
+              "properties": {
+                "cookies": {
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Cookie name (used as the identifier for upsert)"
+                      },
+                      "trackingPurposes": {
+                        "description": "Tracking purpose slugs (e.g., \"Advertising\", \"Analytics\")",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "description": {
+                        "description": "Cookie description",
+                        "type": "string"
+                      },
+                      "service": {
+                        "description": "Service/integration name",
+                        "type": "string"
+                      },
+                      "isJunk": {
+                        "description": "Mark as junk",
+                        "type": "boolean"
+                      },
+                      "status": {
+                        "description": "Set status to LIVE (approve) or NEEDS_REVIEW",
+                        "type": "string",
+                        "enum": [
+                          "LIVE",
+                          "NEEDS_REVIEW"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ]
+                  },
+                  "description": "Cookies to update"
+                }
+              },
+              "required": [
+                "cookies"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "consent_update_data_flows": {
+              "type": "object",
+              "properties": {
+                "dataFlows": {
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Data flow ID"
+                      },
+                      "trackingPurposes": {
+                        "description": "Tracking purpose slugs",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "description": {
+                        "description": "Data flow description",
+                        "type": "string"
+                      },
+                      "service": {
+                        "description": "Service/integration name",
+                        "type": "string"
+                      },
+                      "isJunk": {
+                        "description": "Mark as junk",
+                        "type": "boolean"
+                      },
+                      "status": {
+                        "description": "Set status to LIVE (approve) or NEEDS_REVIEW",
+                        "type": "string",
+                        "enum": [
+                          "LIVE",
+                          "NEEDS_REVIEW"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "id"
+                    ]
+                  },
+                  "description": "Data flows to update"
+                }
+              },
+              "required": [
+                "dataFlows"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "consent_bulk_triage": {
+              "type": "object",
+              "properties": {
+                "items": {
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "cookie",
+                          "data_flow"
+                        ],
+                        "description": "Item type"
+                      },
+                      "id": {
+                        "type": "string",
+                        "description": "Item ID (for data flows) or cookie name (for cookies)"
+                      },
+                      "action": {
+                        "type": "string",
+                        "enum": [
+                          "APPROVE",
+                          "JUNK"
+                        ],
+                        "description": "Action to take: APPROVE or JUNK"
+                      },
+                      "trackingPurposes": {
+                        "description": "Tracking purposes to assign (required when approving)",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "service": {
+                        "description": "Service name to assign",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "id",
+                      "action"
+                    ]
+                  },
+                  "description": "Items to triage"
+                }
+              },
+              "required": [
+                "items"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "preferences_query": {
+              "type": "object",
+              "properties": {
+                "partition": {
+                  "type": "string",
+                  "description": "Partition/organization context"
+                },
+                "identifiers": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string",
+                        "description": "Identifier value"
+                      },
+                      "type": {
+                        "description": "Identifier type (optional)",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "value"
+                    ]
+                  },
+                  "description": "Array of identifier objects to query"
+                }
+              },
+              "required": [
+                "partition",
+                "identifiers"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "preferences_upsert": {
+              "type": "object",
+              "properties": {
+                "partition": {
+                  "type": "string",
+                  "description": "Partition/organization context"
+                },
+                "records": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "identifier": {
+                        "type": "string",
+                        "description": "User identifier"
+                      },
+                      "identifierType": {
+                        "description": "Identifier type (optional)",
+                        "type": "string"
+                      },
+                      "purposes": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "purpose": {
+                              "type": "string",
+                              "description": "Purpose slug"
+                            },
+                            "enabled": {
+                              "type": "boolean",
+                              "description": "Whether consent is granted"
+                            }
+                          },
+                          "required": [
+                            "purpose",
+                            "enabled"
+                          ]
+                        },
+                        "description": "Array of purpose consent settings"
+                      },
+                      "confirmed": {
+                        "description": "Whether consent was explicitly confirmed",
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "identifier",
+                      "purposes"
+                    ]
+                  },
+                  "description": "Array of preference records to upsert"
+                }
+              },
+              "required": [
+                "partition",
+                "records"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "preferences_delete": {
+              "type": "object",
+              "properties": {
+                "partition": {
+                  "type": "string",
+                  "description": "Partition/organization context"
+                },
+                "identifiers": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string",
+                        "description": "Identifier value"
+                      },
+                      "type": {
+                        "description": "Identifier type (optional)",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "value"
+                    ]
+                  },
+                  "description": "Array of identifier objects to delete"
+                }
+              },
+              "required": [
+                "partition",
+                "identifiers"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "preferences_append_identifiers": {
+              "type": "object",
+              "properties": {
+                "partition": {
+                  "type": "string",
+                  "description": "Partition/organization context"
+                },
+                "userId": {
+                  "type": "string",
+                  "description": "User ID to append identifiers to"
+                },
+                "identifiers": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string",
+                        "description": "Identifier value"
+                      },
+                      "type": {
+                        "description": "Identifier type (optional)",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "value"
+                    ]
+                  },
+                  "description": "Array of identifier objects to append"
+                }
+              },
+              "required": [
+                "partition",
+                "userId",
+                "identifiers"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "preferences_update_identifiers": {
+              "type": "object",
+              "properties": {
+                "partition": {
+                  "type": "string",
+                  "description": "Partition/organization context"
+                },
+                "userId": {
+                  "type": "string",
+                  "description": "User ID to update identifiers for"
+                },
+                "identifiers": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "oldValue": {
+                        "type": "string",
+                        "description": "Old identifier value"
+                      },
+                      "newValue": {
+                        "type": "string",
+                        "description": "New identifier value"
+                      },
+                      "type": {
+                        "description": "Identifier type (optional)",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "oldValue",
+                      "newValue"
+                    ]
+                  },
+                  "description": "Array of identifier update objects with old and new values"
+                }
+              },
+              "required": [
+                "partition",
+                "userId",
+                "identifiers"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "preferences_delete_identifiers": {
+              "type": "object",
+              "properties": {
+                "partition": {
+                  "type": "string",
+                  "description": "Partition/organization context"
+                },
+                "userId": {
+                  "type": "string",
+                  "description": "User ID to delete identifiers from"
+                },
+                "identifiers": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string",
+                        "description": "Identifier value"
+                      },
+                      "type": {
+                        "description": "Identifier type (optional)",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "value"
+                    ]
+                  },
+                  "description": "Array of identifier objects to delete"
+                }
+              },
+              "required": [
+                "partition",
+                "userId",
+                "identifiers"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "inventory_list_data_silos": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "default": 50,
+                  "description": "Results per page (1-100, default: 50)",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "offset": {
+                  "default": 0,
+                  "description": "Number of results to skip for pagination (default: 0)",
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "inventory_get_data_silo": {
+              "type": "object",
+              "properties": {
+                "dataSiloId": {
+                  "type": "string",
+                  "description": "ID of the data silo to retrieve"
+                }
+              },
+              "required": [
+                "dataSiloId"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "inventory_create_data_silo": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "Name/title of the data silo (must match an integrationName in the Transcend catalog, e.g. \"Salesforce\", \"Stripe\")"
+                }
+              },
+              "required": [
+                "title"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "inventory_update_data_silo": {
+              "type": "object",
+              "properties": {
+                "dataSiloId": {
+                  "type": "string",
+                  "description": "ID of the data silo to update"
+                },
+                "title": {
+                  "description": "New title for the data silo",
+                  "type": "string"
+                },
+                "description": {
+                  "description": "New description",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "dataSiloId"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "inventory_list_vendors": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "default": 50,
+                  "description": "Results per page (1-100, default: 50)",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "offset": {
+                  "default": 0,
+                  "description": "Number of results to skip for pagination (default: 0)",
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "inventory_list_data_points": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "default": 50,
+                  "description": "Results per page (1-100, default: 50)",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "offset": {
+                  "default": 0,
+                  "description": "Number of results to skip for pagination (default: 0)",
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "inventory_list_sub_data_points": {
+              "type": "object",
+              "properties": {
+                "dataPointId": {
+                  "type": "string",
+                  "description": "ID of the parent data point"
+                },
+                "limit": {
+                  "default": 50,
+                  "description": "Results per page (1-100, default: 50)",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "offset": {
+                  "default": 0,
+                  "description": "Number of results to skip (default: 0)",
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "dataPointId"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "inventory_list_identifiers": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "default": 50,
+                  "description": "Results per page (1-100, default: 50)",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "offset": {
+                  "default": 0,
+                  "description": "Number of results to skip for pagination (default: 0)",
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "inventory_list_categories": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "default": 50,
+                  "description": "Results per page (1-100, default: 50)",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "offset": {
+                  "default": 0,
+                  "description": "Number of results to skip for pagination (default: 0)",
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "inventory_analyze": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discovery_classify_text": {
+              "type": "object",
+              "properties": {
+                "texts": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Array of text strings to classify"
+                },
+                "categories": {
+                  "description": "Specific categories to classify against (optional)",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "model": {
+                  "description": "LLM model to use for classification (optional)",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "texts"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discovery_ner_extract": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "description": "Text to extract entities from"
+                },
+                "entityTypes": {
+                  "description": "Specific entity types to extract (optional)",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "text"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discovery_list_scans": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "default": 50,
+                  "description": "Results per page (1-100, default: 50)",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "cursor": {
+                  "description": "Pagination cursor from previous response (where supported)",
+                  "type": "string"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discovery_list_plugins": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "default": 50,
+                  "description": "Results per page (1-100, default: 50)",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "cursor": {
+                  "description": "Pagination cursor from previous response (where supported)",
+                  "type": "string"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "assessments_list": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "description": "Filter by assessment status",
+                  "type": "string",
+                  "enum": [
+                    "DRAFT",
+                    "SHARED",
+                    "IN_PROGRESS",
+                    "IN_REVIEW",
+                    "CHANGES_REQUESTED",
+                    "REJECTED",
+                    "APPROVED"
+                  ]
+                },
+                "limit": {
+                  "default": 50,
+                  "description": "Results per page (1-100, default: 50)",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "cursor": {
+                  "description": "Pagination cursor from previous response",
+                  "type": "string"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "assessments_get": {
+              "type": "object",
+              "properties": {
+                "assessmentId": {
+                  "type": "string",
+                  "description": "ID of the assessment to retrieve"
+                },
+                "assessmentName": {
+                  "description": "Optional human-readable name (e.g. title) for the tool call in chat; not sent to the API.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "assessmentId"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "assessments_create": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "Title of the assessment"
+                },
+                "assessmentGroupId": {
+                  "description": "ID of the assessment group to create the assessment in (preferred). Use assessments_list_groups to find available groups.",
+                  "type": "string"
+                },
+                "templateId": {
+                  "description": "ID of the assessment template. If assessmentGroupId is not provided, the first group using this template will be used.",
+                  "type": "string"
+                },
+                "assigneeIds": {
+                  "description": "Array of user IDs to assign the assessment to",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "title"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "assessments_create_group": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "Title of the assessment group"
+                },
+                "templateId": {
+                  "type": "string",
+                  "description": "ID of the assessment template to link this group to"
+                },
+                "description": {
+                  "description": "Description of the assessment group (optional)",
+                  "type": "string"
+                },
+                "reviewerIds": {
+                  "description": "IDs of users assigned to review new assessments in this group (optional)",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "title",
+                "templateId"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "assessments_list_groups": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "default": 50,
+                  "description": "Results per page (1-100, default: 50)",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "cursor": {
+                  "description": "Pagination cursor from previous response",
+                  "type": "string"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "assessments_update": {
+              "type": "object",
+              "properties": {
+                "assessmentId": {
+                  "type": "string",
+                  "description": "ID of the assessment to update"
+                },
+                "title": {
+                  "description": "New title for the assessment",
+                  "type": "string"
+                },
+                "description": {
+                  "description": "New description",
+                  "type": "string"
+                },
+                "reviewerIds": {
+                  "description": "IDs of users assigned to review this assessment",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "dueDate": {
+                  "description": "New due date (ISO format)",
+                  "type": "string"
+                },
+                "status": {
+                  "description": "New status",
+                  "type": "string",
+                  "enum": [
+                    "DRAFT",
+                    "SHARED",
+                    "IN_PROGRESS",
+                    "IN_REVIEW",
+                    "CHANGES_REQUESTED",
+                    "REJECTED",
+                    "APPROVED"
+                  ]
+                }
+              },
+              "required": [
+                "assessmentId"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "assessments_list_templates": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "default": 50,
+                  "description": "Results per page (1-100, default: 50)",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "cursor": {
+                  "description": "Pagination cursor from previous response",
+                  "type": "string"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "assessments_update_assignees": {
+              "type": "object",
+              "properties": {
+                "assessmentId": {
+                  "type": "string",
+                  "description": "ID of the assessment form to update assignees for"
+                },
+                "assigneeIds": {
+                  "description": "Array of internal user IDs to assign to the assessment",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "externalAssigneeEmails": {
+                  "description": "Array of external email addresses to assign to the assessment",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "assessmentId"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "assessments_answer_question": {
+              "type": "object",
+              "properties": {
+                "assessmentQuestionId": {
+                  "type": "string",
+                  "description": "ID of the assessment question to answer"
+                },
+                "assessmentAnswerIds": {
+                  "description": "IDs of existing answer options to select (for SINGLE_SELECT/MULTI_SELECT questions)",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "assessmentAnswerValues": {
+                  "description": "Free-text answer values to create and select (for text questions). Each item: {value: string, isUserCreated: boolean}",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string",
+                        "description": "The free-text answer content to record for the question."
+                      },
+                      "isUserCreated": {
+                        "type": "boolean",
+                        "description": "True when this value is newly authored by the caller (rather than an existing option). Use true for free-text answers."
+                      }
+                    },
+                    "required": [
+                      "value",
+                      "isUserCreated"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "assessmentQuestionId"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "assessments_submit_response": {
+              "type": "object",
+              "properties": {
+                "assessmentId": {
+                  "type": "string",
+                  "description": "ID of the assessment to submit for review"
+                },
+                "assessmentSectionIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Array of section IDs to submit for review. Required by the API."
+                }
+              },
+              "required": [
+                "assessmentId",
+                "assessmentSectionIds"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "assessments_create_template": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "Title of the assessment form template"
+                },
+                "description": {
+                  "description": "Description of the template",
+                  "type": "string"
+                },
+                "status": {
+                  "description": "Template status: DRAFT or PUBLISHED (default: DRAFT)",
+                  "type": "string",
+                  "enum": [
+                    "DRAFT",
+                    "PUBLISHED"
+                  ]
+                },
+                "sections": {
+                  "description": "Array of section objects with title and optional questions array",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {}
+                  }
+                }
+              },
+              "required": [
+                "title"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "assessments_add_section": {
+              "type": "object",
+              "properties": {
+                "templateId": {
+                  "type": "string",
+                  "description": "ID of the assessment form template to add the section to"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Title of the new section"
+                },
+                "questions": {
+                  "description": "Array of question objects: [{title, type, subType?, description?, placeholder?, isRequired?, referenceId?, answerOptions?: [{value}], allowSelectOther?, requireRiskEvaluation?}]",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {}
+                  }
+                }
+              },
+              "required": [
+                "templateId",
+                "title"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "assessments_export_template": {
+              "type": "object",
+              "properties": {
+                "templateId": {
+                  "type": "string",
+                  "description": "ID of the assessment form template to export"
+                }
+              },
+              "required": [
+                "templateId"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "assessments_prefill": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "Title for the new assessment form"
+                },
+                "templateId": {
+                  "description": "Template ID to create the form from. Will auto-resolve to the first matching assessment group.",
+                  "type": "string"
+                },
+                "assessmentGroupId": {
+                  "description": "Assessment group ID (alternative to templateId)",
+                  "type": "string"
+                },
+                "answers": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    ]
+                  },
+                  "description": "Map of answers keyed by question title or referenceId. Values should be strings for text/single-select, or arrays of strings for multi-select."
+                },
+                "assigneeIds": {
+                  "description": "Internal user IDs to assign the form to (optional)",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "assigneeEmails": {
+                  "description": "External email addresses to assign the form to (optional)",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "reviewerIds": {
+                  "description": "User IDs to set as reviewers (optional)",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "submitForReview": {
+                  "description": "Whether to automatically submit the form for review after prefilling (default: false)",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "title",
+                "answers"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "workflows_list": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "default": 50,
+                  "description": "Results per page (1-100, default: 50)",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "cursor": {
+                  "description": "Pagination cursor from previous response (where supported)",
+                  "type": "string"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "workflows_update_config": {
+              "type": "object",
+              "properties": {
+                "workflowConfigId": {
+                  "type": "string",
+                  "description": "ID of the workflow config to update (use workflows_list to find config IDs)"
+                },
+                "title": {
+                  "description": "New title for the workflow",
+                  "type": "string"
+                },
+                "subtitle": {
+                  "description": "New subtitle for the workflow",
+                  "type": "string"
+                },
+                "description": {
+                  "description": "New description for the workflow",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "workflowConfigId"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "workflows_list_email_templates": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "default": 50,
+                  "description": "Results per page (1-100, default: 50)",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "cursor": {
+                  "description": "Pagination cursor from previous response (where supported)",
+                  "type": "string"
+                },
+                "offset": {
+                  "default": 0,
+                  "description": "Number of results to skip (default: 0)",
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "admin_get_organization": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "admin_get_current_user": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "admin_list_users": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "default": 50,
+                  "description": "Results per page (1-100, default: 50)",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "cursor": {
+                  "description": "Pagination cursor from previous response (where supported)",
+                  "type": "string"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "admin_list_teams": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "default": 50,
+                  "description": "Results per page (1-100, default: 50)",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "cursor": {
+                  "description": "Pagination cursor from previous response (where supported)",
+                  "type": "string"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "admin_list_api_keys": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "default": 50,
+                  "description": "Results per page (1-100, default: 50)",
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "cursor": {
+                  "description": "Pagination cursor from previous response (where supported)",
+                  "type": "string"
+                },
+                "offset": {
+                  "default": 0,
+                  "description": "Number of results to skip (default: 0)",
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "admin_create_api_key": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "Name/title for the API key"
+                },
+                "scopes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "readOnly",
+                      "fullAdmin",
+                      "viewAllActionItems",
+                      "manageAllActionItems",
+                      "makeDataSubjectRequest",
+                      "connectDataSilos",
+                      "deployPrivacyCenter",
+                      "manageConsentManager",
+                      "viewConsentManager",
+                      "manageConsentManagerDisplaySettings",
+                      "manageConsentManagerDeveloperSettings",
+                      "manageDataFlow",
+                      "deployConsentManager",
+                      "deployTestConsentManager",
+                      "viewCustomerDataDataMapping",
+                      "viewCustomerDataPrivacyRequests",
+                      "manageAccessControl",
+                      "manageApiKeys",
+                      "manageBilling",
+                      "manageDataMap",
+                      "managedAssignedIntegrations",
+                      "managedAssignedDataInventory",
+                      "managedAssignedConsentManager",
+                      "managedAssignedRequests",
+                      "manageAssignedBulkRespond",
+                      "viewAssignedIntegrations",
+                      "viewAssignedDataInventory",
+                      "viewAssignedConsentManager",
+                      "viewAssignedRequests",
+                      "manageDataSubjectRequestSettings",
+                      "manageEmailTemplates",
+                      "manageOrganizationInfo",
+                      "managePrivacyCenter",
+                      "viewPrivacyCenter",
+                      "manageLegalHold",
+                      "manageRequestCompilation",
+                      "manageRequestIdentities",
+                      "manageRequestSecurity",
+                      "manageSombraRootKeys",
+                      "manageSSO",
+                      "manageEmailDomains",
+                      "requestApproval",
+                      "viewApiKeys",
+                      "viewDataFlow",
+                      "viewDataMap",
+                      "viewLegalHold",
+                      "viewDataSubjectRequestSettings",
+                      "viewEmailTemplates",
+                      "viewEmailDomains",
+                      "viewRequestCompilation",
+                      "viewRequestIdentitySettings",
+                      "viewRequests",
+                      "viewScopes",
+                      "viewSSO",
+                      "viewEmployees",
+                      "viewDataInventory",
+                      "manageDataInventory",
+                      "manageGlobalAttributes",
+                      "viewGlobalAttributes",
+                      "viewAssessments",
+                      "manageAssessments",
+                      "viewAssignedAssessments",
+                      "manageAssignedAssessments",
+                      "managePrompts",
+                      "managePromptRuns",
+                      "executePrompt",
+                      "viewPromptRuns",
+                      "viewPrompts",
+                      "approvePrompts",
+                      "manageAuditor",
+                      "executeAuditor",
+                      "viewCodeScanning",
+                      "manageCodeScanning",
+                      "viewPathfinder",
+                      "managePathfinder",
+                      "viewContractScanning",
+                      "manageContractScanning",
+                      "viewAuditorRuns",
+                      "viewAuditEvents",
+                      "manageActionItemCollections",
+                      "viewManagedConsentDatabaseAdminApi",
+                      "manageStoredPreferences",
+                      "managePreferenceStoreSettings",
+                      "viewPreferenceStoreSettings",
+                      "managePolicies",
+                      "viewPolicies",
+                      "viewPolicyEngineBundles",
+                      "managePolicyEngineBundles",
+                      "activatePolicyEngineBundles",
+                      "manageIntlMessages",
+                      "viewIntlMessages",
+                      "llmLogTransfer",
+                      "viewWorkflows",
+                      "manageWorkflows",
+                      "viewDataSubCategories",
+                      "manageDataSubCategories",
+                      "generatePreferenceAccessTokens",
+                      "viewRules",
+                      "manageRules",
+                      "viewAssignedRules",
+                      "manageAssignedRules",
+                      "executeRules"
+                    ]
+                  },
+                  "description": "Array of permission scopes for the key"
+                },
+                "dataSilos": {
+                  "description": "Array of data silo IDs to assign the key to (optional)",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "title",
+                "scopes"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "admin_get_privacy_center": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "admin_test_connection": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.0014999999984866008,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.0004999999946448952,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.20791700000700075,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "partial",
+      "durationMs": 0.542249999998603,
+      "message": "Detected 27 potential egress target(s) and 45 potential state mutation(s) with high confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 72,
+          "diagnostics": [
+            "Egress entries: 27",
+            "State mutations: 45",
+            "Confidence: high"
+          ],
+          "findings": [
+            {
+              "target": "docs_list",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "url",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "Absolute https URL of a docs.transcend.io article (.md) from docs_list.",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "docs_fetch",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "Type of data subject (e.g., customer, employee, prospect). Required by the Transcend API.",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "dsr_submit",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "Type of data subject (e.g., customer, employee). Required by the Transcend API.",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "consent_list_data_flows",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "consent_get_aggregate_analytics",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "consent_get_timeseries_analytics",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "consent_get_analytics_data",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "assessments_list",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "Optional human-readable name (e.g. title) for the tool call in chat; not sent to the API.",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "assessments_get",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "assessments_create",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "assessments_update",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "assessments_list_templates",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "Array of section IDs to submit for review. Required by the API.",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "assessments_submit_response",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "workflows_list",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "workflows_list_email_templates",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "admin_get_current_user",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "admin_list_users",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "admin_list_teams",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "admin_list_api_keys",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "Name/title for the API key",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "admin_create_api_key",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 577.7794580000045,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 73 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
+            "[pass] tool-response-content: Tool \"docs_list\" response has valid content array.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "partial",
+      "durationMs": 3.0538329999981215,
+      "message": "Found 22 quality finding(s) across 73 item(s): 0 warnings, 22 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 22,
+          "identifiers": [
+            "docs_list",
+            "dsr_list",
+            "dsr_analyze",
+            "consent_list_purposes",
+            "consent_list_regimes",
+            "consent_get_aggregate_analytics",
+            "consent_get_timeseries_analytics",
+            "inventory_list_data_silos",
+            "inventory_list_vendors",
+            "inventory_list_data_points",
+            "inventory_list_identifiers",
+            "inventory_list_categories",
+            "discovery_list_scans",
+            "discovery_list_plugins",
+            "assessments_list",
+            "assessments_list_groups",
+            "assessments_list_templates",
+            "workflows_list",
+            "workflows_list_email_templates",
+            "admin_list_users",
+            "admin_list_teams",
+            "admin_list_api_keys"
+          ],
+          "diagnostics": [
+            "[info] tool \"docs_list\": Has properties but no 'required' array declared",
+            "[info] tool \"dsr_list\": Has properties but no 'required' array declared",
+            "[info] tool \"dsr_analyze\": Has properties but no 'required' array declared",
+            "[info] tool \"consent_list_purposes\": Has properties but no 'required' array declared",
+            "[info] tool \"consent_list_regimes\": Has properties but no 'required' array declared",
+            "[info] tool \"consent_get_aggregate_analytics\": Has properties but no 'required' array declared",
+            "[info] tool \"consent_get_timeseries_analytics\": Has properties but no 'required' array declared",
+            "[info] tool \"inventory_list_data_silos\": Has properties but no 'required' array declared",
+            "[info] tool \"inventory_list_vendors\": Has properties but no 'required' array declared",
+            "[info] tool \"inventory_list_data_points\": Has properties but no 'required' array declared",
+            "[info] tool \"inventory_list_identifiers\": Has properties but no 'required' array declared",
+            "[info] tool \"inventory_list_categories\": Has properties but no 'required' array declared",
+            "[info] tool \"discovery_list_scans\": Has properties but no 'required' array declared",
+            "[info] tool \"discovery_list_plugins\": Has properties but no 'required' array declared",
+            "[info] tool \"assessments_list\": Has properties but no 'required' array declared",
+            "[info] tool \"assessments_list_groups\": Has properties but no 'required' array declared",
+            "[info] tool \"assessments_list_templates\": Has properties but no 'required' array declared",
+            "[info] tool \"workflows_list\": Has properties but no 'required' array declared",
+            "[info] tool \"workflows_list_email_templates\": Has properties but no 'required' array declared",
+            "[info] tool \"admin_list_users\": Has properties but no 'required' array declared",
+            "[info] tool \"admin_list_teams\": Has properties but no 'required' array declared",
+            "[info] tool \"admin_list_api_keys\": Has properties but no 'required' array declared"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "docs_list",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "dsr_list",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "dsr_analyze",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "consent_list_purposes",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "consent_list_regimes",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "consent_get_aggregate_analytics",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "consent_get_timeseries_analytics",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "inventory_list_data_silos",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "inventory_list_vendors",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "inventory_list_data_points",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "inventory_list_identifiers",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "inventory_list_categories",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discovery_list_scans",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "discovery_list_plugins",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "assessments_list",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "assessments_list_groups",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "assessments_list_templates",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "workflows_list",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "workflows_list_email_templates",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "admin_list_users",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "admin_list_teams",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "admin_list_api_keys",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "pass",
+      "durationMs": 2.6345000000001164,
+      "message": "No security issues detected.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "pass",
+      "durationMs": 3.794917000006535,
+      "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 85,
+    "grade": "B",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "schema-quality: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "security-lite: pass (100/100)",
+          "security: pass (100/100)",
+          "attack-sim: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 67,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: unsupported (50/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 1455ms",
+          "p95 latency: 3ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 1455.0528339999873,
+    "toolsListMs": 2.703917000006186,
+    "promptsListMs": 0.0014999999984866008,
+    "resourcesListMs": 0.0004999999946448952
+  },
+  "runtimeProfile": {
+    "egress": [
+      {
+        "target": "docs_list",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "url",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "Absolute https URL of a docs.transcend.io article (.md) from docs_list.",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "docs_fetch",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "Type of data subject (e.g., customer, employee, prospect). Required by the Transcend API.",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "dsr_submit",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "Type of data subject (e.g., customer, employee). Required by the Transcend API.",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "consent_list_data_flows",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "consent_get_aggregate_analytics",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "consent_get_timeseries_analytics",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "consent_get_analytics_data",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "assessments_list",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "Optional human-readable name (e.g. title) for the tool call in chat; not sent to the API.",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "assessments_get",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "assessments_create",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "assessments_update",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "assessments_list_templates",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "Array of section IDs to submit for review. Required by the API.",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "assessments_submit_response",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "workflows_list",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "workflows_list_email_templates",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "admin_get_current_user",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "admin_list_users",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "admin_list_teams",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "admin_list_api_keys",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "Name/title for the API key",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "admin_create_api_key",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      }
+    ],
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-15T17:56:35.441Z",
+    "confidence": "high"
+  }
+}

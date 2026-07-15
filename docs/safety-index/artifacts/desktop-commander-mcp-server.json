@@ -1,0 +1,2348 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "fail",
+  "runId": "run_2026-07-15T175704320Z_20e24cd6",
+  "createdAt": "2026-07-15T17:57:04.320Z",
+  "toolVersion": "1.32.1",
+  "target": {
+    "targetId": "desktop-commander-mcp-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@wonderwhy-er/desktop-commander"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "@wonderwhy-er/desktop-commander",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Terminal and file system execution",
+      "failureClass": "Shell/exec/file boundary",
+      "whyItMatters": "Desktop Commander MCP servers expose terminal operations, file editing, and command execution — agents with shell access can execute arbitrary commands on the host system. This is one of the highest-trust boundaries in the MCP ecosystem."
+    },
+    "serverName": "desktop-commander",
+    "serverVersion": "0.2.46"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 9,
+    "pass": 4,
+    "fail": 3,
+    "partial": 2,
+    "unsupported": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "fail"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 15.524166999995941,
+      "message": "Advertised capability responded with the minimal expected shape (26 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 26,
+          "identifiers": [
+            "get_config",
+            "set_config_value",
+            "read_file",
+            "read_multiple_files",
+            "write_file",
+            "write_pdf",
+            "create_directory",
+            "list_directory",
+            "move_file",
+            "start_search",
+            "get_more_search_results",
+            "stop_search",
+            "list_searches",
+            "get_file_info",
+            "edit_block",
+            "start_process",
+            "read_process_output",
+            "interact_with_process",
+            "force_terminate",
+            "list_sessions",
+            "list_processes",
+            "kill_process",
+            "get_usage_stats",
+            "get_recent_tool_calls",
+            "give_feedback_to_desktop_commander",
+            "get_prompts"
+          ],
+          "diagnostics": [
+            "(node:31922) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(Use `node --trace-deprecation ...` to show where the warning was created)"
+          ],
+          "schemas": {
+            "get_config": {
+              "type": "object",
+              "properties": {
+                "origin": {
+                  "type": "string",
+                  "enum": [
+                    "ui",
+                    "llm"
+                  ]
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "set_config_value": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "boolean"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "origin": {
+                  "type": "string",
+                  "enum": [
+                    "ui",
+                    "llm"
+                  ]
+                }
+              },
+              "required": [
+                "key",
+                "value"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "read_file": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "isUrl": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "offset": {
+                  "type": "number",
+                  "default": 0
+                },
+                "length": {
+                  "type": "number",
+                  "default": 1000
+                },
+                "sheet": {
+                  "type": "string"
+                },
+                "range": {
+                  "type": "string"
+                },
+                "options": {
+                  "type": "object",
+                  "additionalProperties": {}
+                },
+                "origin": {
+                  "type": "string",
+                  "enum": [
+                    "ui",
+                    "llm"
+                  ]
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "read_multiple_files": {
+              "type": "object",
+              "properties": {
+                "paths": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "paths"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "write_file": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                },
+                "mode": {
+                  "type": "string",
+                  "enum": [
+                    "rewrite",
+                    "append"
+                  ],
+                  "default": "rewrite"
+                },
+                "origin": {
+                  "type": "string",
+                  "enum": [
+                    "ui",
+                    "llm"
+                  ]
+                }
+              },
+              "required": [
+                "path",
+                "content"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "write_pdf": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "content": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "const": "insert"
+                              },
+                              "pageIndex": {
+                                "type": "number"
+                              },
+                              "markdown": {
+                                "type": "string"
+                              },
+                              "sourcePdfPath": {
+                                "type": "string"
+                              },
+                              "pdfOptions": {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                              }
+                            },
+                            "required": [
+                              "type",
+                              "pageIndex"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "const": "delete"
+                              },
+                              "pageIndexes": {
+                                "type": "array",
+                                "items": {
+                                  "type": "number"
+                                }
+                              }
+                            },
+                            "required": [
+                              "type",
+                              "pageIndexes"
+                            ],
+                            "additionalProperties": false
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "outputPath": {
+                  "type": "string"
+                },
+                "options": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                }
+              },
+              "required": [
+                "path",
+                "content"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "create_directory": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "list_directory": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "depth": {
+                  "type": "number",
+                  "default": 2
+                },
+                "origin": {
+                  "type": "string",
+                  "enum": [
+                    "ui",
+                    "llm"
+                  ]
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "move_file": {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "type": "string"
+                },
+                "destination": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source",
+                "destination"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "start_search": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "pattern": {
+                  "type": "string"
+                },
+                "searchType": {
+                  "type": "string",
+                  "enum": [
+                    "files",
+                    "content"
+                  ],
+                  "default": "files"
+                },
+                "filePattern": {
+                  "type": "string"
+                },
+                "ignoreCase": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "maxResults": {
+                  "type": "number"
+                },
+                "includeHidden": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "contextLines": {
+                  "type": "number",
+                  "default": 5
+                },
+                "timeout_ms": {
+                  "type": "number"
+                },
+                "earlyTermination": {
+                  "type": "boolean"
+                },
+                "literalSearch": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "origin": {
+                  "type": "string",
+                  "enum": [
+                    "ui",
+                    "llm"
+                  ]
+                }
+              },
+              "required": [
+                "path",
+                "pattern"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_more_search_results": {
+              "type": "object",
+              "properties": {
+                "sessionId": {
+                  "type": "string"
+                },
+                "offset": {
+                  "type": "number",
+                  "default": 0
+                },
+                "length": {
+                  "type": "number",
+                  "default": 100
+                }
+              },
+              "required": [
+                "sessionId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "stop_search": {
+              "type": "object",
+              "properties": {
+                "sessionId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "sessionId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "list_searches": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_file_info": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "edit_block": {
+              "type": "object",
+              "properties": {
+                "file_path": {
+                  "type": "string"
+                },
+                "old_string": {
+                  "type": "string"
+                },
+                "new_string": {
+                  "type": "string"
+                },
+                "expected_replacements": {
+                  "type": "number",
+                  "default": 1
+                },
+                "range": {
+                  "type": "string"
+                },
+                "content": {},
+                "options": {
+                  "type": "object",
+                  "additionalProperties": {}
+                },
+                "origin": {
+                  "type": "string",
+                  "enum": [
+                    "ui",
+                    "llm"
+                  ]
+                }
+              },
+              "required": [
+                "file_path"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "start_process": {
+              "type": "object",
+              "properties": {
+                "command": {
+                  "type": "string"
+                },
+                "timeout_ms": {
+                  "type": "number"
+                },
+                "shell": {
+                  "type": "string"
+                },
+                "verbose_timing": {
+                  "type": "boolean"
+                },
+                "origin": {
+                  "type": "string",
+                  "enum": [
+                    "ui",
+                    "llm"
+                  ]
+                }
+              },
+              "required": [
+                "command",
+                "timeout_ms"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "read_process_output": {
+              "type": "object",
+              "properties": {
+                "pid": {
+                  "type": "number"
+                },
+                "timeout_ms": {
+                  "type": "number"
+                },
+                "offset": {
+                  "type": "number"
+                },
+                "length": {
+                  "type": "number"
+                },
+                "verbose_timing": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "pid"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "interact_with_process": {
+              "type": "object",
+              "properties": {
+                "pid": {
+                  "type": "number"
+                },
+                "input": {
+                  "type": "string"
+                },
+                "timeout_ms": {
+                  "type": "number"
+                },
+                "wait_for_prompt": {
+                  "type": "boolean"
+                },
+                "verbose_timing": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "pid",
+                "input"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "force_terminate": {
+              "type": "object",
+              "properties": {
+                "pid": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "pid"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "list_sessions": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "list_processes": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "kill_process": {
+              "type": "object",
+              "properties": {
+                "pid": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "pid"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_usage_stats": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_recent_tool_calls": {
+              "type": "object",
+              "properties": {
+                "maxResults": {
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 1000,
+                  "default": 50
+                },
+                "toolName": {
+                  "type": "string"
+                },
+                "since": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "give_feedback_to_desktop_commander": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_prompts": {
+              "type": "object",
+              "properties": {
+                "action": {
+                  "type": "string",
+                  "enum": [
+                    "get_prompt"
+                  ]
+                },
+                "promptId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "action",
+                "promptId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "pass",
+      "durationMs": 0.2517080000106944,
+      "message": "Advertised capability responded with the minimal expected shape (0 items).",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": [],
+          "diagnostics": [
+            "(node:31922) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(Use `node --trace-deprecation ...` to show where the warning was created)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "pass",
+      "durationMs": 0.48408300000301097,
+      "message": "Advertised capability responded with the minimal expected shape (2 items).",
+      "evidence": [
+        {
+          "endpoint": "resources/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 2,
+          "identifiers": [
+            "ui://desktop-commander/file-preview",
+            "ui://desktop-commander/config-editor"
+          ],
+          "diagnostics": [
+            "(node:31922) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(Use `node --trace-deprecation ...` to show where the warning was created)"
+          ]
+        },
+        {
+          "endpoint": "resources/templates/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": [],
+          "diagnostics": [
+            "(node:31922) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(Use `node --trace-deprecation ...` to show where the warning was created)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "fail",
+      "durationMs": 0.2142909999965923,
+      "message": "Found 6 security finding(s): 2 high, 3 medium, 1 low.",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 6,
+          "identifiers": [
+            "get_config",
+            "write_file",
+            "write_pdf",
+            "create_directory",
+            "start_process",
+            "give_feedback_to_desktop_commander"
+          ],
+          "diagnostics": [
+            "[high] Tool \"get_config\" description suggests command execution: \"\n                        Get the complete server configuration as JSON. Config includes fields for:\n\".",
+            "[medium] Tool \"write_file\" accepts filesystem paths and has destructive capabilities.",
+            "[medium] Tool \"write_pdf\" accepts filesystem paths and has destructive capabilities.",
+            "[medium] Tool \"create_directory\" accepts filesystem paths and has destructive capabilities.",
+            "[high] Tool \"start_process\" has parameter \"command\" which may allow arbitrary command execution.",
+            "[low] Tool \"give_feedback_to_desktop_commander\" has an empty schema but is marked as destructive."
+          ],
+          "findings": [
+            {
+              "ruleId": "shell-injection",
+              "severity": "high",
+              "toolName": "get_config",
+              "message": "Tool \"get_config\" description suggests command execution: \"\n                        Get the complete server configuration as JSON. Config includes fields for:\n\"."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "write_file",
+              "message": "Tool \"write_file\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "write_pdf",
+              "message": "Tool \"write_pdf\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "create_directory",
+              "message": "Tool \"create_directory\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "shell-injection",
+              "severity": "high",
+              "toolName": "start_process",
+              "message": "Tool \"start_process\" has parameter \"command\" which may allow arbitrary command execution."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "give_feedback_to_desktop_commander",
+              "message": "Tool \"give_feedback_to_desktop_commander\" has an empty schema but is marked as destructive."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "partial",
+      "durationMs": 0.39187500000116415,
+      "message": "Detected 10 potential egress target(s) and 39 potential state mutation(s) with high confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 49,
+          "diagnostics": [
+            "Egress entries: 10",
+            "State mutations: 39",
+            "Confidence: high"
+          ],
+          "findings": [
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "start_search",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "origin",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "give_feedback_to_desktop_commander",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "network",
+              "operation": "execute",
+              "scope": "specific_path",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "network",
+              "operation": "execute",
+              "scope": "specific_path",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 15.176416999995126,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 26 tool(s).",
+            "[pass] prompts-capability-match: prompts/list returned 0 prompt(s).",
+            "[pass] resources-capability-match: resources/list returned 2 resource(s).",
+            "[pass] tool-response-content: Tool \"get_config\" response has valid content array.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "partial",
+      "durationMs": 12.140750000005937,
+      "message": "Found 76 quality finding(s) across 28 item(s): 0 warnings, 76 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 76,
+          "identifiers": [
+            "get_config",
+            "set_config_value",
+            "read_file",
+            "read_multiple_files",
+            "write_file",
+            "write_pdf",
+            "create_directory",
+            "list_directory",
+            "move_file",
+            "start_search",
+            "get_more_search_results",
+            "stop_search",
+            "get_file_info",
+            "edit_block",
+            "start_process",
+            "read_process_output",
+            "interact_with_process",
+            "force_terminate",
+            "kill_process",
+            "get_recent_tool_calls",
+            "get_prompts"
+          ],
+          "diagnostics": [
+            "[info] tool \"get_config\": Has properties but no 'required' array declared",
+            "[info] tool \"get_config\": Property 'origin' missing description",
+            "[info] tool \"set_config_value\": Property 'key' missing description",
+            "[info] tool \"set_config_value\": Property 'value' missing description",
+            "[info] tool \"set_config_value\": Property 'origin' missing description",
+            "[info] tool \"read_file\": Property 'path' missing description",
+            "[info] tool \"read_file\": Property 'isUrl' missing description",
+            "[info] tool \"read_file\": Property 'offset' missing description",
+            "[info] tool \"read_file\": Property 'length' missing description",
+            "[info] tool \"read_file\": Property 'sheet' missing description",
+            "[info] tool \"read_file\": Property 'range' missing description",
+            "[info] tool \"read_file\": Property 'options' missing description",
+            "[info] tool \"read_file\": Property 'origin' missing description",
+            "[info] tool \"read_multiple_files\": Property 'paths' missing description",
+            "[info] tool \"write_file\": Property 'path' missing description",
+            "[info] tool \"write_file\": Property 'content' missing description",
+            "[info] tool \"write_file\": Property 'mode' missing description",
+            "[info] tool \"write_file\": Property 'origin' missing description",
+            "[info] tool \"write_pdf\": Property 'path' missing description",
+            "[info] tool \"write_pdf\": Property 'content' missing description",
+            "[info] tool \"write_pdf\": Property 'outputPath' missing description",
+            "[info] tool \"write_pdf\": Property 'options' missing description",
+            "[info] tool \"create_directory\": Property 'path' missing description",
+            "[info] tool \"list_directory\": Property 'path' missing description",
+            "[info] tool \"list_directory\": Property 'depth' missing description",
+            "[info] tool \"list_directory\": Property 'origin' missing description",
+            "[info] tool \"move_file\": Property 'source' missing description",
+            "[info] tool \"move_file\": Property 'destination' missing description",
+            "[info] tool \"start_search\": Property 'path' missing description",
+            "[info] tool \"start_search\": Property 'pattern' missing description",
+            "[info] tool \"start_search\": Property 'searchType' missing description",
+            "[info] tool \"start_search\": Property 'filePattern' missing description",
+            "[info] tool \"start_search\": Property 'ignoreCase' missing description",
+            "[info] tool \"start_search\": Property 'maxResults' missing description",
+            "[info] tool \"start_search\": Property 'includeHidden' missing description",
+            "[info] tool \"start_search\": Property 'contextLines' missing description",
+            "[info] tool \"start_search\": Property 'timeout_ms' missing description",
+            "[info] tool \"start_search\": Property 'earlyTermination' missing description",
+            "[info] tool \"start_search\": Property 'literalSearch' missing description",
+            "[info] tool \"start_search\": Property 'origin' missing description",
+            "[info] tool \"get_more_search_results\": Property 'sessionId' missing description",
+            "[info] tool \"get_more_search_results\": Property 'offset' missing description",
+            "[info] tool \"get_more_search_results\": Property 'length' missing description",
+            "[info] tool \"stop_search\": Property 'sessionId' missing description",
+            "[info] tool \"get_file_info\": Property 'path' missing description",
+            "[info] tool \"edit_block\": Property 'file_path' missing description",
+            "[info] tool \"edit_block\": Property 'old_string' missing description",
+            "[info] tool \"edit_block\": Property 'new_string' missing description",
+            "[info] tool \"edit_block\": Property 'expected_replacements' missing description",
+            "[info] tool \"edit_block\": Property 'range' missing description",
+            "[info] tool \"edit_block\": Property 'content' missing description",
+            "[info] tool \"edit_block\": Property 'options' missing description",
+            "[info] tool \"edit_block\": Property 'origin' missing description",
+            "[info] tool \"start_process\": Property 'command' missing description",
+            "[info] tool \"start_process\": Property 'timeout_ms' missing description",
+            "[info] tool \"start_process\": Property 'shell' missing description",
+            "[info] tool \"start_process\": Property 'verbose_timing' missing description",
+            "[info] tool \"start_process\": Property 'origin' missing description",
+            "[info] tool \"read_process_output\": Property 'pid' missing description",
+            "[info] tool \"read_process_output\": Property 'timeout_ms' missing description",
+            "[info] tool \"read_process_output\": Property 'offset' missing description",
+            "[info] tool \"read_process_output\": Property 'length' missing description",
+            "[info] tool \"read_process_output\": Property 'verbose_timing' missing description",
+            "[info] tool \"interact_with_process\": Property 'pid' missing description",
+            "[info] tool \"interact_with_process\": Property 'input' missing description",
+            "[info] tool \"interact_with_process\": Property 'timeout_ms' missing description",
+            "[info] tool \"interact_with_process\": Property 'wait_for_prompt' missing description",
+            "[info] tool \"interact_with_process\": Property 'verbose_timing' missing description",
+            "[info] tool \"force_terminate\": Property 'pid' missing description",
+            "[info] tool \"kill_process\": Property 'pid' missing description",
+            "[info] tool \"get_recent_tool_calls\": Has properties but no 'required' array declared",
+            "[info] tool \"get_recent_tool_calls\": Property 'maxResults' missing description",
+            "[info] tool \"get_recent_tool_calls\": Property 'toolName' missing description",
+            "[info] tool \"get_recent_tool_calls\": Property 'since' missing description",
+            "[info] tool \"get_prompts\": Property 'action' missing description",
+            "[info] tool \"get_prompts\": Property 'promptId' missing description"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "get_config",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_config",
+              "issue": "Property 'origin' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "set_config_value",
+              "issue": "Property 'key' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "set_config_value",
+              "issue": "Property 'value' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "set_config_value",
+              "issue": "Property 'origin' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "read_file",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "read_file",
+              "issue": "Property 'isUrl' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "read_file",
+              "issue": "Property 'offset' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "read_file",
+              "issue": "Property 'length' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "read_file",
+              "issue": "Property 'sheet' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "read_file",
+              "issue": "Property 'range' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "read_file",
+              "issue": "Property 'options' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "read_file",
+              "issue": "Property 'origin' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "read_multiple_files",
+              "issue": "Property 'paths' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "write_file",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "write_file",
+              "issue": "Property 'content' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "write_file",
+              "issue": "Property 'mode' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "write_file",
+              "issue": "Property 'origin' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "write_pdf",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "write_pdf",
+              "issue": "Property 'content' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "write_pdf",
+              "issue": "Property 'outputPath' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "write_pdf",
+              "issue": "Property 'options' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create_directory",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "list_directory",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "list_directory",
+              "issue": "Property 'depth' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "list_directory",
+              "issue": "Property 'origin' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "move_file",
+              "issue": "Property 'source' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "move_file",
+              "issue": "Property 'destination' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "start_search",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "start_search",
+              "issue": "Property 'pattern' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "start_search",
+              "issue": "Property 'searchType' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "start_search",
+              "issue": "Property 'filePattern' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "start_search",
+              "issue": "Property 'ignoreCase' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "start_search",
+              "issue": "Property 'maxResults' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "start_search",
+              "issue": "Property 'includeHidden' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "start_search",
+              "issue": "Property 'contextLines' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "start_search",
+              "issue": "Property 'timeout_ms' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "start_search",
+              "issue": "Property 'earlyTermination' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "start_search",
+              "issue": "Property 'literalSearch' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "start_search",
+              "issue": "Property 'origin' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_more_search_results",
+              "issue": "Property 'sessionId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_more_search_results",
+              "issue": "Property 'offset' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_more_search_results",
+              "issue": "Property 'length' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "stop_search",
+              "issue": "Property 'sessionId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_file_info",
+              "issue": "Property 'path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "edit_block",
+              "issue": "Property 'file_path' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "edit_block",
+              "issue": "Property 'old_string' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "edit_block",
+              "issue": "Property 'new_string' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "edit_block",
+              "issue": "Property 'expected_replacements' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "edit_block",
+              "issue": "Property 'range' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "edit_block",
+              "issue": "Property 'content' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "edit_block",
+              "issue": "Property 'options' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "edit_block",
+              "issue": "Property 'origin' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "start_process",
+              "issue": "Property 'command' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "start_process",
+              "issue": "Property 'timeout_ms' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "start_process",
+              "issue": "Property 'shell' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "start_process",
+              "issue": "Property 'verbose_timing' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "start_process",
+              "issue": "Property 'origin' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "read_process_output",
+              "issue": "Property 'pid' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "read_process_output",
+              "issue": "Property 'timeout_ms' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "read_process_output",
+              "issue": "Property 'offset' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "read_process_output",
+              "issue": "Property 'length' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "read_process_output",
+              "issue": "Property 'verbose_timing' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "interact_with_process",
+              "issue": "Property 'pid' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "interact_with_process",
+              "issue": "Property 'input' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "interact_with_process",
+              "issue": "Property 'timeout_ms' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "interact_with_process",
+              "issue": "Property 'wait_for_prompt' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "interact_with_process",
+              "issue": "Property 'verbose_timing' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "force_terminate",
+              "issue": "Property 'pid' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "kill_process",
+              "issue": "Property 'pid' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recent_tool_calls",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recent_tool_calls",
+              "issue": "Property 'maxResults' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recent_tool_calls",
+              "issue": "Property 'toolName' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_recent_tool_calls",
+              "issue": "Property 'since' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_prompts",
+              "issue": "Property 'action' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_prompts",
+              "issue": "Property 'promptId' missing description",
+              "severity": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "fail",
+      "durationMs": 1.0754580000066198,
+      "message": "Found 6 security finding(s): 2 high, 3 medium, 1 low.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 6,
+          "identifiers": [
+            "get_config",
+            "write_file",
+            "write_pdf",
+            "create_directory",
+            "start_process",
+            "give_feedback_to_desktop_commander"
+          ],
+          "diagnostics": [
+            "[high] Tool \"get_config\" description suggests command execution: \"\n                        Get the complete server configuration as JSON. Config includes fields for:\n\".",
+            "[medium] Tool \"write_file\" accepts filesystem paths and has destructive capabilities.",
+            "[medium] Tool \"write_pdf\" accepts filesystem paths and has destructive capabilities.",
+            "[medium] Tool \"create_directory\" accepts filesystem paths and has destructive capabilities.",
+            "[high] Tool \"start_process\" has parameter \"command\" which may allow arbitrary command execution.",
+            "[low] Tool \"give_feedback_to_desktop_commander\" has an empty schema but is marked as destructive."
+          ],
+          "findings": [
+            {
+              "ruleId": "shell-injection",
+              "severity": "high",
+              "toolName": "get_config",
+              "message": "Tool \"get_config\" description suggests command execution: \"\n                        Get the complete server configuration as JSON. Config includes fields for:\n\"."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "write_file",
+              "message": "Tool \"write_file\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "write_pdf",
+              "message": "Tool \"write_pdf\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "create_directory",
+              "message": "Tool \"create_directory\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "shell-injection",
+              "severity": "high",
+              "toolName": "start_process",
+              "message": "Tool \"start_process\" has parameter \"command\" which may allow arbitrary command execution."
+            },
+            {
+              "ruleId": "permissive-schema",
+              "severity": "low",
+              "toolName": "give_feedback_to_desktop_commander",
+              "message": "Tool \"give_feedback_to_desktop_commander\" has an empty schema but is marked as destructive."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "fail",
+      "durationMs": 1.5303749999875436,
+      "message": "Safe attack simulation found 7 finding(s): 1 high, 6 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [
+            "write_file",
+            "write_pdf",
+            "create_directory",
+            "start_search",
+            "start_process",
+            "interact_with_process"
+          ],
+          "diagnostics": [
+            "[medium] Tool \"write_file\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"write_pdf\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"create_directory\" combines broad parameters (path) with destructive or non-read-only behavior.",
+            "[medium] Tool \"start_search\" combines broad parameters (path, pattern) with destructive or non-read-only behavior.",
+            "[medium] tool \"start_process\" contains agent behavior control text that could steer an agent.",
+            "[high] Tool \"start_process\" combines broad parameters (command, shell) with destructive or non-read-only behavior.",
+            "[medium] tool \"interact_with_process\" contains agent behavior control text that could steer an agent."
+          ],
+          "findings": [
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "write_file",
+              "message": "Tool \"write_file\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "title": "Write File",
+                  "readOnlyHint": false,
+                  "destructiveHint": true,
+                  "openWorldHint": false
+                },
+                "description": "\n                        Write or append to file contents.\n\n                        IMPORTANT: DO NOT use this tool to create PDF files. Use 'write_pdf' for all PDF creation tasks.\n                        DO NOT use this tool to edit DOCX files. Use 'edit_block' with old_string/new_string instead.\n                        To CREATE a new DOCX, use write_file with .docx extension — text content with markdown headings (#, ##, ###) is converted to styled DOCX paragraphs.\n\n                        CHUNKING IS STANDARD PRACTICE: Always write files in chunks of 25-30 lines maximum.\n                        This is the normal, recommended way to write files - not an emergency measure.\n\n                        STANDARD PROCESS FOR ANY FILE:\n                        1. FIRST → write_file(filePath, firstChunk, {mode: 'rewrite'})  [≤30 lines]\n                        2. THEN → write_file(filePath, secondChunk, {mode: 'append'})   [≤30 lines]\n                        3. CONTINUE → write_file(filePath, nextChunk, {mode: 'append'}) [≤30 lines]\n\n                        ALWAYS CHUNK PROACTIVELY - don't wait for performance warnings!\n\n                        WHEN TO CHUNK (always be proactive):\n                        1. Any file expected to be longer than 25-30 lines\n                        2. When writing multiple files in sequence\n                        3. When creating documentation, code files, or configuration files\n\n                        HANDLING CONTINUATION (\"Continue\" prompts):\n                        If user asks to \"Continue\" after an incomplete operation:\n                        1. Read the file to see what was successfully written\n                        2. Continue writing ONLY the remaining content using {mode: 'append'}\n                        3. Keep chunks to 25-30 lines each\n\n                        FORMAT HANDLING (by extension):\n                        - Text files: String content\n                        - Excel (.xlsx, .xls, .xlsm): JSON 2D array or {\"SheetName\": [[...]]}\n                          Example: '[[\"Name\",\"Age\"],[\"Alice\",30]]'\n\n                        Files over 50 lines will generate performance notes but are still written successfully.\n                        Only works within allowed directories.\n\n                        IMPORTANT: Always use absolute paths for reliability. Paths are automatically normalized regardless of slash direction. Relative paths may fail as they depend on the current working directory. Tilde paths (~/...) might not work in all contexts. Unless the user explicitly asks for relative paths, use absolute paths.\n                        This command can be referenced as \"DC: ...\" or \"use Desktop Commander to ...\" in your instructions."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "write_pdf",
+              "message": "Tool \"write_pdf\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "title": "Write/Modify PDF",
+                  "readOnlyHint": false,
+                  "destructiveHint": true,
+                  "openWorldHint": false
+                },
+                "description": "\n                        Create a new PDF file or modify an existing one.\n\n                        THIS IS THE ONLY TOOL FOR CREATING AND MODIFYING PDF FILES.\n\n                        RULES ABOUT FILENAMES:\n                        - When creating a new PDF, 'outputPath' MUST be provided and MUST use a new unique filename (e.g., \"result_01.pdf\", \"analysis_2025_01.pdf\", etc.).\n\n                        MODES:\n                        1. CREATE NEW PDF:\n                           - Pass a markdown string as 'content'.\n                           write_pdf(path=\"doc.pdf\", content=\"# Title\\n\\nBody text...\")\n\n                        2. MODIFY EXISTING PDF:\n                           - Pass array of operations as 'content'.\n                           - NEVER overwrite the original file.\n                           - ALWAYS provide a new filename in 'outputPath'.\n                           - After modifying, show original file path and new file path to user.\n\n                           write_pdf(path=\"doc.pdf\", content=[\n                               { type: \"delete\", pageIndexes: [0, 2] },\n                               { type: \"insert\", pageIndex: 1, markdown: \"# New Page\" }\n                           ])\n\n                        OPERATIONS:\n                        - delete: Remove pages by 0-based index.\n                          { type: \"delete\", pageIndexes: [0, 1, 5] }\n\n                        - insert: Add pages at a specific 0-based index.\n                          { type: \"insert\", pageIndex: 0, markdown: \"...\" }\n                          { type: \"insert\", pageIndex: 5, sourcePdfPath: \"/path/to/source.pdf\" }\n\n                        PAGE BREAKS:\n                        To force a page break, use this HTML element:\n                        <div style=\"page-break-before: always;\"></div>\n                        \n                        Example:\n                        \"# Page 1\\n\\n<div style=\\\"page-break-before: always;\\\"></div>\\n\\n# Page 2\"\n\n                        ADVANCED STYLING:\n                        HTML/CSS and inline SVG are supported for:\n                        - Text styling: colors, sizes, alignment, highlights\n                        - Boxes: borders, backgrounds, padding, rounded corners\n                        - SVG graphics: charts, diagrams, icons, shapes\n                        - Images: <img src=\"/absolute/path/image.jpg\" width=\"300\" /> or ![alt](/path/image.jpg)\n\n                        Supports standard markdown features including headers, lists, code blocks, tables, and basic formatting.\n\n                        Only works within allowed directories.\n\n                        IMPORTANT: Always use absolute paths for reliability. Paths are automatically normalized regardless of slash direction. Relative paths may fail as they depend on the current working directory. Tilde paths (~/...) might not work in all contexts. Unless the user explicitly asks for relative paths, use absolute paths.\n                        This command can be referenced as \"DC: ...\" or \"use Desktop Commander to ...\" in your instructions."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "create_directory",
+              "message": "Tool \"create_directory\" combines broad parameters (path) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path"
+                ],
+                "annotations": {
+                  "title": "Create Directory",
+                  "readOnlyHint": false,
+                  "destructiveHint": false
+                },
+                "description": "\n                        Create a new directory or ensure a directory exists.\n                        \n                        Can create multiple nested directories in one operation.\n                        Only works within allowed directories.\n                        \n                        IMPORTANT: Always use absolute paths for reliability. Paths are automatically normalized regardless of slash direction. Relative paths may fail as they depend on the current working directory. Tilde paths (~/...) might not work in all contexts. Unless the user explicitly asks for relative paths, use absolute paths.\n                        This command can be referenced as \"DC: ...\" or \"use Desktop Commander to ...\" in your instructions."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "start_search",
+              "message": "Tool \"start_search\" combines broad parameters (path, pattern) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "path",
+                  "pattern"
+                ],
+                "annotations": {
+                  "title": "Start Search",
+                  "readOnlyHint": true
+                },
+                "description": "\n                        Start a streaming search that can return results progressively.\n                        \n                        SEARCH STRATEGY GUIDE:\n                        Choose the right search type based on what the user is looking for:\n                        \n                        USE searchType=\"files\" WHEN:\n                        - User asks for specific files: \"find package.json\", \"locate config files\"\n                        - Pattern looks like a filename: \"*.js\", \"README.md\", \"test-*.tsx\" \n                        - User wants to find files by name/extension: \"all TypeScript files\", \"Python scripts\"\n                        - Looking for configuration/setup files: \".env\", \"dockerfile\", \"tsconfig.json\"\n                        \n                        USE searchType=\"content\" WHEN:\n                        - User asks about code/logic: \"authentication logic\", \"error handling\", \"API calls\"\n                        - Looking for functions/variables: \"getUserData function\", \"useState hook\"\n                        - Searching for text/comments: \"TODO items\", \"FIXME comments\", \"documentation\"\n                        - Finding patterns in code: \"console.log statements\", \"import statements\"\n                        - User describes functionality: \"components that handle login\", \"files with database queries\"\n                        \n                        WHEN UNSURE OR USER REQUEST IS AMBIGUOUS:\n                        Run TWO searches in parallel - one for files and one for content:\n                        \n                        Example approach for ambiguous queries like \"find authentication stuff\":\n                        1. Start file search: searchType=\"files\", pattern=\"auth\"\n                        2. Simultaneously start content search: searchType=\"content\", pattern=\"authentication\"  \n                        3. Present combined results: \"Found 3 auth-related files and 8 files containing authentication code\"\n                        \n                        SEARCH TYPES:\n                        - searchType=\"files\": Find files by name (pattern matches file names)\n                        - searchType=\"content\": Search inside files for text patterns\n                        \n                        PATTERN MATCHING MODES:\n                        - Default (literalSearch=false): Patterns are treated as regular expressions\n                        - Literal (literalSearch=true): Patterns are treated as exact strings\n                        \n                        WHEN TO USE literalSearch=true:\n                        Use literal search when searching for code patterns with special characters:\n                        - Function calls with parentheses and quotes\n                        - Array access with brackets\n                        - Object methods with dots and parentheses\n                        - File paths with backslashes\n                        - Any pattern containing: . * + ? ^ $ { } [ ] | \\ ( )\n                        \n                        IMPORTANT PARAMETERS:\n                        - pattern: What to search for (file names OR content text)\n                        - literalSearch: Use exact string matching instead of regex (default: false)\n                        - filePattern: Optional filter to limit search to specific file types (e.g., \"*.js\", \"package.json\")\n                        - ignoreCase: Case-insensitive search (default: true). Works for both file names and content.\n                        - earlyTermination: Stop search early when exact filename match is found (optional: defaults to true for file searches, false for content searches)\n                        \n                        DECISION EXAMPLES:\n                        - \"find package.json\" → searchType=\"files\", pattern=\"package.json\" (specific file)\n                        - \"find authentication components\" → searchType=\"content\", pattern=\"authentication\" (looking for functionality)\n                        - \"locate all React components\" → searchType=\"files\", pattern=\"*.tsx\" or \"*.jsx\" (file pattern)\n                        - \"find TODO comments\" → searchType=\"content\", pattern=\"TODO\" (text in files)\n                        - \"show me login files\" → AMBIGUOUS → run both: files with \"login\" AND content with \"login\"\n                        - \"find config\" → AMBIGUOUS → run both: config files AND files containing config code\n                        \n                        COMPREHENSIVE SEARCH EXAMPLES:\n                        - Find package.json files: searchType=\"files\", pattern=\"package.json\"\n                        - Find all JS files: searchType=\"files\", pattern=\"*.js\"\n                        - Search for TODO in code: searchType=\"content\", pattern=\"TODO\", filePattern=\"*.js|*.ts\"\n                        - Search for exact code: searchType=\"content\", pattern=\"toast.error('test')\", literalSearch=true\n                        - Ambiguous request \"find auth stuff\": Run two searches:\n                          1. searchType=\"files\", pattern=\"auth\"\n                          2. searchType=\"content\", pattern=\"authentication\"\n                        \n                        PRO TIP: When user requests are ambiguous about whether they want files or content,\n                        run both searches concurrently and combine results for comprehensive coverage.\n                        \n                        Unlike regular search tools, this starts a background search process and returns\n                        immediately with a session ID. Use get_more_search_results to get results as they\n                        come in, and stop_search to stop the search early if needed.\n                        \n                        Perfect for large directories where you want to see results immediately and\n                        have the option to cancel if the search takes too long or you find what you need.\n                        \n                        IMPORTANT: Always use absolute paths for reliability. Paths are automatically normalized regardless of slash direction. Relative paths may fail as they depend on the current working directory. Tilde paths (~/...) might not work in all contexts. Unless the user explicitly asks for relative paths, use absolute paths.\n                        This command can be referenced as \"DC: ...\" or \"use Desktop Commander to ...\" in your instructions."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/tool-poisoning/agent-behavior-control",
+              "attackClass": "tool-poisoning",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "start_process",
+              "message": "tool \"start_process\" contains agent behavior control text that could steer an agent.",
+              "evidence": {
+                "path": "description",
+                "excerpt": "\n                        Start a new terminal process with intelligent state detection.\n                        \n                        PRIMARY TOOL FOR FILE ANALYSIS AND DATA PROCESSING\n                        This is the ONLY correct too",
+                "match": "ALWAYS use this tool + interact_with_process, NEVER use analysis/REPL tool"
+              },
+              "recommendation": "Remove hidden or behavioral instructions from MCP metadata; keep descriptions factual and user-visible.",
+              "recommendedAction": "gate"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "high",
+              "itemType": "tool",
+              "itemName": "start_process",
+              "message": "Tool \"start_process\" combines broad parameters (command, shell) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "command",
+                  "shell"
+                ],
+                "annotations": {
+                  "title": "Start Terminal Process",
+                  "readOnlyHint": false,
+                  "destructiveHint": true,
+                  "openWorldHint": true
+                },
+                "description": "\n                        Start a new terminal process with intelligent state detection.\n                        \n                        PRIMARY TOOL FOR FILE ANALYSIS AND DATA PROCESSING\n                        This is the ONLY correct tool for analyzing local files (CSV, JSON, logs, etc.).\n                        The analysis tool CANNOT access local files and WILL FAIL - always use processes for file-based work.\n                        \n                        CRITICAL RULE: For ANY local file work, ALWAYS use this tool + interact_with_process, NEVER use analysis/REPL tool.\n                        \n                        Running on macOS. Default shell: zsh.\n        \nMACOS-SPECIFIC NOTES:\n- Package manager: brew (Homebrew) is commonly used\n- Python 3 might be 'python3' command, not 'python'\n- Some GNU tools have different names (e.g., gsed instead of sed)\n- System Integrity Protection (SIP) may block certain operations\n- Use 'open' command to open files/applications from terminal\n- For file search: Use mdfind (Spotlight) for fastest exact filename searches\n                        \n                        REQUIRED WORKFLOW FOR LOCAL FILES:\n                        1. start_process(\"python3 -i\") - Start Python REPL for data analysis\n                        2. interact_with_process(pid, \"import pandas as pd, numpy as np\")\n                        3. interact_with_process(pid, \"df = pd.read_csv('/absolute/path/file.csv')\")\n                        4. interact_with_process(pid, \"print(df.describe())\")\n                        5. Continue analysis with pandas, matplotlib, seaborn, etc.\n                        \n                        COMMON FILE ANALYSIS PATTERNS:\n                        • start_process(\"python3 -i\") → Python REPL for data analysis (RECOMMENDED)\n                        • start_process(\"node -i\") → Node.js REPL for JSON processing\n                        • start_process(\"node:local\") → Node.js on MCP server (stateless, ES imports, all code in one call)\n                        • start_process(\"cut -d',' -f1 file.csv | sort | uniq -c\") → Quick CSV analysis\n                        • start_process(\"wc -l /path/file.csv\") → Line counting\n                        • start_process(\"head -10 /path/file.csv\") → File preview\n                        \n                        BINARY FILE SUPPORT:\n                        For PDF, Excel, Word, archives, databases, and other binary formats, use process tools with appropriate libraries or command-line utilities.\n                        \n                        INTERACTIVE PROCESSES FOR DATA ANALYSIS:\n                        For code/calculations, use in this priority order:\n                        1. start_process(\"python3 -i\") - Python REPL (preferred)\n                        2. start_process(\"node -i\") - Node.js REPL (when Python unavailable)\n                        3. start_process(\"node:local\") - Node.js fallback (when node -i fails)\n                        4. Use interact_with_process() to send commands\n                        5. Use read_process_output() to get responses\n                        When Python is unavailable, prefer Node.js over shell for calculations.\n                        Node.js: Always use ES import syntax (import x from 'y'), not require().\n\n                        SMART DETECTION:\n                        - Detects REPL prompts (>>>, >, $, etc.)\n                        - Identifies when process is waiting for input\n                        - Recognizes process completion vs timeout\n                        - Early exit prevents unnecessary waiting\n                        \n                        STATES DETECTED:\n                        Process waiting for input (shows prompt)\n                        Process finished execution\n                        Process running (use read_process_output)\n\n                        PERFORMANCE DEBUGGING (verbose_timing parameter):\n                        Set verbose_timing: true to get detailed timing information including:\n                        - Exit reason (early_exit_quick_pattern, early_exit_periodic_check, process_exit, timeout)\n                        - Total duration and time to first output\n                        - Complete timeline of all output events with timestamps\n                        - Which detection mechanism triggered early exit\n                        Use this to identify missed optimization opportunities and improve detection patterns.\n\n                        ALWAYS USE FOR: Local file analysis, CSV processing, data exploration, system commands\n                        NEVER USE ANALYSIS TOOL FOR: Local file access (analysis tool is browser-only and WILL FAIL)\n\n                        IMPORTANT: Always use absolute paths for reliability. Paths are automatically normalized regardless of slash direction. Relative paths may fail as they depend on the current working directory. Tilde paths (~/...) might not work in all contexts. Unless the user explicitly asks for relative paths, use absolute paths.\n                        This command can be referenced as \"DC: ...\" or \"use Desktop Commander to ...\" in your instructions."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "quarantine"
+            },
+            {
+              "ruleId": "attack-sim/tool-poisoning/agent-behavior-control",
+              "attackClass": "tool-poisoning",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "interact_with_process",
+              "message": "tool \"interact_with_process\" contains agent behavior control text that could steer an agent.",
+              "evidence": {
+                "path": "description",
+                "excerpt": "\n                        Send input to a running process and automatically receive the response.\n                        \n                        CRITICAL: THIS IS THE PRIMARY TOOL FOR ALL LOCAL FILE ANALYSIS\n                        For ANY",
+                "match": "ALWAYS use this instead of the analysis tool"
+              },
+              "recommendation": "Remove hidden or behavioral instructions from MCP metadata; keep descriptions factual and user-visible.",
+              "recommendedAction": "gate"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 72,
+    "grade": "C",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "schema-quality: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 0,
+        "details": [
+          "security-lite: fail (0/100)",
+          "security: fail (0/100)",
+          "attack-sim: fail (0/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: pass (100/100)",
+          "resources: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 1475ms",
+          "p95 latency: 16ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 1475.4047080000018,
+    "toolsListMs": 15.524166999995941,
+    "promptsListMs": 0.2517080000106944,
+    "resourcesListMs": 0.48408300000301097
+  },
+  "runtimeProfile": {
+    "egress": [
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "start_search",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "origin",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "give_feedback_to_desktop_commander",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      }
+    ],
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "network",
+        "operation": "execute",
+        "scope": "specific_path",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "network",
+        "operation": "execute",
+        "scope": "specific_path",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-15T17:57:05.813Z",
+    "confidence": "high"
+  }
+}

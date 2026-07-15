@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-12T234415494Z_abf0d9f2",
-  "createdAt": "2026-07-12T23:44:15.494Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T175541535Z_668bb0c4",
+  "createdAt": "2026-07-15T17:55:41.535Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "chrome-devtools-mcp-server",
     "adapter": "local-process",
@@ -22,7 +22,7 @@
       "whyItMatters": "Coding agents may use Chrome DevTools MCP to inspect pages, network state, console output, and browser behavior before making changes."
     },
     "serverName": "chrome_devtools",
-    "serverVersion": "1.5.0"
+    "serverVersion": "1.6.0"
   },
   "environment": {
     "platform": "darwin 25.5.0",
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 3.241707999997743,
+      "durationMs": 4.284665999999561,
       "message": "Advertised capability responded with the minimal expected shape (29 items).",
       "evidence": [
         {
@@ -84,11 +84,11 @@
             "wait_for"
           ],
           "diagnostics": [
-            "debug, and modify any data in the browser or DevTools.",
             "Avoid sharing sensitive or personal information that you do not want to share with MCP clients.",
             "Performance tools may send trace URLs to the Google CrUX API to fetch real-user experience data. To disable, run with --no-performance-crux.",
             "Google collects usage statistics to improve Chrome DevTools MCP. To opt-out, run with --no-usage-statistics.",
-            "For more details, visit: https://github.com/ChromeDevTools/chrome-devtools-mcp#usage-statistics"
+            "For more details, visit: https://github.com/ChromeDevTools/chrome-devtools-mcp#usage-statistics",
+            "[chrome-devtools-mcp] The connecting client did not negotiate the MCP roots capability. File-writing tools will be restricted to the OS temp directory. To restore the previous unrestricted behavior, start the server with --allow-unrestricted-paths."
           ],
           "schemas": {
             "click": {
@@ -526,7 +526,7 @@
                   "type": "string",
                   "enum": [
                     "accept",
-                    "decline"
+                    "dismiss"
                   ],
                   "description": "Whether to auto accept or beforeunload dialogs triggered by this navigation. Default is accept."
                 },
@@ -809,7 +809,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0011669999985315371,
+      "durationMs": 0.0022080000017012935,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -825,7 +825,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.003333000000566244,
+      "durationMs": 0.003958000001148321,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -841,7 +841,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "fail",
-      "durationMs": 0.07995799999844166,
+      "durationMs": 0.08525000000008731,
       "message": "Found 30 security finding(s): 1 high, 7 medium, 22 low.",
       "evidence": [
         {
@@ -1095,7 +1095,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "partial",
-      "durationMs": 0.29970800000228337,
+      "durationMs": 0.3872080000001006,
       "message": "Detected 9 potential egress target(s) and 36 potential state mutation(s) with high confidence.",
       "evidence": [
         {
@@ -1388,7 +1388,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 585.5175410000011,
+      "durationMs": 659.0016660000001,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -1414,7 +1414,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 1.0256250000020373,
+      "durationMs": 1.0800840000010794,
       "message": "Found 10 quality finding(s) across 29 item(s): 0 warnings, 10 info.",
       "evidence": [
         {
@@ -1516,7 +1516,7 @@
       "id": "security",
       "capability": "security",
       "status": "fail",
-      "durationMs": 0.8184169999985897,
+      "durationMs": 0.6895829999994021,
       "message": "Found 30 security finding(s): 1 high, 7 medium, 22 low.",
       "evidence": [
         {
@@ -1770,7 +1770,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "partial",
-      "durationMs": 0.9619170000005397,
+      "durationMs": 1.085291999999754,
       "message": "Safe attack simulation found 9 finding(s): 0 high, 9 medium, 0 low.",
       "evidence": [
         {
@@ -2023,17 +2023,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 969ms",
-          "p95 latency: 3ms (3 operations)"
+          "Connect: 950ms",
+          "p95 latency: 4ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 969.2750419999975,
-    "toolsListMs": 3.241707999997743,
-    "promptsListMs": 0.0011669999985315371,
-    "resourcesListMs": 0.003333000000566244
+    "connectMs": 949.5404999999992,
+    "toolsListMs": 4.284665999999561,
+    "promptsListMs": 0.0022080000017012935,
+    "resourcesListMs": 0.003958000001148321
   },
   "runtimeProfile": {
     "egress": [
@@ -2310,7 +2310,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-12T23:44:16.468Z",
+    "analyzedAt": "2026-07-15T17:55:42.492Z",
     "confidence": "high"
   }
 }

@@ -1,0 +1,419 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-07-15T175632524Z_4ca950a9",
+  "createdAt": "2026-07-15T17:56:32.524Z",
+  "toolVersion": "1.32.1",
+  "target": {
+    "targetId": "mui-mcp-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@mui/mcp"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "@mui/mcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Design system access",
+      "failureClass": "Component/theme boundary",
+      "whyItMatters": "MUI MCP servers expose Material UI component documentation and usage guidance for agent-assisted React development."
+    },
+    "serverName": "mui-mcp",
+    "serverVersion": "0.1.1"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 9,
+    "pass": 7,
+    "fail": 0,
+    "partial": 0,
+    "unsupported": 2,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 3.4265420000010636,
+      "message": "Advertised capability responded with the minimal expected shape (2 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 2,
+          "identifiers": [
+            "generateReactCode",
+            "fetchDocs"
+          ],
+          "diagnostics": [],
+          "schemas": {
+            "generateReactCode": {
+              "type": "object",
+              "properties": {
+                "prompt": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Natural-language brief for the codegen run."
+                },
+                "threadId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Continue an existing conversation. Must be owned by the caller. Omit to start a new thread."
+                },
+                "designContext": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "figma"
+                        },
+                        "nodeId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "fileUrl": {
+                          "type": "string"
+                        },
+                        "thumbnailDataUrl": {
+                          "type": "string"
+                        },
+                        "variables": {},
+                        "node": {}
+                      },
+                      "required": [
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "opaque"
+                        },
+                        "payload": {}
+                      },
+                      "required": [
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ],
+                  "description": "Design tool context. Use the `figma` variant when the host has a Figma frame in scope; `opaque` is the escape hatch for other tools (Penpot, Sketch, screenshots)."
+                },
+                "muiPairing": {
+                  "type": "object",
+                  "properties": {
+                    "material": {
+                      "type": "string",
+                      "enum": [
+                        "v5",
+                        "v6",
+                        "v7",
+                        "v9"
+                      ],
+                      "description": "Material UI major version. v8 was skipped; valid values are v5, v6, v7, v9."
+                    },
+                    "muiX": {
+                      "type": "string",
+                      "enum": [
+                        "v5",
+                        "v6",
+                        "v7",
+                        "v8",
+                        "v9"
+                      ],
+                      "description": "MUI X products major version."
+                    }
+                  },
+                  "required": [
+                    "material",
+                    "muiX"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Target MUI / MUI X version pairing. Detect from the project's `package.json` (`@mui/material` and `@mui/x-data-grid` ranges) and pass accordingly. Omit to default to the latest stable pairing (currently Material UI v9 + MUI X v9)."
+                },
+                "model": {
+                  "type": "string",
+                  "description": "Optional model override; otherwise the backend default."
+                }
+              },
+              "required": [
+                "prompt"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "fetchDocs": {
+              "type": "object",
+              "properties": {
+                "urls": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "The list of URLs to fetch documentation from"
+                }
+              },
+              "required": [
+                "urls"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.0007920000061858445,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.0007909999985713512,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.021500000002561137,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "pass",
+      "durationMs": 0.0579169999982696,
+      "message": "Detected 1 potential egress target(s) and 1 potential state mutation(s) with low confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 2,
+          "diagnostics": [
+            "Egress entries: 1",
+            "State mutations: 1",
+            "Confidence: medium"
+          ],
+          "findings": [
+            {
+              "target": "Design tool context. Use the `figma` variant when the host has a Figma frame in scope; `opaque` is the escape hatch for other tools (Penpot, Sketch, screenshots).",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 4.121374999987893,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 2 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
+            "[pass] tool-response-content: No safe tool to invoke — content validation skipped.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "pass",
+      "durationMs": 2.978458000012324,
+      "message": "All 2 item(s) have good schema quality.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "pass",
+      "durationMs": 1.7558330000028946,
+      "message": "No security issues detected.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "pass",
+      "durationMs": 1.1940409999951953,
+      "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 93,
+    "grade": "A",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "schema-quality: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "security-lite: pass (100/100)",
+          "security: pass (100/100)",
+          "attack-sim: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 67,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: unsupported (50/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 895ms",
+          "p95 latency: 3ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 894.7137089999887,
+    "toolsListMs": 3.4265420000010636,
+    "promptsListMs": 0.0007920000061858445,
+    "resourcesListMs": 0.0007909999985713512
+  },
+  "runtimeProfile": {
+    "egress": [
+      {
+        "target": "Design tool context. Use the `figma` variant when the host has a Figma frame in scope; `opaque` is the escape hatch for other tools (Penpot, Sketch, screenshots).",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      }
+    ],
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-15T17:56:33.424Z",
+    "confidence": "medium"
+  }
+}

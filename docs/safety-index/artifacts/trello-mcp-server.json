@@ -1,0 +1,891 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "fail",
+  "runId": "run_2026-07-15T173008335Z_51a52f79",
+  "createdAt": "2026-07-15T17:30:08.336Z",
+  "toolVersion": "1.31.0",
+  "target": {
+    "targetId": "trello-mcp-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "trello-mcp-server"
+    ],
+    "serverName": "Trello MCP Server",
+    "serverVersion": "1.0.0"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 8,
+    "pass": 6,
+    "fail": 1,
+    "partial": 0,
+    "unsupported": 1,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "fail"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 7.199167000000216,
+      "message": "Advertised capability responded with the minimal expected shape (15 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 15,
+          "identifiers": [
+            "create-card",
+            "get-boards",
+            "get-lists",
+            "create-cards",
+            "move-card",
+            "add-comment",
+            "create-label",
+            "add-label",
+            "move-cards",
+            "add-comments",
+            "create-labels",
+            "add-labels",
+            "get-tickets-by-list",
+            "archive-card",
+            "archive-cards"
+          ],
+          "diagnostics": [],
+          "schemas": {
+            "create-card": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "listId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "listId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get-boards": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get-lists": {
+              "type": "object",
+              "properties": {
+                "boardId": {
+                  "type": "string",
+                  "description": "ID of the Trello board to get lists from"
+                }
+              },
+              "required": [
+                "boardId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "create-cards": {
+              "type": "object",
+              "properties": {
+                "cards": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "listId": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "listId"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "cards"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "move-card": {
+              "type": "object",
+              "properties": {
+                "cardId": {
+                  "type": "string",
+                  "description": "ID of the card to move"
+                },
+                "listId": {
+                  "type": "string",
+                  "description": "ID of the destination list"
+                },
+                "position": {
+                  "type": "string",
+                  "description": "Position in the list (e.g. \"top\", \"bottom\")"
+                }
+              },
+              "required": [
+                "cardId",
+                "listId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "add-comment": {
+              "type": "object",
+              "properties": {
+                "cardId": {
+                  "type": "string",
+                  "description": "ID of the card to comment on"
+                },
+                "text": {
+                  "type": "string",
+                  "description": "Comment text"
+                }
+              },
+              "required": [
+                "cardId",
+                "text"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "create-label": {
+              "type": "object",
+              "properties": {
+                "boardId": {
+                  "type": "string",
+                  "description": "ID of the board to create the label in"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Name of the label"
+                },
+                "color": {
+                  "type": "string",
+                  "enum": [
+                    "yellow",
+                    "purple",
+                    "blue",
+                    "red",
+                    "green",
+                    "orange",
+                    "black",
+                    "sky",
+                    "pink",
+                    "lime"
+                  ],
+                  "description": "Color of the label"
+                }
+              },
+              "required": [
+                "boardId",
+                "name",
+                "color"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "add-label": {
+              "type": "object",
+              "properties": {
+                "cardId": {
+                  "type": "string",
+                  "description": "ID of the card to add the label to"
+                },
+                "labelId": {
+                  "type": "string",
+                  "description": "ID of the label to add"
+                }
+              },
+              "required": [
+                "cardId",
+                "labelId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "move-cards": {
+              "type": "object",
+              "properties": {
+                "cards": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "cardId": {
+                        "type": "string",
+                        "description": "ID of the card to move"
+                      },
+                      "listId": {
+                        "type": "string",
+                        "description": "ID of the destination list"
+                      },
+                      "position": {
+                        "type": "string",
+                        "description": "Position in the list (e.g. \"top\", \"bottom\")"
+                      }
+                    },
+                    "required": [
+                      "cardId",
+                      "listId"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "cards"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "add-comments": {
+              "type": "object",
+              "properties": {
+                "comments": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "cardId": {
+                        "type": "string",
+                        "description": "ID of the card to comment on"
+                      },
+                      "text": {
+                        "type": "string",
+                        "description": "Comment text"
+                      }
+                    },
+                    "required": [
+                      "cardId",
+                      "text"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "comments"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "create-labels": {
+              "type": "object",
+              "properties": {
+                "labels": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "boardId": {
+                        "type": "string",
+                        "description": "ID of the board to create the label in"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Name of the label"
+                      },
+                      "color": {
+                        "type": "string",
+                        "enum": [
+                          "yellow",
+                          "purple",
+                          "blue",
+                          "red",
+                          "green",
+                          "orange",
+                          "black",
+                          "sky",
+                          "pink",
+                          "lime"
+                        ],
+                        "description": "Color of the label"
+                      }
+                    },
+                    "required": [
+                      "boardId",
+                      "name",
+                      "color"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "labels"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "add-labels": {
+              "type": "object",
+              "properties": {
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "cardId": {
+                        "type": "string",
+                        "description": "ID of the card to add the label to"
+                      },
+                      "labelId": {
+                        "type": "string",
+                        "description": "ID of the label to add"
+                      }
+                    },
+                    "required": [
+                      "cardId",
+                      "labelId"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "items"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get-tickets-by-list": {
+              "type": "object",
+              "properties": {
+                "listId": {
+                  "type": "string",
+                  "description": "ID of the list to get tickets from"
+                },
+                "limit": {
+                  "type": "number",
+                  "description": "Maximum number of cards to return"
+                }
+              },
+              "required": [
+                "listId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "archive-card": {
+              "type": "object",
+              "properties": {
+                "cardId": {
+                  "type": "string",
+                  "description": "ID of the card to archive"
+                }
+              },
+              "required": [
+                "cardId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "archive-cards": {
+              "type": "object",
+              "properties": {
+                "cardIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "IDs of the cards to archive"
+                }
+              },
+              "required": [
+                "cardIds"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.00437499999998181,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "pass",
+      "durationMs": 1.9390419999999722,
+      "message": "Advertised capability responded with the minimal expected shape (3 items).",
+      "evidence": [
+        {
+          "endpoint": "resources/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "trello://boards"
+          ],
+          "diagnostics": []
+        },
+        {
+          "endpoint": "resources/templates/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 2,
+          "identifiers": [
+            "trello://boards/{boardId}/lists",
+            "trello://lists/{listId}/cards"
+          ],
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.6637089999999262,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "pass",
+      "durationMs": 1.2563749999999345,
+      "message": "Detected 0 potential egress target(s) and 5 potential state mutation(s) with low confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 5,
+          "diagnostics": [
+            "Egress entries: 0",
+            "State mutations: 5",
+            "Confidence: medium"
+          ],
+          "findings": [
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 412.86137499999995,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 15 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: resources/list returned 1 resource(s).",
+            "[pass] tool-response-content: Tool \"get-boards\" response has valid content array.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "fail",
+      "durationMs": 1.2178329999997004,
+      "message": "Found 24 quality finding(s) across 16 item(s): 16 warnings, 8 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 24,
+          "identifiers": [
+            "create-card",
+            "get-boards",
+            "get-lists",
+            "create-cards",
+            "move-card",
+            "add-comment",
+            "create-label",
+            "add-label",
+            "move-cards",
+            "add-comments",
+            "create-labels",
+            "add-labels",
+            "get-tickets-by-list",
+            "archive-card",
+            "archive-cards",
+            "boards"
+          ],
+          "diagnostics": [
+            "[warning] tool \"create-card\": Missing description",
+            "[info] tool \"create-card\": Property 'name' missing description",
+            "[info] tool \"create-card\": Property 'description' missing description",
+            "[info] tool \"create-card\": Property 'listId' missing description",
+            "[warning] tool \"get-boards\": Missing description",
+            "[warning] tool \"get-lists\": Missing description",
+            "[warning] tool \"create-cards\": Missing description",
+            "[info] tool \"create-cards\": Property 'cards' missing description",
+            "[warning] tool \"move-card\": Missing description",
+            "[warning] tool \"add-comment\": Missing description",
+            "[warning] tool \"create-label\": Missing description",
+            "[warning] tool \"add-label\": Missing description",
+            "[warning] tool \"move-cards\": Missing description",
+            "[info] tool \"move-cards\": Property 'cards' missing description",
+            "[warning] tool \"add-comments\": Missing description",
+            "[info] tool \"add-comments\": Property 'comments' missing description",
+            "[warning] tool \"create-labels\": Missing description",
+            "[info] tool \"create-labels\": Property 'labels' missing description",
+            "[warning] tool \"add-labels\": Missing description",
+            "[info] tool \"add-labels\": Property 'items' missing description",
+            "[warning] tool \"get-tickets-by-list\": Missing description",
+            "[warning] tool \"archive-card\": Missing description",
+            "[warning] tool \"archive-cards\": Missing description",
+            "[warning] resource \"boards\": Missing description"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "create-card",
+              "issue": "Missing description",
+              "severity": "warning"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create-card",
+              "issue": "Property 'name' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create-card",
+              "issue": "Property 'description' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create-card",
+              "issue": "Property 'listId' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get-boards",
+              "issue": "Missing description",
+              "severity": "warning"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get-lists",
+              "issue": "Missing description",
+              "severity": "warning"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create-cards",
+              "issue": "Missing description",
+              "severity": "warning"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create-cards",
+              "issue": "Property 'cards' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "move-card",
+              "issue": "Missing description",
+              "severity": "warning"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "add-comment",
+              "issue": "Missing description",
+              "severity": "warning"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create-label",
+              "issue": "Missing description",
+              "severity": "warning"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "add-label",
+              "issue": "Missing description",
+              "severity": "warning"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "move-cards",
+              "issue": "Missing description",
+              "severity": "warning"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "move-cards",
+              "issue": "Property 'cards' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "add-comments",
+              "issue": "Missing description",
+              "severity": "warning"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "add-comments",
+              "issue": "Property 'comments' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create-labels",
+              "issue": "Missing description",
+              "severity": "warning"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create-labels",
+              "issue": "Property 'labels' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "add-labels",
+              "issue": "Missing description",
+              "severity": "warning"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "add-labels",
+              "issue": "Property 'items' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get-tickets-by-list",
+              "issue": "Missing description",
+              "severity": "warning"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "archive-card",
+              "issue": "Missing description",
+              "severity": "warning"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "archive-cards",
+              "issue": "Missing description",
+              "severity": "warning"
+            },
+            {
+              "itemType": "resource",
+              "itemName": "boards",
+              "issue": "Missing description",
+              "severity": "warning"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "pass",
+      "durationMs": 2.587665999999899,
+      "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 77,
+    "grade": "C",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 0,
+        "details": [
+          "schema-quality: fail (0/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "security-lite: pass (100/100)",
+          "attack-sim: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 83,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 2658ms",
+          "p95 latency: 7ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 2657.933958,
+    "toolsListMs": 7.199167000000216,
+    "promptsListMs": 0.00437499999998181,
+    "resourcesListMs": 1.9390419999999722
+  },
+  "runtimeProfile": {
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-15T17:30:11.006Z",
+    "confidence": "medium"
+  }
+}

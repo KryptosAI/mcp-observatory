@@ -1,0 +1,1688 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "fail",
+  "runId": "run_2026-07-15T173020307Z_5defa575",
+  "createdAt": "2026-07-15T17:30:20.307Z",
+  "toolVersion": "1.31.0",
+  "target": {
+    "targetId": "confluence-mcp-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "confluence-mcp-server"
+    ],
+    "serverName": "confluence-mcp-server",
+    "serverVersion": "1.3.3"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 8,
+    "pass": 2,
+    "fail": 1,
+    "partial": 3,
+    "unsupported": 2,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "fail"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 43.93095799999992,
+      "message": "Advertised capability responded with the minimal expected shape (25 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 25,
+          "identifiers": [
+            "confluence_configure_connection",
+            "confluence_get_connection_status",
+            "confluence_get_current_user",
+            "confluence_search_pages",
+            "confluence_execute_cql_search",
+            "confluence_get_page",
+            "confluence_get_page_outline",
+            "confluence_get_page_section",
+            "confluence_get_page_anchor_block",
+            "confluence_create_page",
+            "confluence_update_page",
+            "confluence_update_page_section",
+            "confluence_preview_page_section_update",
+            "confluence_update_page_section_confirmed",
+            "confluence_stage_page_update",
+            "confluence_stage_page_section_update",
+            "confluence_stage_page_anchor_block_update",
+            "confluence_list_pending_page_updates",
+            "confluence_get_pending_page_update",
+            "confluence_discard_pending_page_update",
+            "confluence_commit_pending_page_update",
+            "confluence_add_anchor_block_to_section",
+            "confluence_preview_page_anchor_block_update",
+            "confluence_update_page_anchor_block_confirmed",
+            "confluence_upload_attachment"
+          ],
+          "diagnostics": [
+            "[confluence-mcp] No CONF_* connection env vars found; starting unconfigured.",
+            "[confluence-mcp] Server running on stdio"
+          ],
+          "schemas": {
+            "confluence_configure_connection": {
+              "type": "object",
+              "properties": {
+                "baseUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Confluence base URL, for example https://confluence.example.com. Required for first configuration; omitted values inherit the current connection."
+                },
+                "mode": {
+                  "type": "string",
+                  "enum": [
+                    "cloud",
+                    "server",
+                    "dc",
+                    "datacenter",
+                    "data-center"
+                  ],
+                  "description": "Deployment mode (default server). dc/datacenter map to server."
+                },
+                "authMode": {
+                  "type": "string",
+                  "enum": [
+                    "auto",
+                    "basic",
+                    "bearer"
+                  ],
+                  "description": "Authentication mode (default auto). Cloud always uses Basic."
+                },
+                "username": {
+                  "type": "string",
+                  "description": "Login username or Cloud email address."
+                },
+                "token": {
+                  "type": "string",
+                  "description": "Access token. Cloud treats this as an API token; Server auto mode treats it as Bearer."
+                },
+                "password": {
+                  "type": "string",
+                  "description": "Password. Server auto/basic mode uses this with username."
+                },
+                "defaultSpace": {
+                  "type": "string",
+                  "description": "Default Confluence space key used when a tool omits spaceKey."
+                },
+                "verify": {
+                  "type": "boolean",
+                  "description": "Verify credentials by calling whoami after configuring (default true)."
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_get_connection_status": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_get_current_user": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_search_pages": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "description": "Search keywords (optional, empty string means only space/type filter)"
+                },
+                "spaceKey": {
+                  "type": "string",
+                  "description": "Confluence space key (uses CONF_DEFAULT_SPACE if omitted)"
+                },
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 25,
+                  "description": "Max results to return (default 10, max 25)"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_execute_cql_search": {
+              "type": "object",
+              "properties": {
+                "cql": {
+                  "type": "string",
+                  "description": "Raw Confluence CQL expression"
+                },
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 50,
+                  "description": "Max results to return (default 10, max 50)"
+                },
+                "expand": {
+                  "type": "string",
+                  "description": "Comma-separated expand fields (default: space,version)"
+                }
+              },
+              "required": [
+                "cql"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_get_page": {
+              "type": "object",
+              "properties": {
+                "pageId": {
+                  "type": "string",
+                  "description": "Confluence page ID"
+                },
+                "expand": {
+                  "type": "string",
+                  "description": "Comma-separated expand fields (default: body.storage,version,space)"
+                }
+              },
+              "required": [
+                "pageId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_get_page_outline": {
+              "type": "object",
+              "properties": {
+                "pageId": {
+                  "type": "string",
+                  "description": "Confluence page ID"
+                }
+              },
+              "required": [
+                "pageId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_get_page_section": {
+              "type": "object",
+              "properties": {
+                "pageId": {
+                  "type": "string",
+                  "description": "Confluence page ID"
+                },
+                "heading": {
+                  "type": "string",
+                  "description": "Heading text used to locate the target section"
+                },
+                "occurrence": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "When the same heading appears multiple times, choose which occurrence (default 1)"
+                },
+                "includeHeading": {
+                  "type": "boolean",
+                  "description": "Include the heading tag in the returned section (default true)"
+                },
+                "matchMode": {
+                  "type": "string",
+                  "enum": [
+                    "exact",
+                    "contains"
+                  ],
+                  "description": "Heading match mode: exact or contains (default exact)"
+                }
+              },
+              "required": [
+                "pageId",
+                "heading"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_get_page_anchor_block": {
+              "type": "object",
+              "properties": {
+                "pageId": {
+                  "type": "string",
+                  "description": "Confluence page ID"
+                },
+                "startAnchor": {
+                  "type": "string",
+                  "description": "Start anchor name"
+                },
+                "endAnchor": {
+                  "type": "string",
+                  "description": "End anchor name"
+                }
+              },
+              "required": [
+                "pageId",
+                "startAnchor",
+                "endAnchor"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_create_page": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "Page title"
+                },
+                "bodyStorageValue": {
+                  "type": "string",
+                  "description": "Page body in Confluence storage format (XHTML)"
+                },
+                "spaceKey": {
+                  "type": "string",
+                  "description": "Confluence space key (uses CONF_DEFAULT_SPACE if omitted)"
+                },
+                "parentId": {
+                  "type": "string",
+                  "description": "Optional parent page ID (ancestor)"
+                }
+              },
+              "required": [
+                "title",
+                "bodyStorageValue"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_update_page": {
+              "type": "object",
+              "properties": {
+                "pageId": {
+                  "type": "string",
+                  "description": "Confluence page ID"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "New page title (keeps current title if omitted)"
+                },
+                "bodyStorageValue": {
+                  "type": "string",
+                  "description": "New page body in Confluence storage format (XHTML)"
+                },
+                "minorEdit": {
+                  "type": "boolean",
+                  "description": "Whether this is a minor edit (default true)"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Version update message / change comment"
+                }
+              },
+              "required": [
+                "pageId",
+                "bodyStorageValue"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_update_page_section": {
+              "type": "object",
+              "properties": {
+                "pageId": {
+                  "type": "string",
+                  "description": "Confluence page ID"
+                },
+                "heading": {
+                  "type": "string",
+                  "description": "Heading text used to locate the target section"
+                },
+                "sectionStorageValue": {
+                  "type": "string",
+                  "description": "Replacement storage XHTML for the target section"
+                },
+                "occurrence": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "When the same heading appears multiple times, choose which occurrence (default 1)"
+                },
+                "includeHeading": {
+                  "type": "boolean",
+                  "description": "When true replace from the heading tag itself; when false only replace the body below it (default true)"
+                },
+                "matchMode": {
+                  "type": "string",
+                  "enum": [
+                    "exact",
+                    "contains"
+                  ],
+                  "description": "Heading match mode: exact or contains (default exact)"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "New page title (keeps current title if omitted)"
+                },
+                "minorEdit": {
+                  "type": "boolean",
+                  "description": "Whether this is a minor edit (default true)"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Version update message / change comment"
+                }
+              },
+              "required": [
+                "pageId",
+                "heading",
+                "sectionStorageValue"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_preview_page_section_update": {
+              "type": "object",
+              "properties": {
+                "pageId": {
+                  "type": "string",
+                  "description": "Confluence page ID"
+                },
+                "heading": {
+                  "type": "string",
+                  "description": "Heading text used to locate the target section"
+                },
+                "sectionStorageValue": {
+                  "type": "string",
+                  "description": "Proposed replacement storage XHTML for the target section"
+                },
+                "occurrence": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "When the same heading appears multiple times, choose which occurrence (default 1)"
+                },
+                "includeHeading": {
+                  "type": "boolean",
+                  "description": "Include the heading tag in the previewed replace range (default true)"
+                },
+                "matchMode": {
+                  "type": "string",
+                  "enum": [
+                    "exact",
+                    "contains"
+                  ],
+                  "description": "Heading match mode: exact or contains (default exact)"
+                }
+              },
+              "required": [
+                "pageId",
+                "heading",
+                "sectionStorageValue"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_update_page_section_confirmed": {
+              "type": "object",
+              "properties": {
+                "pageId": {
+                  "type": "string",
+                  "description": "Confluence page ID"
+                },
+                "heading": {
+                  "type": "string",
+                  "description": "Heading text used to locate the target section"
+                },
+                "sectionStorageValue": {
+                  "type": "string",
+                  "description": "Replacement storage XHTML for the target section"
+                },
+                "expectedCurrentHash": {
+                  "type": "string",
+                  "description": "Hash returned by confluence_preview_page_section_update"
+                },
+                "occurrence": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "When the same heading appears multiple times, choose which occurrence (default 1)"
+                },
+                "includeHeading": {
+                  "type": "boolean",
+                  "description": "When true replace from the heading tag itself; when false only replace the body below it (default true)"
+                },
+                "matchMode": {
+                  "type": "string",
+                  "enum": [
+                    "exact",
+                    "contains"
+                  ],
+                  "description": "Heading match mode: exact or contains (default exact)"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "New page title (keeps current title if omitted)"
+                },
+                "minorEdit": {
+                  "type": "boolean",
+                  "description": "Whether this is a minor edit (default true)"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Version update message / change comment"
+                }
+              },
+              "required": [
+                "pageId",
+                "heading",
+                "sectionStorageValue",
+                "expectedCurrentHash"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_stage_page_update": {
+              "type": "object",
+              "properties": {
+                "pageId": {
+                  "type": "string",
+                  "description": "Confluence page ID"
+                },
+                "bodyStorageValue": {
+                  "type": "string",
+                  "description": "Proposed new page body in Confluence storage format (XHTML)"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Proposed new page title (keeps current title if omitted)"
+                }
+              },
+              "required": [
+                "pageId",
+                "bodyStorageValue"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_stage_page_section_update": {
+              "type": "object",
+              "properties": {
+                "pageId": {
+                  "type": "string",
+                  "description": "Confluence page ID"
+                },
+                "heading": {
+                  "type": "string",
+                  "description": "Heading text used to locate the target section"
+                },
+                "sectionStorageValue": {
+                  "type": "string",
+                  "description": "Proposed replacement storage XHTML for the target section"
+                },
+                "occurrence": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "When the same heading appears multiple times, choose which occurrence (default 1)"
+                },
+                "includeHeading": {
+                  "type": "boolean",
+                  "description": "When true replace from the heading tag itself; when false only replace the body below it (default true)"
+                },
+                "matchMode": {
+                  "type": "string",
+                  "enum": [
+                    "exact",
+                    "contains"
+                  ],
+                  "description": "Heading match mode: exact or contains (default exact)"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Proposed new page title (keeps current title if omitted)"
+                }
+              },
+              "required": [
+                "pageId",
+                "heading",
+                "sectionStorageValue"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_stage_page_anchor_block_update": {
+              "type": "object",
+              "properties": {
+                "pageId": {
+                  "type": "string",
+                  "description": "Confluence page ID"
+                },
+                "startAnchor": {
+                  "type": "string",
+                  "description": "Start anchor name"
+                },
+                "endAnchor": {
+                  "type": "string",
+                  "description": "End anchor name"
+                },
+                "blockStorageValue": {
+                  "type": "string",
+                  "description": "Proposed replacement storage XHTML between the two anchors"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Proposed new page title (keeps current title if omitted)"
+                }
+              },
+              "required": [
+                "pageId",
+                "startAnchor",
+                "endAnchor",
+                "blockStorageValue"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_list_pending_page_updates": {
+              "type": "object",
+              "properties": {
+                "pageId": {
+                  "type": "string",
+                  "description": "Only list pending updates for this Confluence page ID"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_get_pending_page_update": {
+              "type": "object",
+              "properties": {
+                "draftId": {
+                  "type": "string",
+                  "description": "Draft ID returned by a stage tool"
+                }
+              },
+              "required": [
+                "draftId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_discard_pending_page_update": {
+              "type": "object",
+              "properties": {
+                "draftId": {
+                  "type": "string",
+                  "description": "Draft ID returned by a stage tool"
+                }
+              },
+              "required": [
+                "draftId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_commit_pending_page_update": {
+              "type": "object",
+              "properties": {
+                "draftId": {
+                  "type": "string",
+                  "description": "Draft ID returned by a stage tool"
+                },
+                "minorEdit": {
+                  "type": "boolean",
+                  "description": "Whether this is a minor edit (default true)"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Version update message / change comment"
+                }
+              },
+              "required": [
+                "draftId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_add_anchor_block_to_section": {
+              "type": "object",
+              "properties": {
+                "pageId": {
+                  "type": "string",
+                  "description": "Confluence page ID"
+                },
+                "heading": {
+                  "type": "string",
+                  "description": "Heading text used to locate the section"
+                },
+                "startAnchor": {
+                  "type": "string",
+                  "description": "Start anchor name to insert before the section"
+                },
+                "endAnchor": {
+                  "type": "string",
+                  "description": "End anchor name to insert after the section"
+                },
+                "occurrence": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "When the same heading appears multiple times, choose which occurrence (default 1)"
+                },
+                "matchMode": {
+                  "type": "string",
+                  "enum": [
+                    "exact",
+                    "contains"
+                  ],
+                  "description": "Heading match mode: exact or contains (default exact)"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "New page title (keeps current title if omitted)"
+                },
+                "minorEdit": {
+                  "type": "boolean",
+                  "description": "Whether this is a minor edit (default true)"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Version update message / change comment"
+                }
+              },
+              "required": [
+                "pageId",
+                "heading",
+                "startAnchor",
+                "endAnchor"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_preview_page_anchor_block_update": {
+              "type": "object",
+              "properties": {
+                "pageId": {
+                  "type": "string",
+                  "description": "Confluence page ID"
+                },
+                "startAnchor": {
+                  "type": "string",
+                  "description": "Start anchor name"
+                },
+                "endAnchor": {
+                  "type": "string",
+                  "description": "End anchor name"
+                },
+                "blockStorageValue": {
+                  "type": "string",
+                  "description": "Proposed replacement storage XHTML between the two anchors"
+                }
+              },
+              "required": [
+                "pageId",
+                "startAnchor",
+                "endAnchor",
+                "blockStorageValue"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_update_page_anchor_block_confirmed": {
+              "type": "object",
+              "properties": {
+                "pageId": {
+                  "type": "string",
+                  "description": "Confluence page ID"
+                },
+                "startAnchor": {
+                  "type": "string",
+                  "description": "Start anchor name"
+                },
+                "endAnchor": {
+                  "type": "string",
+                  "description": "End anchor name"
+                },
+                "blockStorageValue": {
+                  "type": "string",
+                  "description": "Replacement storage XHTML between the two anchors"
+                },
+                "expectedCurrentHash": {
+                  "type": "string",
+                  "description": "Hash returned by confluence_preview_page_anchor_block_update"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "New page title (keeps current title if omitted)"
+                },
+                "minorEdit": {
+                  "type": "boolean",
+                  "description": "Whether this is a minor edit (default true)"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Version update message / change comment"
+                }
+              },
+              "required": [
+                "pageId",
+                "startAnchor",
+                "endAnchor",
+                "blockStorageValue",
+                "expectedCurrentHash"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "confluence_upload_attachment": {
+              "type": "object",
+              "properties": {
+                "pageId": {
+                  "type": "string",
+                  "description": "Confluence page ID"
+                },
+                "filePath": {
+                  "type": "string",
+                  "description": "Local file path to upload from the MCP server machine"
+                },
+                "base64Data": {
+                  "type": "string",
+                  "description": "Base64 file content, optionally as a data URL"
+                },
+                "fileName": {
+                  "type": "string",
+                  "description": "Attachment file name. Required for base64Data; defaults to basename(filePath)"
+                },
+                "contentType": {
+                  "type": "string",
+                  "description": "MIME type such as image/png. Inferred from fileName when omitted"
+                },
+                "comment": {
+                  "type": "string",
+                  "description": "Attachment version comment"
+                },
+                "minorEdit": {
+                  "type": "boolean",
+                  "description": "Whether this attachment version is a minor edit (default true)"
+                },
+                "overwrite": {
+                  "type": "boolean",
+                  "description": "Update same-name attachment as a new version when true (default true); fail on duplicates when false"
+                }
+              },
+              "required": [
+                "pageId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.004500000000007276,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.002167000000099506,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "fail",
+      "durationMs": 0.7640000000001237,
+      "message": "Found 1 security finding(s): 1 high, 0 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "confluence_execute_cql_search"
+          ],
+          "diagnostics": [
+            "[high] Tool \"confluence_execute_cql_search\" name suggests command execution capability."
+          ],
+          "findings": [
+            {
+              "ruleId": "shell-injection",
+              "severity": "high",
+              "toolName": "confluence_execute_cql_search",
+              "message": "Tool \"confluence_execute_cql_search\" name suggests command execution capability."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "partial",
+      "durationMs": 3.625,
+      "message": "Detected 6 potential egress target(s) and 44 potential state mutation(s) with high confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 50,
+          "diagnostics": [
+            "Egress entries: 6",
+            "State mutations: 44",
+            "Confidence: high"
+          ],
+          "findings": [
+            {
+              "target": "baseUrl",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "Confluence base URL, for example https://confluence.example.com. Required for first configuration; omitted values inherit the current connection.",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "Access token. Cloud treats this as an API token; Server auto mode treats it as Bearer.",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "confluence_search_pages",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "confluence_execute_cql_search",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "Base64 file content, optionally as a data URL",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 20.8940419999999,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 25 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
+            "[pass] tool-response-content: Tool \"confluence_configure_connection\" response has valid content array.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "partial",
+      "durationMs": 1.445292000000336,
+      "message": "Found 3 quality finding(s) across 25 item(s): 0 warnings, 3 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 3,
+          "identifiers": [
+            "confluence_configure_connection",
+            "confluence_search_pages",
+            "confluence_list_pending_page_updates"
+          ],
+          "diagnostics": [
+            "[info] tool \"confluence_configure_connection\": Has properties but no 'required' array declared",
+            "[info] tool \"confluence_search_pages\": Has properties but no 'required' array declared",
+            "[info] tool \"confluence_list_pending_page_updates\": Has properties but no 'required' array declared"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "confluence_configure_connection",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "confluence_search_pages",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "confluence_list_pending_page_updates",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "partial",
+      "durationMs": 4.334292000000005,
+      "message": "Safe attack simulation found 1 finding(s): 0 high, 1 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "confluence_upload_attachment"
+          ],
+          "diagnostics": [
+            "[medium] Tool \"confluence_upload_attachment\" combines broad parameters (filePath, fileName) with destructive or non-read-only behavior."
+          ],
+          "findings": [
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "confluence_upload_attachment",
+              "message": "Tool \"confluence_upload_attachment\" combines broad parameters (filePath, fileName) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "filePath",
+                  "fileName"
+                ],
+                "description": "Upload an attachment to a Confluence page. Supports local filePath or base64Data; same-name files are updated by default. Returns attachment fields and image storage markup when applicable."
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "gate"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 71,
+    "grade": "C",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "schema-quality: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 30,
+        "details": [
+          "security-lite: fail (0/100)",
+          "attack-sim: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 67,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: unsupported (50/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 2362ms",
+          "p95 latency: 44ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 2362.237458,
+    "toolsListMs": 43.93095799999992,
+    "promptsListMs": 0.004500000000007276,
+    "resourcesListMs": 0.002167000000099506
+  },
+  "runtimeProfile": {
+    "egress": [
+      {
+        "target": "baseUrl",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "Confluence base URL, for example https://confluence.example.com. Required for first configuration; omitted values inherit the current connection.",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "Access token. Cloud treats this as an API token; Server auto mode treats it as Bearer.",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "confluence_search_pages",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "confluence_execute_cql_search",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "Base64 file content, optionally as a data URL",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      }
+    ],
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-15T17:30:22.732Z",
+    "confidence": "high"
+  }
+}

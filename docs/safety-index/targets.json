@@ -873,5 +873,1297 @@
     "failureClass": "Contact/relationship boundary",
     "whyItMatters": "Clay MCP servers can access contact data, enrichment, and relationship intelligence — agents could read or modify CRM records with personal and business contact data.",
     "reproductionNotes": "Schema-only evaluation; requires Clay API credentials. Note: @anthropic/mcp-server-clay has not been published to npm. Community equivalent: @clayhq/clay-mcp."
+  },
+  {
+    "id": "dalle-server",
+    "name": "DALL-E MCP server",
+    "repo": "https://www.npmjs.com/package/dalle-mcp-server",
+    "packageName": "dalle-mcp-server",
+    "category": "Media / Image Generation",
+    "command": "npx",
+    "args": [
+      "-y",
+      "dalle-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Image generation API access",
+    "failureClass": "Image generation boundary",
+    "whyItMatters": "DALL-E MCP servers can generate, edit, and manipulate images via AI — agents with image generation access need visible boundaries around content creation.",
+    "reproductionNotes": "Schema-only evaluation; requires OpenAI API key for full image generation scan. Community package; verify npm availability."
+  },
+  {
+    "id": "stable-diffusion-server",
+    "name": "Stable Diffusion MCP server",
+    "repo": "https://www.npmjs.com/package/stable-diffusion-mcp-server",
+    "packageName": "stable-diffusion-mcp-server",
+    "category": "Media / Image Generation",
+    "command": "npx",
+    "args": [
+      "-y",
+      "stable-diffusion-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Image generation model access",
+    "failureClass": "Model inference boundary",
+    "whyItMatters": "Stable Diffusion MCP servers expose text-to-image generation to agents — content moderation and compute resource boundaries need review.",
+    "reproductionNotes": "Schema-only evaluation; requires Stability AI API key or local model for full scan. Community package; verify npm availability."
+  },
+  {
+    "id": "yahoo-finance-server",
+    "name": "Yahoo Finance MCP server",
+    "repo": "https://www.npmjs.com/package/yahoo-finance-mcp",
+    "packageName": "yahoo-finance-mcp",
+    "category": "Finance / Trading",
+    "command": "npx",
+    "args": [
+      "-y",
+      "yahoo-finance-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Financial data retrieval",
+    "failureClass": "Market data boundary",
+    "whyItMatters": "Yahoo Finance MCP servers expose stock quotes, historical data, and market analytics — agents consuming financial data need visibility into data sources and freshness.",
+    "reproductionNotes": "Schema-only evaluation; full market data queries may require API key or rate limits. Community package; verify npm availability."
+  },
+  {
+    "id": "alpaca-server",
+    "name": "Alpaca Trading MCP server",
+    "repo": "https://www.npmjs.com/package/@alpacahq/alpaca-mcp-server",
+    "packageName": "@alpacahq/alpaca-mcp-server",
+    "category": "Finance / Trading",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@alpacahq/alpaca-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Trading API execution",
+    "failureClass": "Trade execution boundary",
+    "whyItMatters": "Alpaca MCP servers can place trades, manage portfolios, and access brokerage accounts — agents with trading permissions need strict guardrails around financial transactions.",
+    "reproductionNotes": "Schema-only evaluation; requires Alpaca API key and secret for full scan. Community package; verify npm availability."
+  },
+  {
+    "id": "raspberrypi-server",
+    "name": "Raspberry Pi MCP server",
+    "repo": "https://www.npmjs.com/package/raspberrypi-mcp-server",
+    "packageName": "raspberrypi-mcp-server",
+    "category": "IoT / Hardware",
+    "command": "npx",
+    "args": [
+      "-y",
+      "raspberrypi-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Physical device control",
+    "failureClass": "GPIO/hardware boundary",
+    "whyItMatters": "Raspberry Pi MCP servers can control GPIO pins, sensors, and actuators — agents with hardware access can interact with the physical world.",
+    "reproductionNotes": "Schema-only evaluation; requires Raspberry Pi hardware or simulator for full scan. Community package; verify npm availability."
+  },
+  {
+    "id": "homekit-server",
+    "name": "HomeKit MCP server",
+    "repo": "https://www.npmjs.com/package/homekit-mcp-server",
+    "packageName": "homekit-mcp-server",
+    "category": "IoT / Hardware",
+    "command": "npx",
+    "args": [
+      "-y",
+      "homekit-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Smart home device control",
+    "failureClass": "Home automation boundary",
+    "whyItMatters": "HomeKit MCP servers can control lights, locks, thermostats, and cameras — agents with smart home access need clear safety boundaries for physical devices.",
+    "reproductionNotes": "Schema-only evaluation; requires HomeKit bridge or simulator for full scan. Community package; verify npm availability."
+  },
+  {
+    "id": "minecraft-server",
+    "name": "Minecraft MCP server",
+    "repo": "https://www.npmjs.com/package/minecraft-mcp-server",
+    "packageName": "minecraft-mcp-server",
+    "category": "Gaming",
+    "command": "npx",
+    "args": [
+      "-y",
+      "minecraft-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Game world mutation",
+    "failureClass": "Game state boundary",
+    "whyItMatters": "Minecraft MCP servers can place blocks, spawn entities, and modify game worlds — agents with game world access need boundaries around destructive operations.",
+    "reproductionNotes": "Schema-only evaluation; requires Minecraft server connection for full scan. Community package; verify npm availability."
+  },
+  {
+    "id": "unity-server",
+    "name": "Unity MCP server",
+    "repo": "https://www.npmjs.com/package/unity-mcp-server",
+    "packageName": "unity-mcp-server",
+    "category": "Gaming",
+    "command": "npx",
+    "args": [
+      "-y",
+      "unity-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Game engine control",
+    "failureClass": "Game engine boundary",
+    "whyItMatters": "Unity MCP servers can create scenes, modify assets, and control game objects — agents with engine access can alter game logic and build pipelines.",
+    "reproductionNotes": "Schema-only evaluation; requires Unity Editor connection for full scan. Community package; verify npm availability."
+  },
+  {
+    "id": "fhir-server",
+    "name": "FHIR MCP server",
+    "repo": "https://www.npmjs.com/package/fhir-mcp-server",
+    "packageName": "fhir-mcp-server",
+    "category": "Healthcare",
+    "command": "npx",
+    "args": [
+      "-y",
+      "fhir-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Protected health information access",
+    "failureClass": "Patient data boundary",
+    "whyItMatters": "FHIR MCP servers expose patient records, clinical data, and healthcare workflows — agents handling PHI need HIPAA-compliant access boundaries.",
+    "reproductionNotes": "Schema-only evaluation; requires FHIR endpoint and authentication for full scan. Community package; verify npm availability."
+  },
+  {
+    "id": "epic-server",
+    "name": "Epic EHR MCP server",
+    "repo": "https://www.npmjs.com/package/epic-mcp-server",
+    "packageName": "epic-mcp-server",
+    "category": "Healthcare",
+    "command": "npx",
+    "args": [
+      "-y",
+      "epic-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Electronic health record access",
+    "failureClass": "EHR record boundary",
+    "whyItMatters": "Epic MCP servers can access electronic health records, prescriptions, and clinical workflows — agents with EHR access handle sensitive medical data.",
+    "reproductionNotes": "Schema-only evaluation; requires Epic FHIR endpoint and OAuth credentials for full scan. Community package; verify npm availability."
+  },
+  {
+    "id": "caselaw-server",
+    "name": "Case Law Search MCP server",
+    "repo": "https://www.npmjs.com/package/caselaw-mcp-server",
+    "packageName": "caselaw-mcp-server",
+    "category": "Legal",
+    "command": "npx",
+    "args": [
+      "-y",
+      "caselaw-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Legal research data access",
+    "failureClass": "Legal content retrieval boundary",
+    "whyItMatters": "Case law MCP servers retrieve court opinions, statutes, and legal precedents — agents providing legal research need visible citation accuracy boundaries.",
+    "reproductionNotes": "Schema-only evaluation; requires legal database API key for full search scan. Community package; verify npm availability."
+  },
+  {
+    "id": "contract-analysis-server",
+    "name": "Contract Analysis MCP server",
+    "repo": "https://www.npmjs.com/package/contract-analysis-mcp",
+    "packageName": "contract-analysis-mcp",
+    "category": "Legal",
+    "command": "npx",
+    "args": [
+      "-y",
+      "contract-analysis-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Contract data processing",
+    "failureClass": "Document analysis boundary",
+    "whyItMatters": "Contract analysis MCP servers parse, summarize, and extract clauses from legal documents — agents handling contracts need boundaries around confidential document data.",
+    "reproductionNotes": "Schema-only evaluation; requires API key or document upload for full scan. Community package; verify npm availability."
+  },
+  {
+    "id": "canvas-server",
+    "name": "Canvas LMS MCP server",
+    "repo": "https://www.npmjs.com/package/canvas-mcp-server",
+    "packageName": "canvas-mcp-server",
+    "category": "Education",
+    "command": "npx",
+    "args": [
+      "-y",
+      "canvas-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Learning management system access",
+    "failureClass": "Course/grade boundary",
+    "whyItMatters": "Canvas MCP servers can access courses, assignments, grades, and student data — agents with LMS access handle FERPA-protected education records.",
+    "reproductionNotes": "Schema-only evaluation; requires Canvas instance URL and API token for full scan. Community package; verify npm availability."
+  },
+  {
+    "id": "khan-academy-server",
+    "name": "Khan Academy MCP server",
+    "repo": "https://www.npmjs.com/package/khan-academy-mcp",
+    "packageName": "khan-academy-mcp",
+    "category": "Education",
+    "command": "npx",
+    "args": [
+      "-y",
+      "khan-academy-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Educational content retrieval",
+    "failureClass": "Learning content boundary",
+    "whyItMatters": "Khan Academy MCP servers expose courses, exercises, and learning progress — agents serving educational content need content accuracy and student privacy boundaries.",
+    "reproductionNotes": "Schema-only evaluation; requires Khan Academy API credentials for full scan. Community package; verify npm availability."
+  },
+  {
+    "id": "zillow-server",
+    "name": "Zillow MCP server",
+    "repo": "https://www.npmjs.com/package/zillow-mcp-server",
+    "packageName": "zillow-mcp-server",
+    "category": "Real Estate",
+    "command": "npx",
+    "args": [
+      "-y",
+      "zillow-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Property data retrieval",
+    "failureClass": "Property listing boundary",
+    "whyItMatters": "Zillow MCP servers retrieve property listings, valuations, and market data — agents consuming real estate data need visible data freshness and accuracy boundaries.",
+    "reproductionNotes": "Schema-only evaluation; requires Zillow API key or web scraping for full scan. Community package; verify npm availability."
+  },
+  {
+    "id": "mls-server",
+    "name": "MLS Real Estate MCP server",
+    "repo": "https://www.npmjs.com/package/mls-mcp-server",
+    "packageName": "mls-mcp-server",
+    "category": "Real Estate",
+    "command": "npx",
+    "args": [
+      "-y",
+      "mls-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Multiple listing service access",
+    "failureClass": "MLS data boundary",
+    "whyItMatters": "MLS MCP servers expose property listings, agent data, and transaction history — agents with MLS access handle regulated real estate data.",
+    "reproductionNotes": "Schema-only evaluation; requires MLS credentials and board authorization for full scan. Community package; verify npm availability."
+  },
+  {
+    "id": "flight-server",
+    "name": "Flight API MCP server",
+    "repo": "https://www.npmjs.com/package/flight-mcp-server",
+    "packageName": "flight-mcp-server",
+    "category": "Travel",
+    "command": "npx",
+    "args": [
+      "-y",
+      "flight-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Travel booking API access",
+    "failureClass": "Flight search boundary",
+    "whyItMatters": "Flight MCP servers search, compare, and book flights through airline APIs — agents with booking access need payment and itinerary confirmation boundaries.",
+    "reproductionNotes": "Schema-only evaluation; requires flight API key (Amadeus/Skyscanner) for full search scan. Community package; verify npm availability."
+  },
+  {
+    "id": "hotel-booking-server",
+    "name": "Hotel Booking MCP server",
+    "repo": "https://www.npmjs.com/package/hotel-booking-mcp",
+    "packageName": "hotel-booking-mcp",
+    "category": "Travel",
+    "command": "npx",
+    "args": [
+      "-y",
+      "hotel-booking-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Hospitality booking API access",
+    "failureClass": "Hotel reservation boundary",
+    "whyItMatters": "Hotel booking MCP servers search rooms, check availability, and book reservations — agents with booking access handle reservation commitments and payment data.",
+    "reproductionNotes": "Schema-only evaluation; requires hotel API key for full booking scan. Community package; verify npm availability."
+  },
+  {
+    "id": "openweather-server",
+    "name": "OpenWeather MCP server",
+    "repo": "https://www.npmjs.com/package/openweather-mcp-server",
+    "packageName": "openweather-mcp-server",
+    "category": "Weather",
+    "command": "npx",
+    "args": [
+      "-y",
+      "openweather-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Weather data retrieval",
+    "failureClass": "Weather data boundary",
+    "whyItMatters": "OpenWeather MCP servers expose current conditions, forecasts, and alerts — agents using weather data need clear data source and timeliness boundaries.",
+    "reproductionNotes": "Schema-only evaluation; requires OpenWeather API key for full forecast scan. Community package; verify npm availability."
+  },
+  {
+    "id": "weather-server",
+    "name": "Weather.com MCP server",
+    "repo": "https://www.npmjs.com/package/weather-mcp-server",
+    "packageName": "weather-mcp-server",
+    "category": "Weather",
+    "command": "npx",
+    "args": [
+      "-y",
+      "weather-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Weather data retrieval",
+    "failureClass": "Weather forecast boundary",
+    "whyItMatters": "Weather MCP servers retrieve forecasts, radar maps, and severe weather alerts — agents providing weather information to users need accuracy verification boundaries.",
+    "reproductionNotes": "Schema-only evaluation; requires Weather API key for full forecast scan. Community package; verify npm availability."
+  },
+  {
+    "id": "espn-server",
+    "name": "ESPN MCP server",
+    "repo": "https://www.npmjs.com/package/espn-mcp-server",
+    "packageName": "espn-mcp-server",
+    "category": "Sports",
+    "command": "npx",
+    "args": [
+      "-y",
+      "espn-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Sports data retrieval",
+    "failureClass": "Sports content boundary",
+    "whyItMatters": "ESPN MCP servers retrieve scores, schedules, standings, and news — agents serving sports data need content licensing and accuracy boundaries.",
+    "reproductionNotes": "Schema-only evaluation; requires ESPN API key for full data scan. Community package; verify npm availability."
+  },
+  {
+    "id": "spotify-server",
+    "name": "Spotify MCP server",
+    "repo": "https://www.npmjs.com/package/spotify-mcp-server",
+    "packageName": "spotify-mcp-server",
+    "category": "Music",
+    "command": "npx",
+    "args": [
+      "-y",
+      "spotify-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Music streaming API access",
+    "failureClass": "Playback/library boundary",
+    "whyItMatters": "Spotify MCP servers can search tracks, control playback, and manage playlists — agents with music access need user consent boundaries for playback control.",
+    "reproductionNotes": "Schema-only evaluation; requires Spotify OAuth credentials for full playback scan. Community package; verify npm availability."
+  },
+  {
+    "id": "apple-music-server",
+    "name": "Apple Music MCP server",
+    "repo": "https://www.npmjs.com/package/apple-music-mcp",
+    "packageName": "apple-music-mcp",
+    "category": "Music",
+    "command": "npx",
+    "args": [
+      "-y",
+      "apple-music-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Music streaming API access",
+    "failureClass": "Music library boundary",
+    "whyItMatters": "Apple Music MCP servers can search catalog, manage library, and access recommendations — agents with music access need media rights boundaries.",
+    "reproductionNotes": "Schema-only evaluation; requires Apple Music developer token for full catalog scan. Community package; verify npm availability."
+  },
+  {
+    "id": "youtube-server",
+    "name": "YouTube MCP server",
+    "repo": "https://www.npmjs.com/package/youtube-mcp-server",
+    "packageName": "youtube-mcp-server",
+    "category": "Video",
+    "command": "npx",
+    "args": [
+      "-y",
+      "youtube-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Video platform API access",
+    "failureClass": "Video content boundary",
+    "whyItMatters": "YouTube MCP servers can search videos, access captions, and manage playlists — agents with YouTube access need content moderation and API quota boundaries.",
+    "reproductionNotes": "Schema-only evaluation; requires YouTube Data API key for full search scan. Community package; verify npm availability."
+  },
+  {
+    "id": "vimeo-server",
+    "name": "Vimeo MCP server",
+    "repo": "https://www.npmjs.com/package/vimeo-mcp-server",
+    "packageName": "vimeo-mcp-server",
+    "category": "Video",
+    "command": "npx",
+    "args": [
+      "-y",
+      "vimeo-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Video hosting API access",
+    "failureClass": "Video management boundary",
+    "whyItMatters": "Vimeo MCP servers can upload, manage, and retrieve videos and metadata — agents with Vimeo access need video privacy and content ownership boundaries.",
+    "reproductionNotes": "Schema-only evaluation; requires Vimeo API access token for full scan. Community package; verify npm availability."
+  },
+  {
+    "id": "eslint-mcp-server",
+    "name": "ESLint MCP",
+    "repo": "https://www.npmjs.com/package/@eslint/mcp",
+    "packageName": "@eslint/mcp",
+    "category": "Developer Tools / Linting",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@eslint/mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Code quality enforcement",
+    "failureClass": "Lint result boundary",
+    "whyItMatters": "ESLint MCP servers can lint code and enforce rules, potentially flagging or modifying coding patterns in agent workflows.",
+    "reproductionNotes": "Zero-config public package; 1 tool exposed for linting operations."
+  },
+  {
+    "id": "circleci-server",
+    "name": "CircleCI MCP",
+    "repo": "https://www.npmjs.com/package/@circleci/mcp-server-circleci",
+    "packageName": "@circleci/mcp-server-circleci",
+    "category": "CI/CD",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@circleci/mcp-server-circleci"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "CI pipeline control",
+    "failureClass": "Pipeline/build boundary",
+    "whyItMatters": "CircleCI MCP servers can trigger pipelines, manage projects, and control CI workflows — agent-triggered builds and deployments need visible boundaries.",
+    "reproductionNotes": "Zero-config public package; 17 tools visible including pipeline, project, and workflow management. Schema-only for full operations without CircleCI API token."
+  },
+  {
+    "id": "heroku-server",
+    "name": "Heroku MCP",
+    "repo": "https://www.npmjs.com/package/@heroku/mcp-server",
+    "packageName": "@heroku/mcp-server",
+    "category": "Cloud Platform",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@heroku/mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Cloud platform control",
+    "failureClass": "App/dyno/addon boundary",
+    "whyItMatters": "Heroku MCP servers expose app management, dyno scaling, addon provisioning, and config var access — broad cloud control surface with production consequences.",
+    "reproductionNotes": "Zero-config public package; 33 tools visible across apps, dynos, addons, pipelines, and more. High-risk tool surface visible without auth."
+  },
+  {
+    "id": "clarity-server",
+    "name": "Microsoft Clarity MCP",
+    "repo": "https://www.npmjs.com/package/@microsoft/clarity-mcp-server",
+    "packageName": "@microsoft/clarity-mcp-server",
+    "category": "Analytics",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@microsoft/clarity-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "User analytics data access",
+    "failureClass": "Analytics/heatmap boundary",
+    "whyItMatters": "Clarity MCP servers expose user behavior analytics, heatmaps, and session recordings — agent access to user behavioral data needs explicit review.",
+    "reproductionNotes": "Zero-config public package; 3 tools exposed for analytics data access. Schema-only for actual data retrieval without Clarity API credentials."
+  },
+  {
+    "id": "qase-server",
+    "name": "Qase Test Management MCP",
+    "repo": "https://www.npmjs.com/package/@qase/mcp-server",
+    "packageName": "@qase/mcp-server",
+    "category": "Testing",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@qase/mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Test management platform access",
+    "failureClass": "Test case/result boundary",
+    "whyItMatters": "Qase MCP servers expose 80 tools for test case management, test runs, results, and reporting — broad testing platform control surface.",
+    "reproductionNotes": "Zero-config public package; 80 tools visible. High tool count warrants careful review before agent integration."
+  },
+  {
+    "id": "coinbase-cds-server",
+    "name": "Coinbase Design System MCP",
+    "repo": "https://www.npmjs.com/package/@coinbase/cds-mcp-server",
+    "packageName": "@coinbase/cds-mcp-server",
+    "category": "Design System",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@coinbase/cds-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Design system access",
+    "failureClass": "Component/token boundary",
+    "whyItMatters": "Coinbase CDS MCP servers expose design system components and tokens for agent-assisted UI development.",
+    "reproductionNotes": "Zero-config public package; 2 tools for design system component lookup and token reference."
+  },
+  {
+    "id": "mui-mcp-server",
+    "name": "MUI MCP",
+    "repo": "https://www.npmjs.com/package/@mui/mcp",
+    "packageName": "@mui/mcp",
+    "category": "Design System",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@mui/mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Design system access",
+    "failureClass": "Component/theme boundary",
+    "whyItMatters": "MUI MCP servers expose Material UI component documentation and usage guidance for agent-assisted React development.",
+    "reproductionNotes": "Zero-config public package; 2 tools for MUI component search and documentation lookup."
+  },
+  {
+    "id": "transcend-server",
+    "name": "Transcend Privacy MCP",
+    "repo": "https://www.npmjs.com/package/@transcend-io/mcp",
+    "packageName": "@transcend-io/mcp",
+    "category": "Privacy / Data Governance",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@transcend-io/mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Privacy and data governance",
+    "failureClass": "DSR/consent/data boundary",
+    "whyItMatters": "Transcend MCP servers expose 73 tools for data subject requests, consent management, data inventory, and privacy assessments — agents with access could trigger privacy-sensitive operations across all data stores.",
+    "reproductionNotes": "Zero-config public package; 73 tools visible covering DSR, consent, preferences, inventory, discovery, and admin. High-risk privacy operations surface visible without auth."
+  },
+  {
+    "id": "azure-mcp-server",
+    "name": "Azure MCP",
+    "repo": "https://www.npmjs.com/package/@azure/mcp",
+    "packageName": "@azure/mcp",
+    "category": "Cloud",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@azure/mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Cloud resource management",
+    "failureClass": "Resource/provisioning boundary",
+    "whyItMatters": "Azure MCP servers can manage cloud resources, subscriptions, and services — agent-triggered cloud operations have cost and security implications.",
+    "reproductionNotes": "Schema-only evaluation; requires Azure credentials for tool listing and full scan."
+  },
+  {
+    "id": "salesforce-mcp-server",
+    "name": "Salesforce MCP",
+    "repo": "https://www.npmjs.com/package/@salesforce/mcp",
+    "packageName": "@salesforce/mcp",
+    "category": "CRM",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@salesforce/mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "CRM data and org control",
+    "failureClass": "Record/org/metadata boundary",
+    "whyItMatters": "Salesforce MCP servers can read, create, and update CRM records, metadata, and org configuration — high-stakes customer data access.",
+    "reproductionNotes": "Schema-only evaluation; requires Salesforce authentication for tool listing and full scan."
+  },
+  {
+    "id": "storybook-mcp-server",
+    "name": "Storybook MCP",
+    "repo": "https://www.npmjs.com/package/@storybook/mcp",
+    "packageName": "@storybook/mcp",
+    "category": "Design / Component Library",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@storybook/mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Component documentation access",
+    "failureClass": "Component/test boundary",
+    "whyItMatters": "Storybook MCP servers expose UI component documentation, stories, and test data — agents use this context for code generation and component modification.",
+    "reproductionNotes": "Schema-only evaluation; requires a running Storybook instance for full functionality."
+  },
+  {
+    "id": "azure-devops-mcp-server",
+    "name": "Azure DevOps MCP",
+    "repo": "https://www.npmjs.com/package/@azure-devops/mcp",
+    "packageName": "@azure-devops/mcp",
+    "category": "DevOps / Project Management",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@azure-devops/mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "DevOps platform control",
+    "failureClass": "Work item/repo/pipeline boundary",
+    "whyItMatters": "Azure DevOps MCP servers expose work items, repositories, pipelines, and test plans — broad DevOps control surface covering code, builds, and project management.",
+    "reproductionNotes": "Schema-only evaluation; requires Azure DevOps organization URL and PAT for full scan."
+  },
+  {
+    "id": "hubspot-mcp-server",
+    "name": "HubSpot MCP",
+    "repo": "https://www.npmjs.com/package/@hubspot/mcp-server",
+    "packageName": "@hubspot/mcp-server",
+    "category": "CRM / Marketing",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@hubspot/mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "CRM and marketing platform access",
+    "failureClass": "Contact/deal/campaign boundary",
+    "whyItMatters": "HubSpot MCP servers can access contacts, deals, marketing campaigns, and CRM data — agents with HubSpot access can modify customer records and trigger marketing operations.",
+    "reproductionNotes": "Schema-only evaluation; requires HubSpot access token for full scan."
+  },
+  {
+    "id": "dynatrace-mcp-server",
+    "name": "Dynatrace MCP",
+    "repo": "https://www.npmjs.com/package/@dynatrace-oss/dynatrace-mcp-server",
+    "packageName": "@dynatrace-oss/dynatrace-mcp-server",
+    "category": "Monitoring / Observability",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@dynatrace-oss/dynatrace-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Infrastructure monitoring access",
+    "failureClass": "Entity/metric/problem boundary",
+    "whyItMatters": "Dynatrace MCP servers expose infrastructure monitoring data, problems, entities, and metrics — agents can query production observability data with security and privacy implications.",
+    "reproductionNotes": "Schema-only evaluation; requires Dynatrace API token and environment URL for full scan."
+  },
+  {
+    "id": "brave-search-mcp-server-v2",
+    "name": "Brave Search MCP v2",
+    "repo": "https://www.npmjs.com/package/@brave/brave-search-mcp-server",
+    "packageName": "@brave/brave-search-mcp-server",
+    "category": "Search",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@brave/brave-search-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Untrusted content retrieval",
+    "failureClass": "Web search/result boundary",
+    "whyItMatters": "Brave Search MCP v2 returns web results, images, videos, and AI summaries — untrusted content ingestion into agent context with broader result types than v1.",
+    "reproductionNotes": "Schema-only evaluation; requires Brave Search API key for full scan."
+  },
+  {
+    "id": "smartbear-mcp-server",
+    "name": "SmartBear MCP",
+    "repo": "https://www.npmjs.com/package/@smartbear/mcp",
+    "packageName": "@smartbear/mcp",
+    "category": "Testing / API Quality",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@smartbear/mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Testing platform access",
+    "failureClass": "Test/API/quality boundary",
+    "whyItMatters": "SmartBear MCP servers can interact with multiple testing and API quality products — agents could trigger test runs and access quality data.",
+    "reproductionNotes": "Schema-only evaluation; requires SmartBear API credentials for full scan."
+  },
+  {
+    "id": "argocd-mcp-server",
+    "name": "Argo CD MCP",
+    "repo": "https://www.npmjs.com/package/argocd-mcp",
+    "packageName": "argocd-mcp",
+    "category": "Infrastructure / GitOps",
+    "command": "npx",
+    "args": [
+      "-y",
+      "argocd-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "GitOps deployment control",
+    "failureClass": "Application/sync/cluster boundary",
+    "whyItMatters": "Argo CD MCP servers can manage applications, trigger syncs, and control GitOps deployments — agents with Argo CD access can modify production Kubernetes deployments.",
+    "reproductionNotes": "Schema-only evaluation; requires Argo CD server URL and auth token for full scan."
+  },
+  {
+    "id": "aikidosec-mcp-server",
+    "name": "Aikido Security MCP",
+    "repo": "https://www.npmjs.com/package/@aikidosec/mcp",
+    "packageName": "@aikidosec/mcp",
+    "category": "Security",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@aikidosec/mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Security platform access",
+    "failureClass": "Vulnerability/finding boundary",
+    "whyItMatters": "Aikido MCP servers expose security vulnerability findings, code scanning results, and security posture data — agents could modify security findings or suppress alerts.",
+    "reproductionNotes": "Schema-only evaluation; requires Aikido API credentials for full scan."
+  },
+  {
+    "id": "postman-mcp-server",
+    "name": "Postman MCP",
+    "repo": "https://www.npmjs.com/package/@postman/postman-mcp-server",
+    "packageName": "@postman/postman-mcp-server",
+    "category": "API Testing / Development",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@postman/postman-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "API collection and testing access",
+    "failureClass": "Collection/environment/request boundary",
+    "whyItMatters": "Postman MCP servers expose API collections, environments, and request execution — agents could run API tests, modify collections, and access API credentials.",
+    "reproductionNotes": "Schema-only evaluation; requires Postman API key for full scan."
+  },
+  {
+    "id": "shortcut-mcp-server",
+    "name": "Shortcut MCP",
+    "repo": "https://www.npmjs.com/package/@shortcut/mcp",
+    "packageName": "@shortcut/mcp",
+    "category": "Project Management",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@shortcut/mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Project management access",
+    "failureClass": "Story/epic/workflow boundary",
+    "whyItMatters": "Shortcut MCP servers expose story creation, epic management, and workflow state changes — agents can modify project tracking data.",
+    "reproductionNotes": "Schema-only evaluation; requires Shortcut API token for full scan."
+  },
+  {
+    "id": "cloudflare-mcp-server-v2",
+    "name": "Cloudflare MCP v2",
+    "repo": "https://www.npmjs.com/package/@cloudflare/mcp-server-cloudflare",
+    "packageName": "@cloudflare/mcp-server-cloudflare",
+    "category": "Infrastructure",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@cloudflare/mcp-server-cloudflare"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Infrastructure control",
+    "failureClass": "DNS/worker/WAF boundary",
+    "whyItMatters": "Cloudflare MCP v2 servers expose Workers, DNS, KV, R2, WAF, and Zone management — broad edge infrastructure control with production security implications.",
+    "reproductionNotes": "Schema-only evaluation; requires Cloudflare API token for full scan."
+  },
+  {
+    "id": "apify-mcp-server",
+    "name": "Apify MCP",
+    "repo": "https://www.npmjs.com/package/@apify/actors-mcp-server",
+    "packageName": "@apify/actors-mcp-server",
+    "category": "Web Scraping / Automation",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@apify/actors-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Web scraping and data extraction",
+    "failureClass": "Actor/scraping/data boundary",
+    "whyItMatters": "Apify MCP servers can trigger web scraping actors, extract data from websites, and manage scraping infrastructure — agents could scrape any accessible web content.",
+    "reproductionNotes": "Schema-only evaluation; requires Apify API token for full scan."
+  },
+  {
+    "id": "clickup-mcp-server",
+    "name": "ClickUp MCP",
+    "repo": "https://www.npmjs.com/package/@taazkareem/clickup-mcp-server",
+    "packageName": "@taazkareem/clickup-mcp-server",
+    "category": "Project Management",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@taazkareem/clickup-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Task and document management",
+    "failureClass": "Task/list/doc/chat boundary",
+    "whyItMatters": "ClickUp MCP servers expose task management, document editing, and chat capabilities — agents can manage full project workflows including task creation and document modification.",
+    "reproductionNotes": "Schema-only evaluation; requires ClickUp API token for full scan."
+  },
+  {
+    "id": "currents-mcp-server",
+    "name": "Currents MCP",
+    "repo": "https://www.npmjs.com/package/@currents/mcp",
+    "packageName": "@currents/mcp",
+    "category": "Testing / Playwright",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@currents/mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Test orchestration access",
+    "failureClass": "Test run/report boundary",
+    "whyItMatters": "Currents MCP servers integrate with Playwright test orchestration — agents could trigger test suites, access test reports, and modify test configurations.",
+    "reproductionNotes": "Schema-only evaluation; requires Currents API credentials for full scan."
+  },
+  {
+    "id": "desktop-commander-mcp-server",
+    "name": "Desktop Commander MCP",
+    "repo": "https://www.npmjs.com/package/@wonderwhy-er/desktop-commander",
+    "packageName": "@wonderwhy-er/desktop-commander",
+    "category": "Terminal / File System",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@wonderwhy-er/desktop-commander"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Terminal and file system execution",
+    "failureClass": "Shell/exec/file boundary",
+    "whyItMatters": "Desktop Commander MCP servers expose terminal operations, file editing, and command execution — agents with shell access can execute arbitrary commands on the host system. This is one of the highest-trust boundaries in the MCP ecosystem.",
+    "reproductionNotes": "Schema-only evaluation; requires a specific runtime environment for tool listing. Shell execution boundary requires explicit sandboxing review."
+  },
+  {
+    "id": "whatsapp-mcp-server",
+    "name": "WhatsApp MCP",
+    "repo": "https://github.com/lharries/whatsapp-mcp",
+    "packageName": "whatsapp-mcp",
+    "category": "Messaging",
+    "command": "npx",
+    "args": [
+      "-y",
+      "whatsapp-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Messaging platform access",
+    "failureClass": "Message/session boundary",
+    "whyItMatters": "WhatsApp MCP servers (5.9K+ stars) can send and receive messages through WhatsApp Web — agent-initiated messaging to real contacts is a high-trust boundary with privacy and consent implications.",
+    "reproductionNotes": "Schema-only evaluation; requires WhatsApp Web session setup via QR code for full message operations."
+  },
+  {
+    "id": "shopify-mcp-server",
+    "name": "Shopify MCP",
+    "repo": "https://github.com/GeLi2001/shopify-mcp",
+    "packageName": "shopify-mcp",
+    "category": "E-commerce",
+    "command": "npx",
+    "args": [
+      "-y",
+      "shopify-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Store data access",
+    "failureClass": "Product/order boundary",
+    "whyItMatters": "Shopify MCP servers expose store products, orders, customers, and inventory via the GraphQL API — agents could modify product listings, process orders, or manage storefront data with financial consequences.",
+    "reproductionNotes": "Schema-only; requires Shopify store domain and Storefront API access token."
+  },
+  {
+    "id": "mysql-mcp-server",
+    "name": "MySQL MCP Server",
+    "repo": "https://www.npmjs.com/package/mysql-mcp-server",
+    "packageName": "mysql-mcp-server",
+    "category": "Database",
+    "command": "npx",
+    "args": [
+      "-y",
+      "mysql-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Database mutation",
+    "failureClass": "SQL query boundary (MySQL)",
+    "whyItMatters": "MySQL MCP servers can execute SQL queries, manage schemas, and perform CRUD operations against production databases.",
+    "reproductionNotes": "Schema-only evaluation; requires MySQL connection string and credentials for full scan."
+  },
+  {
+    "id": "redis-server",
+    "name": "Redis MCP Server",
+    "repo": "https://www.npmjs.com/package/mcp-server-redis",
+    "packageName": "mcp-server-redis",
+    "category": "Database",
+    "command": "npx",
+    "args": [
+      "-y",
+      "mcp-server-redis"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Cache and data store mutation",
+    "failureClass": "Key/value mutation boundary",
+    "whyItMatters": "Redis MCP servers can read, write, and delete keys, manage pub/sub channels, and execute Lua scripts — agents could manipulate cache and session data.",
+    "reproductionNotes": "Schema-only; requires Redis connection URL for full scan."
+  },
+  {
+    "id": "dynamodb-mcp-server",
+    "name": "DynamoDB MCP Server",
+    "repo": "https://www.npmjs.com/package/mcp-server-dynamodb",
+    "packageName": "mcp-server-dynamodb",
+    "category": "Database / Cloud",
+    "command": "npx",
+    "args": [
+      "-y",
+      "mcp-server-dynamodb"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "NoSQL database mutation",
+    "failureClass": "Table/item mutation boundary",
+    "whyItMatters": "DynamoDB MCP servers can create tables, put/delete items, and query data — agents could modify cloud database resources.",
+    "reproductionNotes": "Schema-only; requires AWS credentials and region configuration for full scan."
+  },
+  {
+    "id": "s3-mcp-server",
+    "name": "S3 MCP Server",
+    "repo": "https://www.npmjs.com/package/mcp-server-s3",
+    "packageName": "mcp-server-s3",
+    "category": "Cloud Storage",
+    "command": "npx",
+    "args": [
+      "-y",
+      "mcp-server-s3"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Cloud object storage access",
+    "failureClass": "Bucket/object boundary",
+    "whyItMatters": "S3 MCP servers can list buckets, upload/download objects, and manage permissions — agents could access or modify cloud storage.",
+    "reproductionNotes": "Schema-only; requires AWS credentials and bucket configuration for full scan."
+  },
+  {
+    "id": "aws-mcp-server",
+    "name": "AWS MCP Server",
+    "repo": "https://www.npmjs.com/package/mcp-server-aws",
+    "packageName": "mcp-server-aws",
+    "category": "Cloud",
+    "command": "npx",
+    "args": [
+      "-y",
+      "mcp-server-aws"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Cloud infrastructure control",
+    "failureClass": "AWS service boundary",
+    "whyItMatters": "AWS MCP servers can interact with EC2, Lambda, S3, IAM, and other AWS services — broad cloud control surface for agents.",
+    "reproductionNotes": "Schema-only; requires AWS credentials and region for full scan."
+  },
+  {
+    "id": "gcp-mcp-server",
+    "name": "GCP MCP Server",
+    "repo": "https://www.npmjs.com/package/mcp-server-gcp",
+    "packageName": "mcp-server-gcp",
+    "category": "Cloud",
+    "command": "npx",
+    "args": [
+      "-y",
+      "mcp-server-gcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Cloud infrastructure control",
+    "failureClass": "GCP service boundary",
+    "whyItMatters": "GCP MCP servers can interact with Compute Engine, Cloud Storage, BigQuery, and other GCP services — broad cloud control surface.",
+    "reproductionNotes": "Schema-only; requires GCP credentials and project configuration for full scan."
+  },
+  {
+    "id": "shopify-mcp",
+    "name": "Shopify MCP",
+    "repo": "https://www.npmjs.com/package/shopify-mcp",
+    "packageName": "shopify-mcp",
+    "category": "E-commerce",
+    "command": "npx",
+    "args": [
+      "-y",
+      "shopify-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "E-commerce platform access",
+    "failureClass": "Store/product/order boundary",
+    "whyItMatters": "Shopify MCP servers can manage products, orders, customers, and store settings — agents could modify live e-commerce operations.",
+    "reproductionNotes": "Schema-only; requires Shopify store credentials and access token for full scan."
+  },
+  {
+    "id": "telegram-mcp-server",
+    "name": "Telegram MCP Server",
+    "repo": "https://www.npmjs.com/package/telegram-mcp-server",
+    "packageName": "telegram-mcp-server",
+    "category": "Communication",
+    "command": "npx",
+    "args": [
+      "-y",
+      "telegram-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Messaging platform access",
+    "failureClass": "Message/chat boundary",
+    "whyItMatters": "Telegram MCP servers can send messages, manage chats, and interact with Telegram bots — agents could communicate on behalf of users.",
+    "reproductionNotes": "Schema-only; requires Telegram bot token for full scan."
+  },
+  {
+    "id": "whatsapp-mcp",
+    "name": "WhatsApp MCP",
+    "repo": "https://www.npmjs.com/package/whatsapp-mcp",
+    "packageName": "whatsapp-mcp",
+    "category": "Communication",
+    "command": "npx",
+    "args": [
+      "-y",
+      "whatsapp-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Messaging platform access",
+    "failureClass": "Message boundary (WhatsApp)",
+    "whyItMatters": "WhatsApp MCP servers can send and receive messages, manage contacts, and interact with WhatsApp Business API — agents could message users directly.",
+    "reproductionNotes": "Schema-only; requires WhatsApp Business API credentials for full scan."
+  },
+  {
+    "id": "twilio-mcp",
+    "name": "Twilio MCP",
+    "repo": "https://www.npmjs.com/package/twilio-mcp",
+    "packageName": "twilio-mcp",
+    "category": "Communication",
+    "command": "npx",
+    "args": [
+      "-y",
+      "twilio-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Communication platform access",
+    "failureClass": "SMS/voice/chat boundary",
+    "whyItMatters": "Twilio MCP servers can send SMS, make voice calls, and manage messaging services — agents could trigger communications to real phone numbers.",
+    "reproductionNotes": "Schema-only; requires Twilio account SID and auth token for full scan."
+  },
+  {
+    "id": "sendgrid-mcp",
+    "name": "SendGrid MCP",
+    "repo": "https://www.npmjs.com/package/sendgrid-mcp",
+    "packageName": "sendgrid-mcp",
+    "category": "Email / Communication",
+    "command": "npx",
+    "args": [
+      "-y",
+      "sendgrid-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Email sending platform access",
+    "failureClass": "Email send/template boundary",
+    "whyItMatters": "SendGrid MCP servers can send transactional and marketing emails, manage templates, and view delivery stats — agents could email users at scale.",
+    "reproductionNotes": "Schema-only; requires SendGrid API key for full scan."
+  },
+  {
+    "id": "openai-mcp-server",
+    "name": "OpenAI MCP Server",
+    "repo": "https://www.npmjs.com/package/openai-mcp-server",
+    "packageName": "openai-mcp-server",
+    "category": "AI / ML Platform",
+    "command": "npx",
+    "args": [
+      "-y",
+      "openai-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "LLM API platform access",
+    "failureClass": "Model inference boundary",
+    "whyItMatters": "OpenAI MCP servers can call GPT models, manage embeddings, and use DALL-E — agents could trigger LLM inference and consume API credits.",
+    "reproductionNotes": "Schema-only; requires OpenAI API key for full scan."
+  },
+  {
+    "id": "perplexity-mcp",
+    "name": "Perplexity MCP",
+    "repo": "https://www.npmjs.com/package/perplexity-mcp",
+    "packageName": "perplexity-mcp",
+    "category": "Search / AI",
+    "command": "npx",
+    "args": [
+      "-y",
+      "perplexity-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "AI-powered search access",
+    "failureClass": "Search result/LLM boundary",
+    "whyItMatters": "Perplexity MCP servers combine web search with LLM reasoning — agents can retrieve AI-generated answers that blend search results with model outputs.",
+    "reproductionNotes": "Schema-only; requires Perplexity API key for full scan."
+  },
+  {
+    "id": "langfuse-mcp",
+    "name": "Langfuse MCP",
+    "repo": "https://www.npmjs.com/package/langfuse-mcp",
+    "packageName": "langfuse-mcp",
+    "category": "AI / ML Observability",
+    "command": "npx",
+    "args": [
+      "-y",
+      "langfuse-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "LLM observability access",
+    "failureClass": "Trace/observation data boundary",
+    "whyItMatters": "Langfuse MCP servers can access LLM traces, prompt versions, and evaluation data — agents could read sensitive prompt/output data from production LLM pipelines.",
+    "reproductionNotes": "Schema-only; requires Langfuse API keys for full scan."
+  },
+  {
+    "id": "jira-mcp-server",
+    "name": "Jira MCP Server",
+    "repo": "https://www.npmjs.com/package/jira-mcp-server",
+    "packageName": "jira-mcp-server",
+    "category": "Project Management",
+    "command": "npx",
+    "args": [
+      "-y",
+      "jira-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Issue tracking mutation",
+    "failureClass": "Issue/board/sprint boundary",
+    "whyItMatters": "Jira MCP servers can create issues, manage boards, transition workflows, and track sprints — agents could modify production project tracking.",
+    "reproductionNotes": "Schema-only; requires Jira API token and instance URL for full scan."
+  },
+  {
+    "id": "confluence-mcp-server",
+    "name": "Confluence MCP Server",
+    "repo": "https://www.npmjs.com/package/confluence-mcp-server",
+    "packageName": "confluence-mcp-server",
+    "category": "Productivity / Docs",
+    "command": "npx",
+    "args": [
+      "-y",
+      "confluence-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Wiki/document platform access",
+    "failureClass": "Page/space boundary",
+    "whyItMatters": "Confluence MCP servers can read, create, update, and search pages across wiki spaces — agents could access and modify internal documentation at scale.",
+    "reproductionNotes": "Schema-only; requires Confluence API token and instance URL for full scan."
+  },
+  {
+    "id": "trello-mcp-server",
+    "name": "Trello MCP Server",
+    "repo": "https://www.npmjs.com/package/trello-mcp-server",
+    "packageName": "trello-mcp-server",
+    "category": "Project Management",
+    "command": "npx",
+    "args": [
+      "-y",
+      "trello-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Board management access",
+    "failureClass": "Board/card/list boundary",
+    "whyItMatters": "Trello MCP servers can create boards, manage cards, move lists, and collaborate on projects — agents could reorganize or modify team workflows.",
+    "reproductionNotes": "Tool listing succeeds without auth. Full operations require Trello API key and token."
+  },
+  {
+    "id": "zendesk-mcp",
+    "name": "Zendesk MCP",
+    "repo": "https://www.npmjs.com/package/zendesk-mcp",
+    "packageName": "zendesk-mcp",
+    "category": "Support / CRM",
+    "command": "npx",
+    "args": [
+      "-y",
+      "zendesk-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Support platform access",
+    "failureClass": "Ticket/user/knowledge boundary",
+    "whyItMatters": "Zendesk MCP servers can create tickets, manage users, and search help center content — agents could respond to customer support requests.",
+    "reproductionNotes": "Schema-only; requires Zendesk subdomain and API token for full scan."
+  },
+  {
+    "id": "spotify-mcp",
+    "name": "Spotify MCP",
+    "repo": "https://www.npmjs.com/package/spotify-mcp",
+    "packageName": "spotify-mcp",
+    "category": "Media / Entertainment",
+    "command": "npx",
+    "args": [
+      "-y",
+      "spotify-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Media platform access",
+    "failureClass": "Playback/playlist boundary",
+    "whyItMatters": "Spotify MCP servers can control playback, manage playlists, search tracks, and access user library data — agents could modify listening experience.",
+    "reproductionNotes": "Tool listing succeeds without auth. Full operations require Spotify OAuth credentials."
+  },
+  {
+    "id": "airtable-mcp-server",
+    "name": "Airtable MCP Server",
+    "repo": "https://www.npmjs.com/package/airtable-mcp-server",
+    "packageName": "airtable-mcp-server",
+    "category": "Productivity / Database",
+    "command": "npx",
+    "args": [
+      "-y",
+      "airtable-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Spreadsheet-database access",
+    "failureClass": "Base/table/record boundary",
+    "whyItMatters": "Airtable MCP servers can create bases, manage tables, and CRUD records — agents could modify structured business data in collaborative workspaces.",
+    "reproductionNotes": "Schema-only; requires Airtable personal access token for full scan."
+  },
+  {
+    "id": "obsidian-mcp",
+    "name": "Obsidian MCP",
+    "repo": "https://www.npmjs.com/package/obsidian-mcp",
+    "packageName": "obsidian-mcp",
+    "category": "Productivity / Knowledge",
+    "command": "npx",
+    "args": [
+      "-y",
+      "obsidian-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Personal knowledge base access",
+    "failureClass": "Note/vault/file boundary",
+    "whyItMatters": "Obsidian MCP servers can read, write, search, and link notes in personal knowledge vaults — agents could access private notes and research.",
+    "reproductionNotes": "Schema-only; requires vault path configuration for full scan."
+  },
+  {
+    "id": "arxiv-mcp-server",
+    "name": "arXiv MCP Server",
+    "repo": "https://www.npmjs.com/package/arxiv-mcp-server",
+    "packageName": "arxiv-mcp-server",
+    "category": "Academic / Search",
+    "command": "npx",
+    "args": [
+      "-y",
+      "arxiv-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Academic content retrieval",
+    "failureClass": "Paper metadata/search boundary",
+    "whyItMatters": "arXiv MCP servers can search and retrieve academic papers, abstracts, and metadata — agents can incorporate scientific literature into workflows.",
+    "reproductionNotes": "Read-only public API; tool listing may succeed without auth."
+  },
+  {
+    "id": "resend-mcp",
+    "name": "Resend MCP",
+    "repo": "https://www.npmjs.com/package/resend-mcp",
+    "packageName": "resend-mcp",
+    "category": "Email / Communication",
+    "command": "npx",
+    "args": [
+      "-y",
+      "resend-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Email sending platform access",
+    "failureClass": "Email send/domain boundary",
+    "whyItMatters": "Resend MCP servers can send emails, manage domains, and track delivery — agents could send transactional and marketing emails on behalf of verified domains.",
+    "reproductionNotes": "Schema-only; requires Resend API key for full scan."
+  },
+  {
+    "id": "discord-mcp",
+    "name": "Discord MCP (v2)",
+    "repo": "https://www.npmjs.com/package/discord-mcp",
+    "packageName": "discord-mcp",
+    "category": "Communication",
+    "command": "npx",
+    "args": [
+      "-y",
+      "discord-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Social platform access",
+    "failureClass": "Server/channel/message boundary",
+    "whyItMatters": "Discord MCP servers can manage servers, channels, messages, and user interactions — agents could moderate or post in Discord communities.",
+    "reproductionNotes": "Tool listing succeeds without auth. Full operations require Discord bot token."
   }
 ]

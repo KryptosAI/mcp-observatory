@@ -1,0 +1,1606 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "fail",
+  "runId": "run_2026-07-15T175622803Z_7b986c16",
+  "createdAt": "2026-07-15T17:56:22.803Z",
+  "toolVersion": "1.32.1",
+  "target": {
+    "targetId": "circleci-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@circleci/mcp-server-circleci"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "@circleci/mcp-server-circleci",
+      "purpose": "mcp-safety-index",
+      "riskClass": "CI pipeline control",
+      "failureClass": "Pipeline/build boundary",
+      "whyItMatters": "CircleCI MCP servers can trigger pipelines, manage projects, and control CI workflows — agent-triggered builds and deployments need visible boundaries."
+    },
+    "serverName": "mcp-server-circleci",
+    "serverVersion": "1.0.0"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 9,
+    "pass": 4,
+    "fail": 2,
+    "partial": 2,
+    "unsupported": 1,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "fail"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 4.845916999998735,
+      "message": "Advertised capability responded with the minimal expected shape (17 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 17,
+          "identifiers": [
+            "get_build_failure_logs",
+            "find_flaky_tests",
+            "get_latest_pipeline_status",
+            "get_job_test_results",
+            "config_helper",
+            "create_prompt_template",
+            "recommend_prompt_template_tests",
+            "run_pipeline",
+            "list_followed_projects",
+            "run_evaluation_tests",
+            "rerun_workflow",
+            "download_usage_api_data",
+            "find_underused_resource_classes",
+            "analyze_diff",
+            "run_rollback_pipeline",
+            "list_component_versions",
+            "list_artifacts"
+          ],
+          "diagnostics": [
+            "Starting CircleCI MCP server in stdio mode..."
+          ],
+          "schemas": {
+            "get_build_failure_logs": {
+              "type": "object",
+              "properties": {
+                "params": {
+                  "type": "object",
+                  "properties": {
+                    "projectSlug": {
+                      "type": "string",
+                      "description": "The project slug from listFollowedProjects tool (e.g., \"gh/organization/project\"). When using this option, branch must also be provided."
+                    },
+                    "branch": {
+                      "type": "string",
+                      "description": "The name of the branch currently checked out in local workspace. This should match local git branch. For example: \"feature/my-branch\", \"bugfix/123\", \"main\", \"master\" etc."
+                    },
+                    "projectURL": {
+                      "type": "string",
+                      "description": "The URL of the CircleCI project. Can be any of these formats:\n- Project URL with branch: https://app.circleci.com/pipelines/gh/organization/project?branch=feature-branch\n- Pipeline URL: https://app.circleci.com/pipelines/gh/organization/project/123\n- Workflow URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def\n- Job URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def/jobs/xyz"
+                    },
+                    "workspaceRoot": {
+                      "type": "string",
+                      "description": "The absolute path to the root directory of your project workspace. This should be the top-level folder containing your source code, configuration files, and dependencies. For example: \"/home/user/my-project\" or \"C:\\Users\\user\\my-project\""
+                    },
+                    "gitRemoteURL": {
+                      "type": "string",
+                      "description": "The URL of the remote git repository. This should be the URL of the repository that you cloned to your local workspace. For example: \"https://github.com/user/my-project.git\""
+                    },
+                    "outputDir": {
+                      "type": "string",
+                      "description": "Optional. When provided, the full build logs are written to a file in this directory and the file path is returned. Use this for large logs to avoid truncation. Use the workspace/project root when available (e.g., \"/home/user/my-project\"), otherwise use the Downloads folder (e.g., \"~/Downloads\")."
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "find_flaky_tests": {
+              "type": "object",
+              "properties": {
+                "params": {
+                  "type": "object",
+                  "properties": {
+                    "projectSlug": {
+                      "type": "string",
+                      "description": "The project slug from listFollowedProjects tool (e.g., \"gh/organization/project\")."
+                    },
+                    "workspaceRoot": {
+                      "type": "string",
+                      "description": "The absolute path to the root directory of your project workspace. This should be the top-level folder containing your source code, configuration files, and dependencies. For example: \"/home/user/my-project\" or \"C:\\Users\\user\\my-project\""
+                    },
+                    "gitRemoteURL": {
+                      "type": "string",
+                      "description": "The URL of the remote git repository. This should be the URL of the repository that you cloned to your local workspace. For example: \"https://github.com/user/my-project.git\""
+                    },
+                    "projectURL": {
+                      "type": "string",
+                      "description": "The URL of the CircleCI project. Can be any of these formats:\n- Project URL: https://app.circleci.com/pipelines/gh/organization/project\n- Project URL with branch: https://app.circleci.com/pipelines/gh/organization/project?branch=feature-branch\n- Pipeline URL: https://app.circleci.com/pipelines/gh/organization/project/123\n- Workflow URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def\n- Job URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def/jobs/xyz"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_latest_pipeline_status": {
+              "type": "object",
+              "properties": {
+                "params": {
+                  "type": "object",
+                  "properties": {
+                    "projectSlug": {
+                      "type": "string",
+                      "description": "The project slug from listFollowedProjects tool (e.g., \"gh/organization/project\"). When using this option, branch must also be provided."
+                    },
+                    "branch": {
+                      "type": "string",
+                      "description": "The name of the branch currently checked out in local workspace. This should match local git branch. For example: \"feature/my-branch\", \"bugfix/123\", \"main\", \"master\" etc."
+                    },
+                    "projectURL": {
+                      "type": "string",
+                      "description": "The URL of the CircleCI project. Can be any of these formats:\n- Project URL with branch: https://app.circleci.com/pipelines/gh/organization/project?branch=feature-branch\n- Legacy Pipeline URL: https://circleci.com/gh/organization/project/123\n- Legacy Pipeline URL with branch: https://circleci.com/gh/organization/project/123?branch=feature-branch\n- Pipeline URL: https://app.circleci.com/pipelines/gh/organization/project/123\n- Workflow URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def\n- Job URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def/jobs/xyz"
+                    },
+                    "workspaceRoot": {
+                      "type": "string",
+                      "description": "The absolute path to the root directory of your project workspace. This should be the top-level folder containing your source code, configuration files, and dependencies. For example: \"/home/user/my-project\" or \"C:\\Users\\user\\my-project\""
+                    },
+                    "gitRemoteURL": {
+                      "type": "string",
+                      "description": "The URL of the remote git repository. This should be the URL of the repository that you cloned to your local workspace. For example: \"https://github.com/user/my-project.git\""
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_job_test_results": {
+              "type": "object",
+              "properties": {
+                "params": {
+                  "type": "object",
+                  "properties": {
+                    "projectSlug": {
+                      "type": "string",
+                      "description": "The project slug from listFollowedProjects tool (e.g., \"gh/organization/project\"). When using this option, branch must also be provided."
+                    },
+                    "branch": {
+                      "type": "string",
+                      "description": "The name of the branch currently checked out in local workspace. This should match local git branch. For example: \"feature/my-branch\", \"bugfix/123\", \"main\", \"master\" etc."
+                    },
+                    "workspaceRoot": {
+                      "type": "string",
+                      "description": "The absolute path to the root directory of your project workspace. This should be the top-level folder containing your source code, configuration files, and dependencies. For example: \"/home/user/my-project\" or \"C:\\Users\\user\\my-project\""
+                    },
+                    "gitRemoteURL": {
+                      "type": "string",
+                      "description": "The URL of the remote git repository. This should be the URL of the repository that you cloned to your local workspace. For example: \"https://github.com/user/my-project.git\""
+                    },
+                    "projectURL": {
+                      "type": "string",
+                      "description": "The URL of the CircleCI project. Can be any of these formats:\n- Project URL: https://app.circleci.com/pipelines/gh/organization/project\n- Project URL with branch: https://app.circleci.com/pipelines/gh/organization/project?branch=feature-branch\n- Pipeline URL: https://app.circleci.com/pipelines/gh/organization/project/123\n- Workflow URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def\n- Job URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def/jobs/123"
+                    },
+                    "filterByTestsResult": {
+                      "type": "string",
+                      "enum": [
+                        "failure",
+                        "success"
+                      ],
+                      "description": "Filter the tests by result.\n      If \"failure\", only failed tests will be returned.\n      If \"success\", only successful tests will be returned.\n      "
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "config_helper": {
+              "type": "object",
+              "properties": {
+                "params": {
+                  "type": "object",
+                  "properties": {
+                    "configFile": {
+                      "type": "string",
+                      "description": "The contents of the circleci config file. This should be the contents of the circleci config file, not the path to the file. Typically located at .circleci/config.yml"
+                    }
+                  },
+                  "required": [
+                    "configFile"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "create_prompt_template": {
+              "type": "object",
+              "properties": {
+                "params": {
+                  "type": "object",
+                  "properties": {
+                    "prompt": {
+                      "type": "string",
+                      "description": "The user's application, feature, or product requirements that will be used to generate a prompt template. Alternatively, a pre-existing prompt or prompt template can be provided if a user wants to test, evaluate, or modify it. (Can be a multi-line string.)"
+                    },
+                    "promptOrigin": {
+                      "type": "string",
+                      "enum": [
+                        "codebase",
+                        "requirements"
+                      ],
+                      "description": "The origin of the prompt - either \"codebase\" for existing prompts from the codebase, or \"requirements\" for new prompts from requirements."
+                    },
+                    "model": {
+                      "type": "string",
+                      "default": "gpt-4.1-mini",
+                      "description": "The model that the prompt template will be tested against. Explicitly specify the model if it can be inferred from the codebase. Otherwise, defaults to `gpt-4.1-mini`."
+                    },
+                    "temperature": {
+                      "type": "number",
+                      "default": 1,
+                      "description": "The temperature of the prompt template. Explicitly specify the temperature if it can be inferred from the codebase. Otherwise, defaults to 1."
+                    }
+                  },
+                  "required": [
+                    "prompt",
+                    "promptOrigin"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "recommend_prompt_template_tests": {
+              "type": "object",
+              "properties": {
+                "params": {
+                  "type": "object",
+                  "properties": {
+                    "template": {
+                      "type": "string",
+                      "description": "The prompt template to be tested. Use the `promptTemplate` from the latest `create_prompt_template` tool output (if available)."
+                    },
+                    "contextSchema": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "description": "The context schema that defines the expected input parameters for the prompt template. Use the `contextSchema` from the latest `create_prompt_template` tool output."
+                    },
+                    "promptOrigin": {
+                      "type": "string",
+                      "enum": [
+                        "codebase",
+                        "requirements"
+                      ],
+                      "description": "The origin of the prompt template, indicating where it came from (e.g. \"codebase\" or \"requirements\")."
+                    },
+                    "model": {
+                      "type": "string",
+                      "default": "gpt-4.1-mini",
+                      "description": "The model to use for generating actual prompt outputs for testing. Defaults to gpt-4.1-mini."
+                    },
+                    "temperature": {
+                      "type": "number",
+                      "default": 1,
+                      "description": "The temperature of the prompt template. Explicitly specify the temperature if it can be inferred from the codebase. Otherwise, defaults to 1."
+                    }
+                  },
+                  "required": [
+                    "template",
+                    "contextSchema",
+                    "promptOrigin"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "run_pipeline": {
+              "type": "object",
+              "properties": {
+                "params": {
+                  "type": "object",
+                  "properties": {
+                    "projectSlug": {
+                      "type": "string",
+                      "description": "The project slug from listFollowedProjects tool (e.g., \"gh/organization/project\"). When using this option, branch must also be provided."
+                    },
+                    "branch": {
+                      "type": "string",
+                      "description": "The name of the branch currently checked out in local workspace. This should match local git branch. For example: \"feature/my-branch\", \"bugfix/123\", \"main\", \"master\" etc."
+                    },
+                    "workspaceRoot": {
+                      "type": "string",
+                      "description": "The absolute path to the root directory of your project workspace. This should be the top-level folder containing your source code, configuration files, and dependencies. For example: \"/home/user/my-project\" or \"C:\\Users\\user\\my-project\""
+                    },
+                    "gitRemoteURL": {
+                      "type": "string",
+                      "description": "The URL of the remote git repository. This should be the URL of the repository that you cloned to your local workspace. For example: \"https://github.com/user/my-project.git\""
+                    },
+                    "projectURL": {
+                      "type": "string",
+                      "description": "The URL of the CircleCI project. Can be any of these formats:\n- Project URL with branch: https://app.circleci.com/pipelines/gh/organization/project?branch=feature-branch\n- Pipeline URL: https://app.circleci.com/pipelines/gh/organization/project/123\n- Workflow URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def\n- Job URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def/jobs/xyz"
+                    },
+                    "pipelineChoiceName": {
+                      "type": "string",
+                      "description": "The name of the pipeline to run. This parameter is only needed if the project has multiple pipeline definitions. If not provided and multiple pipelines exist, the tool will return a list of available pipelines for the user to choose from. If provided, it must exactly match one of the pipeline names returned by the tool."
+                    },
+                    "configContent": {
+                      "type": "string",
+                      "description": "The content of the CircleCI YAML configuration file for the pipeline."
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "list_followed_projects": {
+              "type": "object",
+              "properties": {
+                "params": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "run_evaluation_tests": {
+              "type": "object",
+              "properties": {
+                "params": {
+                  "type": "object",
+                  "properties": {
+                    "projectSlug": {
+                      "type": "string",
+                      "description": "The project slug from listFollowedProjects tool (e.g., \"gh/organization/project\"). When using this option, branch must also be provided."
+                    },
+                    "branch": {
+                      "type": "string",
+                      "description": "The name of the branch currently checked out in local workspace. This should match local git branch. For example: \"feature/my-branch\", \"bugfix/123\", \"main\", \"master\" etc."
+                    },
+                    "workspaceRoot": {
+                      "type": "string",
+                      "description": "The absolute path to the root directory of your project workspace. This should be the top-level folder containing your source code, configuration files, and dependencies. For example: \"/home/user/my-project\" or \"C:\\Users\\user\\my-project\""
+                    },
+                    "gitRemoteURL": {
+                      "type": "string",
+                      "description": "The URL of the remote git repository. This should be the URL of the repository that you cloned to your local workspace. For example: \"https://github.com/user/my-project.git\""
+                    },
+                    "projectURL": {
+                      "type": "string",
+                      "description": "The URL of the CircleCI project. Can be any of these formats:\n- Project URL with branch: https://app.circleci.com/pipelines/gh/organization/project?branch=feature-branch\n- Pipeline URL: https://app.circleci.com/pipelines/gh/organization/project/123\n- Workflow URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def\n- Job URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def/jobs/xyz"
+                    },
+                    "pipelineChoiceName": {
+                      "type": "string",
+                      "description": "The name of the pipeline to run. This parameter is only needed if the project has multiple pipeline definitions. If not provided and multiple pipelines exist, the tool will return a list of available pipelines for the user to choose from. If provided, it must exactly match one of the pipeline names returned by the tool."
+                    },
+                    "promptFiles": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "fileName": {
+                            "type": "string",
+                            "pattern": "^[A-Za-z0-9._-]+$",
+                            "description": "The name of the prompt template file"
+                          },
+                          "fileContent": {
+                            "type": "string",
+                            "description": "The contents of the prompt template file"
+                          }
+                        },
+                        "required": [
+                          "fileName",
+                          "fileContent"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "description": "Array of prompt template files in the ./prompts directory (e.g. <relevant-name>.prompt.yml)."
+                    }
+                  },
+                  "required": [
+                    "promptFiles"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "rerun_workflow": {
+              "type": "object",
+              "properties": {
+                "params": {
+                  "type": "object",
+                  "properties": {
+                    "workflowId": {
+                      "type": "string",
+                      "description": "This should be the workflowId of the workflow that need rerun. The workflowId is an UUID. An example workflowId is a12145c5-90f8-4cc9-98f2-36cb85db9e4b"
+                    },
+                    "fromFailed": {
+                      "type": "boolean",
+                      "description": "If true, reruns the workflow from failed. If false, reruns the workflow from the start. If omitted, the rerun behavior is based on the workflow status."
+                    },
+                    "workflowURL": {
+                      "type": "string",
+                      "description": "The URL of the CircleCI workflow or job. Can be any of these formats:\n- Workflow URL: https://app.circleci.com/pipelines/:vcsType/:orgName/:projectName/:pipelineNumber/workflows/:workflowId- Job URL: https://app.circleci.com/pipelines/:vcsType/:orgName/:projectName/:pipelineNumber/workflows/:workflowId/jobs/:buildNumber"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "download_usage_api_data": {
+              "type": "object",
+              "properties": {
+                "params": {
+                  "type": "object",
+                  "properties": {
+                    "orgId": {
+                      "type": "string",
+                      "description": "The ID of the CircleCI organization"
+                    },
+                    "startDate": {
+                      "type": "string",
+                      "description": "Optional. The start date for the usage data. Used when starting a new export job. This should be in YYYY-MM-DD format or natural language. For example: \"2010-10-20\", \"yesterday\" or \"5 days ago\""
+                    },
+                    "endDate": {
+                      "type": "string",
+                      "description": "Optional. The end date for the usage data. Used when starting a new export job. This should be in YYYY-MM-DD format or natural language. For example: \"2010-10-20\", \"yesterday\" or \"5 days ago\""
+                    },
+                    "jobId": {
+                      "type": "string",
+                      "description": "Generated by the initial tool call when starting the usage export job. Required for subsequent tool calls."
+                    },
+                    "outputDir": {
+                      "type": "string",
+                      "description": "The directory to save the downloaded usage data CSV file."
+                    }
+                  },
+                  "required": [
+                    "orgId",
+                    "outputDir"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "find_underused_resource_classes": {
+              "type": "object",
+              "properties": {
+                "params": {
+                  "type": "object",
+                  "properties": {
+                    "csvFilePath": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ],
+                      "description": "Path to a usage data CSV file, or an array of paths to multiple part files to analyze together."
+                    },
+                    "threshold": {
+                      "type": "number",
+                      "default": 40,
+                      "description": "The usage percentage threshold. Jobs with usage below this will be reported. Default is 40."
+                    }
+                  },
+                  "required": [
+                    "csvFilePath"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "analyze_diff": {
+              "type": "object",
+              "properties": {
+                "params": {
+                  "type": "object",
+                  "properties": {
+                    "speedMode": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "The status of speed mode. Defaults to false."
+                    },
+                    "filterBy": {
+                      "type": "string",
+                      "enum": [
+                        "Violations",
+                        "Compliants",
+                        "Human Review Required",
+                        "None"
+                      ],
+                      "default": "None",
+                      "description": "Analysis filter. Defaults to None"
+                    },
+                    "diff": {
+                      "type": "string",
+                      "description": "Git diff content to analyze. Defaults to staged changes, unless the user explicitly asks for unstaged changes or all changes."
+                    },
+                    "rules": {
+                      "type": "string",
+                      "description": "Rules to use for analysis, found in the rules subdirectory of the IDE workspace settings. Combine all rules from multiple files by separating them with ---"
+                    }
+                  },
+                  "required": [
+                    "diff",
+                    "rules"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "run_rollback_pipeline": {
+              "type": "object",
+              "properties": {
+                "params": {
+                  "type": "object",
+                  "properties": {
+                    "projectSlug": {
+                      "type": "string",
+                      "description": "The project slug from listFollowedProjects tool (e.g., \"gh/organization/project\")."
+                    },
+                    "projectID": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "The ID of the CircleCI project (UUID)"
+                    },
+                    "environmentName": {
+                      "type": "string",
+                      "description": "The environment name"
+                    },
+                    "componentName": {
+                      "type": "string",
+                      "description": "The component name"
+                    },
+                    "currentVersion": {
+                      "type": "string",
+                      "description": "The current version"
+                    },
+                    "targetVersion": {
+                      "type": "string",
+                      "description": "The target version"
+                    },
+                    "namespace": {
+                      "type": "string",
+                      "description": "The namespace of the component"
+                    },
+                    "reason": {
+                      "type": "string",
+                      "description": "The reason for the rollback"
+                    },
+                    "parameters": {
+                      "type": "object",
+                      "additionalProperties": {},
+                      "description": "The extra parameters for the rollback pipeline"
+                    }
+                  },
+                  "required": [
+                    "environmentName",
+                    "componentName",
+                    "currentVersion",
+                    "targetVersion",
+                    "namespace"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "list_component_versions": {
+              "type": "object",
+              "properties": {
+                "params": {
+                  "type": "object",
+                  "properties": {
+                    "projectSlug": {
+                      "type": "string",
+                      "description": "The project slug from listFollowedProjects tool (e.g., \"gh/organization/project\")."
+                    },
+                    "projectID": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "The ID of the CircleCI project (UUID)"
+                    },
+                    "orgID": {
+                      "type": "string",
+                      "description": "The ID of the organization. This is the ID of the organization that the components and environments belong to. If not provided, it will be resolved from projectSlug or projectID."
+                    },
+                    "componentID": {
+                      "type": "string",
+                      "description": "The ID of the component to list versions for. If not provided, available components will be listed."
+                    },
+                    "environmentID": {
+                      "type": "string",
+                      "description": "The ID of the environment to list versions for. If not provided, available environments will be listed."
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "list_artifacts": {
+              "type": "object",
+              "properties": {
+                "params": {
+                  "type": "object",
+                  "properties": {
+                    "projectSlug": {
+                      "type": "string",
+                      "description": "The project slug from listFollowedProjects tool (e.g., \"gh/organization/project\"). When using this option, branch must also be provided."
+                    },
+                    "branch": {
+                      "type": "string",
+                      "description": "The name of the branch currently checked out in local workspace. This should match local git branch. For example: \"feature/my-branch\", \"bugfix/123\", \"main\", \"master\" etc."
+                    },
+                    "workspaceRoot": {
+                      "type": "string",
+                      "description": "The absolute path to the root directory of your project workspace. This should be the top-level folder containing your source code, configuration files, and dependencies. For example: \"/home/user/my-project\" or \"C:\\Users\\user\\my-project\""
+                    },
+                    "gitRemoteURL": {
+                      "type": "string",
+                      "description": "The URL of the remote git repository. This should be the URL of the repository that you cloned to your local workspace. For example: \"https://github.com/user/my-project.git\""
+                    },
+                    "projectURL": {
+                      "type": "string",
+                      "description": "The URL of the CircleCI project. Can be any of these formats:\n- Job URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def/jobs/789\n- Workflow URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def\n- Pipeline URL: https://app.circleci.com/pipelines/gh/organization/project/123"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.0008749999979045242,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "fail",
+      "durationMs": 0.4536250000091968,
+      "message": "Advertised capability did not respond successfully.",
+      "evidence": [
+        {
+          "endpoint": "resources/list",
+          "advertised": true,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": [
+            "MCP error -32601: Method not found",
+            "Starting CircleCI MCP server in stdio mode..."
+          ]
+        },
+        {
+          "endpoint": "resources/templates/list",
+          "advertised": true,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": [
+            "MCP error -32601: Method not found",
+            "Starting CircleCI MCP server in stdio mode..."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.13933400000678375,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "pass",
+      "durationMs": 0.2539580000011483,
+      "message": "Detected 11 potential egress target(s) and 20 potential state mutation(s) with low confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 31,
+          "diagnostics": [
+            "Egress entries: 11",
+            "State mutations: 20",
+            "Confidence: medium"
+          ],
+          "findings": [
+            {
+              "target": "get_build_failure_logs",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "find_flaky_tests",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "get_latest_pipeline_status",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "get_job_test_results",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "run_pipeline",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "run_evaluation_tests",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "rerun_workflow",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "download_usage_api_data",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "find_underused_resource_classes",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "run_rollback_pipeline",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "target": "list_artifacts",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "execute",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "execute",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "execute",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "execute",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "partial",
+      "durationMs": 3.109875000009197,
+      "message": "6/7 conformance checks passed, 1 failed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": false,
+          "itemCount": 7,
+          "identifiers": [
+            "resources-capability-match"
+          ],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 17 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[FAIL] resources-capability-match: Advertised resources but resources/list failed: MCP error -32601: Method not found",
+            "[pass] tool-response-content: Tool \"get_build_failure_logs\" response has valid content array.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "partial",
+      "durationMs": 1.1688339999964228,
+      "message": "Found 34 quality finding(s) across 17 item(s): 0 warnings, 34 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 34,
+          "identifiers": [
+            "get_build_failure_logs",
+            "find_flaky_tests",
+            "get_latest_pipeline_status",
+            "get_job_test_results",
+            "config_helper",
+            "create_prompt_template",
+            "recommend_prompt_template_tests",
+            "run_pipeline",
+            "list_followed_projects",
+            "run_evaluation_tests",
+            "rerun_workflow",
+            "download_usage_api_data",
+            "find_underused_resource_classes",
+            "analyze_diff",
+            "run_rollback_pipeline",
+            "list_component_versions",
+            "list_artifacts"
+          ],
+          "diagnostics": [
+            "[info] tool \"get_build_failure_logs\": Has properties but no 'required' array declared",
+            "[info] tool \"get_build_failure_logs\": Property 'params' missing description",
+            "[info] tool \"find_flaky_tests\": Has properties but no 'required' array declared",
+            "[info] tool \"find_flaky_tests\": Property 'params' missing description",
+            "[info] tool \"get_latest_pipeline_status\": Has properties but no 'required' array declared",
+            "[info] tool \"get_latest_pipeline_status\": Property 'params' missing description",
+            "[info] tool \"get_job_test_results\": Has properties but no 'required' array declared",
+            "[info] tool \"get_job_test_results\": Property 'params' missing description",
+            "[info] tool \"config_helper\": Has properties but no 'required' array declared",
+            "[info] tool \"config_helper\": Property 'params' missing description",
+            "[info] tool \"create_prompt_template\": Has properties but no 'required' array declared",
+            "[info] tool \"create_prompt_template\": Property 'params' missing description",
+            "[info] tool \"recommend_prompt_template_tests\": Has properties but no 'required' array declared",
+            "[info] tool \"recommend_prompt_template_tests\": Property 'params' missing description",
+            "[info] tool \"run_pipeline\": Has properties but no 'required' array declared",
+            "[info] tool \"run_pipeline\": Property 'params' missing description",
+            "[info] tool \"list_followed_projects\": Has properties but no 'required' array declared",
+            "[info] tool \"list_followed_projects\": Property 'params' missing description",
+            "[info] tool \"run_evaluation_tests\": Has properties but no 'required' array declared",
+            "[info] tool \"run_evaluation_tests\": Property 'params' missing description",
+            "[info] tool \"rerun_workflow\": Has properties but no 'required' array declared",
+            "[info] tool \"rerun_workflow\": Property 'params' missing description",
+            "[info] tool \"download_usage_api_data\": Has properties but no 'required' array declared",
+            "[info] tool \"download_usage_api_data\": Property 'params' missing description",
+            "[info] tool \"find_underused_resource_classes\": Has properties but no 'required' array declared",
+            "[info] tool \"find_underused_resource_classes\": Property 'params' missing description",
+            "[info] tool \"analyze_diff\": Has properties but no 'required' array declared",
+            "[info] tool \"analyze_diff\": Property 'params' missing description",
+            "[info] tool \"run_rollback_pipeline\": Has properties but no 'required' array declared",
+            "[info] tool \"run_rollback_pipeline\": Property 'params' missing description",
+            "[info] tool \"list_component_versions\": Has properties but no 'required' array declared",
+            "[info] tool \"list_component_versions\": Property 'params' missing description",
+            "[info] tool \"list_artifacts\": Has properties but no 'required' array declared",
+            "[info] tool \"list_artifacts\": Property 'params' missing description"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "get_build_failure_logs",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_build_failure_logs",
+              "issue": "Property 'params' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "find_flaky_tests",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "find_flaky_tests",
+              "issue": "Property 'params' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_latest_pipeline_status",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_latest_pipeline_status",
+              "issue": "Property 'params' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_job_test_results",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "get_job_test_results",
+              "issue": "Property 'params' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "config_helper",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "config_helper",
+              "issue": "Property 'params' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create_prompt_template",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create_prompt_template",
+              "issue": "Property 'params' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "recommend_prompt_template_tests",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "recommend_prompt_template_tests",
+              "issue": "Property 'params' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "run_pipeline",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "run_pipeline",
+              "issue": "Property 'params' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "list_followed_projects",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "list_followed_projects",
+              "issue": "Property 'params' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "run_evaluation_tests",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "run_evaluation_tests",
+              "issue": "Property 'params' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "rerun_workflow",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "rerun_workflow",
+              "issue": "Property 'params' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "download_usage_api_data",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "download_usage_api_data",
+              "issue": "Property 'params' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "find_underused_resource_classes",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "find_underused_resource_classes",
+              "issue": "Property 'params' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "analyze_diff",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "analyze_diff",
+              "issue": "Property 'params' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "run_rollback_pipeline",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "run_rollback_pipeline",
+              "issue": "Property 'params' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "list_component_versions",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "list_component_versions",
+              "issue": "Property 'params' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "list_artifacts",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "list_artifacts",
+              "issue": "Property 'params' missing description",
+              "severity": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "pass",
+      "durationMs": 0.900500000003376,
+      "message": "No security issues detected.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "fail",
+      "durationMs": 1.4063750000059372,
+      "message": "Safe attack simulation found 2 finding(s): 1 high, 1 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 2,
+          "identifiers": [
+            "download_usage_api_data",
+            "list_component_versions"
+          ],
+          "diagnostics": [
+            "[high] tool \"download_usage_api_data\" contains secret exfiltration instruction text that could steer an agent.",
+            "[medium] tool \"list_component_versions\" contains agent behavior control text that could steer an agent."
+          ],
+          "findings": [
+            {
+              "ruleId": "attack-sim/tool-poisoning/secret-exfiltration-instruction",
+              "attackClass": "tool-poisoning",
+              "severity": "high",
+              "itemType": "tool",
+              "itemName": "download_usage_api_data",
+              "message": "tool \"download_usage_api_data\" contains secret exfiltration instruction text that could steer an agent.",
+              "evidence": {
+                "path": "description",
+                "excerpt": "\n    ⚠️ **MANDATORY: The handler will REJECT any call that does not include BOTH outputDir and originalUserMessage. These parameters are REQUIRED for all tool calls.**\n    \n    ⚠️ **MANDATORY OUTPUT DIRECTORY SELECTION FOR AI AGENTS:**\n    ",
+                "match": "copy-paste friendly for status checks, regardless of the environment"
+              },
+              "recommendation": "Remove hidden or behavioral instructions from MCP metadata; keep descriptions factual and user-visible.",
+              "recommendedAction": "escalate"
+            },
+            {
+              "ruleId": "attack-sim/tool-poisoning/agent-behavior-control",
+              "attackClass": "tool-poisoning",
+              "severity": "medium",
+              "itemType": "tool",
+              "itemName": "list_component_versions",
+              "message": "tool \"list_component_versions\" contains agent behavior control text that could steer an agent.",
+              "evidence": {
+                "path": "description",
+                "excerpt": "\n     This tool lists all versions for a CircleCI component. It guides you through a multi-step process to gather the required information and provides lists of available options when parameters are missing.\n\n     **Initial Requirements:**\n",
+                "match": "Always use the exact IDs returned by the tool"
+              },
+              "recommendation": "Remove hidden or behavioral instructions from MCP metadata; keep descriptions factual and user-visible.",
+              "recommendedAction": "gate"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 63,
+    "grade": "D",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 60,
+        "details": [
+          "conformance: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "schema-quality: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 67,
+        "details": [
+          "security-lite: pass (100/100)",
+          "security: pass (100/100)",
+          "attack-sim: fail (0/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 50,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: fail (0/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 1415ms",
+          "p95 latency: 5ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 1414.7474159999983,
+    "toolsListMs": 4.845916999998735,
+    "promptsListMs": 0.0008749999979045242,
+    "resourcesListMs": 0.4536250000091968
+  },
+  "runtimeProfile": {
+    "egress": [
+      {
+        "target": "get_build_failure_logs",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "find_flaky_tests",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "get_latest_pipeline_status",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "get_job_test_results",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "run_pipeline",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "run_evaluation_tests",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "rerun_workflow",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "download_usage_api_data",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "find_underused_resource_classes",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "run_rollback_pipeline",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      },
+      {
+        "target": "list_artifacts",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      }
+    ],
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "execute",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "execute",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "execute",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "execute",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-15T17:56:24.225Z",
+    "confidence": "medium"
+  }
+}

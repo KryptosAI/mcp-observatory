@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-12T234402967Z_93acfad1",
-  "createdAt": "2026-07-12T23:44:02.967Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T175523593Z_92d999ac",
+  "createdAt": "2026-07-15T17:55:23.593Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "cyanheads-git-mcp-server",
     "adapter": "local-process",
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 37.4576249999991,
+      "durationMs": 39.820708999999624,
       "message": "Advertised capability responded with the minimal expected shape (28 items).",
       "evidence": [
         {
@@ -1357,7 +1357,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "pass",
-      "durationMs": 0.6752500000002328,
+      "durationMs": 0.8124579999985144,
       "message": "Advertised capability responded with the minimal expected shape (1 item).",
       "evidence": [
         {
@@ -1370,11 +1370,11 @@
             "git_wrapup"
           ],
           "diagnostics": [
-            "{\"level\":30,\"time\":1783899843951,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":24859,\"transport\":\"stdio\",\"requestId\":\"Z3S39-K4LVB\",\"timestamp\":\"2026-07-12T23:44:03.946Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Attempting to connect stdio transport...\"}",
-            "{\"level\":20,\"time\":1783899843951,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":24859,\"transport\":\"stdio\",\"requestId\":\"Z3S39-K4LVB\",\"timestamp\":\"2026-07-12T23:44:03.946Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Creating StdioServerTransport instance...\"}",
-            "{\"level\":20,\"time\":1783899843951,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":24859,\"transport\":\"stdio\",\"requestId\":\"Z3S39-K4LVB\",\"timestamp\":\"2026-07-12T23:44:03.946Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Connecting McpServer instance to StdioServerTransport...\"}",
-            "{\"level\":30,\"time\":1783899843951,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":24859,\"transport\":\"stdio\",\"requestId\":\"Z3S39-K4LVB\",\"timestamp\":\"2026-07-12T23:44:03.946Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"MCP Server connected and listening via stdio transport.\"}",
-            "{\"level\":30,\"time\":1783899843951,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":24859,\"applicationName\":\"@cyanheads/git-mcp-server\",\"applicationVersion\":\"2.15.1\",\"nodeEnvironment\":\"development\",\"requestId\":\"HCKV6-D9S8W\",\"timestamp\":\"2026-07-12T23:44:03.946Z\",\"operation\":\"ServerStartup\",\"msg\":\"@cyanheads/git-mcp-server is now running and ready.\"}"
+            "{\"level\":30,\"time\":1784138124488,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":25626,\"transport\":\"stdio\",\"requestId\":\"91H3C-VKLJ6\",\"timestamp\":\"2026-07-15T17:55:24.484Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Attempting to connect stdio transport...\"}",
+            "{\"level\":20,\"time\":1784138124488,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":25626,\"transport\":\"stdio\",\"requestId\":\"91H3C-VKLJ6\",\"timestamp\":\"2026-07-15T17:55:24.484Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Creating StdioServerTransport instance...\"}",
+            "{\"level\":20,\"time\":1784138124488,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":25626,\"transport\":\"stdio\",\"requestId\":\"91H3C-VKLJ6\",\"timestamp\":\"2026-07-15T17:55:24.484Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Connecting McpServer instance to StdioServerTransport...\"}",
+            "{\"level\":30,\"time\":1784138124488,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":25626,\"transport\":\"stdio\",\"requestId\":\"91H3C-VKLJ6\",\"timestamp\":\"2026-07-15T17:55:24.484Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"MCP Server connected and listening via stdio transport.\"}",
+            "{\"level\":30,\"time\":1784138124488,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":25626,\"applicationName\":\"@cyanheads/git-mcp-server\",\"applicationVersion\":\"2.15.1\",\"nodeEnvironment\":\"development\",\"requestId\":\"AQ3Q3-D1393\",\"timestamp\":\"2026-07-15T17:55:24.484Z\",\"operation\":\"ServerStartup\",\"msg\":\"@cyanheads/git-mcp-server is now running and ready.\"}"
           ]
         }
       ]
@@ -1383,7 +1383,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 0.6447919999991427,
+      "durationMs": 0.6768339999998716,
       "message": "Advertised capability responded with the minimal expected shape (2 items).",
       "evidence": [
         {
@@ -1396,11 +1396,11 @@
             "git://working-directory"
           ],
           "diagnostics": [
-            "{\"level\":30,\"time\":1783899843951,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":24859,\"transport\":\"stdio\",\"requestId\":\"Z3S39-K4LVB\",\"timestamp\":\"2026-07-12T23:44:03.946Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Attempting to connect stdio transport...\"}",
-            "{\"level\":20,\"time\":1783899843951,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":24859,\"transport\":\"stdio\",\"requestId\":\"Z3S39-K4LVB\",\"timestamp\":\"2026-07-12T23:44:03.946Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Creating StdioServerTransport instance...\"}",
-            "{\"level\":20,\"time\":1783899843951,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":24859,\"transport\":\"stdio\",\"requestId\":\"Z3S39-K4LVB\",\"timestamp\":\"2026-07-12T23:44:03.946Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Connecting McpServer instance to StdioServerTransport...\"}",
-            "{\"level\":30,\"time\":1783899843951,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":24859,\"transport\":\"stdio\",\"requestId\":\"Z3S39-K4LVB\",\"timestamp\":\"2026-07-12T23:44:03.946Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"MCP Server connected and listening via stdio transport.\"}",
-            "{\"level\":30,\"time\":1783899843951,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":24859,\"applicationName\":\"@cyanheads/git-mcp-server\",\"applicationVersion\":\"2.15.1\",\"nodeEnvironment\":\"development\",\"requestId\":\"HCKV6-D9S8W\",\"timestamp\":\"2026-07-12T23:44:03.946Z\",\"operation\":\"ServerStartup\",\"msg\":\"@cyanheads/git-mcp-server is now running and ready.\"}"
+            "{\"level\":30,\"time\":1784138124488,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":25626,\"transport\":\"stdio\",\"requestId\":\"91H3C-VKLJ6\",\"timestamp\":\"2026-07-15T17:55:24.484Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Attempting to connect stdio transport...\"}",
+            "{\"level\":20,\"time\":1784138124488,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":25626,\"transport\":\"stdio\",\"requestId\":\"91H3C-VKLJ6\",\"timestamp\":\"2026-07-15T17:55:24.484Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Creating StdioServerTransport instance...\"}",
+            "{\"level\":20,\"time\":1784138124488,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":25626,\"transport\":\"stdio\",\"requestId\":\"91H3C-VKLJ6\",\"timestamp\":\"2026-07-15T17:55:24.484Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Connecting McpServer instance to StdioServerTransport...\"}",
+            "{\"level\":30,\"time\":1784138124488,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":25626,\"transport\":\"stdio\",\"requestId\":\"91H3C-VKLJ6\",\"timestamp\":\"2026-07-15T17:55:24.484Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"MCP Server connected and listening via stdio transport.\"}",
+            "{\"level\":30,\"time\":1784138124488,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":25626,\"applicationName\":\"@cyanheads/git-mcp-server\",\"applicationVersion\":\"2.15.1\",\"nodeEnvironment\":\"development\",\"requestId\":\"AQ3Q3-D1393\",\"timestamp\":\"2026-07-15T17:55:24.484Z\",\"operation\":\"ServerStartup\",\"msg\":\"@cyanheads/git-mcp-server is now running and ready.\"}"
           ]
         },
         {
@@ -1413,11 +1413,11 @@
             "git://working-directory"
           ],
           "diagnostics": [
-            "{\"level\":30,\"time\":1783899843951,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":24859,\"transport\":\"stdio\",\"requestId\":\"Z3S39-K4LVB\",\"timestamp\":\"2026-07-12T23:44:03.946Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Attempting to connect stdio transport...\"}",
-            "{\"level\":20,\"time\":1783899843951,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":24859,\"transport\":\"stdio\",\"requestId\":\"Z3S39-K4LVB\",\"timestamp\":\"2026-07-12T23:44:03.946Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Creating StdioServerTransport instance...\"}",
-            "{\"level\":20,\"time\":1783899843951,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":24859,\"transport\":\"stdio\",\"requestId\":\"Z3S39-K4LVB\",\"timestamp\":\"2026-07-12T23:44:03.946Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Connecting McpServer instance to StdioServerTransport...\"}",
-            "{\"level\":30,\"time\":1783899843951,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":24859,\"transport\":\"stdio\",\"requestId\":\"Z3S39-K4LVB\",\"timestamp\":\"2026-07-12T23:44:03.946Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"MCP Server connected and listening via stdio transport.\"}",
-            "{\"level\":30,\"time\":1783899843951,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":24859,\"applicationName\":\"@cyanheads/git-mcp-server\",\"applicationVersion\":\"2.15.1\",\"nodeEnvironment\":\"development\",\"requestId\":\"HCKV6-D9S8W\",\"timestamp\":\"2026-07-12T23:44:03.946Z\",\"operation\":\"ServerStartup\",\"msg\":\"@cyanheads/git-mcp-server is now running and ready.\"}"
+            "{\"level\":30,\"time\":1784138124488,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":25626,\"transport\":\"stdio\",\"requestId\":\"91H3C-VKLJ6\",\"timestamp\":\"2026-07-15T17:55:24.484Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Attempting to connect stdio transport...\"}",
+            "{\"level\":20,\"time\":1784138124488,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":25626,\"transport\":\"stdio\",\"requestId\":\"91H3C-VKLJ6\",\"timestamp\":\"2026-07-15T17:55:24.484Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Creating StdioServerTransport instance...\"}",
+            "{\"level\":20,\"time\":1784138124488,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":25626,\"transport\":\"stdio\",\"requestId\":\"91H3C-VKLJ6\",\"timestamp\":\"2026-07-15T17:55:24.484Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Connecting McpServer instance to StdioServerTransport...\"}",
+            "{\"level\":30,\"time\":1784138124488,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":25626,\"transport\":\"stdio\",\"requestId\":\"91H3C-VKLJ6\",\"timestamp\":\"2026-07-15T17:55:24.484Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"MCP Server connected and listening via stdio transport.\"}",
+            "{\"level\":30,\"time\":1784138124488,\"env\":\"development\",\"version\":\"2.15.1\",\"pid\":25626,\"applicationName\":\"@cyanheads/git-mcp-server\",\"applicationVersion\":\"2.15.1\",\"nodeEnvironment\":\"development\",\"requestId\":\"AQ3Q3-D1393\",\"timestamp\":\"2026-07-15T17:55:24.484Z\",\"operation\":\"ServerStartup\",\"msg\":\"@cyanheads/git-mcp-server is now running and ready.\"}"
           ]
         }
       ]
@@ -1426,7 +1426,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "partial",
-      "durationMs": 0.18129099999896425,
+      "durationMs": 0.10258400000020629,
       "message": "Found 19 security finding(s): 0 high, 19 medium, 0 low.",
       "evidence": [
         {
@@ -1600,7 +1600,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "partial",
-      "durationMs": 0.5201250000009168,
+      "durationMs": 0.5392499999998108,
       "message": "Detected 7 potential egress target(s) and 118 potential state mutation(s) with high confidence.",
       "evidence": [
         {
@@ -2373,7 +2373,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 38.885958999999275,
+      "durationMs": 40.62879099999918,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -2399,7 +2399,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 23.320417000000816,
+      "durationMs": 24.68133400000079,
       "message": "Found 17 quality finding(s) across 30 item(s): 0 warnings, 17 info.",
       "evidence": [
         {
@@ -2557,7 +2557,7 @@
       "id": "security",
       "capability": "security",
       "status": "partial",
-      "durationMs": 17.884792000000743,
+      "durationMs": 17.964124999998603,
       "message": "Found 19 security finding(s): 0 high, 19 medium, 0 low.",
       "evidence": [
         {
@@ -2731,7 +2731,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "partial",
-      "durationMs": 19.044708999999784,
+      "durationMs": 18.56329099999857,
       "message": "Safe attack simulation found 19 finding(s): 0 high, 19 medium, 0 low.",
       "evidence": [
         {
@@ -3196,17 +3196,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 987ms",
-          "p95 latency: 37ms (3 operations)"
+          "Connect: 898ms",
+          "p95 latency: 40ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 987.2887500000015,
-    "toolsListMs": 37.4576249999991,
-    "promptsListMs": 0.6752500000002328,
-    "resourcesListMs": 0.6447919999991427
+    "connectMs": 898.0012499999993,
+    "toolsListMs": 39.820708999999624,
+    "promptsListMs": 0.8124579999985144,
+    "resourcesListMs": 0.6768339999998716
   },
   "runtimeProfile": {
     "egress": [
@@ -3963,7 +3963,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-12T23:44:04.014Z",
+    "analyzedAt": "2026-07-15T17:55:24.559Z",
     "confidence": "high"
   }
 }

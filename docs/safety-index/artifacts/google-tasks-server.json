@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-12T234435050Z_5916222a",
-  "createdAt": "2026-07-12T23:44:35.050Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T175602051Z_dd40afdc",
+  "createdAt": "2026-07-15T17:56:02.051Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "google-tasks-server",
     "adapter": "local-process",
@@ -62,5 +62,5 @@
       "evidence": []
     }
   ],
-  "fatalError": "Could not establish a plain stdio MCP session for target `google-tasks-server`.\nCommand: npx -y @anthropic/mcp-server-google-tasks\nDiagnosis: The process exited or detached before MCP initialization completed.\nRaw error: MCP error -32000: Connection closed\nLikely causes:\n- The package may expect extra startup arguments or environment variables.\n- The package may not behave like a plain local-process stdio target under this invocation.\n- The server may be crashing immediately and only leaving clues on stderr.\nNext steps:\n- Run the command manually and look for usage output, auth prompts, or crash text.\n- Check whether the package expects a different transport or an app-oriented startup flow.\n- Use the recent stderr lines below before assuming this is a harness bug.\nRecent stderr:\n- npm error 404  '@anthropic/mcp-server-google-tasks@*' is not in this registry.\n- npm error 404\n- npm error 404 Note that you can also install from a\n- npm error 404 tarball, folder, http url, or git url.\n- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-12T23_44_35_135Z-debug-0.log"
+  "fatalError": "Could not establish a plain stdio MCP session for target `google-tasks-server`.\nCommand: npx -y @anthropic/mcp-server-google-tasks\nDiagnosis: The process exited or detached before MCP initialization completed.\nRaw error: MCP error -32000: Connection closed\nLikely causes:\n- The package may expect extra startup arguments or environment variables.\n- The package may not behave like a plain local-process stdio target under this invocation.\n- The server may be crashing immediately and only leaving clues on stderr.\nNext steps:\n- Run the command manually and look for usage output, auth prompts, or crash text.\n- Check whether the package expects a different transport or an app-oriented startup flow.\n- Use the recent stderr lines below before assuming this is a harness bug.\nRecent stderr:\n- npm error 404  '@anthropic/mcp-server-google-tasks@*' is not in this registry.\n- npm error 404\n- npm error 404 Note that you can also install from a\n- npm error 404 tarball, folder, http url, or git url.\n- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-15T17_56_02_137Z-debug-0.log"
 }

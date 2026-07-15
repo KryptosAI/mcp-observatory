@@ -1,0 +1,536 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-07-15T175654094Z_9602bf61",
+  "createdAt": "2026-07-15T17:56:54.094Z",
+  "toolVersion": "1.32.1",
+  "target": {
+    "targetId": "aikidosec-mcp-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@aikidosec/mcp"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "@aikidosec/mcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Security platform access",
+      "failureClass": "Vulnerability/finding boundary",
+      "whyItMatters": "Aikido MCP servers expose security vulnerability findings, code scanning results, and security posture data — agents could modify security findings or suppress alerts."
+    },
+    "serverName": "Aikido MCP Server",
+    "serverVersion": "1.0.0"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 9,
+    "pass": 6,
+    "fail": 0,
+    "partial": 1,
+    "unsupported": 2,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 1.9428330000082497,
+      "message": "Advertised capability responded with the minimal expected shape (4 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 4,
+          "identifiers": [
+            "aikido_issues_list",
+            "aikido_full_scan",
+            "aikido_login",
+            "aikido_ignore_issue"
+          ],
+          "diagnostics": [
+            "(node:31328) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(Use `node --trace-deprecation ...` to show where the warning was created)",
+            "{\"level\":30,\"time\":\"2026-07-15T17:56:54.875Z\",\"msg\":\"MCP server is running...\"}"
+          ],
+          "schemas": {
+            "aikido_issues_list": {
+              "type": "object",
+              "properties": {
+                "repo_name": {
+                  "type": "string"
+                },
+                "cloud_name": {
+                  "type": "string"
+                },
+                "vm_name": {
+                  "type": "string"
+                },
+                "domain_name": {
+                  "type": "string"
+                },
+                "container_name": {
+                  "type": "string"
+                },
+                "workspace_name": {
+                  "type": "string",
+                  "description": "The workspace name to filter the issues for. This filter can be used in combination with other filters"
+                },
+                "page": {
+                  "type": "number",
+                  "description": "Pagination page index, zero-based (first page is 0)."
+                },
+                "issue_types": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "open_source",
+                      "leaked_secret",
+                      "cloud",
+                      "sast",
+                      "iac",
+                      "surface_monitoring",
+                      "malware",
+                      "eol",
+                      "mobile",
+                      "docker_container",
+                      "cloud_instance",
+                      "scm_security",
+                      "license",
+                      "ai_pentest"
+                    ]
+                  }
+                },
+                "team_name": {
+                  "type": "string",
+                  "description": "Team name to fetch issues for."
+                },
+                "repo_branch_name": {
+                  "type": "string"
+                },
+                "out_of_sla": {
+                  "type": "boolean",
+                  "description": "Filter issues that are out of SLA."
+                },
+                "sla_due_soon": {
+                  "type": "boolean",
+                  "description": "Filter issues that will soon be out of SLA."
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "aikido_full_scan": {
+              "type": "object",
+              "properties": {
+                "repository_name": {
+                  "type": "string"
+                },
+                "files_to_scan": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "relativeFilePath": {
+                        "type": "string"
+                      },
+                      "content": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "relativeFilePath",
+                      "content"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "files_to_scan"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "aikido_login": {
+              "type": "object",
+              "properties": {
+                "force_reauth": {
+                  "type": "boolean",
+                  "description": "When true, start a new sign-in flow even if the user is already authenticated. Use ONLY when the user explicitly asks to re-authenticate, switch accounts, or sign in again. Do not set this speculatively — it will trigger a browser-based sign-in the user may not want."
+                },
+                "token": {
+                  "type": "string",
+                  "description": "Paste a token here as a manual fallback when the browser-based sign-in could not deliver the token automatically."
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "aikido_ignore_issue": {
+              "type": "object",
+              "properties": {
+                "issue_id": {
+                  "type": "string",
+                  "description": "The ID of the issue to ignore."
+                },
+                "reason": {
+                  "type": "string",
+                  "description": "The reason for ignoring the issue."
+                }
+              },
+              "required": [
+                "issue_id",
+                "reason"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.0009169999975711107,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.0006250000005820766,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.03608400000666734,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "pass",
+      "durationMs": 0.12091599999985192,
+      "message": "Detected 0 potential egress target(s) and 3 potential state mutation(s) with low confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 3,
+          "diagnostics": [
+            "Egress entries: 0",
+            "State mutations: 3",
+            "Confidence: medium"
+          ],
+          "findings": [
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 11.95908299999428,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 4 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
+            "[pass] tool-response-content: Tool \"aikido_issues_list\" response has valid content array.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "partial",
+      "durationMs": 0.5805839999957243,
+      "message": "Found 11 quality finding(s) across 4 item(s): 0 warnings, 11 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 11,
+          "identifiers": [
+            "aikido_issues_list",
+            "aikido_full_scan",
+            "aikido_login"
+          ],
+          "diagnostics": [
+            "[info] tool \"aikido_issues_list\": Has properties but no 'required' array declared",
+            "[info] tool \"aikido_issues_list\": Property 'repo_name' missing description",
+            "[info] tool \"aikido_issues_list\": Property 'cloud_name' missing description",
+            "[info] tool \"aikido_issues_list\": Property 'vm_name' missing description",
+            "[info] tool \"aikido_issues_list\": Property 'domain_name' missing description",
+            "[info] tool \"aikido_issues_list\": Property 'container_name' missing description",
+            "[info] tool \"aikido_issues_list\": Property 'issue_types' missing description",
+            "[info] tool \"aikido_issues_list\": Property 'repo_branch_name' missing description",
+            "[info] tool \"aikido_full_scan\": Property 'repository_name' missing description",
+            "[info] tool \"aikido_full_scan\": Property 'files_to_scan' missing description",
+            "[info] tool \"aikido_login\": Has properties but no 'required' array declared"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "aikido_issues_list",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "aikido_issues_list",
+              "issue": "Property 'repo_name' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "aikido_issues_list",
+              "issue": "Property 'cloud_name' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "aikido_issues_list",
+              "issue": "Property 'vm_name' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "aikido_issues_list",
+              "issue": "Property 'domain_name' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "aikido_issues_list",
+              "issue": "Property 'container_name' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "aikido_issues_list",
+              "issue": "Property 'issue_types' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "aikido_issues_list",
+              "issue": "Property 'repo_branch_name' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "aikido_full_scan",
+              "issue": "Property 'repository_name' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "aikido_full_scan",
+              "issue": "Property 'files_to_scan' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "aikido_login",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "pass",
+      "durationMs": 0.3533750000060536,
+      "message": "No security issues detected.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "pass",
+      "durationMs": 0.3337089999986347,
+      "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 85,
+    "grade": "B",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "schema-quality: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "security-lite: pass (100/100)",
+          "security: pass (100/100)",
+          "attack-sim: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 67,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: unsupported (50/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 810ms",
+          "p95 latency: 2ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 810.2337909999915,
+    "toolsListMs": 1.9428330000082497,
+    "promptsListMs": 0.0009169999975711107,
+    "resourcesListMs": 0.0006250000005820766
+  },
+  "runtimeProfile": {
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-15T17:56:54.907Z",
+    "confidence": "medium"
+  }
+}

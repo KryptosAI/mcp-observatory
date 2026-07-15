@@ -1,0 +1,467 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-07-15T175710606Z_c06670b3",
+  "createdAt": "2026-07-15T17:57:10.606Z",
+  "toolVersion": "1.32.1",
+  "target": {
+    "targetId": "s3-mcp-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "mcp-server-s3"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "mcp-server-s3",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Cloud object storage access",
+      "failureClass": "Bucket/object boundary",
+      "whyItMatters": "S3 MCP servers can list buckets, upload/download objects, and manage permissions — agents could access or modify cloud storage."
+    },
+    "serverName": "mcp-server-s3",
+    "serverVersion": "1.0.0"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 9,
+    "pass": 7,
+    "fail": 0,
+    "partial": 0,
+    "unsupported": 2,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 2.6267079999961425,
+      "message": "Advertised capability responded with the minimal expected shape (7 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [
+            "list_buckets",
+            "list_objects",
+            "get_object",
+            "put_object",
+            "delete_object",
+            "presigned_url",
+            "bucket_info"
+          ],
+          "diagnostics": [],
+          "schemas": {
+            "list_buckets": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "list_objects": {
+              "type": "object",
+              "properties": {
+                "bucket": {
+                  "type": "string",
+                  "description": "Bucket name"
+                },
+                "prefix": {
+                  "type": "string",
+                  "description": "Key prefix (e.g. 'uploads/')"
+                },
+                "maxKeys": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1000,
+                  "default": 100,
+                  "description": "Max objects to return"
+                }
+              },
+              "required": [
+                "bucket"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_object": {
+              "type": "object",
+              "properties": {
+                "bucket": {
+                  "type": "string",
+                  "description": "Bucket name"
+                },
+                "key": {
+                  "type": "string",
+                  "description": "Object key"
+                }
+              },
+              "required": [
+                "bucket",
+                "key"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "put_object": {
+              "type": "object",
+              "properties": {
+                "bucket": {
+                  "type": "string",
+                  "description": "Bucket name"
+                },
+                "key": {
+                  "type": "string",
+                  "description": "Object key"
+                },
+                "content": {
+                  "type": "string",
+                  "description": "Content to upload"
+                },
+                "contentType": {
+                  "type": "string",
+                  "description": "Content-Type header (default: text/plain)"
+                }
+              },
+              "required": [
+                "bucket",
+                "key",
+                "content"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "delete_object": {
+              "type": "object",
+              "properties": {
+                "bucket": {
+                  "type": "string",
+                  "description": "Bucket name"
+                },
+                "key": {
+                  "type": "string",
+                  "description": "Object key"
+                }
+              },
+              "required": [
+                "bucket",
+                "key"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "presigned_url": {
+              "type": "object",
+              "properties": {
+                "bucket": {
+                  "type": "string",
+                  "description": "Bucket name"
+                },
+                "key": {
+                  "type": "string",
+                  "description": "Object key"
+                },
+                "expiresIn": {
+                  "type": "integer",
+                  "minimum": 60,
+                  "maximum": 604800,
+                  "default": 3600,
+                  "description": "URL expiry in seconds (default: 1 hour)"
+                }
+              },
+              "required": [
+                "bucket",
+                "key"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "bucket_info": {
+              "type": "object",
+              "properties": {
+                "bucket": {
+                  "type": "string",
+                  "description": "Bucket name"
+                }
+              },
+              "required": [
+                "bucket"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.0009580000041751191,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.0007089999999152496,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.024624999990919605,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "pass",
+      "durationMs": 0.09145799999532755,
+      "message": "Detected 2 potential egress target(s) and 2 potential state mutation(s) with low confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 4,
+          "diagnostics": [
+            "Egress entries: 2",
+            "State mutations: 2",
+            "Confidence: medium"
+          ],
+          "findings": [
+            {
+              "target": "URL expiry in seconds (default: 1 hour)",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "presigned_url",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "low"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "delete",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 2023.8514589999977,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 7 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
+            "[pass] tool-response-content: Tool \"list_buckets\" response has valid content array.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "pass",
+      "durationMs": 2.256874999991851,
+      "message": "All 7 item(s) have good schema quality.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "pass",
+      "durationMs": 3.2747089999902528,
+      "message": "No security issues detected.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "pass",
+      "durationMs": 2.6614580000023125,
+      "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 93,
+    "grade": "A",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "schema-quality: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "security-lite: pass (100/100)",
+          "security: pass (100/100)",
+          "attack-sim: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 67,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: unsupported (50/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 843ms",
+          "p95 latency: 3ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 842.6305410000059,
+    "toolsListMs": 2.6267079999961425,
+    "promptsListMs": 0.0009580000041751191,
+    "resourcesListMs": 0.0007089999999152496
+  },
+  "runtimeProfile": {
+    "egress": [
+      {
+        "target": "URL expiry in seconds (default: 1 hour)",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "presigned_url",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "low"
+      }
+    ],
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "delete",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-15T17:57:11.452Z",
+    "confidence": "medium"
+  }
+}

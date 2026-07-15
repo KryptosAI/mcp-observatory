@@ -1,0 +1,592 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-07-15T175608421Z_3ec4a60f",
+  "createdAt": "2026-07-15T17:56:08.421Z",
+  "toolVersion": "1.32.1",
+  "target": {
+    "targetId": "minecraft-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "minecraft-mcp-server"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "minecraft-mcp-server",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Game world mutation",
+      "failureClass": "Game state boundary",
+      "whyItMatters": "Minecraft MCP servers can place blocks, spawn entities, and modify game worlds — agents with game world access need boundaries around destructive operations."
+    },
+    "serverName": "minecraft-bot",
+    "serverVersion": "1.0.0"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 9,
+    "pass": 6,
+    "fail": 0,
+    "partial": 1,
+    "unsupported": 2,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 2.983582999993814,
+      "message": "Advertised capability responded with the minimal expected shape (17 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 17,
+          "identifiers": [
+            "get-position",
+            "move-to-position",
+            "look-at",
+            "jump",
+            "move-in-direction",
+            "list-inventory",
+            "find-item",
+            "equip-item",
+            "place-block",
+            "dig-block",
+            "get-block-info",
+            "find-block",
+            "find-entity",
+            "send-chat",
+            "read-chat",
+            "fly-to",
+            "detect-gamemode"
+          ],
+          "diagnostics": [
+            "(node:28679) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(Use `node --trace-deprecation ...` to show where the warning was created)"
+          ],
+          "schemas": {
+            "get-position": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "move-to-position": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "description": "X coordinate"
+                },
+                "y": {
+                  "type": "number",
+                  "description": "Y coordinate"
+                },
+                "z": {
+                  "type": "number",
+                  "description": "Z coordinate"
+                },
+                "range": {
+                  "type": "number",
+                  "description": "How close to get to the target (default: 1)"
+                }
+              },
+              "required": [
+                "x",
+                "y",
+                "z"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "look-at": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "description": "X coordinate"
+                },
+                "y": {
+                  "type": "number",
+                  "description": "Y coordinate"
+                },
+                "z": {
+                  "type": "number",
+                  "description": "Z coordinate"
+                }
+              },
+              "required": [
+                "x",
+                "y",
+                "z"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "jump": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "move-in-direction": {
+              "type": "object",
+              "properties": {
+                "direction": {
+                  "type": "string",
+                  "enum": [
+                    "forward",
+                    "back",
+                    "left",
+                    "right"
+                  ],
+                  "description": "Direction to move"
+                },
+                "duration": {
+                  "type": "number",
+                  "description": "Duration in milliseconds (default: 1000)"
+                }
+              },
+              "required": [
+                "direction"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "list-inventory": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "find-item": {
+              "type": "object",
+              "properties": {
+                "nameOrType": {
+                  "type": "string",
+                  "description": "Name or type of item to find"
+                }
+              },
+              "required": [
+                "nameOrType"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "equip-item": {
+              "type": "object",
+              "properties": {
+                "itemName": {
+                  "type": "string",
+                  "description": "Name of the item to equip"
+                },
+                "destination": {
+                  "type": "string",
+                  "description": "Where to equip the item (default: 'hand')"
+                }
+              },
+              "required": [
+                "itemName"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "place-block": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "description": "X coordinate"
+                },
+                "y": {
+                  "type": "number",
+                  "description": "Y coordinate"
+                },
+                "z": {
+                  "type": "number",
+                  "description": "Z coordinate"
+                },
+                "faceDirection": {
+                  "type": "string",
+                  "enum": [
+                    "up",
+                    "down",
+                    "north",
+                    "south",
+                    "east",
+                    "west"
+                  ],
+                  "description": "Direction to place against (default: 'down')"
+                }
+              },
+              "required": [
+                "x",
+                "y",
+                "z"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "dig-block": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "description": "X coordinate"
+                },
+                "y": {
+                  "type": "number",
+                  "description": "Y coordinate"
+                },
+                "z": {
+                  "type": "number",
+                  "description": "Z coordinate"
+                }
+              },
+              "required": [
+                "x",
+                "y",
+                "z"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get-block-info": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "description": "X coordinate"
+                },
+                "y": {
+                  "type": "number",
+                  "description": "Y coordinate"
+                },
+                "z": {
+                  "type": "number",
+                  "description": "Z coordinate"
+                }
+              },
+              "required": [
+                "x",
+                "y",
+                "z"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "find-block": {
+              "type": "object",
+              "properties": {
+                "blockType": {
+                  "type": "string",
+                  "description": "Type of block to find"
+                },
+                "maxDistance": {
+                  "type": "number",
+                  "description": "Maximum search distance (default: 16)"
+                }
+              },
+              "required": [
+                "blockType"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "find-entity": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Type of entity to find (empty for any entity)"
+                },
+                "maxDistance": {
+                  "type": "number",
+                  "description": "Maximum search distance (default: 16)"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "send-chat": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Message to send in chat"
+                }
+              },
+              "required": [
+                "message"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "read-chat": {
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "number",
+                  "description": "Number of recent messages to retrieve (default: 10, max: 100)"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "fly-to": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "description": "X coordinate"
+                },
+                "y": {
+                  "type": "number",
+                  "description": "Y coordinate"
+                },
+                "z": {
+                  "type": "number",
+                  "description": "Z coordinate"
+                }
+              },
+              "required": [
+                "x",
+                "y",
+                "z"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "detect-gamemode": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.0009579999968991615,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.0006250000005820766,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.03237500000250293,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "pass",
+      "durationMs": 0.09304200000042329,
+      "message": "No egress or state mutation indicators detected in tool schemas.",
+      "evidence": []
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 2.3456250000017462,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 17 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
+            "[pass] tool-response-content: Tool \"get-position\" response has valid content array.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "partial",
+      "durationMs": 0.5765420000025188,
+      "message": "Found 2 quality finding(s) across 17 item(s): 0 warnings, 2 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 2,
+          "identifiers": [
+            "find-entity",
+            "read-chat"
+          ],
+          "diagnostics": [
+            "[info] tool \"find-entity\": Has properties but no 'required' array declared",
+            "[info] tool \"read-chat\": Has properties but no 'required' array declared"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "find-entity",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "read-chat",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "pass",
+      "durationMs": 0.415499999995518,
+      "message": "No security issues detected.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "pass",
+      "durationMs": 0.3654999999998836,
+      "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 85,
+    "grade": "B",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "schema-quality: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "security-lite: pass (100/100)",
+          "security: pass (100/100)",
+          "attack-sim: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 67,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: unsupported (50/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 1290ms",
+          "p95 latency: 3ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 1289.5882079999938,
+    "toolsListMs": 2.983582999993814,
+    "promptsListMs": 0.0009579999968991615,
+    "resourcesListMs": 0.0006250000005820766
+  },
+  "runtimeProfile": {
+    "analyzedAt": "2026-07-15T17:56:09.716Z",
+    "confidence": "low"
+  }
+}

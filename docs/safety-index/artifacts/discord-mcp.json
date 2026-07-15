@@ -1,0 +1,998 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-07-15T173020312Z_79fb6e4b",
+  "createdAt": "2026-07-15T17:30:20.312Z",
+  "toolVersion": "1.31.0",
+  "target": {
+    "targetId": "discord-mcp",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "discord-mcp"
+    ],
+    "serverName": "discord-mcp",
+    "serverVersion": "2.4.0"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 8,
+    "pass": 4,
+    "fail": 0,
+    "partial": 2,
+    "unsupported": 2,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 4.509208999999828,
+      "message": "Advertised capability responded with the minimal expected shape (19 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 19,
+          "identifiers": [
+            "discord_send_message",
+            "discord_edit_message",
+            "discord_delete_message",
+            "discord_add_reaction",
+            "discord_remove_reaction",
+            "discord_get_message_history",
+            "discord_search_messages",
+            "discord_get_message",
+            "discord_list_attachments",
+            "discord_download_attachment",
+            "discord_cleanup_download",
+            "discord_get_channel",
+            "discord_get_dm_channels",
+            "discord_create_dm",
+            "discord_get_friends",
+            "discord_add_friend",
+            "discord_remove_friend",
+            "discord_update_presence",
+            "discord_clear_presence"
+          ],
+          "diagnostics": [
+            "{\"level\":30,\"time\":1784136623655,\"service\":\"discord-mcp\",\"msg\":\"Discord MCP server starting\",\"tools\":19,\"toolNames\":[\"discord_send_message\",\"discord_edit_message\",\"discord_delete_message\",\"discord_add_reaction\",\"discord_remove_reaction\",\"discord_get_message_history\",\"discord_search_messages\",\"discord_get_message\",\"discord_list_attachments\",\"discord_download_attachment\",\"discord_cleanup_download\",\"discord_get_channel\",\"discord_get_dm_channels\",\"discord_create_dm\",\"discord_get_friends\",\"discord_add_friend\",\"discord_remove_friend\",\"discord_update_presence\",\"discord_clear_presence\"],\"version\":\"2.4.0\"}"
+          ],
+          "schemas": {
+            "discord_send_message": {
+              "type": "object",
+              "properties": {
+                "channelId": {
+                  "type": "string",
+                  "description": "The Discord channel ID"
+                },
+                "content": {
+                  "type": "string",
+                  "maxLength": 2000,
+                  "default": "",
+                  "description": "Message content (max 2000 characters)"
+                },
+                "files": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "file": {
+                        "type": "string",
+                        "description": "MCP file reference"
+                      },
+                      "filename": {
+                        "type": "string",
+                        "description": "Filename to use when uploading"
+                      },
+                      "spoiler": {
+                        "type": "boolean",
+                        "description": "Mark file as spoiler"
+                      }
+                    },
+                    "required": [
+                      "file",
+                      "filename"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "maxItems": 10,
+                  "description": "Files to attach to the message"
+                },
+                "tts": {
+                  "type": "boolean",
+                  "description": "Send as text-to-speech message"
+                },
+                "replyTo": {
+                  "type": "string",
+                  "description": "Message ID to reply to"
+                }
+              },
+              "required": [
+                "channelId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discord_edit_message": {
+              "type": "object",
+              "properties": {
+                "channelId": {
+                  "type": "string",
+                  "description": "The Discord channel ID"
+                },
+                "messageId": {
+                  "type": "string",
+                  "description": "The message ID to edit"
+                },
+                "content": {
+                  "type": "string",
+                  "maxLength": 2000,
+                  "description": "New message content"
+                }
+              },
+              "required": [
+                "channelId",
+                "messageId",
+                "content"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discord_delete_message": {
+              "type": "object",
+              "properties": {
+                "channelId": {
+                  "type": "string",
+                  "description": "The Discord channel ID"
+                },
+                "messageId": {
+                  "type": "string",
+                  "description": "The message ID to delete"
+                }
+              },
+              "required": [
+                "channelId",
+                "messageId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discord_add_reaction": {
+              "type": "object",
+              "properties": {
+                "channelId": {
+                  "type": "string",
+                  "description": "The Discord channel ID"
+                },
+                "messageId": {
+                  "type": "string",
+                  "description": "The message ID to react to"
+                },
+                "emoji": {
+                  "type": "string",
+                  "description": "Emoji to react with (Unicode or custom emoji format)"
+                }
+              },
+              "required": [
+                "channelId",
+                "messageId",
+                "emoji"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discord_remove_reaction": {
+              "type": "object",
+              "properties": {
+                "channelId": {
+                  "type": "string",
+                  "description": "The Discord channel ID"
+                },
+                "messageId": {
+                  "type": "string",
+                  "description": "The message ID to remove reaction from"
+                },
+                "emoji": {
+                  "type": "string",
+                  "description": "Emoji to remove (Unicode or custom emoji format)"
+                },
+                "userId": {
+                  "type": "string",
+                  "description": "User ID to remove reaction from (defaults to self)"
+                }
+              },
+              "required": [
+                "channelId",
+                "messageId",
+                "emoji"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discord_get_message_history": {
+              "type": "object",
+              "properties": {
+                "channelId": {
+                  "type": "string",
+                  "description": "The Discord channel ID"
+                },
+                "limit": {
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100,
+                  "description": "Number of messages to retrieve (1-100, default: 50)"
+                },
+                "before": {
+                  "type": "string",
+                  "description": "Get messages before this message ID"
+                },
+                "after": {
+                  "type": "string",
+                  "description": "Get messages after this message ID"
+                },
+                "around": {
+                  "type": "string",
+                  "description": "Get messages around this message ID"
+                }
+              },
+              "required": [
+                "channelId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discord_search_messages": {
+              "type": "object",
+              "properties": {
+                "channelId": {
+                  "type": "string",
+                  "description": "The Discord channel ID"
+                },
+                "query": {
+                  "type": "string",
+                  "description": "Text to search for in messages"
+                },
+                "limit": {
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 25,
+                  "description": "Number of results to return (1-25, default: 25)"
+                },
+                "authorId": {
+                  "type": "string",
+                  "description": "Filter by author user ID"
+                },
+                "hasAttachments": {
+                  "type": "boolean",
+                  "description": "Filter messages that have attachments"
+                },
+                "hasImages": {
+                  "type": "boolean",
+                  "description": "Filter messages that have images"
+                },
+                "hasFiles": {
+                  "type": "boolean",
+                  "description": "Filter messages that have files"
+                },
+                "before": {
+                  "type": "string",
+                  "description": "Search messages before this date (ISO format)"
+                },
+                "after": {
+                  "type": "string",
+                  "description": "Search messages after this date (ISO format)"
+                }
+              },
+              "required": [
+                "channelId",
+                "query"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discord_get_message": {
+              "type": "object",
+              "properties": {
+                "channelId": {
+                  "type": "string",
+                  "description": "The Discord channel ID"
+                },
+                "messageId": {
+                  "type": "string",
+                  "description": "The message ID to retrieve"
+                }
+              },
+              "required": [
+                "channelId",
+                "messageId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discord_list_attachments": {
+              "type": "object",
+              "properties": {
+                "channelId": {
+                  "type": "string",
+                  "description": "The Discord channel ID"
+                },
+                "limit": {
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100,
+                  "description": "Number of messages to scan for attachments (default: 50)"
+                },
+                "imageOnly": {
+                  "type": "boolean",
+                  "description": "Only show image attachments"
+                },
+                "minSize": {
+                  "type": "number",
+                  "description": "Minimum file size in KB"
+                },
+                "maxSize": {
+                  "type": "number",
+                  "description": "Maximum file size in KB"
+                }
+              },
+              "required": [
+                "channelId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discord_download_attachment": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "Discord CDN URL of the attachment to download"
+                }
+              },
+              "required": [
+                "url"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discord_cleanup_download": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "File path to clean up"
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discord_get_channel": {
+              "type": "object",
+              "properties": {
+                "channelId": {
+                  "type": "string",
+                  "description": "The Discord channel ID"
+                }
+              },
+              "required": [
+                "channelId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discord_get_dm_channels": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discord_create_dm": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "description": "The user ID to create DM with"
+                }
+              },
+              "required": [
+                "userId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discord_get_friends": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discord_add_friend": {
+              "type": "object",
+              "properties": {}
+            },
+            "discord_remove_friend": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "description": "User ID to remove as friend"
+                }
+              },
+              "required": [
+                "userId"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discord_update_presence": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "online",
+                    "dnd",
+                    "idle",
+                    "invisible",
+                    "offline"
+                  ],
+                  "description": "Your status (online, dnd, idle, invisible, offline)"
+                },
+                "activity": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Activity name"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "playing",
+                        "streaming",
+                        "listening",
+                        "watching",
+                        "competing"
+                      ],
+                      "description": "Activity type"
+                    },
+                    "url": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "URL for streaming activity"
+                    }
+                  },
+                  "required": [
+                    "name"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Activity to display"
+                },
+                "afk": {
+                  "type": "boolean",
+                  "description": "Whether you are AFK"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "discord_clear_presence": {
+              "type": "object",
+              "properties": {},
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.003707999999733147,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.0016249999998763087,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.6208750000000691,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "partial",
+      "durationMs": 1.3440839999998389,
+      "message": "Detected 2 potential egress target(s) and 22 potential state mutation(s) with high confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 24,
+          "diagnostics": [
+            "Egress entries: 2",
+            "State mutations: 22",
+            "Confidence: high"
+          ],
+          "findings": [
+            {
+              "target": "url",
+              "protocol": "unknown",
+              "source": "tool_schema",
+              "confidence": "high"
+            },
+            {
+              "target": "Discord CDN URL of the attachment to download",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 3.809624999999869,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 19 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
+            "[pass] tool-response-content: Tool \"discord_get_dm_channels\" response has valid content array.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "partial",
+      "durationMs": 0.8768749999999272,
+      "message": "Found 1 quality finding(s) across 19 item(s): 0 warnings, 1 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "discord_update_presence"
+          ],
+          "diagnostics": [
+            "[info] tool \"discord_update_presence\": Has properties but no 'required' array declared"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "discord_update_presence",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "pass",
+      "durationMs": 2.7665000000001783,
+      "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 85,
+    "grade": "B",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "schema-quality: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "security-lite: pass (100/100)",
+          "attack-sim: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 67,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: unsupported (50/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 3348ms",
+          "p95 latency: 5ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 3347.6657499999997,
+    "toolsListMs": 4.509208999999828,
+    "promptsListMs": 0.003707999999733147,
+    "resourcesListMs": 0.0016249999998763087
+  },
+  "runtimeProfile": {
+    "egress": [
+      {
+        "target": "url",
+        "protocol": "unknown",
+        "source": "tool_schema",
+        "confidence": "high"
+      },
+      {
+        "target": "Discord CDN URL of the attachment to download",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      }
+    ],
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-15T17:30:23.668Z",
+    "confidence": "high"
+  }
+}

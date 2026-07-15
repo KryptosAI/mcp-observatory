@@ -1,0 +1,1502 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "fail",
+  "runId": "run_2026-07-15T175624242Z_bcdde93b",
+  "createdAt": "2026-07-15T17:56:24.242Z",
+  "toolVersion": "1.32.1",
+  "target": {
+    "targetId": "heroku-server",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@heroku/mcp-server"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "@heroku/mcp-server",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Cloud platform control",
+      "failureClass": "App/dyno/addon boundary",
+      "whyItMatters": "Heroku MCP servers expose app management, dyno scaling, addon provisioning, and config var access — broad cloud control surface with production consequences."
+    },
+    "serverName": "Heroku MCP Server",
+    "serverVersion": "1.2.5"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 9,
+    "pass": 3,
+    "fail": 3,
+    "partial": 2,
+    "unsupported": 1,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "fail"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 3.21875,
+      "message": "Advertised capability responded with the minimal expected shape (33 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 33,
+          "identifiers": [
+            "list_apps",
+            "get_app_info",
+            "create_app",
+            "rename_app",
+            "maintenance_on",
+            "maintenance_off",
+            "get_app_logs",
+            "list_private_spaces",
+            "list_teams",
+            "list_addons",
+            "get_addon_info",
+            "create_addon",
+            "list_addon_services",
+            "list_addon_plans",
+            "pg_psql",
+            "pg_info",
+            "pg_ps",
+            "pg_locks",
+            "pg_outliers",
+            "pg_credentials",
+            "pg_kill",
+            "pg_maintenance",
+            "pg_backups",
+            "pg_upgrade",
+            "ps_list",
+            "ps_scale",
+            "ps_restart",
+            "pipelines_create",
+            "pipelines_promote",
+            "pipelines_list",
+            "pipelines_info",
+            "deploy_to_heroku",
+            "deploy_one_off_dyno"
+          ],
+          "diagnostics": [
+            "[Plugin Check] @heroku/plugin-ai: NOT INSTALLED - Skipping AI tools",
+            "Heroku MCP Server running on stdio"
+          ],
+          "schemas": {
+            "list_apps": {
+              "type": "object",
+              "properties": {
+                "all": {
+                  "type": "boolean",
+                  "description": "Show owned apps and collaborator access. Default: owned only"
+                },
+                "personal": {
+                  "type": "boolean",
+                  "description": "List personal account apps only, ignoring default team"
+                },
+                "space": {
+                  "type": "string",
+                  "description": "Filter by private space name. Excludes team param"
+                },
+                "team": {
+                  "type": "string",
+                  "description": "Filter by team name. Excludes space param"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_app_info": {
+              "type": "object",
+              "properties": {
+                "app": {
+                  "type": "string",
+                  "description": "Target app name. Requires access permissions"
+                },
+                "json": {
+                  "type": "boolean",
+                  "description": "JSON output with full metadata. Default: text format"
+                }
+              },
+              "required": [
+                "app"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "create_app": {
+              "type": "object",
+              "properties": {
+                "app": {
+                  "type": "string",
+                  "description": "App name. Auto-generated if omitted"
+                },
+                "region": {
+                  "type": "string",
+                  "enum": [
+                    "us",
+                    "eu"
+                  ],
+                  "description": "Region: us/eu. Default: us. Excludes space param"
+                },
+                "space": {
+                  "type": "string",
+                  "description": "Private space name. Inherits region. Excludes region param"
+                },
+                "team": {
+                  "type": "string",
+                  "description": "Team name for ownership"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "rename_app": {
+              "type": "object",
+              "properties": {
+                "app": {
+                  "type": "string",
+                  "description": "Current app name. Requires access"
+                },
+                "newName": {
+                  "type": "string",
+                  "description": "New unique app name"
+                }
+              },
+              "required": [
+                "app",
+                "newName"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "maintenance_on": {
+              "type": "object",
+              "properties": {
+                "app": {
+                  "type": "string",
+                  "description": "Target Heroku app name"
+                }
+              },
+              "required": [
+                "app"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "maintenance_off": {
+              "type": "object",
+              "properties": {
+                "app": {
+                  "type": "string",
+                  "description": "Target Heroku app name"
+                }
+              },
+              "required": [
+                "app"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_app_logs": {
+              "type": "object",
+              "properties": {
+                "app": {
+                  "type": "string",
+                  "description": "Heroku app name. Requires: permissions, Cedar-gen"
+                },
+                "dynoName": {
+                  "type": "string",
+                  "description": "Format: web.1/worker.2. Excludes processType"
+                },
+                "source": {
+                  "type": "string",
+                  "description": "app=application, heroku=platform. Default: all"
+                },
+                "processType": {
+                  "type": "string",
+                  "description": "web|worker. All instances. Excludes dynoName"
+                }
+              },
+              "required": [
+                "app"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "list_private_spaces": {
+              "type": "object",
+              "properties": {
+                "json": {
+                  "type": "boolean",
+                  "description": "JSON output for detailed space metadata, text output if false/omitted"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "list_teams": {
+              "type": "object",
+              "properties": {
+                "json": {
+                  "type": "boolean",
+                  "description": "Output format control - true for detailed JSON with team metadata, false/omitted for simplified text"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "list_addons": {
+              "type": "object",
+              "properties": {
+                "all": {
+                  "type": "boolean",
+                  "description": "List all add-ons across accessible apps. Overrides app param, shows full status"
+                },
+                "app": {
+                  "type": "string",
+                  "description": "Filter by app name. Shows add-ons and attachments. Uses Git remote default if omitted"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_addon_info": {
+              "type": "object",
+              "properties": {
+                "addon": {
+                  "type": "string",
+                  "description": "Add-on identifier: UUID, name (postgresql-curved-12345), or attachment name (DATABASE)"
+                },
+                "app": {
+                  "type": "string",
+                  "description": "App context for add-on lookup. Required for attachment names. Uses Git remote default"
+                }
+              },
+              "required": [
+                "addon"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "create_addon": {
+              "type": "object",
+              "properties": {
+                "app": {
+                  "type": "string",
+                  "description": "Target app for add-on. Must have write access. Region/space affects availability"
+                },
+                "as": {
+                  "type": "string",
+                  "description": "Custom attachment name. Used for config vars prefix. Must be unique in app"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Global add-on identifier. Must be unique across all Heroku add-ons"
+                },
+                "serviceAndPlan": {
+                  "type": "string",
+                  "description": "Format: service_slug:plan_slug (e.g., heroku-postgresql:essential-0)"
+                }
+              },
+              "required": [
+                "app",
+                "serviceAndPlan"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "list_addon_services": {
+              "type": "object",
+              "properties": {
+                "json": {
+                  "type": "boolean",
+                  "description": "JSON output with sharing options and app generation support. Default: basic text"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "list_addon_plans": {
+              "type": "object",
+              "properties": {
+                "service": {
+                  "type": "string",
+                  "description": "Service slug (e.g., heroku-postgresql). Get from list_addon_services"
+                },
+                "json": {
+                  "type": "boolean",
+                  "description": "JSON output with pricing, features, space compatibility. Default: text format"
+                }
+              },
+              "required": [
+                "service"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "pg_psql": {
+              "type": "object",
+              "properties": {
+                "command": {
+                  "type": "string",
+                  "description": "SQL command. Single line. Ignored if file provided"
+                },
+                "file": {
+                  "type": "string",
+                  "description": "SQL file path. Ignored if command provided"
+                },
+                "credential": {
+                  "type": "string",
+                  "description": "credential to use"
+                },
+                "app": {
+                  "type": "string",
+                  "description": "app to run command against"
+                },
+                "database": {
+                  "type": "string",
+                  "description": "Database identifier: config var, name, ID, alias. Format: APP_NAME::DB for other apps. Default: DATABASE_URL"
+                }
+              },
+              "required": [
+                "app"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "pg_info": {
+              "type": "object",
+              "properties": {
+                "app": {
+                  "type": "string",
+                  "description": "Target app name"
+                },
+                "database": {
+                  "type": "string",
+                  "description": "Database identifier. Format: APP_NAME::DB for other apps. Default: all databases"
+                }
+              },
+              "required": [
+                "app"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "pg_ps": {
+              "type": "object",
+              "properties": {
+                "app": {
+                  "type": "string",
+                  "description": "Target app name"
+                },
+                "verbose": {
+                  "type": "boolean",
+                  "description": "Show query plan and memory usage"
+                },
+                "database": {
+                  "type": "string",
+                  "description": "Database identifier. Format: APP_NAME::DB for other apps. Default: DATABASE_URL"
+                }
+              },
+              "required": [
+                "app"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "pg_locks": {
+              "type": "object",
+              "properties": {
+                "app": {
+                  "type": "string",
+                  "description": "Target app name"
+                },
+                "truncate": {
+                  "type": "boolean",
+                  "description": "Truncate queries to 40 chars"
+                },
+                "database": {
+                  "type": "string",
+                  "description": "Database identifier. Format: APP_NAME::DB for other apps. Default: DATABASE_URL"
+                }
+              },
+              "required": [
+                "app"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "pg_outliers": {
+              "type": "object",
+              "properties": {
+                "app": {
+                  "type": "string",
+                  "description": "Target app name"
+                },
+                "num": {
+                  "type": "number",
+                  "description": "Number of queries to show. Default: 10"
+                },
+                "reset": {
+                  "type": "boolean",
+                  "description": "Reset pg_stat_statements stats"
+                },
+                "truncate": {
+                  "type": "boolean",
+                  "description": "Truncate queries to 40 chars"
+                },
+                "database": {
+                  "type": "string",
+                  "description": "Database identifier. Format: APP_NAME::DB for other apps. Default: DATABASE_URL"
+                }
+              },
+              "required": [
+                "app"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "pg_credentials": {
+              "type": "object",
+              "properties": {
+                "app": {
+                  "type": "string",
+                  "description": "Target app name"
+                },
+                "database": {
+                  "type": "string",
+                  "description": "Database identifier. Format: APP_NAME::DB for other apps. Default: DATABASE_URL"
+                }
+              },
+              "required": [
+                "app"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "pg_kill": {
+              "type": "object",
+              "properties": {
+                "app": {
+                  "type": "string",
+                  "description": "Target app name"
+                },
+                "pid": {
+                  "type": "number",
+                  "description": "Process ID to terminate"
+                },
+                "force": {
+                  "type": "boolean",
+                  "description": "Force immediate termination"
+                },
+                "database": {
+                  "type": "string",
+                  "description": "Database identifier. Format: APP_NAME::DB for other apps. Default: DATABASE_URL"
+                }
+              },
+              "required": [
+                "app",
+                "pid"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "pg_maintenance": {
+              "type": "object",
+              "properties": {
+                "app": {
+                  "type": "string",
+                  "description": "Target app name"
+                },
+                "database": {
+                  "type": "string",
+                  "description": "Database identifier. Format: APP_NAME::DB for other apps. Default: DATABASE_URL"
+                }
+              },
+              "required": [
+                "app"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "pg_backups": {
+              "type": "object",
+              "properties": {
+                "app": {
+                  "type": "string",
+                  "description": "Target app name"
+                }
+              },
+              "required": [
+                "app"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "pg_upgrade": {
+              "type": "object",
+              "properties": {
+                "app": {
+                  "type": "string",
+                  "description": "Target app name"
+                },
+                "version": {
+                  "type": "string",
+                  "description": "PostgreSQL version target"
+                },
+                "confirm": {
+                  "type": "string",
+                  "description": "Confirmation for destructive operation"
+                },
+                "database": {
+                  "type": "string",
+                  "description": "Database identifier. Format: APP_NAME::DB for other apps. Default: DATABASE_URL"
+                }
+              },
+              "required": [
+                "app"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "ps_list": {
+              "type": "object",
+              "properties": {
+                "app": {
+                  "type": "string",
+                  "description": "App name to list processes for"
+                },
+                "json": {
+                  "type": "boolean",
+                  "description": "Output process info in JSON format"
+                }
+              },
+              "required": [
+                "app"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "ps_scale": {
+              "type": "object",
+              "properties": {
+                "app": {
+                  "type": "string",
+                  "description": "App name to scale"
+                },
+                "dyno": {
+                  "type": "string",
+                  "description": "Dyno type and quantity (e.g., web=3:Standard-2X, worker+1). Omit to show current formation"
+                }
+              },
+              "required": [
+                "app"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "ps_restart": {
+              "type": "object",
+              "properties": {
+                "app": {
+                  "type": "string",
+                  "description": "App name to restart processes for"
+                },
+                "dyno-name": {
+                  "type": "string",
+                  "description": "Specific dyno to restart (e.g., web.1). Omit both options to restart all"
+                },
+                "process-type": {
+                  "type": "string",
+                  "description": "Dyno type to restart (e.g., web). Omit both options to restart all"
+                }
+              },
+              "required": [
+                "app"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "pipelines_create": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Pipeline name"
+                },
+                "stage": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "staging",
+                    "production"
+                  ],
+                  "description": "Initial pipeline stage"
+                },
+                "app": {
+                  "type": "string",
+                  "description": "App to add to pipeline"
+                },
+                "team": {
+                  "type": "string",
+                  "description": "Team owning the pipeline"
+                }
+              },
+              "required": [
+                "name",
+                "stage"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "pipelines_promote": {
+              "type": "object",
+              "properties": {
+                "app": {
+                  "type": "string",
+                  "description": "Source app for promotion"
+                },
+                "to": {
+                  "type": "string",
+                  "description": "Target apps for promotion (comma-separated)"
+                }
+              },
+              "required": [
+                "app"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "pipelines_list": {
+              "type": "object",
+              "properties": {
+                "json": {
+                  "type": "boolean",
+                  "description": "Enable JSON output"
+                }
+              },
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "pipelines_info": {
+              "type": "object",
+              "properties": {
+                "pipeline": {
+                  "type": "string",
+                  "description": "Target pipeline name"
+                },
+                "json": {
+                  "type": "boolean",
+                  "description": "Enable JSON output"
+                }
+              },
+              "required": [
+                "pipeline"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "deploy_to_heroku": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 5,
+                  "maxLength": 30,
+                  "description": "App name for deployment. Creates new app if not exists."
+                },
+                "rootUri": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Workspace root directory path."
+                },
+                "tarballUri": {
+                  "type": "string",
+                  "description": "URL of deployment tarball. Creates from rootUri if not provided."
+                },
+                "teamId": {
+                  "type": "string",
+                  "description": "Team ID for team deployments."
+                },
+                "spaceId": {
+                  "type": "string",
+                  "description": "Private space ID for space deployments."
+                },
+                "internalRouting": {
+                  "type": "boolean",
+                  "description": "Enable internal routing in private spaces."
+                },
+                "env": {
+                  "type": "object",
+                  "additionalProperties": {},
+                  "description": "Environment variables overriding app.json values"
+                },
+                "appJson": {
+                  "type": "string",
+                  "description": "App.json config for deployment. Must follow schema: {\"default\":{\"$schema\":\"http://json-schema.org/draft-07/schema#\",\"title\":\"Heroku app.json Schema\",\"description\":\"app.json is a manifest format for describing web apps. It declares environment variables, add-ons, and other information required to run an app on Heroku. Used for dynamic configurations or converted projects\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"pattern\":\"^[a-zA-Z-_\\\\.]+\",\"maxLength\":300},\"description\":{\"type\":\"string\"},\"keywords\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"website\":{\"$ref\":\"#/definitions/uriString\"},\"repository\":{\"$ref\":\"#/definitions/uriString\"},\"logo\":{\"$ref\":\"#/definitions/uriString\"},\"success_url\":{\"type\":\"string\"},\"scripts\":{\"$ref\":\"#/definitions/scripts\"},\"env\":{\"$ref\":\"#/definitions/env\"},\"formation\":{\"$ref\":\"#/definitions/formation\"},\"addons\":{\"$ref\":\"#/definitions/addons\"},\"buildpacks\":{\"$ref\":\"#/definitions/buildpacks\"},\"environments\":{\"$ref\":\"#/definitions/environments\"},\"stack\":{\"$ref\":\"#/definitions/stack\"},\"image\":{\"type\":\"string\"}},\"additionalProperties\":false,\"definitions\":{\"uriString\":{\"type\":\"string\",\"format\":\"uri\"},\"scripts\":{\"type\":\"object\",\"properties\":{\"postdeploy\":{\"type\":\"string\"},\"pr-predestroy\":{\"type\":\"string\"}},\"additionalProperties\":false},\"env\":{\"type\":\"object\",\"patternProperties\":{\"^[A-Z][A-Z0-9_]*$\":{\"type\":\"object\",\"properties\":{\"description\":{\"type\":\"string\"},\"value\":{\"type\":\"string\"},\"required\":{\"type\":\"boolean\"},\"generator\":{\"type\":\"string\",\"enum\":[\"secret\"]}},\"additionalProperties\":false}}},\"dynoSize\":{\"type\":\"string\",\"enum\":[\"free\",\"eco\",\"hobby\",\"basic\",\"standard-1x\",\"standard-2x\",\"performance-m\",\"performance-l\",\"private-s\",\"private-m\",\"private-l\",\"shield-s\",\"shield-m\",\"shield-l\"]},\"formation\":{\"type\":\"object\",\"patternProperties\":{\"^[a-zA-Z0-9_-]+$\":{\"type\":\"object\",\"properties\":{\"quantity\":{\"type\":\"integer\",\"minimum\":0},\"size\":{\"$ref\":\"#/definitions/dynoSize\"}},\"required\":[\"quantity\"],\"additionalProperties\":false}}},\"addons\":{\"type\":\"array\",\"items\":{\"oneOf\":[{\"type\":\"string\"},{\"type\":\"object\",\"properties\":{\"plan\":{\"type\":\"string\"},\"as\":{\"type\":\"string\"},\"options\":{\"type\":\"object\"}},\"required\":[\"plan\"],\"additionalProperties\":false}]}},\"buildpacks\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"url\":{\"type\":\"string\"}},\"required\":[\"url\"],\"additionalProperties\":false}},\"environmentConfig\":{\"type\":\"object\",\"properties\":{\"env\":{\"type\":\"object\"},\"formation\":{\"type\":\"object\"},\"addons\":{\"type\":\"array\"},\"buildpacks\":{\"type\":\"array\"}}},\"environments\":{\"type\":\"object\",\"properties\":{\"test\":{\"allOf\":[{\"$ref\":\"#/definitions/environmentConfig\"},{\"type\":\"object\",\"properties\":{\"scripts\":{\"type\":\"object\",\"properties\":{\"test\":{\"type\":\"string\"}},\"additionalProperties\":false}}}]},\"review\":{\"$ref\":\"#/definitions/environmentConfig\"},\"production\":{\"$ref\":\"#/definitions/environmentConfig\"}},\"additionalProperties\":false},\"stack\":{\"type\":\"string\",\"enum\":[\"heroku-18\",\"heroku-20\",\"heroku-22\",\"heroku-24\"]}}}}"
+                }
+              },
+              "required": [
+                "name",
+                "rootUri",
+                "appJson"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "deploy_one_off_dyno": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 5,
+                  "maxLength": 30,
+                  "description": "Target Heroku app name."
+                },
+                "command": {
+                  "type": "string",
+                  "description": "Command to run in dyno."
+                },
+                "sources": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "relativePath": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 512,
+                        "description": "Relative virtual path for each staged source file (strict character set)."
+                      },
+                      "contents": {
+                        "type": "string",
+                        "description": "File contents."
+                      }
+                    },
+                    "required": [
+                      "relativePath",
+                      "contents"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Source files to include in dyno."
+                },
+                "size": {
+                  "type": "string",
+                  "description": "Dyno size.",
+                  "default": "standard-1x"
+                },
+                "timeToLive": {
+                  "type": "number",
+                  "description": "Dyno lifetime in seconds.",
+                  "default": 3600
+                },
+                "env": {
+                  "type": "object",
+                  "additionalProperties": {},
+                  "description": "Dyno environment variables."
+                }
+              },
+              "required": [
+                "name",
+                "command"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.0008329999982379377,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "pass",
+      "durationMs": 0.5968330000032438,
+      "message": "Advertised capability responded with the minimal expected shape (1 items).",
+      "evidence": [
+        {
+          "endpoint": "resources/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "https://devcenter.heroku.com/llms.txt"
+          ],
+          "diagnostics": [
+            "[Plugin Check] @heroku/plugin-ai: NOT INSTALLED - Skipping AI tools",
+            "Heroku MCP Server running on stdio"
+          ]
+        },
+        {
+          "endpoint": "resources/templates/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": [],
+          "diagnostics": [
+            "[Plugin Check] @heroku/plugin-ai: NOT INSTALLED - Skipping AI tools",
+            "Heroku MCP Server running on stdio"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "fail",
+      "durationMs": 0.08912499999860302,
+      "message": "Found 3 security finding(s): 2 high, 1 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 3,
+          "identifiers": [
+            "pg_psql",
+            "deploy_one_off_dyno"
+          ],
+          "diagnostics": [
+            "[high] Tool \"pg_psql\" has parameter \"command\" which may allow arbitrary command execution.",
+            "[medium] Tool \"pg_psql\" accepts filesystem paths and has destructive capabilities.",
+            "[high] Tool \"deploy_one_off_dyno\" has parameter \"command\" which may allow arbitrary command execution."
+          ],
+          "findings": [
+            {
+              "ruleId": "shell-injection",
+              "severity": "high",
+              "toolName": "pg_psql",
+              "message": "Tool \"pg_psql\" has parameter \"command\" which may allow arbitrary command execution."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "pg_psql",
+              "message": "Tool \"pg_psql\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "shell-injection",
+              "severity": "high",
+              "toolName": "deploy_one_off_dyno",
+              "message": "Tool \"deploy_one_off_dyno\" has parameter \"command\" which may allow arbitrary command execution."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "partial",
+      "durationMs": 0.5207090000039898,
+      "message": "Detected 2 potential egress target(s) and 22 potential state mutation(s) with high confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 24,
+          "diagnostics": [
+            "Egress entries: 2",
+            "State mutations: 22",
+            "Confidence: high"
+          ],
+          "findings": [
+            {
+              "target": "URL of deployment tarball. Creates from rootUri if not provided.",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "App.json config for deployment. Must follow schema: {\"default\":{\"$schema\":\"http://json-schema.org/draft-07/schema#\",\"title\":\"Heroku app.json Schema\",\"description\":\"app.json is a manifest format for describing web apps. It declares environment variables, add-ons, and other information required to run an app on Heroku. Used for dynamic configurations or converted projects\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"pattern\":\"^[a-zA-Z-_\\\\.]+\",\"maxLength\":300},\"description\":{\"type\":\"string\"},\"keywords\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"website\":{\"$ref\":\"#/definitions/uriString\"},\"repository\":{\"$ref\":\"#/definitions/uriString\"},\"logo\":{\"$ref\":\"#/definitions/uriString\"},\"success_url\":{\"type\":\"string\"},\"scripts\":{\"$ref\":\"#/definitions/scripts\"},\"env\":{\"$ref\":\"#/definitions/env\"},\"formation\":{\"$ref\":\"#/definitions/formation\"},\"addons\":{\"$ref\":\"#/definitions/addons\"},\"buildpacks\":{\"$ref\":\"#/definitions/buildpacks\"},\"environments\":{\"$ref\":\"#/definitions/environments\"},\"stack\":{\"$ref\":\"#/definitions/stack\"},\"image\":{\"type\":\"string\"}},\"additionalProperties\":false,\"definitions\":{\"uriString\":{\"type\":\"string\",\"format\":\"uri\"},\"scripts\":{\"type\":\"object\",\"properties\":{\"postdeploy\":{\"type\":\"string\"},\"pr-predestroy\":{\"type\":\"string\"}},\"additionalProperties\":false},\"env\":{\"type\":\"object\",\"patternProperties\":{\"^[A-Z][A-Z0-9_]*$\":{\"type\":\"object\",\"properties\":{\"description\":{\"type\":\"string\"},\"value\":{\"type\":\"string\"},\"required\":{\"type\":\"boolean\"},\"generator\":{\"type\":\"string\",\"enum\":[\"secret\"]}},\"additionalProperties\":false}}},\"dynoSize\":{\"type\":\"string\",\"enum\":[\"free\",\"eco\",\"hobby\",\"basic\",\"standard-1x\",\"standard-2x\",\"performance-m\",\"performance-l\",\"private-s\",\"private-m\",\"private-l\",\"shield-s\",\"shield-m\",\"shield-l\"]},\"formation\":{\"type\":\"object\",\"patternProperties\":{\"^[a-zA-Z0-9_-]+$\":{\"type\":\"object\",\"properties\":{\"quantity\":{\"type\":\"integer\",\"minimum\":0},\"size\":{\"$ref\":\"#/definitions/dynoSize\"}},\"required\":[\"quantity\"],\"additionalProperties\":false}}},\"addons\":{\"type\":\"array\",\"items\":{\"oneOf\":[{\"type\":\"string\"},{\"type\":\"object\",\"properties\":{\"plan\":{\"type\":\"string\"},\"as\":{\"type\":\"string\"},\"options\":{\"type\":\"object\"}},\"required\":[\"plan\"],\"additionalProperties\":false}]}},\"buildpacks\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"url\":{\"type\":\"string\"}},\"required\":[\"url\"],\"additionalProperties\":false}},\"environmentConfig\":{\"type\":\"object\",\"properties\":{\"env\":{\"type\":\"object\"},\"formation\":{\"type\":\"object\"},\"addons\":{\"type\":\"array\"},\"buildpacks\":{\"type\":\"array\"}}},\"environments\":{\"type\":\"object\",\"properties\":{\"test\":{\"allOf\":[{\"$ref\":\"#/definitions/environmentConfig\"},{\"type\":\"object\",\"properties\":{\"scripts\":{\"type\":\"object\",\"properties\":{\"test\":{\"type\":\"string\"}},\"additionalProperties\":false}}}]},\"review\":{\"$ref\":\"#/definitions/environmentConfig\"},\"production\":{\"$ref\":\"#/definitions/environmentConfig\"}},\"additionalProperties\":false},\"stack\":{\"type\":\"string\",\"enum\":[\"heroku-18\",\"heroku-20\",\"heroku-22\",\"heroku-24\"]}}}}",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "network",
+              "operation": "execute",
+              "scope": "specific_path",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "environment",
+              "operation": "write",
+              "scope": "global",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "network",
+              "operation": "execute",
+              "scope": "specific_path",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "environment",
+              "operation": "write",
+              "scope": "global",
+              "source": "tool_schema"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 1987.3084590000071,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 33 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: resources/list returned 1 resource(s).",
+            "[pass] tool-response-content: Tool \"list_apps\" response has valid content array.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "partial",
+      "durationMs": 1.0929999999934807,
+      "message": "Found 7 quality finding(s) across 34 item(s): 0 warnings, 7 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [
+            "list_apps",
+            "create_app",
+            "list_private_spaces",
+            "list_teams",
+            "list_addons",
+            "list_addon_services",
+            "pipelines_list"
+          ],
+          "diagnostics": [
+            "[info] tool \"list_apps\": Has properties but no 'required' array declared",
+            "[info] tool \"create_app\": Has properties but no 'required' array declared",
+            "[info] tool \"list_private_spaces\": Has properties but no 'required' array declared",
+            "[info] tool \"list_teams\": Has properties but no 'required' array declared",
+            "[info] tool \"list_addons\": Has properties but no 'required' array declared",
+            "[info] tool \"list_addon_services\": Has properties but no 'required' array declared",
+            "[info] tool \"pipelines_list\": Has properties but no 'required' array declared"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "list_apps",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create_app",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "list_private_spaces",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "list_teams",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "list_addons",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "list_addon_services",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "pipelines_list",
+              "issue": "Has properties but no 'required' array declared",
+              "severity": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "fail",
+      "durationMs": 0.5585839999985183,
+      "message": "Found 3 security finding(s): 2 high, 1 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 3,
+          "identifiers": [
+            "pg_psql",
+            "deploy_one_off_dyno"
+          ],
+          "diagnostics": [
+            "[high] Tool \"pg_psql\" has parameter \"command\" which may allow arbitrary command execution.",
+            "[medium] Tool \"pg_psql\" accepts filesystem paths and has destructive capabilities.",
+            "[high] Tool \"deploy_one_off_dyno\" has parameter \"command\" which may allow arbitrary command execution."
+          ],
+          "findings": [
+            {
+              "ruleId": "shell-injection",
+              "severity": "high",
+              "toolName": "pg_psql",
+              "message": "Tool \"pg_psql\" has parameter \"command\" which may allow arbitrary command execution."
+            },
+            {
+              "ruleId": "broad-filesystem",
+              "severity": "medium",
+              "toolName": "pg_psql",
+              "message": "Tool \"pg_psql\" accepts filesystem paths and has destructive capabilities."
+            },
+            {
+              "ruleId": "shell-injection",
+              "severity": "high",
+              "toolName": "deploy_one_off_dyno",
+              "message": "Tool \"deploy_one_off_dyno\" has parameter \"command\" which may allow arbitrary command execution."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "fail",
+      "durationMs": 1.7721250000031432,
+      "message": "Safe attack simulation found 2 finding(s): 2 high, 0 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 2,
+          "identifiers": [
+            "pg_psql",
+            "deploy_one_off_dyno"
+          ],
+          "diagnostics": [
+            "[high] Tool \"pg_psql\" combines broad parameters (command, file) with destructive or non-read-only behavior.",
+            "[high] Tool \"deploy_one_off_dyno\" combines broad parameters (command) with destructive or non-read-only behavior."
+          ],
+          "findings": [
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "high",
+              "itemType": "tool",
+              "itemName": "pg_psql",
+              "message": "Tool \"pg_psql\" combines broad parameters (command, file) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "command",
+                  "file"
+                ],
+                "description": "Execute SQL queries: analyze, debug, modify schema, manage data"
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "quarantine"
+            },
+            {
+              "ruleId": "attack-sim/permission-boundary/broad-destructive-tool",
+              "attackClass": "permission-boundary",
+              "severity": "high",
+              "itemType": "tool",
+              "itemName": "deploy_one_off_dyno",
+              "message": "Tool \"deploy_one_off_dyno\" combines broad parameters (command) with destructive or non-read-only behavior.",
+              "evidence": {
+                "broadParams": [
+                  "command"
+                ],
+                "description": "\nRun code/commands in Heroku one-off dyno with network and filesystem access.\n\nRequirements:\n- Show command output\n- Use app_info for buildpack detection\n- Support shell setup commands\n- Use stdout/stderr\n\nFeatures:\n- Network/filesystem access\n- Environment variables\n- File operations\n- Temp directory handling\n\nUsage:\n1. Use Heroku runtime\n2. Proper syntax/imports\n3. Organized code structure\n4. Package management:\n   - Define dependencies\n   - Minimize external deps\n   - Prefer native modules\n\nExample package.json:\n```json\n{\n  \"type\": \"module\",\n  \"dependencies\": {\n    \"axios\": \"^1.6.0\"\n  }\n}\n```\n"
+              },
+              "recommendation": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.",
+              "recommendedAction": "quarantine"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 69,
+    "grade": "D",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "schema-quality: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 0,
+        "details": [
+          "security-lite: fail (0/100)",
+          "security: fail (0/100)",
+          "attack-sim: fail (0/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 83,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 999ms",
+          "p95 latency: 3ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 998.5218329999916,
+    "toolsListMs": 3.21875,
+    "promptsListMs": 0.0008329999982379377,
+    "resourcesListMs": 0.5968330000032438
+  },
+  "runtimeProfile": {
+    "egress": [
+      {
+        "target": "URL of deployment tarball. Creates from rootUri if not provided.",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "App.json config for deployment. Must follow schema: {\"default\":{\"$schema\":\"http://json-schema.org/draft-07/schema#\",\"title\":\"Heroku app.json Schema\",\"description\":\"app.json is a manifest format for describing web apps. It declares environment variables, add-ons, and other information required to run an app on Heroku. Used for dynamic configurations or converted projects\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"pattern\":\"^[a-zA-Z-_\\\\.]+\",\"maxLength\":300},\"description\":{\"type\":\"string\"},\"keywords\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"website\":{\"$ref\":\"#/definitions/uriString\"},\"repository\":{\"$ref\":\"#/definitions/uriString\"},\"logo\":{\"$ref\":\"#/definitions/uriString\"},\"success_url\":{\"type\":\"string\"},\"scripts\":{\"$ref\":\"#/definitions/scripts\"},\"env\":{\"$ref\":\"#/definitions/env\"},\"formation\":{\"$ref\":\"#/definitions/formation\"},\"addons\":{\"$ref\":\"#/definitions/addons\"},\"buildpacks\":{\"$ref\":\"#/definitions/buildpacks\"},\"environments\":{\"$ref\":\"#/definitions/environments\"},\"stack\":{\"$ref\":\"#/definitions/stack\"},\"image\":{\"type\":\"string\"}},\"additionalProperties\":false,\"definitions\":{\"uriString\":{\"type\":\"string\",\"format\":\"uri\"},\"scripts\":{\"type\":\"object\",\"properties\":{\"postdeploy\":{\"type\":\"string\"},\"pr-predestroy\":{\"type\":\"string\"}},\"additionalProperties\":false},\"env\":{\"type\":\"object\",\"patternProperties\":{\"^[A-Z][A-Z0-9_]*$\":{\"type\":\"object\",\"properties\":{\"description\":{\"type\":\"string\"},\"value\":{\"type\":\"string\"},\"required\":{\"type\":\"boolean\"},\"generator\":{\"type\":\"string\",\"enum\":[\"secret\"]}},\"additionalProperties\":false}}},\"dynoSize\":{\"type\":\"string\",\"enum\":[\"free\",\"eco\",\"hobby\",\"basic\",\"standard-1x\",\"standard-2x\",\"performance-m\",\"performance-l\",\"private-s\",\"private-m\",\"private-l\",\"shield-s\",\"shield-m\",\"shield-l\"]},\"formation\":{\"type\":\"object\",\"patternProperties\":{\"^[a-zA-Z0-9_-]+$\":{\"type\":\"object\",\"properties\":{\"quantity\":{\"type\":\"integer\",\"minimum\":0},\"size\":{\"$ref\":\"#/definitions/dynoSize\"}},\"required\":[\"quantity\"],\"additionalProperties\":false}}},\"addons\":{\"type\":\"array\",\"items\":{\"oneOf\":[{\"type\":\"string\"},{\"type\":\"object\",\"properties\":{\"plan\":{\"type\":\"string\"},\"as\":{\"type\":\"string\"},\"options\":{\"type\":\"object\"}},\"required\":[\"plan\"],\"additionalProperties\":false}]}},\"buildpacks\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"url\":{\"type\":\"string\"}},\"required\":[\"url\"],\"additionalProperties\":false}},\"environmentConfig\":{\"type\":\"object\",\"properties\":{\"env\":{\"type\":\"object\"},\"formation\":{\"type\":\"object\"},\"addons\":{\"type\":\"array\"},\"buildpacks\":{\"type\":\"array\"}}},\"environments\":{\"type\":\"object\",\"properties\":{\"test\":{\"allOf\":[{\"$ref\":\"#/definitions/environmentConfig\"},{\"type\":\"object\",\"properties\":{\"scripts\":{\"type\":\"object\",\"properties\":{\"test\":{\"type\":\"string\"}},\"additionalProperties\":false}}}]},\"review\":{\"$ref\":\"#/definitions/environmentConfig\"},\"production\":{\"$ref\":\"#/definitions/environmentConfig\"}},\"additionalProperties\":false},\"stack\":{\"type\":\"string\",\"enum\":[\"heroku-18\",\"heroku-20\",\"heroku-22\",\"heroku-24\"]}}}}",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      }
+    ],
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "network",
+        "operation": "execute",
+        "scope": "specific_path",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "environment",
+        "operation": "write",
+        "scope": "global",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "network",
+        "operation": "execute",
+        "scope": "specific_path",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "environment",
+        "operation": "write",
+        "scope": "global",
+        "source": "tool_schema"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-15T17:56:25.246Z",
+    "confidence": "high"
+  }
+}
