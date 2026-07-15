@@ -10,9 +10,10 @@ import {
 import { defaultRunsDirectory } from "../storage.js";
 import { appendHistory, buildHistoryEntry, getTrend, readHistory } from "../history.js";
 import { renderSarif } from "../reporters/sarif.js";
-import { buildEvent, normalizeCampaign, recordEvent } from "../telemetry.js";
+import { buildEvent, generateSessionId, normalizeCampaign, recordEvent, recordSessionEnd, recordSessionStart } from "../telemetry.js";
 import { maybePrintCloudCta } from "../commercial.js";
 import { renderActionReceipt } from "../action-receipt.js";
+import { extractObservatoryFindings } from "../findings.js";
 import { runEnforce } from "./enforce.js";
 import { renderNextActions } from "../reporters/terminal.js";
 import { ANSI, c, resolveTarget, targetFromCommand, writeOutput } from "./helpers.js";
@@ -138,6 +139,8 @@ export function registerTestCommands(program: Command): void {
     .option("--watch", "After the initial test, re-run and diff whenever the target config file changes. Requires --target.", false)
     .option("--no-color", "Disable colored output.")
     .action(async (commandArgs: string[], options: { deep?: boolean; invokeTools?: boolean; security?: boolean; target?: string; attackSim?: boolean; watch?: boolean } & TestCommandFlags) => {
+      const sessionId = generateSessionId();
+      recordSessionStart(sessionId);
       const extracted = extractTrailingConversionFlags(commandArgs, options);
       commandArgs = extracted.commandArgs;
       const conversionFlags = extracted.flags;
@@ -185,6 +188,13 @@ export function registerTestCommands(program: Command): void {
 
       const testCheckStatuses: Record<string, string> = {};
       for (const ch of artifact.checks) testCheckStatuses[ch.id] = ch.status;
+      const allFindings = extractObservatoryFindings(artifact);
+      const severityCounts = { high: 0, medium: 0, low: 0 };
+      for (const f of allFindings) {
+        if (f.severity === "high") severityCounts.high++;
+        else if (f.severity === "medium") severityCounts.medium++;
+        else if (f.severity === "low") severityCounts.low++;
+      }
       recordEvent(buildEvent("command_complete", "test", "cli", {
         historyEntryCount: history.entries.length,
         trendDirection: trend?.direction,
@@ -206,6 +216,9 @@ export function registerTestCommands(program: Command): void {
         fatalError: artifact.fatalError?.split("\n")[0],
         campaign: conversionFlags.campaign,
         securityFindingCount: artifact.checks.find((check) => check.id === "attack-sim")?.evidence[0]?.itemCount,
+        targetServer: target.targetId,
+        findingSeverityCounts: JSON.stringify(severityCounts),
+        stageOverride: "validation",
       }));
 
       if (artifact.gate === "fail") {
@@ -268,5 +281,6 @@ export function registerTestCommands(program: Command): void {
       if (options.watch || conversionFlags.watch) {
         await watchAndRerun(options.target);
       }
+      recordSessionEnd(sessionId);
     });
 }

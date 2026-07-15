@@ -6,7 +6,7 @@ import {
   runTarget,
 } from "../index.js";
 import { appendHistory, buildHistoryEntry } from "../history.js";
-import { buildEvent, normalizeCampaign, recordEvent } from "../telemetry.js";
+import { buildEvent, generateSessionId, normalizeCampaign, recordEvent, recordSessionEnd, recordSessionStart } from "../telemetry.js";
 import type { RunArtifact } from "../types.js";
 import { TOOL_VERSION } from "../version.js";
 import { maybePrintCloudCta } from "../commercial.js";
@@ -50,6 +50,8 @@ async function runScan(
   conversionFlags: SetupCiConversionFlags = {},
   skillScanOption?: SkillScanOption,
 ): Promise<void> {
+  const sessionId = generateSessionId();
+  recordSessionStart(sessionId);
   if (conversionFlags.campaign) conversionFlags.campaign = normalizeCampaign(conversionFlags.campaign);
   const t0 = Date.now();
   if (!isQuiet()) {
@@ -62,6 +64,7 @@ async function runScan(
     } catch {
       process.stdout.write(c(ANSI.red, `  ✗ Config file not found: ${configPath}\n\n`));
       process.exitCode = 1;
+      recordSessionEnd(sessionId);
       return;
     }
   }
@@ -73,6 +76,7 @@ async function runScan(
     process.stdout.write(c(ANSI.dim, "  Looked in ~/.claude.json, Claude Desktop, Cursor, Windsurf, VS Code, OpenCode, Codex, Gemini CLI, Kiro, Antigravity, Amazon Q, and project-level .mcp.json\n\n"));
     process.stdout.write("  Test a specific server:\n");
     process.stdout.write(`    ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} test npx -y @modelcontextprotocol/server-filesystem .`)}\n\n`);
+    recordSessionEnd(sessionId);
     return;
   }
 
@@ -288,6 +292,9 @@ async function runScan(
       const attack = artifact.checks.find((check) => check.id === "attack-sim");
       return sum + (attack?.evidence[0]?.itemCount ?? 0);
     }, 0),
+    targetServer: targets.length === 1 ? targets[0]!.config.targetId : `${targets.length} servers`,
+    scanCount: targets.length,
+    stageOverride: "discovery",
   }));
 
   if (failCount > 0) {
@@ -311,6 +318,7 @@ async function runScan(
       }
     }
   }
+  recordSessionEnd(sessionId);
 }
 
 // ── Register ────────────────────────────────────────────────────────────────

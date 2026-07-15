@@ -10,7 +10,7 @@ import {
   runAudit,
 } from "../audit.js";
 import { buildMcpReceipt, receiptFormatFromPath, renderReceipt } from "../receipt.js";
-import { buildEvent, recordEvent } from "../telemetry.js";
+import { buildEvent, generateSessionId, recordEvent, recordSessionEnd, recordSessionStart } from "../telemetry.js";
 import { ANSI, c } from "./helpers.js";
 
 type AuditFormat = "json" | "markdown" | "sarif";
@@ -86,6 +86,8 @@ export function registerAuditCommands(program: Command): void {
     .option("--fail-on-critical", "Exit nonzero when critical findings are present.", false)
     .option("--no-color", "Disable colored output.")
     .action(async (targetArgs: string[], options: AuditOptions) => {
+      const sessionId = generateSessionId();
+      recordSessionStart(sessionId);
       const extracted = extractTrailingAuditFlags(targetArgs, options);
       targetArgs = extracted.targetArgs;
       options = extracted.options;
@@ -136,6 +138,9 @@ export function registerAuditCommands(program: Command): void {
         receiptGenerated: Boolean(options.receipt),
         receiptFormat: options.receipt ? receiptFormatFromPath(options.receipt, "json") : undefined,
         receiptProfile: options.profile,
+        targetServer: target.targetId,
+        auditProfile: options.profile,
+        stageOverride: "audit",
       }));
 
       if (
@@ -144,5 +149,6 @@ export function registerAuditCommands(program: Command): void {
       ) {
         process.exitCode = 1;
       }
+      recordSessionEnd(sessionId);
     });
 }

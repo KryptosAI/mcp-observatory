@@ -36,6 +36,7 @@ export interface TelemetryEnrichment {
   resourcesFound?: number;
   gateResult?: string;
   executionMs?: number;
+  sessionDurationMs?: number | null;
   deepFlag?: boolean;
   securityFlag?: boolean;
   cloudUpload?: boolean;
@@ -81,6 +82,14 @@ export interface TelemetryEnrichment {
   setupCiSarif?: boolean;
   setupCiFixApplied?: boolean;
   sampleReport?: boolean;
+  // Stage override
+  stageOverride?: string;
+  targetServer?: string | null;
+  findingSeverityCounts?: string | null;
+  auditProfile?: string;
+  policyRuleCount?: number;
+  scanCount?: number;
+  featureChainOverride?: string[];
   // Receipts
   receiptGenerated?: boolean;
   receiptFormat?: string;
@@ -126,9 +135,12 @@ export interface TelemetryEvent extends TelemetryEnrichment {
   transport: "cli" | "mcp";
   machineFingerprint?: string;
   sessionId?: string;
-  featureChain?: string[];
+  featureChain?: string[] | null;
   commandSequence?: string[];
-  stage?: string;
+  stage?: string | null;
+  targetServer?: string | null;
+  findingSeverityCounts?: string | null;
+  sessionDurationMs?: number | null;
   referrer?: string;
   optedInEmail?: string;
 }
@@ -201,6 +213,12 @@ export function computeFingerprint(): string {
   return createHash("sha256").update(input).digest("hex").slice(0, 16);
 }
 
+export function computeTelemetryFingerprint(): string {
+  const hostname = os.hostname();
+  const username = os.userInfo().username;
+  return createHash("sha256").update(`${hostname}:${username}`).digest("hex");
+}
+
 export async function updateFeatureChain(command: string): Promise<void> {
   const config = await loadTelemetryConfig();
   const chain = config.featureChain || [];
@@ -217,15 +235,26 @@ export async function updateFeatureChain(command: string): Promise<void> {
   });
 }
 
-export function deriveStage(chain: string[]): string {
-  if (!chain || chain.length === 0) return "install";
-  const has = (c: string) => chain.some(x => x === c || x.includes(c));
-  if (has("cloud") || has("receipt")) return "paid_intent";
-  if (has("risk-graph") || has("attack-sim")) return "power_user";
-  if (has("setup-ci") || has("ci-report")) return "ci_setup";
-  if (chain.length >= 3) return "recurring";
-  if (has("scan") || has("test")) return "first_scan";
-  return "install";
+export function deriveStage(chain: string[]): string;
+export function deriveStage(eventType: string, command: string): string | null;
+export function deriveStage(arg1: string[] | string, arg2?: string): string | null {
+  if (Array.isArray(arg1)) {
+    if (!arg1 || arg1.length === 0) return "install";
+    const has = (c: string) => arg1.some(x => x === c || x.includes(c));
+    if (has("cloud") || has("receipt")) return "paid_intent";
+    if (has("risk-graph") || has("attack-sim")) return "power_user";
+    if (has("setup-ci") || has("ci-report")) return "ci_setup";
+    if (arg1.length >= 3) return "recurring";
+    if (has("scan") || has("test")) return "first_scan";
+    return "install";
+  }
+  const cmd = (arg2 ?? arg1).toLowerCase();
+  if (cmd.includes("scan")) return "discovery";
+  if (cmd.includes("test")) return "validation";
+  if (cmd.includes("score")) return "assessment";
+  if (cmd.includes("enforce")) return "protection";
+  if (cmd.includes("audit")) return "audit";
+  return null;
 }
 
 function detectReferrer(): string | undefined {
@@ -293,6 +322,16 @@ export function recordEvent(event: TelemetryEvent): void {
 
   const config = _cachedConfig;
   const machineId = config?.machineId || config?.sessionId;
+
+  const rawJsonValue = (event as any).raw_json;
+  if (rawJsonValue !== undefined && rawJsonValue !== null) {
+    const rawJsonStr = typeof rawJsonValue === "string" ? rawJsonValue : JSON.stringify(rawJsonValue);
+    if (rawJsonStr.length > 10240) {
+      process.stderr.write(`[telemetry] WARNING: raw_json exceeds 10KB (${rawJsonStr.length} bytes), truncating\n`);
+      (event as any).raw_json = JSON.stringify({ truncated: true, original_size: rawJsonStr.length });
+    }
+  }
+
   const body = JSON.stringify({
     ...event,
     sessionId: machineId,
@@ -429,6 +468,10 @@ export function _resetIdentityCache(): void {
   _identityPromise = null;
 }
 
+export function generateSessionId(): string {
+  return randomUUID();
+}
+
 // ── Convenience: build event from current process state ──────────────────────
 
 export function buildEvent(
@@ -474,10 +517,48 @@ export function buildEvent(
     campaign,
     machineFingerprint: computeFingerprint(),
     sessionId: config?.machineId || config?.sessionId,
-    featureChain: config?.featureChain,
+    featureChain: enrichment?.featureChainOverride ?? config?.featureChain,
     commandSequence: config?.commandSequence,
-    stage: deriveStage(config?.featureChain || []),
+    stage: enrichment?.stageOverride ?? deriveStage(config?.featureChain || []),
     referrer: config?.firstContactChannel,
     optedInEmail: config?.optedInEmail,
   };
+}
+
+// ── Session tracking ─────────────────────────────────────────────────────────
+
+const _sessionTimestamps = new Map<string, number>();
+
+export function recordSessionStart(sessionId: string): void {
+  _sessionTimestamps.set(sessionId, Date.now());
+}
+
+export function recordSessionEnd(sessionId: string): void {
+  const startedAt = _sessionTimestamps.get(sessionId);
+  if (!startedAt) return;
+  _sessionTimestamps.delete(sessionId);
+  const sessionDurationMs = Date.now() - startedAt;
+  recordEvent(buildEvent("session_end", "session", "cli", { sessionDurationMs }));
+}
+
+/** Reset session timestamps (for testing). */
+export function _resetSessionTimestamps(): void {
+  _sessionTimestamps.clear();
+}
+
+// ── Finding severity counting ────────────────────────────────────────────────
+
+export function countFindingsBySeverity(findings: any[]): { high: number; medium: number; low: number } {
+  const counts = { high: 0, medium: 0, low: 0 };
+  for (const f of findings) {
+    const severity = (f?.severity || f?.level || "low").toLowerCase();
+    if (severity === "high" || severity === "critical" || severity === "error") {
+      counts.high++;
+    } else if (severity === "medium" || severity === "warning" || severity === "moderate") {
+      counts.medium++;
+    } else {
+      counts.low++;
+    }
+  }
+  return counts;
 }

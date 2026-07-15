@@ -9,8 +9,9 @@ import {
   writeRunArtifact,
 } from "../index.js";
 import { defaultRunsDirectory } from "../storage.js";
-import { buildEvent, recordEvent } from "../telemetry.js";
+import { buildEvent, generateSessionId, recordEvent, recordSessionEnd, recordSessionStart } from "../telemetry.js";
 import { maybePrintCloudCta } from "../commercial.js";
+import { extractObservatoryFindings } from "../findings.js";
 import { ANSI, c, formatOutput, printCiConversionCta, targetFromCommand, writeOutput } from "./helpers.js";
 
 function extractTrailingProfileScoreFlags(
@@ -58,6 +59,8 @@ export function registerScoreCommands(program: Command): void {
     .option("--output <file>", "Write to file instead of stdout.")
     .option("--no-color", "Disable colored output.")
     .action(async (commandArgs: string[], options: { profile?: string; format: string; output?: string }) => {
+      const sessionId = generateSessionId();
+      recordSessionStart(sessionId);
       const extracted = extractTrailingProfileScoreFlags(commandArgs, options);
       commandArgs = extracted.commandArgs;
       options = extracted.options;
@@ -81,7 +84,10 @@ export function registerScoreCommands(program: Command): void {
           securityFlag: true,
           securityFindingCount: score.finding_count,
           targetIds: [target.targetId],
+          targetServer: target.targetId,
+          stageOverride: "assessment",
         }));
+        recordSessionEnd(sessionId);
         return;
       }
       const target = targetFromCommand(commandArgs);
@@ -94,6 +100,13 @@ export function registerScoreCommands(program: Command): void {
       const resourcesCheck = artifact.checks.find(ch => ch.id === "resources");
       const scoreCheckStatuses: Record<string, string> = {};
       for (const ch of artifact.checks) scoreCheckStatuses[ch.id] = ch.status;
+      const allFindings = extractObservatoryFindings(artifact);
+      const severityCounts = { high: 0, medium: 0, low: 0 };
+      for (const f of allFindings) {
+        if (f.severity === "high") severityCounts.high++;
+        else if (f.severity === "medium") severityCounts.medium++;
+        else if (f.severity === "low") severityCounts.low++;
+      }
       recordEvent(buildEvent("command_complete", "score", "cli", {
         serversScanned: 1,
         toolsFound: toolsCheck?.evidence[0]?.itemCount ?? 0,
@@ -109,6 +122,9 @@ export function registerScoreCommands(program: Command): void {
         connectMs: artifact.performanceMetrics?.connectMs,
         checkStatuses: scoreCheckStatuses,
         fatalError: artifact.fatalError?.split("\n")[0],
+        targetServer: target.targetId,
+        findingSeverityCounts: JSON.stringify(severityCounts),
+        stageOverride: "assessment",
       }));
 
       if (options.format !== "terminal") {
@@ -187,6 +203,7 @@ export function registerScoreCommands(program: Command): void {
       if (artifact.gate === "fail") {
         process.exitCode = 1;
       }
+      recordSessionEnd(sessionId);
     });
 
   // ── badge ───────────────────────────────────────────────────────────

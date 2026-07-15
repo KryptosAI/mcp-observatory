@@ -9,7 +9,7 @@ import {
 } from "../index.js";
 import { extractObservatoryFindings, type ObservatoryFinding, type ObservatoryFindingSeverity } from "../findings.js";
 import { defaultRunsDirectory } from "../storage.js";
-import { buildEvent, recordEvent } from "../telemetry.js";
+import { buildEvent, generateSessionId, recordEvent, recordSessionEnd, recordSessionStart } from "../telemetry.js";
 import type { RunArtifact, TargetConfig } from "../types.js";
 import { ANSI, c, isQuiet, resolveTarget, targetFromCommand, useColor } from "./helpers.js";
 
@@ -164,6 +164,8 @@ export async function runEnforce(
 
   const denyCount = policy.rules.filter((r) => r.action === "DENY").length;
   const warnCount = policy.rules.filter((r) => r.action === "WARN").length;
+  const policyRuleCount = denyCount + warnCount;
+  const sevCounts = { high: highCount, medium: mediumCount, low: lowCount };
 
   let summary = `Found ${highCount} HIGH, ${mediumCount} MEDIUM findings → generated ${denyCount} DENY, ${warnCount} WARN rules`;
   if (highCount === 0 && mediumCount === 0) {
@@ -200,6 +202,11 @@ export async function runEnforce(
     securityFlag: options.security,
     targetIds: [target.targetId],
     securityFindingCount: highCount + mediumCount + lowCount,
+    targetServer: target.targetId,
+    findingSeverityCounts: JSON.stringify(sevCounts),
+    policyRuleCount,
+    stageOverride: "protection",
+    featureChainOverride: ["scan", "enforce", "protect"],
   }));
 }
 
@@ -218,6 +225,8 @@ export function registerEnforceCommands(program: Command): void {
     .option("--no-proxy", "Just generate policy, don't mention proxy.", false)
     .option("--no-color", "Disable colored output.")
     .action(async (commandArgs: string[], options: { target?: string; deep?: boolean; security?: boolean; policy?: string; startProxy?: boolean; proxyPort?: string; noProxy?: boolean }) => {
+      const sessionId = generateSessionId();
+      recordSessionStart(sessionId);
       if (!isQuiet() && useColor()) {
         const { LOGO } = await import("./helpers.js");
         process.stdout.write(`${c(ANSI.cyan, LOGO)}  ${c(ANSI.dim, `enforce mode`)}\n\n`);
@@ -235,5 +244,6 @@ export function registerEnforceCommands(program: Command): void {
         security: options.security,
         deep: options.deep,
       });
+      recordSessionEnd(sessionId);
     });
 }
