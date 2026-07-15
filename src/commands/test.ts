@@ -1,5 +1,6 @@
 import { createInterface } from "node:readline";
 import { execSync } from "node:child_process";
+import { watch as fsWatch } from "node:fs";
 import type { Command } from "commander";
 
 import {
@@ -17,14 +18,15 @@ import { renderNextActions } from "../reporters/terminal.js";
 import { ANSI, c, resolveTarget, targetFromCommand, writeOutput } from "./helpers.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
 
-interface TestCommandFlags extends SetupCiConversionFlags {
+export interface TestCommandFlags extends SetupCiConversionFlags {
   attackSim?: boolean;
   sarif?: string;
   enforce?: boolean;
   autoEnforce?: boolean;
+  watch?: boolean;
 }
 
-function extractTrailingConversionFlags(
+export function extractTrailingConversionFlags(
   commandArgs: string[],
   options: TestCommandFlags,
 ): { commandArgs: string[]; flags: TestCommandFlags } {
@@ -53,6 +55,8 @@ function extractTrailingConversionFlags(
       flags.enforce = true;
     } else if (arg === "--auto-enforce") {
       flags.autoEnforce = true;
+    } else if (arg === "--watch") {
+      flags.watch = true;
     } else if (arg === "--campaign") {
       const next = commandArgs[i + 1];
       if (!next) throw new Error("--campaign requires a campaign slug.");
@@ -64,6 +68,51 @@ function extractTrailingConversionFlags(
   }
   if (flags.campaign) flags.campaign = normalizeCampaign(flags.campaign);
   return { commandArgs: targetArgs, flags };
+}
+
+/**
+ * Watches a target config file for changes and re-runs a one-shot
+ * check+diff on each change, reusing watch.ts's existing render/diff logic
+ * rather than test.ts's own richer (interactive, enforce-prompting) flow --
+ * that flow only makes sense for a one-time initial run, not a loop.
+ */
+export async function watchAndRerun(configPath: string | undefined): Promise<void> {
+  if (!configPath) {
+    process.stderr.write(
+      `\n  ${c(ANSI.red, "✗ --watch requires --target <config.json> — there's no file to watch for a raw command target.")}\n`,
+    );
+    process.exitCode = 1;
+    return;
+  }
+
+  const { runWatchOneShot } = await import("./watch.js");
+  const outDir = defaultRunsDirectory(process.cwd());
+
+  process.stdout.write(`\n  ${c(ANSI.dim, `Watching for changes... (${configPath}, Ctrl+C to stop)`)}\n`);
+
+  let debounceTimer: NodeJS.Timeout | undefined;
+  const watcher = fsWatch(configPath, () => {
+    if (debounceTimer) clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      void (async () => {
+        process.stdout.write(`\n${c(ANSI.dim, `--- ${new Date().toLocaleTimeString()} ---`)}\n`);
+        try {
+          const changedTarget = await resolveTarget({ target: configPath });
+          await runWatchOneShot(changedTarget, outDir, { format: "terminal", failOnRegression: false });
+        } catch (err) {
+          process.stderr.write(`  [watch] ${err instanceof Error ? err.message : String(err)}\n`);
+        }
+      })();
+    }, 300);
+  });
+
+  await new Promise<void>((resolve) => {
+    process.on("SIGINT", () => {
+      watcher.close();
+      process.stdout.write("\n  Watch mode stopped.\n");
+      resolve();
+    });
+  });
 }
 
 export function registerTestCommands(program: Command): void {
@@ -86,8 +135,9 @@ export function registerTestCommands(program: Command): void {
     .option("--force", "Overwrite existing generated CI adoption files.", false)
     .option("--enforce", "After testing, generate seatbelt policy and optionally start proxy.", false)
     .option("--auto-enforce", "Skip interactive prompt and always enforce after testing.", false)
+    .option("--watch", "After the initial test, re-run and diff whenever the target config file changes. Requires --target.", false)
     .option("--no-color", "Disable colored output.")
-    .action(async (commandArgs: string[], options: { deep?: boolean; invokeTools?: boolean; security?: boolean; target?: string; attackSim?: boolean } & TestCommandFlags) => {
+    .action(async (commandArgs: string[], options: { deep?: boolean; invokeTools?: boolean; security?: boolean; target?: string; attackSim?: boolean; watch?: boolean } & TestCommandFlags) => {
       const extracted = extractTrailingConversionFlags(commandArgs, options);
       commandArgs = extracted.commandArgs;
       const conversionFlags = extracted.flags;
@@ -214,5 +264,9 @@ export function registerTestCommands(program: Command): void {
         });
       }
       maybePrintCloudCta(options.security ? "security" : "general");
+
+      if (options.watch || conversionFlags.watch) {
+        await watchAndRerun(options.target);
+      }
     });
 }
