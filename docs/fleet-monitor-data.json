@@ -1,363 +1,61 @@
 {
-  "generated_at": "2026-07-15T17:30:07.921604Z",
-  "overview": {
-    "total_events": 24969,
-    "active_today": 3,
-    "downloads_7d": 7,
-    "clones_7d": 7,
-    "total_sessions": 18331,
-    "ci_adoption_pct": 69.2,
-    "risk_graph_runs": 903,
-    "attack_sim_runs": 2624,
-    "total_servers_scanned": 9052
-  },
-  "safety_index": {
-    "total_evaluated": 50,
-    "ready": 2,
-    "needs_review": 43,
-    "unsafe": 5
-  },
-  "adoption_trend": [
+  "totalServers": 176,
+  "activeToday": 3,
+  "ciAdoptionRate": 2.8,
+  "totalSessions": 8536,
+  "topCommands": [
     {
-      "day": "2026-03-22",
-      "sessions": 538
+      "command": "run",
+      "count": 5150,
+      "share": 20.6
     },
     {
-      "day": "2026-03-23",
-      "sessions": 318
+      "command": "diff",
+      "count": 4984,
+      "share": 20.0
     },
     {
-      "day": "2026-03-24",
-      "sessions": 2
+      "command": "serve",
+      "count": 4906,
+      "share": 19.6
     },
     {
-      "day": "2026-03-25",
-      "sessions": 59
+      "command": "setup-ci",
+      "count": 2707,
+      "share": 10.8
     },
     {
-      "day": "2026-03-26",
-      "sessions": 2
+      "command": "test",
+      "count": 2233,
+      "share": 8.9
     },
     {
-      "day": "2026-03-27",
-      "sessions": 2
+      "command": "attack-sim",
+      "count": 1022,
+      "share": 4.1
     },
     {
-      "day": "2026-03-28",
-      "sessions": 2
+      "command": "audit",
+      "count": 973,
+      "share": 3.9
     },
     {
-      "day": "2026-03-29",
-      "sessions": 2
+      "command": "ci-report",
+      "count": 881,
+      "share": 3.5
     },
     {
-      "day": "2026-03-30",
-      "sessions": 3
+      "command": "history",
+      "count": 358,
+      "share": 1.4
     },
     {
-      "day": "2026-03-31",
-      "sessions": 3
-    },
-    {
-      "day": "2026-04-01",
-      "sessions": 10
-    },
-    {
-      "day": "2026-04-02",
-      "sessions": 2
-    },
-    {
-      "day": "2026-04-03",
-      "sessions": 3
-    },
-    {
-      "day": "2026-04-04",
-      "sessions": 2
-    },
-    {
-      "day": "2026-04-05",
-      "sessions": 3
-    },
-    {
-      "day": "2026-04-06",
-      "sessions": 2
-    },
-    {
-      "day": "2026-04-07",
-      "sessions": 3
-    },
-    {
-      "day": "2026-04-08",
-      "sessions": 2
-    },
-    {
-      "day": "2026-04-09",
-      "sessions": 58
-    },
-    {
-      "day": "2026-04-10",
-      "sessions": 31
-    },
-    {
-      "day": "2026-04-11",
-      "sessions": 2
-    },
-    {
-      "day": "2026-04-12",
-      "sessions": 2
-    },
-    {
-      "day": "2026-04-13",
-      "sessions": 5
-    },
-    {
-      "day": "2026-04-14",
-      "sessions": 16
-    },
-    {
-      "day": "2026-04-15",
-      "sessions": 5
-    },
-    {
-      "day": "2026-04-16",
-      "sessions": 6
-    },
-    {
-      "day": "2026-04-17",
-      "sessions": 3
-    },
-    {
-      "day": "2026-04-18",
-      "sessions": 2
-    },
-    {
-      "day": "2026-04-19",
-      "sessions": 10
-    },
-    {
-      "day": "2026-04-20",
-      "sessions": 3
-    },
-    {
-      "day": "2026-04-21",
-      "sessions": 2
-    },
-    {
-      "day": "2026-04-22",
-      "sessions": 2
-    },
-    {
-      "day": "2026-04-23",
-      "sessions": 2
-    },
-    {
-      "day": "2026-04-24",
-      "sessions": 2
-    },
-    {
-      "day": "2026-04-25",
-      "sessions": 2
-    },
-    {
-      "day": "2026-04-26",
-      "sessions": 3
-    },
-    {
-      "day": "2026-04-27",
-      "sessions": 22
-    },
-    {
-      "day": "2026-04-28",
-      "sessions": 10
-    },
-    {
-      "day": "2026-04-29",
-      "sessions": 5
-    },
-    {
-      "day": "2026-04-30",
-      "sessions": 10
-    },
-    {
-      "day": "2026-05-01",
-      "sessions": 41
-    },
-    {
-      "day": "2026-05-02",
-      "sessions": 2
-    },
-    {
-      "day": "2026-05-03",
-      "sessions": 5
-    },
-    {
-      "day": "2026-05-04",
-      "sessions": 9
-    },
-    {
-      "day": "2026-05-05",
-      "sessions": 2
-    },
-    {
-      "day": "2026-05-06",
-      "sessions": 2
-    },
-    {
-      "day": "2026-05-07",
-      "sessions": 146
-    },
-    {
-      "day": "2026-05-08",
-      "sessions": 97
-    },
-    {
-      "day": "2026-05-09",
-      "sessions": 79
-    },
-    {
-      "day": "2026-05-10",
-      "sessions": 25
-    },
-    {
-      "day": "2026-05-11",
-      "sessions": 42
-    },
-    {
-      "day": "2026-05-12",
-      "sessions": 34
-    },
-    {
-      "day": "2026-05-13",
-      "sessions": 25
-    },
-    {
-      "day": "2026-05-14",
-      "sessions": 19
-    },
-    {
-      "day": "2026-05-15",
-      "sessions": 69
-    },
-    {
-      "day": "2026-05-16",
-      "sessions": 6
-    },
-    {
-      "day": "2026-05-17",
-      "sessions": 34
-    },
-    {
-      "day": "2026-05-18",
-      "sessions": 23
-    },
-    {
-      "day": "2026-05-19",
-      "sessions": 41
-    },
-    {
-      "day": "2026-05-20",
-      "sessions": 67
-    },
-    {
-      "day": "2026-05-21",
-      "sessions": 63
-    },
-    {
-      "day": "2026-05-22",
-      "sessions": 8
-    },
-    {
-      "day": "2026-05-23",
-      "sessions": 6
-    },
-    {
-      "day": "2026-05-24",
-      "sessions": 2
-    },
-    {
-      "day": "2026-05-25",
-      "sessions": 132
-    },
-    {
-      "day": "2026-05-26",
-      "sessions": 40
-    },
-    {
-      "day": "2026-05-27",
-      "sessions": 63
-    },
-    {
-      "day": "2026-05-28",
-      "sessions": 30
-    },
-    {
-      "day": "2026-05-29",
-      "sessions": 396
-    },
-    {
-      "day": "2026-05-30",
-      "sessions": 33
-    },
-    {
-      "day": "2026-05-31",
-      "sessions": 84
-    },
-    {
-      "day": "2026-06-01",
-      "sessions": 13
-    },
-    {
-      "day": "2026-06-02",
-      "sessions": 21
-    },
-    {
-      "day": "2026-06-03",
-      "sessions": 54
-    },
-    {
-      "day": "2026-06-04",
-      "sessions": 21
-    },
-    {
-      "day": "2026-06-05",
-      "sessions": 79
-    },
-    {
-      "day": "2026-06-06",
-      "sessions": 3
-    },
-    {
-      "day": "2026-06-07",
-      "sessions": 2
-    },
-    {
-      "day": "2026-06-08",
-      "sessions": 2
-    },
-    {
-      "day": "2026-06-09",
-      "sessions": 2
-    },
-    {
-      "day": "2026-06-10",
-      "sessions": 3
-    },
-    {
-      "day": "2026-06-11",
-      "sessions": 75
-    },
-    {
-      "day": "2026-06-12",
-      "sessions": 10
-    },
-    {
-      "day": "2026-06-13",
-      "sessions": 519
-    },
-    {
-      "day": "2026-06-14",
-      "sessions": 628
-    },
+      "command": "scan",
+      "count": 350,
+      "share": 1.4
+    }
+  ],
+  "dailyTrend": [
     {
       "day": "2026-06-15",
       "sessions": 782
@@ -459,58 +157,5 @@
       "sessions": 3
     }
   ],
-  "top_commands": [
-    {
-      "command": "run",
-      "count": 10619
-    },
-    {
-      "command": "diff",
-      "count": 9964
-    },
-    {
-      "command": "setup-ci",
-      "count": 8348
-    },
-    {
-      "command": "serve",
-      "count": 5172
-    },
-    {
-      "command": "test",
-      "count": 4650
-    },
-    {
-      "command": "audit",
-      "count": 2803
-    },
-    {
-      "command": "attack-sim",
-      "count": 2624
-    },
-    {
-      "command": "ci-report",
-      "count": 1682
-    },
-    {
-      "command": "risk-graph",
-      "count": 903
-    },
-    {
-      "command": "score",
-      "count": 757
-    }
-  ],
-  "top_servers": [
-    {
-      "name": "mcp-observatory",
-      "repo": "KryptosAI/mcp-observatory",
-      "count": 25456
-    },
-    {
-      "name": "servers",
-      "repo": "modelcontextprotocol/servers",
-      "count": 15
-    }
-  ]
+  "updatedAt": "2026-07-15 07:01:10"
 }
