@@ -2,8 +2,8 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T175706160Z_7ac3869f",
-  "createdAt": "2026-07-15T17:57:06.160Z",
+  "runId": "run_2026-07-15T223445024Z_107be963",
+  "createdAt": "2026-07-15T22:34:45.024Z",
   "toolVersion": "1.32.1",
   "target": {
     "targetId": "whatsapp-mcp-server",

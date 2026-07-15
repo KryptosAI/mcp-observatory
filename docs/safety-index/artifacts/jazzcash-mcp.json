@@ -1,0 +1,66 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "fail",
+  "runId": "run_2026-07-15T223553573Z_80f6583c",
+  "createdAt": "2026-07-15T22:35:53.573Z",
+  "toolVersion": "1.32.1",
+  "target": {
+    "targetId": "jazzcash-mcp",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@theyahia/jazzcash-mcp"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "@theyahia/jazzcash-mcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Mobile wallet API access (Pakistan)",
+      "failureClass": "Payment/wallet/OTC boundary",
+      "whyItMatters": "JazzCash is Pakistan's largest mobile wallet with 40M+ users. MCP servers exposing mobile wallet operations, OTC vouchers, and refunds handle financial transactions at national scale — invisible to Western scanners."
+    }
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 3,
+    "pass": 0,
+    "fail": 0,
+    "partial": 0,
+    "unsupported": 0,
+    "flaky": 0,
+    "skipped": 3,
+    "gate": "fail"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "skipped",
+      "durationMs": 0,
+      "message": "Skipped because startup failed before the MCP session initialized. See the failure diagnosis.",
+      "evidence": []
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "skipped",
+      "durationMs": 0,
+      "message": "Skipped because startup failed before the MCP session initialized. See the failure diagnosis.",
+      "evidence": []
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "skipped",
+      "durationMs": 0,
+      "message": "Skipped because startup failed before the MCP session initialized. See the failure diagnosis.",
+      "evidence": []
+    }
+  ],
+  "fatalError": "Could not establish a plain stdio MCP session for target `jazzcash-mcp`.\nCommand: npx -y @theyahia/jazzcash-mcp\nDiagnosis: The process exited or detached before MCP initialization completed.\nRaw error: MCP error -32000: Connection closed\nLikely causes:\n- The package may expect extra startup arguments or environment variables.\n- The package may not behave like a plain local-process stdio target under this invocation.\n- The server may be crashing immediately and only leaving clues on stderr.\nNext steps:\n- Run the command manually and look for usage output, auth prompts, or crash text.\n- Check whether the package expects a different transport or an app-oriented startup flow.\n- Use the recent stderr lines below before assuming this is a harness bug.\nRecent stderr:\n- [jazzcash-mcp] Fatal: Environment variables JAZZCASH_MERCHANT_ID, JAZZCASH_PASSWORD, and JAZZCASH_INTEGRITY_SALT are required. Get credentials from the JazzCash merchant portal."
+}

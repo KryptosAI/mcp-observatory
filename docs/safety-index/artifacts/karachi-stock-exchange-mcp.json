@@ -1,0 +1,67 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "fail",
+  "runId": "run_20260715T224500Z_kse01",
+  "createdAt": "2026-07-15T22:45:00.000Z",
+  "toolVersion": "1.32.1",
+  "target": {
+    "targetId": "karachi-stock-exchange-mcp",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "karachi-stock-exchange-mcp"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "karachi-stock-exchange-mcp",
+      "purpose": "mcp-safety-index",
+      "region": "pakistan",
+      "riskClass": "Stock exchange API access (Pakistan markets)",
+      "failureClass": "Market data/trading boundary",
+      "whyItMatters": "The Pakistan Stock Exchange (PSX, formerly KSE) is Pakistan's premier stock exchange with 500+ listed companies representing a $340B+ economy. MCP servers feeding PSX market data to agents provide financial data invisible to Western scanners."
+    }
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 3,
+    "pass": 0,
+    "fail": 0,
+    "partial": 0,
+    "unsupported": 0,
+    "flaky": 0,
+    "skipped": 3,
+    "gate": "fail"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "skipped",
+      "durationMs": 0,
+      "message": "Skipped — Pakistani-region community MCP server; package not yet verified on npm registry.",
+      "evidence": []
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "skipped",
+      "durationMs": 0,
+      "message": "Skipped — Pakistani-region community MCP server; package not yet verified on npm registry.",
+      "evidence": []
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "skipped",
+      "durationMs": 0,
+      "message": "Skipped — Pakistani-region community MCP server; package not yet verified on npm registry.",
+      "evidence": []
+    }
+  ],
+  "fatalError": "Pakistani-region community MCP server `karachi-stock-exchange-mcp` — exact npm package name pending community verification. Western scanners typically miss Pakistani-region packages. If this package exists under a different name, submit a PR to update the safety index target.\n\nRegion: Pakistan | Category: Finance / Pakistan Markets | Risk: Stock exchange API access (Pakistan markets)"
+}

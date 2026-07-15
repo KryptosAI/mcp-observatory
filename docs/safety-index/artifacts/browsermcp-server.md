@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:55:30.528Z
+Generated at 2026-07-15T22:33:29.273Z
 
 ## Target and Environment Metadata
 
@@ -58,7 +58,7 @@ The following targets were identified as potentially reachable by this server (c
 | The URL to navigate to | unknown | description_analysis | medium |
 | browser_navigate | unknown | description_analysis | low |
 
-_Analyzed at 2026-07-15T17:55:31.429Z_
+_Analyzed at 2026-07-15T22:33:30.267Z_
 
 ## Regressions and Recoveries
 
@@ -68,13 +68,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.39 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 1.44 | All 7 conformance checks passed. |
-| healthy | resources | pass | 0.42 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
-| healthy | schema-quality | pass | 0.28 | All 12 item(s) have good schema quality. |
-| healthy | security | pass | 0.15 | No security issues detected. |
+| healthy | attack-sim | pass | 0.61 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 1.60 | All 7 conformance checks passed. |
+| healthy | resources | pass | 0.52 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
+| healthy | schema-quality | pass | 0.35 | All 12 item(s) have good schema quality. |
+| healthy | security | pass | 0.17 | No security issues detected. |
 | healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 0.85 | Advertised capability responded with the minimal expected shape (12 items). |
+| healthy | tools | pass | 1.10 | Advertised capability responded with the minimal expected shape (12 items). |
 | review | runtime-profile | partial | 0.08 | Detected 3 potential egress target(s) and 0 potential state mutation(s) with high confidence. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 
@@ -206,5 +206,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175530528Z_bb014977`
+- Run ID: `run_2026-07-15T223329273Z_428c122a`
 - Gate: `pass`

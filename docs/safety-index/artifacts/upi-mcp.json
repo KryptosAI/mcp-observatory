@@ -1,0 +1,452 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-07-15T223505697Z_ddfc464b",
+  "createdAt": "2026-07-15T22:35:05.697Z",
+  "toolVersion": "1.32.1",
+  "target": {
+    "targetId": "upi-mcp",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "upi-mcp"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "upi-mcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Unified Payments Interface access",
+      "failureClass": "UPI transaction/bank boundary",
+      "whyItMatters": "UPI processes 15B+ transactions monthly across India. MCP servers interfacing with UPI rails can trigger bank transfers — a critical financial trust boundary invisible to Western scanners."
+    },
+    "serverName": "upi-mcp",
+    "serverVersion": "0.1.0"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 9,
+    "pass": 6,
+    "fail": 0,
+    "partial": 1,
+    "unsupported": 2,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 2.692250000007334,
+      "message": "Advertised capability responded with the minimal expected shape (3 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 3,
+          "identifiers": [
+            "create_upi_link",
+            "create_upi_qr",
+            "parse_upi_link"
+          ],
+          "diagnostics": [
+            "upi-mcp running on stdio"
+          ],
+          "schemas": {
+            "create_upi_link": {
+              "type": "object",
+              "properties": {
+                "payee_vpa": {
+                  "type": "string"
+                },
+                "payee_name": {
+                  "type": "string"
+                },
+                "amount": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "note": {
+                  "type": "string"
+                },
+                "transaction_ref": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "payee_vpa",
+                "payee_name"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "create_upi_qr": {
+              "type": "object",
+              "properties": {
+                "payee_vpa": {
+                  "type": "string"
+                },
+                "payee_name": {
+                  "type": "string"
+                },
+                "amount": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "note": {
+                  "type": "string"
+                },
+                "transaction_ref": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "payee_vpa",
+                "payee_name"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "parse_upi_link": {
+              "type": "object",
+              "properties": {
+                "link": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "link"
+              ],
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.0011670000094454736,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.0005830000009154901,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.017040999999153428,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "pass",
+      "durationMs": 0.03883399999176618,
+      "message": "Detected 0 potential egress target(s) and 2 potential state mutation(s) with low confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 2,
+          "diagnostics": [
+            "Egress entries: 0",
+            "State mutations: 2",
+            "Confidence: medium"
+          ],
+          "findings": [
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 0.6615000000019791,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 3 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
+            "[pass] tool-response-content: No safe tool to invoke — content validation skipped.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "partial",
+      "durationMs": 0.17395899999246467,
+      "message": "Found 11 quality finding(s) across 3 item(s): 0 warnings, 11 info.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 11,
+          "identifiers": [
+            "create_upi_link",
+            "create_upi_qr",
+            "parse_upi_link"
+          ],
+          "diagnostics": [
+            "[info] tool \"create_upi_link\": Property 'payee_vpa' missing description",
+            "[info] tool \"create_upi_link\": Property 'payee_name' missing description",
+            "[info] tool \"create_upi_link\": Property 'amount' missing description",
+            "[info] tool \"create_upi_link\": Property 'note' missing description",
+            "[info] tool \"create_upi_link\": Property 'transaction_ref' missing description",
+            "[info] tool \"create_upi_qr\": Property 'payee_vpa' missing description",
+            "[info] tool \"create_upi_qr\": Property 'payee_name' missing description",
+            "[info] tool \"create_upi_qr\": Property 'amount' missing description",
+            "[info] tool \"create_upi_qr\": Property 'note' missing description",
+            "[info] tool \"create_upi_qr\": Property 'transaction_ref' missing description",
+            "[info] tool \"parse_upi_link\": Property 'link' missing description"
+          ],
+          "findings": [
+            {
+              "itemType": "tool",
+              "itemName": "create_upi_link",
+              "issue": "Property 'payee_vpa' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create_upi_link",
+              "issue": "Property 'payee_name' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create_upi_link",
+              "issue": "Property 'amount' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create_upi_link",
+              "issue": "Property 'note' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create_upi_link",
+              "issue": "Property 'transaction_ref' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create_upi_qr",
+              "issue": "Property 'payee_vpa' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create_upi_qr",
+              "issue": "Property 'payee_name' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create_upi_qr",
+              "issue": "Property 'amount' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create_upi_qr",
+              "issue": "Property 'note' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "create_upi_qr",
+              "issue": "Property 'transaction_ref' missing description",
+              "severity": "info"
+            },
+            {
+              "itemType": "tool",
+              "itemName": "parse_upi_link",
+              "issue": "Property 'link' missing description",
+              "severity": "info"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "pass",
+      "durationMs": 0.39433399999688845,
+      "message": "No security issues detected.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "pass",
+      "durationMs": 0.34750000000349246,
+      "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 85,
+    "grade": "B",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 60,
+        "details": [
+          "schema-quality: partial (60/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "security-lite: pass (100/100)",
+          "security: pass (100/100)",
+          "attack-sim: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 67,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: unsupported (50/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 787ms",
+          "p95 latency: 3ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 787.2668339999946,
+    "toolsListMs": 2.692250000007334,
+    "promptsListMs": 0.0011670000094454736,
+    "resourcesListMs": 0.0005830000009154901
+  },
+  "runtimeProfile": {
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-15T22:35:06.487Z",
+    "confidence": "medium"
+  }
+}

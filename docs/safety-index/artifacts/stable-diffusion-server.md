@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:56:05.269Z
+Generated at 2026-07-15T22:33:54.384Z
 
 ## Target and Environment Metadata
 
@@ -60,7 +60,7 @@ Recent stderr:
 - npm error 404
 - npm error 404 Note that you can also install from a
 - npm error 404 tarball, folder, http url, or git url.
-- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-15T17_56_05_347Z-debug-0.log
+- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-15T22_33_54_455Z-debug-0.log
 ```
 
 ## Full Capability Status Table
@@ -102,5 +102,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175605269Z_89e51688`
+- Run ID: `run_2026-07-15T223354384Z_13c718b9`
 - Gate: `fail`

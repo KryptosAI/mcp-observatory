@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:56:21.648Z
+Generated at 2026-07-15T22:34:07.455Z
 
 ## Target and Environment Metadata
 
@@ -56,7 +56,7 @@ The following state-modifying operations were identified from tool schemas:
 | --- | --- | --- | --- |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-15T17:56:22.794Z_
+_Analyzed at 2026-07-15T22:34:08.307Z_
 
 ## Regressions and Recoveries
 
@@ -66,13 +66,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.40 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 0.45 | All 7 conformance checks passed. |
+| healthy | attack-sim | pass | 0.41 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 0.46 | All 7 conformance checks passed. |
 | healthy | runtime-profile | pass | 0.03 | Detected 0 potential egress target(s) and 1 potential state mutation(s) with low confidence. |
-| healthy | security | pass | 0.25 | No security issues detected. |
+| healthy | security | pass | 0.26 | No security issues detected. |
 | healthy | security-lite | pass | 0.01 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 1.45 | Advertised capability responded with the minimal expected shape (1 item). |
-| review | schema-quality | partial | 0.36 | Found 1 quality finding(s) across 1 item(s): 0 warnings, 1 info. |
+| healthy | tools | pass | 1.51 | Advertised capability responded with the minimal expected shape (1 item). |
+| review | schema-quality | partial | 0.38 | Found 1 quality finding(s) across 1 item(s): 0 warnings, 1 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -197,5 +197,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175621648Z_d1bd3e70`
+- Run ID: `run_2026-07-15T223407455Z_7415d9ce`
 - Gate: `pass`

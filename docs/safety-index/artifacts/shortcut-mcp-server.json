@@ -2,8 +2,8 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T175657960Z_f01425b2",
-  "createdAt": "2026-07-15T17:56:57.960Z",
+  "runId": "run_2026-07-15T223438469Z_748e4877",
+  "createdAt": "2026-07-15T22:34:38.469Z",
   "toolVersion": "1.32.1",
   "target": {
     "targetId": "shortcut-mcp-server",

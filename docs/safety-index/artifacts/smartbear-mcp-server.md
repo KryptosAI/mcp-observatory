@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:56:50.683Z
+Generated at 2026-07-15T22:34:31.568Z
 
 ## Target and Environment Metadata
 
@@ -748,7 +748,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-15T17:56:52.786Z_
+_Analyzed at 2026-07-15T22:34:33.278Z_
 
 ## Regressions and Recoveries
 
@@ -758,15 +758,15 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 126.61 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 0.96 | Advertised capability responded with the minimal expected shape (2 items). |
-| healthy | resources | pass | 0.74 | Advertised capability responded with the minimal expected shape (1 items). |
-| healthy | tools | pass | 115.99 | Advertised capability responded with the minimal expected shape (288 items). |
-| review | attack-sim | partial | 69.48 | Safe attack simulation found 11 finding(s): 0 high, 11 medium, 0 low. |
-| review | runtime-profile | partial | 4.45 | Detected 260 potential egress target(s) and 417 potential state mutation(s) with high confidence. |
-| review | schema-quality | partial | 93.68 | Found 86 quality finding(s) across 290 item(s): 0 warnings, 86 info. |
-| act now | security | fail | 80.19 | Found 23 security finding(s): 21 high, 2 medium, 0 low. |
-| act now | security-lite | fail | 2.24 | Found 23 security finding(s): 21 high, 2 medium, 0 low. |
+| healthy | conformance | pass | 118.79 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 0.80 | Advertised capability responded with the minimal expected shape (2 items). |
+| healthy | resources | pass | 0.54 | Advertised capability responded with the minimal expected shape (1 items). |
+| healthy | tools | pass | 91.55 | Advertised capability responded with the minimal expected shape (288 items). |
+| review | attack-sim | partial | 61.33 | Safe attack simulation found 11 finding(s): 0 high, 11 medium, 0 low. |
+| review | runtime-profile | partial | 4.40 | Detected 260 potential egress target(s) and 417 potential state mutation(s) with high confidence. |
+| review | schema-quality | partial | 55.54 | Found 86 quality finding(s) across 290 item(s): 0 warnings, 86 info. |
+| act now | security | fail | 55.84 | Found 23 security finding(s): 21 high, 2 medium, 0 low. |
+| act now | security-lite | fail | 2.23 | Found 23 security finding(s): 21 high, 2 medium, 0 low. |
 
 ## Evidence Snippets
 
@@ -896,5 +896,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175650683Z_de26faef`
+- Run ID: `run_2026-07-15T223431568Z_27de5ba9`
 - Gate: `fail`

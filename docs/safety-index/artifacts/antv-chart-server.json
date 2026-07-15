@@ -2,8 +2,8 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-15T175536968Z_2599dcdd",
-  "createdAt": "2026-07-15T17:55:36.968Z",
+  "runId": "run_2026-07-15T223332070Z_010deadc",
+  "createdAt": "2026-07-15T22:33:32.070Z",
   "toolVersion": "1.32.1",
   "target": {
     "targetId": "antv-chart-server",
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 1.6763329999994312,
+      "durationMs": 1.573499999998603,
       "message": "Advertised capability responded with the minimal expected shape (27 items).",
       "evidence": [
         {
@@ -82,9 +82,9 @@
             "generate_spreadsheet"
           ],
           "diagnostics": [
-            "[MCP-Server-Chart] 2026-07-15T17:55:37.965Z ℹ️  setting up tool handlers...",
-            "[MCP-Server-Chart] 2026-07-15T17:55:37.966Z ℹ️  tool handlers set up",
-            "[MCP-Server-Chart] 2026-07-15T17:55:37.967Z ✅ Stdio MCP Server started"
+            "[MCP-Server-Chart] 2026-07-15T22:33:32.972Z ℹ️  setting up tool handlers...",
+            "[MCP-Server-Chart] 2026-07-15T22:33:32.973Z ℹ️  tool handlers set up",
+            "[MCP-Server-Chart] 2026-07-15T22:33:32.974Z ✅ Stdio MCP Server started"
           ],
           "schemas": {
             "generate_area_chart": {
@@ -2602,7 +2602,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0008749999979045242,
+      "durationMs": 0.0007499999992433004,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -2618,7 +2618,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.0021250000027066562,
+      "durationMs": 0.0025409999980183784,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -2634,7 +2634,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.07004199999937555,
+      "durationMs": 0.06920800000079907,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -2650,7 +2650,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "pass",
-      "durationMs": 0.3925840000010794,
+      "durationMs": 0.3900419999990845,
       "message": "Detected 0 potential egress target(s) and 117 potential state mutation(s) with low confidence.",
       "evidence": [
         {
@@ -3375,7 +3375,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 1.25,
+      "durationMs": 1.0987090000016906,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -3401,7 +3401,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "pass",
-      "durationMs": 0.7043750000011642,
+      "durationMs": 1.2000410000000556,
       "message": "All 27 item(s) have good schema quality.",
       "evidence": [
         {
@@ -3418,7 +3418,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 1.3184579999979178,
+      "durationMs": 0.7256249999991269,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -3434,7 +3434,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "pass",
-      "durationMs": 1.6194999999970605,
+      "durationMs": 1.6307079999969574,
       "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
       "evidence": [
         {
@@ -3493,17 +3493,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 1002ms",
+          "Connect: 907ms",
           "p95 latency: 2ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 1001.679583000001,
-    "toolsListMs": 1.6763329999994312,
-    "promptsListMs": 0.0008749999979045242,
-    "resourcesListMs": 0.0021250000027066562
+    "connectMs": 906.5344579999983,
+    "toolsListMs": 1.573499999998603,
+    "promptsListMs": 0.0007499999992433004,
+    "resourcesListMs": 0.0025409999980183784
   },
   "runtimeProfile": {
     "stateMutations": [
@@ -4210,7 +4210,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-15T17:55:37.973Z",
+    "analyzedAt": "2026-07-15T22:33:32.979Z",
     "confidence": "medium"
   }
 }

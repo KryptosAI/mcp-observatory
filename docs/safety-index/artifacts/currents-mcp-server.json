@@ -2,8 +2,8 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T175702958Z_923778f9",
-  "createdAt": "2026-07-15T17:57:02.958Z",
+  "runId": "run_2026-07-15T223442461Z_4b472658",
+  "createdAt": "2026-07-15T22:34:42.461Z",
   "toolVersion": "1.32.1",
   "target": {
     "targetId": "currents-mcp-server",
@@ -62,5 +62,5 @@
       "evidence": []
     }
   ],
-  "fatalError": "Could not establish a plain stdio MCP session for target `currents-mcp-server`.\nCommand: npx -y @currents/mcp\nDiagnosis: The process exited or detached before MCP initialization completed.\nRaw error: MCP error -32000: Connection closed\nLikely causes:\n- The package may expect extra startup arguments or environment variables.\n- The package may not behave like a plain local-process stdio target under this invocation.\n- The server may be crashing immediately and only leaving clues on stderr.\nNext steps:\n- Run the command manually and look for usage output, auth prompts, or crash text.\n- Check whether the package expects a different transport or an app-oriented startup flow.\n- Use the recent stderr lines below before assuming this is a harness bug.\nRecent stderr:\n- [10:57:04.149] ERROR (31830): CURRENTS_API_KEY is not set. Add your Currents API key to the environment (for example: export CURRENTS_API_KEY=<your-key>)."
+  "fatalError": "Could not establish a plain stdio MCP session for target `currents-mcp-server`.\nCommand: npx -y @currents/mcp\nDiagnosis: The process exited or detached before MCP initialization completed.\nRaw error: MCP error -32000: Connection closed\nLikely causes:\n- The package may expect extra startup arguments or environment variables.\n- The package may not behave like a plain local-process stdio target under this invocation.\n- The server may be crashing immediately and only leaving clues on stderr.\nNext steps:\n- Run the command manually and look for usage output, auth prompts, or crash text.\n- Check whether the package expects a different transport or an app-oriented startup flow.\n- Use the recent stderr lines below before assuming this is a harness bug.\nRecent stderr:\n- [15:34:43.356] ERROR (81938): CURRENTS_API_KEY is not set. Add your Currents API key to the environment (for example: export CURRENTS_API_KEY=<your-key>)."
 }

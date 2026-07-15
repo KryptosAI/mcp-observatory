@@ -2,8 +2,8 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T175704320Z_20e24cd6",
-  "createdAt": "2026-07-15T17:57:04.320Z",
+  "runId": "run_2026-07-15T223443524Z_93a37f6a",
+  "createdAt": "2026-07-15T22:34:43.524Z",
   "toolVersion": "1.32.1",
   "target": {
     "targetId": "desktop-commander-mcp-server",
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 15.524166999995941,
+      "durationMs": 14.770707999996375,
       "message": "Advertised capability responded with the minimal expected shape (26 items).",
       "evidence": [
         {
@@ -81,7 +81,7 @@
             "get_prompts"
           ],
           "diagnostics": [
-            "(node:31922) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(node:82004) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
             "(Use `node --trace-deprecation ...` to show where the warning was created)"
           ],
           "schemas": {
@@ -700,7 +700,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "pass",
-      "durationMs": 0.2517080000106944,
+      "durationMs": 0.382499999992433,
       "message": "Advertised capability responded with the minimal expected shape (0 items).",
       "evidence": [
         {
@@ -711,7 +711,7 @@
           "itemCount": 0,
           "identifiers": [],
           "diagnostics": [
-            "(node:31922) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(node:82004) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
             "(Use `node --trace-deprecation ...` to show where the warning was created)"
           ]
         }
@@ -721,7 +721,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 0.48408300000301097,
+      "durationMs": 0.5212080000055721,
       "message": "Advertised capability responded with the minimal expected shape (2 items).",
       "evidence": [
         {
@@ -735,7 +735,7 @@
             "ui://desktop-commander/config-editor"
           ],
           "diagnostics": [
-            "(node:31922) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(node:82004) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
             "(Use `node --trace-deprecation ...` to show where the warning was created)"
           ]
         },
@@ -747,7 +747,7 @@
           "itemCount": 0,
           "identifiers": [],
           "diagnostics": [
-            "(node:31922) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(node:82004) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
             "(Use `node --trace-deprecation ...` to show where the warning was created)"
           ]
         }
@@ -757,7 +757,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "fail",
-      "durationMs": 0.2142909999965923,
+      "durationMs": 0.4724160000041593,
       "message": "Found 6 security finding(s): 2 high, 3 medium, 1 low.",
       "evidence": [
         {
@@ -827,7 +827,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "partial",
-      "durationMs": 0.39187500000116415,
+      "durationMs": 0.3887079999985872,
       "message": "Detected 10 potential egress target(s) and 39 potential state mutation(s) with high confidence.",
       "evidence": [
         {
@@ -1144,7 +1144,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 15.176416999995126,
+      "durationMs": 18.18787500000326,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -1170,7 +1170,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 12.140750000005937,
+      "durationMs": 11.813290999998571,
       "message": "Found 76 quality finding(s) across 28 item(s): 0 warnings, 76 info.",
       "evidence": [
         {
@@ -1745,7 +1745,7 @@
       "id": "security",
       "capability": "security",
       "status": "fail",
-      "durationMs": 1.0754580000066198,
+      "durationMs": 1.1478340000030585,
       "message": "Found 6 security finding(s): 2 high, 3 medium, 1 low.",
       "evidence": [
         {
@@ -1815,7 +1815,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "fail",
-      "durationMs": 1.5303749999875436,
+      "durationMs": 2.3276670000050217,
       "message": "Safe attack simulation found 7 finding(s): 1 high, 6 medium, 0 low.",
       "evidence": [
         {
@@ -2031,17 +2031,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 1475ms",
-          "p95 latency: 16ms (3 operations)"
+          "Connect: 1208ms",
+          "p95 latency: 15ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 1475.4047080000018,
-    "toolsListMs": 15.524166999995941,
-    "promptsListMs": 0.2517080000106944,
-    "resourcesListMs": 0.48408300000301097
+    "connectMs": 1207.9623749999882,
+    "toolsListMs": 14.770707999996375,
+    "promptsListMs": 0.382499999992433,
+    "resourcesListMs": 0.5212080000055721
   },
   "runtimeProfile": {
     "egress": [
@@ -2342,7 +2342,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-15T17:57:05.813Z",
+    "analyzedAt": "2026-07-15T22:34:44.750Z",
     "confidence": "high"
   }
 }

@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:56:04.823Z
+Generated at 2026-07-15T22:33:54.043Z
 
 ## Target and Environment Metadata
 
@@ -58,7 +58,7 @@ Next steps:
 Recent stderr:
 - npm error code ENOVERSIONS
 - npm error No versions available for dalle-mcp-server
-- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-15T17_56_04_917Z-debug-0.log
+- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-15T22_33_54_118Z-debug-0.log
 ```
 
 ## Full Capability Status Table
@@ -100,5 +100,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175604823Z_70adef3e`
+- Run ID: `run_2026-07-15T223354043Z_41403985`
 - Gate: `fail`

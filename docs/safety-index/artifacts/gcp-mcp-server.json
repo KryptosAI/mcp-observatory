@@ -2,17 +2,25 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T173008346Z_30f38064",
-  "createdAt": "2026-07-15T17:30:08.347Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T223451316Z_f7d490a7",
+  "createdAt": "2026-07-15T22:34:51.316Z",
+  "toolVersion": "1.32.1",
   "target": {
-    "targetId": "mcp-server-gcp",
+    "targetId": "gcp-mcp-server",
     "adapter": "local-process",
     "command": "npx",
     "args": [
       "-y",
       "mcp-server-gcp"
-    ]
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "mcp-server-gcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Cloud infrastructure control",
+      "failureClass": "GCP service boundary",
+      "whyItMatters": "GCP MCP servers can interact with Compute Engine, Cloud Storage, BigQuery, and other GCP services — broad cloud control surface."
+    }
   },
   "environment": {
     "platform": "darwin 25.5.0",
@@ -54,5 +62,5 @@
       "evidence": []
     }
   ],
-  "fatalError": "Could not establish a plain stdio MCP session for target `mcp-server-gcp`.\nCommand: npx -y mcp-server-gcp\nDiagnosis: The process exited or detached before MCP initialization completed.\nRaw error: MCP error -32000: Connection closed\nLikely causes:\n- The package may expect extra startup arguments or environment variables.\n- The package may not behave like a plain local-process stdio target under this invocation.\n- The server may be crashing immediately and only leaving clues on stderr.\nNext steps:\n- Run the command manually and look for usage output, auth prompts, or crash text.\n- Check whether the package expects a different transport or an app-oriented startup flow.\n- Use the recent stderr lines below before assuming this is a harness bug.\nRecent stderr:\n- npm error could not determine executable to run\n- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-15T17_30_08_473Z-debug-0.log"
+  "fatalError": "Could not establish a plain stdio MCP session for target `gcp-mcp-server`.\nCommand: npx -y mcp-server-gcp\nDiagnosis: The process exited or detached before MCP initialization completed.\nRaw error: MCP error -32000: Connection closed\nLikely causes:\n- The package may expect extra startup arguments or environment variables.\n- The package may not behave like a plain local-process stdio target under this invocation.\n- The server may be crashing immediately and only leaving clues on stderr.\nNext steps:\n- Run the command manually and look for usage output, auth prompts, or crash text.\n- Check whether the package expects a different transport or an app-oriented startup flow.\n- Use the recent stderr lines below before assuming this is a harness bug.\nRecent stderr:\n- npm error could not determine executable to run\n- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-15T22_34_51_384Z-debug-0.log"
 }

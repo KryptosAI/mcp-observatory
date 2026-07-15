@@ -1,10 +1,10 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:30:08.347Z
+Generated at 2026-07-15T22:34:51.316Z
 
 ## Target and Environment Metadata
 
-- Target: `mcp-server-gcp`
+- Target: `gcp-mcp-server`
 - Adapter: `local-process`
 - Command: `npx -y mcp-server-gcp`
 - Server: `unknown `
@@ -29,6 +29,13 @@ Generated at 2026-07-15T17:30:08.347Z
 - Suggested next step: Run the target command manually, compare stderr with the diagnosis below, and only raise timeoutMs if startup is genuinely slow.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
 
+## What Was Not Tested
+
+- 🔒 network_egress: No outbound network calls were attempted during scan
+- 🔒 filesystem_mutation: Filesystem write operations were not exercised
+- 🔒 credential_access: Credential scanning was not performed
+- ℹ️ destructive_payloads: Destructive payloads were not attempted (safe-mode only)
+
 ## Regressions and Recoveries
 
 _Use the `diff` command against another run artifact to classify regressions and recoveries over time._
@@ -36,7 +43,7 @@ _Use the `diff` command against another run artifact to classify regressions and
 ## Failure Diagnosis
 
 ```text
-Could not establish a plain stdio MCP session for target `mcp-server-gcp`.
+Could not establish a plain stdio MCP session for target `gcp-mcp-server`.
 Command: npx -y mcp-server-gcp
 Diagnosis: The process exited or detached before MCP initialization completed.
 Raw error: MCP error -32000: Connection closed
@@ -50,7 +57,7 @@ Next steps:
 - Use the recent stderr lines below before assuming this is a harness bug.
 Recent stderr:
 - npm error could not determine executable to run
-- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-15T17_30_08_473Z-debug-0.log
+- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-15T22_34_51_384Z-debug-0.log
 ```
 
 ## Full Capability Status Table
@@ -92,5 +99,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T173008346Z_30f38064`
+- Run ID: `run_2026-07-15T223451316Z_f7d490a7`
 - Gate: `fail`

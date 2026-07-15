@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T173008337Z_74962406",
-  "createdAt": "2026-07-15T17:30:08.338Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T223456283Z_8894143f",
+  "createdAt": "2026-07-15T22:34:56.283Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "langfuse-mcp",
     "adapter": "local-process",
@@ -12,7 +12,15 @@
     "args": [
       "-y",
       "langfuse-mcp"
-    ]
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "langfuse-mcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "LLM observability access",
+      "failureClass": "Trace/observation data boundary",
+      "whyItMatters": "Langfuse MCP servers can access LLM traces, prompt versions, and evaluation data — agents could read sensitive prompt/output data from production LLM pipelines."
+    }
   },
   "environment": {
     "platform": "darwin 25.5.0",

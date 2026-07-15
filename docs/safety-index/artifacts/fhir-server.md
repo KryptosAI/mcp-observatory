@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:56:10.450Z
+Generated at 2026-07-15T22:33:58.466Z
 
 ## Target and Environment Metadata
 
@@ -96,5 +96,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175610450Z_72a7de1c`
+- Run ID: `run_2026-07-15T223358466Z_72d03650`
 - Gate: `fail`

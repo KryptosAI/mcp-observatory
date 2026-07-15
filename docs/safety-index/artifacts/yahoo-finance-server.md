@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:56:05.780Z
+Generated at 2026-07-15T22:33:54.731Z
 
 ## Target and Environment Metadata
 
@@ -48,7 +48,7 @@ Generated at 2026-07-15T17:56:05.780Z
 
 ## Runtime Profile
 
-_Analyzed at 2026-07-15T17:56:06.779Z_
+_Analyzed at 2026-07-15T22:33:55.544Z_
 
 ## Regressions and Recoveries
 
@@ -58,13 +58,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.50 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 84.34 | All 7 conformance checks passed. |
+| healthy | attack-sim | pass | 0.47 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 77.90 | All 7 conformance checks passed. |
 | healthy | runtime-profile | pass | 0.10 | No egress or state mutation indicators detected in tool schemas. |
-| healthy | security | pass | 0.54 | No security issues detected. |
+| healthy | security | pass | 0.53 | No security issues detected. |
 | healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 3.22 | Advertised capability responded with the minimal expected shape (15 items). |
-| review | schema-quality | partial | 1.39 | Found 2 quality finding(s) across 15 item(s): 0 warnings, 2 info. |
+| healthy | tools | pass | 3.45 | Advertised capability responded with the minimal expected shape (15 items). |
+| review | schema-quality | partial | 1.31 | Found 2 quality finding(s) across 15 item(s): 0 warnings, 2 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -183,5 +183,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175605780Z_7298d455`
+- Run ID: `run_2026-07-15T223354731Z_4a67924b`
 - Gate: `pass`

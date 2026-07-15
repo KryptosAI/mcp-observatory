@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T173020279Z_674b19f0",
-  "createdAt": "2026-07-15T17:30:20.279Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T223457009Z_54d93970",
+  "createdAt": "2026-07-15T22:34:57.009Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "jira-mcp-server",
     "adapter": "local-process",
@@ -12,7 +12,15 @@
     "args": [
       "-y",
       "jira-mcp-server"
-    ]
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "jira-mcp-server",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Issue tracking mutation",
+      "failureClass": "Issue/board/sprint boundary",
+      "whyItMatters": "Jira MCP servers can create issues, manage boards, transition workflows, and track sprints — agents could modify production project tracking."
+    }
   },
   "environment": {
     "platform": "darwin 25.5.0",

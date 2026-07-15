@@ -2,8 +2,8 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T175649601Z_40c00b50",
-  "createdAt": "2026-07-15T17:56:49.601Z",
+  "runId": "run_2026-07-15T223430686Z_4b033b64",
+  "createdAt": "2026-07-15T22:34:30.686Z",
   "toolVersion": "1.32.1",
   "target": {
     "targetId": "brave-search-mcp-server-v2",

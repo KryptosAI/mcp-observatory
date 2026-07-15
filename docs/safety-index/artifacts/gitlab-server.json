@@ -2,8 +2,8 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T175558693Z_13935920",
-  "createdAt": "2026-07-15T17:55:58.693Z",
+  "runId": "run_2026-07-15T223349920Z_3504d108",
+  "createdAt": "2026-07-15T22:33:49.920Z",
   "toolVersion": "1.32.1",
   "target": {
     "targetId": "gitlab-server",
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "fail",
-      "durationMs": 1.7741249999962747,
+      "durationMs": 1.895250000001397,
       "message": "Advertised capability failed during tools/list: [\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"object\"\n    ],\n    \"path\": [\n      \"tools\",\n      0,\n      \"inputSchema\",\n      \"type\"\n    ],\n    \"message\": \"Invalid input: expected \\\"object\\\"\"\n  },\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"object\"\n    ],\n    \"path\": [\n      \"tools\",\n      1,\n      \"inputSchema\",\n      \"type\"\n    ],\n    \"message\": \"Invalid input: expected \\\"object\\\"\"\n  },\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"object\"\n    ],\n    \"path\": [\n      \"tools\",\n      2,\n      \"inputSchema\",\n      \"type\"\n    ],\n    \"message\": \"Invalid input: expected \\\"object\\\"\"\n  },\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"object\"\n    ],\n    \"path\": [\n      \"tools\",\n      3,\n      \"inputSchema\",\n      \"type\"\n    ],\n    \"message\": \"Invalid input: expected \\\"object\\\"\"\n  },\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"object\"\n    ],\n    \"path\": [\n      \"tools\",\n      4,\n      \"inputSchema\",\n      \"type\"\n    ],\n    \"message\": \"Invalid input: expected \\\"object\\\"\"\n  },\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"object\"\n    ],\n    \"path\": [\n      \"tools\",\n      5,\n      \"inputSchema\",\n      \"type\"\n    ],\n    \"message\": \"Invalid input: expected \\\"object\\\"\"\n  },\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"object\"\n    ],\n    \"path\": [\n      \"tools\",\n      6,\n      \"inputSchema\",\n      \"type\"\n    ],\n    \"message\": \"Invalid input: expected \\\"object\\\"\"\n  },\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"object\"\n    ],\n    \"path\": [\n      \"tools\",\n      7,\n      \"inputSchema\",\n      \"type\"\n    ],\n    \"message\": \"Invalid input: expected \\\"object\\\"\"\n  },\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"object\"\n    ],\n    \"path\": [\n      \"tools\",\n      8,\n      \"inputSchema\",\n      \"type\"\n    ],\n    \"message\": \"Invalid input: expected \\\"object\\\"\"\n  }\n]",
       "evidence": [
         {
@@ -62,7 +62,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0013330000001587905,
+      "durationMs": 0.0006659999999101274,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -78,7 +78,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.0007079999995767139,
+      "durationMs": 0.0004580000022542663,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -94,7 +94,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "partial",
-      "durationMs": 0.6721250000045984,
+      "durationMs": 0.5302920000031008,
       "message": "5/7 conformance checks passed, 2 failed.",
       "evidence": [
         {
@@ -123,7 +123,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "pass",
-      "durationMs": 0.1553330000024289,
+      "durationMs": 0.12754199999471894,
       "message": "All 0 item(s) have good schema quality.",
       "evidence": [
         {
@@ -140,7 +140,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 0.3230829999956768,
+      "durationMs": 0.2620840000017779,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -156,7 +156,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "pass",
-      "durationMs": 0.197041999999783,
+      "durationMs": 0.21029099999577738,
       "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
       "evidence": [
         {
@@ -214,16 +214,16 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 1096ms",
+          "Connect: 802ms",
           "p95 latency: 2ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 1096.3889160000035,
-    "toolsListMs": 1.7741249999962747,
-    "promptsListMs": 0.0013330000001587905,
-    "resourcesListMs": 0.0007079999995767139
+    "connectMs": 801.9415840000001,
+    "toolsListMs": 1.895250000001397,
+    "promptsListMs": 0.0006659999999101274,
+    "resourcesListMs": 0.0004580000022542663
   }
 }

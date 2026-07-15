@@ -1,13 +1,13 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:56:33.978Z
+Generated at 2026-07-15T22:34:17.959Z
 
 ## Target and Environment Metadata
 
 - Target: `transcend-server`
 - Adapter: `local-process`
 - Command: `npx -y @transcend-io/mcp`
-- Server: `transcend-mcp 0.6.8`
+- Server: `transcend-mcp 0.6.9`
 - Platform: `darwin 25.5.0`
 - Node: `v22.22.1`
 
@@ -132,7 +132,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-15T17:56:35.441Z_
+_Analyzed at 2026-07-15T22:34:19.154Z_
 
 ## Regressions and Recoveries
 
@@ -142,13 +142,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 3.79 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 577.78 | All 7 conformance checks passed. |
-| healthy | security | pass | 2.63 | No security issues detected. |
-| healthy | security-lite | pass | 0.21 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 2.70 | Advertised capability responded with the minimal expected shape (73 items). |
-| review | runtime-profile | partial | 0.54 | Detected 27 potential egress target(s) and 45 potential state mutation(s) with high confidence. |
-| review | schema-quality | partial | 3.05 | Found 22 quality finding(s) across 73 item(s): 0 warnings, 22 info. |
+| healthy | attack-sim | pass | 3.40 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 567.05 | All 7 conformance checks passed. |
+| healthy | security | pass | 2.45 | No security issues detected. |
+| healthy | security-lite | pass | 0.23 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 2.94 | Advertised capability responded with the minimal expected shape (73 items). |
+| review | runtime-profile | partial | 0.57 | Detected 27 potential egress target(s) and 45 potential state mutation(s) with high confidence. |
+| review | schema-quality | partial | 2.63 | Found 22 quality finding(s) across 73 item(s): 0 warnings, 22 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -212,7 +212,7 @@ Summary: Advertised capability responded with the minimal expected shape (73 ite
   - Minimal shape present: `true`
   - Item count: `73`
   - Identifiers: docs_list, docs_fetch, dsr_submit, dsr_poll_status, dsr_list (+68 more)
-  - Diagnostics: {"level":"info","message":"Starting Transcend MCP Server v0.6.8...","data":{"toolCount":73,"categories":["Documentation","DSR Automation","Consent Management","Preference Management","Data Inventory","Data Discovery","Assessments","Workflows","Admin"]},"timestamp":"2026-07-15T17:56:35.429Z"}, {"level":"info","message":"Transcend MCP Server started successfully","data":{"sombraUrl":"https://multi-tenant.sombra.transcend.io","graphqlUrl":"https://api.transcend.io","dashboardUrl":"https://app.transcend.io","tools":73},"timestamp":"2026-07-15T17:56:35.429Z"}, (node:30405) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. (+2 more)
+  - Diagnostics: {"level":"info","message":"Starting Transcend MCP Server v0.6.9...","data":{"toolCount":73,"categories":["Documentation","DSR Automation","Consent Management","Preference Management","Data Inventory","Data Discovery","Assessments","Workflows","Admin"]},"timestamp":"2026-07-15T22:34:19.145Z"}, {"level":"info","message":"Transcend MCP Server started successfully","data":{"sombraUrl":"https://multi-tenant.sombra.transcend.io","graphqlUrl":"https://api.transcend.io","dashboardUrl":"https://app.transcend.io","tools":73},"timestamp":"2026-07-15T22:34:19.145Z"}, (node:81004) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead. (+2 more)
 
 ### runtime-profile — partial
 
@@ -273,5 +273,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175633978Z_51ecd8c7`
+- Run ID: `run_2026-07-15T223417959Z_850681b6`
 - Gate: `pass`

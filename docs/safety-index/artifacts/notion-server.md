@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:55:47.675Z
+Generated at 2026-07-15T22:33:40.323Z
 
 ## Target and Environment Metadata
 
@@ -91,7 +91,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-15T17:55:48.592Z_
+_Analyzed at 2026-07-15T22:33:41.108Z_
 
 ## Regressions and Recoveries
 
@@ -101,13 +101,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 175.26 | All 7 conformance checks passed. |
-| healthy | runtime-profile | pass | 0.19 | Detected 10 potential egress target(s) and 21 potential state mutation(s) with low confidence. |
-| healthy | security | pass | 2.00 | No security issues detected. |
-| healthy | security-lite | pass | 0.11 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 1.89 | Advertised capability responded with the minimal expected shape (24 items). |
-| review | attack-sim | partial | 3.78 | Safe attack simulation found 1 finding(s): 0 high, 1 medium, 0 low. |
-| review | schema-quality | partial | 3.57 | Found 31 quality finding(s) across 24 item(s): 0 warnings, 31 info. |
+| healthy | conformance | pass | 167.20 | All 7 conformance checks passed. |
+| healthy | runtime-profile | pass | 0.16 | Detected 10 potential egress target(s) and 21 potential state mutation(s) with low confidence. |
+| healthy | security | pass | 1.27 | No security issues detected. |
+| healthy | security-lite | pass | 0.05 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 1.70 | Advertised capability responded with the minimal expected shape (24 items). |
+| review | attack-sim | partial | 2.51 | Safe attack simulation found 1 finding(s): 0 high, 1 medium, 0 low. |
+| review | schema-quality | partial | 2.06 | Found 31 quality finding(s) across 24 item(s): 0 warnings, 31 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -232,5 +232,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175547675Z_54eccdbc`
+- Run ID: `run_2026-07-15T223340323Z_a54e806c`
 - Gate: `pass`

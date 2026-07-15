@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T172945412Z_e7ef2528",
-  "createdAt": "2026-07-15T17:29:45.412Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T223451620Z_10ed929a",
+  "createdAt": "2026-07-15T22:34:51.620Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "shopify-mcp",
     "adapter": "local-process",
@@ -12,7 +12,15 @@
     "args": [
       "-y",
       "shopify-mcp"
-    ]
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "shopify-mcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "E-commerce platform access",
+      "failureClass": "Store/product/order boundary",
+      "whyItMatters": "Shopify MCP servers can manage products, orders, customers, and store settings — agents could modify live e-commerce operations."
+    }
   },
   "environment": {
     "platform": "darwin 25.5.0",

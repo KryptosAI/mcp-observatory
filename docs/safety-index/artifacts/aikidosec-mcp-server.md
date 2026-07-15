@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:56:54.094Z
+Generated at 2026-07-15T22:34:34.366Z
 
 ## Target and Environment Metadata
 
@@ -58,7 +58,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-15T17:56:54.907Z_
+_Analyzed at 2026-07-15T22:34:35.158Z_
 
 ## Regressions and Recoveries
 
@@ -68,13 +68,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.33 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 11.96 | All 7 conformance checks passed. |
-| healthy | runtime-profile | pass | 0.12 | Detected 0 potential egress target(s) and 3 potential state mutation(s) with low confidence. |
-| healthy | security | pass | 0.35 | No security issues detected. |
-| healthy | security-lite | pass | 0.04 | No security issues detected (lightweight scan). |
+| healthy | attack-sim | pass | 0.32 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 10.92 | All 7 conformance checks passed. |
+| healthy | runtime-profile | pass | 0.13 | Detected 0 potential egress target(s) and 3 potential state mutation(s) with low confidence. |
+| healthy | security | pass | 0.36 | No security issues detected. |
+| healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
 | healthy | tools | pass | 1.94 | Advertised capability responded with the minimal expected shape (4 items). |
-| review | schema-quality | partial | 0.58 | Found 11 quality finding(s) across 4 item(s): 0 warnings, 11 info. |
+| review | schema-quality | partial | 0.51 | Found 11 quality finding(s) across 4 item(s): 0 warnings, 11 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -150,7 +150,7 @@ Summary: Advertised capability responded with the minimal expected shape (4 item
   - Minimal shape present: `true`
   - Item count: `4`
   - Identifiers: aikido_issues_list, aikido_full_scan, aikido_login, aikido_ignore_issue
-  - Diagnostics: (node:31328) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead., (Use `node --trace-deprecation ...` to show where the warning was created), {"level":30,"time":"2026-07-15T17:56:54.875Z","msg":"MCP server is running..."}
+  - Diagnostics: (node:81579) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead., (Use `node --trace-deprecation ...` to show where the warning was created), {"level":30,"time":"2026-07-15T22:34:35.127Z","msg":"MCP server is running..."}
 
 ### schema-quality — partial
 
@@ -199,5 +199,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175654094Z_9602bf61`
+- Run ID: `run_2026-07-15T223434366Z_66b9f175`
 - Gate: `pass`

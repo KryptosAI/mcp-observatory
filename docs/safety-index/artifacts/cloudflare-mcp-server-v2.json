@@ -2,8 +2,8 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T175658976Z_735f25f3",
-  "createdAt": "2026-07-15T17:56:58.976Z",
+  "runId": "run_2026-07-15T223439273Z_d864edf5",
+  "createdAt": "2026-07-15T22:34:39.273Z",
   "toolVersion": "1.32.1",
   "target": {
     "targetId": "cloudflare-mcp-server-v2",
@@ -62,5 +62,5 @@
       "evidence": []
     }
   ],
-  "fatalError": "Could not establish a plain stdio MCP session for target `cloudflare-mcp-server-v2`.\nCommand: npx -y @cloudflare/mcp-server-cloudflare\nDiagnosis: The process exited or detached before MCP initialization completed.\nRaw error: MCP error -32000: Connection closed\nLikely causes:\n- The package may expect extra startup arguments or environment variables.\n- The package may not behave like a plain local-process stdio target under this invocation.\n- The server may be crashing immediately and only leaving clues on stderr.\nNext steps:\n- Run the command manually and look for usage output, auth prompts, or crash text.\n- Check whether the package expects a different transport or an app-oriented startup flow.\n- Use the recent stderr lines below before assuming this is a harness bug.\nRecent stderr:\n- [DEBUG 2026-07-15T17:56:59.988Z] Uncaught exception: Error: Unknown command: undefined. Expected 'init' or 'run'."
+  "fatalError": "Could not establish a plain stdio MCP session for target `cloudflare-mcp-server-v2`.\nCommand: npx -y @cloudflare/mcp-server-cloudflare\nDiagnosis: The process exited or detached before MCP initialization completed.\nRaw error: MCP error -32000: Connection closed\nLikely causes:\n- The package may expect extra startup arguments or environment variables.\n- The package may not behave like a plain local-process stdio target under this invocation.\n- The server may be crashing immediately and only leaving clues on stderr.\nNext steps:\n- Run the command manually and look for usage output, auth prompts, or crash text.\n- Check whether the package expects a different transport or an app-oriented startup flow.\n- Use the recent stderr lines below before assuming this is a harness bug.\nRecent stderr:\n- [DEBUG 2026-07-15T22:34:40.089Z] Uncaught exception: Error: Unknown command: undefined. Expected 'init' or 'run'."
 }

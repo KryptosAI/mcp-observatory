@@ -2,8 +2,8 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T175708661Z_4cfa3bbd",
-  "createdAt": "2026-07-15T17:57:08.661Z",
+  "runId": "run_2026-07-15T223446482Z_8d8632a7",
+  "createdAt": "2026-07-15T22:34:46.482Z",
   "toolVersion": "1.32.1",
   "target": {
     "targetId": "mysql-mcp-server",

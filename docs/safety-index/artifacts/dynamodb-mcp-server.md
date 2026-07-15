@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:57:10.203Z
+Generated at 2026-07-15T22:34:47.729Z
 
 ## Target and Environment Metadata
 
@@ -57,7 +57,7 @@ Next steps:
 - Use the recent stderr lines below before assuming this is a harness bug.
 Recent stderr:
 - npm error could not determine executable to run
-- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-15T17_57_10_273Z-debug-0.log
+- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-15T22_34_47_794Z-debug-0.log
 ```
 
 ## Full Capability Status Table
@@ -99,5 +99,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175710203Z_74ce3849`
+- Run ID: `run_2026-07-15T223447729Z_603ee1df`
 - Gate: `fail`

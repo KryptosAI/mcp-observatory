@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T173008335Z_51a52f79",
-  "createdAt": "2026-07-15T17:30:08.336Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T223458292Z_6e410b41",
+  "createdAt": "2026-07-15T22:34:58.292Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "trello-mcp-server",
     "adapter": "local-process",
@@ -13,6 +13,14 @@
       "-y",
       "trello-mcp-server"
     ],
+    "cwd": ".",
+    "metadata": {
+      "package": "trello-mcp-server",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Board management access",
+      "failureClass": "Board/card/list boundary",
+      "whyItMatters": "Trello MCP servers can create boards, manage cards, move lists, and collaborate on projects — agents could reorganize or modify team workflows."
+    },
     "serverName": "Trello MCP Server",
     "serverVersion": "1.0.0"
   },
@@ -21,8 +29,8 @@
     "nodeVersion": "v22.22.1"
   },
   "summary": {
-    "total": 8,
-    "pass": 6,
+    "total": 9,
+    "pass": 7,
     "fail": 1,
     "partial": 0,
     "unsupported": 1,
@@ -35,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 7.199167000000216,
+      "durationMs": 3.0228340000030585,
       "message": "Advertised capability responded with the minimal expected shape (15 items).",
       "evidence": [
         {
@@ -433,7 +441,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.00437499999998181,
+      "durationMs": 0.0008749999979045242,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -449,7 +457,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 1.9390419999999722,
+      "durationMs": 0.6609999999927823,
       "message": "Advertised capability responded with the minimal expected shape (3 items).",
       "evidence": [
         {
@@ -481,7 +489,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.6637089999999262,
+      "durationMs": 0.027000000001862645,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -497,7 +505,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "pass",
-      "durationMs": 1.2563749999999345,
+      "durationMs": 0.07095799999660812,
       "message": "Detected 0 potential egress target(s) and 5 potential state mutation(s) with low confidence.",
       "evidence": [
         {
@@ -550,7 +558,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 412.86137499999995,
+      "durationMs": 214.94529099999636,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -576,7 +584,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "fail",
-      "durationMs": 1.2178329999997004,
+      "durationMs": 1.8966249999939464,
       "message": "Found 24 quality finding(s) across 16 item(s): 16 warnings, 8 info.",
       "evidence": [
         {
@@ -779,10 +787,26 @@
       ]
     },
     {
+      "id": "security",
+      "capability": "security",
+      "status": "pass",
+      "durationMs": 0.9191670000000158,
+      "message": "No security issues detected.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "pass",
-      "durationMs": 2.587665999999899,
+      "durationMs": 1.610792000006768,
       "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
       "evidence": [
         {
@@ -822,6 +846,7 @@
         "score": 100,
         "details": [
           "security-lite: pass (100/100)",
+          "security: pass (100/100)",
           "attack-sim: pass (100/100)"
         ]
       },
@@ -840,17 +865,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 2658ms",
-          "p95 latency: 7ms (3 operations)"
+          "Connect: 761ms",
+          "p95 latency: 3ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 2657.933958,
-    "toolsListMs": 7.199167000000216,
-    "promptsListMs": 0.00437499999998181,
-    "resourcesListMs": 1.9390419999999722
+    "connectMs": 760.6229580000072,
+    "toolsListMs": 3.0228340000030585,
+    "promptsListMs": 0.0008749999979045242,
+    "resourcesListMs": 0.6609999999927823
   },
   "runtimeProfile": {
     "stateMutations": [
@@ -885,7 +910,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-15T17:30:11.006Z",
+    "analyzedAt": "2026-07-15T22:34:59.057Z",
     "confidence": "medium"
   }
 }

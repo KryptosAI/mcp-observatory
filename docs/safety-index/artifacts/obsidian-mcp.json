@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T173042484Z_adb6e98b",
-  "createdAt": "2026-07-15T17:30:42.485Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T223501652Z_4a375362",
+  "createdAt": "2026-07-15T22:35:01.652Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "obsidian-mcp",
     "adapter": "local-process",
@@ -12,7 +12,15 @@
     "args": [
       "-y",
       "obsidian-mcp"
-    ]
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "obsidian-mcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Personal knowledge base access",
+      "failureClass": "Note/vault/file boundary",
+      "whyItMatters": "Obsidian MCP servers can read, write, search, and link notes in personal knowledge vaults — agents could access private notes and research."
+    }
   },
   "environment": {
     "platform": "darwin 25.5.0",

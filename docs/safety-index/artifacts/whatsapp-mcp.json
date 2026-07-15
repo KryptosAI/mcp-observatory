@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T173020339Z_dea6fa96",
-  "createdAt": "2026-07-15T17:30:20.339Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T223452652Z_e798d8f0",
+  "createdAt": "2026-07-15T22:34:52.652Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "whatsapp-mcp",
     "adapter": "local-process",
@@ -12,7 +12,15 @@
     "args": [
       "-y",
       "whatsapp-mcp"
-    ]
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "whatsapp-mcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Messaging platform access",
+      "failureClass": "Message boundary (WhatsApp)",
+      "whyItMatters": "WhatsApp MCP servers can send and receive messages, manage contacts, and interact with WhatsApp Business API — agents could message users directly."
+    }
   },
   "environment": {
     "platform": "darwin 25.5.0",

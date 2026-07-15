@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T172830394Z_7fca725c",
-  "createdAt": "2026-07-15T17:28:30.394Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T223454851Z_1fca179d",
+  "createdAt": "2026-07-15T22:34:54.851Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "openai-mcp-server",
     "adapter": "local-process",
@@ -12,7 +12,15 @@
     "args": [
       "-y",
       "openai-mcp-server"
-    ]
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "openai-mcp-server",
+      "purpose": "mcp-safety-index",
+      "riskClass": "LLM API platform access",
+      "failureClass": "Model inference boundary",
+      "whyItMatters": "OpenAI MCP servers can call GPT models, manage embeddings, and use DALL-E — agents could trigger LLM inference and consume API credits."
+    }
   },
   "environment": {
     "platform": "darwin 25.5.0",

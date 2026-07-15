@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T172912683Z_528d3707",
-  "createdAt": "2026-07-15T17:29:12.683Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T223502296Z_74978b19",
+  "createdAt": "2026-07-15T22:35:02.296Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "arxiv-mcp-server",
     "adapter": "local-process",
@@ -12,7 +12,15 @@
     "args": [
       "-y",
       "arxiv-mcp-server"
-    ]
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "arxiv-mcp-server",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Academic content retrieval",
+      "failureClass": "Paper metadata/search boundary",
+      "whyItMatters": "arXiv MCP servers can search and retrieve academic papers, abstracts, and metadata — agents can incorporate scientific literature into workflows."
+    }
   },
   "environment": {
     "platform": "darwin 25.5.0",

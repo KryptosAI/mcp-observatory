@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T173101810Z_55ae5e5f",
-  "createdAt": "2026-07-15T17:31:01.810Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T223454145Z_5d8dbd75",
+  "createdAt": "2026-07-15T22:34:54.145Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "sendgrid-mcp",
     "adapter": "local-process",
@@ -12,7 +12,15 @@
     "args": [
       "-y",
       "sendgrid-mcp"
-    ]
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "sendgrid-mcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Email sending platform access",
+      "failureClass": "Email send/template boundary",
+      "whyItMatters": "SendGrid MCP servers can send transactional and marketing emails, manage templates, and view delivery stats — agents could email users at scale."
+    }
   },
   "environment": {
     "platform": "darwin 25.5.0",

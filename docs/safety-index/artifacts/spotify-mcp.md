@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:30:42.478Z
+Generated at 2026-07-15T22:35:00.079Z
 
 ## Target and Environment Metadata
 
@@ -25,7 +25,7 @@ Generated at 2026-07-15T17:30:42.478Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| pass | 8 | 6 | 0 | 2 | 0 | 0 | 0 |
+| pass | 9 | 7 | 0 | 2 | 0 | 0 | 0 |
 
 ## At a Glance
 
@@ -39,6 +39,54 @@ Generated at 2026-07-15T17:30:42.478Z
 - Suggested next step: Review the caveated checks next: runtime-profile, schema-quality.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
 
+## What Was Not Tested
+
+- 🔒 network_egress: No outbound network calls were attempted during scan
+- ℹ️ credential_access: Credential scanning was performed (see security findings)
+- ℹ️ destructive_payloads: Destructive payloads were not attempted (safe-mode only)
+
+## Runtime Profile
+
+### Egress Manifest
+
+The following targets were identified as potentially reachable by this server (confidence: **high**):
+
+| Target | Protocol | Source | Confidence |
+| --- | --- | --- | --- |
+| uri | unknown | tool_schema | high |
+
+### State Mutations
+
+The following state-modifying operations were identified from tool schemas:
+
+| Resource | Operation | Scope | Source |
+| --- | --- | --- | --- |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+
+_Analyzed at 2026-07-15T22:35:00.872Z_
+
 ## Regressions and Recoveries
 
 _Use the `diff` command against another run artifact to classify regressions and recoveries over time._
@@ -47,14 +95,15 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 4.02 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 5.86 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 2.11 | Advertised capability responded with the minimal expected shape (4 items). |
-| healthy | resources | pass | 1.74 | Advertised capability responded with the minimal expected shape (8 items). |
-| healthy | security-lite | pass | 0.77 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 6.01 | Advertised capability responded with the minimal expected shape (47 items). |
-| review | runtime-profile | partial | 1.78 | Detected 1 potential egress target(s) and 23 potential state mutation(s) with high confidence. |
-| review | schema-quality | partial | 1.89 | Found 54 quality finding(s) across 59 item(s): 0 warnings, 54 info. |
+| healthy | attack-sim | pass | 1.58 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 3.50 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 0.41 | Advertised capability responded with the minimal expected shape (4 items). |
+| healthy | resources | pass | 0.40 | Advertised capability responded with the minimal expected shape (8 items). |
+| healthy | security | pass | 0.90 | No security issues detected. |
+| healthy | security-lite | pass | 0.08 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 3.72 | Advertised capability responded with the minimal expected shape (47 items). |
+| review | runtime-profile | partial | 0.26 | Detected 1 potential egress target(s) and 23 potential state mutation(s) with high confidence. |
+| review | schema-quality | partial | 1.17 | Found 54 quality finding(s) across 59 item(s): 0 warnings, 54 info. |
 
 ## Evidence Snippets
 
@@ -106,6 +155,18 @@ Summary: Advertised capability responded with the minimal expected shape (8 item
   - Identifiers: spotify://me, spotify://player/state, spotify://player/queue, spotify://me/top/tracks, spotify://me/top/artists (+3 more)
   - Diagnostics: none
 - Endpoint: `resources/templates/list`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `0`
+  - Identifiers: none
+  - Diagnostics: none
+
+### security — pass
+
+Summary: No security issues detected.
+
+- Endpoint: `security/scan`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
@@ -172,5 +233,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T173042478Z_023ec01f`
+- Run ID: `run_2026-07-15T223500079Z_79332f60`
 - Gate: `pass`

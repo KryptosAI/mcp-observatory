@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:55:55.877Z
+Generated at 2026-07-15T22:33:47.574Z
 
 ## Target and Environment Metadata
 
@@ -56,7 +56,7 @@ The following state-modifying operations were identified from tool schemas:
 | --- | --- | --- | --- |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-15T17:55:56.742Z_
+_Analyzed at 2026-07-15T22:33:48.390Z_
 
 ## Regressions and Recoveries
 
@@ -66,15 +66,15 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.79 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | attack-sim | pass | 0.88 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
 | healthy | runtime-profile | pass | 0.03 | Detected 0 potential egress target(s) and 1 potential state mutation(s) with low confidence. |
-| healthy | security | pass | 0.08 | No security issues detected. |
+| healthy | security | pass | 0.13 | No security issues detected. |
 | healthy | security-lite | pass | 0.01 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 0.40 | Advertised capability responded with the minimal expected shape (1 item). |
-| review | conformance | partial | 1.49 | 5/7 conformance checks passed, 2 failed. |
-| review | schema-quality | partial | 0.90 | Found 2 quality finding(s) across 1 item(s): 0 warnings, 2 info. |
+| healthy | tools | pass | 0.39 | Advertised capability responded with the minimal expected shape (1 item). |
+| review | conformance | partial | 1.40 | 5/7 conformance checks passed, 2 failed. |
+| review | schema-quality | partial | 0.83 | Found 2 quality finding(s) across 1 item(s): 0 warnings, 2 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
-| act now | resources | fail | 6.48 | Advertised capability did not respond successfully. |
+| act now | resources | fail | 7.06 | Advertised capability did not respond successfully. |
 
 ## Evidence Snippets
 
@@ -204,5 +204,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175555877Z_c57a705f`
+- Run ID: `run_2026-07-15T223347574Z_9c8e8a04`
 - Gate: `fail`

@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:56:18.585Z
+Generated at 2026-07-15T22:34:04.990Z
 
 ## Target and Environment Metadata
 
@@ -48,7 +48,7 @@ Generated at 2026-07-15T17:56:18.585Z
 
 ## Runtime Profile
 
-_Analyzed at 2026-07-15T17:56:19.362Z_
+_Analyzed at 2026-07-15T22:34:05.775Z_
 
 ## Regressions and Recoveries
 
@@ -58,13 +58,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.33 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 0.44 | All 7 conformance checks passed. |
+| healthy | attack-sim | pass | 0.32 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 0.60 | All 7 conformance checks passed. |
 | healthy | runtime-profile | pass | 0.06 | No egress or state mutation indicators detected in tool schemas. |
-| healthy | schema-quality | pass | 0.21 | All 6 item(s) have good schema quality. |
-| healthy | security | pass | 0.43 | No security issues detected. |
+| healthy | schema-quality | pass | 0.17 | All 6 item(s) have good schema quality. |
+| healthy | security | pass | 0.36 | No security issues detected. |
 | healthy | security-lite | pass | 0.02 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 2.26 | Advertised capability responded with the minimal expected shape (6 items). |
+| healthy | tools | pass | 2.28 | Advertised capability responded with the minimal expected shape (6 items). |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -183,5 +183,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175618585Z_6d2ea355`
+- Run ID: `run_2026-07-15T223404990Z_99a7f9b8`
 - Gate: `pass`

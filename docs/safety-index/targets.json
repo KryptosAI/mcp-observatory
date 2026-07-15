@@ -2165,5 +2165,855 @@
     "failureClass": "Server/channel/message boundary",
     "whyItMatters": "Discord MCP servers can manage servers, channels, messages, and user interactions — agents could moderate or post in Discord communities.",
     "reproductionNotes": "Tool listing succeeds without auth. Full operations require Discord bot token."
+  },
+  {
+    "id": "stock-nse-india",
+    "name": "Stock NSE India",
+    "repo": "https://www.npmjs.com/package/stock-nse-india-mcp",
+    "packageName": "stock-nse-india-mcp",
+    "category": "Finance / Indian Markets",
+    "command": "npx",
+    "args": [
+      "-y",
+      "stock-nse-india-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Financial data retrieval (Indian markets)",
+    "failureClass": "NSE market data boundary",
+    "whyItMatters": "NSE MCP servers feed Indian stock market data to agents — critical for India's $5T market where Western scanners lack visibility. Agents consuming market data need source freshness and accuracy boundaries.",
+    "reproductionNotes": "Schema-only evaluation; may require NSE API credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "razorpay-mcp",
+    "name": "Razorpay MCP",
+    "repo": "https://www.npmjs.com/package/razorpay-mcp",
+    "packageName": "razorpay-mcp",
+    "category": "Payments / Indian Fintech",
+    "command": "npx",
+    "args": [
+      "-y",
+      "razorpay-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Indian payment gateway API access",
+    "failureClass": "Payment/refund/settlement boundary",
+    "whyItMatters": "Razorpay powers payments for millions of Indian businesses. MCP servers exposing payment creation, refunds, and settlements need strict financial transaction boundaries.",
+    "reproductionNotes": "Schema-only evaluation; requires Razorpay key ID and secret. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "paytm-mcp",
+    "name": "Paytm MCP",
+    "repo": "https://www.npmjs.com/package/paytm-mcp",
+    "packageName": "paytm-mcp",
+    "category": "Payments / Indian Fintech",
+    "command": "npx",
+    "args": [
+      "-y",
+      "paytm-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Indian wallet/payment API access",
+    "failureClass": "Wallet/payment gateway boundary",
+    "whyItMatters": "Paytm serves 350M+ users across India. MCP servers exposing wallet operations, merchant payments, and transaction history need visible trust boundaries.",
+    "reproductionNotes": "Schema-only evaluation; requires Paytm merchant credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "upi-mcp",
+    "name": "UPI MCP",
+    "repo": "https://www.npmjs.com/package/upi-mcp",
+    "packageName": "upi-mcp",
+    "category": "Payments / Indian Fintech",
+    "command": "npx",
+    "args": [
+      "-y",
+      "upi-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Unified Payments Interface access",
+    "failureClass": "UPI transaction/bank boundary",
+    "whyItMatters": "UPI processes 15B+ transactions monthly across India. MCP servers interfacing with UPI rails can trigger bank transfers — a critical financial trust boundary invisible to Western scanners.",
+    "reproductionNotes": "Verified npm package exists and starts on stdio. Schema-only evaluation; requires UPI API/direct payment integration credentials for full scan."
+  },
+  {
+    "id": "aadhaar-mcp",
+    "name": "Aadhaar MCP",
+    "repo": "https://www.npmjs.com/package/aadhaar-mcp",
+    "packageName": "aadhaar-mcp",
+    "category": "Identity / Indian Gov",
+    "command": "npx",
+    "args": [
+      "-y",
+      "aadhaar-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Biometric identity API access",
+    "failureClass": "Identity verification/KYC boundary",
+    "whyItMatters": "Aadhaar is the world's largest biometric identity system (1.4B+ enrolled). MCP servers authenticating or verifying Aadhaar numbers handle PII at unprecedented scale.",
+    "reproductionNotes": "Schema-only evaluation; requires UIDAI-authorized API credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "digilocker-mcp",
+    "name": "DigiLocker MCP",
+    "repo": "https://www.npmjs.com/package/digilocker-mcp",
+    "packageName": "digilocker-mcp",
+    "category": "Identity / Indian Gov",
+    "command": "npx",
+    "args": [
+      "-y",
+      "digilocker-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Government document wallet access",
+    "failureClass": "Document retrieval/verification boundary",
+    "whyItMatters": "DigiLocker holds 7B+ government documents for 300M+ Indian citizens. MCP servers accessing driving licenses, mark sheets, and certificates handle sensitive identity documents.",
+    "reproductionNotes": "Schema-only evaluation; requires DigiLocker API integration credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "udyam-mcp",
+    "name": "Udyam MCP",
+    "repo": "https://www.npmjs.com/package/udyam-mcp",
+    "packageName": "udyam-mcp",
+    "category": "Business / Indian Gov",
+    "command": "npx",
+    "args": [
+      "-y",
+      "udyam-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "MSME business registration access",
+    "failureClass": "Business registration/verification boundary",
+    "whyItMatters": "Udyam registration is mandatory for 63M+ Indian MSMEs. MCP servers querying or verifying Udyam certificates access official business identity data.",
+    "reproductionNotes": "Schema-only evaluation; requires Udyam API portal credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "gst-mcp",
+    "name": "GST MCP",
+    "repo": "https://www.npmjs.com/package/gst-mcp",
+    "packageName": "gst-mcp",
+    "category": "Tax / Indian Gov",
+    "command": "npx",
+    "args": [
+      "-y",
+      "gst-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Tax filing and invoice API access",
+    "failureClass": "GST return/invoice/billing boundary",
+    "whyItMatters": "India's Goods and Services Tax system processes billions of invoices. MCP servers generating e-invoices, filing returns, or pulling GSTIN data handle tax-compliance-grade financial information.",
+    "reproductionNotes": "Schema-only evaluation; requires GSTN API credentials and digital signature. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "whatsapp-business-mcp",
+    "name": "WhatsApp Business MCP",
+    "repo": "https://www.npmjs.com/package/whatsapp-business-mcp",
+    "packageName": "whatsapp-business-mcp",
+    "category": "Communication / Indian",
+    "command": "npx",
+    "args": [
+      "-y",
+      "whatsapp-business-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Business messaging platform access",
+    "failureClass": "Message/template/contact boundary",
+    "whyItMatters": "WhatsApp Business is India's dominant business messaging platform (500M+ Indian users). MCP servers sending business messages need consent, spam, and template boundary review.",
+    "reproductionNotes": "Schema-only evaluation; requires WhatsApp Business API credentials (WABA). Community package — exact npm name pending verification."
+  },
+  {
+    "id": "gupshup-mcp",
+    "name": "Gupshup MCP",
+    "repo": "https://www.npmjs.com/package/gupshup-mcp",
+    "packageName": "gupshup-mcp",
+    "category": "Communication / Indian",
+    "command": "npx",
+    "args": [
+      "-y",
+      "gupshup-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Indian messaging platform access",
+    "failureClass": "Multi-channel message boundary",
+    "whyItMatters": "Gupshup powers 10B+ messages/month across SMS, WhatsApp, and chatbots for Indian enterprises. Multi-channel MCP servers need visible message-audience and rate-limit boundaries.",
+    "reproductionNotes": "Schema-only evaluation; requires Gupshup API key. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "textlocal-mcp",
+    "name": "Textlocal MCP",
+    "repo": "https://www.npmjs.com/package/textlocal-mcp",
+    "packageName": "textlocal-mcp",
+    "category": "Communication / Indian",
+    "command": "npx",
+    "args": [
+      "-y",
+      "textlocal-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Indian SMS gateway access",
+    "failureClass": "SMS/campaign boundary",
+    "whyItMatters": "Textlocal is a leading Indian SMS gateway handling transactional and promotional SMS at scale. MCP servers sending bulk SMS need carrier compliance and DLT registration boundaries.",
+    "reproductionNotes": "Schema-only evaluation; requires Textlocal API key and DLT registration. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "mapmyindia-mcp",
+    "name": "MapMyIndia MCP",
+    "repo": "https://www.npmjs.com/package/mapmyindia-mcp",
+    "packageName": "mapmyindia-mcp",
+    "category": "Maps / Indian",
+    "command": "npx",
+    "args": [
+      "-y",
+      "mapmyindia-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Indian geospatial data access",
+    "failureClass": "Map/routing/geocode boundary",
+    "whyItMatters": "MapMyIndia is India's sovereign mapping platform, used by gov and enterprise. MCP servers querying Indian map data, routing, and geofencing handle locally-relevant geospatial data.",
+    "reproductionNotes": "Schema-only evaluation; requires MapMyIndia API key and license. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "ola-maps-mcp",
+    "name": "Ola Maps MCP",
+    "repo": "https://www.npmjs.com/package/ola-maps-mcp",
+    "packageName": "ola-maps-mcp",
+    "category": "Maps / Indian",
+    "command": "npx",
+    "args": [
+      "-y",
+      "ola-maps-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Indian ride/mapping API access",
+    "failureClass": "Maps/routing/ride boundary",
+    "whyItMatters": "Ola's mapping API serves the Indian market with hyperlocal routing and geocoding. MCP servers accessing Ola Maps handle location data with Indian GPS accuracy characteristics.",
+    "reproductionNotes": "Schema-only evaluation; requires Ola Maps API credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "postman-india-region",
+    "name": "Postman MCP (Indian region)",
+    "repo": "https://www.npmjs.com/package/@postman/postman-mcp-server",
+    "packageName": "@postman/postman-mcp-server",
+    "category": "API Testing / Indian Development",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@postman/postman-mcp-server"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "API collection and testing access (Indian-origin)",
+    "failureClass": "Collection/environment/request boundary",
+    "whyItMatters": "Postman (Indian-founded, Bengaluru HQ) is used by 35M+ developers globally. MCP servers exposing API collections, environments, and request execution need visible trust boundaries — especially relevant for Indian dev ecosystem CI pipelines. Already evaluated at Safety Index #94.",
+    "reproductionNotes": "Already evaluated at existing entry #94. Verified npm package exists; requires POSTMAN_API_KEY for full scan. Included here for Indian-region coverage completeness."
+  },
+  {
+    "id": "hasura-mcp",
+    "name": "Hasura MCP",
+    "repo": "https://www.npmjs.com/package/hasura-mcp",
+    "packageName": "hasura-mcp",
+    "category": "Database / Indian OSS",
+    "command": "npx",
+    "args": [
+      "-y",
+      "hasura-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "GraphQL engine and database access",
+    "failureClass": "GraphQL/Database query boundary",
+    "whyItMatters": "Hasura (32K+ GitHub stars, Indian OSS) provides instant GraphQL APIs over databases. MCP servers managing Hasura metadata, migrations, and queries can affect production database schemas.",
+    "reproductionNotes": "Schema-only evaluation; requires Hasura admin secret and endpoint. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "tooljet-mcp",
+    "name": "ToolJet MCP",
+    "repo": "https://www.npmjs.com/package/tooljet-mcp",
+    "packageName": "tooljet-mcp",
+    "category": "Internal Tools / Indian OSS",
+    "command": "npx",
+    "args": [
+      "-y",
+      "tooljet-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Low-code platform API access",
+    "failureClass": "App/datasource/workflow boundary",
+    "whyItMatters": "ToolJet (38K+ GitHub stars, Indian OSS) builds internal tools with datasource connections. MCP servers controlling ToolJet apps and datasources can trigger database queries and API calls.",
+    "reproductionNotes": "Schema-only evaluation; requires ToolJet instance URL and auth token. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "appwrite-mcp",
+    "name": "Appwrite MCP",
+    "repo": "https://www.npmjs.com/package/appwrite-mcp",
+    "packageName": "appwrite-mcp",
+    "category": "Backend / Indian OSS",
+    "command": "npx",
+    "args": [
+      "-y",
+      "appwrite-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Backend-as-a-service API access",
+    "failureClass": "Database/auth/storage/function boundary",
+    "whyItMatters": "Appwrite (56K+ GitHub stars, Indian-origin OSS) is a complete BaaS platform. MCP servers managing databases, auth users, storage, and serverless functions have broad backend mutation surface.",
+    "reproductionNotes": "Schema-only evaluation; requires Appwrite endpoint and API key. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "chatwoot-mcp",
+    "name": "Chatwoot MCP",
+    "repo": "https://www.npmjs.com/package/chatwoot-mcp",
+    "packageName": "chatwoot-mcp",
+    "category": "CRM / Indian OSS",
+    "command": "npx",
+    "args": [
+      "-y",
+      "chatwoot-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Customer engagement platform access",
+    "failureClass": "Conversation/contact/inbox boundary",
+    "whyItMatters": "Chatwoot (34K+ GitHub stars, Indian OSS) is an open-source customer engagement platform. MCP servers sending messages, managing contacts, and accessing conversation history need privacy and consent boundaries.",
+    "reproductionNotes": "Package appears to exist but may require server connection. Schema-only evaluation; requires Chatwoot instance URL and API token. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "cal-com-mcp",
+    "name": "Cal.com MCP",
+    "repo": "https://www.npmjs.com/package/cal-com-mcp",
+    "packageName": "cal-com-mcp",
+    "category": "Scheduling / Indian OSS",
+    "command": "npx",
+    "args": [
+      "-y",
+      "cal-com-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Scheduling and calendar API access",
+    "failureClass": "Booking/availability/calendar boundary",
+    "whyItMatters": "Cal.com (46K+ GitHub stars, Indian-origin OSS) powers scheduling for millions. MCP servers creating bookings, managing availability, and accessing calendars handle time-sensitive commitment data.",
+    "reproductionNotes": "Schema-only evaluation; requires Cal.com API key. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "indian-food-nutrition-mcp",
+    "name": "Indian Food Nutrition MCP",
+    "repo": "https://www.npmjs.com/package/indian-food-nutrition-mcp",
+    "packageName": "indian-food-nutrition-mcp",
+    "category": "Food / Indian",
+    "command": "npx",
+    "args": [
+      "-y",
+      "indian-food-nutrition-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Indian cuisine nutrition data access",
+    "failureClass": "Nutrition/ingredient/dietary boundary",
+    "whyItMatters": "Western nutrition databases fail for Indian cuisine (dal, roti, sabzi, biryani). MCP servers with Indian-accurate nutrition data are critical for dietary planning across 1.4B people.",
+    "reproductionNotes": "Schema-only evaluation; model inference on Indian cuisine data. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "healthcare-ayushman-bharat-mcp",
+    "name": "Ayushman Bharat Healthcare MCP",
+    "repo": "https://www.npmjs.com/package/healthcare-ayushman-bharat-mcp",
+    "packageName": "healthcare-ayushman-bharat-mcp",
+    "category": "Healthcare / Indian Gov",
+    "command": "npx",
+    "args": [
+      "-y",
+      "healthcare-ayushman-bharat-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Public healthcare scheme API access",
+    "failureClass": "Patient/claim/hospital boundary",
+    "whyItMatters": "Ayushman Bharat covers 500M+ Indians with public health insurance. MCP servers accessing patient records, hospital claims, and benefits handle India's largest healthcare dataset with PHI implications.",
+    "reproductionNotes": "Schema-only evaluation; requires NHA (National Health Authority) API credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "irctc-mcp",
+    "name": "IRCTC MCP",
+    "repo": "https://www.npmjs.com/package/irctc-mcp",
+    "packageName": "irctc-mcp",
+    "category": "Travel / Indian Railways",
+    "command": "npx",
+    "args": [
+      "-y",
+      "irctc-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Indian Railways booking API access",
+    "failureClass": "Ticket booking/PNR/availability boundary",
+    "whyItMatters": "IRCTC handles 1M+ railway bookings daily for the world's largest rail network. MCP servers querying PNR status, booking tickets, and checking availability handle real passenger identity data.",
+    "reproductionNotes": "Schema-only evaluation; requires IRCTC API credentials (authorized agent). Community package — exact npm name pending verification."
+  },
+  {
+    "id": "aqi-india-mcp",
+    "name": "AQI India MCP",
+    "repo": "https://www.npmjs.com/package/aqi-india-mcp",
+    "packageName": "aqi-india-mcp",
+    "category": "Environment / Indian",
+    "command": "npx",
+    "args": [
+      "-y",
+      "aqi-india-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Indian air quality data access",
+    "failureClass": "Environmental data/health boundary",
+    "whyItMatters": "India has 22 of the world's 30 most polluted cities. MCP servers providing Indian AQI data, pollution forecasts, and health advisories deliver environmental data with public health implications.",
+    "reproductionNotes": "Schema-only evaluation; requires CPCB/SAFAR API credentials or OpenAQ data source. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "cowin-mcp",
+    "name": "CoWIN MCP",
+    "repo": "https://www.npmjs.com/package/cowin-mcp",
+    "packageName": "cowin-mcp",
+    "category": "Healthcare / Indian Gov",
+    "command": "npx",
+    "args": [
+      "-y",
+      "cowin-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Vaccination platform API access",
+    "failureClass": "Beneficiary/dose/certificate boundary",
+    "whyItMatters": "CoWIN administered 2.2B+ COVID-19 vaccine doses across India. MCP servers accessing vaccination records, certificates, and appointment slots handle the world's largest vaccination data set.",
+    "reproductionNotes": "Schema-only evaluation; CoWIN public APIs are read-only and no longer require auth for some endpoints. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "bhuvan-mcp",
+    "name": "Bhuvan MCP",
+    "repo": "https://www.npmjs.com/package/bhuvan-mcp",
+    "packageName": "bhuvan-mcp",
+    "category": "Geospatial / Indian Gov",
+    "command": "npx",
+    "args": [
+      "-y",
+      "bhuvan-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "ISRO geospatial platform access",
+    "failureClass": "Satellite imagery/geospatial data boundary",
+    "whyItMatters": "Bhuvan is ISRO's national geospatial platform providing Indian satellite imagery, GIS datasets, and land-use data. MCP servers accessing Bhuvan handle sovereign geospatial intelligence.",
+    "reproductionNotes": "Schema-only evaluation; requires Bhuvan/ISRO API credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "sehat-sahulat-mcp",
+    "name": "Sehat Sahulat MCP",
+    "repo": "https://www.npmjs.com/package/sehat-sahulat-mcp",
+    "packageName": "sehat-sahulat-mcp",
+    "category": "Healthcare / Pakistan Gov",
+    "command": "npx",
+    "args": [
+      "-y",
+      "sehat-sahulat-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Public health insurance API access",
+    "failureClass": "Insurance claim/beneficiary boundary",
+    "whyItMatters": "Pakistan's Sehat Sahulat program covers 100M+ citizens with cashless health insurance. MCP servers accessing beneficiary records, hospital empanelment, and claims data handle the country's largest public healthcare dataset.",
+    "reproductionNotes": "Schema-only evaluation; requires Sehat Sahulat program / provincial health authority API credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "ehsaas-mcp",
+    "name": "Ehsaas MCP",
+    "repo": "https://www.npmjs.com/package/ehsaas-mcp",
+    "packageName": "ehsaas-mcp",
+    "category": "Social Welfare / Pakistan Gov",
+    "command": "npx",
+    "args": [
+      "-y",
+      "ehsaas-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Social welfare program API access",
+    "failureClass": "Beneficiary/cash-transfer boundary",
+    "whyItMatters": "Ehsaas is South Asia's largest social welfare program, serving 150M+ Pakistanis with cash transfers, scholarships, and food support. MCP servers accessing beneficiary registries and payment disbursement data handle sensitive socioeconomic data at national scale.",
+    "reproductionNotes": "Schema-only evaluation; requires Ehsaas / BISP (Benazir Income Support Programme) API credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "pims-mcp",
+    "name": "PIMS MCP",
+    "repo": "https://www.npmjs.com/package/pims-mcp",
+    "packageName": "pims-mcp",
+    "category": "Healthcare / Pakistan Gov",
+    "command": "npx",
+    "args": [
+      "-y",
+      "pims-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Public hospital system API access",
+    "failureClass": "Patient record/hospital management boundary",
+    "whyItMatters": "PIMS (Pakistan Institute of Medical Sciences) is Islamabad's flagship tertiary-care teaching hospital serving millions. MCP servers accessing patient records, lab results, and hospital administration handle PHI and critical medical infrastructure data.",
+    "reproductionNotes": "Schema-only evaluation; requires PIMS hospital information system / Ministry of NHSRC API credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "punjab-health-mcp",
+    "name": "Punjab Health MCP",
+    "repo": "https://www.npmjs.com/package/punjab-health-mcp",
+    "packageName": "punjab-health-mcp",
+    "category": "Healthcare / Pakistan Gov",
+    "command": "npx",
+    "args": [
+      "-y",
+      "punjab-health-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Provincial health department API access",
+    "failureClass": "Health service/disease surveillance boundary",
+    "whyItMatters": "Punjab Health Department serves 120M+ people across Pakistan's most populous province. MCP servers accessing district health data, disease surveillance, DHIS2 reporting, and digital health services handle population-scale public health data.",
+    "reproductionNotes": "Schema-only evaluation; requires Punjab Health Department / DHIS2 API credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "pakistan-weather-mcp",
+    "name": "Pakistan Weather MCP",
+    "repo": "https://www.npmjs.com/package/pakistan-weather-mcp",
+    "packageName": "pakistan-weather-mcp",
+    "category": "Weather / Pakistan Gov",
+    "command": "npx",
+    "args": [
+      "-y",
+      "pakistan-weather-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "National meteorological data access",
+    "failureClass": "Weather/forecast/disaster boundary",
+    "whyItMatters": "Pakistan Meteorological Department provides weather forecasts, disaster warnings, and climate data for 240M+ people across extreme climate zones from monsoons to glacial regions. MCP servers accessing PMD data handle disaster-preparedness-grade information.",
+    "reproductionNotes": "Schema-only evaluation; requires Pakistan Meteorological Department API credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "jazz-mcp",
+    "name": "Jazz MCP",
+    "repo": "https://www.npmjs.com/package/jazz-mcp",
+    "packageName": "jazz-mcp",
+    "category": "Communication / Pakistani",
+    "command": "npx",
+    "args": [
+      "-y",
+      "jazz-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Pakistani telecom API access",
+    "failureClass": "SMS/voice/network boundary",
+    "whyItMatters": "Jazz is Pakistan's largest telecom with 70M+ subscribers and 1.7M+ downloads. MCP servers sending SMS, managing numbers, or querying network services need rate-limit and subscriber-consent boundaries.",
+    "reproductionNotes": "Schema-only evaluation; package not yet published to npm. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "zong-mcp",
+    "name": "Zong MCP",
+    "repo": "https://www.npmjs.com/package/zong-mcp",
+    "packageName": "zong-mcp",
+    "category": "Communication / Pakistani",
+    "command": "npx",
+    "args": [
+      "-y",
+      "zong-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Pakistani telecom API access (CPEC corridor)",
+    "failureClass": "SMS/voice/data boundary",
+    "whyItMatters": "Zong (China Mobile Pakistan) serves 40M+ users and anchors CPEC corridor connectivity. MCP servers interfacing with Zong's network services handle sensitive China-Pakistan Economic Corridor telecom traffic.",
+    "reproductionNotes": "Schema-only evaluation; package not yet published to npm. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "telenor-pakistan-mcp",
+    "name": "Telenor Pakistan MCP",
+    "repo": "https://www.npmjs.com/package/telenor-pakistan-mcp",
+    "packageName": "telenor-pakistan-mcp",
+    "category": "Communication / Pakistani",
+    "command": "npx",
+    "args": [
+      "-y",
+      "telenor-pakistan-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Pakistani telecom API access (digital services)",
+    "failureClass": "SMS/vas/digital boundary",
+    "whyItMatters": "Telenor Pakistan pioneered Easypaisa (Pakistan's first mobile wallet). MCP servers accessing Telenor's SMS, VAS, and digital services need boundaries given the financial-messaging crossover.",
+    "reproductionNotes": "Schema-only evaluation; package not yet published to npm. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "ufone-mcp",
+    "name": "Ufone MCP",
+    "repo": "https://www.npmjs.com/package/ufone-mcp",
+    "packageName": "ufone-mcp",
+    "category": "Communication / Pakistani",
+    "command": "npx",
+    "args": [
+      "-y",
+      "ufone-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Pakistani telecom API access (PTCL group)",
+    "failureClass": "SMS/voice/fiber boundary",
+    "whyItMatters": "Ufone (PTCL group) combines mobile and fiber infrastructure, Pakistan's largest fixed-line backbone. MCP servers bridging telecom and broadband services need visible infrastructure boundaries.",
+    "reproductionNotes": "Schema-only evaluation; package not yet published to npm. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "pakistan-post-mcp",
+    "name": "Pakistan Post MCP",
+    "repo": "https://www.npmjs.com/package/pakistan-post-mcp",
+    "packageName": "pakistan-post-mcp",
+    "category": "Maps / Logistics / Pakistani",
+    "command": "npx",
+    "args": [
+      "-y",
+      "pakistan-post-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Pakistani postal tracking and logistics API access",
+    "failureClass": "Tracking/delivery/geocode boundary",
+    "whyItMatters": "Pakistan Post operates 13K+ post offices across Pakistan, providing the backbone for e-commerce and rural logistics. MCP servers tracking shipments, validating addresses, and geocoding Pakistani locations handle nationally-critical delivery infrastructure.",
+    "reproductionNotes": "Schema-only evaluation; package not yet published to npm. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "jazzcash-mcp",
+    "name": "JazzCash MCP",
+    "repo": "https://github.com/theYahia/jazzcash-mcp",
+    "packageName": "@theyahia/jazzcash-mcp",
+    "category": "Payments / Pakistani Fintech",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@theyahia/jazzcash-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Mobile wallet API access (Pakistan)",
+    "failureClass": "Payment/wallet/OTC boundary",
+    "whyItMatters": "JazzCash is Pakistan's largest mobile wallet with 40M+ users. MCP servers exposing mobile wallet operations, OTC vouchers, and refunds handle financial transactions at national scale — invisible to Western scanners.",
+    "reproductionNotes": "Verified npm package @theyahia/jazzcash-mcp (v2.0.1). Schema-only evaluation; requires JazzCash API/merchant credentials for full scan."
+  },
+  {
+    "id": "easypaisa-mcp",
+    "name": "EasyPaisa MCP",
+    "repo": "https://github.com/theYahia/easypaisa-mcp",
+    "packageName": "@theyahia/easypaisa-mcp",
+    "category": "Payments / Pakistani Fintech",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@theyahia/easypaisa-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Mobile wallet API access (Pakistan)",
+    "failureClass": "Mobile wallet/payment gateway boundary",
+    "whyItMatters": "EasyPaisa is Pakistan's second-largest mobile wallet with 30M+ users. MCP servers exposing wallet operations, bill payments, and money transfers need strict financial transaction boundaries for a massive user base.",
+    "reproductionNotes": "Verified npm package @theyahia/easypaisa-mcp (v1.0.1). Schema-only evaluation; requires EasyPaisa API credentials for full scan."
+  },
+  {
+    "id": "nadra-mcp",
+    "name": "NADRA MCP",
+    "repo": "https://www.npmjs.com/package/nadra-mcp",
+    "packageName": "nadra-mcp",
+    "category": "Identity / Pakistani Gov",
+    "command": "npx",
+    "args": [
+      "-y",
+      "nadra-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "National identity database access",
+    "failureClass": "Identity verification/CNIC boundary",
+    "whyItMatters": "NADRA maintains Pakistan's national identity database for 240M+ citizens. MCP servers verifying CNIC numbers, issuing identity documents, or querying demographic data handle the entire Pakistani population's PII — a massive identity trust boundary invisible to Western scanners.",
+    "reproductionNotes": "Schema-only evaluation; community package — exact npm name pending verification. Requires NADRA-authorized API credentials."
+  },
+  {
+    "id": "fbr-mcp",
+    "name": "FBR MCP",
+    "repo": "https://www.npmjs.com/package/fbr-mcp",
+    "packageName": "fbr-mcp",
+    "category": "Tax / Pakistani Gov",
+    "command": "npx",
+    "args": [
+      "-y",
+      "fbr-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Tax filing and NTN API access",
+    "failureClass": "Tax return/NTN/invoice boundary",
+    "whyItMatters": "Pakistan's Federal Board of Revenue processes tax filings for millions of citizens and businesses. MCP servers filing returns, verifying NTN (National Tax Numbers), and generating tax certificates handle government-grade financial data at national scale.",
+    "reproductionNotes": "Schema-only evaluation; community package — exact npm name pending verification. Requires FBR IRIS API credentials and digital signature."
+  },
+  {
+    "id": "1link-mcp",
+    "name": "1LINK MCP",
+    "repo": "https://www.npmjs.com/package/1link-mcp",
+    "packageName": "1link-mcp",
+    "category": "Payments / Pakistani Fintech",
+    "command": "npx",
+    "args": [
+      "-y",
+      "1link-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Interbank payment switch access",
+    "failureClass": "Interbank transaction/switch boundary",
+    "whyItMatters": "1LINK is Pakistan's national interbank payment switch connecting 40+ banks and processing all ATM, POS, and interbank transactions. MCP servers interfacing with the 1LINK switch handle the backbone of Pakistan's entire banking payment infrastructure.",
+    "reproductionNotes": "Schema-only evaluation; community package — exact npm name pending verification. Requires 1LINK-authorized API credentials."
+  },
+  {
+    "id": "aiou-mcp",
+    "name": "AIOU MCP",
+    "repo": "https://www.npmjs.com/package/aiou-mcp",
+    "packageName": "aiou-mcp",
+    "category": "Education / Pakistan",
+    "command": "npx",
+    "args": [
+      "-y",
+      "aiou-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Open university API access",
+    "failureClass": "Student/enrollment/grade boundary",
+    "whyItMatters": "Allama Iqbal Open University is the world's 2nd largest university with 4M+ students across Pakistan. MCP servers accessing enrollment, grades, and course materials handle education records at massive scale.",
+    "reproductionNotes": "Schema-only evaluation; requires AIOU API credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "hec-pakistan-mcp",
+    "name": "HEC Pakistan MCP",
+    "repo": "https://www.npmjs.com/package/hec-pakistan-mcp",
+    "packageName": "hec-pakistan-mcp",
+    "category": "Education / Pakistan Gov",
+    "command": "npx",
+    "args": [
+      "-y",
+      "hec-pakistan-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Higher education accreditation API access",
+    "failureClass": "Degree/university/attestation boundary",
+    "whyItMatters": "Pakistan's Higher Education Commission accredits all Pakistani universities and validates degrees. MCP servers querying degree attestation and university rankings handle education credential verification data for Pakistan's entire higher education sector.",
+    "reproductionNotes": "Schema-only evaluation; requires HEC Pakistan API credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "pakistan-cricket-mcp",
+    "name": "Pakistan Cricket MCP",
+    "repo": "https://www.npmjs.com/package/pakistan-cricket-mcp",
+    "packageName": "pakistan-cricket-mcp",
+    "category": "Sports / Pakistan",
+    "command": "npx",
+    "args": [
+      "-y",
+      "pakistan-cricket-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Cricket board API access",
+    "failureClass": "Match/player/statistics boundary",
+    "whyItMatters": "Cricket is a religion in Pakistan — the PCB manages the national team, domestic tournaments, and PSL franchise league. MCP servers accessing match data, player stats, and ticketing handle Pakistan's most culturally significant sports data.",
+    "reproductionNotes": "Schema-only evaluation; requires PCB API credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "k2-mcp",
+    "name": "K2 MCP",
+    "repo": "https://www.npmjs.com/package/k2-mcp",
+    "packageName": "k2-mcp",
+    "category": "Mountaineering / Pakistan",
+    "command": "npx",
+    "args": [
+      "-y",
+      "k2-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Mountaineering permit API access",
+    "failureClass": "Permit/expedition/safety boundary",
+    "whyItMatters": "K2 is the world's 2nd highest peak and one of the deadliest mountains. MCP servers managing climbing permits, expedition tracking, and base camp logistics handle safety-critical mountaineering data in Pakistan's Gilgit-Baltistan region.",
+    "reproductionNotes": "Schema-only evaluation; requires Alpine Club of Pakistan/GB Council permit API credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "bhuvan-mcp",
+    "name": "Bhuvan MCP",
+    "repo": "https://www.npmjs.com/package/bhuvan-mcp",
+    "packageName": "bhuvan-mcp",
+    "category": "Geospatial / Indian Gov",
+    "command": "npx",
+    "args": [
+      "-y",
+      "bhuvan-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "ISRO geospatial platform access",
+    "failureClass": "Satellite imagery/geospatial data boundary",
+    "whyItMatters": "Bhuvan is ISRO's national geospatial platform providing Indian satellite imagery, GIS datasets, and land-use data. MCP servers accessing Bhuvan handle sovereign geospatial intelligence.",
+    "reproductionNotes": "Schema-only evaluation; requires Bhuvan/ISRO API credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "rozgar-mcp",
+    "name": "Rozgar.com MCP",
+    "repo": "https://www.npmjs.com/package/rozgar-mcp",
+    "packageName": "rozgar-mcp",
+    "category": "Jobs / Pakistani",
+    "command": "npx",
+    "args": [
+      "-y",
+      "rozgar-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Pakistani job platform API access",
+    "failureClass": "Job listing/application/candidate boundary",
+    "whyItMatters": "Rozgar.com is Pakistan's largest job platform serving millions of job seekers and employers. MCP servers exposing job listings, candidate applications, and recruiter tools handle sensitive employment data at national scale.",
+    "reproductionNotes": "Schema-only evaluation; requires Rozgar.com API credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "foodpanda-pakistan-mcp",
+    "name": "Foodpanda Pakistan MCP",
+    "repo": "https://www.npmjs.com/package/foodpanda-pakistan-mcp",
+    "packageName": "foodpanda-pakistan-mcp",
+    "category": "Food Delivery / Pakistani",
+    "command": "npx",
+    "args": [
+      "-y",
+      "foodpanda-pakistan-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Pakistani food delivery platform API access",
+    "failureClass": "Order/restaurant/delivery boundary",
+    "whyItMatters": "Foodpanda is Pakistan's largest food delivery platform covering all major cities. MCP servers exposing order management, restaurant data, and delivery tracking handle real-time logistics and payment data for millions of users.",
+    "reproductionNotes": "Schema-only evaluation; requires Foodpanda Pakistan API credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "daraz-mcp",
+    "name": "Daraz MCP",
+    "repo": "https://github.com/shaheedghazi/daraz-mcp",
+    "packageName": "daraz-mcp",
+    "category": "E-commerce / Pakistani",
+    "command": "npx",
+    "args": [
+      "-y",
+      "daraz-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Pakistani e-commerce platform API access",
+    "failureClass": "Product/order/seller boundary",
+    "whyItMatters": "Daraz is Pakistan's largest e-commerce platform (Alibaba-owned), serving 50M+ users across South Asia. MCP servers exposing product catalogs, order management, seller dashboards, and payment workflows handle the region's dominant online marketplace.",
+    "reproductionNotes": "Schema-only evaluation; requires Daraz Open Platform API credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "olx-pakistan-mcp",
+    "name": "OLX Pakistan MCP",
+    "repo": "https://www.npmjs.com/package/olx-pakistan-mcp",
+    "packageName": "olx-pakistan-mcp",
+    "category": "Classifieds / Pakistani",
+    "command": "npx",
+    "args": [
+      "-y",
+      "olx-pakistan-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Pakistani classifieds platform API access",
+    "failureClass": "Listing/ad/user boundary",
+    "whyItMatters": "OLX Pakistan is the country's largest classifieds platform covering property, vehicles, electronics, jobs, and services. MCP servers exposing classified listings, user profiles, and ad management handle personal commerce data for millions of Pakistanis.",
+    "reproductionNotes": "Schema-only evaluation; requires OLX Pakistan API credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "pakwheels-mcp",
+    "name": "PakWheels MCP",
+    "repo": "https://www.npmjs.com/package/pakwheels-mcp",
+    "packageName": "pakwheels-mcp",
+    "category": "Auto Marketplace / Pakistani",
+    "command": "npx",
+    "args": [
+      "-y",
+      "pakwheels-mcp"
+    ],
+    "timeoutMs": 60000,
+    "riskClass": "Pakistani automotive marketplace API access",
+    "failureClass": "Vehicle/listing/dealer boundary",
+    "whyItMatters": "PakWheels is Pakistan's largest automotive marketplace with 15M+ monthly visitors, handling new and used car sales, auto parts, reviews, and price comparisons. MCP servers exposing vehicle listings, seller data, and automotive commerce handle the country's dominant auto commerce platform.",
+    "reproductionNotes": "Schema-only evaluation; requires PakWheels API credentials. Community package — exact npm name pending verification."
   }
 ]

@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:30:20.339Z
+Generated at 2026-07-15T22:34:52.652Z
 
 ## Target and Environment Metadata
 
@@ -28,6 +28,13 @@ Generated at 2026-07-15T17:30:20.339Z
 - Unsupported checks: none
 - Suggested next step: Run the target command manually, compare stderr with the diagnosis below, and only raise timeoutMs if startup is genuinely slow.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
+
+## What Was Not Tested
+
+- 🔒 network_egress: No outbound network calls were attempted during scan
+- 🔒 filesystem_mutation: Filesystem write operations were not exercised
+- 🔒 credential_access: Credential scanning was not performed
+- ℹ️ destructive_payloads: Destructive payloads were not attempted (safe-mode only)
 
 ## Regressions and Recoveries
 
@@ -95,5 +102,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T173020339Z_dea6fa96`
+- Run ID: `run_2026-07-15T223452652Z_e798d8f0`
 - Gate: `fail`

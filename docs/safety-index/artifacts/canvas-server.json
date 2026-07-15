@@ -2,8 +2,8 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T175612880Z_beaa392d",
-  "createdAt": "2026-07-15T17:56:12.880Z",
+  "runId": "run_2026-07-15T223400360Z_c32d7bb7",
+  "createdAt": "2026-07-15T22:34:00.360Z",
   "toolVersion": "1.32.1",
   "target": {
     "targetId": "canvas-server",

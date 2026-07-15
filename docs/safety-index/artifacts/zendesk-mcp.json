@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T173042465Z_f0156e3f",
-  "createdAt": "2026-07-15T17:30:42.465Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T223459327Z_0e501041",
+  "createdAt": "2026-07-15T22:34:59.327Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "zendesk-mcp",
     "adapter": "local-process",
@@ -12,7 +12,15 @@
     "args": [
       "-y",
       "zendesk-mcp"
-    ]
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "zendesk-mcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Support platform access",
+      "failureClass": "Ticket/user/knowledge boundary",
+      "whyItMatters": "Zendesk MCP servers can create tickets, manage users, and search help center content — agents could respond to customer support requests."
+    }
   },
   "environment": {
     "platform": "darwin 25.5.0",

@@ -2,8 +2,8 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T175656945Z_3794bc9a",
-  "createdAt": "2026-07-15T17:56:56.945Z",
+  "runId": "run_2026-07-15T223437195Z_756bc645",
+  "createdAt": "2026-07-15T22:34:37.195Z",
   "toolVersion": "1.32.1",
   "target": {
     "targetId": "postman-mcp-server",

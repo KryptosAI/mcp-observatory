@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T172832431Z_1f6dcef0",
-  "createdAt": "2026-07-15T17:28:32.431Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T223500888Z_de1fcc5f",
+  "createdAt": "2026-07-15T22:35:00.888Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "airtable-mcp-server",
     "adapter": "local-process",
@@ -12,7 +12,15 @@
     "args": [
       "-y",
       "airtable-mcp-server"
-    ]
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "airtable-mcp-server",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Spreadsheet-database access",
+      "failureClass": "Base/table/record boundary",
+      "whyItMatters": "Airtable MCP servers can create bases, manage tables, and CRUD records — agents could modify structured business data in collaborative workspaces."
+    }
   },
   "environment": {
     "platform": "darwin 25.5.0",

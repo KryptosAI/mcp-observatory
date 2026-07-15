@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:56:08.421Z
+Generated at 2026-07-15T22:33:56.754Z
 
 ## Target and Environment Metadata
 
@@ -47,7 +47,7 @@ Generated at 2026-07-15T17:56:08.421Z
 
 ## Runtime Profile
 
-_Analyzed at 2026-07-15T17:56:09.716Z_
+_Analyzed at 2026-07-15T22:33:57.787Z_
 
 ## Regressions and Recoveries
 
@@ -57,13 +57,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.37 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 2.35 | All 7 conformance checks passed. |
-| healthy | runtime-profile | pass | 0.09 | No egress or state mutation indicators detected in tool schemas. |
-| healthy | security | pass | 0.42 | No security issues detected. |
+| healthy | attack-sim | pass | 0.38 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 2.55 | All 7 conformance checks passed. |
+| healthy | runtime-profile | pass | 0.10 | No egress or state mutation indicators detected in tool schemas. |
+| healthy | security | pass | 0.48 | No security issues detected. |
 | healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 2.98 | Advertised capability responded with the minimal expected shape (17 items). |
-| review | schema-quality | partial | 0.58 | Found 2 quality finding(s) across 17 item(s): 0 warnings, 2 info. |
+| healthy | tools | pass | 3.12 | Advertised capability responded with the minimal expected shape (17 items). |
+| review | schema-quality | partial | 0.48 | Found 2 quality finding(s) across 17 item(s): 0 warnings, 2 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -133,7 +133,7 @@ Summary: Advertised capability responded with the minimal expected shape (17 ite
   - Minimal shape present: `true`
   - Item count: `17`
   - Identifiers: get-position, move-to-position, look-at, jump, move-in-direction (+12 more)
-  - Diagnostics: (node:28679) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead., (Use `node --trace-deprecation ...` to show where the warning was created)
+  - Diagnostics: (node:79742) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead., (Use `node --trace-deprecation ...` to show where the warning was created)
 
 ### schema-quality — partial
 
@@ -182,5 +182,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175608421Z_3ec4a60f`
+- Run ID: `run_2026-07-15T223356754Z_52a427f3`
 - Gate: `pass`

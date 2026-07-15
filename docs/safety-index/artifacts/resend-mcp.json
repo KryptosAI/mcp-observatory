@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T173101800Z_8d2c2564",
-  "createdAt": "2026-07-15T17:31:01.800Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T223503064Z_8b8b0ec6",
+  "createdAt": "2026-07-15T22:35:03.064Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "resend-mcp",
     "adapter": "local-process",
@@ -12,7 +12,15 @@
     "args": [
       "-y",
       "resend-mcp"
-    ]
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "resend-mcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Email sending platform access",
+      "failureClass": "Email send/domain boundary",
+      "whyItMatters": "Resend MCP servers can send emails, manage domains, and track delivery — agents could send transactional and marketing emails on behalf of verified domains."
+    }
   },
   "environment": {
     "platform": "darwin 25.5.0",

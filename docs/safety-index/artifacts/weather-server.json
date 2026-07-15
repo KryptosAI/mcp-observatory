@@ -2,8 +2,8 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T175617813Z_77616d1c",
-  "createdAt": "2026-07-15T17:56:17.813Z",
+  "runId": "run_2026-07-15T223404307Z_e9de5283",
+  "createdAt": "2026-07-15T22:34:04.307Z",
   "toolVersion": "1.32.1",
   "target": {
     "targetId": "weather-server",

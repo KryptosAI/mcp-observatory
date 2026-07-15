@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:56:58.976Z
+Generated at 2026-07-15T22:34:39.273Z
 
 ## Target and Environment Metadata
 
@@ -56,7 +56,7 @@ Next steps:
 - Check whether the package expects a different transport or an app-oriented startup flow.
 - Use the recent stderr lines below before assuming this is a harness bug.
 Recent stderr:
-- [DEBUG 2026-07-15T17:56:59.988Z] Uncaught exception: Error: Unknown command: undefined. Expected 'init' or 'run'.
+- [DEBUG 2026-07-15T22:34:40.089Z] Uncaught exception: Error: Unknown command: undefined. Expected 'init' or 'run'.
 ```
 
 ## Full Capability Status Table
@@ -98,5 +98,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175658976Z_735f25f3`
+- Run ID: `run_2026-07-15T223439273Z_d864edf5`
 - Gate: `fail`

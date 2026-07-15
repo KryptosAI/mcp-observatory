@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T173020307Z_5defa575",
-  "createdAt": "2026-07-15T17:30:20.307Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T223457590Z_5e715cc0",
+  "createdAt": "2026-07-15T22:34:57.590Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "confluence-mcp-server",
     "adapter": "local-process",
@@ -13,6 +13,14 @@
       "-y",
       "confluence-mcp-server"
     ],
+    "cwd": ".",
+    "metadata": {
+      "package": "confluence-mcp-server",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Wiki/document platform access",
+      "failureClass": "Page/space boundary",
+      "whyItMatters": "Confluence MCP servers can read, create, update, and search pages across wiki spaces — agents could access and modify internal documentation at scale."
+    },
     "serverName": "confluence-mcp-server",
     "serverVersion": "1.3.3"
   },
@@ -21,9 +29,9 @@
     "nodeVersion": "v22.22.1"
   },
   "summary": {
-    "total": 8,
+    "total": 9,
     "pass": 2,
-    "fail": 1,
+    "fail": 2,
     "partial": 3,
     "unsupported": 2,
     "flaky": 0,
@@ -35,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 43.93095799999992,
+      "durationMs": 4.513166999997338,
       "message": "Advertised capability responded with the minimal expected shape (25 items).",
       "evidence": [
         {
@@ -826,7 +834,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.004500000000007276,
+      "durationMs": 0.0007909999985713512,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -842,7 +850,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.002167000000099506,
+      "durationMs": 0.0005830000009154901,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -858,7 +866,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "fail",
-      "durationMs": 0.7640000000001237,
+      "durationMs": 0.06362499999522697,
       "message": "Found 1 security finding(s): 1 high, 0 medium, 0 low.",
       "evidence": [
         {
@@ -888,7 +896,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "partial",
-      "durationMs": 3.625,
+      "durationMs": 0.27937499999825377,
       "message": "Detected 6 potential egress target(s) and 44 potential state mutation(s) with high confidence.",
       "evidence": [
         {
@@ -1211,7 +1219,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 20.8940419999999,
+      "durationMs": 1.9405000000115251,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -1237,7 +1245,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 1.445292000000336,
+      "durationMs": 1.0485000000044238,
       "message": "Found 3 quality finding(s) across 25 item(s): 0 warnings, 3 info.",
       "evidence": [
         {
@@ -1280,10 +1288,40 @@
       ]
     },
     {
+      "id": "security",
+      "capability": "security",
+      "status": "fail",
+      "durationMs": 0.8724999999976717,
+      "message": "Found 1 security finding(s): 1 high, 0 medium, 0 low.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 1,
+          "identifiers": [
+            "confluence_execute_cql_search"
+          ],
+          "diagnostics": [
+            "[high] Tool \"confluence_execute_cql_search\" name suggests command execution capability."
+          ],
+          "findings": [
+            {
+              "ruleId": "shell-injection",
+              "severity": "high",
+              "toolName": "confluence_execute_cql_search",
+              "message": "Tool \"confluence_execute_cql_search\" name suggests command execution capability."
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "partial",
-      "durationMs": 4.334292000000005,
+      "durationMs": 0.8293750000011642,
       "message": "Safe attack simulation found 1 finding(s): 0 high, 1 medium, 0 low.",
       "evidence": [
         {
@@ -1322,8 +1360,8 @@
     }
   ],
   "healthScore": {
-    "overall": 71,
-    "grade": "C",
+    "overall": 69,
+    "grade": "D",
     "dimensions": [
       {
         "name": "Protocol Compliance",
@@ -1344,9 +1382,10 @@
       {
         "name": "Security",
         "weight": 0.2,
-        "score": 30,
+        "score": 20,
         "details": [
           "security-lite: fail (0/100)",
+          "security: fail (0/100)",
           "attack-sim: partial (60/100)"
         ]
       },
@@ -1365,17 +1404,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 2362ms",
-          "p95 latency: 44ms (3 operations)"
+          "Connect: 683ms",
+          "p95 latency: 5ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 2362.237458,
-    "toolsListMs": 43.93095799999992,
-    "promptsListMs": 0.004500000000007276,
-    "resourcesListMs": 0.002167000000099506
+    "connectMs": 683.4728750000068,
+    "toolsListMs": 4.513166999997338,
+    "promptsListMs": 0.0007909999985713512,
+    "resourcesListMs": 0.0005830000009154901
   },
   "runtimeProfile": {
     "egress": [
@@ -1682,7 +1721,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-15T17:30:22.732Z",
+    "analyzedAt": "2026-07-15T22:34:58.279Z",
     "confidence": "high"
   }
 }

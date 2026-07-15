@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:55:31.442Z
+Generated at 2026-07-15T22:33:30.280Z
 
 ## Target and Environment Metadata
 
@@ -88,7 +88,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-15T17:55:32.261Z_
+_Analyzed at 2026-07-15T22:33:31.098Z_
 
 ## Regressions and Recoveries
 
@@ -98,14 +98,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 4679.39 | All 7 conformance checks passed. |
+| healthy | conformance | pass | 956.92 | All 7 conformance checks passed. |
 | healthy | tools | pass | 2.83 | Advertised capability responded with the minimal expected shape (24 items). |
 | review | runtime-profile | partial | 0.21 | Detected 7 potential egress target(s) and 21 potential state mutation(s) with high confidence. |
-| review | schema-quality | partial | 1.57 | Found 5 quality finding(s) across 24 item(s): 0 warnings, 5 info. |
+| review | schema-quality | partial | 1.64 | Found 5 quality finding(s) across 24 item(s): 0 warnings, 5 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
-| act now | attack-sim | fail | 4.23 | Safe attack simulation found 4 finding(s): 1 high, 3 medium, 0 low. |
-| act now | security | fail | 2.43 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
+| act now | attack-sim | fail | 1.07 | Safe attack simulation found 4 finding(s): 1 high, 3 medium, 0 low. |
+| act now | security | fail | 1.04 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
 | act now | security-lite | fail | 0.06 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
 
 ## Evidence Snippets
@@ -229,5 +229,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175531442Z_043289da`
+- Run ID: `run_2026-07-15T223330280Z_7d32ef53`
 - Gate: `fail`

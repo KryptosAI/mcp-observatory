@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:55:36.968Z
+Generated at 2026-07-15T22:33:32.070Z
 
 ## Target and Environment Metadata
 
@@ -170,7 +170,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-15T17:55:37.973Z_
+_Analyzed at 2026-07-15T22:33:32.979Z_
 
 ## Regressions and Recoveries
 
@@ -180,13 +180,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 1.62 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 1.25 | All 7 conformance checks passed. |
+| healthy | attack-sim | pass | 1.63 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 1.10 | All 7 conformance checks passed. |
 | healthy | runtime-profile | pass | 0.39 | Detected 0 potential egress target(s) and 117 potential state mutation(s) with low confidence. |
-| healthy | schema-quality | pass | 0.70 | All 27 item(s) have good schema quality. |
-| healthy | security | pass | 1.32 | No security issues detected. |
+| healthy | schema-quality | pass | 1.20 | All 27 item(s) have good schema quality. |
+| healthy | security | pass | 0.73 | No security issues detected. |
 | healthy | security-lite | pass | 0.07 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 1.68 | Advertised capability responded with the minimal expected shape (27 items). |
+| healthy | tools | pass | 1.57 | Advertised capability responded with the minimal expected shape (27 items). |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -274,7 +274,7 @@ Summary: Advertised capability responded with the minimal expected shape (27 ite
   - Minimal shape present: `true`
   - Item count: `27`
   - Identifiers: generate_area_chart, generate_bar_chart, generate_boxplot_chart, generate_column_chart, generate_district_map (+22 more)
-  - Diagnostics: [MCP-Server-Chart] 2026-07-15T17:55:37.965Z ℹ️  setting up tool handlers..., [MCP-Server-Chart] 2026-07-15T17:55:37.966Z ℹ️  tool handlers set up, [MCP-Server-Chart] 2026-07-15T17:55:37.967Z ✅ Stdio MCP Server started
+  - Diagnostics: [MCP-Server-Chart] 2026-07-15T22:33:32.972Z ℹ️  setting up tool handlers..., [MCP-Server-Chart] 2026-07-15T22:33:32.973Z ℹ️  tool handlers set up, [MCP-Server-Chart] 2026-07-15T22:33:32.974Z ✅ Stdio MCP Server started
 
 ### prompts — unsupported
 
@@ -311,5 +311,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175536968Z_2599dcdd`
+- Run ID: `run_2026-07-15T223332070Z_010deadc`
 - Gate: `pass`

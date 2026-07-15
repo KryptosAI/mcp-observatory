@@ -2,8 +2,8 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T175559805Z_a5e4b2ae",
-  "createdAt": "2026-07-15T17:55:59.805Z",
+  "runId": "run_2026-07-15T223350732Z_5313d000",
+  "createdAt": "2026-07-15T22:33:50.732Z",
   "toolVersion": "1.32.1",
   "target": {
     "targetId": "gmail-server",
@@ -62,5 +62,5 @@
       "evidence": []
     }
   ],
-  "fatalError": "Could not establish a plain stdio MCP session for target `gmail-server`.\nCommand: npx -y @anthropic/mcp-server-gmail\nDiagnosis: The process exited or detached before MCP initialization completed.\nRaw error: MCP error -32000: Connection closed\nLikely causes:\n- The package may expect extra startup arguments or environment variables.\n- The package may not behave like a plain local-process stdio target under this invocation.\n- The server may be crashing immediately and only leaving clues on stderr.\nNext steps:\n- Run the command manually and look for usage output, auth prompts, or crash text.\n- Check whether the package expects a different transport or an app-oriented startup flow.\n- Use the recent stderr lines below before assuming this is a harness bug.\nRecent stderr:\n- npm error 404  '@anthropic/mcp-server-gmail@*' is not in this registry.\n- npm error 404\n- npm error 404 Note that you can also install from a\n- npm error 404 tarball, folder, http url, or git url.\n- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-15T17_55_59_894Z-debug-0.log"
+  "fatalError": "Could not establish a plain stdio MCP session for target `gmail-server`.\nCommand: npx -y @anthropic/mcp-server-gmail\nDiagnosis: The process exited or detached before MCP initialization completed.\nRaw error: MCP error -32000: Connection closed\nLikely causes:\n- The package may expect extra startup arguments or environment variables.\n- The package may not behave like a plain local-process stdio target under this invocation.\n- The server may be crashing immediately and only leaving clues on stderr.\nNext steps:\n- Run the command manually and look for usage output, auth prompts, or crash text.\n- Check whether the package expects a different transport or an app-oriented startup flow.\n- Use the recent stderr lines below before assuming this is a harness bug.\nRecent stderr:\n- npm error 404  '@anthropic/mcp-server-gmail@*' is not in this registry.\n- npm error 404\n- npm error 404 Note that you can also install from a\n- npm error 404 tarball, folder, http url, or git url.\n- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-15T22_33_50_802Z-debug-0.log"
 }

@@ -1,0 +1,553 @@
+{
+  "artifactType": "run",
+  "schemaVersion": "1.0.0",
+  "gate": "pass",
+  "runId": "run_2026-07-15T223555461Z_1aa19eff",
+  "createdAt": "2026-07-15T22:35:55.461Z",
+  "toolVersion": "1.32.1",
+  "target": {
+    "targetId": "easypaisa-mcp",
+    "adapter": "local-process",
+    "command": "npx",
+    "args": [
+      "-y",
+      "@theyahia/easypaisa-mcp"
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "@theyahia/easypaisa-mcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Mobile wallet API access (Pakistan)",
+      "failureClass": "Mobile wallet/payment gateway boundary",
+      "whyItMatters": "EasyPaisa is Pakistan's second-largest mobile wallet with 30M+ users. MCP servers exposing wallet operations, bill payments, and money transfers need strict financial transaction boundaries for a massive user base."
+    },
+    "serverName": "easypaisa-mcp",
+    "serverVersion": "1.0.0"
+  },
+  "environment": {
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.22.1"
+  },
+  "summary": {
+    "total": 9,
+    "pass": 7,
+    "fail": 0,
+    "partial": 0,
+    "unsupported": 2,
+    "flaky": 0,
+    "skipped": 0,
+    "gate": "pass"
+  },
+  "checks": [
+    {
+      "id": "tools",
+      "capability": "tools",
+      "status": "pass",
+      "durationMs": 3.6665829999838024,
+      "message": "Advertised capability responded with the minimal expected shape (8 items).",
+      "evidence": [
+        {
+          "endpoint": "tools/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 8,
+          "identifiers": [
+            "create_payment",
+            "check_status",
+            "create_ma_payment",
+            "inquire_transaction",
+            "create_otc_payment",
+            "generate_token",
+            "refund_payment",
+            "get_statement"
+          ],
+          "diagnostics": [
+            "[easypaisa-mcp] Server started. 8 tools registered."
+          ],
+          "schemas": {
+            "create_payment": {
+              "type": "object",
+              "properties": {
+                "amount": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "Payment amount in PKR"
+                },
+                "mobile_number": {
+                  "type": "string",
+                  "description": "Customer mobile number (03XXXXXXXXX)"
+                },
+                "order_id": {
+                  "type": "string",
+                  "description": "Unique order ID"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "description": "Customer email address"
+                }
+              },
+              "required": [
+                "amount",
+                "mobile_number",
+                "order_id"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "check_status": {
+              "type": "object",
+              "properties": {
+                "order_id": {
+                  "type": "string",
+                  "description": "Order ID to check status"
+                }
+              },
+              "required": [
+                "order_id"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "create_ma_payment": {
+              "type": "object",
+              "properties": {
+                "amount": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "Amount in PKR"
+                },
+                "mobile_account_no": {
+                  "type": "string",
+                  "description": "Easypaisa mobile account number"
+                },
+                "order_id": {
+                  "type": "string",
+                  "description": "Unique order ID"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "description": "Customer email"
+                }
+              },
+              "required": [
+                "amount",
+                "mobile_account_no",
+                "order_id"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "inquire_transaction": {
+              "type": "object",
+              "properties": {
+                "order_id": {
+                  "type": "string",
+                  "description": "Order ID to inquire"
+                },
+                "payment_token": {
+                  "type": "string",
+                  "description": "Payment token from initiation"
+                }
+              },
+              "required": [
+                "order_id"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "create_otc_payment": {
+              "type": "object",
+              "properties": {
+                "amount": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "Amount in PKR"
+                },
+                "order_id": {
+                  "type": "string",
+                  "description": "Unique order ID"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "description": "Customer email"
+                }
+              },
+              "required": [
+                "amount",
+                "order_id"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "generate_token": {
+              "type": "object",
+              "properties": {
+                "amount": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "Transaction amount in PKR"
+                },
+                "order_id": {
+                  "type": "string",
+                  "description": "Unique order ID"
+                },
+                "expiry_date": {
+                  "type": "string",
+                  "description": "Token expiry date (yyyyMMdd HHmmss)"
+                }
+              },
+              "required": [
+                "amount",
+                "order_id"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "refund_payment": {
+              "type": "object",
+              "properties": {
+                "order_id": {
+                  "type": "string",
+                  "description": "Order ID of the original transaction"
+                },
+                "amount": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "Refund amount in PKR"
+                },
+                "reason": {
+                  "type": "string",
+                  "description": "Reason for refund"
+                }
+              },
+              "required": [
+                "order_id",
+                "amount"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            },
+            "get_statement": {
+              "type": "object",
+              "properties": {
+                "date_from": {
+                  "type": "string",
+                  "description": "Start date (yyyyMMdd)"
+                },
+                "date_to": {
+                  "type": "string",
+                  "description": "End date (yyyyMMdd)"
+                },
+                "page": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 0,
+                  "description": "Page number"
+                },
+                "page_size": {
+                  "type": "number",
+                  "minimum": 1,
+                  "maximum": 100,
+                  "default": 25,
+                  "description": "Items per page"
+                }
+              },
+              "required": [
+                "date_from",
+                "date_to"
+              ],
+              "additionalProperties": false,
+              "$schema": "http://json-schema.org/draft-07/schema#"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "prompts",
+      "capability": "prompts",
+      "status": "unsupported",
+      "durationMs": 0.0012080000014975667,
+      "message": "Prompts are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "prompts/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "capability": "resources",
+      "status": "unsupported",
+      "durationMs": 0.0006250000151339918,
+      "message": "Resources are not advertised by the target.",
+      "evidence": [
+        {
+          "endpoint": "resources/list | resources/templates/list",
+          "advertised": false,
+          "responded": false,
+          "minimalShapePresent": false,
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.02595899999141693,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "pass",
+      "durationMs": 0.08199999999487773,
+      "message": "Detected 0 potential egress target(s) and 6 potential state mutation(s) with low confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 6,
+          "diagnostics": [
+            "Egress entries: 0",
+            "State mutations: 6",
+            "Confidence: medium"
+          ],
+          "findings": [
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 0.5763340000121389,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 8 tool(s).",
+            "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped.",
+            "[pass] resources-capability-match: Resources not advertised — endpoint check skipped.",
+            "[pass] tool-response-content: No safe tool to invoke — content validation skipped.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "pass",
+      "durationMs": 0.40499999999883585,
+      "message": "All 8 item(s) have good schema quality.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    },
+    {
+      "id": "security",
+      "capability": "security",
+      "status": "pass",
+      "durationMs": 0.449583999987226,
+      "message": "No security issues detected.",
+      "evidence": [
+        {
+          "endpoint": "security/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "attack-sim",
+      "capability": "attack-sim",
+      "status": "pass",
+      "durationMs": 0.39241700002457947,
+      "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
+      "evidence": [
+        {
+          "endpoint": "attack-sim/safe",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
+        }
+      ]
+    }
+  ],
+  "healthScore": {
+    "overall": 93,
+    "grade": "A",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "schema-quality: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "security-lite: pass (100/100)",
+          "security: pass (100/100)",
+          "attack-sim: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 67,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: unsupported (50/100)",
+          "resources: unsupported (50/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 1873ms",
+          "p95 latency: 4ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 1873.3836670000164,
+    "toolsListMs": 3.6665829999838024,
+    "promptsListMs": 0.0012080000014975667,
+    "resourcesListMs": 0.0006250000151339918
+  },
+  "runtimeProfile": {
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      },
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-07-15T22:35:57.339Z",
+    "confidence": "medium"
+  }
+}

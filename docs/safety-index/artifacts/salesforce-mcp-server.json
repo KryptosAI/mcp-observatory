@@ -2,8 +2,8 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T175640684Z_d215b742",
-  "createdAt": "2026-07-15T17:56:40.684Z",
+  "runId": "run_2026-07-15T223423896Z_83af13af",
+  "createdAt": "2026-07-15T22:34:23.897Z",
   "toolVersion": "1.32.1",
   "target": {
     "targetId": "salesforce-mcp-server",

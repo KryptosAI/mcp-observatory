@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:30:20.312Z
+Generated at 2026-07-15T22:35:03.838Z
 
 ## Target and Environment Metadata
 
@@ -25,7 +25,7 @@ Generated at 2026-07-15T17:30:20.312Z
 
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| pass | 8 | 4 | 0 | 2 | 2 | 0 | 0 |
+| pass | 9 | 5 | 0 | 2 | 2 | 0 | 0 |
 
 ## At a Glance
 
@@ -39,6 +39,53 @@ Generated at 2026-07-15T17:30:20.312Z
 - Suggested next step: Review the caveated checks next: runtime-profile, schema-quality.
 - CI next step: `Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>"`
 
+## What Was Not Tested
+
+- ℹ️ credential_access: Credential scanning was performed (see security findings)
+- ℹ️ destructive_payloads: Destructive payloads were not attempted (safe-mode only)
+
+## Runtime Profile
+
+### Egress Manifest
+
+The following targets were identified as potentially reachable by this server (confidence: **high**):
+
+| Target | Protocol | Source | Confidence |
+| --- | --- | --- | --- |
+| url | unknown | tool_schema | high |
+| Discord CDN URL of the attachment to download | unknown | description_analysis | medium |
+
+### State Mutations
+
+The following state-modifying operations were identified from tool schemas:
+
+| Resource | Operation | Scope | Source |
+| --- | --- | --- | --- |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | tool_schema |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+| filesystem | write | working_directory | description_analysis |
+
+_Analyzed at 2026-07-15T22:35:04.573Z_
+
 ## Regressions and Recoveries
 
 _Use the `diff` command against another run artifact to classify regressions and recoveries over time._
@@ -47,12 +94,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 2.77 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 3.81 | All 7 conformance checks passed. |
-| healthy | security-lite | pass | 0.62 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 4.51 | Advertised capability responded with the minimal expected shape (19 items). |
-| review | runtime-profile | partial | 1.34 | Detected 2 potential egress target(s) and 22 potential state mutation(s) with high confidence. |
-| review | schema-quality | partial | 0.88 | Found 1 quality finding(s) across 19 item(s): 0 warnings, 1 info. |
+| healthy | attack-sim | pass | 0.65 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 2.39 | All 7 conformance checks passed. |
+| healthy | security | pass | 0.41 | No security issues detected. |
+| healthy | security-lite | pass | 0.04 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 3.47 | Advertised capability responded with the minimal expected shape (19 items). |
+| review | runtime-profile | partial | 0.14 | Detected 2 potential egress target(s) and 22 potential state mutation(s) with high confidence. |
+| review | schema-quality | partial | 0.59 | Found 1 quality finding(s) across 19 item(s): 0 warnings, 1 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -82,6 +130,18 @@ Summary: All 7 conformance checks passed.
   - Identifiers: none
   - Diagnostics: [pass] capabilities-present: Server returned capabilities object., [pass] server-info: Server provided initialization info., [pass] tools-capability-match: tools/list returned 19 tool(s). (+4 more)
 
+### security — pass
+
+Summary: No security issues detected.
+
+- Endpoint: `security/scan`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `0`
+  - Identifiers: none
+  - Diagnostics: none
+
 ### security-lite — pass
 
 Summary: No security issues detected (lightweight scan).
@@ -104,7 +164,7 @@ Summary: Advertised capability responded with the minimal expected shape (19 ite
   - Minimal shape present: `true`
   - Item count: `19`
   - Identifiers: discord_send_message, discord_edit_message, discord_delete_message, discord_add_reaction, discord_remove_reaction (+14 more)
-  - Diagnostics: {"level":30,"time":1784136623655,"service":"discord-mcp","msg":"Discord MCP server starting","tools":19,"toolNames":["discord_send_message","discord_edit_message","discord_delete_message","discord_add_reaction","discord_remove_reaction","discord_get_message_history","discord_search_messages","discord_get_message","discord_list_attachments","discord_download_attachment","discord_cleanup_download","discord_get_channel","discord_get_dm_channels","discord_create_dm","discord_get_friends","discord_add_friend","discord_remove_friend","discord_update_presence","discord_clear_presence"],"version":"2.4.0"}
+  - Diagnostics: {"level":30,"time":1784154904566,"service":"discord-mcp","msg":"Discord MCP server starting","tools":19,"toolNames":["discord_send_message","discord_edit_message","discord_delete_message","discord_add_reaction","discord_remove_reaction","discord_get_message_history","discord_search_messages","discord_get_message","discord_list_attachments","discord_download_attachment","discord_cleanup_download","discord_get_channel","discord_get_dm_channels","discord_create_dm","discord_get_friends","discord_add_friend","discord_remove_friend","discord_update_presence","discord_clear_presence"],"version":"2.4.0"}
 
 ### runtime-profile — partial
 
@@ -165,5 +225,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T173020312Z_79fb6e4b`
+- Run ID: `run_2026-07-15T223503838Z_eb17b47b`
 - Gate: `pass`

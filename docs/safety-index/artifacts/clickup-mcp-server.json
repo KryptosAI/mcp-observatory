@@ -2,8 +2,8 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T175701468Z_fde6b3be",
-  "createdAt": "2026-07-15T17:57:01.468Z",
+  "runId": "run_2026-07-15T223441241Z_6f197552",
+  "createdAt": "2026-07-15T22:34:41.241Z",
   "toolVersion": "1.32.1",
   "target": {
     "targetId": "clickup-mcp-server",

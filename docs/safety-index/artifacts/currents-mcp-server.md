@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:57:02.958Z
+Generated at 2026-07-15T22:34:42.461Z
 
 ## Target and Environment Metadata
 
@@ -56,7 +56,7 @@ Next steps:
 - Check whether the package expects a different transport or an app-oriented startup flow.
 - Use the recent stderr lines below before assuming this is a harness bug.
 Recent stderr:
-- [10:57:04.149] ERROR (31830): CURRENTS_API_KEY is not set. Add your Currents API key to the environment (for example: export CURRENTS_API_KEY=<your-key>).
+- [15:34:43.356] ERROR (81938): CURRENTS_API_KEY is not set. Add your Currents API key to the environment (for example: export CURRENTS_API_KEY=<your-key>).
 ```
 
 ## Full Capability Status Table
@@ -98,5 +98,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175702958Z_923778f9`
+- Run ID: `run_2026-07-15T223442461Z_4b472658`
 - Gate: `fail`

@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:57:04.320Z
+Generated at 2026-07-15T22:34:43.524Z
 
 ## Target and Environment Metadata
 
@@ -110,7 +110,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-15T17:57:05.813Z_
+_Analyzed at 2026-07-15T22:34:44.750Z_
 
 ## Regressions and Recoveries
 
@@ -120,15 +120,15 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 15.18 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 0.25 | Advertised capability responded with the minimal expected shape (0 items). |
-| healthy | resources | pass | 0.48 | Advertised capability responded with the minimal expected shape (2 items). |
-| healthy | tools | pass | 15.52 | Advertised capability responded with the minimal expected shape (26 items). |
+| healthy | conformance | pass | 18.19 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 0.38 | Advertised capability responded with the minimal expected shape (0 items). |
+| healthy | resources | pass | 0.52 | Advertised capability responded with the minimal expected shape (2 items). |
+| healthy | tools | pass | 14.77 | Advertised capability responded with the minimal expected shape (26 items). |
 | review | runtime-profile | partial | 0.39 | Detected 10 potential egress target(s) and 39 potential state mutation(s) with high confidence. |
-| review | schema-quality | partial | 12.14 | Found 76 quality finding(s) across 28 item(s): 0 warnings, 76 info. |
-| act now | attack-sim | fail | 1.53 | Safe attack simulation found 7 finding(s): 1 high, 6 medium, 0 low. |
-| act now | security | fail | 1.08 | Found 6 security finding(s): 2 high, 3 medium, 1 low. |
-| act now | security-lite | fail | 0.21 | Found 6 security finding(s): 2 high, 3 medium, 1 low. |
+| review | schema-quality | partial | 11.81 | Found 76 quality finding(s) across 28 item(s): 0 warnings, 76 info. |
+| act now | attack-sim | fail | 2.33 | Safe attack simulation found 7 finding(s): 1 high, 6 medium, 0 low. |
+| act now | security | fail | 1.15 | Found 6 security finding(s): 2 high, 3 medium, 1 low. |
+| act now | security-lite | fail | 0.47 | Found 6 security finding(s): 2 high, 3 medium, 1 low. |
 
 ## Evidence Snippets
 
@@ -154,7 +154,7 @@ Summary: Advertised capability responded with the minimal expected shape (0 item
   - Minimal shape present: `true`
   - Item count: `0`
   - Identifiers: none
-  - Diagnostics: (node:31922) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead., (Use `node --trace-deprecation ...` to show where the warning was created)
+  - Diagnostics: (node:82004) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead., (Use `node --trace-deprecation ...` to show where the warning was created)
 
 ### resources — pass
 
@@ -166,14 +166,14 @@ Summary: Advertised capability responded with the minimal expected shape (2 item
   - Minimal shape present: `true`
   - Item count: `2`
   - Identifiers: ui://desktop-commander/file-preview, ui://desktop-commander/config-editor
-  - Diagnostics: (node:31922) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead., (Use `node --trace-deprecation ...` to show where the warning was created)
+  - Diagnostics: (node:82004) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead., (Use `node --trace-deprecation ...` to show where the warning was created)
 - Endpoint: `resources/templates/list`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
   - Item count: `0`
   - Identifiers: none
-  - Diagnostics: (node:31922) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead., (Use `node --trace-deprecation ...` to show where the warning was created)
+  - Diagnostics: (node:82004) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead., (Use `node --trace-deprecation ...` to show where the warning was created)
 
 ### tools — pass
 
@@ -185,7 +185,7 @@ Summary: Advertised capability responded with the minimal expected shape (26 ite
   - Minimal shape present: `true`
   - Item count: `26`
   - Identifiers: get_config, set_config_value, read_file, read_multiple_files, write_file (+21 more)
-  - Diagnostics: (node:31922) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead., (Use `node --trace-deprecation ...` to show where the warning was created)
+  - Diagnostics: (node:82004) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead., (Use `node --trace-deprecation ...` to show where the warning was created)
 
 ### runtime-profile — partial
 
@@ -262,5 +262,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175704320Z_20e24cd6`
+- Run ID: `run_2026-07-15T223443524Z_93a37f6a`
 - Gate: `fail`

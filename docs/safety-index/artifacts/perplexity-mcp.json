@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T172945400Z_7023e7b4",
-  "createdAt": "2026-07-15T17:29:45.400Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T223455589Z_b69d6059",
+  "createdAt": "2026-07-15T22:34:55.589Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "perplexity-mcp",
     "adapter": "local-process",
@@ -12,7 +12,15 @@
     "args": [
       "-y",
       "perplexity-mcp"
-    ]
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "perplexity-mcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "AI-powered search access",
+      "failureClass": "Search result/LLM boundary",
+      "whyItMatters": "Perplexity MCP servers combine web search with LLM reasoning — agents can retrieve AI-generated answers that blend search results with model outputs."
+    }
   },
   "environment": {
     "platform": "darwin 25.5.0",

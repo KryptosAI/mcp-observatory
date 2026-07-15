@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:57:10.606Z
+Generated at 2026-07-15T22:34:48.113Z
 
 ## Target and Environment Metadata
 
@@ -64,7 +64,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | delete | working_directory | description_analysis |
 
-_Analyzed at 2026-07-15T17:57:11.452Z_
+_Analyzed at 2026-07-15T22:34:48.941Z_
 
 ## Regressions and Recoveries
 
@@ -74,13 +74,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 2.66 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 2023.85 | All 7 conformance checks passed. |
-| healthy | runtime-profile | pass | 0.09 | Detected 2 potential egress target(s) and 2 potential state mutation(s) with low confidence. |
-| healthy | schema-quality | pass | 2.26 | All 7 item(s) have good schema quality. |
-| healthy | security | pass | 3.27 | No security issues detected. |
+| healthy | attack-sim | pass | 2.72 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 2022.83 | All 7 conformance checks passed. |
+| healthy | runtime-profile | pass | 0.08 | Detected 2 potential egress target(s) and 2 potential state mutation(s) with low confidence. |
+| healthy | schema-quality | pass | 2.23 | All 7 item(s) have good schema quality. |
+| healthy | security | pass | 1.46 | No security issues detected. |
 | healthy | security-lite | pass | 0.02 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 2.63 | Advertised capability responded with the minimal expected shape (7 items). |
+| healthy | tools | pass | 2.57 | Advertised capability responded with the minimal expected shape (7 items). |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -205,5 +205,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175710606Z_c06670b3`
+- Run ID: `run_2026-07-15T223448113Z_d07bd219`
 - Gate: `pass`

@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T173101787Z_0932f3c1",
-  "createdAt": "2026-07-15T17:31:01.787Z",
-  "toolVersion": "1.31.0",
+  "runId": "run_2026-07-15T223453315Z_f2ff6c17",
+  "createdAt": "2026-07-15T22:34:53.315Z",
+  "toolVersion": "1.32.1",
   "target": {
     "targetId": "twilio-mcp",
     "adapter": "local-process",
@@ -12,7 +12,15 @@
     "args": [
       "-y",
       "twilio-mcp"
-    ]
+    ],
+    "cwd": ".",
+    "metadata": {
+      "package": "twilio-mcp",
+      "purpose": "mcp-safety-index",
+      "riskClass": "Communication platform access",
+      "failureClass": "SMS/voice/chat boundary",
+      "whyItMatters": "Twilio MCP servers can send SMS, make voice calls, and manage messaging services — agents could trigger communications to real phone numbers."
+    }
   },
   "environment": {
     "platform": "darwin 25.5.0",

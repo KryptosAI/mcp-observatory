@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T17:55:57.901Z
+Generated at 2026-07-15T22:33:49.149Z
 
 ## Target and Environment Metadata
 
@@ -56,7 +56,7 @@ The following targets were identified as potentially reachable by this server (c
 | brave_web_search | unknown | description_analysis | low |
 | brave_local_search | unknown | description_analysis | low |
 
-_Analyzed at 2026-07-15T17:55:58.674Z_
+_Analyzed at 2026-07-15T22:33:49.912Z_
 
 ## Regressions and Recoveries
 
@@ -66,13 +66,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.75 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 0.87 | All 7 conformance checks passed. |
-| healthy | runtime-profile | pass | 0.09 | Detected 2 potential egress target(s) and 0 potential state mutation(s) with low confidence. |
-| healthy | schema-quality | pass | 0.29 | All 2 item(s) have good schema quality. |
-| healthy | security | pass | 0.51 | No security issues detected. |
-| healthy | security-lite | pass | 0.04 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 0.68 | Advertised capability responded with the minimal expected shape (2 items). |
+| healthy | attack-sim | pass | 0.30 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 0.51 | All 7 conformance checks passed. |
+| healthy | runtime-profile | pass | 0.05 | Detected 2 potential egress target(s) and 0 potential state mutation(s) with low confidence. |
+| healthy | schema-quality | pass | 0.22 | All 2 item(s) have good schema quality. |
+| healthy | security | pass | 0.13 | No security issues detected. |
+| healthy | security-lite | pass | 0.02 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 0.46 | Advertised capability responded with the minimal expected shape (2 items). |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -197,5 +197,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T175557901Z_366625b3`
+- Run ID: `run_2026-07-15T223349149Z_75061521`
 - Gate: `pass`

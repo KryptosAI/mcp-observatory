@@ -2,8 +2,8 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T175707168Z_53b672c9",
-  "createdAt": "2026-07-15T17:57:07.168Z",
+  "runId": "run_2026-07-15T223445738Z_0e225507",
+  "createdAt": "2026-07-15T22:34:45.738Z",
   "toolVersion": "1.32.1",
   "target": {
     "targetId": "shopify-mcp-server",
