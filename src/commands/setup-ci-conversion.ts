@@ -145,6 +145,10 @@ export async function maybeConvertPassingCheckToCi(options: SetupCiConversionOpt
 
   if (shouldPrompt(options)) {
     output.write("\n");
+    output.write(`${c(ANSI.bold, "┌─ Add to CI ─────────────────────────────────────")}\n`);
+    output.write(`${c(ANSI.bold, "│")} ${c(ANSI.dim, "Creates .github/workflows/mcp-observatory.yml")}\n`);
+    output.write(`${c(ANSI.bold, "│")} ${c(ANSI.dim, "Weekly scans + SARIF Code Scanning on every push")}\n`);
+    output.write(`${c(ANSI.bold, "└──────────────────────────────────────────────────")}\n`);
     const accepted = await promptForConversion(options);
     if (accepted) {
       const initResult = await initCi(initOptions);
@@ -157,7 +161,13 @@ export async function maybeConvertPassingCheckToCi(options: SetupCiConversionOpt
     return { status: "skipped", command };
   }
 
-  output.write(`\nCI conversion available:\n  ${command}\n`);
+  output.write(`\n${c(ANSI.bold, "┌─ Add to CI ─────────────────────────────────────")}\n`);
+  output.write(`${c(ANSI.bold, "│")} ${c(ANSI.dim, "One command adds weekly security scanning to your pipeline:")}\n`);
+  output.write(`${c(ANSI.bold, "│")}\n`);
+  output.write(`${c(ANSI.bold, "│")}   ${c(ANSI.cyan, command)}\n`);
+  output.write(`${c(ANSI.bold, "│")}\n`);
+  output.write(`${c(ANSI.bold, "│")} ${c(ANSI.dim, "Rerun with")} --setup-ci --yes ${c(ANSI.dim, "to create the files automatically.")}\n`);
+  output.write(`${c(ANSI.bold, "└──────────────────────────────────────────────────")}\n`);
   if (options.setupCi === true) {
     output.write("Non-interactive mode will only write files when --setup-ci --yes is present.\n");
   }
