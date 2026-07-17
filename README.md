@@ -38,144 +38,31 @@
 
 > **Runtime enforcement:** Use [mcp-seatbelt](https://github.com/KryptosAI/mcp-seatbelt) to block dangerous MCP tool calls at runtime based on observatory scan results.
 
-<p align="center">
-  <img src="docs/demo.gif" alt="MCP Observatory demo" width="700"/>
-</p>
-
-
-Agents should not depend on tools nobody tests. Build your MCP server, test it with MCP Observatory, and ship with confidence. Get security scores, attack simulation results, schema drift alerts, SARIF reports for GitHub Code Scanning, lock files, compliance receipts, and CI-native gating — all from the command line.
+## Get Started
 
 ```bash
-npx @kryptosai/mcp-observatory audit npx -y my-mcp-server --profile nsa-mcp --format markdown --output mcp-audit.md
+npx @kryptosai/mcp-observatory demo
 ```
 
-Sample trust output:
+Scans your configured MCP servers (or a built-in demo server if you have none) and shows your safety grade in seconds. No config, no arguments — instant value.
 
-```json
-{
-  "target_id": "my-mcp-server",
-  "profile": "nsa-mcp",
-  "score": 87,
-  "status": "needs_review",
-  "finding_count": 2
-}
-```
-
-The `nsa-mcp` profile is not an official certification. It maps MCP Observatory findings to practical control areas for sensitive environments: trust boundaries, tool permissions, tool description integrity, authentication, secrets exposure, schema validation, input validation, auditability, runtime safety, and supply chain.
-
-## Trust Signals
-
-| Signal | What it means |
-|---|---|
-| CI + coverage | Typecheck, lint, tests, build, packed install, artifact validation, smoke test, and measured coverage run in GitHub Actions. |
-| CodeQL + OpenSSF Scorecard | Static analysis and supply-chain posture are visible in GitHub-native security surfaces. |
-| Dependabot | npm and GitHub Actions dependency updates are monitored weekly. |
-| npm provenance workflow | Release automation is prepared for npm provenance through GitHub OIDC. |
-| Security policy | Vulnerability reports go through private disclosure; see [SECURITY.md](./SECURITY.md). |
-
-## Try It
-
-Run the public evidence loop: generate a receipt, map it into a risk graph, add CI/SARIF, then request a private fleet review when the server matters to production.
+Have servers? Scan them all:
 
 ```bash
-npx @kryptosai/mcp-observatory audit npx -y my-mcp-server --profile nsa-mcp --format markdown --output report.md
-npx @kryptosai/mcp-observatory audit npx -y my-mcp-server --profile nsa-mcp --format sarif --output results.sarif
-npx @kryptosai/mcp-observatory score npx -y my-mcp-server --profile nsa-mcp --format json
+npx @kryptosai/mcp-observatory
 ```
 
-Or start with the homepage demo: safely simulate MCP attack-readiness for one server, emit an action receipt, and produce SARIF evidence that maintainers can inspect in GitHub Code Scanning.
-
-```bash
-npx @kryptosai/mcp-observatory attack-sim npx -y my-mcp-server --sarif attack-results.sarif
-```
-
-Emit the portable trust record:
-
-```bash
-npx @kryptosai/mcp-observatory audit npx -y my-mcp-server --profile nsa-mcp --format json --output report.json --receipt receipt.json
-npx @kryptosai/mcp-observatory receipt npx -y my-mcp-server --profile nsa-mcp --format markdown --output receipt.md
-npx @kryptosai/mcp-observatory risk-graph --input receipt.json --json mcp-risk-graph.json --output mcp-risk-graph.md --html mcp-risk-graph.html
-```
-
-Then make the evidence repeatable in CI:
-
-```bash
-npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif
-```
-
-See the [government and enterprise pilot brief](./docs/government-enterprise-pilot.md), [public guidance crosswalk](./docs/public-guidance-crosswalk.md), [procurement one-pager](./docs/procurement-one-pager.md), [security due diligence packet](./docs/security-due-diligence.md), [NSA-MCP audit CI guide](./docs/nsa-mcp-audit-ci.md), [example NSA-MCP audit report](./docs/examples/nsa-mcp-audit-report.md), [MCP Receipts](./docs/mcp-receipts.md), [MCP Attack Simulator](./docs/mcp-attack-simulator.md), [Tool-call receipts](./docs/tool-call-receipts.md), [MCP Risk Graph](./docs/receipt-graph.md), [private fleet risk graph pilot](./docs/private-mcp-fleet-risk-graph.md), [launch page](./docs/launch.md), [GitHub Code Scanning demo](./docs/code-scanning-demo.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [sample safety reports](./docs/mcp-server-safety-index.md), and [reference evaluations](./docs/reference-evaluations.md).
-
-Want a receipt for a server your agent depends on? Comment on [Drop an MCP server, get a receipt #146](https://github.com/KryptosAI/mcp-observatory/issues/146) or use the [structured receipt request form](https://github.com/KryptosAI/mcp-observatory/issues/new?template=tool-call-receipt-request.yml). Public requests can become Safety Index entries, delta receipts, SARIF evidence, and maintainer CI conversations.
-
-## Evidence You Can Inspect
-
-| Evidence | Where |
-|---|---|
-| Example GitHub Actions adoption | [`setup-ci --all`](./docs/setup-ci-doctor.md) and the generated workflow docs |
-| NSA-MCP audit example | [Markdown report](./docs/examples/nsa-mcp-audit-report.md), [SARIF](./docs/examples/nsa-mcp-results.sarif), and [score JSON](./docs/examples/nsa-mcp-score.json) |
-| Procurement and pilot packet | [Public guidance crosswalk](./docs/public-guidance-crosswalk.md), [procurement one-pager](./docs/procurement-one-pager.md), and [security due diligence](./docs/security-due-diligence.md) |
-| Attack simulation output | [MCP Attack Simulator](./docs/mcp-attack-simulator.md) |
-| MCP receipts | [Portable trust receipts](./docs/mcp-receipts.md) |
-| Tool-call receipts | [Receipt standard](./docs/tool-call-receipts.md) for reproducible MCP evidence |
-| Risk graph | [Server-to-evidence map](./docs/receipt-graph.md) for agent toolchain trust decisions |
-| SARIF / Code Scanning output | [GitHub Code Scanning demo](./docs/code-scanning-demo.md) |
-| Real MCP server evaluations | [MCP Server Safety Index](./docs/mcp-server-safety-index.md) |
-| Reference reports | [Reference evaluations](./docs/reference-evaluations.md) |
-| Maintainer and contributor proof | [MCP Observatory Contributors](./docs/contributor-recognition.md) |
-| Open core boundary | [What is open vs. commercial](./docs/commercial-boundary.md) |
-| Security disclosure path | [SECURITY.md](./SECURITY.md) |
-
-Two more fast paths:
-
-Cloned this repo? Start here: [`CLONED_THIS.md`](./CLONED_THIS.md). Want to contribute? Add one server to the [MCP Target Registry](./docs/target-registry.md), use the [Agent Task Pack](./docs/agent-tasks.md), and get public credit through [MCP Observatory Contributors](./docs/contributor-recognition.md).
-
-AI coding agents, agentic workflows, and rough PRs are welcome. Use the [10x Agentic Growth Sprint](./docs/10x-agentic-growth-sprint.md), [Agentic Contributor Outreach](./docs/agentic-contributor-outreach.md), or open a `Contributor quest`, `Agentic contribution idea`, or [`Drop an MCP server, get a receipt`](./docs/drop-server-get-receipt.md) issue to suggest a target, prompt, docs fix, receipt, or `setup-ci --sarif` integration.
-
-Add MCP CI and Code Scanning in one command:
-
-```bash
-npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif --schedule weekly
-```
-
-Repair or upgrade an existing adoption kit:
-
-```bash
-npx @kryptosai/mcp-observatory setup-ci --doctor --fix
-```
-
-Installing MCP Observatory in an MCP server project also prints the exact CI setup command. Projects can opt into automatic workflow creation during install with [`mcpObservatory.autoSetupCi`](./docs/automatic-ci-integration.md).
-
-Normal `scan` and `test` runs include safe attack-readiness simulation by default. Use `--no-attack-sim` only when you want the older compatibility-only path.
-
-Upload normalized MCP findings to GitHub Code Scanning when you want a security-native release gate:
-
-```bash
-npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif
-```
-
-Add Observatory as an agent-accessible MCP server:
-
-```bash
-claude mcp add mcp-observatory -- npx -y @kryptosai/mcp-observatory serve
-```
-
-Building an autonomous agent, OpenClaw-style productivity machine, MCP gateway, or bot runtime? Start with the [agent runtime quickstart](./docs/agent-runtime-quickstart.md), copy the [OpenClaw MCP reliability agent template](./docs/openclaw-agent-template/SOUL.md), or point your agent at [`llms.txt`](./llms.txt) and [`AGENTS.md`](./AGENTS.md).
-
-Or test a server immediately:
+Test a specific server:
 
 ```bash
 npx @kryptosai/mcp-observatory test npx -y @modelcontextprotocol/server-everything
 ```
 
-Use it as a CLI, a GitHub Action, or an MCP server that lets your AI agent scan, test, record, replay, and verify other MCP servers autonomously.
+Add CI + Code Scanning in one command:
 
-<p align="center">
-  <img src="./docs/demo.svg" alt="MCP Observatory scan output" width="820">
-</p>
-
-[![Observatory MCP server](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory/badges/card.svg)](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory)
-
-The Glama card is an external MCP directory scorecard. Treat it as directory-level social proof; click through for the underlying category details before using it as a production approval signal.
+```bash
+npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif --schedule weekly
+```
 
 ## Why MCP Observatory
 
