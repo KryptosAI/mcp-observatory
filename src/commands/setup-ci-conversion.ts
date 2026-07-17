@@ -2,7 +2,7 @@ import readline from "node:readline/promises";
 import type { Readable, Writable } from "node:stream";
 
 import type { RunArtifact, TargetConfig } from "../types.js";
-import { buildEvent, recordEvent } from "../telemetry.js";
+import { buildEvent, detectCiProvider, recordEvent } from "../telemetry.js";
 import { initCi, type InitCiOptions, type InitCiResult } from "./init-ci.js";
 import { ANSI, c, quoteShell, setupCiHint } from "./helpers.js";
 
@@ -56,11 +56,11 @@ export function initCiOptionsFromRunArtifact(
   options: Pick<SetupCiConversionOptions, "ciSarif" | "force" | "target" | "targetPath"> = {},
 ): InitCiOptions | undefined {
   if (options.targetPath) {
-    return { all: true, target: options.targetPath, force: options.force, sarif: options.ciSarif !== false, schedule: "weekly" };
+    return { all: true, target: options.targetPath, force: options.force, sarif: options.ciSarif !== false, schedule: "weekly", ciProvider: (detectCiProvider() ?? "github-actions") as InitCiOptions["ciProvider"] };
   }
   const command = targetCommand(options.target) ?? artifactTargetCommand(artifact);
   if (!command) return undefined;
-  return { all: true, command, force: options.force, sarif: options.ciSarif !== false, schedule: "weekly" };
+  return { all: true, command, force: options.force, sarif: options.ciSarif !== false, schedule: "weekly", ciProvider: (detectCiProvider() ?? "github-actions") as InitCiOptions["ciProvider"] };
 }
 
 function shouldPrompt(options: SetupCiConversionOptions): boolean {
@@ -109,7 +109,7 @@ function printInitCiResult(result: InitCiResult, output: NodeJS.WriteStream | Wr
 function recordConversion(status: SetupCiConversionResult["status"], options: SetupCiConversionOptions): void {
   if (status === "not-eligible" || status === "suppressed") return;
   recordEvent(buildEvent("command_complete", "setup-ci", "cli", {
-    ciProvider: "github-actions",
+    ciProvider: detectCiProvider() ?? "github-actions",
     commitStatusSet: status === "written",
     setupCiConversionStatus: status,
     setupCiPromptShown: shouldPrompt(options),

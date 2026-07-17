@@ -1,11 +1,11 @@
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Command } from "commander";
-import { buildEvent, normalizeCampaign, recordEvent } from "../telemetry.js";
+import { buildEvent, detectCiProvider, normalizeCampaign, recordEvent } from "../telemetry.js";
 import { defaultRunsDirectory, findLatestSuccessfulRunArtifact, readArtifact } from "../storage.js";
 import type { RunArtifact } from "../types.js";
 import { TOOL_VERSION } from "../version.js";
-import { quoteShell } from "./helpers.js";
+import { processIdentifyFlag, quoteShell } from "./helpers.js";
 
 export interface InitCiOptions {
   command?: string;
@@ -28,6 +28,27 @@ export interface InitCiOptions {
   fix?: boolean;
   fromLastRun?: boolean;
   campaign?: string;
+  ciProvider?: "github-actions" | "gitlab-ci" | "circleci" | "bitbucket-pipelines" | "azure-pipelines";
+}
+
+const CI_FILE_PATHS: Record<string, string> = {
+  "github-actions": ".github/workflows/mcp-observatory.yml",
+  "gitlab-ci": ".gitlab-ci.yml",
+  "circleci": ".circleci/config.yml",
+  "bitbucket-pipelines": "bitbucket-pipelines.yml",
+  "azure-pipelines": "azure-pipelines.yml",
+};
+
+const PROVIDER_LABELS: Record<string, string> = {
+  "github-actions": "GitHub Action",
+  "gitlab-ci": "GitLab CI",
+  "circleci": "CircleCI",
+  "bitbucket-pipelines": "Bitbucket Pipelines",
+  "azure-pipelines": "Azure Pipelines",
+};
+
+function providerLabel(provider: string): string {
+  return PROVIDER_LABELS[provider] ?? "CI Workflow";
 }
 
 const DEFAULT_WORKFLOW_PATH = ".github/workflows/mcp-observatory.yml";
@@ -56,7 +77,7 @@ function normalizeSchedule(schedule: string | boolean | undefined): string | und
   return value.length > 0 ? value : DEFAULT_WEEKLY_CRON;
 }
 
-function workflowYaml(options: InitCiOptions): string {
+function githubActionsYaml(options: InitCiOptions): string {
   const command = options.command?.trim();
   const target = options.target?.trim();
   const commentsEnabled = options.commentOnPr === true;
@@ -118,6 +139,135 @@ function workflowYaml(options: InitCiOptions): string {
   }
   lines.push("");
 
+  return lines.join("\n");
+}
+
+function workflowYaml(options: InitCiOptions): string {
+  const provider = options.ciProvider ?? "github-actions";
+  switch (provider) {
+    case "github-actions": return githubActionsYaml(options);
+    case "gitlab-ci": return gitlabCiYaml(options);
+    case "circleci": return circleCiYaml(options);
+    case "bitbucket-pipelines": return bitbucketYaml(options);
+    case "azure-pipelines": return azurePipelinesYaml(options);
+    default: return githubActionsYaml(options);
+  }
+}
+
+function gitlabCiYaml(options: InitCiOptions): string {
+  const lines = [
+    "mcp-observatory:",
+    "  image: node:22",
+  ];
+  if (options.schedule) {
+    lines.push("  only:", "    - schedules");
+  } else {
+    lines.push("  rules:", "    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'", "    - if: $CI_COMMIT_BRANCH == 'main'");
+  }
+  lines.push("  script:");
+  if (options.command) {
+    lines.push(`    - npx @kryptosai/mcp-observatory test ${options.command} --deep --security` + (options.sarif !== false ? " --sarif mcp-observatory.sarif" : ""));
+  } else if (options.all) {
+    lines.push("    - npx @kryptosai/mcp-observatory scan --deep --security" + (options.sarif !== false ? " --sarif mcp-observatory.sarif" : ""));
+  } else {
+    lines.push(`    - npx @kryptosai/mcp-observatory test --target mcp-observatory.target.json --deep --security`);
+  }
+  if (options.sarif !== false) {
+    lines.push("  artifacts:", "    reports:", "      sast: mcp-observatory.sarif");
+  }
+  return lines.join("\n");
+}
+
+function circleCiYaml(options: InitCiOptions): string {
+  const lines = [
+    "version: 2.1",
+    "",
+    "jobs:",
+    "  mcp-observatory:",
+    "    docker:",
+    "      - image: cimg/node:22.0",
+    "    steps:",
+    "      - checkout",
+    `      - run:`,
+  ];
+  if (options.command) {
+    lines.push(`          command: npx @kryptosai/mcp-observatory test ${options.command} --deep --security` + (options.sarif !== false ? " --sarif mcp-observatory.sarif" : ""));
+  } else if (options.all) {
+    lines.push("          command: npx @kryptosai/mcp-observatory scan --deep --security" + (options.sarif !== false ? " --sarif mcp-observatory.sarif" : ""));
+  } else {
+    lines.push("          command: npx @kryptosai/mcp-observatory test --target mcp-observatory.target.json --deep --security");
+  }
+  if (options.sarif !== false) {
+    lines.push("      - store_artifacts:", "          path: mcp-observatory.sarif");
+  }
+  lines.push("",
+    "workflows:",
+    "  version: 2",
+    "  mcp-observatory-workflow:",
+    "    jobs:",
+    "      - mcp-observatory" + (options.schedule ? ":\n          filters:\n            branches:\n              only: /scheduled-scan/" : ""));
+  return lines.join("\n");
+}
+
+function bitbucketYaml(options: InitCiOptions): string {
+  const lines = [
+    "image: node:22",
+    "",
+    "pipelines:",
+  ];
+  if (options.schedule) {
+    lines.push("  custom:");
+    lines.push("    mcp-observatory-scheduled:");
+  } else {
+    lines.push("  pull-requests:");
+    lines.push("    '**':");
+  }
+  lines.push("      - step:");
+  lines.push("          name: MCP Observatory Safety Check");
+  lines.push("          script:");
+  if (options.command) {
+    lines.push(`            - npx @kryptosai/mcp-observatory test ${options.command} --deep --security` + (options.sarif !== false ? " --sarif mcp-observatory.sarif" : ""));
+  } else if (options.all) {
+    lines.push("            - npx @kryptosai/mcp-observatory scan --deep --security" + (options.sarif !== false ? " --sarif mcp-observatory.sarif" : ""));
+  } else {
+    lines.push("            - npx @kryptosai/mcp-observatory test --target mcp-observatory.target.json --deep --security");
+  }
+  if (options.sarif !== false) {
+    lines.push("          artifacts:", "            - mcp-observatory.sarif");
+  }
+  if (!options.schedule && options.command) {
+    lines.push("", "  branches:", "    main:", "      - step:", "          name: MCP Observatory Safety Check", "          script:", `            - npx @kryptosai/mcp-observatory test ${options.command} --deep --security` + (options.sarif !== false ? " --sarif mcp-observatory.sarif" : ""));
+  }
+  return lines.join("\n");
+}
+
+function azurePipelinesYaml(options: InitCiOptions): string {
+  const lines = [
+    "trigger:",
+    "  - main",
+    "",
+  ];
+  if (!options.schedule) {
+    lines.push("pr:", "  - main", "");
+  } else {
+    lines.push("schedules:", "  - cron: '0 6 * * *'", "    displayName: Daily MCP safety scan", "    branches:", "      include:", "        - main", "");
+  }
+  lines.push("pool:", "  vmImage: ubuntu-latest", "",
+    "steps:",
+    "  - task: NodeTool@0",
+    "    inputs:",
+    "      versionSpec: '22.x'",
+    "    displayName: 'Install Node.js'",
+    "",
+    "  - script: |");
+  if (options.command) {
+    lines.push(`      npx @kryptosai/mcp-observatory test ${options.command} --deep --security` + (options.sarif !== false ? " --sarif mcp-observatory.sarif" : ""));
+  } else if (options.all) {
+    lines.push("      npx @kryptosai/mcp-observatory scan --deep --security" + (options.sarif !== false ? " --sarif mcp-observatory.sarif" : ""));
+  } else {
+    lines.push("      npx @kryptosai/mcp-observatory test --target mcp-observatory.target.json --deep --security");
+  }
+  lines.push("    displayName: 'MCP Observatory Safety Check'");
   return lines.join("\n");
 }
 
@@ -345,19 +495,22 @@ function doctorFixOptions(options: InitCiOptions, workflow: string | undefined):
 }
 
 export async function doctorSetupCi(options: InitCiOptions = {}): Promise<SetupCiDoctorResult> {
-  const workflowPath = options.workflow ?? DEFAULT_WORKFLOW_PATH;
+  const detectedProvider = options.ciProvider ?? detectCiProvider() ?? "github-actions";
+  const defaultPath = CI_FILE_PATHS[detectedProvider] ?? DEFAULT_WORKFLOW_PATH;
+  const workflowPath = options.workflow ?? defaultPath;
   const badgePath = options.badgeFile ?? DEFAULT_BADGE_PATH;
   const targetConfigPath = optionPath(options.targetConfig, DEFAULT_TARGET_CONFIG_PATH);
   const prBodyPath = optionPath(options.prBody, DEFAULT_PR_BODY_PATH);
   const issueBodyPath = optionPath(options.issueBody, DEFAULT_ISSUE_BODY_PATH);
   const scoreBadgePath = optionPath(options.scoreBadge, DEFAULT_SCORE_BADGE_PATH);
+  const ciLabel = providerLabel(detectedProvider);
 
   const workflow = await readOptional(workflowPath);
   const checks: SetupCiDoctorCheck[] = [];
   if (workflow === undefined) {
     checks.push({
       id: "workflow",
-      label: "GitHub Action",
+      label: ciLabel,
       status: "fail",
       message: `${workflowPath} is missing.`,
       fix: setupCommand(options),
@@ -365,7 +518,7 @@ export async function doctorSetupCi(options: InitCiOptions = {}): Promise<SetupC
   } else {
     checks.push({
       id: "workflow",
-      label: "GitHub Action",
+      label: ciLabel,
       status: "pass",
       message: `${workflowPath} exists.`,
     });
@@ -449,7 +602,9 @@ export async function initCi(options: InitCiOptions): Promise<InitCiResult> {
     throw new Error("Use either --target or --target-config, not both.");
   }
 
-  const workflowPath = options.workflow ?? DEFAULT_WORKFLOW_PATH;
+  const detectedProvider = options.ciProvider ?? detectCiProvider() ?? "github-actions";
+  const defaultPath = CI_FILE_PATHS[detectedProvider] ?? DEFAULT_WORKFLOW_PATH;
+  const workflowPath = options.workflow ?? defaultPath;
   const badgePath = options.badgeFile ?? DEFAULT_BADGE_PATH;
   const workflowStatus = await writeFileOnce(workflowPath, workflowYaml(options), options.force === true);
   const result: InitCiResult = {
@@ -506,11 +661,13 @@ function addInitCiOptions(command: Command): Command {
     .option("--doctor", "Inspect the current repository's MCP Observatory CI adoption state.", false)
     .option("--fix", "With --doctor, repair the adoption kit with deep, security, SARIF, and weekly scheduled checks.", false)
     .option("--from-last-run", "Generate the adoption kit from the latest successful local run artifact.", false)
-    .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.");
+    .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.")
+    .option("--identify <email>", "Opt-in: share your email to help us understand who uses Observatory. Never shared, never spammed.");
 }
 
-function initCiAction(commandName: "init-ci" | "setup-ci"): (options: InitCiOptions) => Promise<void> {
-  return async (options: InitCiOptions) => {
+function initCiAction(commandName: "init-ci" | "setup-ci"): (options: InitCiOptions & { identify?: string }) => Promise<void> {
+  return async (options: InitCiOptions & { identify?: string }) => {
+    processIdentifyFlag(options);
     if (options.campaign) options.campaign = normalizeCampaign(options.campaign);
     if (options.doctor) {
       const result = await doctorSetupCi(options);
@@ -522,7 +679,8 @@ function initCiAction(commandName: "init-ci" | "setup-ci"): (options: InitCiOpti
       }
       process.stdout.write(`\nNext best action:\n  ${result.nextCommand}\n`);
       if (options.fix) {
-        const workflow = await readOptional(options.workflow ?? DEFAULT_WORKFLOW_PATH);
+        const defaultPath = CI_FILE_PATHS[options.ciProvider ?? detectCiProvider() ?? "github-actions"] ?? DEFAULT_WORKFLOW_PATH;
+        const workflow = await readOptional(options.workflow ?? defaultPath);
         const fixed = await initCi(doctorFixOptions(options, workflow));
         process.stdout.write("\nApplied repair:\n");
         process.stdout.write(`${fixed.workflowStatus}: ${fixed.workflowPath}\n`);
@@ -536,7 +694,7 @@ function initCiAction(commandName: "init-ci" | "setup-ci"): (options: InitCiOpti
         process.exitCode = 1;
       }
       recordEvent(buildEvent("command_complete", commandName, "cli", {
-        ciProvider: "github-actions",
+        ciProvider: options.ciProvider ?? detectCiProvider() ?? "github-actions",
         setupCiDoctor: true,
         setupCiReady: result.ready,
         setupCiFailCount: result.checks.filter((check) => check.status === "fail").length,
@@ -595,7 +753,7 @@ function initCiAction(commandName: "init-ci" | "setup-ci"): (options: InitCiOpti
     process.stdout.write("Next: commit the workflow, open a PR, and paste the generated PR body if present.\n");
 
     recordEvent(buildEvent("command_complete", commandName, "cli", {
-      ciProvider: "github-actions",
+      ciProvider: options.ciProvider ?? detectCiProvider() ?? "github-actions",
       commitStatusSet: !skipped,
       campaign: options.campaign,
     }));
