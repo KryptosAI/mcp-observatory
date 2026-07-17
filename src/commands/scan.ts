@@ -11,7 +11,8 @@ import type { RunArtifact } from "../types.js";
 import { TOOL_VERSION } from "../version.js";
 import { maybePrintCloudCta } from "../commercial.js";
 import { renderActionReceipt } from "../action-receipt.js";
-import { ANSI, LOGO, c, isQuiet, setupCiHint, useColor } from "./helpers.js";
+import { ANSI, LOGO, c, isQuiet, setupCiHint, suggestFix, useColor } from "./helpers.js";
+import { firstNextStep } from "../utils/failure-diagnosis.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
 // ── Scan implementation ─────────────────────────────────────────────────────
 
@@ -141,6 +142,10 @@ async function runScan(
 
       if (artifact.fatalError) {
         process.stdout.write(`    ${c(ANSI.red, "→")} ${artifact.fatalError.split("\n")[0]}\n`);
+        const fixHint = firstNextStep(artifact.fatalError) ?? suggestFix(artifact.fatalError);
+        if (fixHint) {
+          process.stdout.write(`    ${c(ANSI.dim, `→ ${fixHint}`)}\n`);
+        }
       } else if (artifact.gate === "fail" && diagnostics.length > 0) {
         process.stdout.write(`    ${c(ANSI.dim, "→")} ${diagnostics[0]}\n`);
       }
@@ -172,6 +177,11 @@ async function runScan(
 
       process.stdout.write(`\r  ${c(ANSI.red, "✗")} ${c(ANSI.bold, t.config.targetId)}\n`);
       process.stdout.write(`    ${c(ANSI.red, friendlyMsg)}\n`);
+
+      const fixHint = suggestFix(msg);
+      if (fixHint) {
+        process.stdout.write(`    ${c(ANSI.dim, `→ ${fixHint}`)}\n`);
+      }
 
       // Docker-specific hint
       const serverCmd = t.config.adapter === "local-process" ? (t.config as { command: string }).command : "";

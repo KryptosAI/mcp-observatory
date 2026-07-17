@@ -63,6 +63,33 @@ export function c(code: string, text: string): string {
   return useColor() ? `${code}${text}${ANSI.reset}` : text;
 }
 
+/**
+ * Suggests a one-line remediation for a raw error message, so scan/test
+ * failures tell the user how to fix the problem, not just state it.
+ *
+ * Note: connection failures during MCP session startup already get a much
+ * richer diagnosis (diagnosis/likely causes/next steps) from
+ * `formatConnectionFailureDiagnosis` via `RunArtifact.fatalError` — this
+ * covers the lighter-weight cases outside that path (thrown exceptions,
+ * config parsing errors) where no such diagnosis exists.
+ */
+export function suggestFix(message: string): string | undefined {
+  const lower = message.toLowerCase();
+  if (lower.includes("timed out") || lower.includes("timeout")) {
+    return "Try increasing timeout with --timeout 30000";
+  }
+  if (lower.includes("econnrefused") || lower.includes("connection refused")) {
+    return "Check that the server is running. Try: npx -y <server-package>";
+  }
+  if (lower.includes("enoent") || lower.includes("spawn")) {
+    return "Check that the command is installed and on PATH. Try: npx -y <server-package>";
+  }
+  if (lower.includes("unexpected token") || lower.includes("invalid config") || lower.includes("is not valid json")) {
+    return "Check target JSON format. Run: cat <config-file>";
+  }
+  return undefined;
+}
+
 export function colorStatus(status: string): string {
   switch (status) {
     case "pass":

@@ -16,7 +16,8 @@ import { renderActionReceipt } from "../action-receipt.js";
 import { extractObservatoryFindings } from "../findings.js";
 import { runEnforce } from "./enforce.js";
 import { renderNextActions } from "../reporters/terminal.js";
-import { ANSI, c, resolveTarget, targetFromCommand, writeOutput } from "./helpers.js";
+import { ANSI, c, resolveTarget, suggestFix, targetFromCommand, writeOutput } from "./helpers.js";
+import { firstNextStep } from "../utils/failure-diagnosis.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
 
 export interface TestCommandFlags extends SetupCiConversionFlags {
@@ -169,6 +170,14 @@ export function registerTestCommands(program: Command): void {
       const gateIcon = artifact.gate === "pass" ? c(ANSI.green, "✓") : c(ANSI.red, "✗");
       process.stdout.write(`\r  ${gateIcon} ${c(ANSI.bold, target.targetId)}${" ".repeat(Math.max(1, 40 - target.targetId.length))}`);
       process.stdout.write(`${c(ANSI.dim, `${toolCount} tools, ${promptCount} prompts, ${resourceCount} resources`)}\n`);
+
+      if (artifact.fatalError) {
+        process.stdout.write(`    ${c(ANSI.red, "→")} ${artifact.fatalError.split("\n")[0]}\n`);
+        const fixHint = firstNextStep(artifact.fatalError) ?? suggestFix(artifact.fatalError);
+        if (fixHint) {
+          process.stdout.write(`    ${c(ANSI.dim, `→ ${fixHint}`)}\n`);
+        }
+      }
 
       for (const check of artifact.checks) {
         if (check.status === "fail" || check.status === "partial") {

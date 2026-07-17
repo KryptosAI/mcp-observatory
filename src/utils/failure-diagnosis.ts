@@ -134,3 +134,17 @@ export function formatConnectionFailureDiagnosis(
 
   return lines.join("\n");
 }
+
+/**
+ * Pulls the first "Next steps:" bullet out of a formatted diagnosis (as
+ * produced by formatConnectionFailureDiagnosis / stored in
+ * RunArtifact.fatalError), for callers that only have room for a single
+ * remediation line rather than the full diagnosis block.
+ */
+export function firstNextStep(formattedDiagnosis: string): string | undefined {
+  const lines = formattedDiagnosis.split("\n");
+  const idx = lines.findIndex((line) => line === "Next steps:");
+  if (idx === -1) return undefined;
+  const step = lines[idx + 1];
+  return step?.startsWith("-") ? step.slice(1).trim() : undefined;
+}
