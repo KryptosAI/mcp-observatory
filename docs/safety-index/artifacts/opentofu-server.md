@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T22:33:26.328Z
+Generated at 2026-07-17T00:36:30.038Z
 
 ## Target and Environment Metadata
 
@@ -48,7 +48,7 @@ Generated at 2026-07-15T22:33:26.328Z
 
 ## Runtime Profile
 
-_Analyzed at 2026-07-15T22:33:27.240Z_
+_Analyzed at 2026-07-17T00:36:30.825Z_
 
 ## Regressions and Recoveries
 
@@ -58,14 +58,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.39 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 0.83 | All 7 conformance checks passed. |
+| healthy | attack-sim | pass | 0.47 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 0.75 | All 7 conformance checks passed. |
 | healthy | resources | pass | 0.62 | Advertised capability responded with the minimal expected shape (1 items). |
-| healthy | runtime-profile | pass | 0.07 | No egress or state mutation indicators detected in tool schemas. |
-| healthy | security | pass | 0.16 | No security issues detected. |
+| healthy | runtime-profile | pass | 0.08 | No egress or state mutation indicators detected in tool schemas. |
+| healthy | security | pass | 0.17 | No security issues detected. |
 | healthy | security-lite | pass | 0.02 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 2.01 | Advertised capability responded with the minimal expected shape (5 items). |
-| review | schema-quality | partial | 0.52 | Found 1 quality finding(s) across 6 item(s): 1 warnings, 0 info. |
+| healthy | tools | pass | 2.11 | Advertised capability responded with the minimal expected shape (5 items). |
+| review | schema-quality | partial | 0.51 | Found 1 quality finding(s) across 6 item(s): 1 warnings, 0 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 
 ## Evidence Snippets
@@ -190,5 +190,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T223326328Z_03567000`
+- Run ID: `run_2026-07-17T003630038Z_fbe94d05`
 - Gate: `pass`

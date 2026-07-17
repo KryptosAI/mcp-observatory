@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T223334012Z_6b45db48",
-  "createdAt": "2026-07-15T22:33:34.012Z",
-  "toolVersion": "1.32.1",
+  "runId": "run_2026-07-17T003636918Z_5edd3f96",
+  "createdAt": "2026-07-17T00:36:36.918Z",
+  "toolVersion": "1.33.0",
   "target": {
     "targetId": "kubernetes-server",
     "adapter": "local-process",
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 1.273124999999709,
+      "durationMs": 2.041291999998066,
       "message": "Advertised capability responded with the minimal expected shape (23 items).",
       "evidence": [
         {
@@ -80,7 +80,7 @@
           "diagnostics": [
             "Starting Kubernetes MCP server v4.0.4, handling commands...",
             "Telemetry: Disabled",
-            "(node:78269) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(node:41154) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
             "(Use `node --trace-deprecation ...` to show where the warning was created)"
           ],
           "schemas": {
@@ -1076,7 +1076,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "pass",
-      "durationMs": 0.30708299999969313,
+      "durationMs": 0.42466699999931734,
       "message": "Advertised capability responded with the minimal expected shape (1 item).",
       "evidence": [
         {
@@ -1091,7 +1091,7 @@
           "diagnostics": [
             "Starting Kubernetes MCP server v4.0.4, handling commands...",
             "Telemetry: Disabled",
-            "(node:78269) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(node:41154) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
             "(Use `node --trace-deprecation ...` to show where the warning was created)"
           ]
         }
@@ -1101,7 +1101,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 0.38800000000264845,
+      "durationMs": 0.9475420000017039,
       "message": "Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported.",
       "evidence": [
         {
@@ -1120,7 +1120,7 @@
           "diagnostics": [
             "Starting Kubernetes MCP server v4.0.4, handling commands...",
             "Telemetry: Disabled",
-            "(node:78269) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(node:41154) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
             "(Use `node --trace-deprecation ...` to show where the warning was created)"
           ]
         },
@@ -1133,7 +1133,7 @@
             "MCP error -32601: Method not found",
             "Starting Kubernetes MCP server v4.0.4, handling commands...",
             "Telemetry: Disabled",
-            "(node:78269) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+            "(node:41154) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
             "(Use `node --trace-deprecation ...` to show where the warning was created)"
           ]
         }
@@ -1143,7 +1143,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "fail",
-      "durationMs": 0.06850000000122236,
+      "durationMs": 0.07570800000030431,
       "message": "Found 8 security finding(s): 3 high, 3 medium, 2 low.",
       "evidence": [
         {
@@ -1228,7 +1228,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "partial",
-      "durationMs": 0.29887500000040745,
+      "durationMs": 0.407959000000119,
       "message": "Detected 11 potential egress target(s) and 76 potential state mutation(s) with high confidence.",
       "evidence": [
         {
@@ -1773,7 +1773,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 1.787292000000889,
+      "durationMs": 2.1241660000014235,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -1799,7 +1799,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 0.9695410000022093,
+      "durationMs": 0.9270419999993464,
       "message": "Found 7 quality finding(s) across 29 item(s): 0 warnings, 7 info.",
       "evidence": [
         {
@@ -1873,7 +1873,7 @@
       "id": "security",
       "capability": "security",
       "status": "fail",
-      "durationMs": 0.3508330000004207,
+      "durationMs": 0.4053329999987909,
       "message": "Found 8 security finding(s): 3 high, 3 medium, 2 low.",
       "evidence": [
         {
@@ -1958,7 +1958,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "fail",
-      "durationMs": 0.9595410000001721,
+      "durationMs": 1.5383750000000873,
       "message": "Safe attack simulation found 5 finding(s): 3 high, 2 medium, 0 low.",
       "evidence": [
         {
@@ -2125,17 +2125,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 1336ms",
-          "p95 latency: 1ms (3 operations)"
+          "Connect: 1788ms",
+          "p95 latency: 2ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 1336.1261249999989,
-    "toolsListMs": 1.273124999999709,
-    "promptsListMs": 0.30708299999969313,
-    "resourcesListMs": 0.38800000000264845
+    "connectMs": 1788.1130420000009,
+    "toolsListMs": 2.041291999998066,
+    "promptsListMs": 0.42466699999931734,
+    "resourcesListMs": 0.9475420000017039
   },
   "runtimeProfile": {
     "egress": [
@@ -2664,7 +2664,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-15T22:33:35.351Z",
+    "analyzedAt": "2026-07-17T00:36:38.710Z",
     "confidence": "high"
   }
 }

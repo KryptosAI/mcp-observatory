@@ -15,7 +15,7 @@ For the rules behind this page, see the [Safety Methodology](./methodology.md) a
 - Needs review before production: 11
 - Unsafe default posture: 14
 - Not reproducible: 127
-- Latest run: 2026-07-15T22:36:02.877Z
+- Latest run: 2026-07-17T00:36:42.758Z
 
 ## Evaluations
 

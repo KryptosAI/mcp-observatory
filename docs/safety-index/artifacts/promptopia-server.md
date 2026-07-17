@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T22:33:19.237Z
+Generated at 2026-07-17T00:36:23.563Z
 
 ## Target and Environment Metadata
 
@@ -58,7 +58,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | delete | working_directory | description_analysis |
 
-_Analyzed at 2026-07-15T22:33:20.276Z_
+_Analyzed at 2026-07-17T00:36:24.418Z_
 
 ## Regressions and Recoveries
 
@@ -68,14 +68,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.43 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 1.81 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 1.12 | Advertised capability responded with the minimal expected shape (1 item). |
+| healthy | attack-sim | pass | 0.53 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 1.97 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 1.87 | Advertised capability responded with the minimal expected shape (1 item). |
 | healthy | runtime-profile | pass | 0.08 | Detected 0 potential egress target(s) and 4 potential state mutation(s) with low confidence. |
-| healthy | security | pass | 0.21 | No security issues detected. |
+| healthy | security | pass | 0.22 | No security issues detected. |
 | healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 2.19 | Advertised capability responded with the minimal expected shape (7 items). |
-| review | schema-quality | partial | 0.90 | Found 1 quality finding(s) across 8 item(s): 0 warnings, 1 info. |
+| healthy | tools | pass | 5.43 | Advertised capability responded with the minimal expected shape (7 items). |
+| review | schema-quality | partial | 0.63 | Found 1 quality finding(s) across 8 item(s): 0 warnings, 1 info. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
 ## Evidence Snippets
@@ -114,7 +114,7 @@ Summary: Advertised capability responded with the minimal expected shape (1 item
   - Minimal shape present: `true`
   - Item count: `1`
   - Identifiers: demo_welcome
-  - Diagnostics: Watching for changes in prompts directory: /Users/williamweishuhn/Documents/New project/mcp-observatory/examples/promptopia-prompts, promptopia-mcp MCP server running (v1.1.0)
+  - Diagnostics: Watching for changes in prompts directory: /Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/promptopia-prompts, promptopia-mcp MCP server running (v1.1.0)
 
 ### runtime-profile — pass
 
@@ -162,7 +162,7 @@ Summary: Advertised capability responded with the minimal expected shape (7 item
   - Minimal shape present: `true`
   - Item count: `7`
   - Identifiers: add_prompt, update_prompt, get_prompt, list_prompts, delete_prompt (+2 more)
-  - Diagnostics: Watching for changes in prompts directory: /Users/williamweishuhn/Documents/New project/mcp-observatory/examples/promptopia-prompts, promptopia-mcp MCP server running (v1.1.0)
+  - Diagnostics: Watching for changes in prompts directory: /Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/promptopia-prompts, promptopia-mcp MCP server running (v1.1.0)
 
 ### schema-quality — partial
 
@@ -199,5 +199,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T223319237Z_baafc299`
+- Run ID: `run_2026-07-17T003623563Z_bf28dbdf`
 - Gate: `pass`

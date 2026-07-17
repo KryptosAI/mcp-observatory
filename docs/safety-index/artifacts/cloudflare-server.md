@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T22:33:38.249Z
+Generated at 2026-07-17T00:36:41.847Z
 
 ## Target and Environment Metadata
 
@@ -56,11 +56,11 @@ Next steps:
 - Check whether the package expects a different transport or an app-oriented startup flow.
 - Use the recent stderr lines below before assuming this is a harness bug.
 Recent stderr:
-- npm error 404  '@anthropic/mcp-server-cloudflare@*' is not in this registry.
+- npm error 404  The requested resource '@anthropic/mcp-server-cloudflare@*' could not be found or you do not have permission to access it.
 - npm error 404
 - npm error 404 Note that you can also install from a
 - npm error 404 tarball, folder, http url, or git url.
-- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-15T22_33_38_319Z-debug-0.log
+- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-17T00_36_41_933Z-debug-0.log
 ```
 
 ## Full Capability Status Table
@@ -102,5 +102,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T223338249Z_a169ea76`
+- Run ID: `run_2026-07-17T003641847Z_09c16193`
 - Gate: `fail`

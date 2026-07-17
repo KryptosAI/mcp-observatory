@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T22:33:14.258Z
+Generated at 2026-07-17T00:36:20.107Z
 
 ## Target and Environment Metadata
 
@@ -56,7 +56,7 @@ The following state-modifying operations were identified from tool schemas:
 | --- | --- | --- | --- |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-15T22:33:15.104Z_
+_Analyzed at 2026-07-17T00:36:20.759Z_
 
 ## Regressions and Recoveries
 
@@ -66,13 +66,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.82 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 1.57 | All 7 conformance checks passed. |
+| healthy | attack-sim | pass | 0.88 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 1.61 | All 7 conformance checks passed. |
 | healthy | runtime-profile | pass | 0.07 | Detected 0 potential egress target(s) and 1 potential state mutation(s) with low confidence. |
-| healthy | schema-quality | pass | 0.81 | All 1 item(s) have good schema quality. |
-| healthy | security | pass | 0.90 | No security issues detected. |
+| healthy | schema-quality | pass | 0.88 | All 1 item(s) have good schema quality. |
+| healthy | security | pass | 0.94 | No security issues detected. |
 | healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 3.70 | Advertised capability responded with the minimal expected shape (1 item). |
+| healthy | tools | pass | 4.07 | Advertised capability responded with the minimal expected shape (1 item). |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -197,5 +197,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T223314258Z_b0743985`
+- Run ID: `run_2026-07-17T003620107Z_b35a41cd`
 - Gate: `pass`

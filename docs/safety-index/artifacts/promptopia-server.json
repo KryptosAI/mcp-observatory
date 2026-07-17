@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-15T223319237Z_baafc299",
-  "createdAt": "2026-07-15T22:33:19.237Z",
-  "toolVersion": "1.32.1",
+  "runId": "run_2026-07-17T003623563Z_bf28dbdf",
+  "createdAt": "2026-07-17T00:36:23.563Z",
+  "toolVersion": "1.33.0",
   "target": {
     "targetId": "promptopia-server",
     "adapter": "local-process",
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 2.1864580000001297,
+      "durationMs": 5.427625000000262,
       "message": "Advertised capability responded with the minimal expected shape (7 items).",
       "evidence": [
         {
@@ -62,7 +62,7 @@
             "add_multi_message_prompt"
           ],
           "diagnostics": [
-            "Watching for changes in prompts directory: /Users/williamweishuhn/Documents/New project/mcp-observatory/examples/promptopia-prompts",
+            "Watching for changes in prompts directory: /Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/promptopia-prompts",
             "promptopia-mcp MCP server running (v1.1.0)"
           ],
           "schemas": {
@@ -267,7 +267,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "pass",
-      "durationMs": 1.1239580000001297,
+      "durationMs": 1.8686659999993935,
       "message": "Advertised capability responded with the minimal expected shape (1 item).",
       "evidence": [
         {
@@ -280,7 +280,7 @@
             "demo_welcome"
           ],
           "diagnostics": [
-            "Watching for changes in prompts directory: /Users/williamweishuhn/Documents/New project/mcp-observatory/examples/promptopia-prompts",
+            "Watching for changes in prompts directory: /Users/williamweishuhn/Documents/GitHub/mcp-observatory/examples/promptopia-prompts",
             "promptopia-mcp MCP server running (v1.1.0)"
           ]
         }
@@ -290,7 +290,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.0029999999997016857,
+      "durationMs": 0.0031249999992724042,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -306,7 +306,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.026875000000472937,
+      "durationMs": 0.02679199999965931,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -322,7 +322,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "pass",
-      "durationMs": 0.0796249999993961,
+      "durationMs": 0.07820800000081363,
       "message": "Detected 0 potential egress target(s) and 4 potential state mutation(s) with low confidence.",
       "evidence": [
         {
@@ -369,7 +369,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 1.8100000000004002,
+      "durationMs": 1.9656669999994847,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -395,7 +395,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 0.902791999999863,
+      "durationMs": 0.6250829999999041,
       "message": "Found 1 quality finding(s) across 8 item(s): 0 warnings, 1 info.",
       "evidence": [
         {
@@ -425,7 +425,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 0.2141249999995125,
+      "durationMs": 0.22325000000000728,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -441,7 +441,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "pass",
-      "durationMs": 0.4345000000002983,
+      "durationMs": 0.53387500000008,
       "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
       "evidence": [
         {
@@ -500,17 +500,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 1036ms",
-          "p95 latency: 2ms (3 operations)"
+          "Connect: 847ms",
+          "p95 latency: 5ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 1035.784208,
-    "toolsListMs": 2.1864580000001297,
-    "promptsListMs": 1.1239580000001297,
-    "resourcesListMs": 0.0029999999997016857
+    "connectMs": 846.9272500000006,
+    "toolsListMs": 5.427625000000262,
+    "promptsListMs": 1.8686659999993935,
+    "resourcesListMs": 0.0031249999992724042
   },
   "runtimeProfile": {
     "stateMutations": [
@@ -539,7 +539,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-15T22:33:20.276Z",
+    "analyzedAt": "2026-07-17T00:36:24.418Z",
     "confidence": "medium"
   }
 }

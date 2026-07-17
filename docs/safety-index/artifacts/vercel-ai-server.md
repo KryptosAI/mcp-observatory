@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T22:33:38.984Z
+Generated at 2026-07-17T00:36:42.758Z
 
 ## Target and Environment Metadata
 
@@ -56,11 +56,11 @@ Next steps:
 - Check whether the package expects a different transport or an app-oriented startup flow.
 - Use the recent stderr lines below before assuming this is a harness bug.
 Recent stderr:
-- npm error 404  '@anthropic/mcp-server-vercel-ai@*' is not in this registry.
+- npm error 404  The requested resource '@anthropic/mcp-server-vercel-ai@*' could not be found or you do not have permission to access it.
 - npm error 404
 - npm error 404 Note that you can also install from a
 - npm error 404 tarball, folder, http url, or git url.
-- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-15T22_33_39_057Z-debug-0.log
+- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-17T00_36_42_834Z-debug-0.log
 ```
 
 ## Full Capability Status Table
@@ -102,5 +102,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T223338984Z_2a29a957`
+- Run ID: `run_2026-07-17T003642758Z_399f4873`
 - Gate: `fail`

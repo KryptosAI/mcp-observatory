@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-15T223330280Z_7d32ef53",
-  "createdAt": "2026-07-15T22:33:30.280Z",
-  "toolVersion": "1.32.1",
+  "runId": "run_2026-07-17T003633428Z_a9fd4dd4",
+  "createdAt": "2026-07-17T00:36:33.428Z",
+  "toolVersion": "1.33.0",
   "target": {
     "targetId": "playwright-mcp-server",
     "adapter": "local-process",
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 2.8278749999990396,
+      "durationMs": 2.7732919999998558,
       "message": "Advertised capability responded with the minimal expected shape (24 items).",
       "evidence": [
         {
@@ -667,7 +667,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0007909999985713512,
+      "durationMs": 0.0008340000003954628,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -683,7 +683,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.0026250000009895302,
+      "durationMs": 0.0022080000017012935,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -699,7 +699,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "fail",
-      "durationMs": 0.0633750000015425,
+      "durationMs": 0.057834000001093955,
       "message": "Found 6 security finding(s): 2 high, 2 medium, 2 low.",
       "evidence": [
         {
@@ -767,7 +767,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "partial",
-      "durationMs": 0.20745800000076997,
+      "durationMs": 0.20362500000010186,
       "message": "Detected 7 potential egress target(s) and 21 potential state mutation(s) with high confidence.",
       "evidence": [
         {
@@ -958,7 +958,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 956.9231250000012,
+      "durationMs": 773.3511670000007,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -984,7 +984,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 1.6393329999991693,
+      "durationMs": 1.262790999999197,
       "message": "Found 5 quality finding(s) across 24 item(s): 0 warnings, 5 info.",
       "evidence": [
         {
@@ -1046,7 +1046,7 @@
       "id": "security",
       "capability": "security",
       "status": "fail",
-      "durationMs": 1.0381249999991269,
+      "durationMs": 0.8856250000008004,
       "message": "Found 6 security finding(s): 2 high, 2 medium, 2 low.",
       "evidence": [
         {
@@ -1114,7 +1114,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "fail",
-      "durationMs": 1.0708340000019234,
+      "durationMs": 1.3217079999994894,
       "message": "Safe attack simulation found 4 finding(s): 1 high, 3 medium, 0 low.",
       "evidence": [
         {
@@ -1275,17 +1275,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 814ms",
+          "Connect: 659ms",
           "p95 latency: 3ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 813.7624580000011,
-    "toolsListMs": 2.8278749999990396,
-    "promptsListMs": 0.0007909999985713512,
-    "resourcesListMs": 0.0026250000009895302
+    "connectMs": 658.5614999999998,
+    "toolsListMs": 2.7732919999998558,
+    "promptsListMs": 0.0008340000003954628,
+    "resourcesListMs": 0.0022080000017012935
   },
   "runtimeProfile": {
     "egress": [
@@ -1460,7 +1460,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-15T22:33:31.098Z",
+    "analyzedAt": "2026-07-17T00:36:34.091Z",
     "confidence": "high"
   }
 }

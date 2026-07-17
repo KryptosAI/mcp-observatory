@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-15T22:33:22.302Z
+Generated at 2026-07-17T00:36:26.429Z
 
 ## Target and Environment Metadata
 
@@ -57,7 +57,7 @@ The following targets were identified as potentially reachable by this server (c
 | The URL of the webpage to read. | unknown | description_analysis | medium |
 | ref_read_url | unknown | description_analysis | low |
 
-_Analyzed at 2026-07-15T22:33:23.029Z_
+_Analyzed at 2026-07-17T00:36:27.010Z_
 
 ## Regressions and Recoveries
 
@@ -67,14 +67,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.27 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 0.51 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 0.24 | Advertised capability responded with the minimal expected shape (2 items). |
-| healthy | schema-quality | pass | 0.52 | All 4 item(s) have good schema quality. |
-| healthy | security | pass | 0.19 | No security issues detected. |
+| healthy | attack-sim | pass | 0.20 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 0.46 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 0.29 | Advertised capability responded with the minimal expected shape (2 items). |
+| healthy | schema-quality | pass | 0.47 | All 4 item(s) have good schema quality. |
+| healthy | security | pass | 0.14 | No security issues detected. |
 | healthy | security-lite | pass | 0.02 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 1.39 | Advertised capability responded with the minimal expected shape (2 items). |
-| review | runtime-profile | partial | 0.12 | Detected 4 potential egress target(s) and 0 potential state mutation(s) with high confidence. |
+| healthy | tools | pass | 1.04 | Advertised capability responded with the minimal expected shape (2 items). |
+| review | runtime-profile | partial | 0.11 | Detected 4 potential egress target(s) and 0 potential state mutation(s) with high confidence. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
 ## Evidence Snippets
@@ -198,5 +198,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-15T223322301Z_3fb8821d`
+- Run ID: `run_2026-07-17T003626429Z_130951f0`
 - Gate: `pass`
