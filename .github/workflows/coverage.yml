@@ -19,7 +19,7 @@ jobs:
           cache: npm
 
       - name: Install
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Coverage
         run: npm run test:coverage

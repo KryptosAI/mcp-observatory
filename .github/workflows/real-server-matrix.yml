@@ -24,7 +24,7 @@ jobs:
           cache: npm
 
       - name: Install
-        run: npm install --legacy-peer-deps
+        run: npm install
 
       - name: Run real-server matrix
         id: matrix

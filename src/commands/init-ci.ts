@@ -5,7 +5,7 @@ import { buildEvent, detectCiProvider, normalizeCampaign, recordEvent } from "..
 import { defaultRunsDirectory, findLatestSuccessfulRunArtifact, readArtifact } from "../storage.js";
 import type { RunArtifact } from "../types.js";
 import { TOOL_VERSION } from "../version.js";
-import { processIdentifyFlag, quoteShell } from "./helpers.js";
+import { quoteShell } from "./helpers.js";
 
 export interface InitCiOptions {
   command?: string;
@@ -667,7 +667,6 @@ function addInitCiOptions(command: Command): Command {
 
 function initCiAction(commandName: "init-ci" | "setup-ci"): (options: InitCiOptions & { identify?: string }) => Promise<void> {
   return async (options: InitCiOptions & { identify?: string }) => {
-    processIdentifyFlag(options);
     if (options.campaign) options.campaign = normalizeCampaign(options.campaign);
     if (options.doctor) {
       const result = await doctorSetupCi(options);
