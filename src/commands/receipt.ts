@@ -1,9 +1,9 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Command } from "commander";
 
 import { resolveAuditTarget, runAudit } from "../audit.js";
-import { buildMcpReceipt, receiptFormatFromPath, renderReceipt, type ReceiptEnvironmentClass, type ReceiptFormat } from "../receipt.js";
+import { buildMcpReceipt, receiptFormatFromPath, renderReceipt, signReceipt, type ReceiptEnvironmentClass, type ReceiptFormat } from "../receipt.js";
 import { buildEvent, recordEvent } from "../telemetry.js";
 import { ANSI, c } from "./helpers.js";
 
@@ -13,6 +13,8 @@ interface ReceiptOptions {
   output?: string;
   environmentClass?: ReceiptEnvironmentClass;
   topFindings?: string;
+  signKey?: string;
+  signer?: string;
 }
 
 function extractTrailingReceiptFlags(args: string[], options: ReceiptOptions): { targetArgs: string[]; options: ReceiptOptions } {
@@ -76,6 +78,8 @@ export function registerReceiptCommands(program: Command): void {
     .option("--environment-class <class>", "local, ci, public_safety_index, or private_fleet.")
     .option("--top-findings <count>", "Number of top findings to include.", "5")
     .option("--no-color", "Disable colored output.")
+    .option("--sign-key <path>", "Path to Ed25519 private key file (DER/PEM) to sign the receipt.")
+    .option("--signer <identity>", "Identity label for the signer (e.g., email). Required when --sign-key is used.")
     .action(async (targetArgs: string[], options: ReceiptOptions) => {
       const extracted = extractTrailingReceiptFlags(targetArgs, options);
       targetArgs = extracted.targetArgs;
@@ -86,12 +90,20 @@ export function registerReceiptCommands(program: Command): void {
         process.stdout.write(`${c(ANSI.dim, "⟳")} Building receipt for ${c(ANSI.bold, target.targetId)} with profile ${c(ANSI.bold, options.profile)}...\n`);
       }
       const report = await runAudit(target, options.profile);
-      const receipt = await buildMcpReceipt(report, target, {
+      let receipt = await buildMcpReceipt(report, target, {
         commandInvoked: `mcp-observatory receipt ${targetArgs.join(" ")} --profile ${options.profile} --format ${options.format}${options.output ? ` --output ${options.output}` : ""}`,
         environmentClass: options.environmentClass,
         outputPath: options.output,
         topFindingsLimit: Number.parseInt(options.topFindings ?? "5", 10),
       });
+      if (options.signKey) {
+        if (!options.signer) {
+          process.stderr.write("Error: --signer is required when --sign-key is used.\n");
+          process.exit(1);
+        }
+        const keyContent = await readFile(options.signKey);
+        receipt = signReceipt(receipt, keyContent, options.signer);
+      }
       const format = receiptFormatFromPath(options.output, options.format);
       if (format !== "json" && format !== "markdown") {
         throw new Error("Unsupported receipt format. Use json or markdown.");

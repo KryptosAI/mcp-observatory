@@ -6,7 +6,8 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import { buildActionReceipt, recommendedActionForFinding, renderActionReceipt } from "../src/action-receipt.js";
 import { buildAuditReport } from "../src/audit.js";
-import { buildMcpReceipt, detectNotObserved, mapStatusToReceiptVerdict, receiptFormatFromPath, renderReceipt, renderReceiptMarkdown } from "../src/receipt.js";
+import { buildMcpReceipt, detectNotObserved, generateReceiptKeyPair, mapStatusToReceiptVerdict, receiptFormatFromPath, renderReceipt, renderReceiptMarkdown, signReceipt, verifyReceipt } from "../src/receipt.js";
+import type { McpReceipt } from "../src/receipt.js";
 import { makeArtifact } from "./fixtures/test-helpers.js";
 
 const target = {
@@ -475,5 +476,30 @@ describe("MCP receipts", () => {
     expect(markdown).toContain("credential_access");
     expect(markdown).toContain("destructive_payloads");
     expect(receipt.notObserved.length).toBeGreaterThanOrEqual(3);
+  });
+});
+
+describe("Ed25519 receipt signing", () => {
+  it("round-trips sign and verify", () => {
+    const { publicKey, privateKey } = generateReceiptKeyPair();
+    const receipt = { receipt_type: "mcp-observatory-receipt" as const } as unknown as McpReceipt;
+    const signed = signReceipt(receipt, privateKey, "test@example.com");
+    expect(signed.signer).toBe("test@example.com");
+    expect(signed.signature).toBeTruthy();
+    expect(verifyReceipt(signed, publicKey)).toBe(true);
+  });
+
+  it("detects tampering", () => {
+    const { publicKey, privateKey } = generateReceiptKeyPair();
+    const receipt = { receipt_type: "mcp-observatory-receipt" as const } as unknown as McpReceipt;
+    const signed = signReceipt(receipt, privateKey, "test@example.com");
+    const tampered = { ...signed, receipt_type: "tampered" as const } as unknown as McpReceipt;
+    expect(verifyReceipt(tampered, publicKey)).toBe(false);
+  });
+
+  it("rejects unsigned receipt", () => {
+    const { publicKey } = generateReceiptKeyPair();
+    const receipt = { receipt_type: "mcp-observatory-receipt" as const } as unknown as McpReceipt;
+    expect(verifyReceipt(receipt, publicKey)).toBe(false);
   });
 });

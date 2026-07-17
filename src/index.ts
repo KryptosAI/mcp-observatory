@@ -14,10 +14,13 @@ export {
 } from "./audit.js";
 export {
   buildMcpReceipt,
+  generateReceiptKeyPair,
   mapStatusToReceiptVerdict,
   renderReceipt,
   renderReceiptMarkdown,
   receiptFormatFromPath,
+  signReceipt,
+  verifyReceipt,
   type BuildReceiptOptions,
   type McpReceipt,
   type ReceiptAction,

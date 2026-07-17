@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { createHash, sign, verify, generateKeyPairSync, type KeyObject } from "node:crypto";
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import os from "node:os";
@@ -96,6 +96,8 @@ export interface McpReceipt {
   reproduction: ReceiptReproduction;
   maintainer_cta: ReceiptCta[];
   buyer_cta: ReceiptCta[];
+  signer?: string;
+  signature?: string;
 }
 
 export interface ReceiptEvidenceOptions {
@@ -570,4 +572,30 @@ export function renderReceipt(receipt: McpReceipt, format: ReceiptFormat): strin
 export function receiptFormatFromPath(outputPath: string | undefined, fallback: ReceiptFormat): ReceiptFormat {
   if (!outputPath) return fallback;
   return /\.json$/i.test(outputPath) ? "json" : "markdown";
+}
+
+function canonicalReceiptBytes(receipt: McpReceipt): Buffer {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { signer, signature, ...rest } = receipt as McpReceipt & { signer?: string; signature?: string };
+  return Buffer.from(JSON.stringify(rest), "utf8");
+}
+
+export function signReceipt(receipt: McpReceipt, privateKey: string | Buffer | KeyObject, signer: string): McpReceipt {
+  const data = canonicalReceiptBytes(receipt);
+  const sig = sign(null, data, privateKey);
+  return { ...receipt, signer, signature: sig.toString("base64") };
+}
+
+export function verifyReceipt(receipt: McpReceipt, publicKey: string | Buffer | KeyObject): boolean {
+  if (!receipt.signature) return false;
+  const data = canonicalReceiptBytes(receipt);
+  return verify(null, data, publicKey, Buffer.from(receipt.signature, "base64"));
+}
+
+export function generateReceiptKeyPair(): { publicKey: string; privateKey: string } {
+  const { publicKey, privateKey } = generateKeyPairSync("ed25519");
+  return {
+    publicKey: publicKey.export({ type: "spki", format: "pem" }) as string,
+    privateKey: privateKey.export({ type: "pkcs8", format: "pem" }) as string,
+  };
 }
