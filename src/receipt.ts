@@ -595,7 +595,7 @@ export function verifyReceipt(receipt: McpReceipt, publicKey: string | Buffer | 
 export function generateReceiptKeyPair(): { publicKey: string; privateKey: string } {
   const { publicKey, privateKey } = generateKeyPairSync("ed25519");
   return {
-    publicKey: publicKey.export({ type: "spki", format: "pem" }) as string,
-    privateKey: privateKey.export({ type: "pkcs8", format: "pem" }) as string,
+    publicKey: publicKey.export({ type: "spki", format: "pem" }),
+    privateKey: privateKey.export({ type: "pkcs8", format: "pem" }),
   };
 }

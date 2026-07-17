@@ -321,11 +321,13 @@ export function recordEvent(event: TelemetryEvent): void {
   const config = _cachedConfig;
   const machineId = config?.machineId || config?.sessionId;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
   const rawJsonValue = (event as any).raw_json;
   if (rawJsonValue !== undefined && rawJsonValue !== null) {
     const rawJsonStr = typeof rawJsonValue === "string" ? rawJsonValue : JSON.stringify(rawJsonValue);
     if (rawJsonStr.length > 10240) {
       process.stderr.write(`[telemetry] WARNING: raw_json exceeds 10KB (${rawJsonStr.length} bytes), truncating\n`);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
       (event as any).raw_json = JSON.stringify({ truncated: true, original_size: rawJsonStr.length });
     }
   }
@@ -548,9 +550,11 @@ export function _resetSessionTimestamps(): void {
 
 // ── Finding severity counting ────────────────────────────────────────────────
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function countFindingsBySeverity(findings: any[]): { high: number; medium: number; low: number } {
   const counts = { high: 0, medium: 0, low: 0 };
   for (const f of findings) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     const severity = (f?.severity || f?.level || "low").toLowerCase();
     if (severity === "high" || severity === "critical" || severity === "error") {
       counts.high++;

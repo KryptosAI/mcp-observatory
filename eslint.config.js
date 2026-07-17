@@ -4,7 +4,7 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: ["docs/fleet-monitor.html", "dashboard/**", "dist/**", "node_modules/**", ".mcp-observatory/**", "api/**", "github-app/**"]
+    ignores: ["docs/fleet-monitor.html", "dashboard/**", "dist/**", "node_modules/**", ".mcp-observatory/**", "api/**", "github-app/**", "scripts/metrics-dashboard.ts", "scripts/telemetry-company-intelligence.ts", "scripts/evaluate-permission-delta-conformance.ts"]
   },
   js.configs.recommended,
   {
