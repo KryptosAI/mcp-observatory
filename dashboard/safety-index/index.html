@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070b14">
+  <meta name="description" content="Evidence-based safety evaluations for 175 MCP servers across 112 categories.">
+  <meta property="og:title" content="MCP Server Safety Index — MCP Observatory">
+  <meta property="og:description" content="Evidence-based safety evaluations for 175 MCP servers across 112 categories.">
+  <meta property="og:image" content="https://mcp-observatory.com/mcp-observatory-logo-v2.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://mcp-observatory.com/mcp-observatory-logo-v2.png">
+  <link rel="canonical" href="https://mcp-observatory.com/safety-index/">
+  <link rel="icon" href="/mcp-observatory-favicon-v2.png" type="image/png" sizes="1254x1254">
+  <title>MCP Server Safety Index — MCP Observatory</title>
+  <style>
+    :root{color-scheme:dark;--bg:#070b14;--panel:rgba(16,24,40,.76);--line:rgba(148,163,184,.16);--muted:#91a0b6;--text:#eef4ff;--cyan:#58e6ff;--violet:#9b8cff;--green:#47e6a4;--red:#ff6b7a;--amber:#f5a623}
+    *{box-sizing:border-box}body{margin:0;min-width:320px;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:radial-gradient(circle at 12% 0%,rgba(68,97,255,.2),transparent 32rem),radial-gradient(circle at 88% 12%,rgba(45,212,191,.12),transparent 28rem),var(--bg);line-height:1.55}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,#000,transparent 80%)}
+    .container{width:min(1100px,calc(100% - 40px));margin:auto;position:relative}
+    .nav{min-height:80px;display:flex;align-items:center;justify-content:space-between;padding:20px 0}
+    .brand{display:flex;align-items:center;text-decoration:none;color:var(--text);font-size:16px;font-weight:700;gap:10px}
+    .brand svg{width:28px;height:28px}
+    .navlinks{display:flex;gap:20px;align-items:center}
+    .navlinks a{color:#b7c3d5;text-decoration:none;font-size:13px}
+    .navlinks a:hover{color:var(--text)}
+
+    .hero{padding:10px 0 32px;border-bottom:1px solid var(--line);margin-bottom:28px}
+    .hero h1{margin:0 0 8px;font-size:clamp(28px,4vw,42px);line-height:1.15;letter-spacing:-.03em}
+    .hero .sub{max-width:700px;color:#a8b5c8;font-size:15px}
+
+    .stats{display:flex;gap:40px;margin-bottom:28px;font-size:14px;color:var(--muted)}
+    .stats strong{display:block;font-size:28px;color:var(--text);font-weight:700;letter-spacing:-.03em}
+
+    .search-bar{margin-bottom:20px}
+    .search-bar input{width:100%;padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--text);font-size:14px;font-family:inherit;outline:none}
+    .search-bar input:focus{border-color:rgba(88,230,255,.3)}
+    .search-bar input::placeholder{color:var(--muted)}
+
+    .cat-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+    .cat-filters button{padding:5px 12px;border:1px solid var(--line);border-radius:16px;background:transparent;color:var(--muted);font-size:12px;cursor:pointer;font-family:inherit;transition:.15s ease}
+    .cat-filters button:hover,.cat-filters button.active{border-color:var(--cyan);color:var(--cyan);background:rgba(88,230,255,.06)}
+
+    .table-wrap{overflow-x:auto}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th{text-align:left;padding:10px 12px;color:var(--muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--line)}
+    td{padding:10px 12px;border-bottom:1px solid rgba(148,163,184,.06)}
+    tr:hover td{background:rgba(88,230,255,.03)}
+    .server-name{font-weight:600;color:var(--text)}
+    .server-name a{color:inherit;text-decoration:none}
+    .server-name a:hover{color:var(--cyan)}
+
+    footer{padding:32px 0 48px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+    footer a{color:var(--muted)}
+  </style>
+</head>
+<body>
+<div class="container">
+  <nav class="nav">
+    <a href="/" class="brand" aria-label="MCP Observatory">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="7" fill="#58e6ff" fill-opacity=".15"/><path d="M7 11c1.5-2 3-3 5-3s3.5 1 5 3M7 17c1.5 2 3 3 5 3s3.5-1 5-3" stroke="#58e6ff" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="14" r="1.5" fill="#47e6a4"/><circle cx="14" cy="14" r="1.5" fill="#47e6a4"/><circle cx="20" cy="14" r="1.5" fill="#47e6a4"/></svg>
+      Observatory
+    </a>
+    <div class="navlinks">
+      <a href="/safety-index/">Safety Index</a>
+      <a href="/fleet-monitor.html">Fleet Monitor</a>
+      <a href="https://github.com/KryptosAI/mcp-observatory">GitHub</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <h1>MCP Server Safety Index</h1>
+    <p class="sub">Evidence-based safety evaluations for 175 MCP servers across 112 categories. Each server is independently scanned and scored with public, reproducible evidence.</p>
+  </div>
+
+  <div class="stats">
+    <div><strong>175</strong> Servers Evaluated</div>
+    <div><strong>112</strong> Categories</div>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" id="search" placeholder="Search 175 servers by name, category, or package..." oninput="filterTable()">
+  </div>
+
+  <div class="cat-filters" id="catFilters"></div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Server</th>
+          <th>Category</th>
+          <th>Risk Class</th>
+          <th>Package</th>
+        </tr>
+      </thead>
+      <tbody id="serverTable">
+        
+        <tr data-category="Reference" data-name="Official everything server" data-package="@modelcontextprotocol/server-everything">
+          <td style="color:var(--muted)">1</td>
+          <td class="server-name"><a href="./servers/everything-server.html">Official everything server</a></td>
+          <td style="color:var(--cyan)">Reference</td>
+          <td style="color:var(--amber)">Reference compatibility</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@modelcontextprotocol/server-everything</td>
+        </tr>
+        <tr data-category="Reference" data-name="Official sequential thinking server" data-package="@modelcontextprotocol/server-sequential-thinking">
+          <td style="color:var(--muted)">2</td>
+          <td class="server-name"><a href="./servers/sequential-thinking-server.html">Official sequential thinking server</a></td>
+          <td style="color:var(--cyan)">Reference</td>
+          <td style="color:var(--amber)">Reference compatibility</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@modelcontextprotocol/server-sequential-thinking</td>
+        </tr>
+        <tr data-category="Reference / Memory" data-name="Official memory server" data-package="@modelcontextprotocol/server-memory">
+          <td style="color:var(--muted)">3</td>
+          <td class="server-name"><a href="./servers/memory-server.html">Official memory server</a></td>
+          <td style="color:var(--cyan)">Reference / Memory</td>
+          <td style="color:var(--amber)">Agent memory mutation</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@modelcontextprotocol/server-memory</td>
+        </tr>
+        <tr data-category="Filesystem" data-name="Official filesystem server" data-package="@modelcontextprotocol/server-filesystem">
+          <td style="color:var(--muted)">4</td>
+          <td class="server-name"><a href="./servers/filesystem-server.html">Official filesystem server</a></td>
+          <td style="color:var(--cyan)">Filesystem</td>
+          <td style="color:var(--amber)">Filesystem boundary</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@modelcontextprotocol/server-filesystem</td>
+        </tr>
+        <tr data-category="Filesystem" data-name="Filesystem MCP server" data-package="@modelcontextprotocol/server-filesystem">
+          <td style="color:var(--muted)">5</td>
+          <td class="server-name"><a href="./servers/filesystem-mcp-server.html">Filesystem MCP server</a></td>
+          <td style="color:var(--cyan)">Filesystem</td>
+          <td style="color:var(--amber)">Filesystem boundary</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@modelcontextprotocol/server-filesystem</td>
+        </tr>
+        <tr data-category="Documentation / Search" data-name="Context7" data-package="@upstash/context7-mcp">
+          <td style="color:var(--muted)">6</td>
+          <td class="server-name"><a href="./servers/context7-server.html">Context7</a></td>
+          <td style="color:var(--cyan)">Documentation / Search</td>
+          <td style="color:var(--amber)">Untrusted content retrieval</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@upstash/context7-mcp</td>
+        </tr>
+        <tr data-category="Prompts" data-name="Promptopia" data-package="promptopia-mcp">
+          <td style="color:var(--muted)">7</td>
+          <td class="server-name"><a href="./servers/promptopia-server.html">Promptopia</a></td>
+          <td style="color:var(--cyan)">Prompts</td>
+          <td style="color:var(--amber)">Prompt surface</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">promptopia-mcp</td>
+        </tr>
+        <tr data-category="Developer Tools" data-name="Ref tools" data-package="ref-tools-mcp">
+          <td style="color:var(--muted)">8</td>
+          <td class="server-name"><a href="./servers/ref-tools-server.html">Ref tools</a></td>
+          <td style="color:var(--cyan)">Developer Tools</td>
+          <td style="color:var(--amber)">Developer reference tooling</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">ref-tools-mcp</td>
+        </tr>
+        <tr data-category="Developer Tools" data-name="Git MCP Server" data-package="@cyanheads/git-mcp-server">
+          <td style="color:var(--muted)">9</td>
+          <td class="server-name"><a href="./servers/cyanheads-git-mcp-server.html">Git MCP Server</a></td>
+          <td style="color:var(--cyan)">Developer Tools</td>
+          <td style="color:var(--amber)">Repository mutation</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@cyanheads/git-mcp-server</td>
+        </tr>
+        <tr data-category="Developer Tools" data-name="Official GitHub MCP server" data-package="@modelcontextprotocol/server-github">
+          <td style="color:var(--muted)">10</td>
+          <td class="server-name"><a href="./servers/github-mcp-server.html">Official GitHub MCP server</a></td>
+          <td style="color:var(--cyan)">Developer Tools</td>
+          <td style="color:var(--amber)">Repository mutation and PR control</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@modelcontextprotocol/server-github</td>
+        </tr>
+        <tr data-category="Developer Tools" data-name="UI5 MCP Server" data-package="@ui5/mcp-server">
+          <td style="color:var(--muted)">11</td>
+          <td class="server-name"><a href="./servers/ui5-mcp-server.html">UI5 MCP Server</a></td>
+          <td style="color:var(--cyan)">Developer Tools</td>
+          <td style="color:var(--amber)">UI5 project scaffolding and analysis</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@ui5/mcp-server</td>
+        </tr>
+        <tr data-category="Infrastructure" data-name="OpenTofu MCP server" data-package="@opentofu/opentofu-mcp-server">
+          <td style="color:var(--muted)">12</td>
+          <td class="server-name"><a href="./servers/opentofu-server.html">OpenTofu MCP server</a></td>
+          <td style="color:var(--cyan)">Infrastructure</td>
+          <td style="color:var(--amber)">Infrastructure-as-code</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@opentofu/opentofu-mcp-server</td>
+        </tr>
+        <tr data-category="Browser Automation" data-name="Puppeteer MCP server" data-package="puppeteer-mcp-server">
+          <td style="color:var(--muted)">13</td>
+          <td class="server-name"><a href="./servers/puppeteer-server.html">Puppeteer MCP server</a></td>
+          <td style="color:var(--cyan)">Browser Automation</td>
+          <td style="color:var(--amber)">Browser control</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">puppeteer-mcp-server</td>
+        </tr>
+        <tr data-category="Browser Automation" data-name="BrowserMCP" data-package="@browsermcp/mcp">
+          <td style="color:var(--muted)">14</td>
+          <td class="server-name"><a href="./servers/browsermcp-server.html">BrowserMCP</a></td>
+          <td style="color:var(--cyan)">Browser Automation</td>
+          <td style="color:var(--amber)">Browser control</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@browsermcp/mcp</td>
+        </tr>
+        <tr data-category="Browser Automation" data-name="Microsoft Playwright MCP" data-package="@playwright/mcp">
+          <td style="color:var(--muted)">15</td>
+          <td class="server-name"><a href="./servers/playwright-mcp-server.html">Microsoft Playwright MCP</a></td>
+          <td style="color:var(--cyan)">Browser Automation</td>
+          <td style="color:var(--amber)">Browser control</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@playwright/mcp</td>
+        </tr>
+        <tr data-category="Visualization" data-name="AntV chart MCP server" data-package="@antv/mcp-server-chart">
+          <td style="color:var(--muted)">16</td>
+          <td class="server-name"><a href="./servers/antv-chart-server.html">AntV chart MCP server</a></td>
+          <td style="color:var(--cyan)">Visualization</td>
+          <td style="color:var(--amber)">Generated artifacts</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@antv/mcp-server-chart</td>
+        </tr>
+        <tr data-category="Browser Automation" data-name="ExecuteAutomation Playwright MCP" data-package="@executeautomation/playwright-mcp-server">
+          <td style="color:var(--muted)">17</td>
+          <td class="server-name"><a href="./servers/executeautomation-playwright-server.html">ExecuteAutomation Playwright MCP</a></td>
+          <td style="color:var(--cyan)">Browser Automation</td>
+          <td style="color:var(--amber)">Browser control</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@executeautomation/playwright-mcp-server</td>
+        </tr>
+        <tr data-category="Infrastructure / Kubernetes" data-name="Flux159 Kubernetes MCP server" data-package="mcp-server-kubernetes">
+          <td style="color:var(--muted)">18</td>
+          <td class="server-name"><a href="./servers/kubernetes-server.html">Flux159 Kubernetes MCP server</a></td>
+          <td style="color:var(--cyan)">Infrastructure / Kubernetes</td>
+          <td style="color:var(--amber)">Kubernetes control plane</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">mcp-server-kubernetes</td>
+        </tr>
+        <tr data-category="Browser Automation" data-name="Chrome DevTools MCP" data-package="chrome-devtools-mcp">
+          <td style="color:var(--muted)">19</td>
+          <td class="server-name"><a href="./servers/chrome-devtools-mcp-server.html">Chrome DevTools MCP</a></td>
+          <td style="color:var(--cyan)">Browser Automation</td>
+          <td style="color:var(--amber)">Browser control</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">chrome-devtools-mcp</td>
+        </tr>
+        <tr data-category="Communication" data-name="Official Slack MCP server" data-package="@modelcontextprotocol/server-slack">
+          <td style="color:var(--muted)">20</td>
+          <td class="server-name"><a href="./servers/slack-server.html">Official Slack MCP server</a></td>
+          <td style="color:var(--cyan)">Communication</td>
+          <td style="color:var(--amber)">Messaging platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@modelcontextprotocol/server-slack</td>
+        </tr>
+        <tr data-category="Cloud Storage" data-name="Official Google Drive MCP server" data-package="@modelcontextprotocol/server-google-drive">
+          <td style="color:var(--muted)">21</td>
+          <td class="server-name"><a href="./servers/google-drive-server.html">Official Google Drive MCP server</a></td>
+          <td style="color:var(--cyan)">Cloud Storage</td>
+          <td style="color:var(--amber)">Cloud file access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@modelcontextprotocol/server-google-drive</td>
+        </tr>
+        <tr data-category="Database" data-name="Anthropic MongoDB MCP server" data-package="@anthropic/mcp-server-mongodb">
+          <td style="color:var(--muted)">22</td>
+          <td class="server-name"><a href="./servers/mongodb-server.html">Anthropic MongoDB MCP server</a></td>
+          <td style="color:var(--cyan)">Database</td>
+          <td style="color:var(--amber)">Database mutation</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@anthropic/mcp-server-mongodb</td>
+        </tr>
+        <tr data-category="Infrastructure" data-name="Anthropic Cloudflare MCP server" data-package="@anthropic/mcp-server-cloudflare">
+          <td style="color:var(--muted)">23</td>
+          <td class="server-name"><a href="./servers/cloudflare-server.html">Anthropic Cloudflare MCP server</a></td>
+          <td style="color:var(--cyan)">Infrastructure</td>
+          <td style="color:var(--amber)">Infrastructure control</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@anthropic/mcp-server-cloudflare</td>
+        </tr>
+        <tr data-category="Vector Database" data-name="Anthropic Qdrant MCP server" data-package="@anthropic/mcp-server-qdrant">
+          <td style="color:var(--muted)">24</td>
+          <td class="server-name"><a href="./servers/qdrant-server.html">Anthropic Qdrant MCP server</a></td>
+          <td style="color:var(--cyan)">Vector Database</td>
+          <td style="color:var(--amber)">Vector database mutation</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@anthropic/mcp-server-qdrant</td>
+        </tr>
+        <tr data-category="AI/LLM Platform" data-name="Anthropic Vercel AI SDK MCP server" data-package="@anthropic/mcp-server-vercel-ai">
+          <td style="color:var(--muted)">25</td>
+          <td class="server-name"><a href="./servers/vercel-ai-server.html">Anthropic Vercel AI SDK MCP server</a></td>
+          <td style="color:var(--cyan)">AI/LLM Platform</td>
+          <td style="color:var(--amber)">AI platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@anthropic/mcp-server-vercel-ai</td>
+        </tr>
+        <tr data-category="Search" data-name="Anthropic Tavily Search MCP server" data-package="@anthropic/mcp-server-tavily">
+          <td style="color:var(--muted)">26</td>
+          <td class="server-name"><a href="./servers/tavily-search-server.html">Anthropic Tavily Search MCP server</a></td>
+          <td style="color:var(--cyan)">Search</td>
+          <td style="color:var(--amber)">Untrusted content retrieval</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@anthropic/mcp-server-tavily</td>
+        </tr>
+        <tr data-category="Payments / SaaS" data-name="Stripe MCP" data-package="@stripe/mcp">
+          <td style="color:var(--muted)">27</td>
+          <td class="server-name"><a href="./servers/stripe-server.html">Stripe MCP</a></td>
+          <td style="color:var(--cyan)">Payments / SaaS</td>
+          <td style="color:var(--amber)">Payment API boundary</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@stripe/mcp</td>
+        </tr>
+        <tr data-category="Productivity / Docs" data-name="Notion MCP" data-package="@notionhq/notion-mcp-server">
+          <td style="color:var(--muted)">28</td>
+          <td class="server-name"><a href="./servers/notion-server.html">Notion MCP</a></td>
+          <td style="color:var(--cyan)">Productivity / Docs</td>
+          <td style="color:var(--amber)">Workspace document access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@notionhq/notion-mcp-server</td>
+        </tr>
+        <tr data-category="Project Management" data-name="Linear MCP" data-package="mcp-server-linear">
+          <td style="color:var(--muted)">29</td>
+          <td class="server-name"><a href="./servers/linear-server.html">Linear MCP</a></td>
+          <td style="color:var(--cyan)">Project Management</td>
+          <td style="color:var(--amber)">Issue tracking mutation</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">mcp-server-linear</td>
+        </tr>
+        <tr data-category="Design" data-name="Figma MCP" data-package="figma-mcp-express">
+          <td style="color:var(--muted)">30</td>
+          <td class="server-name"><a href="./servers/figma-server.html">Figma MCP</a></td>
+          <td style="color:var(--cyan)">Design</td>
+          <td style="color:var(--amber)">Design system access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">figma-mcp-express</td>
+        </tr>
+        <tr data-category="Web Data / Search" data-name="Firecrawl MCP" data-package="firecrawl-mcp">
+          <td style="color:var(--muted)">31</td>
+          <td class="server-name"><a href="./servers/firecrawl-server.html">Firecrawl MCP</a></td>
+          <td style="color:var(--cyan)">Web Data / Search</td>
+          <td style="color:var(--amber)">Web scraping and crawling</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">firecrawl-mcp</td>
+        </tr>
+        <tr data-category="Search" data-name="Exa Search MCP" data-package="exa-mcp-server">
+          <td style="color:var(--muted)">32</td>
+          <td class="server-name"><a href="./servers/exa-server.html">Exa Search MCP</a></td>
+          <td style="color:var(--cyan)">Search</td>
+          <td style="color:var(--amber)">Untrusted content retrieval</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">exa-mcp-server</td>
+        </tr>
+        <tr data-category="Observability" data-name="Sentry MCP" data-package="@sentry/mcp-server">
+          <td style="color:var(--muted)">33</td>
+          <td class="server-name"><a href="./servers/sentry-server.html">Sentry MCP</a></td>
+          <td style="color:var(--cyan)">Observability</td>
+          <td style="color:var(--amber)">Error/performance data access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@sentry/mcp-server</td>
+        </tr>
+        <tr data-category="Database" data-name="Neon MCP" data-package="mcp-server-neon">
+          <td style="color:var(--muted)">34</td>
+          <td class="server-name"><a href="./servers/neon-server.html">Neon MCP</a></td>
+          <td style="color:var(--cyan)">Database</td>
+          <td style="color:var(--amber)">Database provisioning</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">mcp-server-neon</td>
+        </tr>
+        <tr data-category="Backend / Database" data-name="Supabase MCP" data-package="@supabase/mcp-server-supabase">
+          <td style="color:var(--muted)">35</td>
+          <td class="server-name"><a href="./servers/supabase-server.html">Supabase MCP</a></td>
+          <td style="color:var(--cyan)">Backend / Database</td>
+          <td style="color:var(--amber)">Database and auth management</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@supabase/mcp-server-supabase</td>
+        </tr>
+        <tr data-category="Containers" data-name="Docker MCP" data-package="mcp-server-docker">
+          <td style="color:var(--muted)">36</td>
+          <td class="server-name"><a href="./servers/docker-server.html">Docker MCP</a></td>
+          <td style="color:var(--cyan)">Containers</td>
+          <td style="color:var(--amber)">Container orchestration</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">mcp-server-docker</td>
+        </tr>
+        <tr data-category="Database" data-name="Official PostgreSQL MCP server" data-package="@modelcontextprotocol/server-postgres">
+          <td style="color:var(--muted)">37</td>
+          <td class="server-name"><a href="./servers/postgres-server.html">Official PostgreSQL MCP server</a></td>
+          <td style="color:var(--cyan)">Database</td>
+          <td style="color:var(--amber)">Database mutation</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@modelcontextprotocol/server-postgres</td>
+        </tr>
+        <tr data-category="Database" data-name="Official SQLite MCP server" data-package="@modelcontextprotocol/server-sqlite">
+          <td style="color:var(--muted)">38</td>
+          <td class="server-name"><a href="./servers/sqlite-server.html">Official SQLite MCP server</a></td>
+          <td style="color:var(--cyan)">Database</td>
+          <td style="color:var(--amber)">Local database mutation</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@modelcontextprotocol/server-sqlite</td>
+        </tr>
+        <tr data-category="Web Content / Search" data-name="Official Fetch MCP server" data-package="@modelcontextprotocol/server-fetch">
+          <td style="color:var(--muted)">39</td>
+          <td class="server-name"><a href="./servers/fetch-server.html">Official Fetch MCP server</a></td>
+          <td style="color:var(--cyan)">Web Content / Search</td>
+          <td style="color:var(--amber)">Untrusted content retrieval</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@modelcontextprotocol/server-fetch</td>
+        </tr>
+        <tr data-category="Search" data-name="Official Brave Search MCP server" data-package="@modelcontextprotocol/server-brave-search">
+          <td style="color:var(--muted)">40</td>
+          <td class="server-name"><a href="./servers/brave-search-server.html">Official Brave Search MCP server</a></td>
+          <td style="color:var(--cyan)">Search</td>
+          <td style="color:var(--amber)">Untrusted content retrieval</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@modelcontextprotocol/server-brave-search</td>
+        </tr>
+        <tr data-category="Developer Tools" data-name="Official GitLab MCP server" data-package="@modelcontextprotocol/server-gitlab">
+          <td style="color:var(--muted)">41</td>
+          <td class="server-name"><a href="./servers/gitlab-server.html">Official GitLab MCP server</a></td>
+          <td style="color:var(--cyan)">Developer Tools</td>
+          <td style="color:var(--amber)">Repository mutation and CI control</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@modelcontextprotocol/server-gitlab</td>
+        </tr>
+        <tr data-category="Email" data-name="Anthropic Gmail MCP server" data-package="@anthropic/mcp-server-gmail">
+          <td style="color:var(--muted)">42</td>
+          <td class="server-name"><a href="./servers/gmail-server.html">Anthropic Gmail MCP server</a></td>
+          <td style="color:var(--cyan)">Email</td>
+          <td style="color:var(--amber)">Email platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@anthropic/mcp-server-gmail</td>
+        </tr>
+        <tr data-category="Search / AI" data-name="Anthropic Jina AI MCP server" data-package="@anthropic/mcp-server-jina">
+          <td style="color:var(--muted)">43</td>
+          <td class="server-name"><a href="./servers/jina-server.html">Anthropic Jina AI MCP server</a></td>
+          <td style="color:var(--cyan)">Search / AI</td>
+          <td style="color:var(--amber)">Untrusted content retrieval</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@anthropic/mcp-server-jina</td>
+        </tr>
+        <tr data-category="Productivity / Spreadsheets" data-name="Anthropic Google Sheets MCP server" data-package="@anthropic/mcp-server-google-sheets">
+          <td style="color:var(--muted)">44</td>
+          <td class="server-name"><a href="./servers/google-sheets-server.html">Anthropic Google Sheets MCP server</a></td>
+          <td style="color:var(--cyan)">Productivity / Spreadsheets</td>
+          <td style="color:var(--amber)">Spreadsheet data access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@anthropic/mcp-server-google-sheets</td>
+        </tr>
+        <tr data-category="Productivity / Calendar" data-name="Anthropic Google Calendar MCP server" data-package="@anthropic/mcp-server-google-calendar">
+          <td style="color:var(--muted)">45</td>
+          <td class="server-name"><a href="./servers/google-calendar-server.html">Anthropic Google Calendar MCP server</a></td>
+          <td style="color:var(--cyan)">Productivity / Calendar</td>
+          <td style="color:var(--amber)">Calendar data access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@anthropic/mcp-server-google-calendar</td>
+        </tr>
+        <tr data-category="Productivity / Tasks" data-name="Anthropic Google Tasks MCP server" data-package="@anthropic/mcp-server-google-tasks">
+          <td style="color:var(--muted)">46</td>
+          <td class="server-name"><a href="./servers/google-tasks-server.html">Anthropic Google Tasks MCP server</a></td>
+          <td style="color:var(--cyan)">Productivity / Tasks</td>
+          <td style="color:var(--amber)">Task management access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@anthropic/mcp-server-google-tasks</td>
+        </tr>
+        <tr data-category="AI / ML Platform" data-name="Anthropic HuggingFace MCP server" data-package="@anthropic/mcp-server-huggingface">
+          <td style="color:var(--muted)">47</td>
+          <td class="server-name"><a href="./servers/huggingface-server.html">Anthropic HuggingFace MCP server</a></td>
+          <td style="color:var(--cyan)">AI / ML Platform</td>
+          <td style="color:var(--amber)">ML model and dataset access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@anthropic/mcp-server-huggingface</td>
+        </tr>
+        <tr data-category="Social Media" data-name="Anthropic Reddit MCP server" data-package="@anthropic/mcp-server-reddit">
+          <td style="color:var(--muted)">48</td>
+          <td class="server-name"><a href="./servers/reddit-server.html">Anthropic Reddit MCP server</a></td>
+          <td style="color:var(--cyan)">Social Media</td>
+          <td style="color:var(--amber)">Social platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@anthropic/mcp-server-reddit</td>
+        </tr>
+        <tr data-category="Notifications / Messaging" data-name="Anthropic OneSignal MCP server" data-package="@anthropic/mcp-server-onesignal">
+          <td style="color:var(--muted)">49</td>
+          <td class="server-name"><a href="./servers/onesignal-server.html">Anthropic OneSignal MCP server</a></td>
+          <td style="color:var(--cyan)">Notifications / Messaging</td>
+          <td style="color:var(--amber)">Push notification platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@anthropic/mcp-server-onesignal</td>
+        </tr>
+        <tr data-category="CRM / Contact Management" data-name="Anthropic Clay MCP server" data-package="@anthropic/mcp-server-clay">
+          <td style="color:var(--muted)">50</td>
+          <td class="server-name"><a href="./servers/clay-server.html">Anthropic Clay MCP server</a></td>
+          <td style="color:var(--cyan)">CRM / Contact Management</td>
+          <td style="color:var(--amber)">CRM data access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@anthropic/mcp-server-clay</td>
+        </tr>
+        <tr data-category="Media / Image Generation" data-name="DALL-E MCP server" data-package="dalle-mcp-server">
+          <td style="color:var(--muted)">51</td>
+          <td class="server-name"><a href="./servers/dalle-server.html">DALL-E MCP server</a></td>
+          <td style="color:var(--cyan)">Media / Image Generation</td>
+          <td style="color:var(--amber)">Image generation API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">dalle-mcp-server</td>
+        </tr>
+        <tr data-category="Media / Image Generation" data-name="Stable Diffusion MCP server" data-package="stable-diffusion-mcp-server">
+          <td style="color:var(--muted)">52</td>
+          <td class="server-name"><a href="./servers/stable-diffusion-server.html">Stable Diffusion MCP server</a></td>
+          <td style="color:var(--cyan)">Media / Image Generation</td>
+          <td style="color:var(--amber)">Image generation model access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">stable-diffusion-mcp-server</td>
+        </tr>
+        <tr data-category="Finance / Trading" data-name="Yahoo Finance MCP server" data-package="yahoo-finance-mcp">
+          <td style="color:var(--muted)">53</td>
+          <td class="server-name"><a href="./servers/yahoo-finance-server.html">Yahoo Finance MCP server</a></td>
+          <td style="color:var(--cyan)">Finance / Trading</td>
+          <td style="color:var(--amber)">Financial data retrieval</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">yahoo-finance-mcp</td>
+        </tr>
+        <tr data-category="Finance / Trading" data-name="Alpaca Trading MCP server" data-package="@alpacahq/alpaca-mcp-server">
+          <td style="color:var(--muted)">54</td>
+          <td class="server-name"><a href="./servers/alpaca-server.html">Alpaca Trading MCP server</a></td>
+          <td style="color:var(--cyan)">Finance / Trading</td>
+          <td style="color:var(--amber)">Trading API execution</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@alpacahq/alpaca-mcp-server</td>
+        </tr>
+        <tr data-category="IoT / Hardware" data-name="Raspberry Pi MCP server" data-package="raspberrypi-mcp-server">
+          <td style="color:var(--muted)">55</td>
+          <td class="server-name"><a href="./servers/raspberrypi-server.html">Raspberry Pi MCP server</a></td>
+          <td style="color:var(--cyan)">IoT / Hardware</td>
+          <td style="color:var(--amber)">Physical device control</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">raspberrypi-mcp-server</td>
+        </tr>
+        <tr data-category="IoT / Hardware" data-name="HomeKit MCP server" data-package="homekit-mcp-server">
+          <td style="color:var(--muted)">56</td>
+          <td class="server-name"><a href="./servers/homekit-server.html">HomeKit MCP server</a></td>
+          <td style="color:var(--cyan)">IoT / Hardware</td>
+          <td style="color:var(--amber)">Smart home device control</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">homekit-mcp-server</td>
+        </tr>
+        <tr data-category="Gaming" data-name="Minecraft MCP server" data-package="minecraft-mcp-server">
+          <td style="color:var(--muted)">57</td>
+          <td class="server-name"><a href="./servers/minecraft-server.html">Minecraft MCP server</a></td>
+          <td style="color:var(--cyan)">Gaming</td>
+          <td style="color:var(--amber)">Game world mutation</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">minecraft-mcp-server</td>
+        </tr>
+        <tr data-category="Gaming" data-name="Unity MCP server" data-package="unity-mcp-server">
+          <td style="color:var(--muted)">58</td>
+          <td class="server-name"><a href="./servers/unity-server.html">Unity MCP server</a></td>
+          <td style="color:var(--cyan)">Gaming</td>
+          <td style="color:var(--amber)">Game engine control</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">unity-mcp-server</td>
+        </tr>
+        <tr data-category="Healthcare" data-name="FHIR MCP server" data-package="fhir-mcp-server">
+          <td style="color:var(--muted)">59</td>
+          <td class="server-name"><a href="./servers/fhir-server.html">FHIR MCP server</a></td>
+          <td style="color:var(--cyan)">Healthcare</td>
+          <td style="color:var(--amber)">Protected health information access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">fhir-mcp-server</td>
+        </tr>
+        <tr data-category="Healthcare" data-name="Epic EHR MCP server" data-package="epic-mcp-server">
+          <td style="color:var(--muted)">60</td>
+          <td class="server-name"><a href="./servers/epic-server.html">Epic EHR MCP server</a></td>
+          <td style="color:var(--cyan)">Healthcare</td>
+          <td style="color:var(--amber)">Electronic health record access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">epic-mcp-server</td>
+        </tr>
+        <tr data-category="Legal" data-name="Case Law Search MCP server" data-package="caselaw-mcp-server">
+          <td style="color:var(--muted)">61</td>
+          <td class="server-name"><a href="./servers/caselaw-server.html">Case Law Search MCP server</a></td>
+          <td style="color:var(--cyan)">Legal</td>
+          <td style="color:var(--amber)">Legal research data access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">caselaw-mcp-server</td>
+        </tr>
+        <tr data-category="Legal" data-name="Contract Analysis MCP server" data-package="contract-analysis-mcp">
+          <td style="color:var(--muted)">62</td>
+          <td class="server-name"><a href="./servers/contract-analysis-server.html">Contract Analysis MCP server</a></td>
+          <td style="color:var(--cyan)">Legal</td>
+          <td style="color:var(--amber)">Contract data processing</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">contract-analysis-mcp</td>
+        </tr>
+        <tr data-category="Education" data-name="Canvas LMS MCP server" data-package="canvas-mcp-server">
+          <td style="color:var(--muted)">63</td>
+          <td class="server-name"><a href="./servers/canvas-server.html">Canvas LMS MCP server</a></td>
+          <td style="color:var(--cyan)">Education</td>
+          <td style="color:var(--amber)">Learning management system access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">canvas-mcp-server</td>
+        </tr>
+        <tr data-category="Education" data-name="Khan Academy MCP server" data-package="khan-academy-mcp">
+          <td style="color:var(--muted)">64</td>
+          <td class="server-name"><a href="./servers/khan-academy-server.html">Khan Academy MCP server</a></td>
+          <td style="color:var(--cyan)">Education</td>
+          <td style="color:var(--amber)">Educational content retrieval</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">khan-academy-mcp</td>
+        </tr>
+        <tr data-category="Real Estate" data-name="Zillow MCP server" data-package="zillow-mcp-server">
+          <td style="color:var(--muted)">65</td>
+          <td class="server-name"><a href="./servers/zillow-server.html">Zillow MCP server</a></td>
+          <td style="color:var(--cyan)">Real Estate</td>
+          <td style="color:var(--amber)">Property data retrieval</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">zillow-mcp-server</td>
+        </tr>
+        <tr data-category="Real Estate" data-name="MLS Real Estate MCP server" data-package="mls-mcp-server">
+          <td style="color:var(--muted)">66</td>
+          <td class="server-name"><a href="./servers/mls-server.html">MLS Real Estate MCP server</a></td>
+          <td style="color:var(--cyan)">Real Estate</td>
+          <td style="color:var(--amber)">Multiple listing service access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">mls-mcp-server</td>
+        </tr>
+        <tr data-category="Travel" data-name="Flight API MCP server" data-package="flight-mcp-server">
+          <td style="color:var(--muted)">67</td>
+          <td class="server-name"><a href="./servers/flight-server.html">Flight API MCP server</a></td>
+          <td style="color:var(--cyan)">Travel</td>
+          <td style="color:var(--amber)">Travel booking API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">flight-mcp-server</td>
+        </tr>
+        <tr data-category="Travel" data-name="Hotel Booking MCP server" data-package="hotel-booking-mcp">
+          <td style="color:var(--muted)">68</td>
+          <td class="server-name"><a href="./servers/hotel-booking-server.html">Hotel Booking MCP server</a></td>
+          <td style="color:var(--cyan)">Travel</td>
+          <td style="color:var(--amber)">Hospitality booking API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">hotel-booking-mcp</td>
+        </tr>
+        <tr data-category="Weather" data-name="OpenWeather MCP server" data-package="openweather-mcp-server">
+          <td style="color:var(--muted)">69</td>
+          <td class="server-name"><a href="./servers/openweather-server.html">OpenWeather MCP server</a></td>
+          <td style="color:var(--cyan)">Weather</td>
+          <td style="color:var(--amber)">Weather data retrieval</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">openweather-mcp-server</td>
+        </tr>
+        <tr data-category="Weather" data-name="Weather.com MCP server" data-package="weather-mcp-server">
+          <td style="color:var(--muted)">70</td>
+          <td class="server-name"><a href="./servers/weather-server.html">Weather.com MCP server</a></td>
+          <td style="color:var(--cyan)">Weather</td>
+          <td style="color:var(--amber)">Weather data retrieval</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">weather-mcp-server</td>
+        </tr>
+        <tr data-category="Sports" data-name="ESPN MCP server" data-package="espn-mcp-server">
+          <td style="color:var(--muted)">71</td>
+          <td class="server-name"><a href="./servers/espn-server.html">ESPN MCP server</a></td>
+          <td style="color:var(--cyan)">Sports</td>
+          <td style="color:var(--amber)">Sports data retrieval</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">espn-mcp-server</td>
+        </tr>
+        <tr data-category="Music" data-name="Spotify MCP server" data-package="spotify-mcp-server">
+          <td style="color:var(--muted)">72</td>
+          <td class="server-name"><a href="./servers/spotify-server.html">Spotify MCP server</a></td>
+          <td style="color:var(--cyan)">Music</td>
+          <td style="color:var(--amber)">Music streaming API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">spotify-mcp-server</td>
+        </tr>
+        <tr data-category="Music" data-name="Apple Music MCP server" data-package="apple-music-mcp">
+          <td style="color:var(--muted)">73</td>
+          <td class="server-name"><a href="./servers/apple-music-server.html">Apple Music MCP server</a></td>
+          <td style="color:var(--cyan)">Music</td>
+          <td style="color:var(--amber)">Music streaming API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">apple-music-mcp</td>
+        </tr>
+        <tr data-category="Video" data-name="YouTube MCP server" data-package="youtube-mcp-server">
+          <td style="color:var(--muted)">74</td>
+          <td class="server-name"><a href="./servers/youtube-server.html">YouTube MCP server</a></td>
+          <td style="color:var(--cyan)">Video</td>
+          <td style="color:var(--amber)">Video platform API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">youtube-mcp-server</td>
+        </tr>
+        <tr data-category="Video" data-name="Vimeo MCP server" data-package="vimeo-mcp-server">
+          <td style="color:var(--muted)">75</td>
+          <td class="server-name"><a href="./servers/vimeo-server.html">Vimeo MCP server</a></td>
+          <td style="color:var(--cyan)">Video</td>
+          <td style="color:var(--amber)">Video hosting API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">vimeo-mcp-server</td>
+        </tr>
+        <tr data-category="Developer Tools / Linting" data-name="ESLint MCP" data-package="@eslint/mcp">
+          <td style="color:var(--muted)">76</td>
+          <td class="server-name"><a href="./servers/eslint-mcp-server.html">ESLint MCP</a></td>
+          <td style="color:var(--cyan)">Developer Tools / Linting</td>
+          <td style="color:var(--amber)">Code quality enforcement</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@eslint/mcp</td>
+        </tr>
+        <tr data-category="CI/CD" data-name="CircleCI MCP" data-package="@circleci/mcp-server-circleci">
+          <td style="color:var(--muted)">77</td>
+          <td class="server-name"><a href="./servers/circleci-server.html">CircleCI MCP</a></td>
+          <td style="color:var(--cyan)">CI/CD</td>
+          <td style="color:var(--amber)">CI pipeline control</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@circleci/mcp-server-circleci</td>
+        </tr>
+        <tr data-category="Cloud Platform" data-name="Heroku MCP" data-package="@heroku/mcp-server">
+          <td style="color:var(--muted)">78</td>
+          <td class="server-name"><a href="./servers/heroku-server.html">Heroku MCP</a></td>
+          <td style="color:var(--cyan)">Cloud Platform</td>
+          <td style="color:var(--amber)">Cloud platform control</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@heroku/mcp-server</td>
+        </tr>
+        <tr data-category="Analytics" data-name="Microsoft Clarity MCP" data-package="@microsoft/clarity-mcp-server">
+          <td style="color:var(--muted)">79</td>
+          <td class="server-name"><a href="./servers/clarity-server.html">Microsoft Clarity MCP</a></td>
+          <td style="color:var(--cyan)">Analytics</td>
+          <td style="color:var(--amber)">User analytics data access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@microsoft/clarity-mcp-server</td>
+        </tr>
+        <tr data-category="Testing" data-name="Qase Test Management MCP" data-package="@qase/mcp-server">
+          <td style="color:var(--muted)">80</td>
+          <td class="server-name"><a href="./servers/qase-server.html">Qase Test Management MCP</a></td>
+          <td style="color:var(--cyan)">Testing</td>
+          <td style="color:var(--amber)">Test management platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@qase/mcp-server</td>
+        </tr>
+        <tr data-category="Design System" data-name="Coinbase Design System MCP" data-package="@coinbase/cds-mcp-server">
+          <td style="color:var(--muted)">81</td>
+          <td class="server-name"><a href="./servers/coinbase-cds-server.html">Coinbase Design System MCP</a></td>
+          <td style="color:var(--cyan)">Design System</td>
+          <td style="color:var(--amber)">Design system access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@coinbase/cds-mcp-server</td>
+        </tr>
+        <tr data-category="Design System" data-name="MUI MCP" data-package="@mui/mcp">
+          <td style="color:var(--muted)">82</td>
+          <td class="server-name"><a href="./servers/mui-mcp-server.html">MUI MCP</a></td>
+          <td style="color:var(--cyan)">Design System</td>
+          <td style="color:var(--amber)">Design system access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@mui/mcp</td>
+        </tr>
+        <tr data-category="Privacy / Data Governance" data-name="Transcend Privacy MCP" data-package="@transcend-io/mcp">
+          <td style="color:var(--muted)">83</td>
+          <td class="server-name"><a href="./servers/transcend-server.html">Transcend Privacy MCP</a></td>
+          <td style="color:var(--cyan)">Privacy / Data Governance</td>
+          <td style="color:var(--amber)">Privacy and data governance</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@transcend-io/mcp</td>
+        </tr>
+        <tr data-category="Cloud" data-name="Azure MCP" data-package="@azure/mcp">
+          <td style="color:var(--muted)">84</td>
+          <td class="server-name"><a href="./servers/azure-mcp-server.html">Azure MCP</a></td>
+          <td style="color:var(--cyan)">Cloud</td>
+          <td style="color:var(--amber)">Cloud resource management</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@azure/mcp</td>
+        </tr>
+        <tr data-category="CRM" data-name="Salesforce MCP" data-package="@salesforce/mcp">
+          <td style="color:var(--muted)">85</td>
+          <td class="server-name"><a href="./servers/salesforce-mcp-server.html">Salesforce MCP</a></td>
+          <td style="color:var(--cyan)">CRM</td>
+          <td style="color:var(--amber)">CRM data and org control</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@salesforce/mcp</td>
+        </tr>
+        <tr data-category="Design / Component Library" data-name="Storybook MCP" data-package="@storybook/mcp">
+          <td style="color:var(--muted)">86</td>
+          <td class="server-name"><a href="./servers/storybook-mcp-server.html">Storybook MCP</a></td>
+          <td style="color:var(--cyan)">Design / Component Library</td>
+          <td style="color:var(--amber)">Component documentation access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@storybook/mcp</td>
+        </tr>
+        <tr data-category="DevOps / Project Management" data-name="Azure DevOps MCP" data-package="@azure-devops/mcp">
+          <td style="color:var(--muted)">87</td>
+          <td class="server-name"><a href="./servers/azure-devops-mcp-server.html">Azure DevOps MCP</a></td>
+          <td style="color:var(--cyan)">DevOps / Project Management</td>
+          <td style="color:var(--amber)">DevOps platform control</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@azure-devops/mcp</td>
+        </tr>
+        <tr data-category="CRM / Marketing" data-name="HubSpot MCP" data-package="@hubspot/mcp-server">
+          <td style="color:var(--muted)">88</td>
+          <td class="server-name"><a href="./servers/hubspot-mcp-server.html">HubSpot MCP</a></td>
+          <td style="color:var(--cyan)">CRM / Marketing</td>
+          <td style="color:var(--amber)">CRM and marketing platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@hubspot/mcp-server</td>
+        </tr>
+        <tr data-category="Monitoring / Observability" data-name="Dynatrace MCP" data-package="@dynatrace-oss/dynatrace-mcp-server">
+          <td style="color:var(--muted)">89</td>
+          <td class="server-name"><a href="./servers/dynatrace-mcp-server.html">Dynatrace MCP</a></td>
+          <td style="color:var(--cyan)">Monitoring / Observability</td>
+          <td style="color:var(--amber)">Infrastructure monitoring access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@dynatrace-oss/dynatrace-mcp-server</td>
+        </tr>
+        <tr data-category="Search" data-name="Brave Search MCP v2" data-package="@brave/brave-search-mcp-server">
+          <td style="color:var(--muted)">90</td>
+          <td class="server-name"><a href="./servers/brave-search-mcp-server-v2.html">Brave Search MCP v2</a></td>
+          <td style="color:var(--cyan)">Search</td>
+          <td style="color:var(--amber)">Untrusted content retrieval</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@brave/brave-search-mcp-server</td>
+        </tr>
+        <tr data-category="Testing / API Quality" data-name="SmartBear MCP" data-package="@smartbear/mcp">
+          <td style="color:var(--muted)">91</td>
+          <td class="server-name"><a href="./servers/smartbear-mcp-server.html">SmartBear MCP</a></td>
+          <td style="color:var(--cyan)">Testing / API Quality</td>
+          <td style="color:var(--amber)">Testing platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@smartbear/mcp</td>
+        </tr>
+        <tr data-category="Infrastructure / GitOps" data-name="Argo CD MCP" data-package="argocd-mcp">
+          <td style="color:var(--muted)">92</td>
+          <td class="server-name"><a href="./servers/argocd-mcp-server.html">Argo CD MCP</a></td>
+          <td style="color:var(--cyan)">Infrastructure / GitOps</td>
+          <td style="color:var(--amber)">GitOps deployment control</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">argocd-mcp</td>
+        </tr>
+        <tr data-category="Security" data-name="Aikido Security MCP" data-package="@aikidosec/mcp">
+          <td style="color:var(--muted)">93</td>
+          <td class="server-name"><a href="./servers/aikidosec-mcp-server.html">Aikido Security MCP</a></td>
+          <td style="color:var(--cyan)">Security</td>
+          <td style="color:var(--amber)">Security platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@aikidosec/mcp</td>
+        </tr>
+        <tr data-category="API Testing / Development" data-name="Postman MCP" data-package="@postman/postman-mcp-server">
+          <td style="color:var(--muted)">94</td>
+          <td class="server-name"><a href="./servers/postman-mcp-server.html">Postman MCP</a></td>
+          <td style="color:var(--cyan)">API Testing / Development</td>
+          <td style="color:var(--amber)">API collection and testing access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@postman/postman-mcp-server</td>
+        </tr>
+        <tr data-category="Project Management" data-name="Shortcut MCP" data-package="@shortcut/mcp">
+          <td style="color:var(--muted)">95</td>
+          <td class="server-name"><a href="./servers/shortcut-mcp-server.html">Shortcut MCP</a></td>
+          <td style="color:var(--cyan)">Project Management</td>
+          <td style="color:var(--amber)">Project management access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@shortcut/mcp</td>
+        </tr>
+        <tr data-category="Infrastructure" data-name="Cloudflare MCP v2" data-package="@cloudflare/mcp-server-cloudflare">
+          <td style="color:var(--muted)">96</td>
+          <td class="server-name"><a href="./servers/cloudflare-mcp-server-v2.html">Cloudflare MCP v2</a></td>
+          <td style="color:var(--cyan)">Infrastructure</td>
+          <td style="color:var(--amber)">Infrastructure control</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@cloudflare/mcp-server-cloudflare</td>
+        </tr>
+        <tr data-category="Web Scraping / Automation" data-name="Apify MCP" data-package="@apify/actors-mcp-server">
+          <td style="color:var(--muted)">97</td>
+          <td class="server-name"><a href="./servers/apify-mcp-server.html">Apify MCP</a></td>
+          <td style="color:var(--cyan)">Web Scraping / Automation</td>
+          <td style="color:var(--amber)">Web scraping and data extraction</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@apify/actors-mcp-server</td>
+        </tr>
+        <tr data-category="Project Management" data-name="ClickUp MCP" data-package="@taazkareem/clickup-mcp-server">
+          <td style="color:var(--muted)">98</td>
+          <td class="server-name"><a href="./servers/clickup-mcp-server.html">ClickUp MCP</a></td>
+          <td style="color:var(--cyan)">Project Management</td>
+          <td style="color:var(--amber)">Task and document management</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@taazkareem/clickup-mcp-server</td>
+        </tr>
+        <tr data-category="Testing / Playwright" data-name="Currents MCP" data-package="@currents/mcp">
+          <td style="color:var(--muted)">99</td>
+          <td class="server-name"><a href="./servers/currents-mcp-server.html">Currents MCP</a></td>
+          <td style="color:var(--cyan)">Testing / Playwright</td>
+          <td style="color:var(--amber)">Test orchestration access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@currents/mcp</td>
+        </tr>
+        <tr data-category="Terminal / File System" data-name="Desktop Commander MCP" data-package="@wonderwhy-er/desktop-commander">
+          <td style="color:var(--muted)">100</td>
+          <td class="server-name"><a href="./servers/desktop-commander-mcp-server.html">Desktop Commander MCP</a></td>
+          <td style="color:var(--cyan)">Terminal / File System</td>
+          <td style="color:var(--amber)">Terminal and file system execution</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@wonderwhy-er/desktop-commander</td>
+        </tr>
+        <tr data-category="Messaging" data-name="WhatsApp MCP" data-package="whatsapp-mcp">
+          <td style="color:var(--muted)">101</td>
+          <td class="server-name"><a href="./servers/whatsapp-mcp-server.html">WhatsApp MCP</a></td>
+          <td style="color:var(--cyan)">Messaging</td>
+          <td style="color:var(--amber)">Messaging platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">whatsapp-mcp</td>
+        </tr>
+        <tr data-category="E-commerce" data-name="Shopify MCP" data-package="shopify-mcp">
+          <td style="color:var(--muted)">102</td>
+          <td class="server-name"><a href="./servers/shopify-mcp-server.html">Shopify MCP</a></td>
+          <td style="color:var(--cyan)">E-commerce</td>
+          <td style="color:var(--amber)">Store data access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">shopify-mcp</td>
+        </tr>
+        <tr data-category="Database" data-name="MySQL MCP Server" data-package="mysql-mcp-server">
+          <td style="color:var(--muted)">103</td>
+          <td class="server-name"><a href="./servers/mysql-mcp-server.html">MySQL MCP Server</a></td>
+          <td style="color:var(--cyan)">Database</td>
+          <td style="color:var(--amber)">Database mutation</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">mysql-mcp-server</td>
+        </tr>
+        <tr data-category="Database" data-name="Redis MCP Server" data-package="mcp-server-redis">
+          <td style="color:var(--muted)">104</td>
+          <td class="server-name"><a href="./servers/redis-server.html">Redis MCP Server</a></td>
+          <td style="color:var(--cyan)">Database</td>
+          <td style="color:var(--amber)">Cache and data store mutation</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">mcp-server-redis</td>
+        </tr>
+        <tr data-category="Database / Cloud" data-name="DynamoDB MCP Server" data-package="mcp-server-dynamodb">
+          <td style="color:var(--muted)">105</td>
+          <td class="server-name"><a href="./servers/dynamodb-mcp-server.html">DynamoDB MCP Server</a></td>
+          <td style="color:var(--cyan)">Database / Cloud</td>
+          <td style="color:var(--amber)">NoSQL database mutation</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">mcp-server-dynamodb</td>
+        </tr>
+        <tr data-category="Cloud Storage" data-name="S3 MCP Server" data-package="mcp-server-s3">
+          <td style="color:var(--muted)">106</td>
+          <td class="server-name"><a href="./servers/s3-mcp-server.html">S3 MCP Server</a></td>
+          <td style="color:var(--cyan)">Cloud Storage</td>
+          <td style="color:var(--amber)">Cloud object storage access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">mcp-server-s3</td>
+        </tr>
+        <tr data-category="Cloud" data-name="AWS MCP Server" data-package="mcp-server-aws">
+          <td style="color:var(--muted)">107</td>
+          <td class="server-name"><a href="./servers/aws-mcp-server.html">AWS MCP Server</a></td>
+          <td style="color:var(--cyan)">Cloud</td>
+          <td style="color:var(--amber)">Cloud infrastructure control</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">mcp-server-aws</td>
+        </tr>
+        <tr data-category="Cloud" data-name="GCP MCP Server" data-package="mcp-server-gcp">
+          <td style="color:var(--muted)">108</td>
+          <td class="server-name"><a href="./servers/gcp-mcp-server.html">GCP MCP Server</a></td>
+          <td style="color:var(--cyan)">Cloud</td>
+          <td style="color:var(--amber)">Cloud infrastructure control</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">mcp-server-gcp</td>
+        </tr>
+        <tr data-category="E-commerce" data-name="Shopify MCP" data-package="shopify-mcp">
+          <td style="color:var(--muted)">109</td>
+          <td class="server-name"><a href="./servers/shopify-mcp.html">Shopify MCP</a></td>
+          <td style="color:var(--cyan)">E-commerce</td>
+          <td style="color:var(--amber)">E-commerce platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">shopify-mcp</td>
+        </tr>
+        <tr data-category="Communication" data-name="Telegram MCP Server" data-package="telegram-mcp-server">
+          <td style="color:var(--muted)">110</td>
+          <td class="server-name"><a href="./servers/telegram-mcp-server.html">Telegram MCP Server</a></td>
+          <td style="color:var(--cyan)">Communication</td>
+          <td style="color:var(--amber)">Messaging platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">telegram-mcp-server</td>
+        </tr>
+        <tr data-category="Communication" data-name="WhatsApp MCP" data-package="whatsapp-mcp">
+          <td style="color:var(--muted)">111</td>
+          <td class="server-name"><a href="./servers/whatsapp-mcp.html">WhatsApp MCP</a></td>
+          <td style="color:var(--cyan)">Communication</td>
+          <td style="color:var(--amber)">Messaging platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">whatsapp-mcp</td>
+        </tr>
+        <tr data-category="Communication" data-name="Twilio MCP" data-package="twilio-mcp">
+          <td style="color:var(--muted)">112</td>
+          <td class="server-name"><a href="./servers/twilio-mcp.html">Twilio MCP</a></td>
+          <td style="color:var(--cyan)">Communication</td>
+          <td style="color:var(--amber)">Communication platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">twilio-mcp</td>
+        </tr>
+        <tr data-category="Email / Communication" data-name="SendGrid MCP" data-package="sendgrid-mcp">
+          <td style="color:var(--muted)">113</td>
+          <td class="server-name"><a href="./servers/sendgrid-mcp.html">SendGrid MCP</a></td>
+          <td style="color:var(--cyan)">Email / Communication</td>
+          <td style="color:var(--amber)">Email sending platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">sendgrid-mcp</td>
+        </tr>
+        <tr data-category="AI / ML Platform" data-name="OpenAI MCP Server" data-package="openai-mcp-server">
+          <td style="color:var(--muted)">114</td>
+          <td class="server-name"><a href="./servers/openai-mcp-server.html">OpenAI MCP Server</a></td>
+          <td style="color:var(--cyan)">AI / ML Platform</td>
+          <td style="color:var(--amber)">LLM API platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">openai-mcp-server</td>
+        </tr>
+        <tr data-category="Search / AI" data-name="Perplexity MCP" data-package="perplexity-mcp">
+          <td style="color:var(--muted)">115</td>
+          <td class="server-name"><a href="./servers/perplexity-mcp.html">Perplexity MCP</a></td>
+          <td style="color:var(--cyan)">Search / AI</td>
+          <td style="color:var(--amber)">AI-powered search access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">perplexity-mcp</td>
+        </tr>
+        <tr data-category="AI / ML Observability" data-name="Langfuse MCP" data-package="langfuse-mcp">
+          <td style="color:var(--muted)">116</td>
+          <td class="server-name"><a href="./servers/langfuse-mcp.html">Langfuse MCP</a></td>
+          <td style="color:var(--cyan)">AI / ML Observability</td>
+          <td style="color:var(--amber)">LLM observability access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">langfuse-mcp</td>
+        </tr>
+        <tr data-category="Project Management" data-name="Jira MCP Server" data-package="jira-mcp-server">
+          <td style="color:var(--muted)">117</td>
+          <td class="server-name"><a href="./servers/jira-mcp-server.html">Jira MCP Server</a></td>
+          <td style="color:var(--cyan)">Project Management</td>
+          <td style="color:var(--amber)">Issue tracking mutation</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">jira-mcp-server</td>
+        </tr>
+        <tr data-category="Productivity / Docs" data-name="Confluence MCP Server" data-package="confluence-mcp-server">
+          <td style="color:var(--muted)">118</td>
+          <td class="server-name"><a href="./servers/confluence-mcp-server.html">Confluence MCP Server</a></td>
+          <td style="color:var(--cyan)">Productivity / Docs</td>
+          <td style="color:var(--amber)">Wiki/document platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">confluence-mcp-server</td>
+        </tr>
+        <tr data-category="Project Management" data-name="Trello MCP Server" data-package="trello-mcp-server">
+          <td style="color:var(--muted)">119</td>
+          <td class="server-name"><a href="./servers/trello-mcp-server.html">Trello MCP Server</a></td>
+          <td style="color:var(--cyan)">Project Management</td>
+          <td style="color:var(--amber)">Board management access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">trello-mcp-server</td>
+        </tr>
+        <tr data-category="Support / CRM" data-name="Zendesk MCP" data-package="zendesk-mcp">
+          <td style="color:var(--muted)">120</td>
+          <td class="server-name"><a href="./servers/zendesk-mcp.html">Zendesk MCP</a></td>
+          <td style="color:var(--cyan)">Support / CRM</td>
+          <td style="color:var(--amber)">Support platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">zendesk-mcp</td>
+        </tr>
+        <tr data-category="Media / Entertainment" data-name="Spotify MCP" data-package="spotify-mcp">
+          <td style="color:var(--muted)">121</td>
+          <td class="server-name"><a href="./servers/spotify-mcp.html">Spotify MCP</a></td>
+          <td style="color:var(--cyan)">Media / Entertainment</td>
+          <td style="color:var(--amber)">Media platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">spotify-mcp</td>
+        </tr>
+        <tr data-category="Productivity / Database" data-name="Airtable MCP Server" data-package="airtable-mcp-server">
+          <td style="color:var(--muted)">122</td>
+          <td class="server-name"><a href="./servers/airtable-mcp-server.html">Airtable MCP Server</a></td>
+          <td style="color:var(--cyan)">Productivity / Database</td>
+          <td style="color:var(--amber)">Spreadsheet-database access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">airtable-mcp-server</td>
+        </tr>
+        <tr data-category="Productivity / Knowledge" data-name="Obsidian MCP" data-package="obsidian-mcp">
+          <td style="color:var(--muted)">123</td>
+          <td class="server-name"><a href="./servers/obsidian-mcp.html">Obsidian MCP</a></td>
+          <td style="color:var(--cyan)">Productivity / Knowledge</td>
+          <td style="color:var(--amber)">Personal knowledge base access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">obsidian-mcp</td>
+        </tr>
+        <tr data-category="Academic / Search" data-name="arXiv MCP Server" data-package="arxiv-mcp-server">
+          <td style="color:var(--muted)">124</td>
+          <td class="server-name"><a href="./servers/arxiv-mcp-server.html">arXiv MCP Server</a></td>
+          <td style="color:var(--cyan)">Academic / Search</td>
+          <td style="color:var(--amber)">Academic content retrieval</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">arxiv-mcp-server</td>
+        </tr>
+        <tr data-category="Email / Communication" data-name="Resend MCP" data-package="resend-mcp">
+          <td style="color:var(--muted)">125</td>
+          <td class="server-name"><a href="./servers/resend-mcp.html">Resend MCP</a></td>
+          <td style="color:var(--cyan)">Email / Communication</td>
+          <td style="color:var(--amber)">Email sending platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">resend-mcp</td>
+        </tr>
+        <tr data-category="Communication" data-name="Discord MCP (v2)" data-package="discord-mcp">
+          <td style="color:var(--muted)">126</td>
+          <td class="server-name"><a href="./servers/discord-mcp.html">Discord MCP (v2)</a></td>
+          <td style="color:var(--cyan)">Communication</td>
+          <td style="color:var(--amber)">Social platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">discord-mcp</td>
+        </tr>
+        <tr data-category="Finance / Indian Markets" data-name="Stock NSE India" data-package="stock-nse-india-mcp">
+          <td style="color:var(--muted)">127</td>
+          <td class="server-name"><a href="./servers/stock-nse-india.html">Stock NSE India</a></td>
+          <td style="color:var(--cyan)">Finance / Indian Markets</td>
+          <td style="color:var(--amber)">Financial data retrieval (Indian markets)</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">stock-nse-india-mcp</td>
+        </tr>
+        <tr data-category="Payments / Indian Fintech" data-name="Razorpay MCP" data-package="razorpay-mcp">
+          <td style="color:var(--muted)">128</td>
+          <td class="server-name"><a href="./servers/razorpay-mcp.html">Razorpay MCP</a></td>
+          <td style="color:var(--cyan)">Payments / Indian Fintech</td>
+          <td style="color:var(--amber)">Indian payment gateway API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">razorpay-mcp</td>
+        </tr>
+        <tr data-category="Payments / Indian Fintech" data-name="Paytm MCP" data-package="paytm-mcp">
+          <td style="color:var(--muted)">129</td>
+          <td class="server-name"><a href="./servers/paytm-mcp.html">Paytm MCP</a></td>
+          <td style="color:var(--cyan)">Payments / Indian Fintech</td>
+          <td style="color:var(--amber)">Indian wallet/payment API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">paytm-mcp</td>
+        </tr>
+        <tr data-category="Payments / Indian Fintech" data-name="UPI MCP" data-package="upi-mcp">
+          <td style="color:var(--muted)">130</td>
+          <td class="server-name"><a href="./servers/upi-mcp.html">UPI MCP</a></td>
+          <td style="color:var(--cyan)">Payments / Indian Fintech</td>
+          <td style="color:var(--amber)">Unified Payments Interface access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">upi-mcp</td>
+        </tr>
+        <tr data-category="Identity / Indian Gov" data-name="Aadhaar MCP" data-package="aadhaar-mcp">
+          <td style="color:var(--muted)">131</td>
+          <td class="server-name"><a href="./servers/aadhaar-mcp.html">Aadhaar MCP</a></td>
+          <td style="color:var(--cyan)">Identity / Indian Gov</td>
+          <td style="color:var(--amber)">Biometric identity API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">aadhaar-mcp</td>
+        </tr>
+        <tr data-category="Identity / Indian Gov" data-name="DigiLocker MCP" data-package="digilocker-mcp">
+          <td style="color:var(--muted)">132</td>
+          <td class="server-name"><a href="./servers/digilocker-mcp.html">DigiLocker MCP</a></td>
+          <td style="color:var(--cyan)">Identity / Indian Gov</td>
+          <td style="color:var(--amber)">Government document wallet access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">digilocker-mcp</td>
+        </tr>
+        <tr data-category="Business / Indian Gov" data-name="Udyam MCP" data-package="udyam-mcp">
+          <td style="color:var(--muted)">133</td>
+          <td class="server-name"><a href="./servers/udyam-mcp.html">Udyam MCP</a></td>
+          <td style="color:var(--cyan)">Business / Indian Gov</td>
+          <td style="color:var(--amber)">MSME business registration access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">udyam-mcp</td>
+        </tr>
+        <tr data-category="Tax / Indian Gov" data-name="GST MCP" data-package="gst-mcp">
+          <td style="color:var(--muted)">134</td>
+          <td class="server-name"><a href="./servers/gst-mcp.html">GST MCP</a></td>
+          <td style="color:var(--cyan)">Tax / Indian Gov</td>
+          <td style="color:var(--amber)">Tax filing and invoice API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">gst-mcp</td>
+        </tr>
+        <tr data-category="Communication / Indian" data-name="WhatsApp Business MCP" data-package="whatsapp-business-mcp">
+          <td style="color:var(--muted)">135</td>
+          <td class="server-name"><a href="./servers/whatsapp-business-mcp.html">WhatsApp Business MCP</a></td>
+          <td style="color:var(--cyan)">Communication / Indian</td>
+          <td style="color:var(--amber)">Business messaging platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">whatsapp-business-mcp</td>
+        </tr>
+        <tr data-category="Communication / Indian" data-name="Gupshup MCP" data-package="gupshup-mcp">
+          <td style="color:var(--muted)">136</td>
+          <td class="server-name"><a href="./servers/gupshup-mcp.html">Gupshup MCP</a></td>
+          <td style="color:var(--cyan)">Communication / Indian</td>
+          <td style="color:var(--amber)">Indian messaging platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">gupshup-mcp</td>
+        </tr>
+        <tr data-category="Communication / Indian" data-name="Textlocal MCP" data-package="textlocal-mcp">
+          <td style="color:var(--muted)">137</td>
+          <td class="server-name"><a href="./servers/textlocal-mcp.html">Textlocal MCP</a></td>
+          <td style="color:var(--cyan)">Communication / Indian</td>
+          <td style="color:var(--amber)">Indian SMS gateway access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">textlocal-mcp</td>
+        </tr>
+        <tr data-category="Maps / Indian" data-name="MapMyIndia MCP" data-package="mapmyindia-mcp">
+          <td style="color:var(--muted)">138</td>
+          <td class="server-name"><a href="./servers/mapmyindia-mcp.html">MapMyIndia MCP</a></td>
+          <td style="color:var(--cyan)">Maps / Indian</td>
+          <td style="color:var(--amber)">Indian geospatial data access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">mapmyindia-mcp</td>
+        </tr>
+        <tr data-category="Maps / Indian" data-name="Ola Maps MCP" data-package="ola-maps-mcp">
+          <td style="color:var(--muted)">139</td>
+          <td class="server-name"><a href="./servers/ola-maps-mcp.html">Ola Maps MCP</a></td>
+          <td style="color:var(--cyan)">Maps / Indian</td>
+          <td style="color:var(--amber)">Indian ride/mapping API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">ola-maps-mcp</td>
+        </tr>
+        <tr data-category="API Testing / Indian Development" data-name="Postman MCP (Indian region)" data-package="@postman/postman-mcp-server">
+          <td style="color:var(--muted)">140</td>
+          <td class="server-name"><a href="./servers/postman-india-region.html">Postman MCP (Indian region)</a></td>
+          <td style="color:var(--cyan)">API Testing / Indian Development</td>
+          <td style="color:var(--amber)">API collection and testing access (Indian-origin)</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@postman/postman-mcp-server</td>
+        </tr>
+        <tr data-category="Database / Indian OSS" data-name="Hasura MCP" data-package="hasura-mcp">
+          <td style="color:var(--muted)">141</td>
+          <td class="server-name"><a href="./servers/hasura-mcp.html">Hasura MCP</a></td>
+          <td style="color:var(--cyan)">Database / Indian OSS</td>
+          <td style="color:var(--amber)">GraphQL engine and database access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">hasura-mcp</td>
+        </tr>
+        <tr data-category="Internal Tools / Indian OSS" data-name="ToolJet MCP" data-package="tooljet-mcp">
+          <td style="color:var(--muted)">142</td>
+          <td class="server-name"><a href="./servers/tooljet-mcp.html">ToolJet MCP</a></td>
+          <td style="color:var(--cyan)">Internal Tools / Indian OSS</td>
+          <td style="color:var(--amber)">Low-code platform API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">tooljet-mcp</td>
+        </tr>
+        <tr data-category="Backend / Indian OSS" data-name="Appwrite MCP" data-package="appwrite-mcp">
+          <td style="color:var(--muted)">143</td>
+          <td class="server-name"><a href="./servers/appwrite-mcp.html">Appwrite MCP</a></td>
+          <td style="color:var(--cyan)">Backend / Indian OSS</td>
+          <td style="color:var(--amber)">Backend-as-a-service API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">appwrite-mcp</td>
+        </tr>
+        <tr data-category="CRM / Indian OSS" data-name="Chatwoot MCP" data-package="chatwoot-mcp">
+          <td style="color:var(--muted)">144</td>
+          <td class="server-name"><a href="./servers/chatwoot-mcp.html">Chatwoot MCP</a></td>
+          <td style="color:var(--cyan)">CRM / Indian OSS</td>
+          <td style="color:var(--amber)">Customer engagement platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">chatwoot-mcp</td>
+        </tr>
+        <tr data-category="Scheduling / Indian OSS" data-name="Cal.com MCP" data-package="cal-com-mcp">
+          <td style="color:var(--muted)">145</td>
+          <td class="server-name"><a href="./servers/cal-com-mcp.html">Cal.com MCP</a></td>
+          <td style="color:var(--cyan)">Scheduling / Indian OSS</td>
+          <td style="color:var(--amber)">Scheduling and calendar API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">cal-com-mcp</td>
+        </tr>
+        <tr data-category="Food / Indian" data-name="Indian Food Nutrition MCP" data-package="indian-food-nutrition-mcp">
+          <td style="color:var(--muted)">146</td>
+          <td class="server-name"><a href="./servers/indian-food-nutrition-mcp.html">Indian Food Nutrition MCP</a></td>
+          <td style="color:var(--cyan)">Food / Indian</td>
+          <td style="color:var(--amber)">Indian cuisine nutrition data access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">indian-food-nutrition-mcp</td>
+        </tr>
+        <tr data-category="Healthcare / Indian Gov" data-name="Ayushman Bharat Healthcare MCP" data-package="healthcare-ayushman-bharat-mcp">
+          <td style="color:var(--muted)">147</td>
+          <td class="server-name"><a href="./servers/healthcare-ayushman-bharat-mcp.html">Ayushman Bharat Healthcare MCP</a></td>
+          <td style="color:var(--cyan)">Healthcare / Indian Gov</td>
+          <td style="color:var(--amber)">Public healthcare scheme API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">healthcare-ayushman-bharat-mcp</td>
+        </tr>
+        <tr data-category="Travel / Indian Railways" data-name="IRCTC MCP" data-package="irctc-mcp">
+          <td style="color:var(--muted)">148</td>
+          <td class="server-name"><a href="./servers/irctc-mcp.html">IRCTC MCP</a></td>
+          <td style="color:var(--cyan)">Travel / Indian Railways</td>
+          <td style="color:var(--amber)">Indian Railways booking API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">irctc-mcp</td>
+        </tr>
+        <tr data-category="Environment / Indian" data-name="AQI India MCP" data-package="aqi-india-mcp">
+          <td style="color:var(--muted)">149</td>
+          <td class="server-name"><a href="./servers/aqi-india-mcp.html">AQI India MCP</a></td>
+          <td style="color:var(--cyan)">Environment / Indian</td>
+          <td style="color:var(--amber)">Indian air quality data access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">aqi-india-mcp</td>
+        </tr>
+        <tr data-category="Healthcare / Indian Gov" data-name="CoWIN MCP" data-package="cowin-mcp">
+          <td style="color:var(--muted)">150</td>
+          <td class="server-name"><a href="./servers/cowin-mcp.html">CoWIN MCP</a></td>
+          <td style="color:var(--cyan)">Healthcare / Indian Gov</td>
+          <td style="color:var(--amber)">Vaccination platform API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">cowin-mcp</td>
+        </tr>
+        <tr data-category="Geospatial / Indian Gov" data-name="Bhuvan MCP" data-package="bhuvan-mcp">
+          <td style="color:var(--muted)">151</td>
+          <td class="server-name"><a href="./servers/bhuvan-mcp.html">Bhuvan MCP</a></td>
+          <td style="color:var(--cyan)">Geospatial / Indian Gov</td>
+          <td style="color:var(--amber)">ISRO geospatial platform access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">bhuvan-mcp</td>
+        </tr>
+        <tr data-category="Healthcare / Pakistan Gov" data-name="Sehat Sahulat MCP" data-package="sehat-sahulat-mcp">
+          <td style="color:var(--muted)">152</td>
+          <td class="server-name"><a href="./servers/sehat-sahulat-mcp.html">Sehat Sahulat MCP</a></td>
+          <td style="color:var(--cyan)">Healthcare / Pakistan Gov</td>
+          <td style="color:var(--amber)">Public health insurance API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">sehat-sahulat-mcp</td>
+        </tr>
+        <tr data-category="Social Welfare / Pakistan Gov" data-name="Ehsaas MCP" data-package="ehsaas-mcp">
+          <td style="color:var(--muted)">153</td>
+          <td class="server-name"><a href="./servers/ehsaas-mcp.html">Ehsaas MCP</a></td>
+          <td style="color:var(--cyan)">Social Welfare / Pakistan Gov</td>
+          <td style="color:var(--amber)">Social welfare program API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">ehsaas-mcp</td>
+        </tr>
+        <tr data-category="Healthcare / Pakistan Gov" data-name="PIMS MCP" data-package="pims-mcp">
+          <td style="color:var(--muted)">154</td>
+          <td class="server-name"><a href="./servers/pims-mcp.html">PIMS MCP</a></td>
+          <td style="color:var(--cyan)">Healthcare / Pakistan Gov</td>
+          <td style="color:var(--amber)">Public hospital system API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">pims-mcp</td>
+        </tr>
+        <tr data-category="Healthcare / Pakistan Gov" data-name="Punjab Health MCP" data-package="punjab-health-mcp">
+          <td style="color:var(--muted)">155</td>
+          <td class="server-name"><a href="./servers/punjab-health-mcp.html">Punjab Health MCP</a></td>
+          <td style="color:var(--cyan)">Healthcare / Pakistan Gov</td>
+          <td style="color:var(--amber)">Provincial health department API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">punjab-health-mcp</td>
+        </tr>
+        <tr data-category="Weather / Pakistan Gov" data-name="Pakistan Weather MCP" data-package="pakistan-weather-mcp">
+          <td style="color:var(--muted)">156</td>
+          <td class="server-name"><a href="./servers/pakistan-weather-mcp.html">Pakistan Weather MCP</a></td>
+          <td style="color:var(--cyan)">Weather / Pakistan Gov</td>
+          <td style="color:var(--amber)">National meteorological data access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">pakistan-weather-mcp</td>
+        </tr>
+        <tr data-category="Communication / Pakistani" data-name="Jazz MCP" data-package="jazz-mcp">
+          <td style="color:var(--muted)">157</td>
+          <td class="server-name"><a href="./servers/jazz-mcp.html">Jazz MCP</a></td>
+          <td style="color:var(--cyan)">Communication / Pakistani</td>
+          <td style="color:var(--amber)">Pakistani telecom API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">jazz-mcp</td>
+        </tr>
+        <tr data-category="Communication / Pakistani" data-name="Zong MCP" data-package="zong-mcp">
+          <td style="color:var(--muted)">158</td>
+          <td class="server-name"><a href="./servers/zong-mcp.html">Zong MCP</a></td>
+          <td style="color:var(--cyan)">Communication / Pakistani</td>
+          <td style="color:var(--amber)">Pakistani telecom API access (CPEC corridor)</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">zong-mcp</td>
+        </tr>
+        <tr data-category="Communication / Pakistani" data-name="Telenor Pakistan MCP" data-package="telenor-pakistan-mcp">
+          <td style="color:var(--muted)">159</td>
+          <td class="server-name"><a href="./servers/telenor-pakistan-mcp.html">Telenor Pakistan MCP</a></td>
+          <td style="color:var(--cyan)">Communication / Pakistani</td>
+          <td style="color:var(--amber)">Pakistani telecom API access (digital services)</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">telenor-pakistan-mcp</td>
+        </tr>
+        <tr data-category="Communication / Pakistani" data-name="Ufone MCP" data-package="ufone-mcp">
+          <td style="color:var(--muted)">160</td>
+          <td class="server-name"><a href="./servers/ufone-mcp.html">Ufone MCP</a></td>
+          <td style="color:var(--cyan)">Communication / Pakistani</td>
+          <td style="color:var(--amber)">Pakistani telecom API access (PTCL group)</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">ufone-mcp</td>
+        </tr>
+        <tr data-category="Maps / Logistics / Pakistani" data-name="Pakistan Post MCP" data-package="pakistan-post-mcp">
+          <td style="color:var(--muted)">161</td>
+          <td class="server-name"><a href="./servers/pakistan-post-mcp.html">Pakistan Post MCP</a></td>
+          <td style="color:var(--cyan)">Maps / Logistics / Pakistani</td>
+          <td style="color:var(--amber)">Pakistani postal tracking and logistics API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">pakistan-post-mcp</td>
+        </tr>
+        <tr data-category="Payments / Pakistani Fintech" data-name="JazzCash MCP" data-package="@theyahia/jazzcash-mcp">
+          <td style="color:var(--muted)">162</td>
+          <td class="server-name"><a href="./servers/jazzcash-mcp.html">JazzCash MCP</a></td>
+          <td style="color:var(--cyan)">Payments / Pakistani Fintech</td>
+          <td style="color:var(--amber)">Mobile wallet API access (Pakistan)</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@theyahia/jazzcash-mcp</td>
+        </tr>
+        <tr data-category="Payments / Pakistani Fintech" data-name="EasyPaisa MCP" data-package="@theyahia/easypaisa-mcp">
+          <td style="color:var(--muted)">163</td>
+          <td class="server-name"><a href="./servers/easypaisa-mcp.html">EasyPaisa MCP</a></td>
+          <td style="color:var(--cyan)">Payments / Pakistani Fintech</td>
+          <td style="color:var(--amber)">Mobile wallet API access (Pakistan)</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">@theyahia/easypaisa-mcp</td>
+        </tr>
+        <tr data-category="Identity / Pakistani Gov" data-name="NADRA MCP" data-package="nadra-mcp">
+          <td style="color:var(--muted)">164</td>
+          <td class="server-name"><a href="./servers/nadra-mcp.html">NADRA MCP</a></td>
+          <td style="color:var(--cyan)">Identity / Pakistani Gov</td>
+          <td style="color:var(--amber)">National identity database access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">nadra-mcp</td>
+        </tr>
+        <tr data-category="Tax / Pakistani Gov" data-name="FBR MCP" data-package="fbr-mcp">
+          <td style="color:var(--muted)">165</td>
+          <td class="server-name"><a href="./servers/fbr-mcp.html">FBR MCP</a></td>
+          <td style="color:var(--cyan)">Tax / Pakistani Gov</td>
+          <td style="color:var(--amber)">Tax filing and NTN API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">fbr-mcp</td>
+        </tr>
+        <tr data-category="Payments / Pakistani Fintech" data-name="1LINK MCP" data-package="1link-mcp">
+          <td style="color:var(--muted)">166</td>
+          <td class="server-name"><a href="./servers/1link-mcp.html">1LINK MCP</a></td>
+          <td style="color:var(--cyan)">Payments / Pakistani Fintech</td>
+          <td style="color:var(--amber)">Interbank payment switch access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">1link-mcp</td>
+        </tr>
+        <tr data-category="Education / Pakistan" data-name="AIOU MCP" data-package="aiou-mcp">
+          <td style="color:var(--muted)">167</td>
+          <td class="server-name"><a href="./servers/aiou-mcp.html">AIOU MCP</a></td>
+          <td style="color:var(--cyan)">Education / Pakistan</td>
+          <td style="color:var(--amber)">Open university API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">aiou-mcp</td>
+        </tr>
+        <tr data-category="Education / Pakistan Gov" data-name="HEC Pakistan MCP" data-package="hec-pakistan-mcp">
+          <td style="color:var(--muted)">168</td>
+          <td class="server-name"><a href="./servers/hec-pakistan-mcp.html">HEC Pakistan MCP</a></td>
+          <td style="color:var(--cyan)">Education / Pakistan Gov</td>
+          <td style="color:var(--amber)">Higher education accreditation API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">hec-pakistan-mcp</td>
+        </tr>
+        <tr data-category="Sports / Pakistan" data-name="Pakistan Cricket MCP" data-package="pakistan-cricket-mcp">
+          <td style="color:var(--muted)">169</td>
+          <td class="server-name"><a href="./servers/pakistan-cricket-mcp.html">Pakistan Cricket MCP</a></td>
+          <td style="color:var(--cyan)">Sports / Pakistan</td>
+          <td style="color:var(--amber)">Cricket board API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">pakistan-cricket-mcp</td>
+        </tr>
+        <tr data-category="Mountaineering / Pakistan" data-name="K2 MCP" data-package="k2-mcp">
+          <td style="color:var(--muted)">170</td>
+          <td class="server-name"><a href="./servers/k2-mcp.html">K2 MCP</a></td>
+          <td style="color:var(--cyan)">Mountaineering / Pakistan</td>
+          <td style="color:var(--amber)">Mountaineering permit API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">k2-mcp</td>
+        </tr>
+        <tr data-category="Jobs / Pakistani" data-name="Rozgar.com MCP" data-package="rozgar-mcp">
+          <td style="color:var(--muted)">171</td>
+          <td class="server-name"><a href="./servers/rozgar-mcp.html">Rozgar.com MCP</a></td>
+          <td style="color:var(--cyan)">Jobs / Pakistani</td>
+          <td style="color:var(--amber)">Pakistani job platform API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">rozgar-mcp</td>
+        </tr>
+        <tr data-category="Food Delivery / Pakistani" data-name="Foodpanda Pakistan MCP" data-package="foodpanda-pakistan-mcp">
+          <td style="color:var(--muted)">172</td>
+          <td class="server-name"><a href="./servers/foodpanda-pakistan-mcp.html">Foodpanda Pakistan MCP</a></td>
+          <td style="color:var(--cyan)">Food Delivery / Pakistani</td>
+          <td style="color:var(--amber)">Pakistani food delivery platform API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">foodpanda-pakistan-mcp</td>
+        </tr>
+        <tr data-category="E-commerce / Pakistani" data-name="Daraz MCP" data-package="daraz-mcp">
+          <td style="color:var(--muted)">173</td>
+          <td class="server-name"><a href="./servers/daraz-mcp.html">Daraz MCP</a></td>
+          <td style="color:var(--cyan)">E-commerce / Pakistani</td>
+          <td style="color:var(--amber)">Pakistani e-commerce platform API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">daraz-mcp</td>
+        </tr>
+        <tr data-category="Classifieds / Pakistani" data-name="OLX Pakistan MCP" data-package="olx-pakistan-mcp">
+          <td style="color:var(--muted)">174</td>
+          <td class="server-name"><a href="./servers/olx-pakistan-mcp.html">OLX Pakistan MCP</a></td>
+          <td style="color:var(--cyan)">Classifieds / Pakistani</td>
+          <td style="color:var(--amber)">Pakistani classifieds platform API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">olx-pakistan-mcp</td>
+        </tr>
+        <tr data-category="Auto Marketplace / Pakistani" data-name="PakWheels MCP" data-package="pakwheels-mcp">
+          <td style="color:var(--muted)">175</td>
+          <td class="server-name"><a href="./servers/pakwheels-mcp.html">PakWheels MCP</a></td>
+          <td style="color:var(--cyan)">Auto Marketplace / Pakistani</td>
+          <td style="color:var(--amber)">Pakistani automotive marketplace API access</td>
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">pakwheels-mcp</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <p>MCP Observatory Safety Index &middot; 175 servers evaluated &middot; <a href="/sitemap.xml">Sitemap</a></p>
+    <p>Open-source MIT license &middot; <a href="https://github.com/KryptosAI/mcp-observatory">github.com/KryptosAI/mcp-observatory</a></p>
+  </div>
+</footer>
+
+<script>
+  const rows = Array.from(document.querySelectorAll("#serverTable tr"));
+  const cats = [...new Set(rows.map(r => r.dataset.category))].sort();
+  const filterDiv = document.getElementById("catFilters");
+  let activeCat = "";
+  cats.forEach(c => {
+    const btn = document.createElement("button");
+    btn.textContent = c;
+    btn.onclick = () => { activeCat = activeCat === c ? "" : c; updateFilters(); };
+    filterDiv.appendChild(btn);
+  });
+  function updateFilters() {
+    document.querySelectorAll("#catFilters button").forEach(b => {
+      b.classList.toggle("active", b.textContent === activeCat);
+    });
+    filterTable();
+  }
+  function filterTable() {
+    const q = document.getElementById("search").value.toLowerCase();
+    rows.forEach(r => {
+      const matchCat = !activeCat || r.dataset.category === activeCat;
+      const matchSearch = !q || r.dataset.name.toLowerCase().includes(q) || r.dataset.package.toLowerCase().includes(q) || r.dataset.category.toLowerCase().includes(q);
+      r.style.display = matchCat && matchSearch ? "" : "none";
+    });
+  }
+</script>
+</body>
+</html>

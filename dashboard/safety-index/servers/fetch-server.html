@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070b14">
+  <meta name="description" content="Safety evaluation for @modelcontextprotocol/server-fetch: Fetch MCP servers can retrieve arbitrary web content and feed it into agent context — a prompt injection and content trust boundary.">
+  <meta property="og:title" content="Official Fetch MCP server — Safety Report | MCP Observatory">
+  <meta property="og:description" content="Safety evaluation for @modelcontextprotocol/server-fetch: Fetch MCP servers can retrieve arbitrary web content and feed it into agent context — a prompt injection and content trust boundary.">
+  <meta property="og:image" content="https://mcp-observatory.com/mcp-observatory-logo-v2.png">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://mcp-observatory.com/mcp-observatory-logo-v2.png">
+  <link rel="canonical" href="https://mcp-observatory.com/safety-index/servers/fetch-server.html">
+  <link rel="icon" href="/mcp-observatory-favicon-v2.png" type="image/png" sizes="1254x1254">
+  <title>Official Fetch MCP server — Safety Report | MCP Observatory</title>
+  <style>
+    :root{color-scheme:dark;--bg:#070b14;--panel:rgba(16,24,40,.76);--line:rgba(148,163,184,.16);--muted:#91a0b6;--text:#eef4ff;--cyan:#58e6ff;--violet:#9b8cff;--green:#47e6a4;--red:#ff6b7a;--amber:#f5a623}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-width:320px;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:radial-gradient(circle at 12% 0%,rgba(68,97,255,.2),transparent 32rem),radial-gradient(circle at 88% 12%,rgba(45,212,191,.12),transparent 28rem),var(--bg);line-height:1.55}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,#000,transparent 80%)}
+    .container{width:min(900px,calc(100% - 40px));margin:auto;position:relative}
+    .nav{min-height:80px;display:flex;align-items:center;justify-content:space-between;padding:20px 0}
+    .brand{display:flex;align-items:center;text-decoration:none;color:var(--text);font-size:16px;font-weight:700;gap:10px}
+    .brand svg{width:28px;height:28px}
+    .navlinks{display:flex;gap:20px;align-items:center}
+    .navlinks a{color:#b7c3d5;text-decoration:none;font-size:13px}
+    .navlinks a:hover{color:var(--text)}
+    .button{padding:8px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);text-decoration:none;font-size:13px;transition:.18s ease}
+    .button:hover{border-color:rgba(88,230,255,.25)}
+
+    .breadcrumb{padding:12px 0;color:var(--muted);font-size:13px}
+    .breadcrumb a{color:var(--muted);text-decoration:none}
+    .breadcrumb a:hover{color:var(--text)}
+
+    .hero{padding:10px 0 32px;border-bottom:1px solid var(--line);margin-bottom:32px}
+    .hero h1{margin:0 0 8px;font-size:clamp(28px,4vw,42px);line-height:1.15;letter-spacing:-.03em;word-break:break-word}
+    .hero .meta{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+    .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--line)}
+    .badge.cat{color:var(--cyan);border-color:rgba(88,230,255,.2);background:rgba(88,230,255,.06)}
+    .badge.risk{color:var(--amber);border-color:rgba(245,166,35,.2);background:rgba(245,166,35,.06)}
+    .badge.fail{color:var(--red);border-color:rgba(255,107,122,.2);background:rgba(255,107,122,.06)}
+    .hero .why{max-width:700px;color:#a8b5c8;font-size:15px;line-height:1.6}
+
+    .grade-card{display:flex;align-items:center;gap:20px;padding:24px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,rgba(18,27,45,.78),rgba(10,16,28,.68));margin-bottom:24px}
+    .grade-letter{font-size:64px;font-weight:900;line-height:1;letter-spacing:-.06em}
+    .grade-detail{flex:1}
+    .grade-score{font-size:28px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px}
+    .grade-bar{font-family:monospace;font-size:15px;letter-spacing:.15em;line-height:1.2}
+
+    .section{margin-bottom:28px}
+    .section h2{margin:0 0 14px;font-size:17px;letter-spacing:-.02em}
+    .panel{padding:20px 24px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,rgba(18,27,45,.78),rgba(10,16,28,.68))}
+
+    .dim-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(148,163,184,.06)}
+    .dim-row:last-child{border-bottom:0}
+    .dim-name{width:180px;font-weight:600;font-size:14px;flex-shrink:0}
+    .dim-score{width:60px;font-size:15px;font-weight:700;text-align:right;flex-shrink:0}
+    .dim-bar{flex:1;font-family:monospace;font-size:13px;letter-spacing:.15em}
+    .dim-pct{width:44px;font-size:12px;color:var(--muted);text-align:right;flex-shrink:0}
+
+    .check-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(148,163,184,.06)}
+    .check-row:last-child{border-bottom:0}
+    .check-icon{width:16px;text-align:center;flex-shrink:0}
+    .check-id{width:150px;font-family:"SF Mono","Fira Code",monospace;font-size:12px;color:var(--cyan);flex-shrink:0}
+    .check-status{width:70px;font-size:12px;font-weight:700;flex-shrink:0}
+    .check-msg{font-size:12px;color:var(--muted);flex:1}
+
+    .links{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+    .links .button{font-size:13px}
+
+    .nav-pager{display:flex;justify-content:space-between;padding:32px 0;border-top:1px solid var(--line);margin-top:40px}
+    .nav-pager a{color:var(--muted);text-decoration:none;font-size:14px;display:flex;align-items:center;gap:8px}
+    .nav-pager a:hover{color:var(--text)}
+
+    footer{padding:32px 0 48px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+    footer a{color:var(--muted)}
+    @media(max-width:640px){.grade-card{flex-direction:column;text-align:center}.dim-name{width:120px}.check-id{width:100px}}
+  </style>
+</head>
+<body>
+<div class="container">
+  <nav class="nav">
+    <a href="/" class="brand" aria-label="MCP Observatory">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="7" fill="#58e6ff" fill-opacity=".15"/><path d="M7 11c1.5-2 3-3 5-3s3.5 1 5 3M7 17c1.5 2 3 3 5 3s3.5-1 5-3" stroke="#58e6ff" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="14" r="1.5" fill="#47e6a4"/><circle cx="14" cy="14" r="1.5" fill="#47e6a4"/><circle cx="20" cy="14" r="1.5" fill="#47e6a4"/></svg>
+      Observatory
+    </a>
+    <div class="navlinks">
+      <a href="/">Safety Index</a>
+      <a href="/fleet-monitor.html">Fleet Monitor</a>
+      <a href="https://github.com/KryptosAI/mcp-observatory">GitHub</a>
+    </div>
+  </nav>
+
+  <div class="breadcrumb">
+    <a href="/safety-index/">Safety Index</a> &rsaquo; Official Fetch MCP server
+  </div>
+
+  <div class="hero">
+    <h1>Official Fetch MCP server</h1>
+    <div class="meta">
+      <span class="badge cat">Web Content / Search</span>
+      <span class="badge risk">Untrusted content retrieval</span>
+      <span class="badge fail">Startup Failed</span>
+    </div>
+    <p class="why">Fetch MCP servers can retrieve arbitrary web content and feed it into agent context — a prompt injection and content trust boundary.</p>
+  </div>
+
+  
+  <div class="grade-card">
+    <div class="grade-letter" style="color:var(--red)">—</div>
+    <div class="grade-detail">
+      <div class="grade-score" style="font-size:16px;font-weight:600;color:var(--muted)">Could not evaluate</div>
+      <div style="font-size:13px;color:var(--muted)">Could not establish a plain stdio MCP session for target `fetch-server`.
+Command: npx -y @modelcontextprotocol/server-fetch
+Diagnosis: The process exited or detached before MCP initialization completed.
+Raw error: MCP error -32000: Connection closed
+Likely causes:
+- The package may expect extra startup arguments or environment variables.
+- The package may not behave like a plain local-process stdio target under this invocation.
+- The server may be crashing immediately and only leaving clues on stderr.
+Next steps:
+- Run the command manually and look for usage output, auth prompts, or crash text.
+- Check whether the package expects a different transport or an app-oriented startup flow.
+- Use the recent stderr lines below before assuming this is a harness bug.
+Recent stderr:
+- npm error 404  '@modelcontextprotocol/server-fetch@*' is not in this registry.
+- npm error 404
+- npm error 404 Note that you can also install from a
+- npm error 404 tarball, folder, http url, or git url.
+- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-15T22_33_48_816Z-debug-0.log</div>
+    </div>
+  </div>
+  
+
+  
+
+  
+  <div class="section">
+    <h2>Check Results</h2>
+    <div class="panel">
+      <div style="display:flex;gap:18px;margin-bottom:14px;font-size:12px;color:var(--muted)">
+        <span><span style="color:var(--green)">●</span> 0 pass</span>
+        <span><span style="color:var(--red)">●</span> 0 fail</span>
+        <span><span style="color:var(--amber)">●</span> 0 partial</span>
+        <span><span style="color:var(--muted)">●</span> 3 skipped</span>
+      </div>
+      
+      <div class="check-row">
+        <div class="check-icon"><span style="color:var(--amber)">○</span></div>
+        <div class="check-id">tools</div>
+        <div class="check-status" style="color:var(--muted)">Skipped</div>
+        <div class="check-msg">Skipped because startup failed before the MCP session initialized. See the failure diagnosis.</div>
+      </div>
+      <div class="check-row">
+        <div class="check-icon"><span style="color:var(--amber)">○</span></div>
+        <div class="check-id">prompts</div>
+        <div class="check-status" style="color:var(--muted)">Skipped</div>
+        <div class="check-msg">Skipped because startup failed before the MCP session initialized. See the failure diagnosis.</div>
+      </div>
+      <div class="check-row">
+        <div class="check-icon"><span style="color:var(--amber)">○</span></div>
+        <div class="check-id">resources</div>
+        <div class="check-status" style="color:var(--muted)">Skipped</div>
+        <div class="check-msg">Skipped because startup failed before the MCP session initialized. See the failure diagnosis.</div>
+      </div>
+    </div>
+  </div>
+  
+
+  <div class="links">
+    <a href="https://github.com/modelcontextprotocol/servers" target="_blank" rel="noopener" class="button">View Repository →</a>
+    
+    <a href="https://github.com/KryptosAI/mcp-observatory/blob/main/docs/safety-index/artifacts/fetch-server.json" target="_blank" rel="noopener" class="button">Raw Artifact →</a>
+    <a href="https://github.com/KryptosAI/mcp-observatory/blob/main/docs/safety-index/artifacts/fetch-server.md" target="_blank" rel="noopener" class="button">Full Report →</a>
+  </div>
+
+  <div class="nav-pager">
+    <a href="./sqlite-server.html">&larr; Official SQLite MCP server</a>
+    <a href="./brave-search-server.html">Official Brave Search MCP server &rarr;</a>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <p>MCP Observatory Safety Index &middot; 175 servers evaluated &middot; <a href="/sitemap.xml">Sitemap</a></p>
+    <p>Open-source MIT license &middot; <a href="https://github.com/KryptosAI/mcp-observatory">github.com/KryptosAI/mcp-observatory</a></p>
+  </div>
+</footer>
+</body>
+</html>
