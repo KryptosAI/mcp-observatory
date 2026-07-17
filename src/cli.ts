@@ -5,6 +5,7 @@ import { Command } from "commander";
 
 import { isCI } from "./ci.js";
 import { ANSI, LOGO, c, getBinName, setNoColor, setQuiet, useColor } from "./commands/helpers.js";
+import { registerDemoCommands } from "./commands/demo.js";
 import { registerDiffCommands } from "./commands/diff.js";
 import { registerLegacyCommands } from "./commands/legacy.js";
 import { registerRecordReplayCommands } from "./commands/record-replay.js";
@@ -26,7 +27,7 @@ import { registerEnforceCommands } from "./commands/enforce.js";
 import { registerReceiptCommands } from "./commands/receipt.js";
 import { registerRiskGraphCommands } from "./commands/risk-graph.js";
 import { registerSkillScanCommands } from "./commands/skill-scan.js";
-import { DEFAULT_CLOUD_UPLOAD_ENDPOINT, printCloudInfo } from "./commercial.js";
+import { DEFAULT_CLOUD_UPLOAD_ENDPOINT, printCloudInfo, getCloudAccessToken, cloudWhoami } from "./commercial.js";
 import { runTarget } from "./index.js";
 import type { RunArtifact, TargetConfig } from "./types.js";
 import { loadTelemetryConfig, collectUserIdentity, recordEvent, buildEvent, updateFeatureChain } from "./telemetry.js";
@@ -262,6 +263,7 @@ async function main(): Promise<void> {
         "",
         `  ${c(ANSI.bold, "Quick Start")}`,
         "",
+        `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} demo`)}               Interactive demo — scan your servers and get a grade`,
         `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} test`)} ${c(ANSI.dim, "<cmd>")}         Test a specific MCP server`,
         `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} test --target`)} ${c(ANSI.dim, "<file>")} Test an HTTP or local target config`,
         `  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, `${bin} scan`)}               Check all your configured servers`,
@@ -287,6 +289,7 @@ async function main(): Promise<void> {
   // Register all command modules
   registerScanCommands(program, bin);
   registerTestCommands(program);
+  registerDemoCommands(program);
   registerDiffCommands(program);
   registerRecordReplayCommands(program, bin);
   registerWatchCommands(program);
@@ -321,9 +324,9 @@ async function main(): Promise<void> {
     .option("--org <org>", "Customer or organization slug. Defaults to MCP_OBSERVATORY_ORG.")
     .option("--endpoint <url>", "Hosted upload endpoint.", DEFAULT_CLOUD_UPLOAD_ENDPOINT)
     .action(async (artifactPath: string, options: { org?: string; endpoint: string }) => {
-      const token = process.env["MCP_OBSERVATORY_CLOUD_TOKEN"];
+      const token = await getCloudAccessToken();
       if (!token) {
-        throw new Error("MCP_OBSERVATORY_CLOUD_TOKEN is required for cloud uploads.");
+        throw new Error("Authentication required. Set MCP_OBSERVATORY_CLOUD_TOKEN or run: mcp-observatory cloud login");
       }
       const org = options.org ?? process.env["MCP_OBSERVATORY_ORG"];
       const artifact = validateRunArtifact(JSON.parse(await readFile(artifactPath, "utf8")));
@@ -347,6 +350,48 @@ async function main(): Promise<void> {
         cloudUpload: true,
         org,
       }));
+    });
+
+  cloudCmd
+    .command("login")
+    .description("Sign in to MCP Observatory Cloud via your identity provider.")
+    .option("--issuer <url>", "OIDC issuer URL. Defaults to MCP_OBSERVATORY_OIDC_ISSUER env var.")
+    .option("--client-id <id>", "OIDC client ID. Defaults to MCP_OBSERVATORY_OIDC_CLIENT_ID env var.")
+    .action(async (options: { issuer?: string; clientId?: string }) => {
+      const issuer = options.issuer ?? process.env["MCP_OBSERVATORY_OIDC_ISSUER"];
+      const clientId = options.clientId ?? process.env["MCP_OBSERVATORY_OIDC_CLIENT_ID"];
+      if (!issuer || !clientId) {
+        throw new Error("OIDC issuer and client ID are required. Set MCP_OBSERVATORY_OIDC_ISSUER and MCP_OBSERVATORY_OIDC_CLIENT_ID, or pass --issuer and --client-id.");
+      }
+      const { performDeviceFlow } = await import("./auth.js");
+      const token = await performDeviceFlow(issuer, clientId);
+      process.stdout.write(`  ${c(ANSI.green, "✓")} Signed in as ${c(ANSI.bold, token.email ?? token.sub ?? "unknown")}\n`);
+      if (token.org) {
+        process.stdout.write(`    Organization: ${c(ANSI.bold, token.org)}\n`);
+      }
+    });
+
+  cloudCmd
+    .command("logout")
+    .description("Sign out of MCP Observatory Cloud and remove stored credentials.")
+    .action(async () => {
+      const { clearToken } = await import("./auth.js");
+      await clearToken();
+      process.stdout.write(`  ${c(ANSI.green, "✓")} Signed out. Local credentials removed.\n`);
+    });
+
+  cloudCmd
+    .command("whoami")
+    .description("Show the currently authenticated user and organization.")
+    .action(async () => {
+      const info = await cloudWhoami();
+      if (!info.authenticated) {
+        process.stdout.write(`  ${c(ANSI.yellow, "Not signed in.")} Run ${c(ANSI.cyan, `${bin} cloud login`)} to sign in.\n`);
+      } else {
+        process.stdout.write(`  ${c(ANSI.green, "✓")} Signed in\n`);
+        if (info.email) process.stdout.write(`    Email:  ${c(ANSI.bold, info.email)}\n`);
+        if (info.org) process.stdout.write(`    Org:    ${c(ANSI.bold, info.org)}\n`);
+      }
     });
 
   // ── smithery ─────────────────────────────────────────────────────────

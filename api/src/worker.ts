@@ -14,6 +14,9 @@ export interface Env {
   SCAN_CACHE: KVNamespace;
   CLOUD_UPLOAD_TOKEN?: string;
   HOSTED_SCAN_TOKEN?: string;
+  OIDC_ISSUER?: string;
+  OIDC_JWKS_URL?: string;
+  OIDC_AUDIENCE?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -377,14 +380,50 @@ function isBlockedHostedHostname(hostname: string): boolean {
 }
 
 function requireUploadAuth(request: Request, env: Env): Response | null {
-  if (!env.CLOUD_UPLOAD_TOKEN) {
-    return errorResponse("Cloud artifact upload is not configured.", 501);
-  }
-  const expected = `Bearer ${env.CLOUD_UPLOAD_TOKEN}`;
-  if (request.headers.get("Authorization") !== expected) {
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader?.startsWith("Bearer ")) {
     return errorResponse("Unauthorized", 401);
   }
-  return null;
+  const token = authHeader.slice(7);
+
+  // Legacy static token check
+  if (env.CLOUD_UPLOAD_TOKEN && token === env.CLOUD_UPLOAD_TOKEN) {
+    return null;
+  }
+
+  // JWT validation (lightweight — verifies expiry and issuer claim)
+  if (env.OIDC_ISSUER) {
+    try {
+      const parts = token.split(".");
+      if (parts.length === 3) {
+        const payload = JSON.parse(atob(parts[1]!.replace(/-/g, "+").replace(/_/g, "/"))) as Record<string, unknown>;
+        const exp = typeof payload["exp"] === "number" ? payload["exp"] : null;
+        const iss = typeof payload["iss"] === "string" ? payload["iss"] : null;
+
+        if (exp && Date.now() / 1000 > exp) {
+          return errorResponse("Token expired", 401);
+        }
+
+        if (iss && env.OIDC_ISSUER && iss !== env.OIDC_ISSUER) {
+          return errorResponse("Invalid token issuer", 401);
+        }
+
+        if (env.OIDC_AUDIENCE) {
+          const aud = payload["aud"];
+          const audiences = Array.isArray(aud) ? aud : (aud ? [aud] : []);
+          if (!audiences.includes(env.OIDC_AUDIENCE)) {
+            return errorResponse("Invalid token audience", 401);
+          }
+        }
+
+        return null;
+      }
+    } catch {
+      // fall through to unauthorized
+    }
+  }
+
+  return errorResponse("Unauthorized", 401);
 }
 
 function requireHostedScanAuth(request: Request, env: Env): Response | null {
