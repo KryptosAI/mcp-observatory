@@ -988,6 +988,260 @@ function handleHealth(): Response {
 }
 
 // ---------------------------------------------------------------------------
+// Safety Index API handlers
+// ---------------------------------------------------------------------------
+
+function intQueryParam(url: URL, name: string, fallback: number): number {
+  const raw = url.searchParams.get(name);
+  if (raw === null) return fallback;
+  const n = parseInt(raw, 10);
+  return Number.isFinite(n) && n > 0 ? n : fallback;
+}
+
+function safetyBadgeSvg(score: number, grade: HealthGrade, serverName: string): string {
+  const label = "MCP Safety";
+  const value = `${score}/100`;
+  const color = GRADE_COLORS[grade];
+  const labelWidth = label.length * 7 + 10;
+  const valueWidth = value.length * 7 + 10;
+  const totalWidth = labelWidth + valueWidth;
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="20" role="img" aria-label="${label}: ${value}">
+  <title>${serverName}: ${label} ${value}</title>
+  <linearGradient id="s" x2="0" y2="100%">
+    <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+    <stop offset="1" stop-opacity=".1"/>
+  </linearGradient>
+  <clipPath id="r"><rect width="${totalWidth}" height="20" rx="3" fill="#fff"/></clipPath>
+  <g clip-path="url(#r)">
+    <rect width="${labelWidth}" height="20" fill="#555"/>
+    <rect x="${labelWidth}" width="${valueWidth}" height="20" fill="${color}"/>
+    <rect width="${totalWidth}" height="20" fill="url(#s)"/>
+  </g>
+  <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110">
+    <text aria-hidden="true" x="${labelWidth * 5}" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)">${label}</text>
+    <text x="${labelWidth * 5}" y="140" transform="scale(.1)">${label}</text>
+    <text aria-hidden="true" x="${(labelWidth + valueWidth / 2) * 10}" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)">${value}</text>
+    <text x="${(labelWidth + valueWidth / 2) * 10}" y="140" transform="scale(.1)">${value}</text>
+  </g>
+</svg>`;
+}
+
+// Safety Index data shape (cached in memory, fetched from Pages)
+interface SafetyIndexEntry {
+  id: string;
+  name: string;
+  packageName: string;
+  category: string;
+  riskClass: string;
+  failureClass: string;
+  healthScore?: number;
+  grade?: string;
+  gate?: string;
+  toolCount: number;
+  promptCount: number;
+  resourceCount: number;
+  lastScanned?: string;
+  repo?: string;
+  fatalError?: string;
+}
+
+interface SafetyIndexServer extends SafetyIndexEntry {
+  whyItMatters: string;
+  reproductionNotes: string;
+  healthScoreDetail?: {
+    overall: number;
+    grade: string;
+    dimensions: Array<{ name: string; weight: number; score: number }>;
+  };
+  checks: Array<{ id: string; status: string; message: string }>;
+  summary: { total: number; pass: number; fail: number; partial: number; unsupported: number; skipped: number };
+  findings?: Array<{ severity: string; rule?: string; message: string; cwe?: string }>;
+  performanceMetrics?: { connectMs?: number };
+}
+
+interface SafetyIndexData {
+  generatedAt: string;
+  totalServers: number;
+  categories: Array<{ name: string; count: number }>;
+  servers: SafetyIndexEntry[];
+  details: Record<string, SafetyIndexServer>;
+  riskGraph?: {
+    nodes: Array<{ id: string; name: string; source: string; capabilityBoundary: string; receiptState: string; recommendedAction: string; riskLevel: string }>;
+    edges: Array<{ from: string; to: string; type: string; reason: string }>;
+    summary: Record<string, unknown>;
+  };
+}
+
+let _safetyIndexCache: SafetyIndexData | null = null;
+let _safetyIndexFetchTs = 0;
+const SAFETY_INDEX_TTL = 3600_000;
+
+async function loadSafetyIndex(): Promise<SafetyIndexData | null> {
+  if (_safetyIndexCache && Date.now() - _safetyIndexFetchTs < SAFETY_INDEX_TTL) {
+    return _safetyIndexCache;
+  }
+  try {
+    const res = await fetch("https://mcp-observatory.com/safety-index/api-data.json");
+    if (!res.ok) return null;
+    _safetyIndexCache = (await res.json()) as SafetyIndexData;
+    _safetyIndexFetchTs = Date.now();
+    return _safetyIndexCache;
+  } catch {
+    return null;
+  }
+}
+
+async function handleSafetyServers(request: Request, _env: Env): Promise<Response> {
+  const data = await loadSafetyIndex();
+  if (!data) return errorResponse("Safety index not available", 503);
+  const url = new URL(request.url);
+
+  const all = data.servers;
+  let filtered = all;
+
+  const category = url.searchParams.get("category");
+  if (category) {
+    filtered = filtered.filter((s) => s.category === category);
+  }
+
+  const search = url.searchParams.get("search");
+  if (search) {
+    const q = search.toLowerCase();
+    filtered = filtered.filter((s) =>
+      s.name.toLowerCase().includes(q) || s.packageName.toLowerCase().includes(q),
+    );
+  }
+
+  const page = intQueryParam(url, "page", 1);
+  const perPage = Math.min(intQueryParam(url, "perPage", 20), 100);
+  const total = filtered.length;
+  const totalPages = Math.ceil(total / perPage);
+  const start = (page - 1) * perPage;
+  const paged = filtered.slice(start, start + perPage);
+
+  return jsonResponse({
+    servers: paged,
+    pagination: { page, perPage, total, totalPages },
+  });
+}
+
+async function handleSafetyServerDetail(id: string, _env: Env): Promise<Response> {
+  const data = await loadSafetyIndex();
+  if (!data) return errorResponse("Safety index not available", 503);
+  const server = data.details[id];
+  if (!server) return errorResponse("Server not found", 404);
+  return jsonResponse(server);
+}
+
+async function handleSafetySearch(request: Request, _env: Env): Promise<Response> {
+  const data = await loadSafetyIndex();
+  if (!data) return errorResponse("Safety index not available", 503);
+  const url = new URL(request.url);
+
+  let results = data.servers;
+
+  const q = url.searchParams.get("q");
+  if (q) {
+    const lower = q.toLowerCase();
+    results = results.filter((s) =>
+      s.name.toLowerCase().includes(lower) || s.packageName.toLowerCase().includes(lower),
+    );
+  }
+
+  const category = url.searchParams.get("category");
+  if (category) {
+    results = results.filter((s) => s.category === category);
+  }
+
+  const grade = url.searchParams.get("grade");
+  if (grade) {
+    results = results.filter((s) => s.grade === grade);
+  }
+
+  const riskClass = url.searchParams.get("riskClass");
+  if (riskClass) {
+    results = results.filter((s) => s.riskClass === riskClass);
+  }
+
+  return jsonResponse({ results, total: results.length });
+}
+
+async function handleSafetyRiskGraph(_env: Env): Promise<Response> {
+  const data = await loadSafetyIndex();
+  if (!data) return errorResponse("Safety index not available", 503);
+  if (!data.riskGraph) return errorResponse("Risk graph not found", 404);
+  return jsonResponse(data.riskGraph);
+}
+
+async function handleSafetyCategories(_env: Env): Promise<Response> {
+  const data = await loadSafetyIndex();
+  if (!data) return errorResponse("Safety index not available", 503);
+  return jsonResponse(data.categories);
+}
+
+async function handleSafetyServerTools(id: string, _env: Env): Promise<Response> {
+  const data = await loadSafetyIndex();
+  if (!data) return errorResponse("Safety index not available", 503);
+  const server = data.details[id];
+  if (!server) return errorResponse("Server not found", 404);
+  const toolsCheck = server.checks?.find((c) => c.id === "tools") as
+    | { evidence?: Array<{ identifiers?: string[]; diagnostics?: string[] }> }
+    | undefined;
+  const tools = toolsCheck?.evidence?.flatMap((e) =>
+    (e.identifiers ?? []).map((name) => ({
+      name,
+      description: e.diagnostics?.[0] ?? "",
+      inputSchema: {},
+    })),
+  ) ?? [];
+  return jsonResponse(tools);
+}
+
+async function handleSafetyServerSecurity(id: string, _env: Env): Promise<Response> {
+  const data = await loadSafetyIndex();
+  if (!data) return errorResponse("Safety index not available", 503);
+  const server = data.details[id];
+  if (!server) return errorResponse("Server not found", 404);
+  const findings = server.findings ?? [];
+  const result = findings.map((f) => ({
+    severity: f.severity ?? "unknown",
+    rule: f.rule ?? "",
+    message: f.message ?? "",
+    cwe: f.cwe ?? null,
+  }));
+  return jsonResponse(result);
+}
+
+async function handleSafetyServerBadge(id: string, _env: Env): Promise<Response> {
+  const data = await loadSafetyIndex();
+  const server = data?.details[id];
+  if (!server) {
+    const svg = safetyBadgeSvg(0, "F", id);
+    return new Response(svg, {
+      status: 404,
+      headers: {
+        "Content-Type": "image/svg+xml",
+        "Cache-Control": "no-cache",
+        ...securityHeaders(),
+        ...corsHeaders(),
+      },
+    });
+  }
+  const score = server.healthScoreDetail?.overall ?? server.healthScore ?? 0;
+  const grade = (server.healthScoreDetail?.grade ?? server.grade ?? "F") as HealthGrade;
+  const svg = safetyBadgeSvg(score, GRADE_COLORS[grade] ? grade : "F", server.name ?? id);
+  return new Response(svg, {
+    headers: {
+      "Content-Type": "image/svg+xml",
+      "Cache-Control": "public, max-age=300",
+      ...securityHeaders(),
+      ...corsHeaders(),
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Router
 // ---------------------------------------------------------------------------
 
@@ -1021,6 +1275,50 @@ function matchRoute(
   const badgeMatch = pathname.match(/^\/api\/v1\/badge\/([a-z0-9_]+)$/);
   if (method === "GET" && badgeMatch?.[1]) {
     return { handler: "getBadge", params: { runId: badgeMatch[1] } };
+  }
+
+  // GET /api/v1/safety-index/servers
+  if (method === "GET" && pathname === "/api/v1/safety-index/servers") {
+    return { handler: "safetyServers", params: {} };
+  }
+
+  // GET /api/v1/safety-index/servers/:id/tools
+  const serverToolsMatch = pathname.match(/^\/api\/v1\/safety-index\/servers\/([a-zA-Z0-9._-]+)\/tools$/);
+  if (method === "GET" && serverToolsMatch?.[1]) {
+    return { handler: "safetyServerTools", params: { id: serverToolsMatch[1] } };
+  }
+
+  // GET /api/v1/safety-index/servers/:id/security
+  const serverSecurityMatch = pathname.match(/^\/api\/v1\/safety-index\/servers\/([a-zA-Z0-9._-]+)\/security$/);
+  if (method === "GET" && serverSecurityMatch?.[1]) {
+    return { handler: "safetyServerSecurity", params: { id: serverSecurityMatch[1] } };
+  }
+
+  // GET /api/v1/safety-index/servers/:id/badge
+  const serverBadgeMatch = pathname.match(/^\/api\/v1\/safety-index\/servers\/([a-zA-Z0-9._-]+)\/badge$/);
+  if (method === "GET" && serverBadgeMatch?.[1]) {
+    return { handler: "safetyServerBadge", params: { id: serverBadgeMatch[1] } };
+  }
+
+  // GET /api/v1/safety-index/servers/:id
+  const serverDetailMatch = pathname.match(/^\/api\/v1\/safety-index\/servers\/([a-zA-Z0-9._-]+)$/);
+  if (method === "GET" && serverDetailMatch?.[1]) {
+    return { handler: "safetyServerDetail", params: { id: serverDetailMatch[1] } };
+  }
+
+  // GET /api/v1/safety-index/search
+  if (method === "GET" && pathname === "/api/v1/safety-index/search") {
+    return { handler: "safetySearch", params: {} };
+  }
+
+  // GET /api/v1/safety-index/risk-graph
+  if (method === "GET" && pathname === "/api/v1/safety-index/risk-graph") {
+    return { handler: "safetyRiskGraph", params: {} };
+  }
+
+  // GET /api/v1/safety-index/categories
+  if (method === "GET" && pathname === "/api/v1/safety-index/categories") {
+    return { handler: "safetyCategories", params: {} };
   }
 
   return null;
@@ -1058,6 +1356,22 @@ export default {
           return await handleGetScan(route.params.runId!, env);
         case "getBadge":
           return await handleGetBadge(route.params.runId!, env);
+        case "safetyServers":
+          return await handleSafetyServers(request, env);
+        case "safetyServerDetail":
+          return await handleSafetyServerDetail(route.params.id!, env);
+        case "safetySearch":
+          return await handleSafetySearch(request, env);
+        case "safetyRiskGraph":
+          return await handleSafetyRiskGraph(env);
+        case "safetyCategories":
+          return await handleSafetyCategories(env);
+        case "safetyServerTools":
+          return await handleSafetyServerTools(route.params.id!, env);
+        case "safetyServerSecurity":
+          return await handleSafetyServerSecurity(route.params.id!, env);
+        case "safetyServerBadge":
+          return await handleSafetyServerBadge(route.params.id!, env);
         default:
           return errorResponse("Not found", 404);
       }
