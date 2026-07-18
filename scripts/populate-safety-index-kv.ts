@@ -96,11 +96,16 @@ function extractFindings(checks: Array<Record<string, unknown>>): Array<{ severi
     for (const ev of evidence) {
       const fList = ev["findings"] as Array<Record<string, unknown>> | undefined;
       if (Array.isArray(fList)) {
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string
         for (const f of fList) {
           findings.push({
+            // eslint-disable-next-line @typescript-eslint/no-base-to-string
             severity: String(f["severity"] ?? f["level"] ?? "low"),
+            // eslint-disable-next-line @typescript-eslint/no-base-to-string
             rule: f["rule"] ? String(f["rule"]) : undefined,
+            // eslint-disable-next-line @typescript-eslint/no-base-to-string
             message: String(f["message"] ?? f["description"] ?? ch["message"] ?? ""),
+            // eslint-disable-next-line @typescript-eslint/no-base-to-string
             cwe: f["cwe"] ? String(f["cwe"]) : undefined,
           });
         }
