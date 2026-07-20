@@ -519,6 +519,10 @@ The record/replay/verify pattern is inspired by:
 
 Scan before you trust. Enforce at runtime with [mcp-seatbelt](https://github.com/KryptosAI/mcp-seatbelt) — an MCP proxy that consumes Observatory receipts and blocks out-of-contract tool calls in production. Observatory validates; seatbelt enforces.
 
+## Works with agent-obs
+
+Secure your servers with Observatory. Trace your agents with [agent-obs](https://github.com/KryptosAI/agent-observability) — an open-source agent execution tracer that records every tool call, computes A-F session grades, and shows you exactly where your agents spend time, burn tokens, and hit errors. Observatory tells you if a server is safe. agent-obs tells you what your agent did with it.
+
 ## Contributors ✨
 
 Thanks to these amazing people who have contributed:
