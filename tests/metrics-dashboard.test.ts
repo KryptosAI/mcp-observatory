@@ -14,6 +14,18 @@ async function tempDb() {
   return { dir, db };
 }
 
+function tempPaths(dir: string) {
+  return {
+    root: dir,
+    db: path.join(dir, "observatory.sqlite"),
+    dashboardDir: path.join(dir, "dashboard"),
+    dashboard: path.join(dir, "dashboard", "index.html"),
+    snapshotsDir: path.join(dir, "snapshots"),
+    logsDir: path.join(dir, "logs"),
+    lock: path.join(dir, "refresh.lock"),
+  };
+}
+
 afterEach(async () => {
   while (tempDirs.length > 0) {
     const dir = tempDirs.pop();
@@ -41,7 +53,8 @@ describe("local metrics dashboard", () => {
   });
 
   it("renders sanitized dashboard HTML without raw telemetry identifiers", async () => {
-    const { db } = await tempDb();
+    const { dir, db } = await tempDb();
+    const paths = tempPaths(dir);
     const html = renderDashboardHtml({
       generatedAt: "2026-06-21T12:00:00.000Z",
       dbPath: "/tmp/observatory.sqlite",
@@ -153,9 +166,9 @@ describe("local metrics dashboard", () => {
       },
       sourceRuns: [],
       recentFailures: [],
-    }, db);
-    db.close();
+    }, db, paths);
 
+    db.close();
     expect(html).toContain("MCP Observatory Local Metrics");
     expect(html).toContain("MCP Observatory ASCII art logo");
     expect(html).toContain("███╗   ███╗");

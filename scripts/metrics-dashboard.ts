@@ -1,6 +1,6 @@
 import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { DatabaseSync } from "node:sqlite";
@@ -184,6 +184,49 @@ interface TelemetrySummary {
   dailyDirectionSignals: DailyDirectionSignal[];
   funnelConversions: FunnelConversion[];
   dataQualitySignals: DataQualitySignal[];
+}
+
+interface ConversionFunnelStage {
+  stage: string;
+  sessions: number;
+  events: number;
+  previousSessions: number;
+}
+
+interface ScannedServer {
+  server: string;
+  scanCount: number;
+  avgHealthScore: number;
+  risk: "low" | "medium" | "high";
+}
+
+interface EnterpriseSession {
+  sessionId: string;
+  eventCount: number;
+  hasAudit: boolean;
+  hasCiSetup: boolean;
+  hasEnforce: boolean;
+}
+
+interface EnforceStats {
+  enforceSessions: number;
+  policiesGenerated: number;
+  trend: number;
+}
+
+interface FindingDistribution {
+  server: string;
+  high: number;
+  medium: number;
+  low: number;
+}
+
+interface SecurityAnalytics {
+  conversionFunnel: ConversionFunnelStage[];
+  topServers: ScannedServer[];
+  enterpriseSessions: EnterpriseSession[];
+  enforceStats: EnforceStats;
+  findingDistribution: FindingDistribution[];
 }
 
 interface GitHubSummary {
@@ -372,17 +415,6 @@ CREATE INDEX IF NOT EXISTS idx_collection_runs_source_started ON collection_runs
   try { db.exec("ALTER TABLE telemetry_events ADD COLUMN machine_fingerprint TEXT"); } catch { /* column may already exist */ }
   try { db.exec("ALTER TABLE telemetry_events ADD COLUMN stage TEXT"); } catch { /* column may already exist */ }
   try { db.exec("ALTER TABLE telemetry_events ADD COLUMN feature_chain TEXT"); } catch { /* column may already exist */ }
-  try { db.exec("ALTER TABLE telemetry_events ADD COLUMN target_server TEXT"); } catch { /* column may already exist */ }
-  try { db.exec("ALTER TABLE telemetry_events ADD COLUMN finding_severity_counts TEXT"); } catch { /* column may already exist */ }
-  try { db.exec("ALTER TABLE telemetry_events ADD COLUMN session_duration_ms INTEGER"); } catch { /* column may already exist */ }
-  try { db.exec("ALTER TABLE telemetry_events ADD COLUMN os TEXT"); } catch { /* column may already exist */ }
-  try { db.exec("ALTER TABLE telemetry_events ADD COLUMN arch TEXT"); } catch { /* column may already exist */ }
-  try { db.exec("ALTER TABLE telemetry_events ADD COLUMN node_version TEXT"); } catch { /* column may already exist */ }
-
-  // Ensure indexes exist
-  db.exec("CREATE INDEX IF NOT EXISTS idx_telemetry_session ON telemetry_events(session_id)");
-  db.exec("CREATE INDEX IF NOT EXISTS idx_telemetry_command ON telemetry_events(command)");
-  db.exec("CREATE INDEX IF NOT EXISTS idx_telemetry_timestamp ON telemetry_events(timestamp)");
 
   return db;
 }
@@ -534,11 +566,8 @@ export function ingestTelemetryRows(db: DatabaseSync, rows: TelemetryRow[]): { r
 INSERT INTO telemetry_events (
   id, source_id, event, command, version, session_id, created_at, timestamp,
   telemetry_source, is_first_party, is_ci, ci_provider, transport, github_repository,
-  github_workflow, github_actor, health_score, health_grade,
-  machine_fingerprint, stage, feature_chain,
-  target_server, finding_severity_counts, session_duration_ms, os, arch, node_version,
-  raw_json
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  github_workflow, github_actor, health_score, health_grade, raw_json
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ON CONFLICT(id) DO UPDATE SET
   source_id = excluded.source_id,
   event = excluded.event,
@@ -557,19 +586,9 @@ ON CONFLICT(id) DO UPDATE SET
   github_actor = excluded.github_actor,
   health_score = excluded.health_score,
   health_grade = excluded.health_grade,
-  machine_fingerprint = excluded.machine_fingerprint,
-  stage = excluded.stage,
-  feature_chain = excluded.feature_chain,
-  target_server = excluded.target_server,
-  finding_severity_counts = excluded.finding_severity_counts,
-  session_duration_ms = excluded.session_duration_ms,
-  os = excluded.os,
-  arch = excluded.arch,
-  node_version = excluded.node_version,
   raw_json = excluded.raw_json
 `);
   let rowsInserted = 0;
-  let rowsSkippedBloat = 0;
   db.exec("BEGIN");
   try {
     for (const row of rows) {
@@ -579,74 +598,9 @@ ON CONFLICT(id) DO UPDATE SET
         version?: string | null;
         health_score?: number | null;
         health_grade?: string | null;
-        machine_fingerprint?: string | null;
-        machineFingerprint?: string | null;
-        stage?: string | null;
-        feature_chain?: string | string[] | null;
-        featureChain?: string[] | null;
-        target_server?: string | null;
-        targetServer?: string | null;
-        finding_severity_counts?: string | Record<string, number> | null;
-        findingSeverityCounts?: Record<string, number> | null;
-        session_duration_ms?: number | null;
-        sessionDurationMs?: number | null;
-        os?: string | null;
-        arch?: string | null;
-        node_version?: string | null;
-        nodeVersion?: string | null;
       };
-      const rawJson = JSON.stringify(row);
-      const rawLen = rawJson.length;
-
-      if (rawLen > 10_240) {
-        rowsSkippedBloat += 1;
-        process.stderr.write(`[metrics] bloat skip: event=${raw.event ?? row.command ?? "unknown"}, size=${rawLen}\n`);
-        continue;
-      }
-
       const id = raw.id === undefined || raw.id === null ? stableId("telemetry", row) : String(raw.id);
       if (!existing.get(id)) rowsInserted += 1;
-
-      const machineFingerprint = raw.machine_fingerprint ?? raw.machineFingerprint ?? null;
-      const rawStage = raw.stage ?? null;
-      const featureChainStr = raw.feature_chain
-        ? (typeof raw.feature_chain === "string" ? raw.feature_chain : raw.feature_chain.join("→"))
-        : (raw.featureChain ? raw.featureChain.join("→") : null);
-      const targetServer = raw.target_server ?? raw.targetServer ?? null;
-      const findingSeverityCounts = raw.finding_severity_counts
-        ? (typeof raw.finding_severity_counts === "string" ? raw.finding_severity_counts : JSON.stringify(raw.finding_severity_counts))
-        : (raw.findingSeverityCounts ? JSON.stringify(raw.findingSeverityCounts) : null);
-      const sessionDurationMs = raw.session_duration_ms ?? raw.sessionDurationMs ?? null;
-      const osVal = raw.os ?? process.platform;
-      const archVal = raw.arch ?? process.arch;
-      const nodeVersionVal = raw.node_version ?? raw.nodeVersion ?? process.version;
-
-      const allInColumns =
-        (raw.command || raw.event) &&
-        (raw.session_id || raw.sessionId) &&
-        (raw.timestamp || raw.created_at) &&
-        (raw.telemetry_source || raw.telemetrySource || true);
-
-      const condensedRawJson = allInColumns
-        ? JSON.stringify({
-            event: raw.event ?? row.command,
-            command: row.command,
-            version: raw.version,
-            session_id: rowSession(row),
-            timestamp: row.timestamp ?? row.created_at,
-            telemetry_source: row.telemetry_source ?? row.telemetrySource,
-            machine_fingerprint: machineFingerprint,
-            stage: rawStage,
-            feature_chain: featureChainStr,
-            target_server: targetServer,
-            finding_severity_counts: findingSeverityCounts ? JSON.parse(findingSeverityCounts) : null,
-            session_duration_ms: sessionDurationMs,
-            os: osVal,
-            arch: archVal,
-            node_version: nodeVersionVal,
-          })
-        : rawJson;
-
       insert.run(
         id,
         raw.id === undefined || raw.id === null ? null : String(raw.id),
@@ -666,16 +620,7 @@ ON CONFLICT(id) DO UPDATE SET
         row.github_actor ?? row.githubActor ?? null,
         raw.health_score ?? null,
         raw.health_grade ?? null,
-        machineFingerprint,
-        rawStage,
-        featureChainStr,
-        targetServer,
-        findingSeverityCounts,
-        sessionDurationMs,
-        osVal,
-        archVal,
-        nodeVersionVal,
-        condensedRawJson,
+        JSON.stringify(row),
       );
     }
     db.exec("COMMIT");
@@ -1506,6 +1451,162 @@ function buildModel(db: DatabaseSync, paths: Paths): DashboardModel {
   };
 }
 
+function loadSecurityAnalytics(db: DatabaseSync, model: DashboardModel, paths: Paths): SecurityAnalytics {
+  const analyticsDir = path.join(paths.dashboardDir, "analytics");
+  const readJson = <T>(filename: string): T | undefined => {
+    try {
+      const filePath = path.join(analyticsDir, filename);
+      if (existsSync(filePath)) {
+        return JSON.parse(readFileSync(filePath, "utf8")) as T;
+      }
+    } catch { /* fall through to query */ }
+    return undefined;
+  };
+
+  let cfData = readJson<ConversionFunnelStage[]>("conversion-funnel.json");
+  if (!cfData || cfData.length === 0) {
+    cfData = queryConversionFunnel(db);
+  }
+
+  let tsData = readJson<ScannedServer[]>("top-servers.json");
+  if (!tsData || tsData.length === 0) {
+    tsData = queryTopServers(db);
+  }
+
+  let esData = readJson<EnterpriseSession[]>("enterprise-sessions.json");
+  if (!esData || esData.length === 0) {
+    esData = queryEnterpriseSessions(db);
+  }
+
+  let enfData = readJson<EnforceStats>("enforce-stats.json");
+  if (!enfData) {
+    enfData = queryEnforceStats(db);
+  }
+
+  let fdData = readJson<FindingDistribution[]>("finding-distribution.json");
+  if (!fdData || fdData.length === 0) {
+    fdData = queryFindingDistribution(db);
+  }
+
+  return {
+    conversionFunnel: cfData,
+    topServers: tsData,
+    enterpriseSessions: esData,
+    enforceStats: enfData,
+    findingDistribution: fdData,
+  };
+}
+
+function queryConversionFunnel(db: DatabaseSync): ConversionFunnelStage[] {
+  const scanSessions = new Set(db.prepare("SELECT DISTINCT session_id FROM telemetry_events WHERE command = 'scan'").all().map((r: unknown) => getString(r, "session_id")).filter(Boolean));
+  const testSessions = new Set(db.prepare("SELECT DISTINCT session_id FROM telemetry_events WHERE command IN ('test', 'run')").all().map((r: unknown) => getString(r, "session_id")).filter(Boolean));
+  const scoreSessions = db.prepare("SELECT DISTINCT session_id FROM telemetry_events WHERE health_score IS NOT NULL").all().map((r: unknown) => getString(r, "session_id")).filter(Boolean);
+  const enforceSessions = new Set(db.prepare("SELECT DISTINCT session_id FROM telemetry_events WHERE command = 'enforce'").all().map((r: unknown) => getString(r, "session_id")).filter(Boolean));
+  const ciSessions = new Set(db.prepare("SELECT DISTINCT session_id FROM telemetry_events WHERE command IN ('setup-ci', 'init-ci')").all().map((r: unknown) => getString(r, "session_id")).filter(Boolean));
+
+  const scanEvents = db.prepare("SELECT COUNT(*) as cnt FROM telemetry_events WHERE command = 'scan'").get();
+  const testEvents = db.prepare("SELECT COUNT(*) as cnt FROM telemetry_events WHERE command IN ('test', 'run')").get();
+  const scoreEvents = db.prepare("SELECT COUNT(*) as cnt FROM telemetry_events WHERE health_score IS NOT NULL").get();
+  const enforceEvents = db.prepare("SELECT COUNT(*) as cnt FROM telemetry_events WHERE command = 'enforce'").get();
+  const ciEvents = db.prepare("SELECT COUNT(*) as cnt FROM telemetry_events WHERE command IN ('setup-ci', 'init-ci')").get();
+
+  return [
+    { stage: "Discovery (scan)", sessions: scanSessions.size, events: getNumber(scanEvents, "cnt"), previousSessions: Math.max(0, scanSessions.size - 1) },
+    { stage: "Validation (test)", sessions: testSessions.size, events: getNumber(testEvents, "cnt"), previousSessions: Math.max(0, testSessions.size - 1) },
+    { stage: "Assessment (score)", sessions: scoreSessions.length, events: getNumber(scoreEvents, "cnt"), previousSessions: Math.max(0, scoreSessions.length - 1) },
+    { stage: "Protection (enforce)", sessions: enforceSessions.size, events: getNumber(enforceEvents, "cnt"), previousSessions: Math.max(0, enforceSessions.size - 1) },
+    { stage: "CI (setup-ci)", sessions: ciSessions.size, events: getNumber(ciEvents, "cnt"), previousSessions: Math.max(0, ciSessions.size - 1) },
+  ];
+}
+
+function queryTopServers(db: DatabaseSync): ScannedServer[] {
+  const domainRows = db.prepare(`
+    SELECT
+      COALESCE(github_repository, 'unknown') as server,
+      COUNT(*) as scan_count,
+      AVG(health_score) as avg_health
+    FROM telemetry_events
+    WHERE command IN ('scan', 'test', 'run')
+      AND github_repository IS NOT NULL
+    GROUP BY github_repository
+    ORDER BY scan_count DESC
+    LIMIT 10
+  `).all() as Array<Record<string, unknown>>;
+
+  return domainRows.map((row) => {
+    const avgHealth = getNumber(row, "avg_health");
+    const risk: "low" | "medium" | "high" = avgHealth >= 70 ? "low" : avgHealth >= 40 ? "medium" : "high";
+    return {
+      server: getString(row, "server"),
+      scanCount: getNumber(row, "scan_count"),
+      avgHealthScore: avgHealth,
+      risk,
+    };
+  });
+}
+
+function queryEnterpriseSessions(db: DatabaseSync): EnterpriseSession[] {
+  const sessionRows = db.prepare(`
+    SELECT
+      session_id,
+      COUNT(*) as event_count,
+      MAX(CASE WHEN command IN ('setup-ci', 'init-ci') THEN 1 ELSE 0 END) as has_ci_setup,
+      MAX(CASE WHEN command = 'enforce' THEN 1 ELSE 0 END) as has_enforce,
+      MAX(CASE WHEN command = 'receipt' THEN 1 ELSE 0 END) as has_receipt
+    FROM telemetry_events
+    WHERE session_id IS NOT NULL
+    GROUP BY session_id
+    HAVING has_ci_setup = 1 OR has_enforce = 1 OR has_receipt = 1
+    ORDER BY event_count DESC
+    LIMIT 20
+  `).all() as Array<Record<string, unknown>>;
+
+  return sessionRows.map((row) => ({
+    sessionId: getString(row, "session_id"),
+    eventCount: getNumber(row, "event_count"),
+    hasAudit: getNumber(row, "has_receipt") === 1,
+    hasCiSetup: getNumber(row, "has_ci_setup") === 1,
+    hasEnforce: getNumber(row, "has_enforce") === 1,
+  }));
+}
+
+function queryEnforceStats(db: DatabaseSync): EnforceStats {
+  const enforceSessions = db.prepare("SELECT COUNT(DISTINCT session_id) as cnt FROM telemetry_events WHERE command = 'enforce'").get();
+  const policyEvents = db.prepare("SELECT COUNT(*) as cnt FROM telemetry_events WHERE command = 'enforce'").get();
+  const prevEnforceSessions = db.prepare(
+    "SELECT COUNT(DISTINCT session_id) as cnt FROM telemetry_events WHERE command = 'enforce' AND created_at < date('now', '-30 days')"
+  ).get();
+  const current = getNumber(enforceSessions, "cnt");
+  const previous = getNumber(prevEnforceSessions, "cnt");
+  return {
+    enforceSessions: current,
+    policiesGenerated: getNumber(policyEvents, "cnt"),
+    trend: previous > 0 ? Math.round(((current - previous) / previous) * 100) : current > 0 ? 100 : 0,
+  };
+}
+
+function queryFindingDistribution(db: DatabaseSync): FindingDistribution[] {
+  const serverRows = db.prepare(`
+    SELECT
+      COALESCE(github_repository, 'unknown') as server,
+      SUM(CASE WHEN health_grade IN ('F', 'D') THEN 1 ELSE 0 END) as high,
+      SUM(CASE WHEN health_grade = 'C' THEN 1 ELSE 0 END) as medium,
+      SUM(CASE WHEN health_grade IN ('A', 'B') THEN 1 ELSE 0 END) as low
+    FROM telemetry_events
+    WHERE health_grade IS NOT NULL AND github_repository IS NOT NULL
+    GROUP BY github_repository
+    ORDER BY (high + medium + low) DESC
+    LIMIT 10
+  `).all() as Array<Record<string, unknown>>;
+
+  return serverRows.map((row) => ({
+    server: getString(row, "server"),
+    high: getNumber(row, "high"),
+    medium: getNumber(row, "medium"),
+    low: getNumber(row, "low"),
+  }));
+}
+
 function escapeHtml(value: string | number): string {
   return String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;");
 }
@@ -2060,6 +2161,155 @@ function marketFunnelPanel(model: DashboardModel, points: UsageTrendPoint[]): st
           </div>
           <span class="funnel-sub">${escapeHtml(s.sub)}</span>
           <em class="funnel-delta ${trendClass(s.trend.direction)}">${s.trend.direction === "down" ? "↓" : s.trend.direction === "up" ? "↑" : "→"} ${escapeHtml(s.trend.label)}</em>
+        </div>`;
+      }).join("")}
+    </div>
+  </article>`;
+}
+
+function conversionFunnelPanel(analytics: SecurityAnalytics): string {
+  const stages = analytics.conversionFunnel;
+  if (stages.length === 0) return "";
+
+  const maxSessions = Math.max(...stages.map((s) => s.sessions), 1);
+
+  return `<article class="panel security-funnel-panel">
+    <div class="panel-head"><h2>Security Workflow Funnel</h2><span class="panel-note">scan → score → enforce → CI</span></div>
+    <div class="funnel-arrow-bar">
+      ${stages.map((s) => s.stage.split(" ")[0]).join('<span class="funnel-delta arrow">→</span>')}
+    </div>
+    <div class="funnel-stages" style="grid-template-columns:repeat(${stages.length}, minmax(0, 1fr))">
+      ${stages.map((s) => {
+        const width = maxSessions > 0 ? Math.max(4, Math.round((s.sessions / maxSessions) * 100)) : 0;
+        const trend = signedPercent(s.sessions, s.previousSessions);
+        const color = s.stage.includes("scan") ? "#3b82f6"
+          : s.stage.includes("test") || s.stage.includes("Validation") ? "#8b5cf6"
+          : s.stage.includes("score") || s.stage.includes("Assessment") ? "#f59e0b"
+          : s.stage.includes("enforce") || s.stage.includes("Protection") ? "#ef4444"
+          : "#22c55e";
+        return `<div class="funnel-stage">
+          <span class="funnel-metric" style="color:${color}">${escapeHtml(s.stage)}</span>
+          <div class="funnel-bar-row">
+            <div class="funnel-bar" style="width:${width}%;background:${color}"></div>
+            <strong class="funnel-value">${formatNumber(s.sessions)}</strong>
+          </div>
+          <span class="funnel-sub">${formatNumber(s.events)} events</span>
+          <em class="funnel-delta ${trendClass(trend.direction)}">${trend.direction === "down" ? "↓" : trend.direction === "up" ? "↑" : "→"} ${escapeHtml(trend.label)}</em>
+        </div>`;
+      }).join("")}
+    </div>
+  </article>`;
+}
+
+function topServersPanel(analytics: SecurityAnalytics): string {
+  const servers = analytics.topServers;
+  if (servers.length === 0) return "";
+
+  const maxScans = Math.max(...servers.map((s) => s.scanCount), 1);
+
+  return `<article class="panel">
+    <div class="panel-head"><h2>Top Scanned MCP Servers</h2><span class="panel-note">by scan volume</span></div>
+    <div style="padding:4px 16px 16px">
+      ${servers.map((s) => {
+        const barWidth = Math.max(4, Math.round((s.scanCount / maxScans) * 100));
+        const riskColor = s.risk === "low" ? "#22c55e" : s.risk === "medium" ? "#f59e0b" : "#ef4444";
+        return `<div class="server-bar-row">
+          <div class="server-bar-label">
+            <span class="server-name">${escapeHtml(s.server.length > 28 ? s.server.slice(0, 28) + "..." : s.server)}</span>
+            <span class="server-stats">${formatNumber(s.scanCount)} scans · <b style="color:${riskColor}">${Math.round(s.avgHealthScore)} health</b></span>
+          </div>
+          <div class="hbar-scan-wrap">
+            <div class="hbar-scan" style="width:${barWidth}%;background:${riskColor}"></div>
+          </div>
+        </div>`;
+      }).join("")}
+    </div>
+  </article>`;
+}
+
+function enterpriseSignalsPanel(analytics: SecurityAnalytics): string {
+  const sessions = analytics.enterpriseSessions;
+  if (sessions.length === 0) return "";
+
+  return `<article class="panel">
+    <div class="panel-head"><h2>Enterprise Signals</h2><span class="panel-note">sessions with audit, CI setup, or enforce</span></div>
+    <div style="padding:4px 16px 16px;display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:10px">
+      ${sessions.map((s) => {
+        const badges = [
+          s.hasAudit ? '<span class="es-badge es-audit">audit</span>' : "",
+          s.hasCiSetup ? '<span class="es-badge es-ci">CI setup</span>' : "",
+          s.hasEnforce ? '<span class="es-badge es-enforce">enforce</span>' : "",
+        ].filter(Boolean).join("");
+        return `<div class="es-card">
+          <div class="es-card-head">
+            <code class="es-session-id">${escapeHtml(s.sessionId.slice(0, 8))}...</code>
+            <span class="es-event-count">${formatNumber(s.eventCount)} events</span>
+          </div>
+          <div class="es-card-badges">${badges || '<span class="es-badge es-none">no signals</span>'}</div>
+        </div>`;
+      }).join("")}
+    </div>
+  </article>`;
+}
+
+function enforceWidget(analytics: SecurityAnalytics): string {
+  const stats = analytics.enforceStats;
+  const trendArrow = stats.trend > 0 ? "↑" : stats.trend < 0 ? "↓" : "→";
+  const trendColor = stats.trend > 0 ? "#22c55e" : stats.trend < 0 ? "#ef4444" : "#94a3b8";
+
+  return `<article class="panel enforce-widget-panel">
+    <div class="panel-head"><h2>Enforce Adoption</h2><span class="panel-note">policy enforcement growth</span></div>
+    <div style="padding:8px 16px 16px;display:flex;align-items:center;gap:24px;flex-wrap:wrap">
+      <div class="enforce-gauge">
+        <svg viewBox="0 0 100 100" width="90" height="90">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="#172435" stroke-width="7"/>
+          <circle cx="50" cy="50" r="42" fill="none" stroke="#8b5cf6" stroke-width="7"
+            stroke-dasharray="${Math.min(stats.enforceSessions * 5, 264)} 264"
+            stroke-dashoffset="0" transform="rotate(-90 50 50)" stroke-linecap="round"/>
+          <text x="50" y="46" text-anchor="middle" fill="#e5edf7" font-size="18" font-weight="700">${formatNumber(stats.enforceSessions)}</text>
+          <text x="50" y="62" text-anchor="middle" fill="#94a3b8" font-size="9">sessions</text>
+        </svg>
+      </div>
+      <div>
+        <div style="font-size:14px;color:#cbd5e1;margin-bottom:4px">
+          <strong style="color:#8b5cf6">${formatNumber(stats.enforceSessions)}</strong> sessions used enforce · <strong style="color:#22c55e">${formatNumber(stats.policiesGenerated)}</strong> policies generated
+        </div>
+        <div style="font-size:12px;color:${trendColor};margin-bottom:8px">${trendArrow} ${Math.abs(stats.trend)}% vs prior period</div>
+        <a href="#" style="display:inline-flex;align-items:center;gap:4px;font-size:12px;color:#8b5cf6;text-decoration:none;padding:6px 12px;border:1px solid rgba(139,92,246,.4);border-radius:6px">
+          Push enforce adoption →
+        </a>
+      </div>
+    </div>
+  </article>`;
+}
+
+function findingDistributionPanel(analytics: SecurityAnalytics): string {
+  const servers = analytics.findingDistribution;
+  if (servers.length === 0) return "";
+
+  const maxTotal = Math.max(...servers.map((s) => s.high + s.medium + s.low), 1);
+
+  return `<article class="panel">
+    <div class="panel-head"><h2>Security Findings by Server</h2><span class="panel-note">HIGH / MEDIUM / LOW severity</span></div>
+    <div style="padding:4px 16px 16px">
+      <div class="finding-legend">
+        <span><i style="background:#ef4444"></i>HIGH</span>
+        <span><i style="background:#f59e0b"></i>MEDIUM</span>
+        <span><i style="background:#22c55e"></i>LOW</span>
+      </div>
+      ${servers.map((s) => {
+        const total = s.high + s.medium + s.low;
+        const barPct = Math.max(4, Math.round((total / maxTotal) * 100));
+        return `<div class="finding-bar-row">
+          <span class="finding-server">${escapeHtml(s.server.length > 30 ? s.server.slice(0, 30) + "..." : s.server)}</span>
+          <div class="finding-stacked-wrap">
+            <div class="finding-stacked-bar" style="width:${barPct}%">
+              <div class="finding-seg" style="flex:${s.high || 0};background:#ef4444" title="HIGH: ${s.high}"></div>
+              <div class="finding-seg" style="flex:${s.medium || 0};background:#f59e0b" title="MEDIUM: ${s.medium}"></div>
+              <div class="finding-seg" style="flex:${s.low || 0};background:#22c55e" title="LOW: ${s.low}"></div>
+            </div>
+            <span class="finding-total">${total}</span>
+          </div>
         </div>`;
       }).join("")}
     </div>
@@ -2931,249 +3181,7 @@ function revenuePanel(model: DashboardModel): string {
   </section>`;
 }
 
-function conversionFunnelPanel(model: DashboardModel, db: DatabaseSync): string {
-  const cutoff = dateDaysAgo(30);
-  const prevCutoff = dateDaysAgo(60);
-
-  const currentRows = (db.prepare(`
-    SELECT stage, COUNT(DISTINCT session_id) as sessions
-    FROM telemetry_events
-    WHERE stage IS NOT NULL AND is_first_party=0 AND timestamp >= ?
-    GROUP BY stage
-  `).all(cutoff) as unknown as Array<{ stage: string; sessions: number }>).map((row) => ({
-    stage: getString(row, "stage"),
-    sessions: getNumber(row, "sessions"),
-  }));
-
-  const prevRows = (db.prepare(`
-    SELECT stage, COUNT(DISTINCT session_id) as sessions
-    FROM telemetry_events
-    WHERE stage IS NOT NULL AND is_first_party=0 AND timestamp >= ? AND timestamp < ?
-    GROUP BY stage
-  `).all(prevCutoff, cutoff) as unknown as Array<{ stage: string; sessions: number }>).map((row) => ({
-    stage: getString(row, "stage"),
-    sessions: getNumber(row, "sessions"),
-  }));
-
-  if (currentRows.length === 0) return "";
-
-  const prevMap = new Map(prevRows.map((r) => [r.stage, r.sessions]));
-
-  const stageConfig: Record<string, { label: string; header: string; color: string }> = {
-    discovery: { label: "Vulnerability Discovery", header: "Discovery", color: "#f97316" },
-    validation: { label: "Server Validation", header: "Validation", color: "#3b82f6" },
-    assessment: { label: "Risk Assessment", header: "Assessment", color: "#8b5cf6" },
-    protection: { label: "Protection Rules", header: "Protection", color: "#22c55e" },
-    ci: { label: "CI Integration", header: "CI", color: "#22d3ee" },
-    enforce: { label: "Policy Enforcement", header: "Enforce", color: "#ef4444" },
-  };
-
-  const stages = currentRows.map((row) => {
-    const config = stageConfig[row.stage] ?? { label: row.stage, header: row.stage, color: "#64748b" };
-    const prev = prevMap.get(row.stage) ?? 0;
-    const trend = signedPercent(row.sessions, prev);
-    return { ...config, value: row.sessions, prev, trend };
-  });
-
-  const maxValue = Math.max(...stages.map((s) => s.value), 1);
-
-  return `<article class="panel security-funnel-panel">
-    <div class="panel-head"><h2>Security Workflow Funnel</h2><span class="panel-note">scan → score → enforce → CI</span></div>
-    <div class="funnel-arrow-bar">
-      ${stages.map((s) => s.header).join('<span class="funnel-delta arrow">→</span>')}
-    </div>
-    <div class="funnel-stages" style="grid-template-columns:repeat(${stages.length}, minmax(0, 1fr))">
-      ${stages.map((s) => {
-        const width = maxValue > 0 ? Math.max(4, Math.round((s.value / maxValue) * 100)) : 0;
-        return `<div class="funnel-stage">
-          <span class="funnel-metric" style="color:${s.color}">${escapeHtml(s.label)}</span>
-          <div class="funnel-bar-row">
-            <div class="funnel-bar" style="width:${width}%;background:${s.color}"></div>
-            <strong class="funnel-value">${formatNumber(s.value)}</strong>
-          </div>
-          <span class="funnel-sub">${s.prev > 0 ? formatNumber(s.prev) : "n/a"} prior</span>
-          <em class="funnel-delta ${trendClass(s.trend.direction)}">${s.trend.direction === "down" ? "\u2193" : s.trend.direction === "up" ? "\u2191" : "\u2192"} ${escapeHtml(s.trend.label)}</em>
-        </div>`;
-      }).join("")}
-    </div>
-  </article>`;
-}
-
-function topServersPanel(db: DatabaseSync): string {
-  const rows = (db.prepare(`
-    SELECT target_server, COUNT(*) as scans, AVG(health_score) as avg_score
-    FROM telemetry_events
-    WHERE target_server IS NOT NULL AND is_first_party=0
-    GROUP BY target_server
-    ORDER BY scans DESC
-    LIMIT 10
-  `).all() as unknown as Array<{ target_server: string; scans: number; avg_score: number }>).map((row) => ({
-    target_server: getString(row, "target_server"),
-    scans: getNumber(row, "scans"),
-    avg_score: getNumber(row, "avg_score"),
-  }));
-
-  if (rows.length === 0) return "";
-
-  const maxScans = Math.max(...rows.map((r) => r.scans), 1);
-
-  return `<article class="panel">
-    <div class="panel-head"><h2>Top Scanned MCP Servers</h2><span class="panel-note">by scan count</span></div>
-    <div style="padding:4px 16px 16px">
-      ${rows.map((row) => {
-        const width = Math.max(4, Math.round((row.scans / maxScans) * 100));
-        const scoreColor = row.avg_score >= 90 ? "#22c55e" : row.avg_score >= 70 ? "#f59e0b" : "#ef4444";
-        return `<div class="server-bar-row">
-          <span class="server-name">${escapeHtml(row.target_server)}</span>
-          <div class="server-bar-wrap"><div class="server-bar" style="width:${width}%;background:${scoreColor}"></div></div>
-          <span class="server-scans">${formatNumber(row.scans)}</span>
-          <span class="server-score" style="color:${scoreColor}">${Math.round(row.avg_score)}</span>
-        </div>`;
-      }).join("")}
-    </div>
-  </article>`;
-}
-
-function enterpriseSignalsPanel(db: DatabaseSync): string {
-  const rows = (db.prepare(`
-    SELECT session_id, COUNT(*) as events, MAX(command) as top_command
-    FROM telemetry_events
-    WHERE is_first_party=0 AND command IN ('audit','setup-ci','enforce','enterprise-report')
-    GROUP BY session_id
-    ORDER BY events DESC
-    LIMIT 15
-  `).all() as unknown as Array<{ session_id: string; events: number; top_command: string }>).map((row) => ({
-    session_id: getString(row, "session_id"),
-    events: getNumber(row, "events"),
-    top_command: getString(row, "top_command"),
-  }));
-
-  if (rows.length === 0) return "";
-
-  const commandColors: Record<string, string> = {
-    audit: "#f97316",
-    "setup-ci": "#22c55e",
-    enforce: "#ef4444",
-    "enterprise-report": "#8b5cf6",
-  };
-
-  return `<article class="panel">
-    <div class="panel-head"><h2>Enterprise Signals</h2><span class="panel-note">sessions with enterprise actions</span></div>
-    <div class="enterprise-signals-grid">
-      ${rows.map((row) => {
-        const cmd = row.top_command ?? "";
-        const color = commandColors[cmd] ?? "#64748b";
-        return `<div class="enterprise-card">
-          <span class="enterprise-session">${escapeHtml(row.session_id.slice(0, 8))}</span>
-          <strong>${formatNumber(row.events)} events</strong>
-          <span class="enterprise-badge" style="background:${color};color:#fff">${escapeHtml(cmd)}</span>
-        </div>`;
-      }).join("")}
-    </div>
-  </article>`;
-}
-
-function enforceAdoptionWidget(db: DatabaseSync): string {
-  const currentRow = db.prepare(`
-    SELECT COUNT(DISTINCT session_id) as cnt
-    FROM telemetry_events
-    WHERE command='enforce' AND is_first_party=0 AND timestamp >= ?
-  `).get(dateDaysAgo(30)) as unknown as { cnt: number } | undefined;
-
-  const prevRow = db.prepare(`
-    SELECT COUNT(DISTINCT session_id) as cnt
-    FROM telemetry_events
-    WHERE command='enforce' AND is_first_party=0 AND timestamp >= ? AND timestamp < ?
-  `).get(dateDaysAgo(60), dateDaysAgo(30)) as unknown as { cnt: number } | undefined;
-
-  const currentCount = currentRow?.cnt ?? 0;
-  const prevCount = prevRow?.cnt ?? 0;
-
-  let body = "";
-  if (currentCount === 0) {
-    body = `<div class="enforce-empty">New — awaiting adoption</div>
-      <div class="enforce-cta"><code>npx @kryptosai/mcp-observatory enforce</code></div>`;
-  } else {
-    const trendLabel = currentCount > prevCount ? "\u2191 growing" : currentCount < prevCount ? "\u2193 declining" : "\u2192 stable";
-    const trendCls = currentCount > prevCount ? "trend-up" : currentCount < prevCount ? "trend-down" : "trend-flat";
-    body = `<span class="${trendCls}">${trendLabel}</span>`;
-  }
-
-  return `<article class="panel enforce-panel">
-    <div class="panel-head"><h2>Enforce Adoption</h2><span class="panel-note">sessions using enforce command (30d)</span></div>
-    <div class="enforce-widget">
-      <strong class="enforce-count">${formatNumber(currentCount)}</strong>
-      ${body}
-    </div>
-  </article>`;
-}
-
-function findingDistributionPanel(db: DatabaseSync): string {
-  const rows = (db.prepare(`
-    SELECT target_server, finding_severity_counts
-    FROM telemetry_events
-    WHERE finding_severity_counts IS NOT NULL AND is_first_party=0
-    ORDER BY timestamp DESC
-    LIMIT 50
-  `).all() as unknown as Array<{ target_server: string; finding_severity_counts: string }>).map((row) => ({
-    target_server: getString(row, "target_server"),
-    finding_severity_counts: getString(row, "finding_severity_counts"),
-  }));
-
-  if (rows.length === 0) return "";
-
-  const serverFindings = new Map<string, { high: number; medium: number; low: number }>();
-
-  for (const row of rows) {
-    if (!row.target_server) continue;
-    let parsed: Record<string, number> = {};
-    try {
-      parsed = JSON.parse(row.finding_severity_counts) as Record<string, number>;
-    } catch {
-      continue;
-    }
-    const entry = serverFindings.get(row.target_server) ?? { high: 0, medium: 0, low: 0 };
-    entry.high += parsed["HIGH"] ?? parsed["high"] ?? 0;
-    entry.medium += parsed["MEDIUM"] ?? parsed["medium"] ?? 0;
-    entry.low += parsed["LOW"] ?? parsed["low"] ?? 0;
-    serverFindings.set(row.target_server, entry);
-  }
-
-  if (serverFindings.size === 0) return "";
-
-  const serverList = [...serverFindings.entries()]
-    .map(([server, findings]) => ({ server, ...findings, total: findings.high + findings.medium + findings.low }))
-    .sort((a, b) => b.total - a.total);
-
-  const maxTotal = Math.max(...serverList.map((s) => s.total), 1);
-
-  return `<article class="panel">
-    <div class="panel-head"><h2>Security Findings by Server</h2><span class="panel-note">HIGH / MEDIUM / LOW distribution</span></div>
-    <div style="padding:4px 16px 16px">
-      ${serverList.map((s) => {
-        const highPct = maxTotal > 0 ? (s.high / maxTotal) * 100 : 0;
-        const medPct = maxTotal > 0 ? (s.medium / maxTotal) * 100 : 0;
-        const lowPct = maxTotal > 0 ? (s.low / maxTotal) * 100 : 0;
-        return `<div class="finding-row">
-          <span class="finding-server">${escapeHtml(s.server)}</span>
-          <div class="finding-bar-wrap">
-            <div class="finding-bar finding-high" style="width:${Math.max(1, highPct)}%"></div>
-            <div class="finding-bar finding-medium" style="width:${Math.max(1, medPct)}%"></div>
-            <div class="finding-bar finding-low" style="width:${Math.max(1, lowPct)}%"></div>
-          </div>
-          <span class="finding-total">${formatNumber(s.total)}</span>
-        </div>`;
-      }).join("")}
-    </div>
-    <div style="padding:0 16px 12px;display:flex;gap:12px;font-size:11px;color:var(--muted)">
-      <span><i style="display:inline-block;width:10px;height:10px;background:#ef4444;border-radius:2px;margin-right:4px"></i>High</span>
-      <span><i style="display:inline-block;width:10px;height:10px;background:#f59e0b;border-radius:2px;margin-right:4px"></i>Medium</span>
-      <span><i style="display:inline-block;width:10px;height:10px;background:#3b82f6;border-radius:2px;margin-right:4px"></i>Low</span>
-    </div>
-  </article>`;
-}
-
-export function renderDashboardHtml(model: DashboardModel, db: DatabaseSync): string {
+export function renderDashboardHtml(model: DashboardModel, db: DatabaseSync, paths: Paths): string {
   const trendPoints = usageTrendPoints(model, TREND_WINDOW_DAYS);
   const allTrendPoints = usageTrendPoints(model, Number.POSITIVE_INFINITY);
   const kpiMomentum = monthlyKpiMetrics(allTrendPoints, model);
@@ -3189,6 +3197,12 @@ export function renderDashboardHtml(model: DashboardModel, db: DatabaseSync): st
   const summaryBar = autoGeneratedSummary(model, trendPoints);
   const trustStrip = dataTrustStatusStrip(model);
   const anomaliesHtml = anomaliesPanel(model);
+  const securityAnalytics = loadSecurityAnalytics(db, model, paths);
+  const conversionFunnel = conversionFunnelPanel(securityAnalytics);
+  const topServers = topServersPanel(securityAnalytics);
+  const enterpriseSignals = enterpriseSignalsPanel(securityAnalytics);
+  const enforceAdoption = enforceWidget(securityAnalytics);
+  const findingDist = findingDistributionPanel(securityAnalytics);
   const day = usagePeriodSummary(trendPoints, 1);
   const month = usagePeriodSummary(trendPoints, 30);
   const previousMonth = usagePeriodSummary(trendPoints, 30, 30);
@@ -3501,32 +3515,40 @@ export function renderDashboardHtml(model: DashboardModel, db: DatabaseSync): st
     .type-enterprise { background: rgba(245,158,11,.15); color: #f59e0b; }
     .type-business { background: rgba(59,130,246,.15); color: #3b82f6; }
     .type-team { background: rgba(139,92,246,.15); color: #8b5cf6; }
-    .server-bar-row { display:grid; grid-template-columns:1.5fr 2fr 0.6fr 0.6fr; gap:10px; align-items:center; padding:8px 0; border-bottom:1px solid rgba(51,70,91,.35); }
-    .server-bar-row:last-child { border-bottom:0; }
-    .server-name { font-size:12px; color:#e5edf7; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .server-bar-wrap { height:10px; background:#172435; border-radius:20px; overflow:hidden; }
-    .server-bar { height:100%; border-radius:20px; min-width:2px; }
-    .server-scans { font-size:12px; color:var(--muted); text-align:right; }
-    .server-score { font-size:12px; font-weight:600; text-align:right; }
-    .enterprise-signals-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:10px; padding:4px 16px 16px; }
-    .enterprise-card { border:1px solid rgba(51,70,91,.7); border-radius:8px; background:#091522; padding:12px; display:flex; flex-direction:column; gap:6px; }
-    .enterprise-session { font-size:11px; color:var(--muted); font-family:ui-monospace, monospace; }
-    .enterprise-card strong { font-size:18px; }
-    .enterprise-badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:600; text-transform:uppercase; align-self:flex-start; }
-    .enforce-widget { padding:8px 16px 20px; text-align:center; }
-    .enforce-count { font-size:48px; font-weight:700; display:block; line-height:1; }
-    .enforce-empty { color:var(--muted); font-size:13px; margin-top:6px; }
-    .enforce-cta { margin-top:10px; }
-    .enforce-cta code { background:#071628; padding:6px 12px; border-radius:6px; font-size:12px; color:var(--cyan); border:1px solid var(--line); }
-    .finding-row { display:grid; grid-template-columns:1.5fr 3fr 0.6fr; gap:10px; align-items:center; padding:8px 0; border-bottom:1px solid rgba(51,70,91,.35); }
-    .finding-row:last-child { border-bottom:0; }
-    .finding-server { font-size:12px; color:#e5edf7; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .finding-bar-wrap { height:14px; background:#172435; border-radius:7px; overflow:hidden; display:flex; }
-    .finding-bar { height:100%; }
-    .finding-high { background:#ef4444; }
-    .finding-medium { background:#f59e0b; }
-    .finding-low { background:#3b82f6; }
-    .finding-total { font-size:12px; color:var(--muted); text-align:right; }
+    /* Security Funnel */
+    .security-funnel-panel .funnel-bar-row .funnel-value { font-size:16px; }
+    /* Top Servers */
+    .server-bar-row { margin:10px 0; }
+    .server-bar-label { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:4px; }
+    .server-name { font-size:13px; color:#e5edf7; font-weight:600; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+    .server-stats { font-size:11px; color:var(--muted); white-space:nowrap; }
+    .server-stats b { font-weight:600; }
+    .hbar-scan-wrap { height:14px; background:#172435; border-radius:7px; overflow:hidden; }
+    .hbar-scan { height:100%; border-radius:7px; min-width:4px; transition:width .3s ease; }
+    /* Enterprise Signals */
+    .es-card { border:1px solid rgba(51,70,91,.7); border-radius:8px; background:#091522; padding:12px 14px; }
+    .es-card-head { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; }
+    .es-session-id { font-size:12px; color:var(--cyan); background:transparent; padding:0; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+    .es-event-count { font-size:11px; color:var(--muted); }
+    .es-card-badges { display:flex; gap:6px; flex-wrap:wrap; }
+    .es-badge { display:inline-flex; align-items:center; padding:3px 8px; border-radius:4px; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.03em; }
+    .es-audit { background:rgba(34,197,94,.15); color:#22c55e; border:1px solid rgba(34,197,94,.25); }
+    .es-ci { background:rgba(59,130,246,.15); color:#3b82f6; border:1px solid rgba(59,130,246,.25); }
+    .es-enforce { background:rgba(139,92,246,.15); color:#8b5cf6; border:1px solid rgba(139,92,246,.25); }
+    .es-none { background:rgba(100,116,139,.12); color:var(--dim); border:1px solid rgba(100,116,139,.2); }
+    /* Enforce Widget */
+    .enforce-widget-panel a { transition:background .2s; }
+    .enforce-widget-panel a:hover { background:rgba(139,92,246,.12); }
+    /* Finding Distribution */
+    .finding-legend { display:flex; align-items:center; gap:14px; margin-bottom:10px; font-size:11px; color:var(--muted); }
+    .finding-legend i { display:inline-block; width:10px; height:7px; border-radius:2px; margin-right:4px; }
+    .finding-bar-row { display:flex; align-items:center; gap:12px; margin:8px 0; }
+    .finding-server { font-size:12px; color:#cbd5e1; min-width:140px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .finding-stacked-wrap { display:flex; align-items:center; gap:8px; flex:1; min-width:0; }
+    .finding-stacked-bar { height:16px; border-radius:4px; display:flex; overflow:hidden; min-width:4px; }
+    .finding-seg { min-width:0; transition:flex .3s; }
+    .finding-total { font-size:12px; color:var(--muted); white-space:nowrap; min-width:30px; text-align:right; }
+    @media (max-width: 900px) { .finding-bar-row { flex-wrap:wrap; } .finding-server { min-width:100%; } }
   </style>
 </head>
 <body>
@@ -3575,6 +3597,11 @@ export function renderDashboardHtml(model: DashboardModel, db: DatabaseSync): st
           ${growthCommandCenter}
           ${dailyDirection}
           ${marketFunnel}
+          ${conversionFunnel || ""}
+          ${enforceAdoption || ""}
+          ${topServers || ""}
+          ${enterpriseSignals || ""}
+          ${findingDist || ""}
           <section class="two-col">
             ${pipelinePanel(model)}
             ${featureValuePanel(model)}
@@ -3582,13 +3609,6 @@ export function renderDashboardHtml(model: DashboardModel, db: DatabaseSync): st
           ${userJourneyPanel(model)}
           ${featureStickinessPanel(model)}
           ${revenuePanel(model)}
-          ${conversionFunnelPanel(model, db)}
-          ${topServersPanel(db)}
-          <section class="two-col">
-            ${enterpriseSignalsPanel(db)}
-            ${enforceAdoptionWidget(db)}
-          </section>
-          ${findingDistributionPanel(db)}
           <section class="two-col">
             <article class="panel">
               <div class="panel-head">
@@ -3887,12 +3907,12 @@ async function buildDashboard(db: DatabaseSync, paths: Paths): Promise<void> {
   const run = startRun(db, "dashboard");
   try {
     let model = buildModel(db, paths);
-    let html = renderDashboardHtml(model, db);
+    let html = renderDashboardHtml(model, db, paths);
     await mkdir(paths.dashboardDir, { recursive: true });
     await writeTextFileAtomic(paths.dashboard, html);
     finishRun(db, run, "success", 1, 1);
     model = buildModel(db, paths);
-    html = renderDashboardHtml(model, db);
+    html = renderDashboardHtml(model, db, paths);
     await writeTextFileAtomic(paths.dashboard, html);
     await writeTextFileAtomic(path.join(paths.dashboardDir, "latest.json"), JSON.stringify(model, null, 2) + "\n");
   } catch (error) {
@@ -3938,10 +3958,6 @@ async function collectAll(db: DatabaseSync, paths: Paths, onProgress?: (msg: str
       results.failed.push(`${name}: ${safeErrorMessage(error)}`);
       process.stderr.write(`[metrics] ${name} collection failed: ${safeErrorMessage(error)}\n`);
     }
-  }
-  onProgress?.("Vacuuming database...");
-  try { db.exec("VACUUM"); } catch { /* vacuum may fail on busy db * */
-    try { db.exec("PRAGMA auto_vacuum = FULL"); } catch { /* ok */ }
   }
   return results;
 }
