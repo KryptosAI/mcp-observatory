@@ -76,13 +76,22 @@ export function registerDemoCommands(program: Command): void {
     .command("demo")
     .description("Quick interactive demo — scan your MCP servers and see your safety grade")
     .option("--server <name>", `Demo with a built-in server: ${DEMO_SERVERS.map(s => s.name).join(", ")}`)
+    .option("--timeout <ms>", "Timeout in milliseconds", "15000")
     .option("--deep", "Run full tool invocation and security checks (takes longer)", false)
     .option("--no-color", "Disable colored output")
-    .action(async (options: { server?: string; deep?: boolean }) => {
+    .action(async (options: { server?: string; deep?: boolean; timeout?: string }) => {
       const sessionId = generateSessionId();
       recordSessionStart(sessionId);
       const t0 = Date.now();
       const bin = getBinName();
+
+      const timeoutMs = parseInt(options.timeout ?? "15000", 10);
+      if (isNaN(timeoutMs) || timeoutMs <= 0 || String(timeoutMs) !== (options.timeout ?? "15000")) {
+        process.stderr.write(`\n  ${c(ANSI.red, "✗")} Invalid timeout value: must be a positive integer number.\n\n`);
+        process.exitCode = 1;
+        recordSessionEnd(sessionId);
+        return;
+      }
 
       if (!isQuiet()) {
         process.stdout.write(LOGO + "\n");
@@ -157,6 +166,8 @@ export function registerDemoCommands(program: Command): void {
           `    ${c(ANSI.dim, `Tip: ${bin} suggest  → discover servers for your stack`)}\n`,
         );
       }
+
+      targetConfig.timeoutMs = timeoutMs;
 
       process.stdout.write("\n");
 
