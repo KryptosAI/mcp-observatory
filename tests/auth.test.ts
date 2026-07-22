@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 
 vi.mock("node:fs/promises", () => ({
   readFile: vi.fn(),
@@ -211,7 +211,7 @@ describe("auth module", () => {
       const auth = await importAuth();
       const mockFetch = vi.fn().mockResolvedValue({
         ok: true,
-        json: async () => ({
+        json: () => ({
           issuer: "https://auth.example.com",
           token_endpoint: "https://auth.example.com/token",
         }),
@@ -230,7 +230,7 @@ describe("auth module", () => {
       const mockFetch = vi.fn()
         .mockResolvedValueOnce({
           ok: true,
-          json: async () => ({
+          json: () => ({
             device_authorization_endpoint: "https://auth.example.com/device",
             token_endpoint: "https://auth.example.com/token",
           }),
@@ -238,7 +238,7 @@ describe("auth module", () => {
         .mockResolvedValueOnce({
           ok: false,
           status: 400,
-          text: async () => "invalid_client",
+          text: () => "invalid_client",
         });
       vi.stubGlobal("fetch", mockFetch);
 
@@ -259,14 +259,14 @@ describe("auth module", () => {
       const mockFetch = vi.fn()
         .mockResolvedValueOnce({
           ok: true,
-          json: async () => ({
+          json: () => ({
             device_authorization_endpoint: "https://auth.example.com/device",
             token_endpoint: "https://auth.example.com/token",
           }),
         })
         .mockResolvedValueOnce({
           ok: true,
-          json: async () => ({
+          json: () => ({
             device_code: "device-123",
             user_code: "ABCD-EFGH",
             verification_uri: "https://auth.example.com/activate",
@@ -276,7 +276,7 @@ describe("auth module", () => {
         })
         .mockResolvedValueOnce({
           ok: true,
-          json: async () => ({
+          json: () => ({
             access_token: "new-access-token",
             refresh_token: "new-refresh-token",
             expires_in: 3600,
