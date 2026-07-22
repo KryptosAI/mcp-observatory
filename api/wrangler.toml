@@ -1,5 +1,6 @@
 name = "mcp-observatory-api"
 main = "src/worker.ts"
+account_id = "385e00f98ceabbee25800bda2756cc75"
 compatibility_date = "2025-03-15"
 compatibility_flags = ["nodejs_compat"]
 workers_dev = true

@@ -161,6 +161,21 @@ jobs:
           done
           exit 1
 
+      - name: Regenerate Safety Index API data
+        run: npx tsx scripts/populate-safety-index-kv.ts
+
+      - name: Deploy dashboard to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: 385e00f98ceabbee25800bda2756cc75
+        run: npx wrangler pages deploy dashboard --project-name mcp-observatory --branch main
+
+      - name: Deploy API Worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: 385e00f98ceabbee25800bda2756cc75
+        run: cd api && npx wrangler deploy
+
       - name: Skip release until npm trusted publishing is configured
         if: steps.npm-auth.outputs.valid != 'true' && steps.npm-oidc.outputs.configured != 'true'
         run: |
