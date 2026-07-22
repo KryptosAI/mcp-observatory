@@ -74,6 +74,7 @@ jobs:
         run: npx wrangler pages deploy dashboard --project-name mcp-observatory --branch main
 
       - name: Deploy API Worker
+        continue-on-error: true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: 385e00f98ceabbee25800bda2756cc75
