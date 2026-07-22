@@ -1,7 +1,7 @@
 {
   "name": "@kryptosai/mcp-observatory",
   "version": "1.33.0",
-  "description": "Ship safer MCP servers. Test, secure, and monitor the MCP servers you're building — CI-native scanning, attack simulation, and security gates.",
+  "description": "MCP security scanner and CI gate. Test, secure, and monitor MCP servers with attack simulation, schema drift detection, health scoring, and SARIF before agents depend on them.",
   "mcpName": "io.github.KryptosAI/mcp-observatory",
   "license": "MIT",
   "type": "module",
@@ -102,6 +102,8 @@
     "metrics:open": "tsx scripts/metrics-dashboard.ts open",
     "metrics:serve": "tsx scripts/metrics-dashboard.ts serve",
     "integration:real": "tsx scripts/run-real-server-matrix.ts",
+    "evaluate:permission-delta": "tsx scripts/evaluate-permission-delta-conformance.ts",
+    "evaluate:permission-delta:mcp-diff": "tsx scripts/run-mcp-diff-baseline.ts",
     "intel:run": "tsx scripts/enterprise-intel.ts",
     "safety-index": "tsx scripts/run-safety-index.ts",
     "lint": "eslint .",
@@ -112,6 +114,7 @@
     "certification:pr-body": "tsx scripts/print-certification-pr-body.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json && npm --prefix api install && npm --prefix api run typecheck",
     "test": "vitest run",
+    "test:permission-delta-model": "vitest run tests/permission-delta-model.test.ts",
     "test:coverage": "vitest run --coverage",
     "validate:artifacts": "tsx scripts/validate-artifacts.ts",
     "verify:packed-install": "node scripts/verify-packed-install.mjs",
@@ -159,7 +162,14 @@
     "mcp-observability",
     "security-scanner",
     "mcp-server-testing",
-    "tool-call-audit"
+    "tool-call-audit",
+    "mcp-proxy",
+    "mcp-enforcement",
+    "runtime-security",
+    "security-proxy",
+    "mcp-guardrails",
+    "zero-trust",
+    "policy-as-code"
   ],
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
