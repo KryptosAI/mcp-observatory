@@ -197,10 +197,9 @@ describe("createOrUpdateIssue", () => {
 describe("execCommand", () => {
   it("resolves with stdout and stderr on success", async () => {
     mockedExecFile.mockImplementation(
-      (_cmd, _args, callback) => {
+      ((_cmd: string, _args: string[], callback: (err: Error | null, stdout: string, stderr: string) => void) => {
         callback(null, "output", "");
-        return {} as never;
-      },
+      }) as typeof execFile,
     );
     const { execCommand } = await import("../src/ci-issue.js");
     const result = await execCommand("echo", ["hello"]);
@@ -209,10 +208,9 @@ describe("execCommand", () => {
 
   it("rejects with error on failure", async () => {
     mockedExecFile.mockImplementation(
-      (_cmd, _args, callback) => {
+      ((_cmd: string, _args: string[], callback: (err: Error | null, stdout: string, stderr: string) => void) => {
         callback(new Error("command not found"), "", "");
-        return {} as never;
-      },
+      }) as typeof execFile,
     );
     const { execCommand } = await import("../src/ci-issue.js");
     await expect(execCommand("bad", [])).rejects.toThrow("command not found");
@@ -220,10 +218,9 @@ describe("execCommand", () => {
 
   it("handles null stdout/stderr from execFile", async () => {
     mockedExecFile.mockImplementation(
-      (_cmd, _args, callback) => {
+      ((_cmd: string, _args: string[], callback: (err: Error | null, stdout: string, stderr: string) => void) => {
         callback(null, null as never, null as never);
-        return {} as never;
-      },
+      }) as typeof execFile,
     );
     const { execCommand } = await import("../src/ci-issue.js");
     const result = await execCommand("cmd", []);

@@ -47,6 +47,16 @@ function extractTrailingReceiptFlags(args: string[], options: ReceiptOptions): {
       if (!next) throw new Error("--top-findings requires a value.");
       nextOptions.topFindings = next;
       i += 1;
+    } else if (arg === "--sign-key") {
+      const next = args[i + 1];
+      if (!next) throw new Error("--sign-key requires a value.");
+      nextOptions.signKey = next;
+      i += 1;
+    } else if (arg === "--signer") {
+      const next = args[i + 1];
+      if (!next) throw new Error("--signer requires a value.");
+      nextOptions.signer = next;
+      i += 1;
     } else if (arg === "--no-color") {
       // Commander handles color globally; keep it out of the target command.
     } else {
