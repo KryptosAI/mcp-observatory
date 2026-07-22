@@ -84,6 +84,10 @@ Observatory gives maintainers and teams:
 
 See the [launch page](./docs/launch.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [Code Scanning demo](./docs/code-scanning-demo.md), [target gallery](./docs/target-gallery.md), [target registry](./docs/target-registry.md), [target contribution guide](./docs/target-contribution-guide.md), [MCP Observatory Contributors](./docs/contributor-recognition.md), [Agent Task Pack](./docs/agent-tasks.md), [MCP Receipts](./docs/mcp-receipts.md), [Tool-call receipts](./docs/tool-call-receipts.md), [MCP Risk Graph](./docs/receipt-graph.md), [`setup-ci --doctor`](./docs/setup-ci-doctor.md), [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [June 2026 safety field report](./docs/mcp-safety-field-report-2026-06.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), [campaign attribution](./docs/campaign-attribution.md), [local metrics dashboard](./docs/metrics-dashboard.md), [open core boundary](./docs/commercial-boundary.md), [MCP Attack Simulation Evidence Pack](./docs/attack-simulation-pilot.md), [Private MCP Fleet Risk Graph](./docs/private-mcp-fleet-risk-graph.md), and [commercial support](./COMMERCIAL.md).
 
+### Self-Assessment
+
+We scan ourselves with mcp-observatory on every release. [See results →](docs/self-assessment.md)
+
 ## For Security And Platform Teams
 
 MCP servers are becoming part of the AI software supply chain. Agents need reliable, testable, auditable tools before those tools become dependencies in mission-critical workflows.
