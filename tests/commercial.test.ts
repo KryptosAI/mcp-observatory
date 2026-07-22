@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { cloudUpgradeLine, hasCloudToken, maybePrintCloudCta, printCloudInfo } from "../src/commercial.js";
+import { cloudUpgradeLine, hasCloudToken, maybePrintCloudCta, printCloudInfo, getCloudAccessToken, cloudWhoami } from "../src/commercial.js";
 import { setQuiet } from "../src/commands/helpers.js";
 
 const originalEnv = { ...process.env };
@@ -79,5 +79,19 @@ describe("commercial cloud messaging", () => {
     expect(stdout.output()).toContain("Team Pilot");
     expect(stdout.output()).toContain("cloud upload .mcp-observatory/runs/<run>.json");
     expect(stdout.output()).toContain("william@banksey.com");
+  });
+
+  it("getCloudAccessToken prefers env token over stored token", async () => {
+    process.env["MCP_OBSERVATORY_CLOUD_TOKEN"] = "env-token";
+    expect(await getCloudAccessToken()).toBe("env-token");
+    delete process.env["MCP_OBSERVATORY_CLOUD_TOKEN"];
+    // Falls back to stored token (null when no auth.json exists)
+    expect(await getCloudAccessToken()).toBeNull();
+  });
+
+  it("cloudWhoami returns unauthenticated when no token exists", async () => {
+    delete process.env["MCP_OBSERVATORY_CLOUD_TOKEN"];
+    const info = await cloudWhoami();
+    expect(info.authenticated).toBe(false);
   });
 });

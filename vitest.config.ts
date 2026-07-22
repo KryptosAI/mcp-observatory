@@ -13,6 +13,7 @@ export default defineConfig({
         "src/commands/**",
         "src/tools/**",
         "src/index.ts",
+        "src/risk-taxonomy.ts",
       ],
       reporter: ["text", "json-summary"],
       reportsDirectory: "coverage",
