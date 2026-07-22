@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-17T00:36:20.107Z
+Generated at 2026-07-22T21:35:59.087Z
 
 ## Target and Environment Metadata
 
@@ -9,7 +9,7 @@ Generated at 2026-07-17T00:36:20.107Z
 - Command: `npx -y @modelcontextprotocol/server-sequential-thinking`
 - Server: `sequential-thinking-server 0.2.0`
 - Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Node: `v22.23.1`
 
 ## Executive Summary
 
@@ -56,7 +56,7 @@ The following state-modifying operations were identified from tool schemas:
 | --- | --- | --- | --- |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-17T00:36:20.759Z_
+_Analyzed at 2026-07-22T21:36:00.958Z_
 
 ## Regressions and Recoveries
 
@@ -66,11 +66,11 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.88 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 1.61 | All 7 conformance checks passed. |
-| healthy | runtime-profile | pass | 0.07 | Detected 0 potential egress target(s) and 1 potential state mutation(s) with low confidence. |
-| healthy | schema-quality | pass | 0.88 | All 1 item(s) have good schema quality. |
-| healthy | security | pass | 0.94 | No security issues detected. |
+| healthy | attack-sim | pass | 0.95 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 1.66 | All 7 conformance checks passed. |
+| healthy | runtime-profile | pass | 0.08 | Detected 0 potential egress target(s) and 1 potential state mutation(s) with low confidence. |
+| healthy | schema-quality | pass | 0.83 | All 1 item(s) have good schema quality. |
+| healthy | security | pass | 0.97 | No security issues detected. |
 | healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
 | healthy | tools | pass | 4.07 | Advertised capability responded with the minimal expected shape (1 item). |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
@@ -197,5 +197,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-17T003620107Z_b35a41cd`
+- Run ID: `run_2026-07-22T213559087Z_6ddb88a5`
 - Gate: `pass`

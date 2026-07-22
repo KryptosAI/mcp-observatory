@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-17T003620107Z_b35a41cd",
-  "createdAt": "2026-07-17T00:36:20.107Z",
-  "toolVersion": "1.33.0",
+  "runId": "run_2026-07-22T213559087Z_6ddb88a5",
+  "createdAt": "2026-07-22T21:35:59.087Z",
+  "toolVersion": "1.34.1",
   "target": {
     "targetId": "sequential-thinking-server",
     "adapter": "local-process",
@@ -26,7 +26,7 @@
   },
   "environment": {
     "platform": "darwin 25.5.0",
-    "nodeVersion": "v22.22.1"
+    "nodeVersion": "v22.23.1"
   },
   "summary": {
     "total": 9,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 4.0713330000003225,
+      "durationMs": 4.069625000000087,
       "message": "Advertised capability responded with the minimal expected shape (1 item).",
       "evidence": [
         {
@@ -122,7 +122,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0029160000003685127,
+      "durationMs": 0.0029169999997975538,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -138,7 +138,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.001374999999825377,
+      "durationMs": 0.0015419999999721767,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -154,7 +154,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.026624999999967258,
+      "durationMs": 0.032666999999491964,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -170,7 +170,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "pass",
-      "durationMs": 0.06950000000006185,
+      "durationMs": 0.08091700000022684,
       "message": "Detected 0 potential egress target(s) and 1 potential state mutation(s) with low confidence.",
       "evidence": [
         {
@@ -199,7 +199,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 1.612833000000137,
+      "durationMs": 1.6618330000001151,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -225,7 +225,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "pass",
-      "durationMs": 0.8796670000001541,
+      "durationMs": 0.8270409999995536,
       "message": "All 1 item(s) have good schema quality.",
       "evidence": [
         {
@@ -242,7 +242,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 0.9446669999997539,
+      "durationMs": 0.9681250000003274,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -258,7 +258,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "pass",
-      "durationMs": 0.8807080000001406,
+      "durationMs": 0.9514169999993101,
       "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
       "evidence": [
         {
@@ -317,17 +317,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 647ms",
+          "Connect: 1865ms",
           "p95 latency: 4ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 646.8518750000001,
-    "toolsListMs": 4.0713330000003225,
-    "promptsListMs": 0.0029160000003685127,
-    "resourcesListMs": 0.001374999999825377
+    "connectMs": 1864.889917,
+    "toolsListMs": 4.069625000000087,
+    "promptsListMs": 0.0029169999997975538,
+    "resourcesListMs": 0.0015419999999721767
   },
   "runtimeProfile": {
     "stateMutations": [
@@ -338,7 +338,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-17T00:36:20.759Z",
+    "analyzedAt": "2026-07-22T21:36:00.958Z",
     "confidence": "medium"
   }
 }

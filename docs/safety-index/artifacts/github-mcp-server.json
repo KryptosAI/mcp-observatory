@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-17T003628068Z_156f1c06",
-  "createdAt": "2026-07-17T00:36:28.068Z",
-  "toolVersion": "1.33.0",
+  "runId": "run_2026-07-22T213621269Z_ad0dd168",
+  "createdAt": "2026-07-22T21:36:21.269Z",
+  "toolVersion": "1.34.1",
   "target": {
     "targetId": "github-mcp-server",
     "adapter": "local-process",
@@ -26,7 +26,7 @@
   },
   "environment": {
     "platform": "darwin 25.5.0",
-    "nodeVersion": "v22.22.1"
+    "nodeVersion": "v22.23.1"
   },
   "summary": {
     "total": 9,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 3.107165999999779,
+      "durationMs": 4.722375000001193,
       "message": "Advertised capability responded with the minimal expected shape (26 items).",
       "evidence": [
         {
@@ -81,6 +81,8 @@
             "get_pull_request_reviews"
           ],
           "diagnostics": [
+            "npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead",
+            "npm warn deprecated @modelcontextprotocol/server-github@2025.4.8: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.",
             "GitHub MCP Server running on stdio"
           ],
           "schemas": {
@@ -1032,7 +1034,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.001916999999593827,
+      "durationMs": 0.001999999996769475,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -1048,7 +1050,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.002375000000029104,
+      "durationMs": 0.002166000002034707,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -1064,7 +1066,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "partial",
-      "durationMs": 0.06133299999964947,
+      "durationMs": 0.06137499999749707,
       "message": "Found 1 security finding(s): 0 high, 1 medium, 0 low.",
       "evidence": [
         {
@@ -1094,7 +1096,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "partial",
-      "durationMs": 0.2966249999990396,
+      "durationMs": 0.285875000001397,
       "message": "Detected 0 potential egress target(s) and 27 potential state mutation(s) with high confidence.",
       "evidence": [
         {
@@ -1279,7 +1281,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 1.1692089999996824,
+      "durationMs": 1.0650000000023283,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -1305,7 +1307,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 0.5291660000002594,
+      "durationMs": 0.5553749999999127,
       "message": "Found 51 quality finding(s) across 26 item(s): 0 warnings, 51 info.",
       "evidence": [
         {
@@ -1693,7 +1695,7 @@
       "id": "security",
       "capability": "security",
       "status": "partial",
-      "durationMs": 0.6930420000007871,
+      "durationMs": 0.8239580000008573,
       "message": "Found 1 security finding(s): 0 high, 1 medium, 0 low.",
       "evidence": [
         {
@@ -1723,7 +1725,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "partial",
-      "durationMs": 0.8974579999994603,
+      "durationMs": 1.5206250000010186,
       "message": "Safe attack simulation found 5 finding(s): 0 high, 5 medium, 0 low.",
       "evidence": [
         {
@@ -1877,17 +1879,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 578ms",
-          "p95 latency: 3ms (3 operations)"
+          "Connect: 2221ms",
+          "p95 latency: 5ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 578.2210840000007,
-    "toolsListMs": 3.107165999999779,
-    "promptsListMs": 0.001916999999593827,
-    "resourcesListMs": 0.002375000000029104
+    "connectMs": 2220.634624999999,
+    "toolsListMs": 4.722375000001193,
+    "promptsListMs": 0.001999999996769475,
+    "resourcesListMs": 0.002166000002034707
   },
   "runtimeProfile": {
     "stateMutations": [
@@ -2054,7 +2056,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-17T00:36:28.651Z",
+    "analyzedAt": "2026-07-22T21:36:23.496Z",
     "confidence": "high"
   }
 }

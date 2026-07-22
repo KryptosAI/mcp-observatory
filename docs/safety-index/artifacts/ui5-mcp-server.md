@@ -1,15 +1,15 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-17T00:36:28.663Z
+Generated at 2026-07-22T21:36:23.516Z
 
 ## Target and Environment Metadata
 
 - Target: `ui5-mcp-server`
 - Adapter: `local-process`
 - Command: `npx -y @ui5/mcp-server`
-- Server: `UI5 0.2.14`
+- Server: `UI5 0.2.15`
 - Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Node: `v22.23.1`
 
 ## Executive Summary
 
@@ -87,7 +87,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | execute | working_directory | description_analysis |
 
-_Analyzed at 2026-07-17T00:36:30.010Z_
+_Analyzed at 2026-07-22T21:36:29.251Z_
 
 ## Regressions and Recoveries
 
@@ -97,13 +97,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 3.30 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 8.00 | All 7 conformance checks passed. |
+| healthy | attack-sim | pass | 2.94 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 6.92 | All 7 conformance checks passed. |
 | healthy | runtime-profile | pass | 0.13 | Detected 4 potential egress target(s) and 23 potential state mutation(s) with low confidence. |
-| healthy | schema-quality | pass | 3.19 | All 10 item(s) have good schema quality. |
-| healthy | security | pass | 3.46 | No security issues detected. |
+| healthy | schema-quality | pass | 3.36 | All 10 item(s) have good schema quality. |
+| healthy | security | pass | 2.98 | No security issues detected. |
 | healthy | security-lite | pass | 0.04 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 6.49 | Advertised capability responded with the minimal expected shape (10 items). |
+| healthy | tools | pass | 6.08 | Advertised capability responded with the minimal expected shape (10 items). |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -191,7 +191,7 @@ Summary: Advertised capability responded with the minimal expected shape (10 ite
   - Minimal shape present: `true`
   - Item count: `10`
   - Identifiers: get_guidelines, run_ui5_linter, get_api_reference, get_project_info, create_ui5_app (+5 more)
-  - Diagnostics: none
+  - Diagnostics: npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting [redacted-email], npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting [redacted-email]
 
 ### prompts — unsupported
 
@@ -228,5 +228,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-17T003628663Z_79935e31`
+- Run ID: `run_2026-07-22T213623516Z_9f467868`
 - Gate: `pass`

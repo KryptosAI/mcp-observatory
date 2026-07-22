@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-17T003634877Z_d8b79bb5",
-  "createdAt": "2026-07-17T00:36:34.877Z",
-  "toolVersion": "1.33.0",
+  "runId": "run_2026-07-22T213643015Z_c3b027f6",
+  "createdAt": "2026-07-22T21:36:43.015Z",
+  "toolVersion": "1.34.1",
   "target": {
     "targetId": "antv-chart-server",
     "adapter": "local-process",
@@ -26,7 +26,7 @@
   },
   "environment": {
     "platform": "darwin 25.5.0",
-    "nodeVersion": "v22.22.1"
+    "nodeVersion": "v22.23.1"
   },
   "summary": {
     "total": 9,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 1.8368749999972351,
+      "durationMs": 1.6613330000036513,
       "message": "Advertised capability responded with the minimal expected shape (27 items).",
       "evidence": [
         {
@@ -82,9 +82,9 @@
             "generate_spreadsheet"
           ],
           "diagnostics": [
-            "[MCP-Server-Chart] 2026-07-17T00:36:35.779Z ℹ️  setting up tool handlers...",
-            "[MCP-Server-Chart] 2026-07-17T00:36:35.781Z ℹ️  tool handlers set up",
-            "[MCP-Server-Chart] 2026-07-17T00:36:35.781Z ✅ Stdio MCP Server started"
+            "[MCP-Server-Chart] 2026-07-22T21:36:45.246Z ℹ️  setting up tool handlers...",
+            "[MCP-Server-Chart] 2026-07-22T21:36:45.247Z ℹ️  tool handlers set up",
+            "[MCP-Server-Chart] 2026-07-22T21:36:45.248Z ✅ Stdio MCP Server started"
           ],
           "schemas": {
             "generate_area_chart": {
@@ -2602,7 +2602,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0013340000004973263,
+      "durationMs": 0.0007499999992433004,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -2618,7 +2618,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.00225000000136788,
+      "durationMs": 0.0029999999969732016,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -2634,7 +2634,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.07304099999964819,
+      "durationMs": 0.2869170000049053,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -2650,7 +2650,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "pass",
-      "durationMs": 0.399582999998529,
+      "durationMs": 0.4070830000055139,
       "message": "Detected 0 potential egress target(s) and 117 potential state mutation(s) with low confidence.",
       "evidence": [
         {
@@ -3375,7 +3375,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 1.3267909999995027,
+      "durationMs": 1.3120409999974072,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -3401,7 +3401,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "pass",
-      "durationMs": 1.6343750000014552,
+      "durationMs": 1.327292000001762,
       "message": "All 27 item(s) have good schema quality.",
       "evidence": [
         {
@@ -3418,7 +3418,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 0.7686670000002778,
+      "durationMs": 0.9267499999987194,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -3434,7 +3434,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "pass",
-      "durationMs": 1.4957920000015292,
+      "durationMs": 1.8258330000026035,
       "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
       "evidence": [
         {
@@ -3493,17 +3493,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 908ms",
+          "Connect: 2236ms",
           "p95 latency: 2ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 907.9111250000024,
-    "toolsListMs": 1.8368749999972351,
-    "promptsListMs": 0.0013340000004973263,
-    "resourcesListMs": 0.00225000000136788
+    "connectMs": 2235.9436669999996,
+    "toolsListMs": 1.6613330000036513,
+    "promptsListMs": 0.0007499999992433004,
+    "resourcesListMs": 0.0029999999969732016
   },
   "runtimeProfile": {
     "stateMutations": [
@@ -4210,7 +4210,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-17T00:36:35.788Z",
+    "analyzedAt": "2026-07-22T21:36:45.254Z",
     "confidence": "medium"
   }
 }

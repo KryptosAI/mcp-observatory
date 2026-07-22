@@ -10,12 +10,12 @@ For the rules behind this page, see the [Safety Methodology](./methodology.md) a
 
 ## Snapshot
 
-- Evaluated servers: 176
+- Evaluated servers: 175
 - Ready for CI: 24
 - Needs review before production: 11
 - Unsafe default posture: 14
-- Not reproducible: 127
-- Latest run: 2026-07-17T00:36:42.758Z
+- Not reproducible: 126
+- Latest run: 2026-07-22T21:37:06.047Z
 
 ## Evaluations
 
@@ -191,12 +191,11 @@ For the rules behind this page, see the [Safety Methodology](./methodology.md) a
 | 168 | [HEC Pakistan MCP](https://www.npmjs.com/package/hec-pakistan-mcp) | Education / Pakistan Gov | **Not reproducible** | `rerun` | Degree/university/attestation boundary | `npx -y hec-pakistan-mcp` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y hec-pakistan-mcp" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/hec-pakistan-mcp.json) / [report](./safety-index/artifacts/hec-pakistan-mcp.md) | Schema-only evaluation; requires HEC Pakistan API credentials. Community package — exact npm name pending verification. |
 | 169 | [Pakistan Cricket MCP](https://www.npmjs.com/package/pakistan-cricket-mcp) | Sports / Pakistan | **Not reproducible** | `rerun` | Match/player/statistics boundary | `npx -y pakistan-cricket-mcp` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y pakistan-cricket-mcp" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/pakistan-cricket-mcp.json) / [report](./safety-index/artifacts/pakistan-cricket-mcp.md) | Schema-only evaluation; requires PCB API credentials. Community package — exact npm name pending verification. |
 | 170 | [K2 MCP](https://www.npmjs.com/package/k2-mcp) | Mountaineering / Pakistan | **Not reproducible** | `rerun` | Permit/expedition/safety boundary | `npx -y k2-mcp` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y k2-mcp" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/k2-mcp.json) / [report](./safety-index/artifacts/k2-mcp.md) | Schema-only evaluation; requires Alpine Club of Pakistan/GB Council permit API credentials. Community package — exact npm name pending verification. |
-| 171 | [Bhuvan MCP](https://www.npmjs.com/package/bhuvan-mcp) | Geospatial / Indian Gov | **Not reproducible** | `rerun` | Satellite imagery/geospatial data boundary | `npx -y bhuvan-mcp` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y bhuvan-mcp" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/bhuvan-mcp.json) / [report](./safety-index/artifacts/bhuvan-mcp.md) | Schema-only evaluation; requires Bhuvan/ISRO API credentials. Community package — exact npm name pending verification. |
-| 172 | [Rozgar.com MCP](https://www.npmjs.com/package/rozgar-mcp) | Jobs / Pakistani | **Not reproducible** | `rerun` | Job listing/application/candidate boundary | `npx -y rozgar-mcp` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y rozgar-mcp" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/rozgar-mcp.json) / [report](./safety-index/artifacts/rozgar-mcp.md) | Schema-only evaluation; requires Rozgar.com API credentials. Community package — exact npm name pending verification. |
-| 173 | [Foodpanda Pakistan MCP](https://www.npmjs.com/package/foodpanda-pakistan-mcp) | Food Delivery / Pakistani | **Not reproducible** | `rerun` | Order/restaurant/delivery boundary | `npx -y foodpanda-pakistan-mcp` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y foodpanda-pakistan-mcp" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/foodpanda-pakistan-mcp.json) / [report](./safety-index/artifacts/foodpanda-pakistan-mcp.md) | Schema-only evaluation; requires Foodpanda Pakistan API credentials. Community package — exact npm name pending verification. |
-| 174 | [Daraz MCP](https://github.com/shaheedghazi/daraz-mcp) | E-commerce / Pakistani | **Not reproducible** | `rerun` | Product/order/seller boundary | `npx -y daraz-mcp` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y daraz-mcp" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/daraz-mcp.json) / [report](./safety-index/artifacts/daraz-mcp.md) | Schema-only evaluation; requires Daraz Open Platform API credentials. Community package — exact npm name pending verification. |
-| 175 | [OLX Pakistan MCP](https://www.npmjs.com/package/olx-pakistan-mcp) | Classifieds / Pakistani | **Not reproducible** | `rerun` | Listing/ad/user boundary | `npx -y olx-pakistan-mcp` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y olx-pakistan-mcp" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/olx-pakistan-mcp.json) / [report](./safety-index/artifacts/olx-pakistan-mcp.md) | Schema-only evaluation; requires OLX Pakistan API credentials. Community package — exact npm name pending verification. |
-| 176 | [PakWheels MCP](https://www.npmjs.com/package/pakwheels-mcp) | Auto Marketplace / Pakistani | **Not reproducible** | `rerun` | Vehicle/listing/dealer boundary | `npx -y pakwheels-mcp` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y pakwheels-mcp" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/pakwheels-mcp.json) / [report](./safety-index/artifacts/pakwheels-mcp.md) | Schema-only evaluation; requires PakWheels API credentials. Community package — exact npm name pending verification. |
+| 171 | [Rozgar.com MCP](https://www.npmjs.com/package/rozgar-mcp) | Jobs / Pakistani | **Not reproducible** | `rerun` | Job listing/application/candidate boundary | `npx -y rozgar-mcp` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y rozgar-mcp" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/rozgar-mcp.json) / [report](./safety-index/artifacts/rozgar-mcp.md) | Schema-only evaluation; requires Rozgar.com API credentials. Community package — exact npm name pending verification. |
+| 172 | [Foodpanda Pakistan MCP](https://www.npmjs.com/package/foodpanda-pakistan-mcp) | Food Delivery / Pakistani | **Not reproducible** | `rerun` | Order/restaurant/delivery boundary | `npx -y foodpanda-pakistan-mcp` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y foodpanda-pakistan-mcp" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/foodpanda-pakistan-mcp.json) / [report](./safety-index/artifacts/foodpanda-pakistan-mcp.md) | Schema-only evaluation; requires Foodpanda Pakistan API credentials. Community package — exact npm name pending verification. |
+| 173 | [Daraz MCP](https://github.com/shaheedghazi/daraz-mcp) | E-commerce / Pakistani | **Not reproducible** | `rerun` | Product/order/seller boundary | `npx -y daraz-mcp` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y daraz-mcp" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/daraz-mcp.json) / [report](./safety-index/artifacts/daraz-mcp.md) | Schema-only evaluation; requires Daraz Open Platform API credentials. Community package — exact npm name pending verification. |
+| 174 | [OLX Pakistan MCP](https://www.npmjs.com/package/olx-pakistan-mcp) | Classifieds / Pakistani | **Not reproducible** | `rerun` | Listing/ad/user boundary | `npx -y olx-pakistan-mcp` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y olx-pakistan-mcp" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/olx-pakistan-mcp.json) / [report](./safety-index/artifacts/olx-pakistan-mcp.md) | Schema-only evaluation; requires OLX Pakistan API credentials. Community package — exact npm name pending verification. |
+| 175 | [PakWheels MCP](https://www.npmjs.com/package/pakwheels-mcp) | Auto Marketplace / Pakistani | **Not reproducible** | `rerun` | Vehicle/listing/dealer boundary | `npx -y pakwheels-mcp` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y pakwheels-mcp" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/pakwheels-mcp.json) / [report](./safety-index/artifacts/pakwheels-mcp.md) | Schema-only evaluation; requires PakWheels API credentials. Community package — exact npm name pending verification. |
 
 ## Patterns Observed
 
@@ -204,7 +203,6 @@ For the rules behind this page, see the [Safety Methodology](./methodology.md) a
 - Search result boundary: 3 server(s)
 - Collection/environment/request boundary: 2 server(s)
 - Model inference boundary: 2 server(s)
-- Satellite imagery/geospatial data boundary: 2 server(s)
 - Actor/scraping/data boundary: 1 server(s)
 - Analytics/heatmap boundary: 1 server(s)
 - App/datasource/workflow boundary: 1 server(s)
@@ -322,6 +320,7 @@ For the rules behind this page, see the [Safety Methodology](./methodology.md) a
 - Record/org/metadata boundary: 1 server(s)
 - Resource/provisioning boundary: 1 server(s)
 - Sandboxed filesystem access: 1 server(s)
+- Satellite imagery/geospatial data boundary: 1 server(s)
 - Search result/LLM boundary: 1 server(s)
 - Server/channel/message boundary: 1 server(s)
 - Shell/exec/file boundary: 1 server(s)

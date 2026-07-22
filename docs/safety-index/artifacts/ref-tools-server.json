@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-17T003626429Z_130951f0",
-  "createdAt": "2026-07-17T00:36:26.429Z",
-  "toolVersion": "1.33.0",
+  "runId": "run_2026-07-22T213611247Z_2cf54dbb",
+  "createdAt": "2026-07-22T21:36:11.247Z",
+  "toolVersion": "1.34.1",
   "target": {
     "targetId": "ref-tools-server",
     "adapter": "local-process",
@@ -26,7 +26,7 @@
   },
   "environment": {
     "platform": "darwin 25.5.0",
-    "nodeVersion": "v22.22.1"
+    "nodeVersion": "v22.23.1"
   },
   "summary": {
     "total": 9,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 1.037916999999652,
+      "durationMs": 0.9388749999998254,
       "message": "Advertised capability responded with the minimal expected shape (2 items).",
       "evidence": [
         {
@@ -57,6 +57,7 @@
             "ref_read_url"
           ],
           "diagnostics": [
+            "npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead",
             "Ref MCP Server running on stdio"
           ],
           "schemas": {
@@ -92,7 +93,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "pass",
-      "durationMs": 0.28758299999935844,
+      "durationMs": 0.23616599999877508,
       "message": "Advertised capability responded with the minimal expected shape (2 items).",
       "evidence": [
         {
@@ -106,6 +107,7 @@
             "my_docs"
           ],
           "diagnostics": [
+            "npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead",
             "Ref MCP Server running on stdio"
           ]
         }
@@ -115,7 +117,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.0032499999997526174,
+      "durationMs": 0.0022919999973964877,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -131,7 +133,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.01900000000023283,
+      "durationMs": 0.03654200000164565,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -147,7 +149,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "partial",
-      "durationMs": 0.10537499999918509,
+      "durationMs": 0.1746659999989788,
       "message": "Detected 4 potential egress target(s) and 0 potential state mutation(s) with high confidence.",
       "evidence": [
         {
@@ -194,7 +196,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 0.4587499999997817,
+      "durationMs": 0.45525000000270666,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -220,7 +222,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "pass",
-      "durationMs": 0.4734169999992446,
+      "durationMs": 0.5715419999978621,
       "message": "All 4 item(s) have good schema quality.",
       "evidence": [
         {
@@ -237,7 +239,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 0.14400000000023283,
+      "durationMs": 0.19279200000164565,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -253,7 +255,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "pass",
-      "durationMs": 0.2027909999997064,
+      "durationMs": 0.26745799999844166,
       "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
       "evidence": [
         {
@@ -312,17 +314,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 579ms",
+          "Connect: 7555ms",
           "p95 latency: 1ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 579.0261249999994,
-    "toolsListMs": 1.037916999999652,
-    "promptsListMs": 0.28758299999935844,
-    "resourcesListMs": 0.0032499999997526174
+    "connectMs": 7554.884624999999,
+    "toolsListMs": 0.9388749999998254,
+    "promptsListMs": 0.23616599999877508,
+    "resourcesListMs": 0.0022919999973964877
   },
   "runtimeProfile": {
     "egress": [
@@ -351,7 +353,7 @@
         "confidence": "low"
       }
     ],
-    "analyzedAt": "2026-07-17T00:36:27.010Z",
+    "analyzedAt": "2026-07-22T21:36:18.803Z",
     "confidence": "high"
   }
 }

@@ -1,15 +1,15 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-17T00:36:22.609Z
+Generated at 2026-07-22T21:36:05.555Z
 
 ## Target and Environment Metadata
 
 - Target: `context7-server`
 - Adapter: `local-process`
 - Command: `npx -y @upstash/context7-mcp`
-- Server: `Context7 3.2.3`
+- Server: `Context7 3.2.4`
 - Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Node: `v22.23.1`
 
 ## Executive Summary
 
@@ -65,7 +65,7 @@ The following state-modifying operations were identified from tool schemas:
 | --- | --- | --- | --- |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-17T00:36:23.552Z_
+_Analyzed at 2026-07-22T21:36:07.352Z_
 
 ## Regressions and Recoveries
 
@@ -75,15 +75,15 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 1.11 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 0.29 | Advertised capability responded with the minimal expected shape (0 items). |
-| healthy | resources | pass | 0.67 | Advertised capability responded with the minimal expected shape (0 items). |
-| healthy | runtime-profile | pass | 0.28 | Detected 2 potential egress target(s) and 1 potential state mutation(s) with low confidence. |
-| healthy | schema-quality | pass | 0.73 | All 2 item(s) have good schema quality. |
-| healthy | security | pass | 0.22 | No security issues detected. |
+| healthy | conformance | pass | 1.10 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 0.30 | Advertised capability responded with the minimal expected shape (0 items). |
+| healthy | resources | pass | 0.48 | Advertised capability responded with the minimal expected shape (0 items). |
+| healthy | runtime-profile | pass | 0.27 | Detected 2 potential egress target(s) and 1 potential state mutation(s) with low confidence. |
+| healthy | schema-quality | pass | 0.59 | All 2 item(s) have good schema quality. |
+| healthy | security | pass | 0.24 | No security issues detected. |
 | healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 1.69 | Advertised capability responded with the minimal expected shape (2 items). |
-| review | attack-sim | partial | 1.20 | Safe attack simulation found 2 finding(s): 0 high, 2 medium, 0 low. |
+| healthy | tools | pass | 1.59 | Advertised capability responded with the minimal expected shape (2 items). |
+| review | attack-sim | partial | 1.00 | Safe attack simulation found 2 finding(s): 0 high, 2 medium, 0 low. |
 
 ## Evidence Snippets
 
@@ -109,7 +109,7 @@ Summary: Advertised capability responded with the minimal expected shape (0 item
   - Minimal shape present: `true`
   - Item count: `0`
   - Identifiers: none
-  - Diagnostics: Context7 Documentation MCP Server v3.2.3 running on stdio
+  - Diagnostics: Context7 Documentation MCP Server v3.2.4 running on stdio
 
 ### resources — pass
 
@@ -121,14 +121,14 @@ Summary: Advertised capability responded with the minimal expected shape (0 item
   - Minimal shape present: `true`
   - Item count: `0`
   - Identifiers: none
-  - Diagnostics: Context7 Documentation MCP Server v3.2.3 running on stdio
+  - Diagnostics: Context7 Documentation MCP Server v3.2.4 running on stdio
 - Endpoint: `resources/templates/list`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
   - Item count: `0`
   - Identifiers: none
-  - Diagnostics: Context7 Documentation MCP Server v3.2.3 running on stdio
+  - Diagnostics: Context7 Documentation MCP Server v3.2.4 running on stdio
 
 ### runtime-profile — pass
 
@@ -188,7 +188,7 @@ Summary: Advertised capability responded with the minimal expected shape (2 item
   - Minimal shape present: `true`
   - Item count: `2`
   - Identifiers: resolve-library-id, query-docs
-  - Diagnostics: Context7 Documentation MCP Server v3.2.3 running on stdio
+  - Diagnostics: Context7 Documentation MCP Server v3.2.4 running on stdio
 
 ### attack-sim — partial
 
@@ -213,5 +213,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-17T003622609Z_7a792254`
+- Run ID: `run_2026-07-22T213605555Z_ade0c612`
 - Gate: `pass`

@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-17T00:36:33.428Z
+Generated at 2026-07-22T21:36:38.834Z
 
 ## Target and Environment Metadata
 
@@ -9,7 +9,7 @@ Generated at 2026-07-17T00:36:33.428Z
 - Command: `npx -y @playwright/mcp`
 - Server: `Playwright 1.62.0-alpha-1783623505000`
 - Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Node: `v22.23.1`
 
 ## Executive Summary
 
@@ -88,7 +88,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-17T00:36:34.091Z_
+_Analyzed at 2026-07-22T21:36:41.562Z_
 
 ## Regressions and Recoveries
 
@@ -98,15 +98,15 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 773.35 | All 7 conformance checks passed. |
-| healthy | tools | pass | 2.77 | Advertised capability responded with the minimal expected shape (24 items). |
-| review | runtime-profile | partial | 0.20 | Detected 7 potential egress target(s) and 21 potential state mutation(s) with high confidence. |
-| review | schema-quality | partial | 1.26 | Found 5 quality finding(s) across 24 item(s): 0 warnings, 5 info. |
+| healthy | conformance | pass | 1436.47 | All 7 conformance checks passed. |
+| healthy | tools | pass | 3.39 | Advertised capability responded with the minimal expected shape (24 items). |
+| review | runtime-profile | partial | 0.22 | Detected 7 potential egress target(s) and 21 potential state mutation(s) with high confidence. |
+| review | schema-quality | partial | 1.63 | Found 5 quality finding(s) across 24 item(s): 0 warnings, 5 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
-| act now | attack-sim | fail | 1.32 | Safe attack simulation found 4 finding(s): 1 high, 3 medium, 0 low. |
-| act now | security | fail | 0.89 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
-| act now | security-lite | fail | 0.06 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
+| act now | attack-sim | fail | 1.22 | Safe attack simulation found 4 finding(s): 1 high, 3 medium, 0 low. |
+| act now | security | fail | 1.04 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
+| act now | security-lite | fail | 0.07 | Found 6 security finding(s): 2 high, 2 medium, 2 low. |
 
 ## Evidence Snippets
 
@@ -229,5 +229,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-17T003633428Z_a9fd4dd4`
+- Run ID: `run_2026-07-22T213638834Z_f97d41d0`
 - Gate: `fail`
