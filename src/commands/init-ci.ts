@@ -51,6 +51,14 @@ function providerLabel(provider: string): string {
   return PROVIDER_LABELS[provider] ?? "CI Workflow";
 }
 
+const VALID_CI_PROVIDERS = Object.keys(CI_FILE_PATHS);
+
+function validateCiProvider(provider: string | undefined): void {
+  if (provider !== undefined && !VALID_CI_PROVIDERS.includes(provider)) {
+    throw new Error(`Invalid --ci-provider "${provider}". Valid options: ${VALID_CI_PROVIDERS.join(", ")}.`);
+  }
+}
+
 const DEFAULT_WORKFLOW_PATH = ".github/workflows/mcp-observatory.yml";
 const DEFAULT_BADGE_PATH = "docs/mcp-observatory-badge.md";
 const DEFAULT_TARGET_CONFIG_PATH = "mcp-observatory.target.json";
@@ -495,6 +503,7 @@ function doctorFixOptions(options: InitCiOptions, workflow: string | undefined):
 }
 
 export async function doctorSetupCi(options: InitCiOptions = {}): Promise<SetupCiDoctorResult> {
+  validateCiProvider(options.ciProvider);
   const detectedProvider = options.ciProvider ?? detectCiProvider() ?? "github-actions";
   const defaultPath = CI_FILE_PATHS[detectedProvider] ?? DEFAULT_WORKFLOW_PATH;
   const workflowPath = options.workflow ?? defaultPath;
@@ -595,6 +604,7 @@ export async function doctorSetupCi(options: InitCiOptions = {}): Promise<SetupC
 }
 
 export async function initCi(options: InitCiOptions): Promise<InitCiResult> {
+  validateCiProvider(options.ciProvider);
   if (options.command && options.target) {
     throw new Error("Use either --command or --target, not both.");
   }
@@ -644,7 +654,8 @@ function addInitCiOptions(command: Command): Command {
   return command
     .option("--command <command>", "MCP server command to test, for example: 'npx -y my-mcp-server'")
     .option("--target <file>", "Target config JSON path to use instead of a command.")
-    .option("--workflow <file>", "Workflow output path.", DEFAULT_WORKFLOW_PATH)
+    .option("--workflow <file>", "Workflow output path. Defaults to the path for the detected or selected CI provider.")
+    .option("--ci-provider <provider>", `Override auto-detected CI provider (${VALID_CI_PROVIDERS.join(", ")}).`)
     .option("--badge", "Also write a README badge snippet.", false)
     .option("--badge-file <file>", "Badge snippet output path.", DEFAULT_BADGE_PATH)
     .option("--target-config [file]", "Also write an example target config and point the workflow at it.")
