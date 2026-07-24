@@ -525,7 +525,7 @@ Scan before you trust. Enforce at runtime with [mcp-seatbelt](https://github.com
 
 ## Works with agent-obs
 
-Secure your servers with Observatory. Trace your agents with [agent-obs](https://github.com/KryptosAI/agent-observability) — an open-source agent execution tracer that records every tool call, computes A-F session grades, and shows you exactly where your agents spend time, burn tokens, and hit errors. Observatory tells you if a server is safe. agent-obs tells you what your agent did with it.
+Secure your servers with Observatory. Trace your agents with [agent-obs](https://github.com/KryptosAI/agent-observability) — an open-source agent execution tracer that records every tool call, computes A-F session grades, and shows you exactly where your agents spend time, burn tokens, and hit errors. Observatory tells you if a server is safe. agent-obs tells you what your agent did with it. Free, local-first, `npm install -g agent-obs`.
 
 ## Contributors ✨
 
