@@ -2,12 +2,12 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.KryptosAI/mcp-observatory",
   "description": "MCP security scanner. CI-native testing, attack simulation, health scoring, and SARIF.",
-  "version": "1.36.0",
+  "version": "1.36.1",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@kryptosai/mcp-observatory",
-      "version": "1.36.0",
+      "version": "1.36.1",
       "transport": {
         "type": "stdio"
       }
