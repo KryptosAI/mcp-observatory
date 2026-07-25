@@ -1,6 +1,6 @@
 {
   "name": "@kryptosai/mcp-observatory",
-  "version": "1.35.0",
+  "version": "1.36.0",
   "description": "MCP security scanner and CI gate. Test, secure, and monitor MCP servers with attack simulation, schema drift detection, health scoring, and SARIF before agents depend on them.",
   "mcpName": "io.github.kryptosai/mcp-observatory",
   "license": "MIT",
