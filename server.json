@@ -1,24 +1,20 @@
 {
-  "name": "io.github.kryptosai/mcp-observatory",
-  "description": "CI-native security testing for MCP servers. Attack simulation, schema drift detection, health scoring, and SARIF before agents depend on them.",
-  "version": "1.35.1",
-  "url": "https://github.com/KryptosAI/mcp-observatory",
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.KryptosAI/mcp-observatory",
+  "description": "MCP security scanner. CI-native testing, attack simulation, health scoring, and SARIF for MCP servers.",
+  "version": "1.36.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@kryptosai/mcp-observatory",
+      "version": "1.36.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ],
   "repository": {
-    "type": "git",
+    "source": "github",
     "url": "https://github.com/KryptosAI/mcp-observatory"
-  },
-  "package": {
-    "registry": "npm",
-    "name": "@kryptosai/mcp-observatory",
-    "version": "1.35.1"
-  },
-  "runtime": {
-    "type": "stdio",
-    "command": "npx",
-    "args": ["@kryptosai/mcp-observatory", "serve"]
-  },
-  "metadata": {
-    "category": "Security",
-    "tags": ["mcp-security", "mcp-scanner", "attack-simulation", "schema-drift", "health-scoring", "sarif", "ci-cd"]
   }
 }
