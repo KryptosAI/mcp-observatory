@@ -1,3 +1,5 @@
+[![MCP Toplist](https://mcptoplist.com/badge/io.github.KryptosAI%2Fmcp-observatory.svg)](https://mcptoplist.com/server/io.github.KryptosAI%2Fmcp-observatory)
+
 > 🇨🇳 中文文档: [README.zh-CN.md](README.zh-CN.md) | 欢迎中国开发者贡献!
 
 <p align="center">
