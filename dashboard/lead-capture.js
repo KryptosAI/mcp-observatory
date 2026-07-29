@@ -11,11 +11,13 @@
   const escapeHtml = value => String(value).replace(/[&<>'"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char]));
   const leadIsQualified = values => {
     const domain = String(values.company_domain || "").toLowerCase().trim();
+    const emailParts = String(values.email || "").split("@");
+    const emailDomain = emailParts[emailParts.length - 1].toLowerCase();
     return values.mcp_deployment_status !== "exploring"
       && values.decision_timing !== "later"
       && values.decision_owner === "confirmed"
       && domain.includes(".")
-      && !freeEmailDomains.has(String(values.email || "").split("@").pop()?.toLowerCase());
+      && !freeEmailDomains.has(emailDomain);
   };
   const formIdFor = kind => kind === "buyer" ? config.buyerFormId : config.partnerFormId;
   const readyForHubSpot = kind => Boolean(config.hubspotPortalId && formIdFor(kind));
@@ -39,10 +41,11 @@
       try {
         if (readyForHubSpot(kind)) {
           const fields = Object.entries(raw).filter(([, value]) => value !== "").map(([name, value]) => ({ name, value: String(value) }));
+          const hutkMatch = document.cookie.match(/hubspotutk=([^;]+)/);
           const response = await fetch(`https://api.hsforms.com/submissions/v3/integration/submit/${config.hubspotPortalId}/${formIdFor(kind)}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ fields, context: { pageUri: window.location.href, pageName: document.title, hutk: document.cookie.match(/hubspotutk=([^;]+)/)?.[1] || undefined }),
+            body: JSON.stringify({ fields, context: { pageUri: window.location.href, pageName: document.title, hutk: hutkMatch ? hutkMatch[1] : undefined } }),
           });
           if (!response.ok) throw new Error("HubSpot submission failed");
         } else {
