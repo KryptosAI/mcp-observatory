@@ -297,6 +297,9 @@ async function generateSitemap(ids: string[]): Promise<void> {
     { loc: `${BASE_URL}/`, changefreq: "daily", priority: "1.0" },
     { loc: `${BASE_URL}/release-gate-pilot/`, changefreq: "weekly", priority: "0.9" },
     { loc: `${BASE_URL}/partners/`, changefreq: "weekly", priority: "0.8" },
+    { loc: `${BASE_URL}/release-gate-evidence-pack/`, changefreq: "monthly", priority: "0.8" },
+    { loc: `${BASE_URL}/partner-co-sell-kit/`, changefreq: "monthly", priority: "0.7" },
+    { loc: `${BASE_URL}/privacy/`, changefreq: "yearly", priority: "0.4" },
     { loc: `${BASE_URL}/safety-index/`, changefreq: "daily", priority: "0.9" },
     { loc: `${BASE_URL}/fleet-monitor.html`, changefreq: "daily", priority: "0.8" },
     ...ids.map(id => ({

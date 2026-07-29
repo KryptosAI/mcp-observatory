@@ -1,30 +1,19 @@
 # Terms For Production Use
 
-MCP Observatory is distributed under the MIT license for the open source CLI and MCP server code.
+MCP Observatory is MIT-licensed open-source software. Local use of the package does not create a paid subscription or retroactive payment obligation.
 
-These commercial terms describe optional paid pilots for hosted reporting, private-repo CI, security reports, production monitoring, certification, support, and fleet visibility.
+## MCP Release Gate Pilot
 
-## No Retroactive Billing
+The public commercial entry offer is the MCP Release Gate Pilot: `$15,000` for 1-3 named MCP servers over ten business days. It produces private, safe-mode evidence, an approve/gate/defer decision, CI/SARIF handoff, and owner-ready remediation.
 
-Using the open source package locally does not create a paid subscription by itself. Paid services require a separate written agreement, invoice, purchase order, or accepted pilot arrangement.
+The first two qualified founding design partners may be offered a `$10,000` rate in exchange for structured feedback and permission to publish an anonymized outcome. This is optional and does not alter the public list price.
 
-## Production And Private Use
+Paid work begins only after a written agreement, accepted proposal, or purchase order identifies the contracting parties, scope, exclusions, payment schedule, and handling of private material. The standard payment schedule is 50% at signing and 50% before the final readout.
 
-Teams using MCP Observatory for private repositories, production MCP monitoring, compliance/security reporting, certification, or fleet-level visibility should contact us for a pilot.
+## Boundaries
 
-Starting pilot pricing:
-
-- Team Pilot: starts at $299/month
-- Business Pilot: starts at $999/month
-- Enterprise Pilot: starts at $3k/month
-- Strategic Accounts: custom, $250k+/year
-
-## Hosted Upload Tokens
-
-`MCP_OBSERVATORY_CLOUD_TOKEN` is reserved for hosted reporting and pilot workflows. Receiving or setting a token does not transfer ownership of local artifacts or private source code.
+The pilot is not a penetration test, certification, compliance attestation, destructive assessment, or authorization to handle production credentials. It is a reproducible release-decision engagement for agreed MCP dependencies.
 
 ## Contact
 
-For production MCP usage, private repo CI, enterprise support, or strategic partnerships:
-
-the GitHub issue chooser
+For private or production MCP use, submit a [Release Gate Pilot request](https://mcp-observatory.com/release-gate-pilot/) or a [partner deal registration](https://mcp-observatory.com/partners/).

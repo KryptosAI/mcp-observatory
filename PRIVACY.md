@@ -68,4 +68,10 @@ Internal usage reports separate first-party MCP Observatory project activity fro
 
 Enterprise customers can request telemetry review, reduced collection, private deployment, or enterprise-controlled telemetry modes as part of a paid pilot.
 
-Contact: open an issue or pilot request from the GitHub issue chooser.
+Contact: submit a pilot request at https://mcp-observatory.com/release-gate-pilot/.
+
+## Commercial Inquiry Forms
+
+Pilot requests and partner deal registrations collect only the information explicitly submitted in the form: business contact details, company/domain, role, high-level MCP deployment context, timing, and campaign attribution. These submissions are used to respond to the request and to operate the commercial pipeline. They are not added to CLI telemetry, public reports, or Safety Index evidence.
+
+Do not submit credentials, source code, private URLs, customer data, production commands, or other sensitive technical material through a commercial inquiry form. MCP Observatory replies within one business day to qualified inquiries and requests any later technical material only after scope is agreed.

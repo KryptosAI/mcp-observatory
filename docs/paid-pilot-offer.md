@@ -28,7 +28,7 @@ The public CLI produces reproducible evidence. The paid review packages that evi
 - executive summary with “safe for agent dependency” verdicts
 - prioritized remediation notes and owner-ready next steps
 - maintainer PR support for public or partner-owned MCP repos
-- optional certification language for servers that pass agreed checks
+- optional customer-approved public evidence summary after delivery
 
 ## Starting Package
 
@@ -42,7 +42,7 @@ Good fit:
 - a maintainer wants public trust signals for an MCP project
 - a company has private MCP servers and needs owner-ready remediation notes
 
-Large fleets, recurring reviews, hosted history, support, or certification programs can move into a custom production pilot.
+Large fleets, recurring reviews, hosted history, support, or customer-approved public evidence programs can move into a separately scoped follow-on engagement.
 
 ## Simple Outreach Copy
 
