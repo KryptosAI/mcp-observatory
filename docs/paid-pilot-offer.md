@@ -2,7 +2,7 @@
 
 ## Offer
 
-Private MCP readiness review + CI rollout + SARIF/Code Scanning setup + drift/security report.
+In seven business days, we tell a team which MCP servers its agents may depend on, what should block a pull request, and what owners need to fix. The fixed-scope review includes private evidence, CI rollout, SARIF/Code Scanning setup, and drift/security findings.
 
 For teams that need a higher-confidence security deliverable before production agent dependency, use the [MCP Attack Simulation Evidence Pack](./attack-simulation-pilot.md). That package starts at `$15,000` and adds safe-mode attack simulation, executive evidence, and owner-ready remediation notes.
 
@@ -32,7 +32,7 @@ The public CLI produces reproducible evidence. The paid review packages that evi
 
 ## Starting Package
 
-MCP Readiness Review: starts at `$2,500`.
+MCP Readiness Review: `$5,000` fixed scope for 1-5 MCP servers. The first two design partners may receive a `$2,500` pilot rate in exchange for structured feedback and permission to publish an anonymized outcome.
 
 Higher-confidence attack simulation packages:
 
