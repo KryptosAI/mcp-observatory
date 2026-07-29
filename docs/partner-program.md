@@ -4,7 +4,7 @@ MCP Observatory is the CI release gate for MCP servers before agents depend on t
 
 ## Offer
 
-The MCP Readiness Review is a seven-business-day, fixed-scope engagement for 1-5 MCP servers. The customer receives a private inventory, safe-mode evidence, SARIF/Code Scanning setup, a CI recommendation, and owner-ready remediation actions.
+The MCP Release Gate Pilot is a ten-business-day, fixed-scope engagement for 1-3 critical MCP servers. The customer receives a private inventory, safe-mode evidence, SARIF/Code Scanning setup, an approve/gate/defer decision, and owner-ready remediation actions.
 
 ## Partner model
 
@@ -19,4 +19,4 @@ A qualified opportunity has a named platform or security owner, private or produ
 
 ## Starter materials
 
-Use the [MCP Readiness Review](./paid-pilot-offer.md) as the customer offer and the sanitized fleet-risk-graph example as the evidence shape. Do not share telemetry exports, customer data, or private account intelligence.
+Use the [MCP Release Gate Pilot](./paid-pilot-offer.md) as the customer offer and the sanitized fleet-risk-graph example as the evidence shape. Do not share telemetry exports, customer data, or private account intelligence.

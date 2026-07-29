@@ -20,15 +20,9 @@ MCP servers are becoming part of the AI software supply chain. A scanner can say
 - what a maintainer or internal owner should change first
 - how to keep re-running the evidence after MCP servers update
 
-## Packages
+## Engagement model
 
-| Package | Price | Best Fit | Typical Scope |
-| --- | ---: | --- | --- |
-| Attack Simulation Quickstart | $15,000 | One high-value MCP server or one team adopting MCP | 1-3 servers, private report, SARIF, CI gate |
-| Attack Simulation Evidence Pack | $25,000 | Security/platform team reviewing MCP before production use | Up to 10 servers, executive packet, remediation notes, CI rollout |
-| Platform Attack Simulation Pilot | $50,000 | Company building or approving MCP across teams | Up to 25 servers, fleet inventory, recurring review plan, stakeholder readout |
-
-Custom enterprise scope is available for major AI labs, developer platforms, cloud providers, and teams running MCP across many repositories or agent runtimes.
+The public entry offer is the [MCP Release Gate Pilot](./paid-pilot-offer.md): 1-3 critical servers, ten business days, and an evidence-backed release decision. Broader attack-simulation work is scoped only after that pilot establishes the customer's actual authority boundaries, fixtures, and decision owners.
 
 ## What It Includes
 
