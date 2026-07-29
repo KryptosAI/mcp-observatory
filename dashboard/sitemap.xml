@@ -16,6 +16,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://mcp-observatory.com/safety-index/</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://mcp-observatory.com/fleet-monitor.html</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>

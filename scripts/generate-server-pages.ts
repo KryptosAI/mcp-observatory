@@ -124,7 +124,7 @@ function renderPage(t: TargetEntry, artifact: RunArtifact | null, index: number,
     .nav{min-height:80px;display:flex;align-items:center;justify-content:space-between;padding:20px 0}
     .brand{display:flex;align-items:center;text-decoration:none;color:var(--text);font-size:16px;font-weight:700;gap:10px}
     .brand svg{width:28px;height:28px}
-    .navlinks{display:flex;gap:20px;align-items:center}
+    .navlinks{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:flex-end}
     .navlinks a{color:#b7c3d5;text-decoration:none;font-size:13px}
     .navlinks a:hover{color:var(--text)}
     .button{padding:8px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);text-decoration:none;font-size:13px;transition:.18s ease}
@@ -176,7 +176,7 @@ function renderPage(t: TargetEntry, artifact: RunArtifact | null, index: number,
 
     footer{padding:32px 0 48px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
     footer a{color:var(--muted)}
-    @media(max-width:640px){.grade-card{flex-direction:column;text-align:center}.dim-name{width:120px}.check-id{width:100px}}
+    @media(max-width:640px){.nav{flex-wrap:wrap;gap:12px}.navlinks{width:100%;justify-content:space-between;gap:10px}.navlinks a{font-size:12px}.grade-card{flex-direction:column;text-align:center}.dim-name{width:120px}.check-id{width:100px}}
   </style>
 </head>
 <body>
@@ -187,9 +187,10 @@ function renderPage(t: TargetEntry, artifact: RunArtifact | null, index: number,
       Observatory
     </a>
     <div class="navlinks">
-      <a href="/">Safety Index</a>
-      <a href="/fleet-monitor.html">Fleet Monitor</a>
-      <a href="https://github.com/KryptosAI/mcp-observatory">GitHub</a>
+      <a href="/safety-index/">Safety Index</a>
+      <a href="/release-gate-pilot/">Release Gate</a>
+      <a href="/partners/">Partners</a>
+      <a href="https://www.npmjs.com/package/@kryptosai/mcp-observatory">Install ↗</a>
     </div>
   </nav>
 
@@ -294,6 +295,9 @@ function renderPage(t: TargetEntry, artifact: RunArtifact | null, index: number,
 async function generateSitemap(ids: string[]): Promise<void> {
   const urls = [
     { loc: `${BASE_URL}/`, changefreq: "daily", priority: "1.0" },
+    { loc: `${BASE_URL}/release-gate-pilot/`, changefreq: "weekly", priority: "0.9" },
+    { loc: `${BASE_URL}/partners/`, changefreq: "weekly", priority: "0.8" },
+    { loc: `${BASE_URL}/safety-index/`, changefreq: "daily", priority: "0.9" },
     { loc: `${BASE_URL}/fleet-monitor.html`, changefreq: "daily", priority: "0.8" },
     ...ids.map(id => ({
       loc: `${BASE_URL}/safety-index/servers/${id}.html`,
@@ -312,7 +316,7 @@ ${urls.map(u => `  <url>
 </urlset>
 `;
 
-  await writeFile(sitemapPath, xml + "\n", "utf8");
+  await writeFile(sitemapPath, xml, "utf8");
   console.log(`Sitemap: ${urls.length} URLs written to ${sitemapPath}`);
 }
 
@@ -403,7 +407,7 @@ function generateIndexPage(targets: TargetEntry[]): string {
     .nav{min-height:80px;display:flex;align-items:center;justify-content:space-between;padding:20px 0}
     .brand{display:flex;align-items:center;text-decoration:none;color:var(--text);font-size:16px;font-weight:700;gap:10px}
     .brand svg{width:28px;height:28px}
-    .navlinks{display:flex;gap:20px;align-items:center}
+    .navlinks{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:flex-end}
     .navlinks a{color:#b7c3d5;text-decoration:none;font-size:13px}
     .navlinks a:hover{color:var(--text)}
 
@@ -434,6 +438,7 @@ function generateIndexPage(targets: TargetEntry[]): string {
 
     footer{padding:32px 0 48px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
     footer a{color:var(--muted)}
+    @media(max-width:640px){.nav{flex-wrap:wrap;gap:12px}.navlinks{width:100%;justify-content:space-between;gap:10px}.navlinks a{font-size:12px}}
   </style>
 </head>
 <body>
@@ -445,8 +450,9 @@ function generateIndexPage(targets: TargetEntry[]): string {
     </a>
     <div class="navlinks">
       <a href="/safety-index/">Safety Index</a>
-      <a href="/fleet-monitor.html">Fleet Monitor</a>
-      <a href="https://github.com/KryptosAI/mcp-observatory">GitHub</a>
+      <a href="/release-gate-pilot/">Release Gate</a>
+      <a href="/partners/">Partners</a>
+      <a href="https://www.npmjs.com/package/@kryptosai/mcp-observatory">Install ↗</a>
     </div>
   </nav>
 
