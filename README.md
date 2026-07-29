@@ -92,11 +92,11 @@ We scan ourselves with mcp-observatory on every release. [See results →](docs/
 
 MCP servers are becoming part of the AI software supply chain. Agents need reliable, testable, auditable tools before those tools become dependencies in mission-critical workflows.
 
-Whether you're shipping one MCP server or running a fleet, MCP Observatory gives you CI-native security scoring, attack simulation, schema drift detection, SARIF/HTML/Markdown reports, and GitHub Code Scanning — from your first `npx` command to production deployment. Local development stays free; teams running private repos, fleets, or compliance pipelines can upgrade through a paid MCP Readiness Review.
+Whether you're shipping one MCP server or running a fleet, MCP Observatory gives you CI-native security scoring, attack simulation, schema drift detection, SARIF/HTML/Markdown reports, and GitHub Code Scanning — from your first `npx` command to production deployment. Local development stays free; teams with a near-term production approval decision can use the fixed-scope [MCP Release Gate Pilot](./docs/paid-pilot-offer.md).
 
 ## Production Support
 
-Local OSS use stays free under MIT. Teams running MCP in production can use the [Private MCP Fleet Risk Graph](./docs/private-mcp-fleet-risk-graph.md) and [MCP Attack Simulation Evidence Pack](./docs/attack-simulation-pilot.md) for safe-mode attack simulation, SARIF/Code Scanning setup, CI rollout, private evidence reporting, and owner-ready remediation notes. Private fleet risk graph pilots start at `$50,000`; attack simulation packages start at `$15,000`; narrow readiness reviews start at `$2,500`.
+Local OSS use stays free under MIT. Teams running MCP in production can use the [MCP Release Gate Pilot](./docs/paid-pilot-offer.md) for safe-mode evidence, SARIF/Code Scanning setup, CI rollout, private reporting, and owner-ready remediation notes. The fixed public entry offer is `$15,000` for 1-3 critical MCP servers over ten business days; broader work is scoped after the release decision.
 
 The open source repo is the public evidence engine. Private telemetry intelligence, company/account prioritization, commercial ranking weights, hosted fleet workflows, and buyer-specific evidence packs stay outside the OSS package; see the [open core boundary](./docs/commercial-boundary.md).
 
