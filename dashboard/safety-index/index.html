@@ -20,9 +20,9 @@
     .container{width:min(1100px,calc(100% - 40px));margin:auto;position:relative}
     .nav{min-height:80px;display:flex;align-items:center;justify-content:space-between;padding:20px 0}
     .brand{display:flex;align-items:center;text-decoration:none;color:var(--text);font-size:16px;font-weight:700;gap:10px}
-    .brand svg{width:28px;height:28px}
+    .brand svg{display:none}.brand img{display:block;width:220px;height:auto}
     .navlinks{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:flex-end}
-    .navlinks a{color:#b7c3d5;text-decoration:none;font-size:13px}
+    .navlinks a{color:#b7c3d5;text-decoration:none;font-size:13px}.navlinks a[aria-current="page"]{color:var(--text)}.navlinks .button{display:inline-flex;align-items:center;padding:10px 16px;border:1px solid var(--line);border-radius:10px;background:rgba(16,24,40,.76);color:var(--text);font-weight:800}
     .navlinks a:hover{color:var(--text)}
 
     .hero{padding:10px 0 32px;border-bottom:1px solid var(--line);margin-bottom:28px}
@@ -60,13 +60,13 @@
   <nav class="nav">
     <a href="/" class="brand" aria-label="MCP Observatory">
       <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="7" fill="#58e6ff" fill-opacity=".15"/><path d="M7 11c1.5-2 3-3 5-3s3.5 1 5 3M7 17c1.5 2 3 3 5 3s3.5-1 5-3" stroke="#58e6ff" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="14" r="1.5" fill="#47e6a4"/><circle cx="14" cy="14" r="1.5" fill="#47e6a4"/><circle cx="20" cy="14" r="1.5" fill="#47e6a4"/></svg>
-      Observatory
+      <img src="/mcp-observatory-logo-v2.png" alt="MCP Observatory">
     </a>
     <div class="navlinks">
-      <a href="/safety-index/">Safety Index</a>
+      <a href="/safety-index/" aria-current="page">Safety Index</a>
       <a href="/release-gate-pilot/">Release Gate</a>
       <a href="/partners/">Partners</a>
-      <a href="https://www.npmjs.com/package/@kryptosai/mcp-observatory">Install ↗</a>
+      <a class="button" href="/release-gate-pilot/#request">Get a release decision</a>
     </div>
   </nav>
 
