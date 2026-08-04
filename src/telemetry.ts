@@ -148,7 +148,7 @@ export interface TelemetryEvent extends TelemetryEnrichment {
 
 const CONFIG_DIR = path.join(os.homedir(), ".mcp-observatory");
 const CONFIG_PATH = path.join(CONFIG_DIR, "config.json");
-const DEFAULT_ENDPOINT = "https://mcp-observatory-telemetry.william-weishuhn.workers.dev/v1/events";
+const DEFAULT_ENDPOINT = "https://mcp-observatory-telemetry.kryptosai.workers.dev/v1/events";
 const FIRST_PARTY_GITHUB_REPOSITORY = "kryptosai/mcp-observatory";
 const CAMPAIGN_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9._-]{1,63}$/;
 
