@@ -4,7 +4,7 @@ import type { Readable, Writable } from "node:stream";
 import type { RunArtifact, TargetConfig } from "../types.js";
 import { buildEvent, detectCiProvider, recordEvent } from "../telemetry.js";
 import { initCi, type InitCiOptions, type InitCiResult } from "./init-ci.js";
-import { ANSI, c, quoteShell, setupCiHint } from "./helpers.js";
+import { ANSI, c, isQuiet, quoteShell, setupCiHint } from "./helpers.js";
 
 export interface SetupCiConversionFlags {
   setupCi?: boolean;
@@ -157,9 +157,11 @@ export async function maybeConvertPassingCheckToCi(options: SetupCiConversionOpt
     return { status: "skipped", command };
   }
 
-  output.write(`\nCI conversion available:\n  ${command}\n`);
-  if (options.setupCi === true) {
-    output.write("Non-interactive mode will only write files when --setup-ci --yes is present.\n");
+  if (!isQuiet()) {
+    output.write(`\nCI conversion available:\n  ${command}\n`);
+    if (options.setupCi === true) {
+      output.write("Non-interactive mode will only write files when --setup-ci --yes is present.\n");
+    }
   }
   recordConversion("hinted", options);
   return { status: "hinted", command };

@@ -237,17 +237,21 @@ async function runScan(
     const firstServerCmd = firstTarget.adapter === "local-process"
       ? `${firstTarget.command} ${(firstTarget.args ?? []).join(" ")}`
       : firstTarget.targetId;
-    process.stdout.write(`\n  ${c(ANSI.bold, "Protect at runtime:")} ${c(ANSI.cyan, `npx @kryptosai/mcp-observatory enforce ${firstServerCmd}`)}\n`);
+    if (!isQuiet()) {
+      process.stdout.write(`\n  ${c(ANSI.bold, "Protect at runtime:")} ${c(ANSI.cyan, `npx @kryptosai/mcp-observatory enforce ${firstServerCmd}`)}\n`);
+    }
   }
 
   // ── Next step ────────────────────────────────────────────────────────
-  process.stdout.write("\n");
-  if (!invokeTools && totalTools > 0) {
-    process.stdout.write(c(ANSI.dim, `  Next: ${c(ANSI.cyan, `${bin} scan deep`)} to also test that tools run\n`));
-  } else {
-    process.stdout.write(c(ANSI.dim, `  Run ${c(ANSI.cyan, `${bin} --help`)} for more commands\n`));
+  if (!isQuiet()) {
+    process.stdout.write("\n");
+    if (!invokeTools && totalTools > 0) {
+      process.stdout.write(c(ANSI.dim, `  Next: ${c(ANSI.cyan, `${bin} scan deep`)} to also test that tools run\n`));
+    } else {
+      process.stdout.write(c(ANSI.dim, `  Run ${c(ANSI.cyan, `${bin} --help`)} for more commands\n`));
+    }
+    process.stdout.write("\n");
   }
-  process.stdout.write("\n");
 
   if (failCount === 0) {
     if (artifacts.length === 1 && targets[0]) {
@@ -263,10 +267,12 @@ async function runScan(
         campaign: conversionFlags.campaign,
       });
     } else if (conversionFlags.noSetupCi !== true) {
-      const sarif = conversionFlags.ciSarif === false ? "" : " --sarif";
-      process.stdout.write(`CI conversion available for a specific target:\n  ${setupCiHint(undefined, undefined, bin)}${sarif} --schedule weekly\n`);
-      if (conversionFlags.setupCi === true) {
-        process.stdout.write("Non-interactive mode will only write files when --setup-ci --yes is present, and multi-target scans need a single target config.\n");
+      if (!isQuiet()) {
+        const sarif = conversionFlags.ciSarif === false ? "" : " --sarif";
+        process.stdout.write(`CI conversion available for a specific target:\n  ${setupCiHint(undefined, undefined, bin)}${sarif} --schedule weekly\n`);
+        if (conversionFlags.setupCi === true) {
+          process.stdout.write("Non-interactive mode will only write files when --setup-ci --yes is present, and multi-target scans need a single target config.\n");
+        }
       }
     }
   }
@@ -356,7 +362,7 @@ export function registerScanCommands(program: Command, bin: string): void {
   // `scan` with no subcommand — basic scan
   scanCmd.action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string; skillScan?: SkillScanOption; enforce?: boolean } & SetupCiConversionFlags) => {
     await runScan(bin, options.config, false, options.security, options.format, options.attackSim !== false, options, options.skillScan);
-    if (options.enforce) {
+    if (options.enforce && !isQuiet()) {
       process.stdout.write(`\n  ${c(ANSI.bold, "Next:")} ${c(ANSI.cyan, `npx @kryptosai/mcp-observatory enforce --deep npx -y <your-server>`)}\n`);
       process.stdout.write(`  ${c(ANSI.dim, "Enforce mode runs a scan AND auto-generates seatbelt policy for runtime protection.")}\n\n`);
     }
@@ -385,9 +391,9 @@ export function registerScanCommands(program: Command, bin: string): void {
       const parentSkillScan = scanCmd.opts().skillScan as SkillScanOption;
       const resolvedSkillScan = options.skillScan !== undefined ? options.skillScan : parentSkillScan;
       await runScan(bin, options.config ?? parentConfig, true, options.security ?? parentSecurity ?? true, options.format ?? parentFormat, options.attackSim !== false && parentAttackSim !== false, options, resolvedSkillScan);
-      if (options.enforce) {
+      if (options.enforce && !isQuiet()) {
         process.stdout.write(`\n  ${c(ANSI.bold, "Next:")} ${c(ANSI.cyan, `npx @kryptosai/mcp-observatory enforce --deep npx -y <your-server>`)}\n`);
         process.stdout.write(`  ${c(ANSI.dim, "Enforce mode runs a scan AND auto-generates seatbelt policy for runtime protection.")}\n\n`);
       }
-    });
+  });
 }

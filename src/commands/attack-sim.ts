@@ -10,7 +10,7 @@ import type { RunArtifact } from "../types.js";
 import { validateRunArtifact } from "../validate.js";
 import { renderActionReceipt } from "../action-receipt.js";
 import { maybePrintCloudCta } from "../commercial.js";
-import { ANSI, c, getBinName, quoteShell, resolveTarget, targetFromCommand, writeOutput } from "./helpers.js";
+import { ANSI, c, getBinName, isQuiet, quoteShell, resolveTarget, targetFromCommand, writeOutput } from "./helpers.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
 
 interface AttackSimOptions extends SetupCiConversionFlags {
@@ -167,7 +167,9 @@ export function registerAttackSimCommands(program: Command): void {
         process.stdout.write(`    ${c(ANSI.dim, "→")} [${finding.severity}] ${finding.message}\n`);
       }
       process.stdout.write(`    ${c(ANSI.dim, "→")} ${renderActionReceipt(artifact).split("\n")[0]}\n`);
-      process.stdout.write(`\n  ${c(ANSI.bold, "Reproduce:")} ${c(ANSI.cyan, repro)}\n\n`);
+      if (!isQuiet()) {
+        process.stdout.write(`\n  ${c(ANSI.bold, "Reproduce:")} ${c(ANSI.cyan, repro)}\n\n`);
+      }
 
       if (options.json) {
         await writeOutput(JSON.stringify(artifact, null, 2), "json", options.json);
