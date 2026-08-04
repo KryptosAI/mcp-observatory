@@ -136,6 +136,22 @@ export function buildServerLockEntry(artifact: RunArtifact): LockFileServerEntry
 
 // ── Verify against lock ─────────────────────────────────────────────────────
 
+function stableStringify(obj: unknown): string {
+  if (obj === null || typeof obj !== "object") {
+    return JSON.stringify(obj);
+  }
+  if (Array.isArray(obj)) {
+    return "[" + obj.map(stableStringify).join(",") + "]";
+  }
+  const sorted = Object.keys(obj as Record<string, unknown>)
+    .sort()
+    .reduce<Record<string, unknown>>((acc, key) => {
+      acc[key] = (obj as Record<string, unknown>)[key];
+      return acc;
+    }, {});
+  return JSON.stringify(sorted);
+}
+
 export function verifyAgainstLock(
   lockEntry: LockFileServerEntry,
   artifact: RunArtifact,
@@ -164,8 +180,8 @@ export function verifyAgainstLock(
   for (const tool of current.tools) {
     const locked = lockedToolMap.get(tool.name);
     if (locked) {
-      const lockedSchema = JSON.stringify(locked.inputSchema);
-      const currentSchema = JSON.stringify(tool.inputSchema);
+      const lockedSchema = stableStringify(locked.inputSchema);
+      const currentSchema = stableStringify(tool.inputSchema);
       if (lockedSchema !== currentSchema) {
         drift.push({
           targetId,
