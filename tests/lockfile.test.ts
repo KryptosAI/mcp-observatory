@@ -303,3 +303,21 @@ describe("mergeLockFile", () => {
     expect(merged.servers.map((s) => s.targetId)).toContain("server-b");
   });
 });
+
+describe("verifyAgainstLock schema ordering", () => {
+  it("does not report drift when only property order differs in inputSchema", () => {
+    const artifact = fullArtifact();
+    const lockEntry = buildServerLockEntry(artifact);
+
+    // Same schema, different key order
+    lockEntry.tools[0]!.inputSchema = {
+      required: ["message"],
+      type: "object",
+      properties: { message: { type: "string" } },
+    };
+
+    const result = verifyAgainstLock(lockEntry, artifact);
+    expect(result.passed).toBe(true);
+    expect(result.drift).toHaveLength(0);
+  });
+});

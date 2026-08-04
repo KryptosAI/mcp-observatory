@@ -98,7 +98,7 @@ export { detectPermissionDeltas } from "./permission-delta.js";
 export { renderSarif } from "./reporters/sarif.js";
 export { renderTerminal, renderWatchFirstRun, renderWatchNoChanges, renderWatchChanges } from "./reporters/terminal.js";
 export { runTarget, runTargetRecording, type RunOptions, type RunResult } from "./runner.js";
-export { computeHealthScore, type ScoreWeights, DEFAULT_WEIGHTS } from "./score.js";
+export { computeHealthScore, getTrustTier, type ScoreWeights, DEFAULT_WEIGHTS } from "./score.js";
 export {
   defaultRunsDirectory,
   findLatestArtifact,

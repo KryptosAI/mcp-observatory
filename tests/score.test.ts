@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { computeHealthScore, gradeFromScore } from "../src/score.js";
+import { computeHealthScore, getTrustTier, gradeFromScore } from "../src/score.js";
 import type { CheckResult, PerformanceMetrics } from "../src/types.js";
 
 function makeCheck(id: string, status: string): CheckResult {
@@ -157,5 +157,29 @@ describe("computeHealthScore", () => {
     const highSecurity = computeHealthScore(checks, undefined, { security: 0.80, protocolCompliance: 0.05, schemaQuality: 0.05, reliability: 0.05, performance: 0.05 });
     const lowSecurity = computeHealthScore(checks, undefined, { security: 0.05, protocolCompliance: 0.30, schemaQuality: 0.25, reliability: 0.25, performance: 0.15 });
     expect(highSecurity.overall).toBeLessThan(lowSecurity.overall);
+  });
+});
+
+describe("getTrustTier", () => {
+  it("returns platinum for score >= 90", () => {
+    expect(getTrustTier(100)).toBe("platinum");
+    expect(getTrustTier(95)).toBe("platinum");
+    expect(getTrustTier(90)).toBe("platinum");
+  });
+  it("returns gold for score >= 80 and < 90", () => {
+    expect(getTrustTier(89)).toBe("gold");
+    expect(getTrustTier(80)).toBe("gold");
+  });
+  it("returns silver for score >= 65 and < 80", () => {
+    expect(getTrustTier(79)).toBe("silver");
+    expect(getTrustTier(65)).toBe("silver");
+  });
+  it("returns bronze for score >= 50 and < 65", () => {
+    expect(getTrustTier(64)).toBe("bronze");
+    expect(getTrustTier(50)).toBe("bronze");
+  });
+  it("returns unrated for score < 50", () => {
+    expect(getTrustTier(49)).toBe("unrated");
+    expect(getTrustTier(0)).toBe("unrated");
   });
 });
