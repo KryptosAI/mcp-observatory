@@ -274,37 +274,41 @@ export function registerDemoCommands(program: Command): void {
       if (artifact.gate === "pass") {
         process.stdout.write(`  ${c(ANSI.green, "✓")} ${c(ANSI.bold, "All checks passed!")}\n\n`);
 
-        process.stdout.write(`  ${c(ANSI.bold, "What's next?")}\n`);
-        const serverCount = targets.length > 1 ? targets.length : "";
-        if (serverCount) {
+        if (!isQuiet()) {
+          process.stdout.write(`  ${c(ANSI.bold, "What's next?")}\n`);
+          const serverCount = targets.length > 1 ? targets.length : "";
+          if (serverCount) {
+            process.stdout.write(
+              `    ${c(ANSI.cyan, "$")} ${c(ANSI.bold, `${bin} scan`)}${serverCount ? "" : ""} ${c(ANSI.dim, `— scan all ${serverCount} servers`)}\n`,
+            );
+          }
           process.stdout.write(
-            `    ${c(ANSI.cyan, "$")} ${c(ANSI.bold, `${bin} scan`)}${serverCount ? "" : ""} ${c(ANSI.dim, `— scan all ${serverCount} servers`)}\n`,
+            `    ${c(ANSI.cyan, "$")} ${c(ANSI.bold, `${bin} diff`)} <run1> <run2>  ${c(ANSI.dim, "- compare before/after")}\n`,
+          );
+          process.stdout.write(
+            `    ${c(ANSI.cyan, "$")} ${c(ANSI.bold, `${bin} badge`)} <server>      ${c(ANSI.dim, "- generate a safety badge")}\n`,
+          );
+          process.stdout.write(
+            `    ${c(ANSI.cyan, "$")} ${c(ANSI.bold, `${bin} setup-ci`)}             ${c(ANSI.dim, "- add to CI pipeline")}\n`,
           );
         }
-        process.stdout.write(
-          `    ${c(ANSI.cyan, "$")} ${c(ANSI.bold, `${bin} diff`)} <run1> <run2>  ${c(ANSI.dim, "- compare before/after")}\n`,
-        );
-        process.stdout.write(
-          `    ${c(ANSI.cyan, "$")} ${c(ANSI.bold, `${bin} badge`)} <server>      ${c(ANSI.dim, "- generate a safety badge")}\n`,
-        );
-        process.stdout.write(
-          `    ${c(ANSI.cyan, "$")} ${c(ANSI.bold, `${bin} setup-ci`)}             ${c(ANSI.dim, "- add to CI pipeline")}\n`,
-        );
 
         printCiConversionCta({ bin, context: "keep this safety grade visible in CI", target: targetConfig });
       } else {
         process.stdout.write(`  ${c(ANSI.yellow, "!")} ${c(ANSI.bold, "Some checks need attention")}\n\n`);
 
-        process.stdout.write(`  ${c(ANSI.bold, "Quick fixes:")}\n`);
-        process.stdout.write(
-          `    ${c(ANSI.cyan, "$")} ${c(ANSI.bold, `${bin} enforce`)} ${targetConfig.targetId}  ${c(ANSI.dim, "- generate runtime policy")}\n`,
+        if (!isQuiet()) {
+          process.stdout.write(`  ${c(ANSI.bold, "Quick fixes:")}\n`);
+          process.stdout.write(
+            `    ${c(ANSI.cyan, "$")} ${c(ANSI.bold, `${bin} enforce`)} ${targetConfig.targetId}  ${c(ANSI.dim, "- generate runtime policy")}\n`,
+          );
+          process.stdout.write(
+            `    ${c(ANSI.cyan, "$")} ${c(ANSI.bold, `${bin} audit`)} ${targetConfig.targetId}   ${c(ANSI.dim, "- deep security audit")}\n`,
+          );
+          process.stdout.write(
+            `    ${c(ANSI.cyan, "$")} ${c(ANSI.bold, `${bin} test --deep`)} ${targetConfig.targetId}  ${c(ANSI.dim, "- full tool invocation")}\n`,
         );
-        process.stdout.write(
-          `    ${c(ANSI.cyan, "$")} ${c(ANSI.bold, `${bin} audit`)} ${targetConfig.targetId}   ${c(ANSI.dim, "- deep security audit")}\n`,
-        );
-        process.stdout.write(
-          `    ${c(ANSI.cyan, "$")} ${c(ANSI.bold, `${bin} test --deep`)} ${targetConfig.targetId}  ${c(ANSI.dim, "- full tool invocation")}\n`,
-        );
+        }
       }
 
       process.stdout.write("\n");

@@ -4,7 +4,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { Command } from "commander";
 
 import { isCI } from "./ci.js";
-import { ANSI, LOGO, c, getBinName, setNoColor, setQuiet, useColor } from "./commands/helpers.js";
+import { ANSI, LOGO, c, getBinName, isQuiet, setNoColor, setQuiet, useColor } from "./commands/helpers.js";
 import { registerDemoCommands } from "./commands/demo.js";
 import { registerDiffCommands } from "./commands/diff.js";
 import { registerLegacyCommands } from "./commands/legacy.js";
@@ -256,7 +256,10 @@ async function main(): Promise<void> {
     .enablePositionalOptions()
     .description("Test your MCP servers for breaking changes.")
     .version(TOOL_VERSION)
-    .addHelpText("before", useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n` : LOGO + `  v${TOOL_VERSION}\n`)
+    .addHelpText("before", (() => {
+      if (isQuiet()) return "";
+      return useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n` : LOGO + `  v${TOOL_VERSION}\n`;
+    })())
     .option("--quiet", "Suppress logo and informational output.", false)
     .addHelpText("after", (() => {
       const lines = [
