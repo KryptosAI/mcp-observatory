@@ -77,12 +77,23 @@ export function registerDemoCommands(program: Command): void {
     .description("Quick interactive demo — scan your MCP servers and see your safety grade")
     .option("--server <name>", `Demo with a built-in server: ${DEMO_SERVERS.map(s => s.name).join(", ")}`)
     .option("--deep", "Run full tool invocation and security checks (takes longer)", false)
+    .option("--timeout <ms>", "Timeout in milliseconds", "15000")
     .option("--no-color", "Disable colored output")
-    .action(async (options: { server?: string; deep?: boolean }) => {
+    .action(async (options: { server?: string; deep?: boolean; timeout: string }) => {
       const sessionId = generateSessionId();
       recordSessionStart(sessionId);
       const t0 = Date.now();
       const bin = getBinName();
+
+      const timeoutMs = Number(options.timeout);
+      if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) {
+        process.stdout.write(
+          `  ${c(ANSI.red, "✗")} Invalid --timeout "${options.timeout}" — expected a positive number of milliseconds.\n`,
+        );
+        process.exitCode = 1;
+        recordSessionEnd(sessionId);
+        return;
+      }
 
       if (!isQuiet()) {
         process.stdout.write(LOGO + "\n");
@@ -118,7 +129,7 @@ export function registerDemoCommands(program: Command): void {
           adapter: "local-process",
           command: demo.command,
           args: demo.args,
-          timeoutMs: 15_000,
+          timeoutMs,
         };
         targetSource = `built-in demo (${demo.desc})`;
         process.stdout.write(
@@ -134,7 +145,7 @@ export function registerDemoCommands(program: Command): void {
         if (targets.length > 5) {
           process.stdout.write(`    ${c(ANSI.dim, `... and ${targets.length - 5} more`)}\n`);
         }
-        targetConfig = targets[0]!.config;
+        targetConfig = { ...targets[0]!.config, timeoutMs };
         targetSource = targets[0]!.source;
         process.stdout.write(`\n  ${c(ANSI.dim, "Scanning first server...")}\n`);
       } else {
@@ -144,7 +155,7 @@ export function registerDemoCommands(program: Command): void {
           adapter: "local-process",
           command: demo.command,
           args: demo.args,
-          timeoutMs: 15_000,
+          timeoutMs,
         };
         targetSource = `built-in demo (${demo.desc})`;
         process.stdout.write(
