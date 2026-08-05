@@ -143,7 +143,7 @@ function stableStringify(obj: unknown): string {
   if (Array.isArray(obj)) {
     return "[" + obj.map(stableStringify).join(",") + "]";
   }
-  const sorted = Object.keys(obj as Record<string, unknown>)
+  const sorted = Object.keys(obj)
     .sort()
     .reduce<Record<string, unknown>>((acc, key) => {
       acc[key] = (obj as Record<string, unknown>)[key];
