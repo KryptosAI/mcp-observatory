@@ -170,6 +170,31 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: 385e00f98ceabbee25800bda2756cc75
         run: npx wrangler pages deploy dashboard --project-name mcp-observatory --branch main
 
+      - name: Ensure public domain is attached to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: 385e00f98ceabbee25800bda2756cc75
+        run: |
+          set -euo pipefail
+          domains_url="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects/mcp-observatory/domains"
+          existing_status="$(curl -fsS \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            "${domains_url}" | jq -r '.result[]? | select(.name == "mcp-observatory.com") | .status' | head -n 1)"
+          if [ -n "${existing_status}" ]; then
+            echo "mcp-observatory.com is already attached to Cloudflare Pages (${existing_status})."
+            exit 0
+          fi
+          response="$(curl -fsS -X POST \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            -H 'Content-Type: application/json' \
+            "${domains_url}" \
+            --data '{"name":"mcp-observatory.com"}')"
+          if ! printf '%s' "${response}" | jq -e '.success == true' >/dev/null; then
+            printf '%s\n' "${response}" | jq . >&2
+            exit 1
+          fi
+          printf '%s\n' "${response}" | jq -r '"Attached mcp-observatory.com to Cloudflare Pages (status: \(.result.status))."'
+
       - name: Deploy API Worker
         continue-on-error: true
         env:
