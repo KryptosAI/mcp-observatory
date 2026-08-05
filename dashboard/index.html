@@ -26,11 +26,9 @@
     @media(max-width:900px){.server-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.features{grid-template-columns:1fr}.feature-icon{margin-bottom:18px}.team-section,.demo-section,.case-study{grid-template-columns:1fr}}@media(max-width:820px){.hero{grid-template-columns:1fr;padding-top:34px}.proof{max-width:520px}.nav{min-height:auto;padding:22px 0;align-items:flex-start}.brand img{width:205px}.navlinks{gap:12px}}@media(max-width:620px){.directory-tools{grid-template-columns:1fr}.server-grid{grid-template-columns:1fr}.server-card{min-height:230px}.try-command{align-items:flex-start;flex-direction:column}}@media(max-width:560px){.container{width:calc(100% - 28px)}h1{font-size:43px}.summary{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:1/-1}th,td{padding:13px 12px}.subtitle{font-size:17px}.audience{grid-template-columns:1fr}.index-note{display:block}.index-note b{display:block;margin-bottom:4px}.case-study,.team-section{padding:20px}.nav{flex-wrap:wrap;gap:12px}.brand img{width:190px}.navlinks{width:100%;justify-content:space-between;gap:8px}.navlinks a{font-size:12px}.navlinks .button{padding:8px 11px}}
   
     .evaluation-proof{margin:24px 0 90px;padding:34px;border:1px solid rgba(88,230,255,.32);border-radius:20px;background:radial-gradient(circle at 100% 0,rgba(88,230,255,.16),transparent 48%),var(--panel);box-shadow:0 28px 80px rgba(0,0,0,.2)}
-    .evaluation-proof-header{max-width:780px}.evaluation-proof-header h2{margin:8px 0 13px;font-size:clamp(32px,5vw,48px);line-height:1.05;letter-spacing:-.045em}.evaluation-proof-header p{color:var(--muted)}
-    .evaluation-proof-note{margin:20px 0 0;padding:12px 14px;border-left:2px solid var(--cyan);background:rgba(88,230,255,.045);font-size:12px}.evaluation-proof-note strong{color:var(--cyan)}
-    .evaluation-proof-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0 30px}.evaluation-proof-card{padding:18px;border:1px solid var(--line);border-radius:14px;background:rgba(8,14,25,.55)}.evaluation-proof-card strong{display:block;color:var(--text);font-size:25px;line-height:1.05;letter-spacing:-.04em}.evaluation-proof-card span{display:block;margin-top:9px;color:#aebbd0;font-size:12px;line-height:1.45}
-    .evaluation-orgs-label{margin-bottom:12px;color:#cbd6e6;font-size:13px;font-weight:700}.evaluation-orgs{display:flex;flex-wrap:wrap;gap:8px}.evaluation-orgs span{padding:7px 10px;border:1px solid var(--line);border-radius:8px;color:#9eacc0;font-size:12px}
-    @media(max-width:900px){.evaluation-proof-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.evaluation-proof{padding:20px}.evaluation-proof-grid{grid-template-columns:1fr}}
+    .evaluation-proof-header{max-width:980px}.evaluation-proof-header h2{margin:8px 0 18px;font-size:clamp(34px,5.2vw,60px);line-height:1.02;letter-spacing:-.055em}.evaluation-proof-header p{color:var(--muted)}
+    .evaluation-download-proof{display:flex;align-items:baseline;gap:12px;margin:24px 0 4px}.evaluation-download-proof strong{color:var(--cyan);font-size:clamp(34px,5vw,52px);line-height:1;letter-spacing:-.06em}.evaluation-download-proof span{color:#d7e2f2;font-size:16px;font-weight:700}.evaluation-proof-note{margin:16px 0 0;padding:12px 14px;border-left:2px solid var(--cyan);background:rgba(88,230,255,.045);font-size:12px}.evaluation-proof-note strong{color:var(--cyan)}
+    @media(max-width:560px){.evaluation-proof{padding:20px}.evaluation-download-proof{align-items:flex-start;flex-direction:column;gap:4px}.evaluation-download-proof span{font-size:14px}}
 
   </style>
 </head>
@@ -41,20 +39,11 @@
 
     <section class="evaluation-proof" aria-labelledby="evaluation-proof-heading">
       <div class="evaluation-proof-header">
-        <div class="eyebrow">Evidence in the wild</div>
-        <h2 id="evaluation-proof-heading">Real-world evaluations across the MCP ecosystem</h2>
-        <p>MCP Observatory is being evaluated by engineers, security researchers, infrastructure specialists, and AI practitioners working across enterprise technology, cybersecurity, academia, and developer tooling.</p>
+        <div class="eyebrow">Real-world proof</div>
+        <h2 id="evaluation-proof-heading">Engineers and security researchers from Microsoft, Google, Oracle, Cisco, Accenture, Cloudflare, Klarna, and UC Berkeley are evaluating MCP Observatory.</h2>
+        <p>MCP Observatory is being evaluated by professionals working across enterprise technology, cybersecurity, academia, and developer tooling.</p>
+        <div class="evaluation-download-proof"><strong>14K+</strong><span>package downloads across the wider MCP developer community</span></div>
         <p class="evaluation-proof-note"><strong>Important:</strong> Based on observed evaluations. This does not imply customer, partnership, or endorsement relationships.</p>
-      </div>
-      <div class="evaluation-proof-grid">
-        <article class="evaluation-proof-card"><strong>67</strong><span>Real-world evaluations from Microsoft engineering professionals</span></article>
-        <article class="evaluation-proof-card"><strong>81 MCP servers</strong><span>Inspected in one Cisco security evaluation</span></article>
-        <article class="evaluation-proof-card"><strong>119</strong><span>Professional evaluations from ThinkingData</span></article>
-        <article class="evaluation-proof-card"><strong>70</strong><span>Real-world evaluations from UC Berkeley engineering and research professionals</span></article>
-      </div>
-      <div class="evaluation-orgs-label">Professionals evaluating MCP Observatory include engineers, researchers, and security practitioners from:</div>
-      <div class="evaluation-orgs" aria-label="Organizations represented in observed evaluations">
-        <span>Microsoft</span><span>Google</span><span>Oracle</span><span>Cisco</span><span>Accenture</span><span>Cloudflare</span><span>Klarna</span><span>UC Berkeley</span><span>Northeastern University</span><span>Western University</span><span>Ivey Business School</span><span>WitnessAI</span><span>ThinkingData</span><span>PassEntry</span><span>CyberneticsPlus</span><span>CapaTalk</span>
       </div>
     </section>
 
