@@ -75,6 +75,25 @@
         "code",
         "maintenance"
       ]
+    },
+    {
+      "login": "addielaruee",
+      "name": "addielarue",
+      "avatar_url": "https://avatars.githubusercontent.com/u/173251542?v=4",
+      "profile": "https://github.com/addielaruee",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "yuehua1213",
+      "name": "yuehua1213",
+      "avatar_url": "https://avatars.githubusercontent.com/u/264363320?v=4",
+      "profile": "https://github.com/yuehua1213",
+      "contributions": [
+        "bug"
+      ]
     }
-  ]
+  ],
+  "commitConvention": "angular"
 }

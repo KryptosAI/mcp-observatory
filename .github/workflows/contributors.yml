@@ -1,0 +1,29 @@
+name: Contributors
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".all-contributorsrc"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - run: npx all-contributors-cli generate
+      - name: Create PR if changed
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "chore: regenerate CONTRIBUTORS.md"
+          title: "chore: update contributor list"
+          body: "Auto-generated from .all-contributorsrc changes."
+          branch: chore/contributors-update
+          delete-branch: true
