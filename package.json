@@ -96,6 +96,7 @@
     "build": "tsc -p tsconfig.json",
     "cli": "tsx src/cli.ts",
     "dashboard:build": "tsx scripts/build-dashboard.ts",
+    "dashboard:validate": "node scripts/validate-dashboard.mjs",
     "metrics:collect": "tsx scripts/metrics-dashboard.ts collect",
     "metrics:build": "tsx scripts/metrics-dashboard.ts build",
     "metrics:refresh": "tsx scripts/metrics-dashboard.ts refresh",

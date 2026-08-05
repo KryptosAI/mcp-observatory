@@ -178,22 +178,25 @@ function renderPage(t: TargetEntry, artifact: RunArtifact | null, index: number,
     footer a{color:var(--muted)}
     @media(max-width:640px){.nav{flex-wrap:wrap;gap:12px}.navlinks{width:100%;justify-content:space-between;gap:10px}.navlinks a{font-size:12px}.grade-card{flex-direction:column;text-align:center}.dim-name{width:120px}.check-id{width:100px}}
   </style>
+  <link rel="stylesheet" href="/m3.css">
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 <div class="container">
-  <nav class="nav">
+  <nav class="nav" aria-label="Primary navigation">
     <a href="/" class="brand" aria-label="MCP Observatory">
       <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="7" fill="#58e6ff" fill-opacity=".15"/><path d="M7 11c1.5-2 3-3 5-3s3.5 1 5 3M7 17c1.5 2 3 3 5 3s3.5-1 5-3" stroke="#58e6ff" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="14" r="1.5" fill="#47e6a4"/><circle cx="14" cy="14" r="1.5" fill="#47e6a4"/><circle cx="20" cy="14" r="1.5" fill="#47e6a4"/></svg>
       Observatory
     </a>
     <div class="navlinks">
-      <a href="/safety-index/">Safety Index</a>
+      <a href="/safety-index/" aria-current="page">Safety Index</a>
       <a href="/release-gate-pilot/">Release Gate</a>
       <a href="/partners/">Partners</a>
       <a href="https://www.npmjs.com/package/@kryptosai/mcp-observatory">Install ↗</a>
     </div>
   </nav>
 
+  <main id="main-content">
   <div class="breadcrumb">
     <a href="/safety-index/">Safety Index</a> &rsaquo; ${esc(t.name)}
   </div>
@@ -281,6 +284,7 @@ function renderPage(t: TargetEntry, artifact: RunArtifact | null, index: number,
     ${index < total - 1 ? `<a href="./${esc(total > 1 ? "" : "")}">Next &rarr;</a>` : "<span></span>"}
   </div>
 </div>
+</main>
 
 <footer>
   <div class="container">
@@ -443,22 +447,25 @@ function generateIndexPage(targets: TargetEntry[]): string {
     footer a{color:var(--muted)}
     @media(max-width:640px){.nav{flex-wrap:wrap;gap:12px}.navlinks{width:100%;justify-content:space-between;gap:10px}.navlinks a{font-size:12px}}
   </style>
+  <link rel="stylesheet" href="/m3.css">
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 <div class="container">
-  <nav class="nav">
+  <nav class="nav" aria-label="Primary navigation">
     <a href="/" class="brand" aria-label="MCP Observatory">
       <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="7" fill="#58e6ff" fill-opacity=".15"/><path d="M7 11c1.5-2 3-3 5-3s3.5 1 5 3M7 17c1.5 2 3 3 5 3s3.5-1 5-3" stroke="#58e6ff" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="14" r="1.5" fill="#47e6a4"/><circle cx="14" cy="14" r="1.5" fill="#47e6a4"/><circle cx="20" cy="14" r="1.5" fill="#47e6a4"/></svg>
       Observatory
     </a>
     <div class="navlinks">
-      <a href="/safety-index/">Safety Index</a>
+      <a href="/safety-index/" aria-current="page">Safety Index</a>
       <a href="/release-gate-pilot/">Release Gate</a>
       <a href="/partners/">Partners</a>
       <a href="https://www.npmjs.com/package/@kryptosai/mcp-observatory">Install ↗</a>
     </div>
   </nav>
 
+  <main id="main-content">
   <div class="hero">
     <h1>MCP Server Safety Index</h1>
     <p class="sub">${esc(desc)} Each server is independently scanned and scored with public, reproducible evidence.</p>
@@ -470,7 +477,7 @@ function generateIndexPage(targets: TargetEntry[]): string {
   </div>
 
   <div class="search-bar">
-    <input type="text" id="search" placeholder="Search ${targets.length} servers by name, category, or package..." oninput="filterTable()">
+    <label class="field-label">Search indexed servers<input type="text" id="search" placeholder="Search ${targets.length} servers by name, category, or package..." oninput="filterTable()"></label>
   </div>
 
   <div class="cat-filters" id="catFilters"></div>
@@ -499,6 +506,7 @@ function generateIndexPage(targets: TargetEntry[]): string {
     </table>
   </div>
 </div>
+</main>
 
 <footer>
   <div class="container">
