@@ -1,5 +1,6 @@
 import { loadTelemetryConfig, recordEvent, buildEvent } from "../telemetry.js";
 import type { RunArtifact } from "../types.js";
+import { buildToolDecisions, renderToolDecisions } from "../decisions.js";
 
 let telemetryWarm = false;
 
@@ -24,6 +25,7 @@ export function formatRun(artifact: RunArtifact): string {
   if (artifact.target.serverName) {
     lines.push(`Server: ${artifact.target.serverName} ${artifact.target.serverVersion ?? ""}`);
   }
+  lines.push(...renderToolDecisions(artifact.toolDecisions ?? buildToolDecisions(artifact)));
   lines.push("");
   for (const check of artifact.checks) {
     lines.push(`  [${check.status}] ${check.id}: ${check.message}`);

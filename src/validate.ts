@@ -18,6 +18,8 @@ import type {
   SchemaDriftSeverity,
   TargetConfig,
   TargetSnapshot,
+  ToolDecision,
+  ToolDecisionAction,
   SCHEMA_VERSION,
 } from "./types.js";
 
@@ -183,6 +185,27 @@ function optionalStringArray(value: unknown, label: string): string[] | undefine
   });
 }
 
+function optionalToolDecisions(value: unknown): ToolDecision[] | undefined {
+  if (value === undefined) return undefined;
+  if (!Array.isArray(value)) throw new Error("Run artifact.toolDecisions must be an array.");
+  return value.map((entry, index) => {
+    if (!isObject(entry)) throw new Error(`Run artifact.toolDecisions[${index}] must be an object.`);
+    const toolName = requireString(entry, "toolName", `Run artifact.toolDecisions[${index}]`);
+    const decision = entry["decision"];
+    if (decision !== "allow" && decision !== "review" && decision !== "block") {
+      throw new Error(`Run artifact.toolDecisions[${index}] has invalid decision '${String(decision)}'.`);
+    }
+    const findingIds = entry["findingIds"];
+    if (!isStringArray(findingIds)) throw new Error(`Run artifact.toolDecisions[${index}].findingIds must be an array of strings.`);
+    return {
+      toolName,
+      decision: decision as ToolDecisionAction,
+      reason: requireString(entry, "reason", `Run artifact.toolDecisions[${index}]`),
+      findingIds,
+    };
+  });
+}
+
 export function validateTargetConfig(data: unknown): TargetConfig {
   if (!isObject(data)) {
     throw new Error("Target config must be a JSON object.");
@@ -286,6 +309,8 @@ export function validateRunArtifact(data: unknown): RunArtifact {
     ? data["runtimeProfile"] as unknown as RunArtifact["runtimeProfile"]
     : undefined;
 
+  const toolDecisions = optionalToolDecisions(data["toolDecisions"]);
+
   const notObserved: RunArtifact["notObserved"] | undefined = Array.isArray(data["notObserved"])
     ? data["notObserved"] as RunArtifact["notObserved"]
     : undefined;
@@ -306,6 +331,7 @@ export function validateRunArtifact(data: unknown): RunArtifact {
     healthScore,
     performanceMetrics,
     runtimeProfile,
+    toolDecisions,
     notObserved,
     fatalError,
   };

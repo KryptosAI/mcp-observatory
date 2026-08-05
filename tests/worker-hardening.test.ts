@@ -7,8 +7,10 @@ const workerPath = path.join(process.cwd(), "api", "src", "worker.ts");
 describe("hosted Worker hardening", () => {
   it("keeps hosted scoring aligned with security-lite and invocation latency", async () => {
     const source = await readFile(workerPath, "utf8");
-    expect(source).toContain('scoreDimension("Security", w.security, checks, ["security", "security-lite"])');
-    expect(source).toContain("Object.values(metrics.toolInvokeMs)");
+    const scoreModel = await readFile(path.join(process.cwd(), "src", "score-model.ts"), "utf8");
+    expect(source).toContain('from "../../src/score-model.js"');
+    expect(source).toContain('computeScoreModel(checks, performanceMetrics, undefined, ["security", "security-lite"])');
+    expect(scoreModel).toContain("Object.values(metrics.toolInvokeMs)");
   });
 
   it("requires hosted scan auth before rate limiting and target validation", async () => {

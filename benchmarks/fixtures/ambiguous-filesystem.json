@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "ambiguous-filesystem",
+  "category": "needs-review",
+  "description": "A path-based tool with write language but incomplete scope metadata.",
+  "tools": [
+    {
+      "name": "update_file",
+      "description": "Modify a file at the supplied path.",
+      "inputSchema": {
+        "type": "object",
+        "properties": { "path": { "type": "string" } }
+      },
+      "annotations": { "readOnlyHint": false }
+    }
+  ],
+  "expectedFindings": [
+    { "toolName": "update_file", "ruleId": "broad-filesystem", "severity": "medium" }
+  ]
+}

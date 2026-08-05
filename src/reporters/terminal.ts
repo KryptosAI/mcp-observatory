@@ -1,5 +1,6 @@
 import { execSync } from "node:child_process";
 import type { CheckResult, CheckStatus, DiffArtifact, DiffEntry, RunArtifact } from "../types.js";
+import { buildToolDecisions, renderToolDecisions } from "../decisions.js";
 import { detectNotObserved } from "../receipt.js";
 import {
   describeCheckList,
@@ -17,9 +18,11 @@ export function isSeatbeltAvailable(): boolean {
   if (_seatbeltChecked) return _seatbeltAvailable;
   _seatbeltChecked = true;
   try {
-    execSync("command -v mcp-seatbelt 2>/dev/null || npx @kryptosai/mcp-seatbelt --version 2>/dev/null", {
+    // Keep rendering local and deterministic. Do not start package resolution or
+    // network access from a reporter just to discover an optional executable.
+    execSync("command -v mcp-seatbelt 2>/dev/null", {
       stdio: "pipe",
-      timeout: 5_000,
+      timeout: 1_000,
     });
     _seatbeltAvailable = true;
   } catch {
@@ -247,6 +250,8 @@ function renderRunTerminal(artifact: RunArtifact): string {
       : ANSI.red;
     lines.push(`Health Score: ${co(gradeColor, `${score.overall}/100 (${score.grade})`)}`);
   }
+
+  lines.push(...renderToolDecisions(artifact.toolDecisions ?? buildToolDecisions(artifact)));
 
   lines.push("Checks (most actionable first):");
   for (const check of orderedChecks) {

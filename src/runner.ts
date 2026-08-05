@@ -21,6 +21,7 @@ import type { CheckResult, Gate, PerformanceMetrics, RunArtifact, RuntimeProfile
 import { SCHEMA_VERSION } from "./types.js";
 import { buildRunId } from "./utils/ids.js";
 import { TOOL_VERSION } from "./version.js";
+import { buildToolDecisions } from "./decisions.js";
 
 function createEmptyCounts(): StatusCounts {
   return {
@@ -259,6 +260,8 @@ async function runTargetWithRecording(target: TargetConfig, options?: RunOptions
     runtimeProfile,
     fatalError
   };
+
+  artifact.toolDecisions = buildToolDecisions(artifact);
 
   return { artifact, cassetteEntries };
 }

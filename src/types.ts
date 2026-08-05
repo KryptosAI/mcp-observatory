@@ -113,8 +113,19 @@ export interface RunArtifact {
   healthScore?: HealthScore;
   performanceMetrics?: PerformanceMetrics;
   runtimeProfile?: RuntimeProfile;
+  /** Deterministic per-tool release decisions derived from the run findings. */
+  toolDecisions?: ToolDecision[];
   fatalError?: string;
   notObserved?: NotObserved[];
+}
+
+export type ToolDecisionAction = "allow" | "review" | "block";
+
+export interface ToolDecision {
+  toolName: string;
+  decision: ToolDecisionAction;
+  reason: string;
+  findingIds: string[];
 }
 
 export type HealthGrade = "A" | "B" | "C" | "D" | "F";

@@ -33,6 +33,10 @@
     "healthScore": { "$ref": "#/definitions/healthScore" },
     "performanceMetrics": { "$ref": "#/definitions/performanceMetrics" },
     "runtimeProfile": { "$ref": "#/definitions/runtimeProfile" },
+    "toolDecisions": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/toolDecision" }
+    },
     "notObserved": {
       "type": "array",
       "items": { "$ref": "#/definitions/notObserved" }
@@ -195,6 +199,20 @@
         "dimensions": {
           "type": "array",
           "items": { "$ref": "#/definitions/scoreDimension" }
+        }
+      }
+    },
+    "toolDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["toolName", "decision", "reason", "findingIds"],
+      "properties": {
+        "toolName": { "type": "string" },
+        "decision": { "type": "string", "enum": ["allow", "review", "block"] },
+        "reason": { "type": "string" },
+        "findingIds": {
+          "type": "array",
+          "items": { "type": "string" }
         }
       }
     },

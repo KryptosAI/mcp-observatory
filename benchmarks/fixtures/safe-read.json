@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "safe-read",
+  "category": "benign-control",
+  "description": "A read-only file tool with a narrow, documented schema.",
+  "tools": [
+    {
+      "name": "read_file",
+      "description": "Read one approved text file.",
+      "inputSchema": {
+        "type": "object",
+        "properties": { "path": { "type": "string", "description": "Approved relative file path." } },
+        "required": ["path"],
+        "additionalProperties": false
+      },
+      "annotations": { "readOnlyHint": true, "destructiveHint": false }
+    }
+  ],
+  "expectedFindings": []
+}

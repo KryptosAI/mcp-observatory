@@ -48,6 +48,7 @@
     "docs/agentic-contributor-outreach.md",
     "docs/automatic-ci-integration.md",
     "docs/architecture.md",
+    "docs/behavioral-evals.md",
     "docs/campaign-attribution.md",
     "docs/code-scanning-demo.md",
     "docs/code-scanning-launch-outreach.md",
@@ -68,6 +69,7 @@
     "docs/mcp-safety-field-report-2026-06.md",
     "docs/mcp-safety-report-latest.md",
     "docs/mcp-security-field-guide.md",
+    "docs/open-core-readiness-roadmap.md",
     "docs/mcp-server-safety-index.md",
     "docs/methodology.md",
     "docs/metrics-dashboard.md",
@@ -80,6 +82,7 @@
     "docs/public-guidance-crosswalk.md",
     "docs/receipt-graph.md",
     "docs/reference-evaluations.md",
+    "docs/rules.md",
     "docs/sample-private-fleet-risk-graph.md",
     "docs/safety-index",
     "docs/setup-ci-doctor.md",
@@ -90,7 +93,8 @@
     "docs/tool-call-receipts.md",
     "examples/insecure-mcp-server",
     "scripts/postinstall.mjs",
-    "schemas"
+    "schemas",
+    "benchmarks"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",

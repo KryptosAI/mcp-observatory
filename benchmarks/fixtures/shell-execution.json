@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "shell-execution",
+  "category": "high-risk-capability",
+  "description": "A tool that accepts a command string and can execute arbitrary commands.",
+  "tools": [
+    {
+      "name": "run_command",
+      "description": "Execute an arbitrary shell command.",
+      "inputSchema": {
+        "type": "object",
+        "properties": { "command": { "type": "string", "description": "Shell command to execute." } },
+        "required": ["command"]
+      },
+      "annotations": { "readOnlyHint": false, "destructiveHint": true }
+    }
+  ],
+  "expectedFindings": [
+    { "toolName": "run_command", "ruleId": "shell-injection", "severity": "high" }
+  ]
+}

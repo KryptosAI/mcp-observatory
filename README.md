@@ -401,7 +401,7 @@ $ npx @kryptosai/mcp-observatory ci-report          # Generate regression report
 claude mcp add mcp-observatory -- npx -y @kryptosai/mcp-observatory serve
 ```
 
-Your agent gets 10 tools:
+Your agent gets 13 tools:
 
 | Tool | When to use it |
 |------|---------------|
@@ -415,8 +415,15 @@ Your agent gets 10 tools:
 | `diff_runs` | Find regressions between two check results |
 | `get_last_run` | Retrieve previous check results for a server |
 | `suggest_servers` | Discover MCP servers that match your project stack |
+| `lock_verify` | Verify live servers still match a saved local lock file |
+| `get_history` | Review local health score trends for a server |
+| `ci_report` | Generate a CI regression report from local run artifacts |
 
 An AI tool that checks other AI tools. It is a tool testing tools that serve tools.
+
+### Open-source readiness surfaces
+
+The open-source project includes the scanner, evidence-backed findings, versioned artifact schemas, signed receipts, local baselines and diffs, public benchmark fixtures, and a deterministic behavioral-evaluation runner scaffold. Start with the [readiness roadmap](./docs/open-core-readiness-roadmap.md), [rule reference](./docs/rules.md), and [behavioral evaluation guide](./docs/behavioral-evals.md).
 
 ### Security
 

@@ -55,7 +55,6 @@ async function runScan(
   recordSessionStart(sessionId);
   if (conversionFlags.campaign) conversionFlags.campaign = normalizeCampaign(conversionFlags.campaign);
   const t0 = Date.now();
-  recordSessionStart(generateSessionId());
   if (!isQuiet()) {
     process.stdout.write(useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n\n` : LOGO + `  v${TOOL_VERSION}\n\n`);
   }
