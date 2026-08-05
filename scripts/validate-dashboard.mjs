@@ -36,7 +36,7 @@ if (homepage.includes("<strong>Important:</strong>")) failures.push("homepage: p
 for (const file of await htmlFiles(root)) {
   const source = await readFile(file, "utf8");
   const rel = path.relative(process.cwd(), file);
-  if (!source.includes('href="/m3.css"')) failures.push(`${rel}: missing shared m3.css`);
+  if (!/href="\/m3\.css(?:\?[^"]*)?"/.test(source)) failures.push(`${rel}: missing shared m3.css`);
   if (count(source, /<main\b/gi) !== 1) failures.push(`${rel}: expected exactly one main landmark`);
   if (count(source, /<h1\b/gi) !== 1) failures.push(`${rel}: expected exactly one h1`);
   const headingLevels = [...source.matchAll(/<h([1-6])\b/gi)].map(match => Number(match[1]));
