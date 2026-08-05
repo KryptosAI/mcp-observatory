@@ -1,4 +1,4 @@
-// IMPORTANT: Scoring logic is duplicated in api/src/worker.ts for the Cloudflare Worker
+// The hosted Worker keeps a compatible scoring implementation in the private cloud repository.
 // deployment (which can't import from src/). Keep both files in sync when making changes.
 
 import type { CheckResult, HealthGrade, HealthScore, PerformanceMetrics, ScoreDimension, TrustTier } from "./types.js";

@@ -2,7 +2,7 @@ import readline from "node:readline/promises";
 import type { Readable, Writable } from "node:stream";
 
 import type { RunArtifact, TargetConfig } from "../types.js";
-import { buildEvent, detectCiProvider, recordEvent } from "../telemetry.js";
+import { buildEvent, detectCiProvider, recordEvent } from "../command-events.js";
 import { initCi, type InitCiOptions, type InitCiResult } from "./init-ci.js";
 import { ANSI, c, isQuiet, quoteShell, setupCiHint } from "./helpers.js";
 

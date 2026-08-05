@@ -39,13 +39,6 @@ function runCliWithStderr(args: string[], opts?: { cwd?: string; timeout?: numbe
   };
 }
 
-function telemetryEvents(stderr: string): Array<Record<string, unknown>> {
-  return stderr
-    .split("\n")
-    .filter((line) => line.startsWith("[telemetry] "))
-    .map((line) => JSON.parse(line.slice("[telemetry] ".length)) as Record<string, unknown>);
-}
-
 describe("CLI entrypoint", () => {
   it("prints version with --version", () => {
     const { stdout, exitCode } = runCli(["--version"]);
@@ -231,19 +224,21 @@ describe("CLI entrypoint", () => {
 
     const withAttack = runCliWithStderr(["test", "node", fixture, "--no-setup-ci"], {
       cwd: tmpDir,
-      env: { MCP_OBSERVATORY_TELEMETRY_DEBUG: "1" },
+      env: {},
     });
     expect(withAttack.exitCode).toBe(0);
-    const withAttackComplete = telemetryEvents(withAttack.stderr).find((event) => event["event"] === "command_complete" && event["command"] === "test");
-    expect((withAttackComplete?.["checkStatuses"] as Record<string, string> | undefined)?.["attack-sim"]).toBe("pass");
+    const runFiles = fs.readdirSync(path.join(tmpDir, ".mcp-observatory", "runs"));
+    const withAttackArtifact = JSON.parse(fs.readFileSync(path.join(tmpDir, ".mcp-observatory", "runs", runFiles[0]!), "utf8")) as { checks: Array<{ id: string }> };
+    expect(withAttackArtifact.checks.some((check) => check.id === "attack-sim")).toBe(true);
 
     const withoutAttack = runCliWithStderr(["test", "node", fixture, "--no-attack-sim", "--no-setup-ci"], {
       cwd: tmpDir,
-      env: { MCP_OBSERVATORY_TELEMETRY_DEBUG: "1" },
+      env: {},
     });
     expect(withoutAttack.exitCode).toBe(0);
-    const withoutAttackComplete = telemetryEvents(withoutAttack.stderr).find((event) => event["event"] === "command_complete" && event["command"] === "test");
-    expect((withoutAttackComplete?.["checkStatuses"] as Record<string, string> | undefined)?.["attack-sim"]).toBeUndefined();
+    const withoutAttackFiles = fs.readdirSync(path.join(tmpDir, ".mcp-observatory", "runs"));
+    const withoutAttackArtifact = JSON.parse(fs.readFileSync(path.join(tmpDir, ".mcp-observatory", "runs", withoutAttackFiles.at(-1)!), "utf8")) as { checks: Array<{ id: string }> };
+    expect(withoutAttackArtifact.checks.some((check) => check.id === "attack-sim")).toBe(false);
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
@@ -494,14 +489,10 @@ describe("CLI entrypoint", () => {
 
     const { stderr, exitCode } = runCliWithStderr(["test", "node", fixture, "--campaign", "maintainer-pr", "--no-setup-ci"], {
       cwd: tmpDir,
-      env: {
-        MCP_OBSERVATORY_TELEMETRY_DEBUG: "1",
-      },
+      env: {},
     });
     expect(exitCode).toBe(0);
-    const complete = telemetryEvents(stderr).find((event) => event["event"] === "command_complete" && event["command"] === "test");
-    expect(complete?.["campaign"]).toBe("maintainer-pr");
-    expect(JSON.stringify(complete?.["serverCommands"])).not.toContain("--campaign");
+    expect(stderr).not.toContain("[telemetry]");
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
@@ -514,13 +505,10 @@ describe("CLI entrypoint", () => {
       cwd: tmpDir,
       env: {
         MCP_OBSERVATORY_CAMPAIGN: "bot-runtime-review",
-        MCP_OBSERVATORY_TELEMETRY_DEBUG: "1",
       },
     });
     expect(exitCode).toBe(0);
-    const events = telemetryEvents(stderr);
-    expect(events.find((event) => event["event"] === "command_run")?.["campaign"]).toBe("bot-runtime-review");
-    expect(events.find((event) => event["event"] === "command_complete")?.["campaign"]).toBe("bot-runtime-review");
+    expect(stderr).not.toContain("[telemetry]");
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 

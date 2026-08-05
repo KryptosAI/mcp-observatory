@@ -10,7 +10,7 @@ import {
   runAudit,
 } from "../audit.js";
 import { buildMcpReceipt, receiptFormatFromPath, renderReceipt } from "../receipt.js";
-import { buildEvent, generateSessionId, recordEvent, recordSessionEnd, recordSessionStart } from "../telemetry.js";
+import { buildEvent, generateSessionId, recordEvent, recordSessionEnd, recordSessionStart } from "../command-events.js";
 import { ANSI, c, isQuiet } from "./helpers.js";
 
 type AuditFormat = "json" | "markdown" | "sarif";

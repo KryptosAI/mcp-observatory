@@ -13,7 +13,6 @@ import { registerScanCommands } from "./commands/scan.js";
 import { registerScoreCommands } from "./commands/score.js";
 import { registerServeCommands } from "./commands/serve.js";
 import { registerSuggestCommands } from "./commands/suggest.js";
-import { registerTelemetryCommands } from "./commands/telemetry.js";
 import { registerTestCommands } from "./commands/test.js";
 import { registerWatchCommands } from "./commands/watch.js";
 import { registerHistoryCommands } from "./commands/history.js";
@@ -27,10 +26,10 @@ import { registerEnforceCommands } from "./commands/enforce.js";
 import { registerReceiptCommands } from "./commands/receipt.js";
 import { registerRiskGraphCommands } from "./commands/risk-graph.js";
 import { registerSkillScanCommands } from "./commands/skill-scan.js";
-import { DEFAULT_CLOUD_UPLOAD_ENDPOINT, printCloudInfo, getCloudAccessToken, cloudWhoami } from "./commercial.js";
+import { getCloudUploadEndpoint, printCloudInfo, getCloudAccessToken, cloudWhoami } from "./commercial.js";
 import { runTarget } from "./index.js";
 import type { RunArtifact, TargetConfig } from "./types.js";
-import { loadTelemetryConfig, collectUserIdentity, recordEvent, buildEvent, updateFeatureChain } from "./telemetry.js";
+import { recordEvent, buildEvent } from "./command-events.js";
 import { requireHttpUrl } from "./utils/url.js";
 import { validateRunArtifact } from "./validate.js";
 import { TOOL_VERSION } from "./version.js";
@@ -229,10 +228,6 @@ async function main(): Promise<void> {
 
   const bin = getBinName();
 
-  // Telemetry: load config and warm identity cache in background
-  await loadTelemetryConfig();
-  await collectUserIdentity().catch(() => {});
-
   // Update check (CLI only, not MCP server mode)
   if (process.argv[2] !== "serve") {
     try {
@@ -300,7 +295,6 @@ async function main(): Promise<void> {
   registerSuggestCommands(program);
   registerScoreCommands(program);
   registerLegacyCommands(program);
-  registerTelemetryCommands(program);
   registerHistoryCommands(program);
   registerCiReportCommands(program);
   registerEnterpriseReportCommands(program);
@@ -325,7 +319,7 @@ async function main(): Promise<void> {
     .description("Upload a run artifact to MCP Observatory Cloud for a hosted pilot report.")
     .argument("<artifact>", "Path to a run artifact JSON file.")
     .option("--org <org>", "Customer or organization slug. Defaults to MCP_OBSERVATORY_ORG.")
-    .option("--endpoint <url>", "Hosted upload endpoint.", DEFAULT_CLOUD_UPLOAD_ENDPOINT)
+    .option("--endpoint <url>", "Hosted upload endpoint.", getCloudUploadEndpoint())
     .action(async (artifactPath: string, options: { org?: string; endpoint: string }) => {
       const token = await getCloudAccessToken();
       if (!token) {
@@ -492,10 +486,8 @@ async function main(): Promise<void> {
     process.argv.push(...choice);
   }
 
-  // Telemetry: record command usage
   const commandName = process.argv[2] ?? "interactive";
   recordEvent(buildEvent("command_run", commandName, "cli"));
-  updateFeatureChain(commandName).catch(() => {});
 
   await program.parseAsync(process.argv);
 }

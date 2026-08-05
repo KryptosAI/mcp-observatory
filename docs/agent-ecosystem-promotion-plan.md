@@ -172,21 +172,10 @@ It is intentionally read-only and does not require secrets. If this is useful, m
 
 Run this once per week:
 
-1. Refresh metrics:
+1. Review public GitHub and npm distribution signals manually.
 
-```bash
-npm run metrics:refresh
-```
-
-2. Record:
-
-- GitHub views/clones
-- npm downloads
-- `serve` sessions
-- `setup-ci` sessions
-- external CI sessions
-- directory referrals when visible
-- accepted/closed certification PRs
+2. Record public repository views, npm downloads, directory referrals, and
+accepted/closed certification PRs.
 
 3. Ship:
 

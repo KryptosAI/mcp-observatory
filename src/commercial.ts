@@ -5,6 +5,10 @@ import { getAccessToken, whoami } from "./auth.js";
 const CONTACT = "william@banksey.com";
 export const DEFAULT_CLOUD_UPLOAD_ENDPOINT = "https://mcp-observatory-api.kryptosai.workers.dev/api/v1/artifacts";
 
+export function getCloudUploadEndpoint(): string {
+  return process.env["MCP_OBSERVATORY_CLOUD_ENDPOINT"]?.trim() || DEFAULT_CLOUD_UPLOAD_ENDPOINT;
+}
+
 export function hasCloudToken(): boolean {
   return Boolean(process.env["MCP_OBSERVATORY_CLOUD_TOKEN"]) || hasValidToken();
 }

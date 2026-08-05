@@ -2,7 +2,7 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import type { Command } from "commander";
 import type { RunArtifact } from "../types.js";
-import { buildEvent, recordEvent } from "../telemetry.js";
+import { buildEvent, recordEvent } from "../command-events.js";
 import { validateRunArtifact } from "../validate.js";
 import { defaultRunsDirectory } from "../storage.js";
 import { maybePrintCloudCta } from "../commercial.js";

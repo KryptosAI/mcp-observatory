@@ -27,6 +27,9 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Repository boundary
+        run: npm run boundary:check
+
       - name: Test
         run: npm test
 

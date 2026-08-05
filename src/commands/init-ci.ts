@@ -1,7 +1,7 @@
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Command } from "commander";
-import { buildEvent, detectCiProvider, normalizeCampaign, recordEvent } from "../telemetry.js";
+import { buildEvent, detectCiProvider, normalizeCampaign, recordEvent } from "../command-events.js";
 import { defaultRunsDirectory, findLatestSuccessfulRunArtifact, readArtifact } from "../storage.js";
 import type { RunArtifact } from "../types.js";
 import { TOOL_VERSION } from "../version.js";
@@ -672,7 +672,7 @@ function addInitCiOptions(command: Command): Command {
     .option("--doctor", "Inspect the current repository's MCP Observatory CI adoption state.", false)
     .option("--fix", "With --doctor, repair the adoption kit with deep, security, SARIF, and weekly scheduled checks.", false)
     .option("--from-last-run", "Generate the adoption kit from the latest successful local run artifact.", false)
-    .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.")
+    .option("--campaign <slug>", "Attach a safe campaign/source slug for attribution.")
     .option("--identify <email>", "Opt-in: share your email to help us understand who uses Observatory. Never shared, never spammed.");
 }
 

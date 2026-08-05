@@ -5,7 +5,7 @@ import { extractObservatoryFindings } from "../findings.js";
 import { runTarget } from "../index.js";
 import { renderAttackSimulationMarkdown } from "../reporters/attack-sim.js";
 import { renderSarif } from "../reporters/sarif.js";
-import { buildEvent, normalizeCampaign, recordEvent } from "../telemetry.js";
+import { buildEvent, normalizeCampaign, recordEvent } from "../command-events.js";
 import type { RunArtifact } from "../types.js";
 import { validateRunArtifact } from "../validate.js";
 import { renderActionReceipt } from "../action-receipt.js";
@@ -132,7 +132,7 @@ export function registerAttackSimCommands(program: Command): void {
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
     .option("--no-ci-sarif", "Generate post-check CI without GitHub Code Scanning SARIF upload.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
-    .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.")
+    .option("--campaign <slug>", "Attach a safe campaign/source slug for attribution.")
     .option("--no-color", "Disable colored output.")
     .action(async (commandArgs: string[], options: AttackSimOptions) => {
       const extracted = extractTrailingAttackFlags(commandArgs, options);

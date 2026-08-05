@@ -6,7 +6,7 @@ import { maybePrintCloudCta } from "../commercial.js";
 import { defaultRunsDirectory } from "../storage.js";
 import type { CheckResult, RunArtifact } from "../types.js";
 import { validateRunArtifact } from "../validate.js";
-import { buildEvent, recordEvent } from "../telemetry.js";
+import { buildEvent, recordEvent } from "../command-events.js";
 
 export interface EnterpriseReportSummary {
   serverCount: number;

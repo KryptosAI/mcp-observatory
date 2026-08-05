@@ -96,7 +96,6 @@ function extractFindings(checks: Array<Record<string, unknown>>): Array<{ severi
     for (const ev of evidence) {
       const fList = ev["findings"] as Array<Record<string, unknown>> | undefined;
       if (Array.isArray(fList)) {
-        // eslint-disable-next-line @typescript-eslint/no-base-to-string
         for (const f of fList) {
           findings.push({
             // eslint-disable-next-line @typescript-eslint/no-base-to-string

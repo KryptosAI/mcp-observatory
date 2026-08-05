@@ -17,5 +17,5 @@
     "skipLibCheck": true
   },
   "include": ["src/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts", "vitest.config.ts"],
-  "exclude": ["dist", "node_modules", "scripts/evaluate-permission-delta-conformance.ts", "scripts/metrics-dashboard.ts"]
+  "exclude": ["dist", "node_modules", "scripts/evaluate-permission-delta-conformance.ts"]
 }

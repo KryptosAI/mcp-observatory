@@ -23,8 +23,8 @@ npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y <server-package>
 
 ## Weekly Loop
 
-1. Refresh the local metrics dashboard.
-2. Record clone/download/view and `setup-ci` conversion.
+1. Review public repository and npm distribution signals.
+2. Record public setup-ci adoption signals and maintainer responses.
 3. Pick 5 public MCP repos for certification PRs.
 4. Submit or refresh 3 directory/listing entries.
 5. Publish one short public note from the safety findings.

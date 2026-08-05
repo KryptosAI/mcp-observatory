@@ -1,7 +1,7 @@
 import type { Command } from "commander";
 
 import { scanForTargets } from "../discovery.js";
-import { buildEvent, recordEvent } from "../telemetry.js";
+import { buildEvent, recordEvent } from "../command-events.js";
 import {
   readLockFile,
   writeLockFile,

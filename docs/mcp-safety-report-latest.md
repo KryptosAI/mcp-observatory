@@ -1,14 +1,10 @@
 # MCP Safety Report
 
-Latest generated baseline: June 20, 2026.
+MCP servers are becoming production dependencies. When agents depend on a
+server, that server needs repeatable compatibility checks, security review,
+schema drift detection, and visible trust signals.
 
-MCP servers are becoming production dependencies. When agents depend on a server, that server needs repeatable compatibility checks, security review, schema drift detection, and visible trust signals.
-
-For a broader security framing, see the [MCP Server Security Field Guide](./mcp-security-field-guide.md). For public examples, see [Reference Evaluations](./reference-evaluations.md).
-
-## What Observatory Checks
-
-MCP Observatory checks:
+## What Observatory checks
 
 - tools, prompts, and resources list/respond correctly
 - advertised capabilities match observed behavior
@@ -18,77 +14,23 @@ MCP Observatory checks:
 - runs can be compared for regressions and schema drift
 - artifacts can be rendered as JSON, Markdown, HTML, JUnit, SARIF, or PR comments
 
-## Aggregate Usage Snapshot
-
-Safe aggregate telemetry from the latest local export:
-
-| Metric | Value |
-| --- | ---: |
-| Total telemetry events | 11,481 |
-| Total sessions | 7,571 |
-| External sessions | 5,389 |
-| External CI sessions | 2,446 |
-| Attributed company/org sessions | 148 |
-| Attributed company/org candidates | 12 |
-| Latest external activity | June 21, 2026 |
-| npm downloads snapshot | 511 downloads, June 11-20, 2026 |
-| GitHub clones in visible traffic window | 745 |
-| Unique cloners in visible traffic window | 232 |
-| GitHub page views in visible traffic window | 12 |
-| Unique GitHub viewers in visible traffic window | 9 |
-
-Top external commands:
-
-1. `serve`
-2. `run`
-3. `diff`
-4. `test`
-5. `scan`
-6. `history`
-
-No raw emails, hostnames, private URLs, tokens, or response bodies are included in this report.
-
-## Common MCP Failure Classes
-
-From public sample artifacts and Observatory check categories, the most important failure classes are:
+## Common failure classes
 
 - server startup failure
-- malformed or missing tools/list, prompts/list, or resources/list responses
+- malformed tools/list, prompts/list, or resources/list responses
 - schema quality issues that make tools harder for agents to call correctly
 - regressions between two runs
 - unexpected drift from a recorded baseline
-- broad filesystem/network/security-sensitive tool surfaces
+- broad filesystem, network, or security-sensitive tool surfaces
 - slow or unreliable connection behavior
 
-## How Maintainers Add The Check
+## Maintainer workflow
 
-```bash
-npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server"
-```
+    npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server"
 
-That creates a GitHub Action and a README badge snippet. The action can comment on PRs and fail when MCP compatibility or security checks regress.
+That creates a GitHub Action and README badge snippet. The action can comment
+on pull requests and fail when MCP compatibility or security checks regress.
 
-## Production Path
-
-Production teams can use MCP Observatory for:
-
-- private repo CI history
-- hosted reporting
-- recurring security reports
-- MCP certification
-- support and rollout review
-- fleet visibility across teams and repos
-
-See [Commercial Pilots](../COMMERCIAL.md) for production/private MCP usage.
-
-## Launch Post
-
-MCP servers are becoming production dependencies.
-
-I built MCP Observatory so MCP maintainers can add CI, security checks, schema drift detection, PR reports, and trust badges in one command:
-
-```bash
-npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server"
-```
-
-Free for local OSS use. Paid pilots are available for hosted reporting, private repo CI, certification, support, and fleet visibility.
+Production teams can use the private cloud control plane for hosted reporting,
+private repository CI history, recurring security reviews, certification,
+support, and fleet workflows.

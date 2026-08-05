@@ -3,7 +3,7 @@ import path from "node:path";
 import type { Command } from "commander";
 
 import { buildRiskGraph, loadRiskGraphInputs, renderRiskGraphHtml, renderRiskGraphJson, renderRiskGraphMarkdown } from "../risk-graph.js";
-import { buildEvent, recordEvent } from "../telemetry.js";
+import { buildEvent, recordEvent } from "../command-events.js";
 
 interface RiskGraphOptions {
   input?: string[];

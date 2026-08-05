@@ -1,242 +1,60 @@
-# MCP Observatory Cloud API
+# MCP Observatory hosted client contract
 
-Base URL: `https://mcp-observatory-api.kryptosai.workers.dev`
+The public CLI includes a thin compatibility client for explicit hosted
+operations. The hosted implementation is private and lives in
+KryptosAI/mcp-observatory-cloud.
 
-All responses are JSON. Public endpoints require no authentication. CORS is enabled on all endpoints.
+## Endpoint configuration
 
-## Authentication
+The default artifact endpoint is:
 
-Protected endpoints require a Bearer token in the Authorization header:
+https://mcp-observatory-api.kryptosai.workers.dev/api/v1/artifacts
 
-```
-Authorization: Bearer <token>
-```
+Override it with MCP_OBSERVATORY_CLOUD_ENDPOINT or the cloud upload
+--endpoint option. OIDC issuer and client configuration are also supplied by
+the caller through the cloud login options or environment variables.
 
-Tokens can be:
-- **Legacy static token**: Set via `MCP_OBSERVATORY_CLOUD_TOKEN` env var or `CLOUD_UPLOAD_TOKEN` Cloudflare secret
-- **OIDC JWT token**: Obtained via `mcp-observatory cloud login` (OIDC device authorization flow)
+## Stable v1 routes
 
-## Rate Limiting
+The existing hosted service preserves these routes:
 
-Some endpoints enforce 10 requests per minute per IP.
+| Method | Route | Client use |
+| --- | --- | --- |
+| GET | /api/v1/health | service health |
+| POST | /api/v1/scan | authenticated HTTP MCP scan |
+| GET | /api/v1/scan/:runId | retrieve a scan artifact |
+| POST | /api/v1/artifacts | authenticated RunArtifact upload |
+| GET | /api/v1/artifacts/:org | authenticated artifact index |
+| GET | /api/v1/badge/:runId | SVG health badge |
+| GET | /api/v1/safety-index/servers | public index listing |
+| GET | /api/v1/safety-index/servers/:id | public server detail |
+| GET | /api/v1/safety-index/search | public index search |
+| GET | /api/v1/safety-index/categories | public categories |
+| GET | /api/v1/safety-index/risk-graph | public risk graph |
+| GET | /api/v1/safety-index/servers/:id/tools | public tools |
+| GET | /api/v1/safety-index/servers/:id/security | public findings |
+| GET | /api/v1/safety-index/servers/:id/badge | public SVG badge |
 
-## Endpoints
+## Wire-format boundary
 
-### Health Check
+RunArtifact and the published artifact schemas are the compatibility
+boundary. Clients should validate artifacts locally before upload and should
+not assume private storage, retention, organization, or decision
+implementation details.
 
-```
-GET /api/v1/health
-```
+Hosted authorization, organization validation, storage policy, retention,
+rate limiting, and decision logic are private control-plane behavior.
 
-Returns `{"status":"ok","service":"mcp-observatory-api"}`.
+## CLI examples
 
----
+Upload an explicit local artifact:
 
-### Artifact Upload
+    npx @kryptosai/mcp-observatory cloud upload .mcp-observatory/runs/latest.json
 
-```
-POST /api/v1/artifacts
-Authorization: Bearer <token>
-Content-Type: application/json
+Use a staging-compatible endpoint:
 
-{ ... run artifact JSON ... }
-```
+    MCP_OBSERVATORY_CLOUD_ENDPOINT=https://staging.example/api/v1/artifacts \
+      npx @kryptosai/mcp-observatory cloud upload run.json
 
-Uploads a run artifact to cloud storage. Returns `{"uploaded":true,"runId":"..."}`.
-
----
-
-### List Artifacts
-
-```
-GET /api/v1/artifacts/:org
-Authorization: Bearer <token>
-```
-
-Lists uploaded artifacts for an organization.
-
----
-
-### Hosted Scan
-
-```
-POST /api/v1/scan
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{"url":"https://mcp.example.com/mcp"}
-```
-
-Runs a scan against an HTTP MCP server. Returns the scan result.
-
----
-
-### Get Scan Result
-
-```
-GET /api/v1/scan/:runId
-```
-
-Retrieves a cached scan result.
-
----
-
-### Health Badge
-
-```
-GET /api/v1/badge/:runId
-```
-
-Returns an SVG health badge for a scan result.
-
----
-
-## Safety Index (Public)
-
-All Safety Index endpoints are public (no authentication required).
-
-### List All Servers
-
-```
-GET /api/v1/safety-index/servers?page=1&perPage=20
-```
-
-Returns a paginated list of evaluated MCP servers.
-
-**Response:**
-```json
-{
-  "servers": [
-    {
-      "id": "everything-server",
-      "name": "Official everything server",
-      "packageName": "@modelcontextprotocol/server-everything",
-      "category": "Reference",
-      "riskClass": "Reference compatibility",
-      "healthScore": 92,
-      "grade": "A",
-      "gate": "pass",
-      "toolCount": 8,
-      "promptCount": 2,
-      "resourceCount": 1,
-      "lastScanned": "2026-07-15T22:35:58Z"
-    }
-  ],
-  "total": 175,
-  "page": 1,
-  "perPage": 20
-}
-```
-
----
-
-### Server Detail
-
-```
-GET /api/v1/safety-index/servers/:id
-```
-
-Returns full evaluation details for a specific server.
-
-**Response:** Includes all check results, health score dimensions, performance metrics, and security findings.
-
----
-
-### Search
-
-```
-GET /api/v1/safety-index/search?q=postgres&category=Database&grade=A
-```
-
-Filters servers by name, category, grade, or risk class. All query parameters are optional.
-
----
-
-### Categories
-
-```
-GET /api/v1/safety-index/categories
-```
-
-Returns all categories with server counts:
-```json
-{
-  "categories": [
-    {"name": "Reference", "count": 12},
-    {"name": "Database", "count": 8}
-  ]
-}
-```
-
----
-
-### Server Tools
-
-```
-GET /api/v1/safety-index/servers/:id/tools
-```
-
-Returns tool schemas from the most recent scan:
-```json
-{
-  "tools": [
-    {"name": "query", "description": "Execute SQL query", "inputSchema": { ... }}
-  ]
-}
-```
-
----
-
-### Server Security Findings
-
-```
-GET /api/v1/safety-index/servers/:id/security
-```
-
-Returns security-specific findings with severity and rule mapping:
-```json
-{
-  "findings": [
-    {"severity": "medium", "rule": "filesystem-write-access", "message": "...", "cwe": "CWE-22"}
-  ]
-}
-```
-
----
-
-### Server Badge
-
-```
-GET /api/v1/safety-index/servers/:id/badge
-Content-Type: image/svg+xml
-```
-
-Returns an SVG health badge for a Safety Index server.
-
----
-
-### Risk Graph
-
-```
-GET /api/v1/safety-index/risk-graph
-```
-
-Returns the MCP risk graph (nodes and edges mapping server capability boundaries).
-
----
-
-## Error Responses
-
-All errors follow this format:
-```json
-{"error":"Error message"}
-```
-
-HTTP status codes:
-- 200: Success
-- 400: Bad request
-- 401: Unauthorized (auth required)
-- 404: Not found
-- 429: Rate limited
-- 501: Not configured
-```
+The local scanner, evidence engine, report generators, and public dashboard
+remain usable without an account or hosted credentials.

@@ -71,13 +71,6 @@ jobs:
             npx wrangler pages deploy dashboard --project-name mcp-observatory --branch "${GITHUB_REF_NAME}"
           fi
 
-      - name: Deploy API Worker
-        continue-on-error: true
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: 385e00f98ceabbee25800bda2756cc75
-        run: cd api && npx wrangler deploy
-
       - name: Fail if matrix found issues
         if: steps.matrix.outcome == 'failure'
         run: |

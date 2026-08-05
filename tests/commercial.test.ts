@@ -1,6 +1,15 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { cloudUpgradeLine, hasCloudToken, maybePrintCloudCta, printCloudInfo, getCloudAccessToken, cloudWhoami } from "../src/commercial.js";
+import {
+  cloudUpgradeLine,
+  hasCloudToken,
+  maybePrintCloudCta,
+  printCloudInfo,
+  getCloudAccessToken,
+  cloudWhoami,
+  getCloudUploadEndpoint,
+  DEFAULT_CLOUD_UPLOAD_ENDPOINT,
+} from "../src/commercial.js";
 import { setQuiet } from "../src/commands/helpers.js";
 
 const originalEnv = { ...process.env };
@@ -93,5 +102,13 @@ describe("commercial cloud messaging", () => {
     delete process.env["MCP_OBSERVATORY_CLOUD_TOKEN"];
     const info = await cloudWhoami();
     expect(info.authenticated).toBe(false);
+  });
+
+  it("allows hosted upload endpoint overrides while preserving the production default", () => {
+    delete process.env["MCP_OBSERVATORY_CLOUD_ENDPOINT"];
+    expect(getCloudUploadEndpoint()).toBe(DEFAULT_CLOUD_UPLOAD_ENDPOINT);
+
+    process.env["MCP_OBSERVATORY_CLOUD_ENDPOINT"] = "https://staging.example/api/v1/artifacts";
+    expect(getCloudUploadEndpoint()).toBe("https://staging.example/api/v1/artifacts");
   });
 });

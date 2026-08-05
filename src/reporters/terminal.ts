@@ -16,6 +16,7 @@ let _seatbeltAvailable = false;
 export function isSeatbeltAvailable(): boolean {
   if (_seatbeltChecked) return _seatbeltAvailable;
   _seatbeltChecked = true;
+  if (process.env["VITEST"]) return false;
   try {
     execSync("command -v mcp-seatbelt 2>/dev/null || npx @kryptosai/mcp-seatbelt --version 2>/dev/null", {
       stdio: "pipe",

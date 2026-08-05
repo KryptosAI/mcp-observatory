@@ -6,7 +6,7 @@ import {
   runTarget,
 } from "../index.js";
 import { appendHistory, buildHistoryEntry } from "../history.js";
-import { buildEvent, generateSessionId, normalizeCampaign, recordEvent, recordSessionEnd, recordSessionStart } from "../telemetry.js";
+import { buildEvent, generateSessionId, normalizeCampaign, recordEvent, recordSessionEnd, recordSessionStart } from "../command-events.js";
 import type { RunArtifact } from "../types.js";
 import { TOOL_VERSION } from "../version.js";
 import { maybePrintCloudCta } from "../commercial.js";
@@ -348,7 +348,7 @@ export function registerScanCommands(program: Command, bin: string): void {
     .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
     .option("--no-attack-sim", "Skip the default safe attack-readiness simulation.")
     .option("--format <format>", "Output format: terminal or pr-comment-matrix.", "terminal")
-    .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.")
+    .option("--campaign <slug>", "Attach a safe campaign/source slug for attribution.")
     .option("--setup-ci", "Offer CI conversion after a successful one-target scan; use with --yes in non-interactive runs to write files.", false)
     .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
@@ -376,7 +376,7 @@ export function registerScanCommands(program: Command, bin: string): void {
     .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
     .option("--no-attack-sim", "Skip the default safe attack-readiness simulation.")
     .option("--format <format>", "Output format: terminal or pr-comment-matrix.", "terminal")
-    .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.")
+    .option("--campaign <slug>", "Attach a safe campaign/source slug for attribution.")
     .option("--setup-ci", "Offer CI conversion after a successful one-target scan; use with --yes in non-interactive runs to write files.", false)
     .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")

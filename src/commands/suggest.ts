@@ -2,7 +2,7 @@ import type { Command } from "commander";
 
 import { scanForTargets } from "../discovery.js";
 import { detectEnvironment } from "../environment.js";
-import { buildEvent, recordEvent } from "../telemetry.js";
+import { buildEvent, recordEvent } from "../command-events.js";
 import { ANSI, c } from "./helpers.js";
 
 // Curated popular servers shown when no stack-specific matches exist

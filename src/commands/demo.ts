@@ -3,7 +3,7 @@ import type { Command } from "commander";
 import { runTarget } from "../index.js";
 import type { TargetConfig } from "../types.js";
 import { scanForTargets } from "../discovery.js";
-import { buildEvent, generateSessionId, recordEvent, recordSessionEnd, recordSessionStart } from "../telemetry.js";
+import { buildEvent, generateSessionId, recordEvent, recordSessionEnd, recordSessionStart } from "../command-events.js";
 import { maybePrintCloudCta } from "../commercial.js";
 import {
   ANSI,

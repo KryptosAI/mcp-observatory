@@ -4,7 +4,7 @@ import type { Command } from "commander";
 
 import { resolveAuditTarget, runAudit } from "../audit.js";
 import { buildMcpReceipt, receiptFormatFromPath, renderReceipt, signReceipt, type ReceiptEnvironmentClass, type ReceiptFormat } from "../receipt.js";
-import { buildEvent, recordEvent } from "../telemetry.js";
+import { buildEvent, recordEvent } from "../command-events.js";
 import { ANSI, c } from "./helpers.js";
 
 interface ReceiptOptions {

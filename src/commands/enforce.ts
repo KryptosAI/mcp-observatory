@@ -9,7 +9,7 @@ import {
 } from "../index.js";
 import { extractObservatoryFindings, type ObservatoryFinding, type ObservatoryFindingSeverity } from "../findings.js";
 import { defaultRunsDirectory } from "../storage.js";
-import { buildEvent, generateSessionId, recordEvent, recordSessionEnd, recordSessionStart } from "../telemetry.js";
+import { buildEvent, generateSessionId, recordEvent, recordSessionEnd, recordSessionStart } from "../command-events.js";
 import type { RunArtifact, TargetConfig } from "../types.js";
 import { ANSI, c, isQuiet, resolveTarget, targetFromCommand, useColor } from "./helpers.js";
 

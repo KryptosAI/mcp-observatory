@@ -9,7 +9,7 @@ import {
   writeRunArtifact,
 } from "../index.js";
 import { defaultRunsDirectory } from "../storage.js";
-import { buildEvent, generateSessionId, recordEvent, recordSessionEnd, recordSessionStart } from "../telemetry.js";
+import { buildEvent, generateSessionId, recordEvent, recordSessionEnd, recordSessionStart } from "../command-events.js";
 import { maybePrintCloudCta } from "../commercial.js";
 import { extractObservatoryFindings } from "../findings.js";
 import { ANSI, c, formatOutput, isQuiet, printCiConversionCta, targetFromCommand, writeOutput } from "./helpers.js";

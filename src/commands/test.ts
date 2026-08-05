@@ -10,7 +10,7 @@ import {
 import { defaultRunsDirectory } from "../storage.js";
 import { appendHistory, buildHistoryEntry, getTrend, readHistory } from "../history.js";
 import { renderSarif } from "../reporters/sarif.js";
-import { buildEvent, generateSessionId, normalizeCampaign, recordEvent, recordSessionEnd, recordSessionStart } from "../telemetry.js";
+import { buildEvent, generateSessionId, normalizeCampaign, recordEvent, recordSessionEnd, recordSessionStart } from "../command-events.js";
 import { maybePrintCloudCta } from "../commercial.js";
 import { renderActionReceipt } from "../action-receipt.js";
 import { extractObservatoryFindings } from "../findings.js";
@@ -129,7 +129,7 @@ export function registerTestCommands(program: Command): void {
     .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
     .option("--no-attack-sim", "Skip the default safe attack-readiness simulation.")
     .option("--sarif <file>", "Write a GitHub Code Scanning SARIF report after the run.")
-    .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.")
+    .option("--campaign <slug>", "Attach a safe campaign/source slug for attribution.")
     .option("--setup-ci", "Offer CI conversion after a successful check; use with --yes in non-interactive runs to write files.", false)
     .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")

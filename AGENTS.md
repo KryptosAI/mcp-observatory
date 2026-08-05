@@ -37,13 +37,6 @@ For a real target sweep:
 npm run integration:real
 ```
 
-For local telemetry:
-
-```bash
-npm run metrics:refresh
-npm run metrics:serve
-```
-
 For target-registry contributions:
 
 ```bash
