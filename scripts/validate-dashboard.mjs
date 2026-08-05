@@ -27,11 +27,12 @@ if (/font-size:\s*10px/.test(css)) failures.push("m3.css contains deprecated 10p
 if (/body::before\s*\{[^}]*display:none/.test(css) === false) failures.push("decorative grid suppression is missing");
 
 const homepage = await readFile(path.join(root, "index.html"), "utf8");
-const proofHeadline = "Used by engineers and security researchers.";
-const proofQualifier = "Observed evaluations. No endorsement implied.";
-if (count(homepage, new RegExp(proofHeadline.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) !== 1) failures.push("homepage: expected exactly one proof headline");
-if (count(homepage, new RegExp(proofQualifier.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) !== 1) failures.push("homepage: expected exactly one proof qualifier");
-if (homepage.includes("<strong>Important:</strong>")) failures.push("homepage: proof qualifier still uses legal-warning label");
+const homepageTop = homepage.slice(0, homepage.indexOf('<div class="section-title" id="index">'));
+if (count(homepage, /Trust is a <span>production decision\.<\/span>/g) !== 1) failures.push("homepage: expected exactly one trust-led hero headline");
+if (count(homepage, /THE MOMENT BEFORE TRUST/g) !== 1) failures.push("homepage: expected exactly one trust-led eyebrow");
+if (!homepage.includes('class="logo-strip"')) failures.push("homepage: missing full-width company logo strip");
+if (!homepage.includes('class="hero-product"')) failures.push("homepage: missing product decision visual");
+if (/Used by|Trusted by|teams at/i.test(homepageTop)) failures.push("homepage: contains unsupported customer-style proof language");
 
 for (const file of await htmlFiles(root)) {
   const source = await readFile(file, "utf8");
