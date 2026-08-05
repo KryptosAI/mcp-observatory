@@ -26,6 +26,13 @@ if (!css.includes("min-height:48px")) failures.push("m3.css is missing the 48px 
 if (/font-size:\s*10px/.test(css)) failures.push("m3.css contains deprecated 10px text");
 if (/body::before\s*\{[^}]*display:none/.test(css) === false) failures.push("decorative grid suppression is missing");
 
+const homepage = await readFile(path.join(root, "index.html"), "utf8");
+const proofHeadline = "Used by engineers and security researchers.";
+const proofQualifier = "Observed evaluations. No endorsement implied.";
+if (count(homepage, new RegExp(proofHeadline.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) !== 1) failures.push("homepage: expected exactly one proof headline");
+if (count(homepage, new RegExp(proofQualifier.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) !== 1) failures.push("homepage: expected exactly one proof qualifier");
+if (homepage.includes("<strong>Important:</strong>")) failures.push("homepage: proof qualifier still uses legal-warning label");
+
 for (const file of await htmlFiles(root)) {
   const source = await readFile(file, "utf8");
   const rel = path.relative(process.cwd(), file);

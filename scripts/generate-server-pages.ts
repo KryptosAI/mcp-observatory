@@ -180,7 +180,7 @@ function renderPage(t: TargetEntry, artifact: RunArtifact | null, index: number,
   </style>
   <link rel="stylesheet" href="/m3.css">
 </head>
-<body>
+<body class="evidence-theme">
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <div class="container">
   <nav class="nav" aria-label="Primary navigation">
@@ -449,7 +449,7 @@ function generateIndexPage(targets: TargetEntry[]): string {
   </style>
   <link rel="stylesheet" href="/m3.css">
 </head>
-<body>
+<body class="evidence-theme">
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <div class="container">
   <nav class="nav" aria-label="Primary navigation">
