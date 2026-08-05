@@ -6,7 +6,9 @@ const matrixSummaryPath = path.join(root, "examples", "matrix-summary.json");
 const matrixHistoryPath = path.join(root, "examples", "matrix-history.json");
 const safetyTargetsPath = path.join(root, "docs", "safety-index", "targets.json");
 const demoPath = path.join(root, "docs", "demo.gif");
+const logoSvgPath = path.join(root, "docs", "assets", "mcp-observatory-logo.svg");
 const logoPath = path.join(root, "docs", "assets", "mcp-observatory-logo.png");
+const faviconSvgPath = path.join(root, "docs", "assets", "mcp-observatory-favicon.svg");
 const faviconPath = path.join(root, "docs", "assets", "mcp-observatory-favicon-v2.png");
 const dashboardDir = path.join(root, "dashboard");
 const badgesDir = path.join(dashboardDir, "badges");
@@ -244,7 +246,9 @@ async function main(): Promise<void> {
   const html = buildHtml(current, history, safetyTargets);
   await writeFile(path.join(dashboardDir, "index.html"), html, "utf8");
   await copyFile(demoPath, path.join(dashboardDir, "demo.gif"));
+  await copyFile(logoSvgPath, path.join(dashboardDir, "mcp-observatory-logo.svg"));
   await copyFile(logoPath, path.join(dashboardDir, "mcp-observatory-logo-v2.png"));
+  await copyFile(faviconSvgPath, path.join(dashboardDir, "mcp-observatory-favicon.svg"));
   await copyFile(faviconPath, path.join(dashboardDir, "mcp-observatory-favicon-v2.png"));
   await writeFile(path.join(dashboardDir, "directory.js"), `(() => {
   const cards = [...document.querySelectorAll(".server-card")];

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+  <title id="title">Observatory</title>
+  <rect width="256" height="256" rx="48" fill="#0B1F33"/>
+  <g transform="translate(32 32)">
+    <rect width="88" height="88" rx="16" fill="#F7F9FB"/>
+    <rect x="104" width="88" height="88" rx="16" fill="#12B8E8"/>
+    <rect y="104" width="88" height="88" rx="16" fill="#F7F9FB"/>
+    <rect x="104" y="104" width="88" height="88" rx="16" fill="#F7F9FB"/>
+    <circle cx="96" cy="96" r="48" fill="#0B1F33"/>
+    <rect x="88" width="16" height="48" fill="#0B1F33"/>
+    <rect x="88" y="144" width="16" height="48" fill="#0B1F33"/>
+    <rect y="88" width="48" height="16" fill="#0B1F33"/>
+    <rect x="144" y="88" width="48" height="16" fill="#0B1F33"/>
+  </g>
+</svg>
