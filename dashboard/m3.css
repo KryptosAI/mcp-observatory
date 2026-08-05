@@ -4,14 +4,14 @@
 
 :root{
   color-scheme:dark;
-  --md-sys-color-primary:#8fd8e6;
-  --md-sys-color-on-primary:#00363d;
-  --md-sys-color-primary-container:#004f58;
-  --md-sys-color-on-primary-container:#a7efff;
-  --md-sys-color-secondary:#b2cbd0;
-  --md-sys-color-on-secondary:#1d3337;
-  --md-sys-color-secondary-container:#344a4e;
-  --md-sys-color-on-secondary-container:#cde7ec;
+  --md-sys-color-primary:#12B8E8;
+  --md-sys-color-on-primary:#0B1F33;
+  --md-sys-color-primary-container:#063B53;
+  --md-sys-color-on-primary-container:#C5F5FF;
+  --md-sys-color-secondary:#B7C9D1;
+  --md-sys-color-on-secondary:#0B1F33;
+  --md-sys-color-secondary-container:#263442;
+  --md-sys-color-on-secondary-container:#E5F2F5;
   --md-sys-color-tertiary:#bec6eb;
   --md-sys-color-on-tertiary:#28304d;
   --md-sys-color-tertiary-container:#3e4665;
@@ -34,7 +34,7 @@
   --md-sys-color-outline-variant:#3f494c;
   --md-sys-color-inverse-surface:#e0e3e5;
   --md-sys-color-inverse-on-surface:#2d3133;
-  --md-sys-color-inverse-primary:#006875;
+  --md-sys-color-inverse-primary:#0B1F33;
   --md-sys-shape-corner-extra-small:4px;
   --md-sys-shape-corner-small:8px;
   --md-sys-shape-corner-medium:12px;
@@ -157,14 +157,14 @@ tbody tr:hover td{background:color-mix(in srgb,var(--md-sys-color-primary) 8%,tr
 
 /* Marketing uses a light enterprise surface system; evidence views stay dark. */
 body:not(.evidence-theme){
-  --md-sys-color-primary:#006874;
+  --md-sys-color-primary:#0B1F33;
   --md-sys-color-on-primary:#ffffff;
-  --md-sys-color-primary-container:#a6efff;
-  --md-sys-color-on-primary-container:#001f24;
-  --md-sys-color-secondary:#4a6267;
+  --md-sys-color-primary-container:#DDF5FA;
+  --md-sys-color-on-primary-container:#0B1F33;
+  --md-sys-color-secondary:#263442;
   --md-sys-color-on-secondary:#ffffff;
-  --md-sys-color-secondary-container:#cde7ec;
-  --md-sys-color-on-secondary-container:#051f24;
+  --md-sys-color-secondary-container:#E5F2F5;
+  --md-sys-color-on-secondary-container:#0B1F33;
   --md-sys-color-tertiary:#4d5d90;
   --md-sys-color-on-tertiary:#ffffff;
   --md-sys-color-tertiary-container:#dce2ff;
@@ -183,7 +183,7 @@ body:not(.evidence-theme){
   --md-sys-color-outline-variant:#bec8ca;
   --md-sys-color-inverse-surface:#2d3335;
   --md-sys-color-inverse-on-surface:#eef2f3;
-  --md-sys-color-inverse-primary:#83d2df;
+  --md-sys-color-inverse-primary:#12B8E8;
   background:var(--md-sys-color-surface);
   color:var(--md-sys-color-on-surface);
 }
