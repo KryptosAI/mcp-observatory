@@ -228,9 +228,9 @@ body:not(.evidence-theme) .result-card,body.marketing-theme .result-card{backgro
 /* Proof-led landing page: one calm enterprise story above the fold. */
 .home-main>.evaluation-proof{order:initial}
 .logo-strip{width:100vw;margin:0 calc(50% - 50vw);overflow:hidden;border-top:1px solid var(--md-sys-color-outline-variant);border-bottom:1px solid var(--md-sys-color-outline-variant);background:var(--md-sys-color-surface-container-lowest)}
-.logo-strip-logos{display:flex;align-items:center;justify-content:space-between;gap:48px;max-width:1200px;min-height:88px;margin:0 auto;padding:20px 24px}
+.logo-strip-logos{display:flex;flex-wrap:nowrap;align-items:center;justify-content:space-between;gap:48px;max-width:1200px;min-height:88px;margin:0 auto;padding:20px 24px}
 .logo-strip-logo{display:flex;flex:0 1 136px;align-items:center;justify-content:center;width:136px;height:32px}
-.logo-strip-logo img{display:block;max-width:100%;max-height:26px;filter:grayscale(1);opacity:.72}
+.logo-strip-logo img{display:block;width:auto;max-width:136px;height:26px;object-fit:contain;filter:grayscale(1);opacity:.72}
 .logo-strip-logo:hover img{opacity:1}
 .hero-product{align-self:stretch;display:flex;flex-direction:column;justify-content:space-between;min-height:340px;padding:24px;border:1px solid var(--md-sys-color-outline-variant);border-radius:var(--md-sys-shape-corner-extra-large);background:var(--md-sys-color-surface-container);box-shadow:var(--md-sys-elevation-level2)}
 .product-windowbar{display:flex;align-items:center;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid var(--md-sys-color-outline-variant);color:var(--md-sys-color-on-surface-variant);font:var(--md-sys-typescale-label-medium)}
