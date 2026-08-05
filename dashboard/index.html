@@ -28,9 +28,10 @@
     .used-by{margin:2px 0 82px;padding:24px 0 4px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
     .used-by-heading{margin:0 0 20px;text-align:center;color:#8fa0b7;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
     .used-by-window{overflow:hidden;padding:3px 0 8px;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
-    .used-by-track{display:flex;width:max-content;animation:used-by-scroll 44s linear infinite;will-change:transform}
-    .used-logo{display:grid;place-items:center;min-width:176px;height:56px;margin-right:12px;padding:0 22px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(145deg,rgba(18,27,45,.78),rgba(10,16,28,.68));color:#e9f1ff;font-size:17px;font-weight:800;letter-spacing:-.035em;white-space:nowrap;box-shadow:inset 0 1px rgba(255,255,255,.04)}
-    .used-logo:nth-child(4n+1){color:#fff}.used-logo:nth-child(4n+2){color:#c8f7ff}.used-logo:nth-child(4n+3){color:#d8d0ff}.used-logo:nth-child(4n){color:#bff7df}
+    .used-by-track{display:flex;width:max-content;animation:used-by-scroll 48s linear infinite;will-change:transform}
+    .used-logo{display:flex;align-items:center;gap:12px;min-width:196px;height:64px;margin-right:12px;padding:0 18px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(145deg,rgba(18,27,45,.78),rgba(10,16,28,.68));color:#e9f1ff;font-size:15px;font-weight:800;letter-spacing:-.025em;white-space:nowrap;box-shadow:inset 0 1px rgba(255,255,255,.04)}
+    .used-logo img{display:block;flex:none;width:32px;height:32px;padding:4px;border-radius:8px;background:#fff;object-fit:contain}
+    .used-logo span{overflow:hidden;text-overflow:ellipsis}
     @keyframes used-by-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
     .used-by-window:hover .used-by-track,.used-by-window:focus-within .used-by-track{animation-play-state:paused}
     @media(prefers-reduced-motion:reduce){.used-by-window{overflow-x:auto;mask-image:none;-webkit-mask-image:none}.used-by-track{animation:none}}
@@ -46,38 +47,38 @@
       <h2 class="used-by-heading" id="used-by-heading">Used by teams at</h2>
       <div class="used-by-window" tabindex="0" aria-label="Organizations using MCP Observatory">
         <div class="used-by-track">
-          <span class="used-logo">Microsoft</span>
-          <span class="used-logo">Google</span>
-          <span class="used-logo">Oracle</span>
-          <span class="used-logo">Cisco</span>
-          <span class="used-logo">Accenture</span>
-          <span class="used-logo">Cloudflare</span>
-          <span class="used-logo">Klarna</span>
-          <span class="used-logo">UC Berkeley</span>
-          <span class="used-logo">Northeastern University</span>
-          <span class="used-logo">Western University</span>
-          <span class="used-logo">Ivey Business School</span>
-          <span class="used-logo">WitnessAI</span>
-          <span class="used-logo">ThinkingData</span>
-          <span class="used-logo">PassEntry</span>
-          <span class="used-logo">CyberneticsPlus</span>
-          <span class="used-logo">CapaTalk</span>
-          <span class="used-logo" aria-hidden="true">Microsoft</span>
-          <span class="used-logo" aria-hidden="true">Google</span>
-          <span class="used-logo" aria-hidden="true">Oracle</span>
-          <span class="used-logo" aria-hidden="true">Cisco</span>
-          <span class="used-logo" aria-hidden="true">Accenture</span>
-          <span class="used-logo" aria-hidden="true">Cloudflare</span>
-          <span class="used-logo" aria-hidden="true">Klarna</span>
-          <span class="used-logo" aria-hidden="true">UC Berkeley</span>
-          <span class="used-logo" aria-hidden="true">Northeastern University</span>
-          <span class="used-logo" aria-hidden="true">Western University</span>
-          <span class="used-logo" aria-hidden="true">Ivey Business School</span>
-          <span class="used-logo" aria-hidden="true">WitnessAI</span>
-          <span class="used-logo" aria-hidden="true">ThinkingData</span>
-          <span class="used-logo" aria-hidden="true">PassEntry</span>
-          <span class="used-logo" aria-hidden="true">CyberneticsPlus</span>
-          <span class="used-logo" aria-hidden="true">CapaTalk</span>
+          <span class="used-logo"><img src="/used-by-logos/microsoft.png" alt="" width="32" height="32"><span>Microsoft</span></span>
+          <span class="used-logo"><img src="/used-by-logos/witnessai.png" alt="" width="32" height="32"><span>WitnessAI</span></span>
+          <span class="used-logo"><img src="/used-by-logos/google.png" alt="" width="32" height="32"><span>Google</span></span>
+          <span class="used-logo"><img src="/used-by-logos/thinkingdata.png" alt="" width="32" height="32"><span>ThinkingData</span></span>
+          <span class="used-logo"><img src="/used-by-logos/oracle.png" alt="" width="32" height="32"><span>Oracle</span></span>
+          <span class="used-logo"><img src="/used-by-logos/cyberneticsplus.png" alt="" width="32" height="32"><span>CyberneticsPlus</span></span>
+          <span class="used-logo"><img src="/used-by-logos/cisco.png" alt="" width="32" height="32"><span>Cisco</span></span>
+          <span class="used-logo"><img src="/used-by-logos/capatalk.png" alt="" width="32" height="32"><span>CapaTalk</span></span>
+          <span class="used-logo"><img src="/used-by-logos/accenture.png" alt="" width="32" height="32"><span>Accenture</span></span>
+          <span class="used-logo"><img src="/used-by-logos/passentry.png" alt="" width="32" height="32"><span>PassEntry</span></span>
+          <span class="used-logo"><img src="/used-by-logos/cloudflare.png" alt="" width="32" height="32"><span>Cloudflare</span></span>
+          <span class="used-logo"><img src="/used-by-logos/western-university.png" alt="" width="32" height="32"><span>Western University</span></span>
+          <span class="used-logo"><img src="/used-by-logos/klarna.png" alt="" width="32" height="32"><span>Klarna</span></span>
+          <span class="used-logo"><img src="/used-by-logos/ivey.png" alt="" width="32" height="32"><span>Ivey Business School</span></span>
+          <span class="used-logo"><img src="/used-by-logos/uc-berkeley.svg" alt="" width="32" height="32"><span>UC Berkeley</span></span>
+          <span class="used-logo"><img src="/used-by-logos/northeastern.png" alt="" width="32" height="32"><span>Northeastern University</span></span>
+          <span class="used-logo" aria-hidden="true"><img src="/used-by-logos/microsoft.png" alt="" width="32" height="32"><span>Microsoft</span></span>
+          <span class="used-logo" aria-hidden="true"><img src="/used-by-logos/witnessai.png" alt="" width="32" height="32"><span>WitnessAI</span></span>
+          <span class="used-logo" aria-hidden="true"><img src="/used-by-logos/google.png" alt="" width="32" height="32"><span>Google</span></span>
+          <span class="used-logo" aria-hidden="true"><img src="/used-by-logos/thinkingdata.png" alt="" width="32" height="32"><span>ThinkingData</span></span>
+          <span class="used-logo" aria-hidden="true"><img src="/used-by-logos/oracle.png" alt="" width="32" height="32"><span>Oracle</span></span>
+          <span class="used-logo" aria-hidden="true"><img src="/used-by-logos/cyberneticsplus.png" alt="" width="32" height="32"><span>CyberneticsPlus</span></span>
+          <span class="used-logo" aria-hidden="true"><img src="/used-by-logos/cisco.png" alt="" width="32" height="32"><span>Cisco</span></span>
+          <span class="used-logo" aria-hidden="true"><img src="/used-by-logos/capatalk.png" alt="" width="32" height="32"><span>CapaTalk</span></span>
+          <span class="used-logo" aria-hidden="true"><img src="/used-by-logos/accenture.png" alt="" width="32" height="32"><span>Accenture</span></span>
+          <span class="used-logo" aria-hidden="true"><img src="/used-by-logos/passentry.png" alt="" width="32" height="32"><span>PassEntry</span></span>
+          <span class="used-logo" aria-hidden="true"><img src="/used-by-logos/cloudflare.png" alt="" width="32" height="32"><span>Cloudflare</span></span>
+          <span class="used-logo" aria-hidden="true"><img src="/used-by-logos/western-university.png" alt="" width="32" height="32"><span>Western University</span></span>
+          <span class="used-logo" aria-hidden="true"><img src="/used-by-logos/klarna.png" alt="" width="32" height="32"><span>Klarna</span></span>
+          <span class="used-logo" aria-hidden="true"><img src="/used-by-logos/ivey.png" alt="" width="32" height="32"><span>Ivey Business School</span></span>
+          <span class="used-logo" aria-hidden="true"><img src="/used-by-logos/uc-berkeley.svg" alt="" width="32" height="32"><span>UC Berkeley</span></span>
+          <span class="used-logo" aria-hidden="true"><img src="/used-by-logos/northeastern.png" alt="" width="32" height="32"><span>Northeastern University</span></span>
         </div>
       </div>
     </section>
