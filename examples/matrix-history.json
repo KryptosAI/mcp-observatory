@@ -1,0 +1,105 @@
+[
+  {
+    "date": "2026-08-05",
+    "entries": [
+      {
+        "targetId": "context7-server",
+        "packageName": "@upstash/context7-mcp",
+        "packageVersion": "3.2.5",
+        "runDate": "2026-08-05T21:19:28.230Z",
+        "gate": "pass",
+        "tools": "pass",
+        "prompts": "pass",
+        "resources": "pass",
+        "artifactPath": "./examples/artifacts/context7-server.json",
+        "reportPath": "./examples/artifacts/context7-server-report.md",
+        "command": "npx -y @upstash/context7-mcp",
+        "whyItMatters": "Zero-config third-party tools server that keeps the matrix grounded in real package usage."
+      },
+      {
+        "targetId": "everything-server",
+        "packageName": "@modelcontextprotocol/server-everything",
+        "packageVersion": "2.0.0",
+        "runDate": "2026-08-05T21:19:32.113Z",
+        "gate": "pass",
+        "tools": "pass",
+        "prompts": "pass",
+        "resources": "pass",
+        "artifactPath": "./examples/artifacts/everything-server.json",
+        "reportPath": "./examples/artifacts/everything-server-report.md",
+        "command": "npx -y @modelcontextprotocol/server-everything",
+        "whyItMatters": "Broad official reference target that exercises tools, prompts, and resources in one run."
+      },
+      {
+        "targetId": "filesystem-server",
+        "packageName": "@modelcontextprotocol/server-filesystem",
+        "packageVersion": "0.2.0",
+        "runDate": "2026-08-05T21:19:35.723Z",
+        "gate": "pass",
+        "tools": "pass",
+        "prompts": "unsupported",
+        "resources": "unsupported",
+        "artifactPath": "./examples/artifacts/filesystem-server.json",
+        "reportPath": "./examples/artifacts/filesystem-server-report.md",
+        "command": "npx -y @modelcontextprotocol/server-filesystem examples/filesystem-fixture",
+        "whyItMatters": "Baseline passing tools server that proves unsupported prompts and resources are not treated as failures."
+      },
+      {
+        "targetId": "opentofu-server",
+        "packageName": "@opentofu/opentofu-mcp-server",
+        "packageVersion": "0.1.0",
+        "runDate": "2026-08-05T21:19:38.646Z",
+        "gate": "pass",
+        "tools": "pass",
+        "prompts": "unsupported",
+        "resources": "pass",
+        "artifactPath": "./examples/artifacts/opentofu-server.json",
+        "reportPath": "./examples/artifacts/opentofu-server-report.md",
+        "command": "npx -y @opentofu/opentofu-mcp-server",
+        "whyItMatters": "Resource-capable third-party target that broadens the matrix beyond the everything server."
+      },
+      {
+        "targetId": "promptopia-server",
+        "packageName": "promptopia-mcp",
+        "packageVersion": "1.1.0",
+        "runDate": "2026-08-05T21:19:41.270Z",
+        "gate": "pass",
+        "tools": "pass",
+        "prompts": "pass",
+        "resources": "unsupported",
+        "artifactPath": "./examples/artifacts/promptopia-server.json",
+        "reportPath": "./examples/artifacts/promptopia-server-report.md",
+        "command": "npx -y promptopia-mcp",
+        "whyItMatters": "Filesystem-backed prompts server that gives the matrix a second third-party prompts-capable target."
+      },
+      {
+        "targetId": "puppeteer-server",
+        "packageName": "puppeteer-mcp-server",
+        "packageVersion": "0.1.0",
+        "runDate": "2026-08-05T21:19:47.801Z",
+        "gate": "pass",
+        "tools": "pass",
+        "prompts": "unsupported",
+        "resources": "pass",
+        "artifactPath": "./examples/artifacts/puppeteer-server.json",
+        "reportPath": "./examples/artifacts/puppeteer-server-report.md",
+        "command": "npx -y puppeteer-mcp-server",
+        "whyItMatters": "Browser-oriented third-party target that passes resources while surfacing an optional endpoint caveat."
+      },
+      {
+        "targetId": "ref-tools-server",
+        "packageName": "ref-tools-mcp",
+        "packageVersion": "3.0.3",
+        "runDate": "2026-08-05T21:19:57.679Z",
+        "gate": "pass",
+        "tools": "pass",
+        "prompts": "pass",
+        "resources": "unsupported",
+        "artifactPath": "./examples/artifacts/ref-tools-server.json",
+        "reportPath": "./examples/artifacts/ref-tools-server-report.md",
+        "command": "npx -y ref-tools-mcp",
+        "whyItMatters": "Third-party prompts-capable target that proves prompt support is not limited to official example servers."
+      }
+    ]
+  }
+]
