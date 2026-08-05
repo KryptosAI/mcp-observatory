@@ -60,13 +60,6 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: echo "::notice::Skipping matrix-history push on protected main; dashboard still uses this run's generated artifacts."
 
-      - name: Deploy dashboard to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dashboard
-          publish_branch: gh-pages
-
       - name: Deploy dashboard to Cloudflare Pages
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
