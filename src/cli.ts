@@ -26,7 +26,7 @@ import { registerEnforceCommands } from "./commands/enforce.js";
 import { registerReceiptCommands } from "./commands/receipt.js";
 import { registerRiskGraphCommands } from "./commands/risk-graph.js";
 import { registerSkillScanCommands } from "./commands/skill-scan.js";
-import { getCloudUploadEndpoint, printCloudInfo, getCloudAccessToken, cloudWhoami } from "./commercial.js";
+import { getCloudUploadEndpoint, getCloudBaseUrl, printCloudInfo, getCloudAccessToken, cloudWhoami } from "./commercial.js";
 import { runTarget } from "./index.js";
 import type { RunArtifact, TargetConfig } from "./types.js";
 import { recordEvent, buildEvent } from "./command-events.js";
@@ -357,11 +357,10 @@ async function main(): Promise<void> {
     .action(async (options: { issuer?: string; clientId?: string }) => {
       const issuer = options.issuer ?? process.env["MCP_OBSERVATORY_OIDC_ISSUER"];
       const clientId = options.clientId ?? process.env["MCP_OBSERVATORY_OIDC_CLIENT_ID"];
-      if (!issuer || !clientId) {
-        throw new Error("OIDC issuer and client ID are required. Set MCP_OBSERVATORY_OIDC_ISSUER and MCP_OBSERVATORY_OIDC_CLIENT_ID, or pass --issuer and --client-id.");
-      }
-      const { performDeviceFlow } = await import("./auth.js");
-      const token = await performDeviceFlow(issuer, clientId);
+      const { performDeviceFlow, performCloudDeviceFlow } = await import("./auth.js");
+      const token = issuer && clientId
+        ? await performDeviceFlow(issuer, clientId)
+        : await performCloudDeviceFlow(getCloudBaseUrl());
       process.stdout.write(`  ${c(ANSI.green, "✓")} Signed in as ${c(ANSI.bold, token.email ?? token.sub ?? "unknown")}\n`);
       if (token.org) {
         process.stdout.write(`    Organization: ${c(ANSI.bold, token.org)}\n`);

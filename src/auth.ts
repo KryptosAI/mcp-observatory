@@ -1,6 +1,10 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { execFile } from "node:child_process";
 import { homedir } from "node:os";
 import path from "node:path";
+import { promisify } from "node:util";
+
+const execFileAsync = promisify(execFile);
 
 const AUTH_DIR = path.join(homedir(), ".mcp-observatory");
 const TOKEN_FILE = path.join(AUTH_DIR, "auth.json");
@@ -86,6 +90,57 @@ async function discoverOidc(issuer: string): Promise<OidcDiscovery> {
   const res = await fetch(url, { signal: AbortSignal.timeout(10_000) });
   if (!res.ok) throw new Error(`OIDC discovery failed (${res.status}): ${url}`);
   return (await res.json()) as OidcDiscovery;
+}
+
+async function openBrowser(url: string): Promise<void> {
+  try {
+    const command = process.platform === "darwin" ? "open" : process.platform === "win32" ? "cmd" : "xdg-open";
+    const args = process.platform === "win32" ? ["/c", "start", "", url] : [url];
+    await execFileAsync(command, args);
+  } catch {
+    // Printing the URL is sufficient when the environment has no GUI browser.
+  }
+}
+
+export async function performCloudDeviceFlow(endpoint: string): Promise<StoredToken> {
+  const baseUrl = endpoint.replace(/\/$/, "");
+  const deviceRes = await fetch(`${baseUrl}/auth/device`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    signal: AbortSignal.timeout(15_000),
+  });
+  if (!deviceRes.ok) throw new Error(`Cloud device authorization failed (${deviceRes.status}): ${await deviceRes.text()}`);
+  const deviceData = await deviceRes.json() as { device_code: string; user_code: string; verification_uri: string; expires_in: number; interval?: number };
+  process.stdout.write(`\n  Open this URL in your browser:\n  ${deviceData.verification_uri}\n\n  Enter this code: ${deviceData.user_code}\n\n  Waiting for authorization...\n`);
+  await openBrowser(deviceData.verification_uri);
+  const deadline = Date.now() + deviceData.expires_in * 1000;
+  const interval = (deviceData.interval ?? 5) * 1000;
+  while (Date.now() < deadline) {
+    await new Promise(resolve => setTimeout(resolve, interval));
+    const tokenRes = await fetch(`${baseUrl}/auth/device/token`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ device_code: deviceData.device_code }),
+      signal: AbortSignal.timeout(10_000),
+    });
+    const tokenData = await tokenRes.json() as { access_token?: string; expires_in?: number; email?: string; org?: string; error?: string };
+    if (!tokenRes.ok) {
+      if (tokenData.error === "authorization_pending") continue;
+      throw new Error(`Cloud token exchange failed (${tokenRes.status}): ${tokenData.error ?? "unknown"}`);
+    }
+    if (!tokenData.access_token) throw new Error("Cloud token exchange returned no access token.");
+    const token: StoredToken = {
+      accessToken: tokenData.access_token,
+      expiresAt: tokenData.expires_in ? Date.now() + tokenData.expires_in * 1000 : undefined,
+      issuer: baseUrl,
+      clientId: "mcp-observatory-cli",
+      email: tokenData.email,
+      org: tokenData.org,
+    };
+    await saveToken(token);
+    return token;
+  }
+  throw new Error("Cloud device authorization timed out. Please try again.");
 }
 
 export async function performDeviceFlow(issuer: string, clientId: string): Promise<StoredToken> {

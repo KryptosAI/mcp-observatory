@@ -3,7 +3,12 @@ import { hasValidToken } from "./auth.js";
 import { getAccessToken, whoami } from "./auth.js";
 
 const CONTACT = "william@banksey.com";
-export const DEFAULT_CLOUD_UPLOAD_ENDPOINT = "https://mcp-observatory-api.kryptosai.workers.dev/api/v1/artifacts";
+export const DEFAULT_CLOUD_UPLOAD_ENDPOINT = "https://mcp-observatory-api.william-weishuhn.workers.dev/api/v1/artifacts";
+export const DEFAULT_CLOUD_BASE_URL = "https://mcp-observatory-api.william-weishuhn.workers.dev";
+
+export function getCloudBaseUrl(): string {
+  return process.env["MCP_OBSERVATORY_CLOUD_URL"]?.trim() || DEFAULT_CLOUD_BASE_URL;
+}
 
 export function getCloudUploadEndpoint(): string {
   return process.env["MCP_OBSERVATORY_CLOUD_ENDPOINT"]?.trim() || DEFAULT_CLOUD_UPLOAD_ENDPOINT;

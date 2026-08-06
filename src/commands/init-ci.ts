@@ -6,6 +6,7 @@ import { defaultRunsDirectory, findLatestSuccessfulRunArtifact, readArtifact } f
 import type { RunArtifact } from "../types.js";
 import { TOOL_VERSION } from "../version.js";
 import { quoteShell } from "./helpers.js";
+import { getCloudAccessToken, getCloudBaseUrl } from "../commercial.js";
 
 export interface InitCiOptions {
   command?: string;
@@ -28,6 +29,7 @@ export interface InitCiOptions {
   fix?: boolean;
   fromLastRun?: boolean;
   campaign?: string;
+  cloud?: boolean;
   ciProvider?: "github-actions" | "gitlab-ci" | "circleci" | "bitbucket-pipelines" | "azure-pipelines";
 }
 
@@ -142,6 +144,12 @@ function githubActionsYaml(options: InitCiOptions): string {
     `          set-status: ${statusEnabled ? "true" : "false"}`,
   );
   if (sarifEnabled) lines.push("          upload-sarif: true");
+  if (options.cloud) {
+    lines.push(
+      "          cloud-token: ${{ secrets.MCP_OBSERVATORY_CLOUD_TOKEN }}",
+      `          cloud-endpoint: ${getCloudBaseUrl()}`,
+    );
+  }
   if (!commentsEnabled && !statusEnabled && !sarifEnabled) {
     lines.push("          # Read-only by default for low-friction external PRs. Maintainers can enable PR comments/statuses later.");
   }
@@ -673,6 +681,7 @@ function addInitCiOptions(command: Command): Command {
     .option("--fix", "With --doctor, repair the adoption kit with deep, security, SARIF, and weekly scheduled checks.", false)
     .option("--from-last-run", "Generate the adoption kit from the latest successful local run artifact.", false)
     .option("--campaign <slug>", "Attach a safe campaign/source slug for attribution.")
+    .option("--cloud", "Require MCP Observatory Cloud login and upload private-repo CI artifacts.", false)
     .option("--identify <email>", "Opt-in: share your email to help us understand who uses Observatory. Never shared, never spammed.");
 }
 
@@ -737,6 +746,17 @@ function initCiAction(commandName: "init-ci" | "setup-ci"): (options: InitCiOpti
         all: true,
       };
       process.stdout.write(`Using latest successful run: ${latestPath}\n`);
+    }
+
+    if (options.cloud) {
+      let token = await getCloudAccessToken();
+      if (!token) {
+        const auth = await import("../auth.js");
+        const signedIn = await auth.performCloudDeviceFlow(getCloudBaseUrl());
+        token = signedIn.accessToken;
+      }
+      if (!token) throw new Error("Cloud authentication is required before writing private-repo CI.");
+      process.stdout.write("Cloud authentication confirmed. Add the token to your repository as MCP_OBSERVATORY_CLOUD_TOKEN.\n");
     }
 
     const result = await initCi(options);

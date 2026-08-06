@@ -57,6 +57,14 @@ inputs:
     description: "MCP Observatory npm version to install. Use 'latest' for the newest release or pin a version for reproducible CI."
     required: false
     default: "latest"
+  cloud-token:
+    description: "MCP Observatory Cloud token for private-repo fleet reporting. Store this in a GitHub Actions secret."
+    required: false
+    default: ""
+  cloud-endpoint:
+    description: "MCP Observatory Cloud API base URL."
+    required: false
+    default: "https://mcp-observatory-api.william-weishuhn.workers.dev"
 
 outputs:
   gate:
@@ -181,6 +189,22 @@ runs:
       uses: github/codeql-action/upload-sarif@v4
       with:
         sarif_file: ${{ steps.run.outputs.sarif_path }}
+
+    - name: Upload to MCP Observatory Cloud
+      if: inputs.cloud-token != '' && steps.run.outputs.artifact_path != ''
+      shell: bash
+      env:
+        MCP_OBSERVATORY_CLOUD_TOKEN: ${{ inputs.cloud-token }}
+        CLOUD_ENDPOINT: ${{ inputs.cloud-endpoint }}
+        ARTIFACT_PATH: ${{ steps.run.outputs.artifact_path }}
+      run: |
+        if [ -f "$ARTIFACT_PATH" ]; then
+          npx @kryptosai/mcp-observatory cloud upload "$ARTIFACT_PATH" --endpoint "${CLOUD_ENDPOINT}/api/v1/artifacts"
+        else
+          find "$ARTIFACT_PATH" -type f -name '*.json' -print0 | while IFS= read -r -d '' artifact; do
+            npx @kryptosai/mcp-observatory cloud upload "$artifact" --endpoint "${CLOUD_ENDPOINT}/api/v1/artifacts"
+          done
+        fi
 
     - name: Verify against baseline
       if: inputs.baseline != ''
