@@ -175,6 +175,7 @@ body:not(.evidence-theme),body.marketing-theme{
   --md-sys-color-on-tertiary:#ffffff;
   --md-sys-color-tertiary-container:#dce2ff;
   --md-sys-color-on-tertiary-container:#07183b;
+  --md-sys-color-error:#b3261e;
   --md-sys-color-surface:#f9fbfc;
   --md-sys-color-surface-dim:#d9e1e3;
   --md-sys-color-surface-bright:#f9fbfc;
