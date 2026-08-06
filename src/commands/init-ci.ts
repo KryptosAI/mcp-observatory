@@ -94,7 +94,7 @@ function githubActionsYaml(options: InitCiOptions): string {
   const statusEnabled = options.setStatus === true;
   const sarifEnabled = options.sarif === true;
   const schedule = normalizeSchedule(options.schedule);
-  const actionRef = options.actionRef?.trim() || DEFAULT_ACTION_REF;
+  const actionRef = options.actionRef?.trim() || (options.cloud ? "main" : DEFAULT_ACTION_REF);
   const lines = [
     "name: MCP Observatory",
     "",
