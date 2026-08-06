@@ -72,6 +72,7 @@ jobs:
 
       - name: Check npm trusted publishing
         id: npm-oidc
+        continue-on-error: true
         if: steps.npm-auth.outputs.valid != 'true'
         run: |
           oidc_response="$(curl -sSf \
