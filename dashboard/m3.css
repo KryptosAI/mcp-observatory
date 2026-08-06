@@ -114,7 +114,7 @@ a{color:var(--md-sys-color-primary)}
 .evaluation-proof-note{margin:12px 0 0;color:var(--md-sys-color-on-surface-variant)!important;font:var(--md-sys-typescale-label-medium);opacity:.88}
 .evaluation-proof-note strong{color:var(--md-sys-color-primary)}
 
-.hero{padding:48px 0 56px!important;gap:48px!important}
+.hero{padding:40px 0 40px!important;gap:48px!important}
 .eyebrow{display:flex;align-items:center;gap:8px;color:var(--md-sys-color-secondary);font:var(--md-sys-typescale-label-medium);letter-spacing:.08em;text-transform:uppercase}
 h1{color:var(--md-sys-color-on-surface);font:var(--md-sys-typescale-display-medium)!important;letter-spacing:0!important}
 h1 span{color:var(--md-sys-color-primary);background:none!important}
@@ -126,6 +126,12 @@ h2{color:var(--md-sys-color-on-surface)}
 .score,.result-score,.stat .number,.grade-letter{color:var(--md-sys-color-primary)}
 .bar,.result-bar{background:var(--md-sys-color-surface-container-highest)!important;border-radius:var(--md-sys-shape-corner-full)}
 .bar span,.result-bar span{background:var(--md-sys-color-primary)!important}
+.result-head>div{min-width:0}
+.result-head .eyebrow{display:block;margin:0 0 12px;white-space:nowrap}
+.result-score{margin:0;line-height:.95}
+.finding-row{color:var(--md-sys-color-on-surface-variant)}
+.finding-row b{color:var(--md-sys-color-on-surface)}
+.finding-row b[style]{color:var(--md-sys-color-error)!important}
 .blocked,.evidence-chip,.badge{border-radius:var(--md-sys-shape-corner-small)!important;background:var(--md-sys-color-error-container)!important;color:var(--md-sys-color-on-error-container)!important}
 
 .audience a,.team-points div,.card-meta span{min-height:48px;display:block;padding:12px 16px;border:1px solid var(--md-sys-color-outline-variant);border-radius:var(--md-sys-shape-corner-medium);background:var(--md-sys-color-surface-container-low);color:var(--md-sys-color-on-surface-variant)}
@@ -264,6 +270,11 @@ body:not(.evidence-theme) .result-card,body.marketing-theme .result-card{backgro
   .logo-strip-logo{flex:0 0 128px}
   .final-cta{align-items:flex-start;flex-direction:column}
   .final-cta-actions{justify-content:flex-start;min-width:0}
+}
+@media(min-width:901px){
+  .hero-product{min-height:300px}
+  .logo-strip-logos{min-height:72px;padding-top:16px;padding-bottom:16px}
+  .product-proof{margin-top:32px}
 }
 @media(max-width:600px){
   .hero-product{min-height:320px;padding:20px}
