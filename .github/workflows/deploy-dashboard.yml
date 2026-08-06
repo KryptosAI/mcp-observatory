@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, dashboard-deploy]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
