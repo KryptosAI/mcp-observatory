@@ -20,7 +20,7 @@ jobs:
           node-version: 22
       - run: npx all-contributors-cli generate
       - name: Create PR if changed
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: "chore: regenerate CONTRIBUTORS.md"
           title: "chore: update contributor list"
