@@ -319,6 +319,30 @@ jobs:
           set-status: false
 ```
 
+### GitLab CI
+
+Runs the same `test` scan on merge requests and on `main`, publishing the SARIF as a GitLab SAST report so findings appear in the merge request security widget. This matches what `setup-ci --ci-provider gitlab-ci` generates.
+
+```yaml
+# .gitlab-ci.yml
+mcp-observatory:
+  image: node:22
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == 'main'
+  script:
+    - npx @kryptosai/mcp-observatory test npx -y my-mcp-server --deep --security --sarif mcp-observatory.sarif
+  artifacts:
+    reports:
+      sast: mcp-observatory.sarif
+```
+
+Or let the CLI write it for you:
+
+```bash
+npx @kryptosai/mcp-observatory setup-ci --ci-provider gitlab-ci --command "npx -y my-mcp-server"
+```
+
 Action inputs:
 
 | Input | Description | Default |
