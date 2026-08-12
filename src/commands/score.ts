@@ -4,6 +4,8 @@ import type { Command } from "commander";
 
 import { generateBadgeSvg } from "../badge.js";
 import { auditScore, resolveAuditTarget, runAudit } from "../audit.js";
+import { getTrustTier } from "../score.js";
+import type { TrustTier } from "../types.js";
 import {
   runTarget,
   writeRunArtifact,
@@ -44,6 +46,20 @@ function extractTrailingProfileScoreFlags(
     }
   }
   return { commandArgs, options: nextOptions };
+}
+
+/** Terminal colour per trust tier. Metal-ish, and distinct from the grade colour. */
+const TIER_COLORS: Record<TrustTier, string> = {
+  platinum: ANSI.cyan,
+  gold: ANSI.yellow,
+  silver: ANSI.blue,
+  bronze: ANSI.dim,
+  unrated: ANSI.dim,
+};
+
+/** "gold" -> "Gold". The tier is stored lowercase but reads as a label. */
+function formatTier(tier: TrustTier): string {
+  return tier.charAt(0).toUpperCase() + tier.slice(1);
 }
 
 export function registerScoreCommands(program: Command): void {
@@ -154,7 +170,9 @@ export function registerScoreCommands(program: Command): void {
         : score.grade === "C" ? ANSI.yellow
         : ANSI.red;
 
-      process.stdout.write(c(ANSI.bold, `  MCP Health Score: ${c(gradeColor, `${score.overall}/100`)} (${c(gradeColor, score.grade)})\n\n`));
+      const tier = getTrustTier(score.overall);
+
+      process.stdout.write(c(ANSI.bold, `  MCP Health Score: ${c(gradeColor, `${score.overall}/100`)} (${c(gradeColor, score.grade)})  Tier: ${c(TIER_COLORS[tier], formatTier(tier))}\n\n`));
 
       for (const dim of score.dimensions) {
         const filled = Math.round(dim.score / 5);
