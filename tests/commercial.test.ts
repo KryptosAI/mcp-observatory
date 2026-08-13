@@ -45,7 +45,9 @@ describe("commercial cloud messaging", () => {
     expect(cloudUpgradeLine("security")).toContain("hosted security reports");
     expect(cloudUpgradeLine("fleet")).toContain("MCP fleet visibility");
     expect(cloudUpgradeLine("general")).toContain("hosted reporting");
-    expect(cloudUpgradeLine()).toContain("mcp-observatory cloud");
+    expect(cloudUpgradeLine()).toContain("https://app.mcp-observatory.com/pricing?plan=individual");
+    expect(cloudUpgradeLine("ci")).toContain("https://app.mcp-observatory.com/pricing?plan=team");
+    expect(cloudUpgradeLine()).toContain("mcp-observatory cloud login");
   });
 
   it("prints a CTA only when a cloud token is absent", () => {
@@ -85,6 +87,8 @@ describe("commercial cloud messaging", () => {
     printCloudInfo();
 
     expect(stdout.output()).toContain("MCP Observatory Cloud");
+    expect(stdout.output()).toContain("Individual Pro: $29/month");
+    expect(stdout.output()).toContain("pricing?plan=team");
     expect(stdout.output()).toContain("Team Pilot");
     expect(stdout.output()).toContain("cloud upload .mcp-observatory/runs/<run>.json");
     expect(stdout.output()).toContain("william@banksey.com");
