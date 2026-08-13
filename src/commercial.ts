@@ -5,6 +5,7 @@ import { getAccessToken, whoami } from "./auth.js";
 const CONTACT = "william@banksey.com";
 export const DEFAULT_CLOUD_UPLOAD_ENDPOINT = "https://app.mcp-observatory.com/api/v1/artifacts";
 export const DEFAULT_CLOUD_BASE_URL = "https://app.mcp-observatory.com";
+export const SELF_SERVE_PRICING_URL = `${DEFAULT_CLOUD_BASE_URL}/pricing`;
 
 export function getCloudBaseUrl(): string {
   return process.env["MCP_OBSERVATORY_CLOUD_URL"]?.trim() || DEFAULT_CLOUD_BASE_URL;
@@ -38,10 +39,13 @@ export function cloudUpgradeLine(context: "ci" | "security" | "fleet" | "general
         : context === "fleet"
           ? "MCP fleet visibility, drift reports, and production support"
           : "hosted reporting, security review, and enterprise support";
+  const plan = context === "ci" || context === "fleet" ? "team" : "individual";
+  const planLabel = plan === "team" ? "Team · $299/month" : "Individual Pro · $29/month";
 
   return [
     c(ANSI.dim, `  Production MCP teams: ${value}.`),
-    c(ANSI.dim, `  Run ${c(ANSI.cyan, `${bin} cloud`)} or contact ${CONTACT}.`),
+    c(ANSI.dim, `  Start ${c(ANSI.cyan, planLabel)}: ${c(ANSI.cyan, `${SELF_SERVE_PRICING_URL}?plan=${plan}`)}`),
+    c(ANSI.dim, `  Already subscribed? Run ${c(ANSI.cyan, `${bin} cloud login`)} to connect this CLI.`),
   ].join("\n");
 }
 
@@ -58,6 +62,11 @@ export function printCloudInfo(): void {
       "",
       "Free local OSS use remains available. Production teams can add hosted reporting,",
       "private-repo CI, security reports, certification, support, and MCP fleet visibility.",
+      "",
+      "Self-serve hosted plans:",
+      `  Individual Pro: $29/month — ${SELF_SERVE_PRICING_URL}?plan=individual`,
+      `  Team:           $299/month — ${SELF_SERVE_PRICING_URL}?plan=team`,
+      `  Already subscribed? Run ${getBinName()} cloud login to connect this CLI.`,
       "",
       "Pilot pricing:",
       "  Team Pilot:       starts at $299/month",
