@@ -1,9 +1,21 @@
 {
-  "generatedAt": "2026-07-18T03:07:59.109Z",
+  "generatedAt": "2026-08-15T00:50:58.813Z",
   "totalServers": 175,
   "categories": [
     {
+      "name": "Communication",
+      "count": 12
+    },
+    {
       "name": "Database",
+      "count": 7
+    },
+    {
+      "name": "Healthcare",
+      "count": 7
+    },
+    {
+      "name": "Payments",
       "count": 6
     },
     {
@@ -15,10 +27,6 @@
       "count": 5
     },
     {
-      "name": "Communication",
-      "count": 5
-    },
-    {
       "name": "Project Management",
       "count": 5
     },
@@ -27,7 +35,11 @@
       "count": 4
     },
     {
-      "name": "Communication / Pakistani",
+      "name": "Education",
+      "count": 4
+    },
+    {
+      "name": "Travel",
       "count": 4
     },
     {
@@ -35,23 +47,19 @@
       "count": 3
     },
     {
+      "name": "Weather",
+      "count": 3
+    },
+    {
       "name": "Cloud",
       "count": 3
     },
     {
-      "name": "Payments / Indian Fintech",
+      "name": "E-commerce",
       "count": 3
     },
     {
-      "name": "Communication / Indian",
-      "count": 3
-    },
-    {
-      "name": "Healthcare / Pakistan Gov",
-      "count": 3
-    },
-    {
-      "name": "Payments / Pakistani Fintech",
+      "name": "Identity",
       "count": 3
     },
     {
@@ -95,15 +103,7 @@
       "count": 2
     },
     {
-      "name": "Healthcare",
-      "count": 2
-    },
-    {
       "name": "Legal",
-      "count": 2
-    },
-    {
-      "name": "Education",
       "count": 2
     },
     {
@@ -111,11 +111,7 @@
       "count": 2
     },
     {
-      "name": "Travel",
-      "count": 2
-    },
-    {
-      "name": "Weather",
+      "name": "Sports",
       "count": 2
     },
     {
@@ -131,7 +127,11 @@
       "count": 2
     },
     {
-      "name": "E-commerce",
+      "name": "CRM",
+      "count": 2
+    },
+    {
+      "name": "API Testing / Development",
       "count": 2
     },
     {
@@ -139,15 +139,11 @@
       "count": 2
     },
     {
-      "name": "Identity / Indian Gov",
+      "name": "Tax",
       "count": 2
     },
     {
-      "name": "Maps / Indian",
-      "count": 2
-    },
-    {
-      "name": "Healthcare / Indian Gov",
+      "name": "Maps",
       "count": 2
     },
     {
@@ -235,10 +231,6 @@
       "count": 1
     },
     {
-      "name": "Sports",
-      "count": 1
-    },
-    {
       "name": "Developer Tools / Linting",
       "count": 1
     },
@@ -260,10 +252,6 @@
     },
     {
       "name": "Privacy / Data Governance",
-      "count": 1
-    },
-    {
-      "name": "CRM",
       "count": 1
     },
     {
@@ -292,10 +280,6 @@
     },
     {
       "name": "Security",
-      "count": 1
-    },
-    {
-      "name": "API Testing / Development",
       "count": 1
     },
     {
@@ -343,111 +327,59 @@
       "count": 1
     },
     {
-      "name": "Finance / Indian Markets",
+      "name": "Finance",
       "count": 1
     },
     {
-      "name": "Business / Indian Gov",
+      "name": "Business / Government",
       "count": 1
     },
     {
-      "name": "Tax / Indian Gov",
+      "name": "Internal Tools",
       "count": 1
     },
     {
-      "name": "API Testing / Indian Development",
+      "name": "Backend",
       "count": 1
     },
     {
-      "name": "Database / Indian OSS",
+      "name": "Scheduling",
       "count": 1
     },
     {
-      "name": "Internal Tools / Indian OSS",
+      "name": "Food",
       "count": 1
     },
     {
-      "name": "Backend / Indian OSS",
+      "name": "Environment",
       "count": 1
     },
     {
-      "name": "CRM / Indian OSS",
+      "name": "Geospatial",
       "count": 1
     },
     {
-      "name": "Scheduling / Indian OSS",
+      "name": "Social Welfare",
       "count": 1
     },
     {
-      "name": "Food / Indian",
+      "name": "Maps / Logistics",
       "count": 1
     },
     {
-      "name": "Travel / Indian Railways",
+      "name": "Jobs",
       "count": 1
     },
     {
-      "name": "Environment / Indian",
+      "name": "Food Delivery",
       "count": 1
     },
     {
-      "name": "Geospatial / Indian Gov",
+      "name": "Classifieds",
       "count": 1
     },
     {
-      "name": "Social Welfare / Pakistan Gov",
-      "count": 1
-    },
-    {
-      "name": "Weather / Pakistan Gov",
-      "count": 1
-    },
-    {
-      "name": "Maps / Logistics / Pakistani",
-      "count": 1
-    },
-    {
-      "name": "Identity / Pakistani Gov",
-      "count": 1
-    },
-    {
-      "name": "Tax / Pakistani Gov",
-      "count": 1
-    },
-    {
-      "name": "Education / Pakistan",
-      "count": 1
-    },
-    {
-      "name": "Education / Pakistan Gov",
-      "count": 1
-    },
-    {
-      "name": "Sports / Pakistan",
-      "count": 1
-    },
-    {
-      "name": "Mountaineering / Pakistan",
-      "count": 1
-    },
-    {
-      "name": "Jobs / Pakistani",
-      "count": 1
-    },
-    {
-      "name": "Food Delivery / Pakistani",
-      "count": 1
-    },
-    {
-      "name": "E-commerce / Pakistani",
-      "count": 1
-    },
-    {
-      "name": "Classifieds / Pakistani",
-      "count": 1
-    },
-    {
-      "name": "Auto Marketplace / Pakistani",
+      "name": "Auto Marketplace",
       "count": 1
     }
   ],
@@ -465,7 +397,7 @@
       "toolCount": 13,
       "promptCount": 4,
       "resourceCount": 7,
-      "lastScanned": "2026-07-17T00:36:18.811Z",
+      "lastScanned": "2026-07-22T21:35:55.985Z",
       "repo": "https://github.com/modelcontextprotocol/servers"
     },
     {
@@ -481,7 +413,7 @@
       "toolCount": 1,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:20.107Z",
+      "lastScanned": "2026-07-22T21:35:59.087Z",
       "repo": "https://github.com/modelcontextprotocol/servers"
     },
     {
@@ -497,7 +429,7 @@
       "toolCount": 9,
       "promptCount": 0,
       "resourceCount": 1,
-      "lastScanned": "2026-07-17T00:36:20.771Z",
+      "lastScanned": "2026-07-22T21:36:00.978Z",
       "repo": "https://github.com/modelcontextprotocol/servers"
     },
     {
@@ -513,7 +445,7 @@
       "toolCount": 14,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:21.413Z",
+      "lastScanned": "2026-07-22T21:36:02.456Z",
       "repo": "https://github.com/modelcontextprotocol/servers"
     },
     {
@@ -529,7 +461,7 @@
       "toolCount": 14,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:22.007Z",
+      "lastScanned": "2026-07-22T21:36:04.854Z",
       "repo": "https://github.com/modelcontextprotocol/servers"
     },
     {
@@ -545,7 +477,7 @@
       "toolCount": 2,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:22.609Z",
+      "lastScanned": "2026-07-22T21:36:05.555Z",
       "repo": "https://github.com/upstash/context7"
     },
     {
@@ -561,7 +493,7 @@
       "toolCount": 7,
       "promptCount": 1,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:23.563Z",
+      "lastScanned": "2026-07-22T21:36:07.368Z",
       "repo": "https://www.npmjs.com/package/promptopia-mcp"
     },
     {
@@ -577,7 +509,7 @@
       "toolCount": 2,
       "promptCount": 2,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:26.429Z",
+      "lastScanned": "2026-07-22T21:36:11.247Z",
       "repo": "https://www.npmjs.com/package/ref-tools-mcp"
     },
     {
@@ -593,7 +525,7 @@
       "toolCount": 28,
       "promptCount": 1,
       "resourceCount": 1,
-      "lastScanned": "2026-07-17T00:36:27.019Z",
+      "lastScanned": "2026-07-22T21:36:18.823Z",
       "repo": "https://www.npmjs.com/package/@cyanheads/git-mcp-server"
     },
     {
@@ -609,7 +541,7 @@
       "toolCount": 26,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:28.068Z",
+      "lastScanned": "2026-07-22T21:36:21.269Z",
       "repo": "https://github.com/modelcontextprotocol/servers"
     },
     {
@@ -625,7 +557,7 @@
       "toolCount": 10,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:28.663Z",
+      "lastScanned": "2026-07-22T21:36:23.516Z",
       "repo": "https://github.com/UI5/mcp-server"
     },
     {
@@ -641,7 +573,7 @@
       "toolCount": 5,
       "promptCount": 0,
       "resourceCount": 1,
-      "lastScanned": "2026-07-17T00:36:30.038Z",
+      "lastScanned": "2026-07-22T21:36:29.288Z",
       "repo": "https://github.com/opentofu/opentofu-mcp-server"
     },
     {
@@ -657,7 +589,7 @@
       "toolCount": 8,
       "promptCount": 0,
       "resourceCount": 1,
-      "lastScanned": "2026-07-17T00:36:30.838Z",
+      "lastScanned": "2026-07-22T21:36:31.152Z",
       "repo": "https://www.npmjs.com/package/puppeteer-mcp-server"
     },
     {
@@ -673,7 +605,7 @@
       "toolCount": 12,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:32.701Z",
+      "lastScanned": "2026-07-22T21:36:37.089Z",
       "repo": "https://github.com/BrowserMCP/mcp"
     },
     {
@@ -689,7 +621,7 @@
       "toolCount": 24,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:33.428Z",
+      "lastScanned": "2026-07-22T21:36:38.834Z",
       "repo": "https://github.com/microsoft/playwright-mcp"
     },
     {
@@ -705,7 +637,7 @@
       "toolCount": 27,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:34.877Z",
+      "lastScanned": "2026-07-22T21:36:43.015Z",
       "repo": "https://github.com/antvis/mcp-server-chart"
     },
     {
@@ -721,7 +653,7 @@
       "toolCount": 33,
       "promptCount": 0,
       "resourceCount": 1,
-      "lastScanned": "2026-07-17T00:36:35.804Z",
+      "lastScanned": "2026-07-22T21:36:45.277Z",
       "repo": "https://github.com/executeautomation/mcp-playwright"
     },
     {
@@ -737,7 +669,7 @@
       "toolCount": 23,
       "promptCount": 1,
       "resourceCount": 5,
-      "lastScanned": "2026-07-17T00:36:36.918Z",
+      "lastScanned": "2026-07-22T21:36:53.411Z",
       "repo": "https://github.com/Flux159/mcp-server-kubernetes"
     },
     {
@@ -753,7 +685,7 @@
       "toolCount": 29,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:38.730Z",
+      "lastScanned": "2026-07-22T21:36:59.053Z",
       "repo": "https://github.com/ChromeDevTools/chrome-devtools-mcp"
     },
     {
@@ -767,7 +699,7 @@
       "toolCount": 0,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:40.236Z",
+      "lastScanned": "2026-07-22T21:37:03.140Z",
       "repo": "https://github.com/modelcontextprotocol/servers",
       "fatalError": "Could not establish a plain stdio MCP session for target `slack-server`."
     },
@@ -782,7 +714,7 @@
       "toolCount": 0,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:40.832Z",
+      "lastScanned": "2026-07-22T21:37:04.288Z",
       "repo": "https://github.com/modelcontextprotocol/servers",
       "fatalError": "Could not establish a plain stdio MCP session for target `google-drive-server`."
     },
@@ -797,7 +729,7 @@
       "toolCount": 0,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:41.239Z",
+      "lastScanned": "2026-07-22T21:37:04.727Z",
       "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-mongodb",
       "fatalError": "Could not establish a plain stdio MCP session for target `mongodb-server`."
     },
@@ -812,7 +744,7 @@
       "toolCount": 0,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:41.847Z",
+      "lastScanned": "2026-07-22T21:37:05.223Z",
       "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-cloudflare",
       "fatalError": "Could not establish a plain stdio MCP session for target `cloudflare-server`."
     },
@@ -827,7 +759,7 @@
       "toolCount": 0,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:42.256Z",
+      "lastScanned": "2026-07-22T21:37:05.638Z",
       "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-qdrant",
       "fatalError": "Could not establish a plain stdio MCP session for target `qdrant-server`."
     },
@@ -842,7 +774,7 @@
       "toolCount": 0,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:42.758Z",
+      "lastScanned": "2026-07-22T21:37:06.047Z",
       "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-vercel-ai",
       "fatalError": "Could not establish a plain stdio MCP session for target `vercel-ai-server`."
     },
@@ -2393,7 +2325,7 @@
       "id": "stock-nse-india",
       "name": "Stock NSE India",
       "packageName": "stock-nse-india-mcp",
-      "category": "Finance / Indian Markets",
+      "category": "Finance",
       "riskClass": "Financial data retrieval (Indian markets)",
       "failureClass": "NSE market data boundary",
       "gate": "fail",
@@ -2408,7 +2340,7 @@
       "id": "razorpay-mcp",
       "name": "Razorpay MCP",
       "packageName": "razorpay-mcp",
-      "category": "Payments / Indian Fintech",
+      "category": "Payments",
       "riskClass": "Indian payment gateway API access",
       "failureClass": "Payment/refund/settlement boundary",
       "gate": "fail",
@@ -2423,7 +2355,7 @@
       "id": "paytm-mcp",
       "name": "Paytm MCP",
       "packageName": "paytm-mcp",
-      "category": "Payments / Indian Fintech",
+      "category": "Payments",
       "riskClass": "Indian wallet/payment API access",
       "failureClass": "Wallet/payment gateway boundary",
       "gate": "fail",
@@ -2438,7 +2370,7 @@
       "id": "upi-mcp",
       "name": "UPI MCP",
       "packageName": "upi-mcp",
-      "category": "Payments / Indian Fintech",
+      "category": "Payments",
       "riskClass": "Unified Payments Interface access",
       "failureClass": "UPI transaction/bank boundary",
       "healthScore": 85,
@@ -2454,7 +2386,7 @@
       "id": "aadhaar-mcp",
       "name": "Aadhaar MCP",
       "packageName": "aadhaar-mcp",
-      "category": "Identity / Indian Gov",
+      "category": "Identity",
       "riskClass": "Biometric identity API access",
       "failureClass": "Identity verification/KYC boundary",
       "gate": "fail",
@@ -2469,7 +2401,7 @@
       "id": "digilocker-mcp",
       "name": "DigiLocker MCP",
       "packageName": "digilocker-mcp",
-      "category": "Identity / Indian Gov",
+      "category": "Identity",
       "riskClass": "Government document wallet access",
       "failureClass": "Document retrieval/verification boundary",
       "gate": "fail",
@@ -2484,7 +2416,7 @@
       "id": "udyam-mcp",
       "name": "Udyam MCP",
       "packageName": "udyam-mcp",
-      "category": "Business / Indian Gov",
+      "category": "Business / Government",
       "riskClass": "MSME business registration access",
       "failureClass": "Business registration/verification boundary",
       "gate": "fail",
@@ -2499,7 +2431,7 @@
       "id": "gst-mcp",
       "name": "GST MCP",
       "packageName": "gst-mcp",
-      "category": "Tax / Indian Gov",
+      "category": "Tax",
       "riskClass": "Tax filing and invoice API access",
       "failureClass": "GST return/invoice/billing boundary",
       "gate": "fail",
@@ -2514,7 +2446,7 @@
       "id": "whatsapp-business-mcp",
       "name": "WhatsApp Business MCP",
       "packageName": "whatsapp-business-mcp",
-      "category": "Communication / Indian",
+      "category": "Communication",
       "riskClass": "Business messaging platform access",
       "failureClass": "Message/template/contact boundary",
       "gate": "fail",
@@ -2529,7 +2461,7 @@
       "id": "gupshup-mcp",
       "name": "Gupshup MCP",
       "packageName": "gupshup-mcp",
-      "category": "Communication / Indian",
+      "category": "Communication",
       "riskClass": "Indian messaging platform access",
       "failureClass": "Multi-channel message boundary",
       "gate": "fail",
@@ -2544,7 +2476,7 @@
       "id": "textlocal-mcp",
       "name": "Textlocal MCP",
       "packageName": "textlocal-mcp",
-      "category": "Communication / Indian",
+      "category": "Communication",
       "riskClass": "Indian SMS gateway access",
       "failureClass": "SMS/campaign boundary",
       "gate": "fail",
@@ -2559,7 +2491,7 @@
       "id": "mapmyindia-mcp",
       "name": "MapMyIndia MCP",
       "packageName": "mapmyindia-mcp",
-      "category": "Maps / Indian",
+      "category": "Maps",
       "riskClass": "Indian geospatial data access",
       "failureClass": "Map/routing/geocode boundary",
       "gate": "fail",
@@ -2574,7 +2506,7 @@
       "id": "ola-maps-mcp",
       "name": "Ola Maps MCP",
       "packageName": "ola-maps-mcp",
-      "category": "Maps / Indian",
+      "category": "Maps",
       "riskClass": "Indian ride/mapping API access",
       "failureClass": "Maps/routing/ride boundary",
       "gate": "fail",
@@ -2587,10 +2519,10 @@
     },
     {
       "id": "postman-india-region",
-      "name": "Postman MCP (Indian region)",
+      "name": "Postman MCP",
       "packageName": "@postman/postman-mcp-server",
-      "category": "API Testing / Indian Development",
-      "riskClass": "API collection and testing access (Indian-origin)",
+      "category": "API Testing / Development",
+      "riskClass": "API collection and testing access",
       "failureClass": "Collection/environment/request boundary",
       "gate": "fail",
       "toolCount": 0,
@@ -2604,7 +2536,7 @@
       "id": "hasura-mcp",
       "name": "Hasura MCP",
       "packageName": "hasura-mcp",
-      "category": "Database / Indian OSS",
+      "category": "Database",
       "riskClass": "GraphQL engine and database access",
       "failureClass": "GraphQL/Database query boundary",
       "gate": "fail",
@@ -2619,7 +2551,7 @@
       "id": "tooljet-mcp",
       "name": "ToolJet MCP",
       "packageName": "tooljet-mcp",
-      "category": "Internal Tools / Indian OSS",
+      "category": "Internal Tools",
       "riskClass": "Low-code platform API access",
       "failureClass": "App/datasource/workflow boundary",
       "gate": "fail",
@@ -2634,7 +2566,7 @@
       "id": "appwrite-mcp",
       "name": "Appwrite MCP",
       "packageName": "appwrite-mcp",
-      "category": "Backend / Indian OSS",
+      "category": "Backend",
       "riskClass": "Backend-as-a-service API access",
       "failureClass": "Database/auth/storage/function boundary",
       "gate": "fail",
@@ -2649,7 +2581,7 @@
       "id": "chatwoot-mcp",
       "name": "Chatwoot MCP",
       "packageName": "chatwoot-mcp",
-      "category": "CRM / Indian OSS",
+      "category": "CRM",
       "riskClass": "Customer engagement platform access",
       "failureClass": "Conversation/contact/inbox boundary",
       "gate": "fail",
@@ -2664,7 +2596,7 @@
       "id": "cal-com-mcp",
       "name": "Cal.com MCP",
       "packageName": "cal-com-mcp",
-      "category": "Scheduling / Indian OSS",
+      "category": "Scheduling",
       "riskClass": "Scheduling and calendar API access",
       "failureClass": "Booking/availability/calendar boundary",
       "gate": "fail",
@@ -2679,7 +2611,7 @@
       "id": "indian-food-nutrition-mcp",
       "name": "Indian Food Nutrition MCP",
       "packageName": "indian-food-nutrition-mcp",
-      "category": "Food / Indian",
+      "category": "Food",
       "riskClass": "Indian cuisine nutrition data access",
       "failureClass": "Nutrition/ingredient/dietary boundary",
       "healthScore": 85,
@@ -2695,7 +2627,7 @@
       "id": "healthcare-ayushman-bharat-mcp",
       "name": "Ayushman Bharat Healthcare MCP",
       "packageName": "healthcare-ayushman-bharat-mcp",
-      "category": "Healthcare / Indian Gov",
+      "category": "Healthcare",
       "riskClass": "Public healthcare scheme API access",
       "failureClass": "Patient/claim/hospital boundary",
       "gate": "fail",
@@ -2710,7 +2642,7 @@
       "id": "irctc-mcp",
       "name": "IRCTC MCP",
       "packageName": "irctc-mcp",
-      "category": "Travel / Indian Railways",
+      "category": "Travel",
       "riskClass": "Indian Railways booking API access",
       "failureClass": "Ticket booking/PNR/availability boundary",
       "gate": "fail",
@@ -2725,7 +2657,7 @@
       "id": "aqi-india-mcp",
       "name": "AQI India MCP",
       "packageName": "aqi-india-mcp",
-      "category": "Environment / Indian",
+      "category": "Environment",
       "riskClass": "Indian air quality data access",
       "failureClass": "Environmental data/health boundary",
       "gate": "fail",
@@ -2740,7 +2672,7 @@
       "id": "cowin-mcp",
       "name": "CoWIN MCP",
       "packageName": "cowin-mcp",
-      "category": "Healthcare / Indian Gov",
+      "category": "Healthcare",
       "riskClass": "Vaccination platform API access",
       "failureClass": "Beneficiary/dose/certificate boundary",
       "gate": "fail",
@@ -2755,7 +2687,7 @@
       "id": "bhuvan-mcp",
       "name": "Bhuvan MCP",
       "packageName": "bhuvan-mcp",
-      "category": "Geospatial / Indian Gov",
+      "category": "Geospatial",
       "riskClass": "ISRO geospatial platform access",
       "failureClass": "Satellite imagery/geospatial data boundary",
       "gate": "fail",
@@ -2770,7 +2702,7 @@
       "id": "sehat-sahulat-mcp",
       "name": "Sehat Sahulat MCP",
       "packageName": "sehat-sahulat-mcp",
-      "category": "Healthcare / Pakistan Gov",
+      "category": "Healthcare",
       "riskClass": "Public health insurance API access",
       "failureClass": "Insurance claim/beneficiary boundary",
       "gate": "fail",
@@ -2785,7 +2717,7 @@
       "id": "ehsaas-mcp",
       "name": "Ehsaas MCP",
       "packageName": "ehsaas-mcp",
-      "category": "Social Welfare / Pakistan Gov",
+      "category": "Social Welfare",
       "riskClass": "Social welfare program API access",
       "failureClass": "Beneficiary/cash-transfer boundary",
       "gate": "fail",
@@ -2800,7 +2732,7 @@
       "id": "pims-mcp",
       "name": "PIMS MCP",
       "packageName": "pims-mcp",
-      "category": "Healthcare / Pakistan Gov",
+      "category": "Healthcare",
       "riskClass": "Public hospital system API access",
       "failureClass": "Patient record/hospital management boundary",
       "gate": "fail",
@@ -2815,7 +2747,7 @@
       "id": "punjab-health-mcp",
       "name": "Punjab Health MCP",
       "packageName": "punjab-health-mcp",
-      "category": "Healthcare / Pakistan Gov",
+      "category": "Healthcare",
       "riskClass": "Provincial health department API access",
       "failureClass": "Health service/disease surveillance boundary",
       "gate": "fail",
@@ -2830,7 +2762,7 @@
       "id": "pakistan-weather-mcp",
       "name": "Pakistan Weather MCP",
       "packageName": "pakistan-weather-mcp",
-      "category": "Weather / Pakistan Gov",
+      "category": "Weather",
       "riskClass": "National meteorological data access",
       "failureClass": "Weather/forecast/disaster boundary",
       "gate": "fail",
@@ -2845,7 +2777,7 @@
       "id": "jazz-mcp",
       "name": "Jazz MCP",
       "packageName": "jazz-mcp",
-      "category": "Communication / Pakistani",
+      "category": "Communication",
       "riskClass": "Pakistani telecom API access",
       "failureClass": "SMS/voice/network boundary",
       "gate": "fail",
@@ -2860,7 +2792,7 @@
       "id": "zong-mcp",
       "name": "Zong MCP",
       "packageName": "zong-mcp",
-      "category": "Communication / Pakistani",
+      "category": "Communication",
       "riskClass": "Pakistani telecom API access (CPEC corridor)",
       "failureClass": "SMS/voice/data boundary",
       "gate": "fail",
@@ -2875,7 +2807,7 @@
       "id": "telenor-pakistan-mcp",
       "name": "Telenor Pakistan MCP",
       "packageName": "telenor-pakistan-mcp",
-      "category": "Communication / Pakistani",
+      "category": "Communication",
       "riskClass": "Pakistani telecom API access (digital services)",
       "failureClass": "SMS/vas/digital boundary",
       "gate": "fail",
@@ -2890,7 +2822,7 @@
       "id": "ufone-mcp",
       "name": "Ufone MCP",
       "packageName": "ufone-mcp",
-      "category": "Communication / Pakistani",
+      "category": "Communication",
       "riskClass": "Pakistani telecom API access (PTCL group)",
       "failureClass": "SMS/voice/fiber boundary",
       "gate": "fail",
@@ -2905,7 +2837,7 @@
       "id": "pakistan-post-mcp",
       "name": "Pakistan Post MCP",
       "packageName": "pakistan-post-mcp",
-      "category": "Maps / Logistics / Pakistani",
+      "category": "Maps / Logistics",
       "riskClass": "Pakistani postal tracking and logistics API access",
       "failureClass": "Tracking/delivery/geocode boundary",
       "gate": "fail",
@@ -2920,7 +2852,7 @@
       "id": "jazzcash-mcp",
       "name": "JazzCash MCP",
       "packageName": "@theyahia/jazzcash-mcp",
-      "category": "Payments / Pakistani Fintech",
+      "category": "Payments",
       "riskClass": "Mobile wallet API access (Pakistan)",
       "failureClass": "Payment/wallet/OTC boundary",
       "gate": "fail",
@@ -2935,7 +2867,7 @@
       "id": "easypaisa-mcp",
       "name": "EasyPaisa MCP",
       "packageName": "@theyahia/easypaisa-mcp",
-      "category": "Payments / Pakistani Fintech",
+      "category": "Payments",
       "riskClass": "Mobile wallet API access (Pakistan)",
       "failureClass": "Mobile wallet/payment gateway boundary",
       "healthScore": 93,
@@ -2951,7 +2883,7 @@
       "id": "nadra-mcp",
       "name": "NADRA MCP",
       "packageName": "nadra-mcp",
-      "category": "Identity / Pakistani Gov",
+      "category": "Identity",
       "riskClass": "National identity database access",
       "failureClass": "Identity verification/CNIC boundary",
       "gate": "fail",
@@ -2966,7 +2898,7 @@
       "id": "fbr-mcp",
       "name": "FBR MCP",
       "packageName": "fbr-mcp",
-      "category": "Tax / Pakistani Gov",
+      "category": "Tax",
       "riskClass": "Tax filing and NTN API access",
       "failureClass": "Tax return/NTN/invoice boundary",
       "gate": "fail",
@@ -2981,7 +2913,7 @@
       "id": "1link-mcp",
       "name": "1LINK MCP",
       "packageName": "1link-mcp",
-      "category": "Payments / Pakistani Fintech",
+      "category": "Payments",
       "riskClass": "Interbank payment switch access",
       "failureClass": "Interbank transaction/switch boundary",
       "gate": "fail",
@@ -2996,7 +2928,7 @@
       "id": "aiou-mcp",
       "name": "AIOU MCP",
       "packageName": "aiou-mcp",
-      "category": "Education / Pakistan",
+      "category": "Education",
       "riskClass": "Open university API access",
       "failureClass": "Student/enrollment/grade boundary",
       "gate": "fail",
@@ -3011,7 +2943,7 @@
       "id": "hec-pakistan-mcp",
       "name": "HEC Pakistan MCP",
       "packageName": "hec-pakistan-mcp",
-      "category": "Education / Pakistan Gov",
+      "category": "Education",
       "riskClass": "Higher education accreditation API access",
       "failureClass": "Degree/university/attestation boundary",
       "gate": "fail",
@@ -3026,7 +2958,7 @@
       "id": "pakistan-cricket-mcp",
       "name": "Pakistan Cricket MCP",
       "packageName": "pakistan-cricket-mcp",
-      "category": "Sports / Pakistan",
+      "category": "Sports",
       "riskClass": "Cricket board API access",
       "failureClass": "Match/player/statistics boundary",
       "gate": "fail",
@@ -3041,7 +2973,7 @@
       "id": "k2-mcp",
       "name": "K2 MCP",
       "packageName": "k2-mcp",
-      "category": "Mountaineering / Pakistan",
+      "category": "Travel",
       "riskClass": "Mountaineering permit API access",
       "failureClass": "Permit/expedition/safety boundary",
       "gate": "fail",
@@ -3056,7 +2988,7 @@
       "id": "rozgar-mcp",
       "name": "Rozgar.com MCP",
       "packageName": "rozgar-mcp",
-      "category": "Jobs / Pakistani",
+      "category": "Jobs",
       "riskClass": "Pakistani job platform API access",
       "failureClass": "Job listing/application/candidate boundary",
       "gate": "fail",
@@ -3071,7 +3003,7 @@
       "id": "foodpanda-pakistan-mcp",
       "name": "Foodpanda Pakistan MCP",
       "packageName": "foodpanda-pakistan-mcp",
-      "category": "Food Delivery / Pakistani",
+      "category": "Food Delivery",
       "riskClass": "Pakistani food delivery platform API access",
       "failureClass": "Order/restaurant/delivery boundary",
       "gate": "fail",
@@ -3086,7 +3018,7 @@
       "id": "daraz-mcp",
       "name": "Daraz MCP",
       "packageName": "daraz-mcp",
-      "category": "E-commerce / Pakistani",
+      "category": "E-commerce",
       "riskClass": "Pakistani e-commerce platform API access",
       "failureClass": "Product/order/seller boundary",
       "gate": "fail",
@@ -3101,7 +3033,7 @@
       "id": "olx-pakistan-mcp",
       "name": "OLX Pakistan MCP",
       "packageName": "olx-pakistan-mcp",
-      "category": "Classifieds / Pakistani",
+      "category": "Classifieds",
       "riskClass": "Pakistani classifieds platform API access",
       "failureClass": "Listing/ad/user boundary",
       "gate": "fail",
@@ -3116,7 +3048,7 @@
       "id": "pakwheels-mcp",
       "name": "PakWheels MCP",
       "packageName": "pakwheels-mcp",
-      "category": "Auto Marketplace / Pakistani",
+      "category": "Auto Marketplace",
       "riskClass": "Pakistani automotive marketplace API access",
       "failureClass": "Vehicle/listing/dealer boundary",
       "gate": "fail",
@@ -3142,7 +3074,7 @@
       "toolCount": 13,
       "promptCount": 4,
       "resourceCount": 7,
-      "lastScanned": "2026-07-17T00:36:18.811Z",
+      "lastScanned": "2026-07-22T21:35:55.985Z",
       "repo": "https://github.com/modelcontextprotocol/servers",
       "whyItMatters": "Exercises tools, prompts, and resources in one official reference server.",
       "reproductionNotes": "Zero-config official package; useful as a broad protocol baseline.",
@@ -3191,7 +3123,7 @@
             "weight": 0.1,
             "score": 100,
             "details": [
-              "Connect: 852ms",
+              "Connect: 2701ms",
               "p95 latency: 7ms (3 operations)"
             ]
           }
@@ -3271,7 +3203,7 @@
         }
       ],
       "performanceMetrics": {
-        "connectMs": 852.3235
+        "connectMs": 2700.702541
       }
     },
     "sequential-thinking-server": {
@@ -3287,7 +3219,7 @@
       "toolCount": 1,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:20.107Z",
+      "lastScanned": "2026-07-22T21:35:59.087Z",
       "repo": "https://github.com/modelcontextprotocol/servers",
       "whyItMatters": "Small official tools server that makes schema readability easy to inspect.",
       "reproductionNotes": "Zero-config official package.",
@@ -3336,7 +3268,7 @@
             "weight": 0.1,
             "score": 100,
             "details": [
-              "Connect: 647ms",
+              "Connect: 1865ms",
               "p95 latency: 4ms (3 operations)"
             ]
           }
@@ -3399,7 +3331,7 @@
       },
       "findings": [],
       "performanceMetrics": {
-        "connectMs": 646.8518750000001
+        "connectMs": 1864.889917
       }
     },
     "memory-server": {
@@ -3415,7 +3347,7 @@
       "toolCount": 9,
       "promptCount": 0,
       "resourceCount": 1,
-      "lastScanned": "2026-07-17T00:36:20.771Z",
+      "lastScanned": "2026-07-22T21:36:00.978Z",
       "repo": "https://github.com/modelcontextprotocol/servers",
       "whyItMatters": "Memory tools are agent-facing state; their schemas and write behavior should be visible before use.",
       "reproductionNotes": "Zero-config official package.",
@@ -3464,8 +3396,8 @@
             "weight": 0.1,
             "score": 100,
             "details": [
-              "Connect: 597ms",
-              "p95 latency: 8ms (3 operations)"
+              "Connect: 1428ms",
+              "p95 latency: 10ms (3 operations)"
             ]
           }
         ]
@@ -3527,7 +3459,7 @@
       },
       "findings": [],
       "performanceMetrics": {
-        "connectMs": 596.5829169999997
+        "connectMs": 1428.3173340000003
       }
     },
     "filesystem-server": {
@@ -3543,7 +3475,7 @@
       "toolCount": 14,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:21.413Z",
+      "lastScanned": "2026-07-22T21:36:02.456Z",
       "repo": "https://github.com/modelcontextprotocol/servers",
       "whyItMatters": "Filesystem tools need harmless test roots and clear read/write boundaries.",
       "reproductionNotes": "Runs against the checked-in harmless fixture directory.",
@@ -3592,8 +3524,8 @@
             "weight": 0.1,
             "score": 100,
             "details": [
-              "Connect: 561ms",
-              "p95 latency: 6ms (3 operations)"
+              "Connect: 2356ms",
+              "p95 latency: 8ms (3 operations)"
             ]
           }
         ]
@@ -3692,7 +3624,7 @@
         }
       ],
       "performanceMetrics": {
-        "connectMs": 561.257541
+        "connectMs": 2355.642458999999
       }
     },
     "filesystem-mcp-server": {
@@ -3708,7 +3640,7 @@
       "toolCount": 14,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:22.007Z",
+      "lastScanned": "2026-07-22T21:36:04.854Z",
       "repo": "https://github.com/modelcontextprotocol/servers",
       "whyItMatters": "Filesystem MCP is a core agent trust boundary because it exposes read, write, edit, delete, and directory traversal tools.",
       "reproductionNotes": "Safety Index generation creates an empty temporary directory for the server root and sanitizes that path from public artifacts.",
@@ -3757,7 +3689,7 @@
             "weight": 0.1,
             "score": 100,
             "details": [
-              "Connect: 568ms",
+              "Connect: 670ms",
               "p95 latency: 6ms (3 operations)"
             ]
           }
@@ -3857,7 +3789,7 @@
         }
       ],
       "performanceMetrics": {
-        "connectMs": 568.48875
+        "connectMs": 670.2326250000006
       }
     },
     "context7-server": {
@@ -3873,7 +3805,7 @@
       "toolCount": 2,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:22.609Z",
+      "lastScanned": "2026-07-22T21:36:05.555Z",
       "repo": "https://github.com/upstash/context7",
       "whyItMatters": "Documentation retrieval tools can return untrusted text into agent context.",
       "reproductionNotes": "Zero-config public package.",
@@ -3922,7 +3854,7 @@
             "weight": 0.1,
             "score": 100,
             "details": [
-              "Connect: 939ms",
+              "Connect: 1793ms",
               "p95 latency: 2ms (3 operations)"
             ]
           }
@@ -3994,7 +3926,7 @@
         }
       ],
       "performanceMetrics": {
-        "connectMs": 939.1923340000003
+        "connectMs": 1793.4585000000006
       }
     },
     "promptopia-server": {
@@ -4010,7 +3942,7 @@
       "toolCount": 7,
       "promptCount": 1,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:23.563Z",
+      "lastScanned": "2026-07-22T21:36:07.368Z",
       "repo": "https://www.npmjs.com/package/promptopia-mcp",
       "whyItMatters": "Prompt-serving MCP packages need predictable prompt inventory and startup behavior.",
       "reproductionNotes": "Uses the checked-in prompt fixture through package defaults.",
@@ -4059,8 +3991,8 @@
             "weight": 0.1,
             "score": 100,
             "details": [
-              "Connect: 847ms",
-              "p95 latency: 5ms (3 operations)"
+              "Connect: 1843ms",
+              "p95 latency: 2ms (3 operations)"
             ]
           }
         ]
@@ -4122,7 +4054,7 @@
       },
       "findings": [],
       "performanceMetrics": {
-        "connectMs": 846.9272500000006
+        "connectMs": 1843.1624159999992
       }
     },
     "ref-tools-server": {
@@ -4138,7 +4070,7 @@
       "toolCount": 2,
       "promptCount": 2,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:26.429Z",
+      "lastScanned": "2026-07-22T21:36:11.247Z",
       "repo": "https://www.npmjs.com/package/ref-tools-mcp",
       "whyItMatters": "Developer tools become agent dependencies when wired into coding workflows.",
       "reproductionNotes": "Zero-config public package.",
@@ -4187,7 +4119,7 @@
             "weight": 0.1,
             "score": 100,
             "details": [
-              "Connect: 579ms",
+              "Connect: 7555ms",
               "p95 latency: 1ms (3 operations)"
             ]
           }
@@ -4250,7 +4182,7 @@
       },
       "findings": [],
       "performanceMetrics": {
-        "connectMs": 579.0261249999994
+        "connectMs": 7554.884624999999
       }
     },
     "cyanheads-git-mcp-server": {
@@ -4266,7 +4198,7 @@
       "toolCount": 28,
       "promptCount": 1,
       "resourceCount": 1,
-      "lastScanned": "2026-07-17T00:36:27.019Z",
+      "lastScanned": "2026-07-22T21:36:18.823Z",
       "repo": "https://www.npmjs.com/package/@cyanheads/git-mcp-server",
       "whyItMatters": "Coding agents often need Git context and can cause real repository changes if tool boundaries are unclear.",
       "reproductionNotes": "Zero-config public package. Keep tool invocation read-only unless a harmless fixture repository is added.",
@@ -4315,8 +4247,8 @@
             "weight": 0.1,
             "score": 100,
             "details": [
-              "Connect: 894ms",
-              "p95 latency: 30ms (3 operations)"
+              "Connect: 2267ms",
+              "p95 latency: 31ms (3 operations)"
             ]
           }
         ]
@@ -4607,7 +4539,7 @@
         }
       ],
       "performanceMetrics": {
-        "connectMs": 893.7751250000001
+        "connectMs": 2266.912541999998
       }
     },
     "github-mcp-server": {
@@ -4623,7 +4555,7 @@
       "toolCount": 26,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:28.068Z",
+      "lastScanned": "2026-07-22T21:36:21.269Z",
       "repo": "https://github.com/modelcontextprotocol/servers",
       "whyItMatters": "Exposes 26 tools to agents, including file writes, branch creation, issue/PR creation, and PR merges across any repo a token can reach — high-stakes write access that needs a visible boundary before an agent is trusted with it.",
       "reproductionNotes": "Zero-config package; tool listing succeeds without a real GitHub token, so this check is safe to run in CI. Note: npm currently flags this package as deprecated/no longer supported by the publisher — treat this target as compatibility evidence, not an endorsement of the package's maintenance status.",
@@ -4672,8 +4604,8 @@
             "weight": 0.1,
             "score": 100,
             "details": [
-              "Connect: 578ms",
-              "p95 latency: 3ms (3 operations)"
+              "Connect: 2221ms",
+              "p95 latency: 5ms (3 operations)"
             ]
           }
         ]
@@ -4764,7 +4696,7 @@
         }
       ],
       "performanceMetrics": {
-        "connectMs": 578.2210840000007
+        "connectMs": 2220.634624999999
       }
     },
     "ui5-mcp-server": {
@@ -4780,7 +4712,7 @@
       "toolCount": 10,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:28.663Z",
+      "lastScanned": "2026-07-22T21:36:23.516Z",
       "repo": "https://github.com/UI5/mcp-server",
       "whyItMatters": "UI5 agents can scaffold applications, run UI5-specific analysis, and fetch framework guidance, so teams need reproducible evidence before trusting the tool surface.",
       "reproductionNotes": "Zero-config public package; tool listing works without private credentials or a project fixture.",
@@ -4829,7 +4761,7 @@
             "weight": 0.1,
             "score": 100,
             "details": [
-              "Connect: 1336ms",
+              "Connect: 5726ms",
               "p95 latency: 6ms (3 operations)"
             ]
           }
@@ -4892,7 +4824,7 @@
       },
       "findings": [],
       "performanceMetrics": {
-        "connectMs": 1336.3704159999998
+        "connectMs": 5725.920125000004
       }
     },
     "opentofu-server": {
@@ -4908,7 +4840,7 @@
       "toolCount": 5,
       "promptCount": 0,
       "resourceCount": 1,
-      "lastScanned": "2026-07-17T00:36:30.038Z",
+      "lastScanned": "2026-07-22T21:36:29.288Z",
       "repo": "https://github.com/opentofu/opentofu-mcp-server",
       "whyItMatters": "Infrastructure tools can influence production configuration and should have reviewable MCP surfaces.",
       "reproductionNotes": "Zero-config public package.",
@@ -4957,7 +4889,7 @@
             "weight": 0.1,
             "score": 100,
             "details": [
-              "Connect: 784ms",
+              "Connect: 1842ms",
               "p95 latency: 2ms (3 operations)"
             ]
           }
@@ -5020,7 +4952,7 @@
       },
       "findings": [],
       "performanceMetrics": {
-        "connectMs": 784.308833000001
+        "connectMs": 1841.7070830000011
       }
     },
     "puppeteer-server": {
@@ -5036,7 +4968,7 @@
       "toolCount": 8,
       "promptCount": 0,
       "resourceCount": 1,
-      "lastScanned": "2026-07-17T00:36:30.838Z",
+      "lastScanned": "2026-07-22T21:36:31.152Z",
       "repo": "https://www.npmjs.com/package/puppeteer-mcp-server",
       "whyItMatters": "Browser automation gives agents navigation, page state, and sometimes code-evaluation powers.",
       "reproductionNotes": "Intentional browser evaluation is suppressed so remaining findings stay readable.",
@@ -5085,7 +5017,7 @@
             "weight": 0.1,
             "score": 100,
             "details": [
-              "Connect: 748ms",
+              "Connect: 4429ms",
               "p95 latency: 1ms (3 operations)"
             ]
           }
@@ -5153,7 +5085,7 @@
         }
       ],
       "performanceMetrics": {
-        "connectMs": 747.8179999999993
+        "connectMs": 4428.586792000002
       }
     },
     "browsermcp-server": {
@@ -5169,7 +5101,7 @@
       "toolCount": 12,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:32.701Z",
+      "lastScanned": "2026-07-22T21:36:37.089Z",
       "repo": "https://github.com/BrowserMCP/mcp",
       "whyItMatters": "Browser-control servers need visible tool boundaries before agents drive real browsing sessions.",
       "reproductionNotes": "Zero-config public package.",
@@ -5218,7 +5150,7 @@
             "weight": 0.1,
             "score": 100,
             "details": [
-              "Connect: 712ms",
+              "Connect: 1727ms",
               "p95 latency: 1ms (3 operations)"
             ]
           }
@@ -5281,7 +5213,7 @@
       },
       "findings": [],
       "performanceMetrics": {
-        "connectMs": 712.0667080000003
+        "connectMs": 1726.8922080000048
       }
     },
     "playwright-mcp-server": {
@@ -5297,7 +5229,7 @@
       "toolCount": 24,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:33.428Z",
+      "lastScanned": "2026-07-22T21:36:38.834Z",
       "repo": "https://github.com/microsoft/playwright-mcp",
       "whyItMatters": "Popular browser automation servers need explicit review around navigation, screenshots, and code evaluation.",
       "reproductionNotes": "Zero-config public package; security findings represent policy-review prompts, not a vulnerability claim.",
@@ -5346,7 +5278,7 @@
             "weight": 0.1,
             "score": 100,
             "details": [
-              "Connect: 659ms",
+              "Connect: 2723ms",
               "p95 latency: 3ms (3 operations)"
             ]
           }
@@ -5474,7 +5406,7 @@
         }
       ],
       "performanceMetrics": {
-        "connectMs": 658.5614999999998
+        "connectMs": 2722.551124999998
       }
     },
     "antv-chart-server": {
@@ -5490,7 +5422,7 @@
       "toolCount": 27,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:34.877Z",
+      "lastScanned": "2026-07-22T21:36:43.015Z",
       "repo": "https://github.com/antvis/mcp-server-chart",
       "whyItMatters": "Visualization servers produce files or structured outputs agents may pass into workflows.",
       "reproductionNotes": "Zero-config public package.",
@@ -5539,7 +5471,7 @@
             "weight": 0.1,
             "score": 100,
             "details": [
-              "Connect: 908ms",
+              "Connect: 2236ms",
               "p95 latency: 2ms (3 operations)"
             ]
           }
@@ -5602,7 +5534,7 @@
       },
       "findings": [],
       "performanceMetrics": {
-        "connectMs": 907.9111250000024
+        "connectMs": 2235.9436669999996
       }
     },
     "executeautomation-playwright-server": {
@@ -5618,7 +5550,7 @@
       "toolCount": 33,
       "promptCount": 0,
       "resourceCount": 1,
-      "lastScanned": "2026-07-17T00:36:35.804Z",
+      "lastScanned": "2026-07-22T21:36:45.277Z",
       "repo": "https://github.com/executeautomation/mcp-playwright",
       "whyItMatters": "A public browser automation package that fails basic listing checks shows why reproducible readiness evidence matters.",
       "reproductionNotes": "Evaluated as a public package; current result should be treated as a maintainer conversation starter.",
@@ -5667,8 +5599,8 @@
             "weight": 0.1,
             "score": 100,
             "details": [
-              "Connect: 1081ms",
-              "p95 latency: 6ms (3 operations)"
+              "Connect: 8107ms",
+              "p95 latency: 1ms (3 operations)"
             ]
           }
         ]
@@ -5763,7 +5695,7 @@
         }
       ],
       "performanceMetrics": {
-        "connectMs": 1080.8530410000021
+        "connectMs": 8107.433917000002
       }
     },
     "kubernetes-server": {
@@ -5779,7 +5711,7 @@
       "toolCount": 23,
       "promptCount": 1,
       "resourceCount": 5,
-      "lastScanned": "2026-07-17T00:36:36.918Z",
+      "lastScanned": "2026-07-22T21:36:53.411Z",
       "repo": "https://github.com/Flux159/mcp-server-kubernetes",
       "whyItMatters": "Kubernetes MCP servers can expose cluster mutation, pod exec, manifest apply/delete, and broad kubectl command surfaces to agents.",
       "reproductionNotes": "Zero-config public package. Evaluated without cluster credentials; findings are metadata and schema boundary prompts, not exploit claims.",
@@ -5828,8 +5760,8 @@
             "weight": 0.1,
             "score": 100,
             "details": [
-              "Connect: 1788ms",
-              "p95 latency: 2ms (3 operations)"
+              "Connect: 5610ms",
+              "p95 latency: 4ms (3 operations)"
             ]
           }
         ]
@@ -5858,7 +5790,7 @@
         {
           "id": "runtime-profile",
           "status": "partial",
-          "message": "Detected 11 potential egress target(s) and 76 potential state mutation(s) with high confidence."
+          "message": "Detected 15 potential egress target(s) and 76 potential state mutation(s) with high confidence."
         },
         {
           "id": "conformance",
@@ -5976,7 +5908,7 @@
         }
       ],
       "performanceMetrics": {
-        "connectMs": 1788.1130420000009
+        "connectMs": 5609.807458999996
       }
     },
     "chrome-devtools-mcp-server": {
@@ -5992,7 +5924,7 @@
       "toolCount": 29,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:38.730Z",
+      "lastScanned": "2026-07-22T21:36:59.053Z",
       "repo": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
       "whyItMatters": "Coding agents may use Chrome DevTools MCP to inspect pages, network state, console output, and browser behavior before making changes.",
       "reproductionNotes": "Zero-config public package; browser-control findings should be treated as policy-review prompts, not vulnerability claims.",
@@ -6041,7 +5973,7 @@
             "weight": 0.1,
             "score": 100,
             "details": [
-              "Connect: 909ms",
+              "Connect: 2516ms",
               "p95 latency: 5ms (3 operations)"
             ]
           }
@@ -6381,7 +6313,7 @@
         }
       ],
       "performanceMetrics": {
-        "connectMs": 908.7971249999973
+        "connectMs": 2515.9537920000075
       }
     },
     "slack-server": {
@@ -6395,7 +6327,7 @@
       "toolCount": 0,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:40.236Z",
+      "lastScanned": "2026-07-22T21:37:03.140Z",
       "repo": "https://github.com/modelcontextprotocol/servers",
       "fatalError": "Could not establish a plain stdio MCP session for target `slack-server`.",
       "whyItMatters": "Slack MCP servers can expose channel history, message posting, and workspace search capabilities to agents.",
@@ -6438,7 +6370,7 @@
       "toolCount": 0,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:40.832Z",
+      "lastScanned": "2026-07-22T21:37:04.288Z",
       "repo": "https://github.com/modelcontextprotocol/servers",
       "fatalError": "Could not establish a plain stdio MCP session for target `google-drive-server`.",
       "whyItMatters": "Google Drive agents can read, write, search, and manage permissions on cloud documents the token can reach.",
@@ -6481,7 +6413,7 @@
       "toolCount": 0,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:41.239Z",
+      "lastScanned": "2026-07-22T21:37:04.727Z",
       "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-mongodb",
       "fatalError": "Could not establish a plain stdio MCP session for target `mongodb-server`.",
       "whyItMatters": "MongoDB MCP servers can expose collection queries, document CRUD, and index management to agents.",
@@ -6524,7 +6456,7 @@
       "toolCount": 0,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:41.847Z",
+      "lastScanned": "2026-07-22T21:37:05.223Z",
       "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-cloudflare",
       "fatalError": "Could not establish a plain stdio MCP session for target `cloudflare-server`.",
       "whyItMatters": "Cloudflare MCP servers can expose DNS records, Workers, KV stores, and deployment pipelines to agents.",
@@ -6567,7 +6499,7 @@
       "toolCount": 0,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:42.256Z",
+      "lastScanned": "2026-07-22T21:37:05.638Z",
       "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-qdrant",
       "fatalError": "Could not establish a plain stdio MCP session for target `qdrant-server`.",
       "whyItMatters": "Qdrant MCP servers can expose vector search, collection management, and point CRUD to agents.",
@@ -6610,7 +6542,7 @@
       "toolCount": 0,
       "promptCount": 0,
       "resourceCount": 0,
-      "lastScanned": "2026-07-17T00:36:42.758Z",
+      "lastScanned": "2026-07-22T21:37:06.047Z",
       "repo": "https://www.npmjs.com/package/@anthropic/mcp-server-vercel-ai",
       "fatalError": "Could not establish a plain stdio MCP session for target `vercel-ai-server`.",
       "whyItMatters": "Vercel AI SDK MCP servers can expose project management, deployment triggers, and AI model configuration to agents.",
@@ -14494,7 +14426,7 @@
       "id": "stock-nse-india",
       "name": "Stock NSE India",
       "packageName": "stock-nse-india-mcp",
-      "category": "Finance / Indian Markets",
+      "category": "Finance",
       "riskClass": "Financial data retrieval (Indian markets)",
       "failureClass": "NSE market data boundary",
       "gate": "fail",
@@ -14537,7 +14469,7 @@
       "id": "razorpay-mcp",
       "name": "Razorpay MCP",
       "packageName": "razorpay-mcp",
-      "category": "Payments / Indian Fintech",
+      "category": "Payments",
       "riskClass": "Indian payment gateway API access",
       "failureClass": "Payment/refund/settlement boundary",
       "gate": "fail",
@@ -14580,7 +14512,7 @@
       "id": "paytm-mcp",
       "name": "Paytm MCP",
       "packageName": "paytm-mcp",
-      "category": "Payments / Indian Fintech",
+      "category": "Payments",
       "riskClass": "Indian wallet/payment API access",
       "failureClass": "Wallet/payment gateway boundary",
       "gate": "fail",
@@ -14623,7 +14555,7 @@
       "id": "upi-mcp",
       "name": "UPI MCP",
       "packageName": "upi-mcp",
-      "category": "Payments / Indian Fintech",
+      "category": "Payments",
       "riskClass": "Unified Payments Interface access",
       "failureClass": "UPI transaction/bank boundary",
       "healthScore": 85,
@@ -14751,7 +14683,7 @@
       "id": "aadhaar-mcp",
       "name": "Aadhaar MCP",
       "packageName": "aadhaar-mcp",
-      "category": "Identity / Indian Gov",
+      "category": "Identity",
       "riskClass": "Biometric identity API access",
       "failureClass": "Identity verification/KYC boundary",
       "gate": "fail",
@@ -14794,7 +14726,7 @@
       "id": "digilocker-mcp",
       "name": "DigiLocker MCP",
       "packageName": "digilocker-mcp",
-      "category": "Identity / Indian Gov",
+      "category": "Identity",
       "riskClass": "Government document wallet access",
       "failureClass": "Document retrieval/verification boundary",
       "gate": "fail",
@@ -14837,7 +14769,7 @@
       "id": "udyam-mcp",
       "name": "Udyam MCP",
       "packageName": "udyam-mcp",
-      "category": "Business / Indian Gov",
+      "category": "Business / Government",
       "riskClass": "MSME business registration access",
       "failureClass": "Business registration/verification boundary",
       "gate": "fail",
@@ -14880,7 +14812,7 @@
       "id": "gst-mcp",
       "name": "GST MCP",
       "packageName": "gst-mcp",
-      "category": "Tax / Indian Gov",
+      "category": "Tax",
       "riskClass": "Tax filing and invoice API access",
       "failureClass": "GST return/invoice/billing boundary",
       "gate": "fail",
@@ -14923,7 +14855,7 @@
       "id": "whatsapp-business-mcp",
       "name": "WhatsApp Business MCP",
       "packageName": "whatsapp-business-mcp",
-      "category": "Communication / Indian",
+      "category": "Communication",
       "riskClass": "Business messaging platform access",
       "failureClass": "Message/template/contact boundary",
       "gate": "fail",
@@ -14966,7 +14898,7 @@
       "id": "gupshup-mcp",
       "name": "Gupshup MCP",
       "packageName": "gupshup-mcp",
-      "category": "Communication / Indian",
+      "category": "Communication",
       "riskClass": "Indian messaging platform access",
       "failureClass": "Multi-channel message boundary",
       "gate": "fail",
@@ -15009,7 +14941,7 @@
       "id": "textlocal-mcp",
       "name": "Textlocal MCP",
       "packageName": "textlocal-mcp",
-      "category": "Communication / Indian",
+      "category": "Communication",
       "riskClass": "Indian SMS gateway access",
       "failureClass": "SMS/campaign boundary",
       "gate": "fail",
@@ -15052,7 +14984,7 @@
       "id": "mapmyindia-mcp",
       "name": "MapMyIndia MCP",
       "packageName": "mapmyindia-mcp",
-      "category": "Maps / Indian",
+      "category": "Maps",
       "riskClass": "Indian geospatial data access",
       "failureClass": "Map/routing/geocode boundary",
       "gate": "fail",
@@ -15095,7 +15027,7 @@
       "id": "ola-maps-mcp",
       "name": "Ola Maps MCP",
       "packageName": "ola-maps-mcp",
-      "category": "Maps / Indian",
+      "category": "Maps",
       "riskClass": "Indian ride/mapping API access",
       "failureClass": "Maps/routing/ride boundary",
       "gate": "fail",
@@ -15136,10 +15068,10 @@
     },
     "postman-india-region": {
       "id": "postman-india-region",
-      "name": "Postman MCP (Indian region)",
+      "name": "Postman MCP",
       "packageName": "@postman/postman-mcp-server",
-      "category": "API Testing / Indian Development",
-      "riskClass": "API collection and testing access (Indian-origin)",
+      "category": "API Testing / Development",
+      "riskClass": "API collection and testing access",
       "failureClass": "Collection/environment/request boundary",
       "gate": "fail",
       "toolCount": 0,
@@ -15181,7 +15113,7 @@
       "id": "hasura-mcp",
       "name": "Hasura MCP",
       "packageName": "hasura-mcp",
-      "category": "Database / Indian OSS",
+      "category": "Database",
       "riskClass": "GraphQL engine and database access",
       "failureClass": "GraphQL/Database query boundary",
       "gate": "fail",
@@ -15224,7 +15156,7 @@
       "id": "tooljet-mcp",
       "name": "ToolJet MCP",
       "packageName": "tooljet-mcp",
-      "category": "Internal Tools / Indian OSS",
+      "category": "Internal Tools",
       "riskClass": "Low-code platform API access",
       "failureClass": "App/datasource/workflow boundary",
       "gate": "fail",
@@ -15267,7 +15199,7 @@
       "id": "appwrite-mcp",
       "name": "Appwrite MCP",
       "packageName": "appwrite-mcp",
-      "category": "Backend / Indian OSS",
+      "category": "Backend",
       "riskClass": "Backend-as-a-service API access",
       "failureClass": "Database/auth/storage/function boundary",
       "gate": "fail",
@@ -15310,7 +15242,7 @@
       "id": "chatwoot-mcp",
       "name": "Chatwoot MCP",
       "packageName": "chatwoot-mcp",
-      "category": "CRM / Indian OSS",
+      "category": "CRM",
       "riskClass": "Customer engagement platform access",
       "failureClass": "Conversation/contact/inbox boundary",
       "gate": "fail",
@@ -15353,7 +15285,7 @@
       "id": "cal-com-mcp",
       "name": "Cal.com MCP",
       "packageName": "cal-com-mcp",
-      "category": "Scheduling / Indian OSS",
+      "category": "Scheduling",
       "riskClass": "Scheduling and calendar API access",
       "failureClass": "Booking/availability/calendar boundary",
       "gate": "fail",
@@ -15396,7 +15328,7 @@
       "id": "indian-food-nutrition-mcp",
       "name": "Indian Food Nutrition MCP",
       "packageName": "indian-food-nutrition-mcp",
-      "category": "Food / Indian",
+      "category": "Food",
       "riskClass": "Indian cuisine nutrition data access",
       "failureClass": "Nutrition/ingredient/dietary boundary",
       "healthScore": 85,
@@ -15524,7 +15456,7 @@
       "id": "healthcare-ayushman-bharat-mcp",
       "name": "Ayushman Bharat Healthcare MCP",
       "packageName": "healthcare-ayushman-bharat-mcp",
-      "category": "Healthcare / Indian Gov",
+      "category": "Healthcare",
       "riskClass": "Public healthcare scheme API access",
       "failureClass": "Patient/claim/hospital boundary",
       "gate": "fail",
@@ -15567,7 +15499,7 @@
       "id": "irctc-mcp",
       "name": "IRCTC MCP",
       "packageName": "irctc-mcp",
-      "category": "Travel / Indian Railways",
+      "category": "Travel",
       "riskClass": "Indian Railways booking API access",
       "failureClass": "Ticket booking/PNR/availability boundary",
       "gate": "fail",
@@ -15610,7 +15542,7 @@
       "id": "aqi-india-mcp",
       "name": "AQI India MCP",
       "packageName": "aqi-india-mcp",
-      "category": "Environment / Indian",
+      "category": "Environment",
       "riskClass": "Indian air quality data access",
       "failureClass": "Environmental data/health boundary",
       "gate": "fail",
@@ -15653,7 +15585,7 @@
       "id": "cowin-mcp",
       "name": "CoWIN MCP",
       "packageName": "cowin-mcp",
-      "category": "Healthcare / Indian Gov",
+      "category": "Healthcare",
       "riskClass": "Vaccination platform API access",
       "failureClass": "Beneficiary/dose/certificate boundary",
       "gate": "fail",
@@ -15696,7 +15628,7 @@
       "id": "bhuvan-mcp",
       "name": "Bhuvan MCP",
       "packageName": "bhuvan-mcp",
-      "category": "Geospatial / Indian Gov",
+      "category": "Geospatial",
       "riskClass": "ISRO geospatial platform access",
       "failureClass": "Satellite imagery/geospatial data boundary",
       "gate": "fail",
@@ -15739,7 +15671,7 @@
       "id": "sehat-sahulat-mcp",
       "name": "Sehat Sahulat MCP",
       "packageName": "sehat-sahulat-mcp",
-      "category": "Healthcare / Pakistan Gov",
+      "category": "Healthcare",
       "riskClass": "Public health insurance API access",
       "failureClass": "Insurance claim/beneficiary boundary",
       "gate": "fail",
@@ -15782,7 +15714,7 @@
       "id": "ehsaas-mcp",
       "name": "Ehsaas MCP",
       "packageName": "ehsaas-mcp",
-      "category": "Social Welfare / Pakistan Gov",
+      "category": "Social Welfare",
       "riskClass": "Social welfare program API access",
       "failureClass": "Beneficiary/cash-transfer boundary",
       "gate": "fail",
@@ -15825,7 +15757,7 @@
       "id": "pims-mcp",
       "name": "PIMS MCP",
       "packageName": "pims-mcp",
-      "category": "Healthcare / Pakistan Gov",
+      "category": "Healthcare",
       "riskClass": "Public hospital system API access",
       "failureClass": "Patient record/hospital management boundary",
       "gate": "fail",
@@ -15868,7 +15800,7 @@
       "id": "punjab-health-mcp",
       "name": "Punjab Health MCP",
       "packageName": "punjab-health-mcp",
-      "category": "Healthcare / Pakistan Gov",
+      "category": "Healthcare",
       "riskClass": "Provincial health department API access",
       "failureClass": "Health service/disease surveillance boundary",
       "gate": "fail",
@@ -15911,7 +15843,7 @@
       "id": "pakistan-weather-mcp",
       "name": "Pakistan Weather MCP",
       "packageName": "pakistan-weather-mcp",
-      "category": "Weather / Pakistan Gov",
+      "category": "Weather",
       "riskClass": "National meteorological data access",
       "failureClass": "Weather/forecast/disaster boundary",
       "gate": "fail",
@@ -15954,7 +15886,7 @@
       "id": "jazz-mcp",
       "name": "Jazz MCP",
       "packageName": "jazz-mcp",
-      "category": "Communication / Pakistani",
+      "category": "Communication",
       "riskClass": "Pakistani telecom API access",
       "failureClass": "SMS/voice/network boundary",
       "gate": "fail",
@@ -15997,7 +15929,7 @@
       "id": "zong-mcp",
       "name": "Zong MCP",
       "packageName": "zong-mcp",
-      "category": "Communication / Pakistani",
+      "category": "Communication",
       "riskClass": "Pakistani telecom API access (CPEC corridor)",
       "failureClass": "SMS/voice/data boundary",
       "gate": "fail",
@@ -16040,7 +15972,7 @@
       "id": "telenor-pakistan-mcp",
       "name": "Telenor Pakistan MCP",
       "packageName": "telenor-pakistan-mcp",
-      "category": "Communication / Pakistani",
+      "category": "Communication",
       "riskClass": "Pakistani telecom API access (digital services)",
       "failureClass": "SMS/vas/digital boundary",
       "gate": "fail",
@@ -16083,7 +16015,7 @@
       "id": "ufone-mcp",
       "name": "Ufone MCP",
       "packageName": "ufone-mcp",
-      "category": "Communication / Pakistani",
+      "category": "Communication",
       "riskClass": "Pakistani telecom API access (PTCL group)",
       "failureClass": "SMS/voice/fiber boundary",
       "gate": "fail",
@@ -16126,7 +16058,7 @@
       "id": "pakistan-post-mcp",
       "name": "Pakistan Post MCP",
       "packageName": "pakistan-post-mcp",
-      "category": "Maps / Logistics / Pakistani",
+      "category": "Maps / Logistics",
       "riskClass": "Pakistani postal tracking and logistics API access",
       "failureClass": "Tracking/delivery/geocode boundary",
       "gate": "fail",
@@ -16169,7 +16101,7 @@
       "id": "jazzcash-mcp",
       "name": "JazzCash MCP",
       "packageName": "@theyahia/jazzcash-mcp",
-      "category": "Payments / Pakistani Fintech",
+      "category": "Payments",
       "riskClass": "Mobile wallet API access (Pakistan)",
       "failureClass": "Payment/wallet/OTC boundary",
       "gate": "fail",
@@ -16212,7 +16144,7 @@
       "id": "easypaisa-mcp",
       "name": "EasyPaisa MCP",
       "packageName": "@theyahia/easypaisa-mcp",
-      "category": "Payments / Pakistani Fintech",
+      "category": "Payments",
       "riskClass": "Mobile wallet API access (Pakistan)",
       "failureClass": "Mobile wallet/payment gateway boundary",
       "healthScore": 93,
@@ -16340,7 +16272,7 @@
       "id": "nadra-mcp",
       "name": "NADRA MCP",
       "packageName": "nadra-mcp",
-      "category": "Identity / Pakistani Gov",
+      "category": "Identity",
       "riskClass": "National identity database access",
       "failureClass": "Identity verification/CNIC boundary",
       "gate": "fail",
@@ -16383,7 +16315,7 @@
       "id": "fbr-mcp",
       "name": "FBR MCP",
       "packageName": "fbr-mcp",
-      "category": "Tax / Pakistani Gov",
+      "category": "Tax",
       "riskClass": "Tax filing and NTN API access",
       "failureClass": "Tax return/NTN/invoice boundary",
       "gate": "fail",
@@ -16426,7 +16358,7 @@
       "id": "1link-mcp",
       "name": "1LINK MCP",
       "packageName": "1link-mcp",
-      "category": "Payments / Pakistani Fintech",
+      "category": "Payments",
       "riskClass": "Interbank payment switch access",
       "failureClass": "Interbank transaction/switch boundary",
       "gate": "fail",
@@ -16469,7 +16401,7 @@
       "id": "aiou-mcp",
       "name": "AIOU MCP",
       "packageName": "aiou-mcp",
-      "category": "Education / Pakistan",
+      "category": "Education",
       "riskClass": "Open university API access",
       "failureClass": "Student/enrollment/grade boundary",
       "gate": "fail",
@@ -16512,7 +16444,7 @@
       "id": "hec-pakistan-mcp",
       "name": "HEC Pakistan MCP",
       "packageName": "hec-pakistan-mcp",
-      "category": "Education / Pakistan Gov",
+      "category": "Education",
       "riskClass": "Higher education accreditation API access",
       "failureClass": "Degree/university/attestation boundary",
       "gate": "fail",
@@ -16555,7 +16487,7 @@
       "id": "pakistan-cricket-mcp",
       "name": "Pakistan Cricket MCP",
       "packageName": "pakistan-cricket-mcp",
-      "category": "Sports / Pakistan",
+      "category": "Sports",
       "riskClass": "Cricket board API access",
       "failureClass": "Match/player/statistics boundary",
       "gate": "fail",
@@ -16598,7 +16530,7 @@
       "id": "k2-mcp",
       "name": "K2 MCP",
       "packageName": "k2-mcp",
-      "category": "Mountaineering / Pakistan",
+      "category": "Travel",
       "riskClass": "Mountaineering permit API access",
       "failureClass": "Permit/expedition/safety boundary",
       "gate": "fail",
@@ -16641,7 +16573,7 @@
       "id": "rozgar-mcp",
       "name": "Rozgar.com MCP",
       "packageName": "rozgar-mcp",
-      "category": "Jobs / Pakistani",
+      "category": "Jobs",
       "riskClass": "Pakistani job platform API access",
       "failureClass": "Job listing/application/candidate boundary",
       "gate": "fail",
@@ -16684,7 +16616,7 @@
       "id": "foodpanda-pakistan-mcp",
       "name": "Foodpanda Pakistan MCP",
       "packageName": "foodpanda-pakistan-mcp",
-      "category": "Food Delivery / Pakistani",
+      "category": "Food Delivery",
       "riskClass": "Pakistani food delivery platform API access",
       "failureClass": "Order/restaurant/delivery boundary",
       "gate": "fail",
@@ -16727,7 +16659,7 @@
       "id": "daraz-mcp",
       "name": "Daraz MCP",
       "packageName": "daraz-mcp",
-      "category": "E-commerce / Pakistani",
+      "category": "E-commerce",
       "riskClass": "Pakistani e-commerce platform API access",
       "failureClass": "Product/order/seller boundary",
       "gate": "fail",
@@ -16770,7 +16702,7 @@
       "id": "olx-pakistan-mcp",
       "name": "OLX Pakistan MCP",
       "packageName": "olx-pakistan-mcp",
-      "category": "Classifieds / Pakistani",
+      "category": "Classifieds",
       "riskClass": "Pakistani classifieds platform API access",
       "failureClass": "Listing/ad/user boundary",
       "gate": "fail",
@@ -16813,7 +16745,7 @@
       "id": "pakwheels-mcp",
       "name": "PakWheels MCP",
       "packageName": "pakwheels-mcp",
-      "category": "Auto Marketplace / Pakistani",
+      "category": "Auto Marketplace",
       "riskClass": "Pakistani automotive marketplace API access",
       "failureClass": "Vehicle/listing/dealer boundary",
       "gate": "fail",

@@ -1,4 +1,4 @@
-> 🇺🇸 English: [README.md](README.md)  
+> 🇺🇸 English: [README.md](README.md) · [中文文档目录](docs/zh/README.md)  
 
 <p align="center">
   <img src="docs/assets/mcp-observatory-logo.png" alt="MCP Observatory" width="482"/>

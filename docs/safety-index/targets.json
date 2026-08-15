@@ -177,8 +177,8 @@
     "timeoutMs": 60000,
     "riskClass": "Repository mutation and PR control",
     "failureClass": "Write/merge tool boundary",
-    "whyItMatters": "Exposes 26 tools to agents, including file writes, branch creation, issue/PR creation, and PR merges across any repo a token can reach \u2014 high-stakes write access that needs a visible boundary before an agent is trusted with it.",
-    "reproductionNotes": "Zero-config package; tool listing succeeds without a real GitHub token, so this check is safe to run in CI. Note: npm currently flags this package as deprecated/no longer supported by the publisher \u2014 treat this target as compatibility evidence, not an endorsement of the package's maintenance status."
+    "whyItMatters": "Exposes 26 tools to agents, including file writes, branch creation, issue/PR creation, and PR merges across any repo a token can reach — high-stakes write access that needs a visible boundary before an agent is trusted with it.",
+    "reproductionNotes": "Zero-config package; tool listing succeeds without a real GitHub token, so this check is safe to run in CI. Note: npm currently flags this package as deprecated/no longer supported by the publisher — treat this target as compatibility evidence, not an endorsement of the package's maintenance status."
   },
   {
     "id": "ui5-mcp-server",
@@ -472,7 +472,7 @@
     "timeoutMs": 60000,
     "riskClass": "Payment API boundary",
     "failureClass": "Financial transaction tool boundary",
-    "whyItMatters": "Stripe tools can create customers, process payments, and manage subscriptions \u2014 financial mutation surfaces that need visible boundaries.",
+    "whyItMatters": "Stripe tools can create customers, process payments, and manage subscriptions — financial mutation surfaces that need visible boundaries.",
     "reproductionNotes": "Schema-only; requires Stripe API key for full scan. Tool listing exposes payment operations."
   },
   {
@@ -591,7 +591,7 @@
     "timeoutMs": 60000,
     "riskClass": "Database provisioning",
     "failureClass": "Database/branch boundary",
-    "whyItMatters": "Neon MCP servers can provision databases, manage branches, and run SQL \u2014 cloud database operations with production implications.",
+    "whyItMatters": "Neon MCP servers can provision databases, manage branches, and run SQL — cloud database operations with production implications.",
     "reproductionNotes": "Schema-only; requires Neon API key and project ID for full scan."
   },
   {
@@ -608,7 +608,7 @@
     "timeoutMs": 60000,
     "riskClass": "Database and auth management",
     "failureClass": "Database/auth/admin boundary",
-    "whyItMatters": "Supabase MCP servers can manage tables, run SQL, manage auth users, and control Edge Functions \u2014 broad backend control surface.",
+    "whyItMatters": "Supabase MCP servers can manage tables, run SQL, manage auth users, and control Edge Functions — broad backend control surface.",
     "reproductionNotes": "Schema-only; requires Supabase access token for full scan."
   },
   {
@@ -625,7 +625,7 @@
     "timeoutMs": 60000,
     "riskClass": "Container orchestration",
     "failureClass": "Container/image boundary",
-    "whyItMatters": "Docker MCP servers expose container run, exec, and image management tools \u2014 container-level command execution is a high-trust boundary.",
+    "whyItMatters": "Docker MCP servers expose container run, exec, and image management tools — container-level command execution is a high-trust boundary.",
     "reproductionNotes": "Schema-only; requires Docker Desktop running for full scan. Tool listing may succeed without a running daemon."
   },
   {
@@ -643,7 +643,7 @@
     "timeoutMs": 60000,
     "riskClass": "Database mutation",
     "failureClass": "SQL query boundary",
-    "whyItMatters": "PostgreSQL MCP servers can run arbitrary SQL queries against connected databases \u2014 a high-trust data mutation surface.",
+    "whyItMatters": "PostgreSQL MCP servers can run arbitrary SQL queries against connected databases — a high-trust data mutation surface.",
     "reproductionNotes": "Scanned with dummy connection string for schema discovery. Full query execution requires a real PostgreSQL connection. Note: npm flags this package as deprecated by the publisher."
   },
   {
@@ -678,7 +678,7 @@
     "timeoutMs": 60000,
     "riskClass": "Untrusted content retrieval",
     "failureClass": "Web fetch boundary",
-    "whyItMatters": "Fetch MCP servers can retrieve arbitrary web content and feed it into agent context \u2014 a prompt injection and content trust boundary.",
+    "whyItMatters": "Fetch MCP servers can retrieve arbitrary web content and feed it into agent context — a prompt injection and content trust boundary.",
     "reproductionNotes": "Package not published on npm (404). Available in the servers monorepo. Use community packages like mcp-fetch-server or build from source."
   },
   {
@@ -698,7 +698,7 @@
     "timeoutMs": 60000,
     "riskClass": "Untrusted content retrieval",
     "failureClass": "Search result boundary",
-    "whyItMatters": "Brave Search MCP servers return web and local search results into agent context \u2014 untrusted content ingestion vector.",
+    "whyItMatters": "Brave Search MCP servers return web and local search results into agent context — untrusted content ingestion vector.",
     "reproductionNotes": "Scanned with dummy API key for schema/tool discovery. Full search execution requires a valid Brave Search API key. Note: npm flags this package as deprecated by the publisher."
   },
   {
@@ -718,7 +718,7 @@
     "timeoutMs": 60000,
     "riskClass": "Repository mutation and CI control",
     "failureClass": "Merge/CI pipeline boundary",
-    "whyItMatters": "GitLab MCP servers expose repository operations, merge requests, issues, and CI pipeline controls \u2014 high-stakes write access across repos.",
+    "whyItMatters": "GitLab MCP servers expose repository operations, merge requests, issues, and CI pipeline controls — high-stakes write access across repos.",
     "reproductionNotes": "Scanned with dummy token for schema/tool discovery. Server responds but tools have schema validation issues preventing full listing. Note: npm flags this package as deprecated by the publisher."
   },
   {
@@ -735,7 +735,7 @@
     "timeoutMs": 60000,
     "riskClass": "Email platform access",
     "failureClass": "Email read/write boundary",
-    "whyItMatters": "Gmail MCP servers can read, send, archive, and manage emails on behalf of users \u2014 high-stakes message access that needs visible boundaries before agents are trusted with inbox control.",
+    "whyItMatters": "Gmail MCP servers can read, send, archive, and manage emails on behalf of users — high-stakes message access that needs visible boundaries before agents are trusted with inbox control.",
     "reproductionNotes": "Schema-only evaluation; requires Gmail OAuth credentials. Note: @anthropic/mcp-server-gmail has not been published to npm. Community equivalent: gmail-mcp."
   },
   {
@@ -752,7 +752,7 @@
     "timeoutMs": 60000,
     "riskClass": "Untrusted content retrieval",
     "failureClass": "Web search/reader boundary",
-    "whyItMatters": "Jina AI MCP servers can perform web search and content reading \u2014 untrusted content ingestion into agent context.",
+    "whyItMatters": "Jina AI MCP servers can perform web search and content reading — untrusted content ingestion into agent context.",
     "reproductionNotes": "Schema-only evaluation; requires Jina AI API key. Note: @anthropic/mcp-server-jina has not been published to npm. Community equivalent: jina-mcp-tools."
   },
   {
@@ -769,7 +769,7 @@
     "timeoutMs": 60000,
     "riskClass": "Spreadsheet data access",
     "failureClass": "Spreadsheet read/write boundary",
-    "whyItMatters": "Google Sheets MCP servers can read, write, and query spreadsheet data \u2014 agents with sheet access can modify business-critical data.",
+    "whyItMatters": "Google Sheets MCP servers can read, write, and query spreadsheet data — agents with sheet access can modify business-critical data.",
     "reproductionNotes": "Schema-only evaluation; requires Google Sheets OAuth credentials. Note: @anthropic/mcp-server-google-sheets has not been published to npm. Community equivalent: google-sheets-mcp."
   },
   {
@@ -786,7 +786,7 @@
     "timeoutMs": 60000,
     "riskClass": "Calendar data access",
     "failureClass": "Calendar event boundary",
-    "whyItMatters": "Google Calendar MCP servers can create, read, update, and delete calendar events \u2014 agents can schedule meetings and modify availability.",
+    "whyItMatters": "Google Calendar MCP servers can create, read, update, and delete calendar events — agents can schedule meetings and modify availability.",
     "reproductionNotes": "Schema-only evaluation; requires Google Calendar OAuth credentials. Note: @anthropic/mcp-server-google-calendar has not been published to npm. Community equivalent: @cocal/google-calendar-mcp."
   },
   {
@@ -803,7 +803,7 @@
     "timeoutMs": 60000,
     "riskClass": "Task management access",
     "failureClass": "Task list mutation boundary",
-    "whyItMatters": "Google Tasks MCP servers can create, list, update, and delete user tasks \u2014 agents can manage personal task lists with real user data.",
+    "whyItMatters": "Google Tasks MCP servers can create, list, update, and delete user tasks — agents can manage personal task lists with real user data.",
     "reproductionNotes": "Schema-only evaluation; requires Google Tasks OAuth credentials. Note: @anthropic/mcp-server-google-tasks has not been published to npm. Community equivalent: @overlay-one/google-tasks-mcp-server."
   },
   {
@@ -820,7 +820,7 @@
     "timeoutMs": 60000,
     "riskClass": "ML model and dataset access",
     "failureClass": "Model/inference boundary",
-    "whyItMatters": "HuggingFace MCP servers can access models, datasets, and inference endpoints \u2014 agents could download or interact with ML artifacts.",
+    "whyItMatters": "HuggingFace MCP servers can access models, datasets, and inference endpoints — agents could download or interact with ML artifacts.",
     "reproductionNotes": "Schema-only evaluation; requires HuggingFace API token. Note: @anthropic/mcp-server-huggingface has not been published to npm. Community equivalent: huggingface-mcp-server."
   },
   {
@@ -837,7 +837,7 @@
     "timeoutMs": 60000,
     "riskClass": "Social platform access",
     "failureClass": "Content posting/reading boundary",
-    "whyItMatters": "Reddit MCP servers can browse posts, search content, and interact with subreddits \u2014 agents could post or retrieve content from social platforms.",
+    "whyItMatters": "Reddit MCP servers can browse posts, search content, and interact with subreddits — agents could post or retrieve content from social platforms.",
     "reproductionNotes": "Schema-only evaluation; requires Reddit API credentials. Note: @anthropic/mcp-server-reddit has not been published to npm. Community equivalent: reddit-mcp."
   },
   {
@@ -854,7 +854,7 @@
     "timeoutMs": 60000,
     "riskClass": "Push notification platform access",
     "failureClass": "Notification/audience boundary",
-    "whyItMatters": "OneSignal MCP servers can send push notifications, manage segments, and configure messaging campaigns \u2014 agent-triggered notifications to real users is a high-stakes boundary.",
+    "whyItMatters": "OneSignal MCP servers can send push notifications, manage segments, and configure messaging campaigns — agent-triggered notifications to real users is a high-stakes boundary.",
     "reproductionNotes": "Schema-only evaluation; requires OneSignal API credentials. Note: @anthropic/mcp-server-onesignal has not been published to npm. No community MCP equivalent found as of this writing."
   },
   {
@@ -871,7 +871,7 @@
     "timeoutMs": 60000,
     "riskClass": "CRM data access",
     "failureClass": "Contact/relationship boundary",
-    "whyItMatters": "Clay MCP servers can access contact data, enrichment, and relationship intelligence \u2014 agents could read or modify CRM records with personal and business contact data.",
+    "whyItMatters": "Clay MCP servers can access contact data, enrichment, and relationship intelligence — agents could read or modify CRM records with personal and business contact data.",
     "reproductionNotes": "Schema-only evaluation; requires Clay API credentials. Note: @anthropic/mcp-server-clay has not been published to npm. Community equivalent: @clayhq/clay-mcp."
   },
   {
@@ -888,7 +888,7 @@
     "timeoutMs": 60000,
     "riskClass": "Image generation API access",
     "failureClass": "Image generation boundary",
-    "whyItMatters": "DALL-E MCP servers can generate, edit, and manipulate images via AI \u2014 agents with image generation access need visible boundaries around content creation.",
+    "whyItMatters": "DALL-E MCP servers can generate, edit, and manipulate images via AI — agents with image generation access need visible boundaries around content creation.",
     "reproductionNotes": "Schema-only evaluation; requires OpenAI API key for full image generation scan. Community package; verify npm availability."
   },
   {
@@ -905,7 +905,7 @@
     "timeoutMs": 60000,
     "riskClass": "Image generation model access",
     "failureClass": "Model inference boundary",
-    "whyItMatters": "Stable Diffusion MCP servers expose text-to-image generation to agents \u2014 content moderation and compute resource boundaries need review.",
+    "whyItMatters": "Stable Diffusion MCP servers expose text-to-image generation to agents — content moderation and compute resource boundaries need review.",
     "reproductionNotes": "Schema-only evaluation; requires Stability AI API key or local model for full scan. Community package; verify npm availability."
   },
   {
@@ -922,7 +922,7 @@
     "timeoutMs": 60000,
     "riskClass": "Financial data retrieval",
     "failureClass": "Market data boundary",
-    "whyItMatters": "Yahoo Finance MCP servers expose stock quotes, historical data, and market analytics \u2014 agents consuming financial data need visibility into data sources and freshness.",
+    "whyItMatters": "Yahoo Finance MCP servers expose stock quotes, historical data, and market analytics — agents consuming financial data need visibility into data sources and freshness.",
     "reproductionNotes": "Schema-only evaluation; full market data queries may require API key or rate limits. Community package; verify npm availability."
   },
   {
@@ -939,7 +939,7 @@
     "timeoutMs": 60000,
     "riskClass": "Trading API execution",
     "failureClass": "Trade execution boundary",
-    "whyItMatters": "Alpaca MCP servers can place trades, manage portfolios, and access brokerage accounts \u2014 agents with trading permissions need strict guardrails around financial transactions.",
+    "whyItMatters": "Alpaca MCP servers can place trades, manage portfolios, and access brokerage accounts — agents with trading permissions need strict guardrails around financial transactions.",
     "reproductionNotes": "Schema-only evaluation; requires Alpaca API key and secret for full scan. Community package; verify npm availability."
   },
   {
@@ -956,7 +956,7 @@
     "timeoutMs": 60000,
     "riskClass": "Physical device control",
     "failureClass": "GPIO/hardware boundary",
-    "whyItMatters": "Raspberry Pi MCP servers can control GPIO pins, sensors, and actuators \u2014 agents with hardware access can interact with the physical world.",
+    "whyItMatters": "Raspberry Pi MCP servers can control GPIO pins, sensors, and actuators — agents with hardware access can interact with the physical world.",
     "reproductionNotes": "Schema-only evaluation; requires Raspberry Pi hardware or simulator for full scan. Community package; verify npm availability."
   },
   {
@@ -973,7 +973,7 @@
     "timeoutMs": 60000,
     "riskClass": "Smart home device control",
     "failureClass": "Home automation boundary",
-    "whyItMatters": "HomeKit MCP servers can control lights, locks, thermostats, and cameras \u2014 agents with smart home access need clear safety boundaries for physical devices.",
+    "whyItMatters": "HomeKit MCP servers can control lights, locks, thermostats, and cameras — agents with smart home access need clear safety boundaries for physical devices.",
     "reproductionNotes": "Schema-only evaluation; requires HomeKit bridge or simulator for full scan. Community package; verify npm availability."
   },
   {
@@ -990,7 +990,7 @@
     "timeoutMs": 60000,
     "riskClass": "Game world mutation",
     "failureClass": "Game state boundary",
-    "whyItMatters": "Minecraft MCP servers can place blocks, spawn entities, and modify game worlds \u2014 agents with game world access need boundaries around destructive operations.",
+    "whyItMatters": "Minecraft MCP servers can place blocks, spawn entities, and modify game worlds — agents with game world access need boundaries around destructive operations.",
     "reproductionNotes": "Schema-only evaluation; requires Minecraft server connection for full scan. Community package; verify npm availability."
   },
   {
@@ -1007,7 +1007,7 @@
     "timeoutMs": 60000,
     "riskClass": "Game engine control",
     "failureClass": "Game engine boundary",
-    "whyItMatters": "Unity MCP servers can create scenes, modify assets, and control game objects \u2014 agents with engine access can alter game logic and build pipelines.",
+    "whyItMatters": "Unity MCP servers can create scenes, modify assets, and control game objects — agents with engine access can alter game logic and build pipelines.",
     "reproductionNotes": "Schema-only evaluation; requires Unity Editor connection for full scan. Community package; verify npm availability."
   },
   {
@@ -1024,7 +1024,7 @@
     "timeoutMs": 60000,
     "riskClass": "Protected health information access",
     "failureClass": "Patient data boundary",
-    "whyItMatters": "FHIR MCP servers expose patient records, clinical data, and healthcare workflows \u2014 agents handling PHI need HIPAA-compliant access boundaries.",
+    "whyItMatters": "FHIR MCP servers expose patient records, clinical data, and healthcare workflows — agents handling PHI need HIPAA-compliant access boundaries.",
     "reproductionNotes": "Schema-only evaluation; requires FHIR endpoint and authentication for full scan. Community package; verify npm availability."
   },
   {
@@ -1041,7 +1041,7 @@
     "timeoutMs": 60000,
     "riskClass": "Electronic health record access",
     "failureClass": "EHR record boundary",
-    "whyItMatters": "Epic MCP servers can access electronic health records, prescriptions, and clinical workflows \u2014 agents with EHR access handle sensitive medical data.",
+    "whyItMatters": "Epic MCP servers can access electronic health records, prescriptions, and clinical workflows — agents with EHR access handle sensitive medical data.",
     "reproductionNotes": "Schema-only evaluation; requires Epic FHIR endpoint and OAuth credentials for full scan. Community package; verify npm availability."
   },
   {
@@ -1058,7 +1058,7 @@
     "timeoutMs": 60000,
     "riskClass": "Legal research data access",
     "failureClass": "Legal content retrieval boundary",
-    "whyItMatters": "Case law MCP servers retrieve court opinions, statutes, and legal precedents \u2014 agents providing legal research need visible citation accuracy boundaries.",
+    "whyItMatters": "Case law MCP servers retrieve court opinions, statutes, and legal precedents — agents providing legal research need visible citation accuracy boundaries.",
     "reproductionNotes": "Schema-only evaluation; requires legal database API key for full search scan. Community package; verify npm availability."
   },
   {
@@ -1075,7 +1075,7 @@
     "timeoutMs": 60000,
     "riskClass": "Contract data processing",
     "failureClass": "Document analysis boundary",
-    "whyItMatters": "Contract analysis MCP servers parse, summarize, and extract clauses from legal documents \u2014 agents handling contracts need boundaries around confidential document data.",
+    "whyItMatters": "Contract analysis MCP servers parse, summarize, and extract clauses from legal documents — agents handling contracts need boundaries around confidential document data.",
     "reproductionNotes": "Schema-only evaluation; requires API key or document upload for full scan. Community package; verify npm availability."
   },
   {
@@ -1092,7 +1092,7 @@
     "timeoutMs": 60000,
     "riskClass": "Learning management system access",
     "failureClass": "Course/grade boundary",
-    "whyItMatters": "Canvas MCP servers can access courses, assignments, grades, and student data \u2014 agents with LMS access handle FERPA-protected education records.",
+    "whyItMatters": "Canvas MCP servers can access courses, assignments, grades, and student data — agents with LMS access handle FERPA-protected education records.",
     "reproductionNotes": "Schema-only evaluation; requires Canvas instance URL and API token for full scan. Community package; verify npm availability."
   },
   {
@@ -1109,7 +1109,7 @@
     "timeoutMs": 60000,
     "riskClass": "Educational content retrieval",
     "failureClass": "Learning content boundary",
-    "whyItMatters": "Khan Academy MCP servers expose courses, exercises, and learning progress \u2014 agents serving educational content need content accuracy and student privacy boundaries.",
+    "whyItMatters": "Khan Academy MCP servers expose courses, exercises, and learning progress — agents serving educational content need content accuracy and student privacy boundaries.",
     "reproductionNotes": "Schema-only evaluation; requires Khan Academy API credentials for full scan. Community package; verify npm availability."
   },
   {
@@ -1126,7 +1126,7 @@
     "timeoutMs": 60000,
     "riskClass": "Property data retrieval",
     "failureClass": "Property listing boundary",
-    "whyItMatters": "Zillow MCP servers retrieve property listings, valuations, and market data \u2014 agents consuming real estate data need visible data freshness and accuracy boundaries.",
+    "whyItMatters": "Zillow MCP servers retrieve property listings, valuations, and market data — agents consuming real estate data need visible data freshness and accuracy boundaries.",
     "reproductionNotes": "Schema-only evaluation; requires Zillow API key or web scraping for full scan. Community package; verify npm availability."
   },
   {
@@ -1143,7 +1143,7 @@
     "timeoutMs": 60000,
     "riskClass": "Multiple listing service access",
     "failureClass": "MLS data boundary",
-    "whyItMatters": "MLS MCP servers expose property listings, agent data, and transaction history \u2014 agents with MLS access handle regulated real estate data.",
+    "whyItMatters": "MLS MCP servers expose property listings, agent data, and transaction history — agents with MLS access handle regulated real estate data.",
     "reproductionNotes": "Schema-only evaluation; requires MLS credentials and board authorization for full scan. Community package; verify npm availability."
   },
   {
@@ -1160,7 +1160,7 @@
     "timeoutMs": 60000,
     "riskClass": "Travel booking API access",
     "failureClass": "Flight search boundary",
-    "whyItMatters": "Flight MCP servers search, compare, and book flights through airline APIs \u2014 agents with booking access need payment and itinerary confirmation boundaries.",
+    "whyItMatters": "Flight MCP servers search, compare, and book flights through airline APIs — agents with booking access need payment and itinerary confirmation boundaries.",
     "reproductionNotes": "Schema-only evaluation; requires flight API key (Amadeus/Skyscanner) for full search scan. Community package; verify npm availability."
   },
   {
@@ -1177,7 +1177,7 @@
     "timeoutMs": 60000,
     "riskClass": "Hospitality booking API access",
     "failureClass": "Hotel reservation boundary",
-    "whyItMatters": "Hotel booking MCP servers search rooms, check availability, and book reservations \u2014 agents with booking access handle reservation commitments and payment data.",
+    "whyItMatters": "Hotel booking MCP servers search rooms, check availability, and book reservations — agents with booking access handle reservation commitments and payment data.",
     "reproductionNotes": "Schema-only evaluation; requires hotel API key for full booking scan. Community package; verify npm availability."
   },
   {
@@ -1194,7 +1194,7 @@
     "timeoutMs": 60000,
     "riskClass": "Weather data retrieval",
     "failureClass": "Weather data boundary",
-    "whyItMatters": "OpenWeather MCP servers expose current conditions, forecasts, and alerts \u2014 agents using weather data need clear data source and timeliness boundaries.",
+    "whyItMatters": "OpenWeather MCP servers expose current conditions, forecasts, and alerts — agents using weather data need clear data source and timeliness boundaries.",
     "reproductionNotes": "Schema-only evaluation; requires OpenWeather API key for full forecast scan. Community package; verify npm availability."
   },
   {
@@ -1211,7 +1211,7 @@
     "timeoutMs": 60000,
     "riskClass": "Weather data retrieval",
     "failureClass": "Weather forecast boundary",
-    "whyItMatters": "Weather MCP servers retrieve forecasts, radar maps, and severe weather alerts \u2014 agents providing weather information to users need accuracy verification boundaries.",
+    "whyItMatters": "Weather MCP servers retrieve forecasts, radar maps, and severe weather alerts — agents providing weather information to users need accuracy verification boundaries.",
     "reproductionNotes": "Schema-only evaluation; requires Weather API key for full forecast scan. Community package; verify npm availability."
   },
   {
@@ -1228,7 +1228,7 @@
     "timeoutMs": 60000,
     "riskClass": "Sports data retrieval",
     "failureClass": "Sports content boundary",
-    "whyItMatters": "ESPN MCP servers retrieve scores, schedules, standings, and news \u2014 agents serving sports data need content licensing and accuracy boundaries.",
+    "whyItMatters": "ESPN MCP servers retrieve scores, schedules, standings, and news — agents serving sports data need content licensing and accuracy boundaries.",
     "reproductionNotes": "Schema-only evaluation; requires ESPN API key for full data scan. Community package; verify npm availability."
   },
   {
@@ -1245,7 +1245,7 @@
     "timeoutMs": 60000,
     "riskClass": "Music streaming API access",
     "failureClass": "Playback/library boundary",
-    "whyItMatters": "Spotify MCP servers can search tracks, control playback, and manage playlists \u2014 agents with music access need user consent boundaries for playback control.",
+    "whyItMatters": "Spotify MCP servers can search tracks, control playback, and manage playlists — agents with music access need user consent boundaries for playback control.",
     "reproductionNotes": "Schema-only evaluation; requires Spotify OAuth credentials for full playback scan. Community package; verify npm availability."
   },
   {
@@ -1262,7 +1262,7 @@
     "timeoutMs": 60000,
     "riskClass": "Music streaming API access",
     "failureClass": "Music library boundary",
-    "whyItMatters": "Apple Music MCP servers can search catalog, manage library, and access recommendations \u2014 agents with music access need media rights boundaries.",
+    "whyItMatters": "Apple Music MCP servers can search catalog, manage library, and access recommendations — agents with music access need media rights boundaries.",
     "reproductionNotes": "Schema-only evaluation; requires Apple Music developer token for full catalog scan. Community package; verify npm availability."
   },
   {
@@ -1279,7 +1279,7 @@
     "timeoutMs": 60000,
     "riskClass": "Video platform API access",
     "failureClass": "Video content boundary",
-    "whyItMatters": "YouTube MCP servers can search videos, access captions, and manage playlists \u2014 agents with YouTube access need content moderation and API quota boundaries.",
+    "whyItMatters": "YouTube MCP servers can search videos, access captions, and manage playlists — agents with YouTube access need content moderation and API quota boundaries.",
     "reproductionNotes": "Schema-only evaluation; requires YouTube Data API key for full search scan. Community package; verify npm availability."
   },
   {
@@ -1296,7 +1296,7 @@
     "timeoutMs": 60000,
     "riskClass": "Video hosting API access",
     "failureClass": "Video management boundary",
-    "whyItMatters": "Vimeo MCP servers can upload, manage, and retrieve videos and metadata \u2014 agents with Vimeo access need video privacy and content ownership boundaries.",
+    "whyItMatters": "Vimeo MCP servers can upload, manage, and retrieve videos and metadata — agents with Vimeo access need video privacy and content ownership boundaries.",
     "reproductionNotes": "Schema-only evaluation; requires Vimeo API access token for full scan. Community package; verify npm availability."
   },
   {
@@ -1330,7 +1330,7 @@
     "timeoutMs": 60000,
     "riskClass": "CI pipeline control",
     "failureClass": "Pipeline/build boundary",
-    "whyItMatters": "CircleCI MCP servers can trigger pipelines, manage projects, and control CI workflows \u2014 agent-triggered builds and deployments need visible boundaries.",
+    "whyItMatters": "CircleCI MCP servers can trigger pipelines, manage projects, and control CI workflows — agent-triggered builds and deployments need visible boundaries.",
     "reproductionNotes": "Zero-config public package; 17 tools visible including pipeline, project, and workflow management. Schema-only for full operations without CircleCI API token."
   },
   {
@@ -1347,7 +1347,7 @@
     "timeoutMs": 60000,
     "riskClass": "Cloud platform control",
     "failureClass": "App/dyno/addon boundary",
-    "whyItMatters": "Heroku MCP servers expose app management, dyno scaling, addon provisioning, and config var access \u2014 broad cloud control surface with production consequences.",
+    "whyItMatters": "Heroku MCP servers expose app management, dyno scaling, addon provisioning, and config var access — broad cloud control surface with production consequences.",
     "reproductionNotes": "Zero-config public package; 33 tools visible across apps, dynos, addons, pipelines, and more. High-risk tool surface visible without auth."
   },
   {
@@ -1364,7 +1364,7 @@
     "timeoutMs": 60000,
     "riskClass": "User analytics data access",
     "failureClass": "Analytics/heatmap boundary",
-    "whyItMatters": "Clarity MCP servers expose user behavior analytics, heatmaps, and session recordings \u2014 agent access to user behavioral data needs explicit review.",
+    "whyItMatters": "Clarity MCP servers expose user behavior analytics, heatmaps, and session recordings — agent access to user behavioral data needs explicit review.",
     "reproductionNotes": "Zero-config public package; 3 tools exposed for analytics data access. Schema-only for actual data retrieval without Clarity API credentials."
   },
   {
@@ -1381,7 +1381,7 @@
     "timeoutMs": 60000,
     "riskClass": "Test management platform access",
     "failureClass": "Test case/result boundary",
-    "whyItMatters": "Qase MCP servers expose 80 tools for test case management, test runs, results, and reporting \u2014 broad testing platform control surface.",
+    "whyItMatters": "Qase MCP servers expose 80 tools for test case management, test runs, results, and reporting — broad testing platform control surface.",
     "reproductionNotes": "Zero-config public package; 80 tools visible. High tool count warrants careful review before agent integration."
   },
   {
@@ -1432,7 +1432,7 @@
     "timeoutMs": 60000,
     "riskClass": "Privacy and data governance",
     "failureClass": "DSR/consent/data boundary",
-    "whyItMatters": "Transcend MCP servers expose 73 tools for data subject requests, consent management, data inventory, and privacy assessments \u2014 agents with access could trigger privacy-sensitive operations across all data stores.",
+    "whyItMatters": "Transcend MCP servers expose 73 tools for data subject requests, consent management, data inventory, and privacy assessments — agents with access could trigger privacy-sensitive operations across all data stores.",
     "reproductionNotes": "Zero-config public package; 73 tools visible covering DSR, consent, preferences, inventory, discovery, and admin. High-risk privacy operations surface visible without auth."
   },
   {
@@ -1449,7 +1449,7 @@
     "timeoutMs": 60000,
     "riskClass": "Cloud resource management",
     "failureClass": "Resource/provisioning boundary",
-    "whyItMatters": "Azure MCP servers can manage cloud resources, subscriptions, and services \u2014 agent-triggered cloud operations have cost and security implications.",
+    "whyItMatters": "Azure MCP servers can manage cloud resources, subscriptions, and services — agent-triggered cloud operations have cost and security implications.",
     "reproductionNotes": "Schema-only evaluation; requires Azure credentials for tool listing and full scan."
   },
   {
@@ -1466,7 +1466,7 @@
     "timeoutMs": 60000,
     "riskClass": "CRM data and org control",
     "failureClass": "Record/org/metadata boundary",
-    "whyItMatters": "Salesforce MCP servers can read, create, and update CRM records, metadata, and org configuration \u2014 high-stakes customer data access.",
+    "whyItMatters": "Salesforce MCP servers can read, create, and update CRM records, metadata, and org configuration — high-stakes customer data access.",
     "reproductionNotes": "Schema-only evaluation; requires Salesforce authentication for tool listing and full scan."
   },
   {
@@ -1483,7 +1483,7 @@
     "timeoutMs": 60000,
     "riskClass": "Component documentation access",
     "failureClass": "Component/test boundary",
-    "whyItMatters": "Storybook MCP servers expose UI component documentation, stories, and test data \u2014 agents use this context for code generation and component modification.",
+    "whyItMatters": "Storybook MCP servers expose UI component documentation, stories, and test data — agents use this context for code generation and component modification.",
     "reproductionNotes": "Schema-only evaluation; requires a running Storybook instance for full functionality."
   },
   {
@@ -1500,7 +1500,7 @@
     "timeoutMs": 60000,
     "riskClass": "DevOps platform control",
     "failureClass": "Work item/repo/pipeline boundary",
-    "whyItMatters": "Azure DevOps MCP servers expose work items, repositories, pipelines, and test plans \u2014 broad DevOps control surface covering code, builds, and project management.",
+    "whyItMatters": "Azure DevOps MCP servers expose work items, repositories, pipelines, and test plans — broad DevOps control surface covering code, builds, and project management.",
     "reproductionNotes": "Schema-only evaluation; requires Azure DevOps organization URL and PAT for full scan."
   },
   {
@@ -1517,7 +1517,7 @@
     "timeoutMs": 60000,
     "riskClass": "CRM and marketing platform access",
     "failureClass": "Contact/deal/campaign boundary",
-    "whyItMatters": "HubSpot MCP servers can access contacts, deals, marketing campaigns, and CRM data \u2014 agents with HubSpot access can modify customer records and trigger marketing operations.",
+    "whyItMatters": "HubSpot MCP servers can access contacts, deals, marketing campaigns, and CRM data — agents with HubSpot access can modify customer records and trigger marketing operations.",
     "reproductionNotes": "Schema-only evaluation; requires HubSpot access token for full scan."
   },
   {
@@ -1534,7 +1534,7 @@
     "timeoutMs": 60000,
     "riskClass": "Infrastructure monitoring access",
     "failureClass": "Entity/metric/problem boundary",
-    "whyItMatters": "Dynatrace MCP servers expose infrastructure monitoring data, problems, entities, and metrics \u2014 agents can query production observability data with security and privacy implications.",
+    "whyItMatters": "Dynatrace MCP servers expose infrastructure monitoring data, problems, entities, and metrics — agents can query production observability data with security and privacy implications.",
     "reproductionNotes": "Schema-only evaluation; requires Dynatrace API token and environment URL for full scan."
   },
   {
@@ -1551,7 +1551,7 @@
     "timeoutMs": 60000,
     "riskClass": "Untrusted content retrieval",
     "failureClass": "Web search/result boundary",
-    "whyItMatters": "Brave Search MCP v2 returns web results, images, videos, and AI summaries \u2014 untrusted content ingestion into agent context with broader result types than v1.",
+    "whyItMatters": "Brave Search MCP v2 returns web results, images, videos, and AI summaries — untrusted content ingestion into agent context with broader result types than v1.",
     "reproductionNotes": "Schema-only evaluation; requires Brave Search API key for full scan."
   },
   {
@@ -1568,7 +1568,7 @@
     "timeoutMs": 60000,
     "riskClass": "Testing platform access",
     "failureClass": "Test/API/quality boundary",
-    "whyItMatters": "SmartBear MCP servers can interact with multiple testing and API quality products \u2014 agents could trigger test runs and access quality data.",
+    "whyItMatters": "SmartBear MCP servers can interact with multiple testing and API quality products — agents could trigger test runs and access quality data.",
     "reproductionNotes": "Schema-only evaluation; requires SmartBear API credentials for full scan."
   },
   {
@@ -1585,7 +1585,7 @@
     "timeoutMs": 60000,
     "riskClass": "GitOps deployment control",
     "failureClass": "Application/sync/cluster boundary",
-    "whyItMatters": "Argo CD MCP servers can manage applications, trigger syncs, and control GitOps deployments \u2014 agents with Argo CD access can modify production Kubernetes deployments.",
+    "whyItMatters": "Argo CD MCP servers can manage applications, trigger syncs, and control GitOps deployments — agents with Argo CD access can modify production Kubernetes deployments.",
     "reproductionNotes": "Schema-only evaluation; requires Argo CD server URL and auth token for full scan."
   },
   {
@@ -1602,7 +1602,7 @@
     "timeoutMs": 60000,
     "riskClass": "Security platform access",
     "failureClass": "Vulnerability/finding boundary",
-    "whyItMatters": "Aikido MCP servers expose security vulnerability findings, code scanning results, and security posture data \u2014 agents could modify security findings or suppress alerts.",
+    "whyItMatters": "Aikido MCP servers expose security vulnerability findings, code scanning results, and security posture data — agents could modify security findings or suppress alerts.",
     "reproductionNotes": "Schema-only evaluation; requires Aikido API credentials for full scan."
   },
   {
@@ -1619,7 +1619,7 @@
     "timeoutMs": 60000,
     "riskClass": "API collection and testing access",
     "failureClass": "Collection/environment/request boundary",
-    "whyItMatters": "Postman MCP servers expose API collections, environments, and request execution \u2014 agents could run API tests, modify collections, and access API credentials.",
+    "whyItMatters": "Postman MCP servers expose API collections, environments, and request execution — agents could run API tests, modify collections, and access API credentials.",
     "reproductionNotes": "Schema-only evaluation; requires Postman API key for full scan."
   },
   {
@@ -1636,7 +1636,7 @@
     "timeoutMs": 60000,
     "riskClass": "Project management access",
     "failureClass": "Story/epic/workflow boundary",
-    "whyItMatters": "Shortcut MCP servers expose story creation, epic management, and workflow state changes \u2014 agents can modify project tracking data.",
+    "whyItMatters": "Shortcut MCP servers expose story creation, epic management, and workflow state changes — agents can modify project tracking data.",
     "reproductionNotes": "Schema-only evaluation; requires Shortcut API token for full scan."
   },
   {
@@ -1653,7 +1653,7 @@
     "timeoutMs": 60000,
     "riskClass": "Infrastructure control",
     "failureClass": "DNS/worker/WAF boundary",
-    "whyItMatters": "Cloudflare MCP v2 servers expose Workers, DNS, KV, R2, WAF, and Zone management \u2014 broad edge infrastructure control with production security implications.",
+    "whyItMatters": "Cloudflare MCP v2 servers expose Workers, DNS, KV, R2, WAF, and Zone management — broad edge infrastructure control with production security implications.",
     "reproductionNotes": "Schema-only evaluation; requires Cloudflare API token for full scan."
   },
   {
@@ -1670,7 +1670,7 @@
     "timeoutMs": 60000,
     "riskClass": "Web scraping and data extraction",
     "failureClass": "Actor/scraping/data boundary",
-    "whyItMatters": "Apify MCP servers can trigger web scraping actors, extract data from websites, and manage scraping infrastructure \u2014 agents could scrape any accessible web content.",
+    "whyItMatters": "Apify MCP servers can trigger web scraping actors, extract data from websites, and manage scraping infrastructure — agents could scrape any accessible web content.",
     "reproductionNotes": "Schema-only evaluation; requires Apify API token for full scan."
   },
   {
@@ -1687,7 +1687,7 @@
     "timeoutMs": 60000,
     "riskClass": "Task and document management",
     "failureClass": "Task/list/doc/chat boundary",
-    "whyItMatters": "ClickUp MCP servers expose task management, document editing, and chat capabilities \u2014 agents can manage full project workflows including task creation and document modification.",
+    "whyItMatters": "ClickUp MCP servers expose task management, document editing, and chat capabilities — agents can manage full project workflows including task creation and document modification.",
     "reproductionNotes": "Schema-only evaluation; requires ClickUp API token for full scan."
   },
   {
@@ -1704,7 +1704,7 @@
     "timeoutMs": 60000,
     "riskClass": "Test orchestration access",
     "failureClass": "Test run/report boundary",
-    "whyItMatters": "Currents MCP servers integrate with Playwright test orchestration \u2014 agents could trigger test suites, access test reports, and modify test configurations.",
+    "whyItMatters": "Currents MCP servers integrate with Playwright test orchestration — agents could trigger test suites, access test reports, and modify test configurations.",
     "reproductionNotes": "Schema-only evaluation; requires Currents API credentials for full scan."
   },
   {
@@ -1721,7 +1721,7 @@
     "timeoutMs": 60000,
     "riskClass": "Terminal and file system execution",
     "failureClass": "Shell/exec/file boundary",
-    "whyItMatters": "Desktop Commander MCP servers expose terminal operations, file editing, and command execution \u2014 agents with shell access can execute arbitrary commands on the host system. This is one of the highest-trust boundaries in the MCP ecosystem.",
+    "whyItMatters": "Desktop Commander MCP servers expose terminal operations, file editing, and command execution — agents with shell access can execute arbitrary commands on the host system. This is one of the highest-trust boundaries in the MCP ecosystem.",
     "reproductionNotes": "Schema-only evaluation; requires a specific runtime environment for tool listing. Shell execution boundary requires explicit sandboxing review."
   },
   {
@@ -1738,7 +1738,7 @@
     "timeoutMs": 60000,
     "riskClass": "Messaging platform access",
     "failureClass": "Message/session boundary",
-    "whyItMatters": "WhatsApp MCP servers (5.9K+ stars) can send and receive messages through WhatsApp Web \u2014 agent-initiated messaging to real contacts is a high-trust boundary with privacy and consent implications.",
+    "whyItMatters": "WhatsApp MCP servers (5.9K+ stars) can send and receive messages through WhatsApp Web — agent-initiated messaging to real contacts is a high-trust boundary with privacy and consent implications.",
     "reproductionNotes": "Schema-only evaluation; requires WhatsApp Web session setup via QR code for full message operations."
   },
   {
@@ -1755,7 +1755,7 @@
     "timeoutMs": 60000,
     "riskClass": "Store data access",
     "failureClass": "Product/order boundary",
-    "whyItMatters": "Shopify MCP servers expose store products, orders, customers, and inventory via the GraphQL API \u2014 agents could modify product listings, process orders, or manage storefront data with financial consequences.",
+    "whyItMatters": "Shopify MCP servers expose store products, orders, customers, and inventory via the GraphQL API — agents could modify product listings, process orders, or manage storefront data with financial consequences.",
     "reproductionNotes": "Schema-only; requires Shopify store domain and Storefront API access token."
   },
   {
@@ -1789,7 +1789,7 @@
     "timeoutMs": 60000,
     "riskClass": "Cache and data store mutation",
     "failureClass": "Key/value mutation boundary",
-    "whyItMatters": "Redis MCP servers can read, write, and delete keys, manage pub/sub channels, and execute Lua scripts \u2014 agents could manipulate cache and session data.",
+    "whyItMatters": "Redis MCP servers can read, write, and delete keys, manage pub/sub channels, and execute Lua scripts — agents could manipulate cache and session data.",
     "reproductionNotes": "Schema-only; requires Redis connection URL for full scan."
   },
   {
@@ -1806,7 +1806,7 @@
     "timeoutMs": 60000,
     "riskClass": "NoSQL database mutation",
     "failureClass": "Table/item mutation boundary",
-    "whyItMatters": "DynamoDB MCP servers can create tables, put/delete items, and query data \u2014 agents could modify cloud database resources.",
+    "whyItMatters": "DynamoDB MCP servers can create tables, put/delete items, and query data — agents could modify cloud database resources.",
     "reproductionNotes": "Schema-only; requires AWS credentials and region configuration for full scan."
   },
   {
@@ -1823,7 +1823,7 @@
     "timeoutMs": 60000,
     "riskClass": "Cloud object storage access",
     "failureClass": "Bucket/object boundary",
-    "whyItMatters": "S3 MCP servers can list buckets, upload/download objects, and manage permissions \u2014 agents could access or modify cloud storage.",
+    "whyItMatters": "S3 MCP servers can list buckets, upload/download objects, and manage permissions — agents could access or modify cloud storage.",
     "reproductionNotes": "Schema-only; requires AWS credentials and bucket configuration for full scan."
   },
   {
@@ -1840,7 +1840,7 @@
     "timeoutMs": 60000,
     "riskClass": "Cloud infrastructure control",
     "failureClass": "AWS service boundary",
-    "whyItMatters": "AWS MCP servers can interact with EC2, Lambda, S3, IAM, and other AWS services \u2014 broad cloud control surface for agents.",
+    "whyItMatters": "AWS MCP servers can interact with EC2, Lambda, S3, IAM, and other AWS services — broad cloud control surface for agents.",
     "reproductionNotes": "Schema-only; requires AWS credentials and region for full scan."
   },
   {
@@ -1857,7 +1857,7 @@
     "timeoutMs": 60000,
     "riskClass": "Cloud infrastructure control",
     "failureClass": "GCP service boundary",
-    "whyItMatters": "GCP MCP servers can interact with Compute Engine, Cloud Storage, BigQuery, and other GCP services \u2014 broad cloud control surface.",
+    "whyItMatters": "GCP MCP servers can interact with Compute Engine, Cloud Storage, BigQuery, and other GCP services — broad cloud control surface.",
     "reproductionNotes": "Schema-only; requires GCP credentials and project configuration for full scan."
   },
   {
@@ -1874,7 +1874,7 @@
     "timeoutMs": 60000,
     "riskClass": "E-commerce platform access",
     "failureClass": "Store/product/order boundary",
-    "whyItMatters": "Shopify MCP servers can manage products, orders, customers, and store settings \u2014 agents could modify live e-commerce operations.",
+    "whyItMatters": "Shopify MCP servers can manage products, orders, customers, and store settings — agents could modify live e-commerce operations.",
     "reproductionNotes": "Schema-only; requires Shopify store credentials and access token for full scan."
   },
   {
@@ -1891,7 +1891,7 @@
     "timeoutMs": 60000,
     "riskClass": "Messaging platform access",
     "failureClass": "Message/chat boundary",
-    "whyItMatters": "Telegram MCP servers can send messages, manage chats, and interact with Telegram bots \u2014 agents could communicate on behalf of users.",
+    "whyItMatters": "Telegram MCP servers can send messages, manage chats, and interact with Telegram bots — agents could communicate on behalf of users.",
     "reproductionNotes": "Schema-only; requires Telegram bot token for full scan."
   },
   {
@@ -1908,7 +1908,7 @@
     "timeoutMs": 60000,
     "riskClass": "Messaging platform access",
     "failureClass": "Message boundary (WhatsApp)",
-    "whyItMatters": "WhatsApp MCP servers can send and receive messages, manage contacts, and interact with WhatsApp Business API \u2014 agents could message users directly.",
+    "whyItMatters": "WhatsApp MCP servers can send and receive messages, manage contacts, and interact with WhatsApp Business API — agents could message users directly.",
     "reproductionNotes": "Schema-only; requires WhatsApp Business API credentials for full scan."
   },
   {
@@ -1925,7 +1925,7 @@
     "timeoutMs": 60000,
     "riskClass": "Communication platform access",
     "failureClass": "SMS/voice/chat boundary",
-    "whyItMatters": "Twilio MCP servers can send SMS, make voice calls, and manage messaging services \u2014 agents could trigger communications to real phone numbers.",
+    "whyItMatters": "Twilio MCP servers can send SMS, make voice calls, and manage messaging services — agents could trigger communications to real phone numbers.",
     "reproductionNotes": "Schema-only; requires Twilio account SID and auth token for full scan."
   },
   {
@@ -1942,7 +1942,7 @@
     "timeoutMs": 60000,
     "riskClass": "Email sending platform access",
     "failureClass": "Email send/template boundary",
-    "whyItMatters": "SendGrid MCP servers can send transactional and marketing emails, manage templates, and view delivery stats \u2014 agents could email users at scale.",
+    "whyItMatters": "SendGrid MCP servers can send transactional and marketing emails, manage templates, and view delivery stats — agents could email users at scale.",
     "reproductionNotes": "Schema-only; requires SendGrid API key for full scan."
   },
   {
@@ -1959,7 +1959,7 @@
     "timeoutMs": 60000,
     "riskClass": "LLM API platform access",
     "failureClass": "Model inference boundary",
-    "whyItMatters": "OpenAI MCP servers can call GPT models, manage embeddings, and use DALL-E \u2014 agents could trigger LLM inference and consume API credits.",
+    "whyItMatters": "OpenAI MCP servers can call GPT models, manage embeddings, and use DALL-E — agents could trigger LLM inference and consume API credits.",
     "reproductionNotes": "Schema-only; requires OpenAI API key for full scan."
   },
   {
@@ -1976,7 +1976,7 @@
     "timeoutMs": 60000,
     "riskClass": "AI-powered search access",
     "failureClass": "Search result/LLM boundary",
-    "whyItMatters": "Perplexity MCP servers combine web search with LLM reasoning \u2014 agents can retrieve AI-generated answers that blend search results with model outputs.",
+    "whyItMatters": "Perplexity MCP servers combine web search with LLM reasoning — agents can retrieve AI-generated answers that blend search results with model outputs.",
     "reproductionNotes": "Schema-only; requires Perplexity API key for full scan."
   },
   {
@@ -1993,7 +1993,7 @@
     "timeoutMs": 60000,
     "riskClass": "LLM observability access",
     "failureClass": "Trace/observation data boundary",
-    "whyItMatters": "Langfuse MCP servers can access LLM traces, prompt versions, and evaluation data \u2014 agents could read sensitive prompt/output data from production LLM pipelines.",
+    "whyItMatters": "Langfuse MCP servers can access LLM traces, prompt versions, and evaluation data — agents could read sensitive prompt/output data from production LLM pipelines.",
     "reproductionNotes": "Schema-only; requires Langfuse API keys for full scan."
   },
   {
@@ -2010,7 +2010,7 @@
     "timeoutMs": 60000,
     "riskClass": "Issue tracking mutation",
     "failureClass": "Issue/board/sprint boundary",
-    "whyItMatters": "Jira MCP servers can create issues, manage boards, transition workflows, and track sprints \u2014 agents could modify production project tracking.",
+    "whyItMatters": "Jira MCP servers can create issues, manage boards, transition workflows, and track sprints — agents could modify production project tracking.",
     "reproductionNotes": "Schema-only; requires Jira API token and instance URL for full scan."
   },
   {
@@ -2027,7 +2027,7 @@
     "timeoutMs": 60000,
     "riskClass": "Wiki/document platform access",
     "failureClass": "Page/space boundary",
-    "whyItMatters": "Confluence MCP servers can read, create, update, and search pages across wiki spaces \u2014 agents could access and modify internal documentation at scale.",
+    "whyItMatters": "Confluence MCP servers can read, create, update, and search pages across wiki spaces — agents could access and modify internal documentation at scale.",
     "reproductionNotes": "Schema-only; requires Confluence API token and instance URL for full scan."
   },
   {
@@ -2044,7 +2044,7 @@
     "timeoutMs": 60000,
     "riskClass": "Board management access",
     "failureClass": "Board/card/list boundary",
-    "whyItMatters": "Trello MCP servers can create boards, manage cards, move lists, and collaborate on projects \u2014 agents could reorganize or modify team workflows.",
+    "whyItMatters": "Trello MCP servers can create boards, manage cards, move lists, and collaborate on projects — agents could reorganize or modify team workflows.",
     "reproductionNotes": "Tool listing succeeds without auth. Full operations require Trello API key and token."
   },
   {
@@ -2061,7 +2061,7 @@
     "timeoutMs": 60000,
     "riskClass": "Support platform access",
     "failureClass": "Ticket/user/knowledge boundary",
-    "whyItMatters": "Zendesk MCP servers can create tickets, manage users, and search help center content \u2014 agents could respond to customer support requests.",
+    "whyItMatters": "Zendesk MCP servers can create tickets, manage users, and search help center content — agents could respond to customer support requests.",
     "reproductionNotes": "Schema-only; requires Zendesk subdomain and API token for full scan."
   },
   {
@@ -2078,7 +2078,7 @@
     "timeoutMs": 60000,
     "riskClass": "Media platform access",
     "failureClass": "Playback/playlist boundary",
-    "whyItMatters": "Spotify MCP servers can control playback, manage playlists, search tracks, and access user library data \u2014 agents could modify listening experience.",
+    "whyItMatters": "Spotify MCP servers can control playback, manage playlists, search tracks, and access user library data — agents could modify listening experience.",
     "reproductionNotes": "Tool listing succeeds without auth. Full operations require Spotify OAuth credentials."
   },
   {
@@ -2095,7 +2095,7 @@
     "timeoutMs": 60000,
     "riskClass": "Spreadsheet-database access",
     "failureClass": "Base/table/record boundary",
-    "whyItMatters": "Airtable MCP servers can create bases, manage tables, and CRUD records \u2014 agents could modify structured business data in collaborative workspaces.",
+    "whyItMatters": "Airtable MCP servers can create bases, manage tables, and CRUD records — agents could modify structured business data in collaborative workspaces.",
     "reproductionNotes": "Schema-only; requires Airtable personal access token for full scan."
   },
   {
@@ -2112,7 +2112,7 @@
     "timeoutMs": 60000,
     "riskClass": "Personal knowledge base access",
     "failureClass": "Note/vault/file boundary",
-    "whyItMatters": "Obsidian MCP servers can read, write, search, and link notes in personal knowledge vaults \u2014 agents could access private notes and research.",
+    "whyItMatters": "Obsidian MCP servers can read, write, search, and link notes in personal knowledge vaults — agents could access private notes and research.",
     "reproductionNotes": "Schema-only; requires vault path configuration for full scan."
   },
   {
@@ -2129,7 +2129,7 @@
     "timeoutMs": 60000,
     "riskClass": "Academic content retrieval",
     "failureClass": "Paper metadata/search boundary",
-    "whyItMatters": "arXiv MCP servers can search and retrieve academic papers, abstracts, and metadata \u2014 agents can incorporate scientific literature into workflows.",
+    "whyItMatters": "arXiv MCP servers can search and retrieve academic papers, abstracts, and metadata — agents can incorporate scientific literature into workflows.",
     "reproductionNotes": "Read-only public API; tool listing may succeed without auth."
   },
   {
@@ -2146,7 +2146,7 @@
     "timeoutMs": 60000,
     "riskClass": "Email sending platform access",
     "failureClass": "Email send/domain boundary",
-    "whyItMatters": "Resend MCP servers can send emails, manage domains, and track delivery \u2014 agents could send transactional and marketing emails on behalf of verified domains.",
+    "whyItMatters": "Resend MCP servers can send emails, manage domains, and track delivery — agents could send transactional and marketing emails on behalf of verified domains.",
     "reproductionNotes": "Schema-only; requires Resend API key for full scan."
   },
   {
@@ -2163,7 +2163,7 @@
     "timeoutMs": 60000,
     "riskClass": "Social platform access",
     "failureClass": "Server/channel/message boundary",
-    "whyItMatters": "Discord MCP servers can manage servers, channels, messages, and user interactions \u2014 agents could moderate or post in Discord communities.",
+    "whyItMatters": "Discord MCP servers can manage servers, channels, messages, and user interactions — agents could moderate or post in Discord communities.",
     "reproductionNotes": "Tool listing succeeds without auth. Full operations require Discord bot token."
   },
   {
@@ -2171,7 +2171,7 @@
     "name": "Stock NSE India",
     "repo": "https://www.npmjs.com/package/stock-nse-india-mcp",
     "packageName": "stock-nse-india-mcp",
-    "category": "Finance / Indian Markets",
+    "category": "Finance",
     "command": "npx",
     "args": [
       "-y",
@@ -2180,15 +2180,15 @@
     "timeoutMs": 60000,
     "riskClass": "Financial data retrieval (Indian markets)",
     "failureClass": "NSE market data boundary",
-    "whyItMatters": "NSE MCP servers feed Indian stock market data to agents \u2014 critical for India's $5T market where Western scanners lack visibility. Agents consuming market data need source freshness and accuracy boundaries.",
-    "reproductionNotes": "Schema-only evaluation; may require NSE API credentials. Community package \u2014 exact npm name pending verification."
+    "whyItMatters": "NSE MCP servers feed Indian stock market data to agents — critical for India's $5T market where Western scanners lack visibility. Agents consuming market data need source freshness and accuracy boundaries.",
+    "reproductionNotes": "Schema-only evaluation; may require NSE API credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "razorpay-mcp",
     "name": "Razorpay MCP",
     "repo": "https://www.npmjs.com/package/razorpay-mcp",
     "packageName": "razorpay-mcp",
-    "category": "Payments / Indian Fintech",
+    "category": "Payments",
     "command": "npx",
     "args": [
       "-y",
@@ -2198,14 +2198,14 @@
     "riskClass": "Indian payment gateway API access",
     "failureClass": "Payment/refund/settlement boundary",
     "whyItMatters": "Razorpay powers payments for millions of Indian businesses. MCP servers exposing payment creation, refunds, and settlements need strict financial transaction boundaries.",
-    "reproductionNotes": "Schema-only evaluation; requires Razorpay key ID and secret. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires Razorpay key ID and secret. Community package — exact npm name pending verification."
   },
   {
     "id": "paytm-mcp",
     "name": "Paytm MCP",
     "repo": "https://www.npmjs.com/package/paytm-mcp",
     "packageName": "paytm-mcp",
-    "category": "Payments / Indian Fintech",
+    "category": "Payments",
     "command": "npx",
     "args": [
       "-y",
@@ -2215,14 +2215,14 @@
     "riskClass": "Indian wallet/payment API access",
     "failureClass": "Wallet/payment gateway boundary",
     "whyItMatters": "Paytm serves 350M+ users across India. MCP servers exposing wallet operations, merchant payments, and transaction history need visible trust boundaries.",
-    "reproductionNotes": "Schema-only evaluation; requires Paytm merchant credentials. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires Paytm merchant credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "upi-mcp",
     "name": "UPI MCP",
     "repo": "https://www.npmjs.com/package/upi-mcp",
     "packageName": "upi-mcp",
-    "category": "Payments / Indian Fintech",
+    "category": "Payments",
     "command": "npx",
     "args": [
       "-y",
@@ -2231,7 +2231,7 @@
     "timeoutMs": 60000,
     "riskClass": "Unified Payments Interface access",
     "failureClass": "UPI transaction/bank boundary",
-    "whyItMatters": "UPI processes 15B+ transactions monthly across India. MCP servers interfacing with UPI rails can trigger bank transfers \u2014 a critical financial trust boundary invisible to Western scanners.",
+    "whyItMatters": "UPI processes 15B+ transactions monthly across India. MCP servers interfacing with UPI rails can trigger bank transfers — a critical financial trust boundary invisible to Western scanners.",
     "reproductionNotes": "Verified npm package exists and starts on stdio. Schema-only evaluation; requires UPI API/direct payment integration credentials for full scan."
   },
   {
@@ -2239,7 +2239,7 @@
     "name": "Aadhaar MCP",
     "repo": "https://www.npmjs.com/package/aadhaar-mcp",
     "packageName": "aadhaar-mcp",
-    "category": "Identity / Indian Gov",
+    "category": "Identity",
     "command": "npx",
     "args": [
       "-y",
@@ -2249,14 +2249,14 @@
     "riskClass": "Biometric identity API access",
     "failureClass": "Identity verification/KYC boundary",
     "whyItMatters": "Aadhaar is the world's largest biometric identity system (1.4B+ enrolled). MCP servers authenticating or verifying Aadhaar numbers handle PII at unprecedented scale.",
-    "reproductionNotes": "Schema-only evaluation; requires UIDAI-authorized API credentials. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires UIDAI-authorized API credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "digilocker-mcp",
     "name": "DigiLocker MCP",
     "repo": "https://www.npmjs.com/package/digilocker-mcp",
     "packageName": "digilocker-mcp",
-    "category": "Identity / Indian Gov",
+    "category": "Identity",
     "command": "npx",
     "args": [
       "-y",
@@ -2266,14 +2266,14 @@
     "riskClass": "Government document wallet access",
     "failureClass": "Document retrieval/verification boundary",
     "whyItMatters": "DigiLocker holds 7B+ government documents for 300M+ Indian citizens. MCP servers accessing driving licenses, mark sheets, and certificates handle sensitive identity documents.",
-    "reproductionNotes": "Schema-only evaluation; requires DigiLocker API integration credentials. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires DigiLocker API integration credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "udyam-mcp",
     "name": "Udyam MCP",
     "repo": "https://www.npmjs.com/package/udyam-mcp",
     "packageName": "udyam-mcp",
-    "category": "Business / Indian Gov",
+    "category": "Business / Government",
     "command": "npx",
     "args": [
       "-y",
@@ -2283,14 +2283,14 @@
     "riskClass": "MSME business registration access",
     "failureClass": "Business registration/verification boundary",
     "whyItMatters": "Udyam registration is mandatory for 63M+ Indian MSMEs. MCP servers querying or verifying Udyam certificates access official business identity data.",
-    "reproductionNotes": "Schema-only evaluation; requires Udyam API portal credentials. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires Udyam API portal credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "gst-mcp",
     "name": "GST MCP",
     "repo": "https://www.npmjs.com/package/gst-mcp",
     "packageName": "gst-mcp",
-    "category": "Tax / Indian Gov",
+    "category": "Tax",
     "command": "npx",
     "args": [
       "-y",
@@ -2300,14 +2300,14 @@
     "riskClass": "Tax filing and invoice API access",
     "failureClass": "GST return/invoice/billing boundary",
     "whyItMatters": "India's Goods and Services Tax system processes billions of invoices. MCP servers generating e-invoices, filing returns, or pulling GSTIN data handle tax-compliance-grade financial information.",
-    "reproductionNotes": "Schema-only evaluation; requires GSTN API credentials and digital signature. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires GSTN API credentials and digital signature. Community package — exact npm name pending verification."
   },
   {
     "id": "whatsapp-business-mcp",
     "name": "WhatsApp Business MCP",
     "repo": "https://www.npmjs.com/package/whatsapp-business-mcp",
     "packageName": "whatsapp-business-mcp",
-    "category": "Communication / Indian",
+    "category": "Communication",
     "command": "npx",
     "args": [
       "-y",
@@ -2317,14 +2317,14 @@
     "riskClass": "Business messaging platform access",
     "failureClass": "Message/template/contact boundary",
     "whyItMatters": "WhatsApp Business is India's dominant business messaging platform (500M+ Indian users). MCP servers sending business messages need consent, spam, and template boundary review.",
-    "reproductionNotes": "Schema-only evaluation; requires WhatsApp Business API credentials (WABA). Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires WhatsApp Business API credentials (WABA). Community package — exact npm name pending verification."
   },
   {
     "id": "gupshup-mcp",
     "name": "Gupshup MCP",
     "repo": "https://www.npmjs.com/package/gupshup-mcp",
     "packageName": "gupshup-mcp",
-    "category": "Communication / Indian",
+    "category": "Communication",
     "command": "npx",
     "args": [
       "-y",
@@ -2334,14 +2334,14 @@
     "riskClass": "Indian messaging platform access",
     "failureClass": "Multi-channel message boundary",
     "whyItMatters": "Gupshup powers 10B+ messages/month across SMS, WhatsApp, and chatbots for Indian enterprises. Multi-channel MCP servers need visible message-audience and rate-limit boundaries.",
-    "reproductionNotes": "Schema-only evaluation; requires Gupshup API key. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires Gupshup API key. Community package — exact npm name pending verification."
   },
   {
     "id": "textlocal-mcp",
     "name": "Textlocal MCP",
     "repo": "https://www.npmjs.com/package/textlocal-mcp",
     "packageName": "textlocal-mcp",
-    "category": "Communication / Indian",
+    "category": "Communication",
     "command": "npx",
     "args": [
       "-y",
@@ -2351,14 +2351,14 @@
     "riskClass": "Indian SMS gateway access",
     "failureClass": "SMS/campaign boundary",
     "whyItMatters": "Textlocal is a leading Indian SMS gateway handling transactional and promotional SMS at scale. MCP servers sending bulk SMS need carrier compliance and DLT registration boundaries.",
-    "reproductionNotes": "Schema-only evaluation; requires Textlocal API key and DLT registration. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires Textlocal API key and DLT registration. Community package — exact npm name pending verification."
   },
   {
     "id": "mapmyindia-mcp",
     "name": "MapMyIndia MCP",
     "repo": "https://www.npmjs.com/package/mapmyindia-mcp",
     "packageName": "mapmyindia-mcp",
-    "category": "Maps / Indian",
+    "category": "Maps",
     "command": "npx",
     "args": [
       "-y",
@@ -2368,14 +2368,14 @@
     "riskClass": "Indian geospatial data access",
     "failureClass": "Map/routing/geocode boundary",
     "whyItMatters": "MapMyIndia is India's sovereign mapping platform, used by gov and enterprise. MCP servers querying Indian map data, routing, and geofencing handle locally-relevant geospatial data.",
-    "reproductionNotes": "Schema-only evaluation; requires MapMyIndia API key and license. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires MapMyIndia API key and license. Community package — exact npm name pending verification."
   },
   {
     "id": "ola-maps-mcp",
     "name": "Ola Maps MCP",
     "repo": "https://www.npmjs.com/package/ola-maps-mcp",
     "packageName": "ola-maps-mcp",
-    "category": "Maps / Indian",
+    "category": "Maps",
     "command": "npx",
     "args": [
       "-y",
@@ -2385,23 +2385,23 @@
     "riskClass": "Indian ride/mapping API access",
     "failureClass": "Maps/routing/ride boundary",
     "whyItMatters": "Ola's mapping API serves the Indian market with hyperlocal routing and geocoding. MCP servers accessing Ola Maps handle location data with Indian GPS accuracy characteristics.",
-    "reproductionNotes": "Schema-only evaluation; requires Ola Maps API credentials. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires Ola Maps API credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "postman-india-region",
-    "name": "Postman MCP (Indian region)",
+    "name": "Postman MCP",
     "repo": "https://www.npmjs.com/package/@postman/postman-mcp-server",
     "packageName": "@postman/postman-mcp-server",
-    "category": "API Testing / Indian Development",
+    "category": "API Testing / Development",
     "command": "npx",
     "args": [
       "-y",
       "@postman/postman-mcp-server"
     ],
     "timeoutMs": 60000,
-    "riskClass": "API collection and testing access (Indian-origin)",
+    "riskClass": "API collection and testing access",
     "failureClass": "Collection/environment/request boundary",
-    "whyItMatters": "Postman (Indian-founded, Bengaluru HQ) is used by 35M+ developers globally. MCP servers exposing API collections, environments, and request execution need visible trust boundaries \u2014 especially relevant for Indian dev ecosystem CI pipelines. Already evaluated at Safety Index #94.",
+    "whyItMatters": "Postman (Indian-founded, Bengaluru HQ) is used by 35M+ developers globally. MCP servers exposing API collections, environments, and request execution need visible trust boundaries — especially relevant for Indian dev ecosystem CI pipelines. Already evaluated at Safety Index #94.",
     "reproductionNotes": "Already evaluated at existing entry #94. Verified npm package exists; requires POSTMAN_API_KEY for full scan. Included here for Indian-region coverage completeness."
   },
   {
@@ -2409,7 +2409,7 @@
     "name": "Hasura MCP",
     "repo": "https://www.npmjs.com/package/hasura-mcp",
     "packageName": "hasura-mcp",
-    "category": "Database / Indian OSS",
+    "category": "Database",
     "command": "npx",
     "args": [
       "-y",
@@ -2419,14 +2419,14 @@
     "riskClass": "GraphQL engine and database access",
     "failureClass": "GraphQL/Database query boundary",
     "whyItMatters": "Hasura (32K+ GitHub stars, Indian OSS) provides instant GraphQL APIs over databases. MCP servers managing Hasura metadata, migrations, and queries can affect production database schemas.",
-    "reproductionNotes": "Schema-only evaluation; requires Hasura admin secret and endpoint. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires Hasura admin secret and endpoint. Community package — exact npm name pending verification."
   },
   {
     "id": "tooljet-mcp",
     "name": "ToolJet MCP",
     "repo": "https://www.npmjs.com/package/tooljet-mcp",
     "packageName": "tooljet-mcp",
-    "category": "Internal Tools / Indian OSS",
+    "category": "Internal Tools",
     "command": "npx",
     "args": [
       "-y",
@@ -2436,14 +2436,14 @@
     "riskClass": "Low-code platform API access",
     "failureClass": "App/datasource/workflow boundary",
     "whyItMatters": "ToolJet (38K+ GitHub stars, Indian OSS) builds internal tools with datasource connections. MCP servers controlling ToolJet apps and datasources can trigger database queries and API calls.",
-    "reproductionNotes": "Schema-only evaluation; requires ToolJet instance URL and auth token. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires ToolJet instance URL and auth token. Community package — exact npm name pending verification."
   },
   {
     "id": "appwrite-mcp",
     "name": "Appwrite MCP",
     "repo": "https://www.npmjs.com/package/appwrite-mcp",
     "packageName": "appwrite-mcp",
-    "category": "Backend / Indian OSS",
+    "category": "Backend",
     "command": "npx",
     "args": [
       "-y",
@@ -2453,14 +2453,14 @@
     "riskClass": "Backend-as-a-service API access",
     "failureClass": "Database/auth/storage/function boundary",
     "whyItMatters": "Appwrite (56K+ GitHub stars, Indian-origin OSS) is a complete BaaS platform. MCP servers managing databases, auth users, storage, and serverless functions have broad backend mutation surface.",
-    "reproductionNotes": "Schema-only evaluation; requires Appwrite endpoint and API key. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires Appwrite endpoint and API key. Community package — exact npm name pending verification."
   },
   {
     "id": "chatwoot-mcp",
     "name": "Chatwoot MCP",
     "repo": "https://www.npmjs.com/package/chatwoot-mcp",
     "packageName": "chatwoot-mcp",
-    "category": "CRM / Indian OSS",
+    "category": "CRM",
     "command": "npx",
     "args": [
       "-y",
@@ -2470,14 +2470,14 @@
     "riskClass": "Customer engagement platform access",
     "failureClass": "Conversation/contact/inbox boundary",
     "whyItMatters": "Chatwoot (34K+ GitHub stars, Indian OSS) is an open-source customer engagement platform. MCP servers sending messages, managing contacts, and accessing conversation history need privacy and consent boundaries.",
-    "reproductionNotes": "Package appears to exist but may require server connection. Schema-only evaluation; requires Chatwoot instance URL and API token. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Package appears to exist but may require server connection. Schema-only evaluation; requires Chatwoot instance URL and API token. Community package — exact npm name pending verification."
   },
   {
     "id": "cal-com-mcp",
     "name": "Cal.com MCP",
     "repo": "https://www.npmjs.com/package/cal-com-mcp",
     "packageName": "cal-com-mcp",
-    "category": "Scheduling / Indian OSS",
+    "category": "Scheduling",
     "command": "npx",
     "args": [
       "-y",
@@ -2487,14 +2487,14 @@
     "riskClass": "Scheduling and calendar API access",
     "failureClass": "Booking/availability/calendar boundary",
     "whyItMatters": "Cal.com (46K+ GitHub stars, Indian-origin OSS) powers scheduling for millions. MCP servers creating bookings, managing availability, and accessing calendars handle time-sensitive commitment data.",
-    "reproductionNotes": "Schema-only evaluation; requires Cal.com API key. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires Cal.com API key. Community package — exact npm name pending verification."
   },
   {
     "id": "indian-food-nutrition-mcp",
     "name": "Indian Food Nutrition MCP",
     "repo": "https://www.npmjs.com/package/indian-food-nutrition-mcp",
     "packageName": "indian-food-nutrition-mcp",
-    "category": "Food / Indian",
+    "category": "Food",
     "command": "npx",
     "args": [
       "-y",
@@ -2504,14 +2504,14 @@
     "riskClass": "Indian cuisine nutrition data access",
     "failureClass": "Nutrition/ingredient/dietary boundary",
     "whyItMatters": "Western nutrition databases fail for Indian cuisine (dal, roti, sabzi, biryani). MCP servers with Indian-accurate nutrition data are critical for dietary planning across 1.4B people.",
-    "reproductionNotes": "Schema-only evaluation; model inference on Indian cuisine data. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; model inference on Indian cuisine data. Community package — exact npm name pending verification."
   },
   {
     "id": "healthcare-ayushman-bharat-mcp",
     "name": "Ayushman Bharat Healthcare MCP",
     "repo": "https://www.npmjs.com/package/healthcare-ayushman-bharat-mcp",
     "packageName": "healthcare-ayushman-bharat-mcp",
-    "category": "Healthcare / Indian Gov",
+    "category": "Healthcare",
     "command": "npx",
     "args": [
       "-y",
@@ -2521,14 +2521,14 @@
     "riskClass": "Public healthcare scheme API access",
     "failureClass": "Patient/claim/hospital boundary",
     "whyItMatters": "Ayushman Bharat covers 500M+ Indians with public health insurance. MCP servers accessing patient records, hospital claims, and benefits handle India's largest healthcare dataset with PHI implications.",
-    "reproductionNotes": "Schema-only evaluation; requires NHA (National Health Authority) API credentials. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires NHA (National Health Authority) API credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "irctc-mcp",
     "name": "IRCTC MCP",
     "repo": "https://www.npmjs.com/package/irctc-mcp",
     "packageName": "irctc-mcp",
-    "category": "Travel / Indian Railways",
+    "category": "Travel",
     "command": "npx",
     "args": [
       "-y",
@@ -2538,14 +2538,14 @@
     "riskClass": "Indian Railways booking API access",
     "failureClass": "Ticket booking/PNR/availability boundary",
     "whyItMatters": "IRCTC handles 1M+ railway bookings daily for the world's largest rail network. MCP servers querying PNR status, booking tickets, and checking availability handle real passenger identity data.",
-    "reproductionNotes": "Schema-only evaluation; requires IRCTC API credentials (authorized agent). Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires IRCTC API credentials (authorized agent). Community package — exact npm name pending verification."
   },
   {
     "id": "aqi-india-mcp",
     "name": "AQI India MCP",
     "repo": "https://www.npmjs.com/package/aqi-india-mcp",
     "packageName": "aqi-india-mcp",
-    "category": "Environment / Indian",
+    "category": "Environment",
     "command": "npx",
     "args": [
       "-y",
@@ -2555,14 +2555,14 @@
     "riskClass": "Indian air quality data access",
     "failureClass": "Environmental data/health boundary",
     "whyItMatters": "India has 22 of the world's 30 most polluted cities. MCP servers providing Indian AQI data, pollution forecasts, and health advisories deliver environmental data with public health implications.",
-    "reproductionNotes": "Schema-only evaluation; requires CPCB/SAFAR API credentials or OpenAQ data source. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires CPCB/SAFAR API credentials or OpenAQ data source. Community package — exact npm name pending verification."
   },
   {
     "id": "cowin-mcp",
     "name": "CoWIN MCP",
     "repo": "https://www.npmjs.com/package/cowin-mcp",
     "packageName": "cowin-mcp",
-    "category": "Healthcare / Indian Gov",
+    "category": "Healthcare",
     "command": "npx",
     "args": [
       "-y",
@@ -2572,14 +2572,14 @@
     "riskClass": "Vaccination platform API access",
     "failureClass": "Beneficiary/dose/certificate boundary",
     "whyItMatters": "CoWIN administered 2.2B+ COVID-19 vaccine doses across India. MCP servers accessing vaccination records, certificates, and appointment slots handle the world's largest vaccination data set.",
-    "reproductionNotes": "Schema-only evaluation; CoWIN public APIs are read-only and no longer require auth for some endpoints. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; CoWIN public APIs are read-only and no longer require auth for some endpoints. Community package — exact npm name pending verification."
   },
   {
     "id": "bhuvan-mcp",
     "name": "Bhuvan MCP",
     "repo": "https://www.npmjs.com/package/bhuvan-mcp",
     "packageName": "bhuvan-mcp",
-    "category": "Geospatial / Indian Gov",
+    "category": "Geospatial",
     "command": "npx",
     "args": [
       "-y",
@@ -2589,14 +2589,14 @@
     "riskClass": "ISRO geospatial platform access",
     "failureClass": "Satellite imagery/geospatial data boundary",
     "whyItMatters": "Bhuvan is ISRO's national geospatial platform providing Indian satellite imagery, GIS datasets, and land-use data. MCP servers accessing Bhuvan handle sovereign geospatial intelligence.",
-    "reproductionNotes": "Schema-only evaluation; requires Bhuvan/ISRO API credentials. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires Bhuvan/ISRO API credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "sehat-sahulat-mcp",
     "name": "Sehat Sahulat MCP",
     "repo": "https://www.npmjs.com/package/sehat-sahulat-mcp",
     "packageName": "sehat-sahulat-mcp",
-    "category": "Healthcare / Pakistan Gov",
+    "category": "Healthcare",
     "command": "npx",
     "args": [
       "-y",
@@ -2606,14 +2606,14 @@
     "riskClass": "Public health insurance API access",
     "failureClass": "Insurance claim/beneficiary boundary",
     "whyItMatters": "Pakistan's Sehat Sahulat program covers 100M+ citizens with cashless health insurance. MCP servers accessing beneficiary records, hospital empanelment, and claims data handle the country's largest public healthcare dataset.",
-    "reproductionNotes": "Schema-only evaluation; requires Sehat Sahulat program / provincial health authority API credentials. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires Sehat Sahulat program / provincial health authority API credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "ehsaas-mcp",
     "name": "Ehsaas MCP",
     "repo": "https://www.npmjs.com/package/ehsaas-mcp",
     "packageName": "ehsaas-mcp",
-    "category": "Social Welfare / Pakistan Gov",
+    "category": "Social Welfare",
     "command": "npx",
     "args": [
       "-y",
@@ -2623,14 +2623,14 @@
     "riskClass": "Social welfare program API access",
     "failureClass": "Beneficiary/cash-transfer boundary",
     "whyItMatters": "Ehsaas is South Asia's largest social welfare program, serving 150M+ Pakistanis with cash transfers, scholarships, and food support. MCP servers accessing beneficiary registries and payment disbursement data handle sensitive socioeconomic data at national scale.",
-    "reproductionNotes": "Schema-only evaluation; requires Ehsaas / BISP (Benazir Income Support Programme) API credentials. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires Ehsaas / BISP (Benazir Income Support Programme) API credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "pims-mcp",
     "name": "PIMS MCP",
     "repo": "https://www.npmjs.com/package/pims-mcp",
     "packageName": "pims-mcp",
-    "category": "Healthcare / Pakistan Gov",
+    "category": "Healthcare",
     "command": "npx",
     "args": [
       "-y",
@@ -2640,14 +2640,14 @@
     "riskClass": "Public hospital system API access",
     "failureClass": "Patient record/hospital management boundary",
     "whyItMatters": "PIMS (Pakistan Institute of Medical Sciences) is Islamabad's flagship tertiary-care teaching hospital serving millions. MCP servers accessing patient records, lab results, and hospital administration handle PHI and critical medical infrastructure data.",
-    "reproductionNotes": "Schema-only evaluation; requires PIMS hospital information system / Ministry of NHSRC API credentials. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires PIMS hospital information system / Ministry of NHSRC API credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "punjab-health-mcp",
     "name": "Punjab Health MCP",
     "repo": "https://www.npmjs.com/package/punjab-health-mcp",
     "packageName": "punjab-health-mcp",
-    "category": "Healthcare / Pakistan Gov",
+    "category": "Healthcare",
     "command": "npx",
     "args": [
       "-y",
@@ -2657,14 +2657,14 @@
     "riskClass": "Provincial health department API access",
     "failureClass": "Health service/disease surveillance boundary",
     "whyItMatters": "Punjab Health Department serves 120M+ people across Pakistan's most populous province. MCP servers accessing district health data, disease surveillance, DHIS2 reporting, and digital health services handle population-scale public health data.",
-    "reproductionNotes": "Schema-only evaluation; requires Punjab Health Department / DHIS2 API credentials. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires Punjab Health Department / DHIS2 API credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "pakistan-weather-mcp",
     "name": "Pakistan Weather MCP",
     "repo": "https://www.npmjs.com/package/pakistan-weather-mcp",
     "packageName": "pakistan-weather-mcp",
-    "category": "Weather / Pakistan Gov",
+    "category": "Weather",
     "command": "npx",
     "args": [
       "-y",
@@ -2674,14 +2674,14 @@
     "riskClass": "National meteorological data access",
     "failureClass": "Weather/forecast/disaster boundary",
     "whyItMatters": "Pakistan Meteorological Department provides weather forecasts, disaster warnings, and climate data for 240M+ people across extreme climate zones from monsoons to glacial regions. MCP servers accessing PMD data handle disaster-preparedness-grade information.",
-    "reproductionNotes": "Schema-only evaluation; requires Pakistan Meteorological Department API credentials. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires Pakistan Meteorological Department API credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "jazz-mcp",
     "name": "Jazz MCP",
     "repo": "https://www.npmjs.com/package/jazz-mcp",
     "packageName": "jazz-mcp",
-    "category": "Communication / Pakistani",
+    "category": "Communication",
     "command": "npx",
     "args": [
       "-y",
@@ -2691,14 +2691,14 @@
     "riskClass": "Pakistani telecom API access",
     "failureClass": "SMS/voice/network boundary",
     "whyItMatters": "Jazz is Pakistan's largest telecom with 70M+ subscribers and 1.7M+ downloads. MCP servers sending SMS, managing numbers, or querying network services need rate-limit and subscriber-consent boundaries.",
-    "reproductionNotes": "Schema-only evaluation; package not yet published to npm. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; package not yet published to npm. Community package — exact npm name pending verification."
   },
   {
     "id": "zong-mcp",
     "name": "Zong MCP",
     "repo": "https://www.npmjs.com/package/zong-mcp",
     "packageName": "zong-mcp",
-    "category": "Communication / Pakistani",
+    "category": "Communication",
     "command": "npx",
     "args": [
       "-y",
@@ -2708,14 +2708,14 @@
     "riskClass": "Pakistani telecom API access (CPEC corridor)",
     "failureClass": "SMS/voice/data boundary",
     "whyItMatters": "Zong (China Mobile Pakistan) serves 40M+ users and anchors CPEC corridor connectivity. MCP servers interfacing with Zong's network services handle sensitive China-Pakistan Economic Corridor telecom traffic.",
-    "reproductionNotes": "Schema-only evaluation; package not yet published to npm. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; package not yet published to npm. Community package — exact npm name pending verification."
   },
   {
     "id": "telenor-pakistan-mcp",
     "name": "Telenor Pakistan MCP",
     "repo": "https://www.npmjs.com/package/telenor-pakistan-mcp",
     "packageName": "telenor-pakistan-mcp",
-    "category": "Communication / Pakistani",
+    "category": "Communication",
     "command": "npx",
     "args": [
       "-y",
@@ -2725,14 +2725,14 @@
     "riskClass": "Pakistani telecom API access (digital services)",
     "failureClass": "SMS/vas/digital boundary",
     "whyItMatters": "Telenor Pakistan pioneered Easypaisa (Pakistan's first mobile wallet). MCP servers accessing Telenor's SMS, VAS, and digital services need boundaries given the financial-messaging crossover.",
-    "reproductionNotes": "Schema-only evaluation; package not yet published to npm. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; package not yet published to npm. Community package — exact npm name pending verification."
   },
   {
     "id": "ufone-mcp",
     "name": "Ufone MCP",
     "repo": "https://www.npmjs.com/package/ufone-mcp",
     "packageName": "ufone-mcp",
-    "category": "Communication / Pakistani",
+    "category": "Communication",
     "command": "npx",
     "args": [
       "-y",
@@ -2742,14 +2742,14 @@
     "riskClass": "Pakistani telecom API access (PTCL group)",
     "failureClass": "SMS/voice/fiber boundary",
     "whyItMatters": "Ufone (PTCL group) combines mobile and fiber infrastructure, Pakistan's largest fixed-line backbone. MCP servers bridging telecom and broadband services need visible infrastructure boundaries.",
-    "reproductionNotes": "Schema-only evaluation; package not yet published to npm. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; package not yet published to npm. Community package — exact npm name pending verification."
   },
   {
     "id": "pakistan-post-mcp",
     "name": "Pakistan Post MCP",
     "repo": "https://www.npmjs.com/package/pakistan-post-mcp",
     "packageName": "pakistan-post-mcp",
-    "category": "Maps / Logistics / Pakistani",
+    "category": "Maps / Logistics",
     "command": "npx",
     "args": [
       "-y",
@@ -2759,14 +2759,14 @@
     "riskClass": "Pakistani postal tracking and logistics API access",
     "failureClass": "Tracking/delivery/geocode boundary",
     "whyItMatters": "Pakistan Post operates 13K+ post offices across Pakistan, providing the backbone for e-commerce and rural logistics. MCP servers tracking shipments, validating addresses, and geocoding Pakistani locations handle nationally-critical delivery infrastructure.",
-    "reproductionNotes": "Schema-only evaluation; package not yet published to npm. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; package not yet published to npm. Community package — exact npm name pending verification."
   },
   {
     "id": "jazzcash-mcp",
     "name": "JazzCash MCP",
     "repo": "https://github.com/theYahia/jazzcash-mcp",
     "packageName": "@theyahia/jazzcash-mcp",
-    "category": "Payments / Pakistani Fintech",
+    "category": "Payments",
     "command": "npx",
     "args": [
       "-y",
@@ -2775,7 +2775,7 @@
     "timeoutMs": 60000,
     "riskClass": "Mobile wallet API access (Pakistan)",
     "failureClass": "Payment/wallet/OTC boundary",
-    "whyItMatters": "JazzCash is Pakistan's largest mobile wallet with 40M+ users. MCP servers exposing mobile wallet operations, OTC vouchers, and refunds handle financial transactions at national scale \u2014 invisible to Western scanners.",
+    "whyItMatters": "JazzCash is Pakistan's largest mobile wallet with 40M+ users. MCP servers exposing mobile wallet operations, OTC vouchers, and refunds handle financial transactions at national scale — invisible to Western scanners.",
     "reproductionNotes": "Verified npm package @theyahia/jazzcash-mcp (v2.0.1). Schema-only evaluation; requires JazzCash API/merchant credentials for full scan."
   },
   {
@@ -2783,7 +2783,7 @@
     "name": "EasyPaisa MCP",
     "repo": "https://github.com/theYahia/easypaisa-mcp",
     "packageName": "@theyahia/easypaisa-mcp",
-    "category": "Payments / Pakistani Fintech",
+    "category": "Payments",
     "command": "npx",
     "args": [
       "-y",
@@ -2800,7 +2800,7 @@
     "name": "NADRA MCP",
     "repo": "https://www.npmjs.com/package/nadra-mcp",
     "packageName": "nadra-mcp",
-    "category": "Identity / Pakistani Gov",
+    "category": "Identity",
     "command": "npx",
     "args": [
       "-y",
@@ -2809,15 +2809,15 @@
     "timeoutMs": 60000,
     "riskClass": "National identity database access",
     "failureClass": "Identity verification/CNIC boundary",
-    "whyItMatters": "NADRA maintains Pakistan's national identity database for 240M+ citizens. MCP servers verifying CNIC numbers, issuing identity documents, or querying demographic data handle the entire Pakistani population's PII \u2014 a massive identity trust boundary invisible to Western scanners.",
-    "reproductionNotes": "Schema-only evaluation; community package \u2014 exact npm name pending verification. Requires NADRA-authorized API credentials."
+    "whyItMatters": "NADRA maintains Pakistan's national identity database for 240M+ citizens. MCP servers verifying CNIC numbers, issuing identity documents, or querying demographic data handle the entire Pakistani population's PII — a massive identity trust boundary invisible to Western scanners.",
+    "reproductionNotes": "Schema-only evaluation; community package — exact npm name pending verification. Requires NADRA-authorized API credentials."
   },
   {
     "id": "fbr-mcp",
     "name": "FBR MCP",
     "repo": "https://www.npmjs.com/package/fbr-mcp",
     "packageName": "fbr-mcp",
-    "category": "Tax / Pakistani Gov",
+    "category": "Tax",
     "command": "npx",
     "args": [
       "-y",
@@ -2827,14 +2827,14 @@
     "riskClass": "Tax filing and NTN API access",
     "failureClass": "Tax return/NTN/invoice boundary",
     "whyItMatters": "Pakistan's Federal Board of Revenue processes tax filings for millions of citizens and businesses. MCP servers filing returns, verifying NTN (National Tax Numbers), and generating tax certificates handle government-grade financial data at national scale.",
-    "reproductionNotes": "Schema-only evaluation; community package \u2014 exact npm name pending verification. Requires FBR IRIS API credentials and digital signature."
+    "reproductionNotes": "Schema-only evaluation; community package — exact npm name pending verification. Requires FBR IRIS API credentials and digital signature."
   },
   {
     "id": "1link-mcp",
     "name": "1LINK MCP",
     "repo": "https://www.npmjs.com/package/1link-mcp",
     "packageName": "1link-mcp",
-    "category": "Payments / Pakistani Fintech",
+    "category": "Payments",
     "command": "npx",
     "args": [
       "-y",
@@ -2844,14 +2844,14 @@
     "riskClass": "Interbank payment switch access",
     "failureClass": "Interbank transaction/switch boundary",
     "whyItMatters": "1LINK is Pakistan's national interbank payment switch connecting 40+ banks and processing all ATM, POS, and interbank transactions. MCP servers interfacing with the 1LINK switch handle the backbone of Pakistan's entire banking payment infrastructure.",
-    "reproductionNotes": "Schema-only evaluation; community package \u2014 exact npm name pending verification. Requires 1LINK-authorized API credentials."
+    "reproductionNotes": "Schema-only evaluation; community package — exact npm name pending verification. Requires 1LINK-authorized API credentials."
   },
   {
     "id": "aiou-mcp",
     "name": "AIOU MCP",
     "repo": "https://www.npmjs.com/package/aiou-mcp",
     "packageName": "aiou-mcp",
-    "category": "Education / Pakistan",
+    "category": "Education",
     "command": "npx",
     "args": [
       "-y",
@@ -2861,14 +2861,14 @@
     "riskClass": "Open university API access",
     "failureClass": "Student/enrollment/grade boundary",
     "whyItMatters": "Allama Iqbal Open University is the world's 2nd largest university with 4M+ students across Pakistan. MCP servers accessing enrollment, grades, and course materials handle education records at massive scale.",
-    "reproductionNotes": "Schema-only evaluation; requires AIOU API credentials. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires AIOU API credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "hec-pakistan-mcp",
     "name": "HEC Pakistan MCP",
     "repo": "https://www.npmjs.com/package/hec-pakistan-mcp",
     "packageName": "hec-pakistan-mcp",
-    "category": "Education / Pakistan Gov",
+    "category": "Education",
     "command": "npx",
     "args": [
       "-y",
@@ -2878,14 +2878,14 @@
     "riskClass": "Higher education accreditation API access",
     "failureClass": "Degree/university/attestation boundary",
     "whyItMatters": "Pakistan's Higher Education Commission accredits all Pakistani universities and validates degrees. MCP servers querying degree attestation and university rankings handle education credential verification data for Pakistan's entire higher education sector.",
-    "reproductionNotes": "Schema-only evaluation; requires HEC Pakistan API credentials. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires HEC Pakistan API credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "pakistan-cricket-mcp",
     "name": "Pakistan Cricket MCP",
     "repo": "https://www.npmjs.com/package/pakistan-cricket-mcp",
     "packageName": "pakistan-cricket-mcp",
-    "category": "Sports / Pakistan",
+    "category": "Sports",
     "command": "npx",
     "args": [
       "-y",
@@ -2894,15 +2894,15 @@
     "timeoutMs": 60000,
     "riskClass": "Cricket board API access",
     "failureClass": "Match/player/statistics boundary",
-    "whyItMatters": "Cricket is a religion in Pakistan \u2014 the PCB manages the national team, domestic tournaments, and PSL franchise league. MCP servers accessing match data, player stats, and ticketing handle Pakistan's most culturally significant sports data.",
-    "reproductionNotes": "Schema-only evaluation; requires PCB API credentials. Community package \u2014 exact npm name pending verification."
+    "whyItMatters": "Cricket is a religion in Pakistan — the PCB manages the national team, domestic tournaments, and PSL franchise league. MCP servers accessing match data, player stats, and ticketing handle Pakistan's most culturally significant sports data.",
+    "reproductionNotes": "Schema-only evaluation; requires PCB API credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "k2-mcp",
     "name": "K2 MCP",
     "repo": "https://www.npmjs.com/package/k2-mcp",
     "packageName": "k2-mcp",
-    "category": "Mountaineering / Pakistan",
+    "category": "Travel",
     "command": "npx",
     "args": [
       "-y",
@@ -2912,14 +2912,14 @@
     "riskClass": "Mountaineering permit API access",
     "failureClass": "Permit/expedition/safety boundary",
     "whyItMatters": "K2 is the world's 2nd highest peak and one of the deadliest mountains. MCP servers managing climbing permits, expedition tracking, and base camp logistics handle safety-critical mountaineering data in Pakistan's Gilgit-Baltistan region.",
-    "reproductionNotes": "Schema-only evaluation; requires Alpine Club of Pakistan/GB Council permit API credentials. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires Alpine Club of Pakistan/GB Council permit API credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "rozgar-mcp",
     "name": "Rozgar.com MCP",
     "repo": "https://www.npmjs.com/package/rozgar-mcp",
     "packageName": "rozgar-mcp",
-    "category": "Jobs / Pakistani",
+    "category": "Jobs",
     "command": "npx",
     "args": [
       "-y",
@@ -2929,14 +2929,14 @@
     "riskClass": "Pakistani job platform API access",
     "failureClass": "Job listing/application/candidate boundary",
     "whyItMatters": "Rozgar.com is Pakistan's largest job platform serving millions of job seekers and employers. MCP servers exposing job listings, candidate applications, and recruiter tools handle sensitive employment data at national scale.",
-    "reproductionNotes": "Schema-only evaluation; requires Rozgar.com API credentials. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires Rozgar.com API credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "foodpanda-pakistan-mcp",
     "name": "Foodpanda Pakistan MCP",
     "repo": "https://www.npmjs.com/package/foodpanda-pakistan-mcp",
     "packageName": "foodpanda-pakistan-mcp",
-    "category": "Food Delivery / Pakistani",
+    "category": "Food Delivery",
     "command": "npx",
     "args": [
       "-y",
@@ -2946,14 +2946,14 @@
     "riskClass": "Pakistani food delivery platform API access",
     "failureClass": "Order/restaurant/delivery boundary",
     "whyItMatters": "Foodpanda is Pakistan's largest food delivery platform covering all major cities. MCP servers exposing order management, restaurant data, and delivery tracking handle real-time logistics and payment data for millions of users.",
-    "reproductionNotes": "Schema-only evaluation; requires Foodpanda Pakistan API credentials. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires Foodpanda Pakistan API credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "daraz-mcp",
     "name": "Daraz MCP",
     "repo": "https://github.com/shaheedghazi/daraz-mcp",
     "packageName": "daraz-mcp",
-    "category": "E-commerce / Pakistani",
+    "category": "E-commerce",
     "command": "npx",
     "args": [
       "-y",
@@ -2963,14 +2963,14 @@
     "riskClass": "Pakistani e-commerce platform API access",
     "failureClass": "Product/order/seller boundary",
     "whyItMatters": "Daraz is Pakistan's largest e-commerce platform (Alibaba-owned), serving 50M+ users across South Asia. MCP servers exposing product catalogs, order management, seller dashboards, and payment workflows handle the region's dominant online marketplace.",
-    "reproductionNotes": "Schema-only evaluation; requires Daraz Open Platform API credentials. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires Daraz Open Platform API credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "olx-pakistan-mcp",
     "name": "OLX Pakistan MCP",
     "repo": "https://www.npmjs.com/package/olx-pakistan-mcp",
     "packageName": "olx-pakistan-mcp",
-    "category": "Classifieds / Pakistani",
+    "category": "Classifieds",
     "command": "npx",
     "args": [
       "-y",
@@ -2980,14 +2980,14 @@
     "riskClass": "Pakistani classifieds platform API access",
     "failureClass": "Listing/ad/user boundary",
     "whyItMatters": "OLX Pakistan is the country's largest classifieds platform covering property, vehicles, electronics, jobs, and services. MCP servers exposing classified listings, user profiles, and ad management handle personal commerce data for millions of Pakistanis.",
-    "reproductionNotes": "Schema-only evaluation; requires OLX Pakistan API credentials. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires OLX Pakistan API credentials. Community package — exact npm name pending verification."
   },
   {
     "id": "pakwheels-mcp",
     "name": "PakWheels MCP",
     "repo": "https://www.npmjs.com/package/pakwheels-mcp",
     "packageName": "pakwheels-mcp",
-    "category": "Auto Marketplace / Pakistani",
+    "category": "Auto Marketplace",
     "command": "npx",
     "args": [
       "-y",
@@ -2997,6 +2997,6 @@
     "riskClass": "Pakistani automotive marketplace API access",
     "failureClass": "Vehicle/listing/dealer boundary",
     "whyItMatters": "PakWheels is Pakistan's largest automotive marketplace with 15M+ monthly visitors, handling new and used car sales, auto parts, reviews, and price comparisons. MCP servers exposing vehicle listings, seller data, and automotive commerce handle the country's dominant auto commerce platform.",
-    "reproductionNotes": "Schema-only evaluation; requires PakWheels API credentials. Community package \u2014 exact npm name pending verification."
+    "reproductionNotes": "Schema-only evaluation; requires PakWheels API credentials. Community package — exact npm name pending verification."
   }
 ]

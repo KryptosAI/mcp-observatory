@@ -140,6 +140,5 @@ Avoid drive-by PRs where the server requires private credentials, paid services,
 After a repo accepts the check or badge:
 
 - ask the maintainer to mention “tested with MCP Observatory” in their MCP directory listing
-- update the MCP Observatory launch/story docs with the accepted repo
-- use accepted PRs as proof in enterprise outreach
-- invite production users to hosted reporting or certification pilots
+- update the public proof docs with the accepted repo
+- invite production users to hosted reporting when they need private history or certification
