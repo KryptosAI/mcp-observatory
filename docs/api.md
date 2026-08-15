@@ -8,7 +8,7 @@ KryptosAI/mcp-observatory-cloud.
 
 The default artifact endpoint is:
 
-https://mcp-observatory-api.kryptosai.workers.dev/api/v1/artifacts
+https://app.mcp-observatory.com/api/v1/artifacts
 
 Override it with MCP_OBSERVATORY_CLOUD_ENDPOINT or the cloud upload
 --endpoint option. OIDC issuer and client configuration are also supplied by
