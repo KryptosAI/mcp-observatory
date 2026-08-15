@@ -1,5 +1,3 @@
-> 🇨🇳 中文文档: [README.zh-CN.md](README.zh-CN.md) | 欢迎中国开发者贡献!
-
 <p align="center">
   <img src="docs/assets/mcp-observatory-logo.png" alt="MCP Observatory" width="482"/>
 </p>
@@ -30,11 +28,13 @@
 [![MCP Market](https://img.shields.io/badge/MCP_Market-premium-gold)](https://mcpmarket.com)
 [![MCP Hub China](https://img.shields.io/badge/MCP_Hub_China-listed-red)](https://mcp-hub.cn)
 [![OpenTools](https://img.shields.io/badge/OpenTools-listed-green)](https://opentools.ai)
-[![Gitee](https://img.shields.io/badge/Gitee-镜像-orange)](https://gitee.com/williamweishuhn/mcp-observatory)
+[![Gitee](https://img.shields.io/badge/Gitee-mirror-orange)](https://gitee.com/williamweishuhn/mcp-observatory)
 
 </details>
 
 **Secure the MCP servers you're building.** MCP Observatory is the CI-native security tool for teams shipping custom MCP servers. Test during development, catch schema drift, simulate attacks, and generate compliance evidence — before agents depend on your servers.
+
+Also available in [Simplified Chinese](README.zh-CN.md).
 
 > **Runtime enforcement:** Use [mcp-seatbelt](https://github.com/KryptosAI/mcp-seatbelt) to block dangerous MCP tool calls at runtime based on observatory scan results.
 
@@ -82,7 +82,7 @@ Observatory gives maintainers and teams:
 - **MCP server mode** so agents can inspect other MCP servers directly
 - **Production support path** for hosted history, private repo reporting, owner-ready remediation, support, and fleet visibility
 
-See the [launch page](./docs/launch.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [Code Scanning demo](./docs/code-scanning-demo.md), [target gallery](./docs/target-gallery.md), [target registry](./docs/target-registry.md), [target contribution guide](./docs/target-contribution-guide.md), [MCP Observatory Contributors](./docs/contributor-recognition.md), [Agent Task Pack](./docs/agent-tasks.md), [MCP Receipts](./docs/mcp-receipts.md), [Tool-call receipts](./docs/tool-call-receipts.md), [MCP Risk Graph](./docs/receipt-graph.md), [`setup-ci --doctor`](./docs/setup-ci-doctor.md), [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [June 2026 safety field report](./docs/mcp-safety-field-report-2026-06.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), [campaign attribution](./docs/campaign-attribution.md), [hosted client contract](./docs/api.md), [repository boundary](./docs/repository-boundary.md), [open core boundary](./docs/commercial-boundary.md), [MCP Attack Simulation Evidence Pack](./docs/attack-simulation-pilot.md), and [commercial support](./COMMERCIAL.md).
+See [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [MCP Receipts](./docs/mcp-receipts.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [MCP Observatory Contributors](./docs/contributor-recognition.md), [hosted client contract](./docs/api.md), [repository boundary](./docs/repository-boundary.md), [open core boundary](./docs/commercial-boundary.md), and [commercial support](./COMMERCIAL.md).
 
 ### Self-Assessment
 
@@ -113,7 +113,7 @@ Run `npx @kryptosai/mcp-observatory cloud`, open a pilot request from the issue 
 | Health scoring (0-100) | ✓ | ✗ | ✗ | ✗ |
 | SARIF output | ✓ | ✓ | ✓ | ✓ |
 | CI/CD native (setup-ci) | ✓ | ✓ | ✓ | ✓ |
-| Safety index (17+ servers) | ✓ | ✗ | ✗ | ✗ |
+| Public Safety Index | ✓ | ✗ | ✗ | ✗ |
 | Runtime enforcement via mcp-seatbelt | ✓ | ✗ | ✗ | ✗ |
 
 ## Quick Start

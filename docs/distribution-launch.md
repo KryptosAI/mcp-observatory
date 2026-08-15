@@ -3,7 +3,7 @@
 Use this as the reversible launch motion for MCP Observatory commercialization.
 
 For the release gate and publication checklist, see [Publish And Distribution Readiness](./publish-readiness.md).
-For listing copy, use [Directory And Marketplace Listing Copy](./directory-listing-copy.md).
+For listing copy, use the short listing in [Ecosystem Distribution Kit](./ecosystem-distribution-kit.md).
 For public proof, use [MCP Observatory Proof](./proof.md).
 
 ## Positioning
@@ -71,8 +71,6 @@ Frame this as free OSS safety infrastructure:
 > I added a lightweight MCP Observatory check so users can see this server is tested for compatibility, schema drift, and common security issues. It runs in GitHub Actions, comments a readable report on PRs, and does not require an account.
 
 Use the full template in [`certification-distribution.md`](./certification-distribution.md).
-
-Track each outbound wave with [`certification-campaign-template.md`](./certification-campaign-template.md).
 
 ## Account Ranking Inputs
 

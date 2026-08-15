@@ -4,30 +4,24 @@ Thanks for helping make MCP Observatory sharper and more trustworthy.
 
 This project adheres to a [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
 
-## 🌏 International Contributors Welcome
+## International contributors
 
-We actively welcome contributors from China, Korea, Japan, and across Asia. This is an early-stage project — contributors can help shape the direction before it becomes established infrastructure.
+Simplified Chinese docs: [README.zh-CN.md](README.zh-CN.md) and [CONTRIBUTING.zh-CN.md](CONTRIBUTING.zh-CN.md). Issues and pull requests in Chinese or Korean are welcome. A Gitee mirror is at https://gitee.com/williamweishuhn/mcp-observatory.
 
-- [中文 README](README.zh-CN.md) — Simplified Chinese documentation
-- Bilingual issues welcome: 欢迎提交中文 issues 和 PRs
-- We use `新手友好` (Chinese) and `초보자 환영` (Korean) labels alongside `good first issue`
-- Gitee 镜像: https://gitee.com/williamweishuhn/mcp-observatory
-
-Join us early. Your contributions will define how MCP security tooling evolves.
-
-## ⚡ 5-Minute Quickstart
+## Quickstart
 
 ```bash
 git clone https://github.com/KryptosAI/mcp-observatory.git
 cd mcp-observatory
 npm install
-npm test          # ~30s, all 471 tests should pass
-npm run typecheck # ~5s, no errors
-npm run lint      # ~5s, clean
+npm test
+npm run typecheck
+npm run lint
 ```
-You're ready. Pick an issue labeled [good first issue](https://github.com/KryptosAI/mcp-observatory/issues?q=is%3Aopen+label%3A%22good+first+issue%22).
 
-This repo is intentionally small. Good contributions make the evidence clearer. Weak contributions usually add surface area faster than they add trust.
+Pick an issue labeled [good first issue](https://github.com/KryptosAI/mcp-observatory/issues?q=is%3Aopen+label%3A%22good+first+issue%22).
+
+Good contributions make the evidence clearer. Weak contributions usually add surface area faster than they add trust.
 
 ## What Good Contributions Look Like
 
@@ -54,7 +48,7 @@ This repo is intentionally small. Good contributions make the evidence clearer. 
 
 ## Ground Rules
 
-- Keep v1 CLI-first.
+- Keep the CLI the primary interface.
 - Do not turn the project into a generic dashboard.
 - Treat the artifact schema and Markdown report as core product surfaces.
 - Preserve the project’s positioning as complementary to official conformance.

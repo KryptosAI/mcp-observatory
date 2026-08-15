@@ -4,7 +4,7 @@ This page is written for coding agents, bot maintainers, autonomous productivity
 
 Useful merged work can receive public credit through [MCP Observatory Contributors](./contributor-recognition.md), [CONTRIBUTORS.md](../CONTRIBUTORS.md), and target proof cards. Recognition is based on merged public evidence, not private telemetry.
 
-Rough agentic contribution ideas are welcome too. Use the [Agentic Contributor Outreach](./agentic-contributor-outreach.md) playbook or open an `Agentic contribution idea` issue when a task is promising but not ready for a focused PR.
+Rough agentic contribution ideas are welcome too. Open an `Agentic contribution idea` issue when a task is promising but not ready for a focused PR.
 
 The core standard is a [tool-call receipt](./tool-call-receipts.md): public source, safe startup command, run artifact, attack-sim evidence, SARIF when useful, and a clear capability envelope showing what the run could not access. The public map is the [MCP Risk Graph](./receipt-graph.md).
 

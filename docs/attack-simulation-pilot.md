@@ -8,8 +8,6 @@ This is a fixed-scope security and platform package. It does not run destructive
 
 See the [sample attack simulation evidence pack](./sample-attack-simulation-evidence-pack.md) for the buyer-facing deliverable shape.
 
-See the [attack simulation growth sprint](./attack-simulation-growth-sprint.md) for target accounts, outreach copy, and the `$100k` pipeline path.
-
 ## Why This Exists
 
 MCP servers are becoming part of the AI software supply chain. A scanner can say “risk exists.” An evidence pack shows:

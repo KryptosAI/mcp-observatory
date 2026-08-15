@@ -23,7 +23,7 @@
 [![Node >= 20](https://img.shields.io/badge/node-%3E%3D20-339933)](./package.json)
 [![Smithery](https://smithery.ai/badge/@kryptosai/mcp-observatory)](https://smithery.ai/server/@kryptosai/mcp-observatory)
 [![mcp-observatory MCP server](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory/badges/score.svg)](https://glama.ai/mcp/servers/KryptosAI/mcp-observatory)
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](./CONTRIBUTORS.md)
+[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](./CONTRIBUTORS.md)
 [![Gitee Stars](https://gitee.com/williamweishuhn/mcp-observatory/badge/star.svg)](https://gitee.com/williamweishuhn/mcp-observatory)
 [![Gitee Forks](https://gitee.com/williamweishuhn/mcp-observatory/badge/fork.svg)](https://gitee.com/williamweishuhn/mcp-observatory)
 [![MCP Registry](https://img.shields.io/badge/MCP_Registry-listed-blue)](https://registry.modelcontextprotocol.io)
@@ -102,7 +102,7 @@ npx @kryptosai/mcp-observatory risk-graph --input receipt.json --json mcp-risk-g
 npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif
 ```
 
-参见 [政府和企业的试点简报](./docs/government-enterprise-pilot.md)、[公共指导对照表](./docs/public-guidance-crosswalk.md)、[采购一页摘要](./docs/procurement-one-pager.md)、[安全尽职调查包](./docs/security-due-diligence.md)、[NSA-MCP 审计 CI 指南](./docs/nsa-mcp-audit-ci.md)、[NSA-MCP 审计报告示例](./docs/examples/nsa-mcp-audit-report.md)、[MCP 凭证](./docs/mcp-receipts.md)、[MCP 攻击模拟器](./docs/mcp-attack-simulator.md)、[工具调用凭证](./docs/tool-call-receipts.md)、[MCP 风险图谱](./docs/receipt-graph.md)、[私有集群风险图谱试点](./docs/private-mcp-fleet-risk-graph.md)、[发布页面](./docs/launch.md)、[GitHub Code Scanning 演示](./docs/code-scanning-demo.md)、[MCP 服务器的 GitHub Code Scanning](./docs/github-code-scanning-for-mcp.md)、[安全报告示例](./docs/mcp-server-safety-index.md)和[参考评估](./docs/reference-evaluations.md)。
+参见 [政府和企业的试点简报](./docs/government-enterprise-pilot.md)、[公共指导对照表](./docs/public-guidance-crosswalk.md)、[采购一页摘要](./docs/procurement-one-pager.md)、[安全尽职调查包](./docs/security-due-diligence.md)、[NSA-MCP 审计 CI 指南](./docs/nsa-mcp-audit-ci.md)、[NSA-MCP 审计报告示例](./docs/examples/nsa-mcp-audit-report.md)、[MCP 凭证](./docs/mcp-receipts.md)、[MCP 攻击模拟器](./docs/mcp-attack-simulator.md)、[工具调用凭证](./docs/tool-call-receipts.md)、[MCP 风险图谱](./docs/receipt-graph.md)、[发布页面](./docs/launch.md)、[GitHub Code Scanning 演示](./docs/code-scanning-demo.md)、[MCP 服务器的 GitHub Code Scanning](./docs/github-code-scanning-for-mcp.md)、[安全报告示例](./docs/mcp-server-safety-index.md)和[参考评估](./docs/reference-evaluations.md)。
 
 想要为你的 Agent 依赖的服务器获取凭证？在 [Drop an MCP server, get a receipt #146](https://github.com/KryptosAI/mcp-observatory/issues/146) 留言，或使用[结构化凭证请求表单](https://github.com/KryptosAI/mcp-observatory/issues/new?template=tool-call-receipt-request.yml)。公开请求可成为安全索引条目、增量凭证、SARIF 证据和维护者 CI 对话。
 
@@ -126,9 +126,9 @@ npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" -
 
 另外两条快速路径：
 
-已克隆此仓库？从这里开始：[`CLONED_THIS.md`](./CLONED_THIS.md)。想要贡献？向 [MCP 目标注册表](./docs/target-registry.md)添加一个服务器，使用 [Agent 任务包](./docs/agent-tasks.md)，并通过 [MCP Observatory 贡献者](./docs/contributor-recognition.md)获得公开认可。
+想要贡献？向 [MCP 目标注册表](./docs/target-registry.md)添加一个服务器，使用 [Agent 任务包](./docs/agent-tasks.md)，并通过 [MCP Observatory 贡献者](./docs/contributor-recognition.md)获得公开认可。
 
-欢迎 AI 编程助手、Agentic 工作流和粗略的 PR。使用 [10x Agentic 增长冲刺](./docs/10x-agentic-growth-sprint.md)、[Agentic 贡献者外联](./docs/agentic-contributor-outreach.md)，或创建一个 `Contributor quest`、`Agentic contribution idea` 或 [`Drop an MCP server, get a receipt`](./docs/drop-server-get-receipt.md) issue 来建议目标、提示词、文档修复、凭证或 `setup-ci --sarif` 集成。
+欢迎 AI 编程助手和 Agentic 工作流。可创建一个 `Contributor quest`、`Agentic contribution idea` 或 [`Drop an MCP server, get a receipt`](./docs/drop-server-get-receipt.md) issue 来建议目标、提示词、文档修复、凭证或 `setup-ci --sarif` 集成。
 
 一条命令添加 MCP CI 和 Code Scanning：
 
@@ -221,7 +221,7 @@ MCP Observatory 为安全和平台团队提供 MCP 服务器 CI、schema 漂移�
 | 健康评分(0-100) | ✓ | ✗ | ✗ | ✗ |
 | SARIF输出 | ✓ | ✓ | ✓ | ✓ |
 | CI/CD原生(setup-ci) | ✓ | ✓ | ✓ | ✓ |
-| 安全索引(17+服务器) | ✓ | ✗ | ✗ | ✗ |
+| 公共安全索引 | ✓ | ✗ | ✗ | ✗ |
 | 通过mcp-seatbelt运行时强制执行 | ✓ | ✗ | ✗ | ✗ |
 
 ## 快速开始

@@ -59,7 +59,7 @@ Current status:
 | appcypher/awesome-mcp-servers | Not listed as of July 6, 2026 | Open a single PR under Development Tools/Security if format fits |
 | Official MCP Registry | Package is public; publishing requires registry workflow/auth | Add `server.json`/publisher path only after owner auth is available |
 
-See [Agent And MCP Ecosystem Promotion Plan](./agent-ecosystem-promotion-plan.md) for the current claim, listing, agent prompt, company outreach, and weekly operating loop.
+Keep directory listings current after each release. Use only claims backed by public evidence.
 
 ## Badge Policy
 
@@ -73,7 +73,7 @@ Use directory badges only when their wording is backed by public evidence that t
 ## Submission Checklist
 
 - Link to the README.
-- Link to `CLONED_THIS.md` for immediate adoption.
+- Link to the README for immediate adoption.
 - Include the `setup-ci` command.
 - Mention free local OSS use.
 - Mention paid pilots only as production support: hosted history, private readiness review, drift/security reports, certification, support, and fleet visibility.

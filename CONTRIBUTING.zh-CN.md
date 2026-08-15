@@ -6,29 +6,27 @@
 
 ## 🌏 欢迎国际贡献者
 
-我们欢迎来自中国、韩国、日本以及整个亚洲的贡献者。这是一个早期项目——贡献者可以在它成为基础设施之前帮助塑造方向。
+我们欢迎来自中国、韩国、日本以及整个亚洲的贡献者。
 
 - [中文 README](README.zh-CN.md) — 简体中文文档
 - 欢迎提交中文 issues 和 PRs
 - 我们使用 `新手友好` 标签标注适合新手的任务
 - Gitee 镜像: https://gitee.com/williamweishuhn/mcp-observatory
 
-加入我们，你的贡献将定义 MCP 安全工具的发展方向。
-
-## ⚡ 5 分钟快速开始
+## 5 分钟快速开始
 
 ```bash
 git clone https://github.com/KryptosAI/mcp-observatory.git
 cd mcp-observatory
 npm install
-npm test          # 约30秒，471个测试应全部通过
+npm test
 npm run typecheck # 约5秒，无错误
 npm run lint      # 约5秒，干净通过
 ```
 
 准备就绪。挑选一个标记为 [新手友好](https://github.com/KryptosAI/mcp-observatory/issues?q=is%3Aopen+label%3A%22good+first+issue%22) 的 issue 开始吧。
 
-这个仓库刻意保持小巧。好的贡献让证据更清晰；弱的贡献通常增加表面面积的速度比增加信任的速度更快。
+好的贡献让证据更清晰；弱的贡献通常增加复杂度的速度比增加信任的速度更快。
 
 ## 什么是好的贡献
 
@@ -55,7 +53,7 @@ npm run lint      # 约5秒，干净通过
 
 ## 基本原则
 
-- 保持 v1 以 CLI 为先。
+- 保持 CLI 作为主要界面。
 - 不要将项目变成通用仪表板。
 - 将 artifact schema 和 Markdown 报告视为核心产品界面。
 - 保持项目作为官方合规工具的补充定位。

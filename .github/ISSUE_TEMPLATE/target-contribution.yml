@@ -10,7 +10,7 @@ body:
 
         Please do not paste secrets, private URLs, private schemas, customer data, or destructive commands.
 
-        中文和韩语提交欢迎 | Chinese and Korean submissions welcome
+        Chinese and Korean submissions are welcome. 欢迎使用中文或韩语提交。
   - type: input
     id: server
     attributes:
