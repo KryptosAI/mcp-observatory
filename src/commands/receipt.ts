@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Command } from "commander";
 
@@ -139,7 +139,21 @@ export function registerReceiptCommands(program: Command): void {
     .description("Generate an Ed25519 key pair for signing and verifying MCP receipts.")
     .option("--public <path>", "Output path for the public key.", "mcp-observatory.pub")
     .option("--private <path>", "Output path for the private key.", "mcp-observatory.key")
-    .action(async (options: { public: string; private: string }) => {
+    .option("--force", "Overwrite existing key files if they already exist.")
+    .action(async (options: { public: string; private: string; force?: boolean }) => {
+      if (path.resolve(options.public) === path.resolve(options.private)) {
+        process.stderr.write("Error: --public and --private must not point to the same file.\n");
+        process.exit(1);
+      }
+      if (!options.force) {
+        for (const target of [options.public, options.private]) {
+          const exists = await access(target).then(() => true, () => false);
+          if (exists) {
+            process.stderr.write(`Error: ${target} already exists. Use --force to overwrite (this invalidates any receipts signed with the old key).\n`);
+            process.exit(1);
+          }
+        }
+      }
       const { publicKey, privateKey } = generateReceiptKeyPair();
       await writeFile(options.public, publicKey, "utf8");
       await writeFile(options.private, privateKey, { encoding: "utf8", mode: 0o600 });

@@ -26,9 +26,13 @@ describe("receipt keygen", () => {
 
   beforeEach(async () => {
     dir = await mkdtemp(path.join(tmpdir(), "mcp-observatory-keygen-"));
+    vi.spyOn(process, "exit").mockImplementation(((code?: number) => {
+      throw new Error(`process.exit(${code})`);
+    }) as never);
   });
 
   afterEach(async () => {
+    vi.restoreAllMocks();
     await rm(dir, { recursive: true, force: true });
   });
 
@@ -68,6 +72,38 @@ describe("receipt keygen", () => {
     } finally {
       process.chdir(cwd);
     }
+  });
+
+  it("refuses to overwrite an existing key file without --force", async () => {
+    const pub = path.join(dir, "test.pub");
+    const priv = path.join(dir, "test.key");
+    const first = makeProgram();
+    await run(first, ["receipt", "keygen", "--public", pub, "--private", priv]);
+    const originalPublicKey = await readFile(pub, "utf8");
+
+    const second = makeProgram();
+    await expect(run(second, ["receipt", "keygen", "--public", pub, "--private", priv])).rejects.toThrow("process.exit(1)");
+
+    expect(await readFile(pub, "utf8")).toBe(originalPublicKey); // untouched by the rejected run
+  });
+
+  it("overwrites existing key files when --force is passed", async () => {
+    const pub = path.join(dir, "test.pub");
+    const priv = path.join(dir, "test.key");
+    const first = makeProgram();
+    await run(first, ["receipt", "keygen", "--public", pub, "--private", priv]);
+    const originalPublicKey = await readFile(pub, "utf8");
+
+    const second = makeProgram();
+    await run(second, ["receipt", "keygen", "--public", pub, "--private", priv, "--force"]);
+
+    expect(await readFile(pub, "utf8")).not.toBe(originalPublicKey); // genuinely regenerated
+  });
+
+  it("refuses when --public and --private point to the same file, even with --force", async () => {
+    const samePath = path.join(dir, "test.key");
+    const program = makeProgram();
+    await expect(run(program, ["receipt", "keygen", "--public", samePath, "--private", samePath, "--force"])).rejects.toThrow("process.exit(1)");
   });
 });
 
