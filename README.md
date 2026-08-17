@@ -44,9 +44,9 @@ Also available in [Simplified Chinese](README.zh-CN.md).
 npx @kryptosai/mcp-observatory demo
 ```
 
-Scans your configured MCP servers (or a built-in demo server if you have none) and shows your safety grade in seconds. No config, no arguments — instant value.
+Scans your configured MCP servers, or a packaged local demo server if you have none, and shows a safety grade. No config required.
 
-Have servers? Scan them all:
+No arguments runs the same demo. Open the old menu with `--menu`.
 
 ```bash
 npx @kryptosai/mcp-observatory
@@ -118,7 +118,7 @@ Run `npx @kryptosai/mcp-observatory cloud`, open a pilot request from the issue 
 
 ## Quick Start
 
-Scan every MCP server in your Claude config:
+Run a first check. No arguments starts `demo` (your servers, or the packaged local demo):
 
 ```bash
 npx @kryptosai/mcp-observatory
@@ -183,7 +183,7 @@ Or add it manually to your config:
 | `badge <cmd>` | Generate an SVG health score badge for README |
 | `cloud` | Show hosted reporting, security review, and enterprise pilot options |
 
-Run with no arguments for an interactive menu:
+Run with no arguments to start `demo`. Use `--menu` for the interactive catalog.
 
 ## What It Does
 

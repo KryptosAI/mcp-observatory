@@ -82,6 +82,7 @@
     "docs/target-gallery.md",
     "docs/target-registry.md",
     "docs/tool-call-receipts.md",
+    "examples/demo-mcp-server.mjs",
     "examples/insecure-mcp-server",
     "scripts/postinstall.mjs",
     "schemas"

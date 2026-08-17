@@ -58,8 +58,7 @@ function normalizeSchedule(schedule) {
 }
 
 function yamlFor(command, sarif, schedule) {
-  const selfPackage = readJson(path.join(packageRoot, "package.json"));
-  const actionRef = `v${selfPackage?.version || "0.28.0"}`;
+  const actionRef = "v1";
   const cron = normalizeSchedule(schedule);
   return [
     "name: MCP Observatory",
@@ -126,10 +125,10 @@ try {
     const result = writeCi(projectRoot, command, sarif, schedule);
     const relative = path.relative(projectRoot, result.workflowPath);
     log(result.status === "created"
-      ? `MCP Observatory: created ${relative}. Verify with: npx @kryptosai/mcp-observatory setup-ci --doctor`
-      : `MCP Observatory: ${relative} already exists. Verify with: npx @kryptosai/mcp-observatory setup-ci --doctor`);
+      ? `MCP Observatory: created ${relative}. Verify with: npx -y @kryptosai/mcp-observatory@latest setup-ci --doctor`
+      : `MCP Observatory: ${relative} already exists. Verify with: npx -y @kryptosai/mcp-observatory@latest setup-ci --doctor`);
   } else {
-    log(`MCP Observatory: CI ready. Run: npx @kryptosai/mcp-observatory setup-ci --all --command "${command.replaceAll("\"", "\\\"")}"${sarif ? " --sarif" : ""} --schedule weekly`);
+    log(`MCP Observatory: CI ready. Run: npx -y @kryptosai/mcp-observatory@latest setup-ci --all --command "${command.replaceAll("\"", "\\\"")}"${sarif ? " --sarif" : ""} --schedule weekly`);
     log("MCP Observatory: to auto-create CI on install, set package.json mcpObservatory.autoSetupCi=true.");
   }
 } catch (error) {

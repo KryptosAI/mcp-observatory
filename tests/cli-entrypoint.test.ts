@@ -46,6 +46,28 @@ describe("CLI entrypoint", () => {
     expect(stdout.trim()).toMatch(/^\d+\.\d+\.\d+$/);
   });
 
+  it("demo grades the packaged local server when no MCP servers are configured", () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "mcp-obs-demo-"));
+    const { stdout, exitCode } = runCli(["demo"], {
+      cwd: tmpDir,
+      timeout: 30_000,
+      env: { HOME: tmpDir, USERPROFILE: tmpDir, XDG_CONFIG_HOME: tmpDir },
+    });
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("packaged local demo server");
+    expect(stdout).toContain("mcp-observatory-demo");
+    expect(stdout).toContain("Safety Grade");
+  });
+
+  it("prints a CI activation card when invoked with no arguments", () => {
+    const { stdout, exitCode } = runCli([], { env: { CI: "true" } });
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("action@v1");
+    expect(stdout).toContain("setup-ci --all");
+    expect(stdout).toContain("demo");
+    expect(stdout).not.toContain("Usage:");
+  });
+
   it("prints help with --help", () => {
     const { stdout, exitCode } = runCli(["--help"]);
     expect(exitCode).toBe(0);

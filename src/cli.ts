@@ -52,7 +52,8 @@ const MENU_GROUPS: MenuGroup[] = [
   {
     heading: "",
     items: [
-      { command: ["test"],         label: "test <cmd>", outcome: "Test a specific MCP server",                        recommended: true },
+      { command: ["demo"],         label: "demo",       outcome: "Scan your servers or a built-in demo and get a grade", recommended: true },
+      { command: ["test"],         label: "test <cmd>", outcome: "Test a specific MCP server" },
       { command: ["scan"],         label: "scan",       outcome: "Check all your configured MCP servers" },
       { command: ["scan", "deep"], label: "scan deep",  outcome: "^ plus invoke tools to verify they work" },
       { command: ["skill-scan"],   label: "skill-scan <path>", outcome: "Scan skill files for security risks" },
@@ -100,7 +101,7 @@ async function showInteractiveMenu(): Promise<string[] | null> {
   }
 
   const allItems = getAllMenuItems();
-  let cursor = 0; // start on "scan" (recommended)
+  let cursor = 0;
 
   const write = (s: string) => process.stdout.write(s);
 
@@ -482,11 +483,26 @@ async function main(): Promise<void> {
       }
     });
 
-  // Interactive menu when invoked with no arguments
-  if (process.argv.length === 2 && !isCI) {
+  if (process.argv[2] === "--menu") {
+    process.argv.splice(2, 1);
     const choice = await showInteractiveMenu();
     if (!choice) return;
     process.argv.push(...choice);
+  } else if (process.argv.length === 2) {
+    if (isCI) {
+      process.stdout.write(
+        [
+          "",
+          "MCP Observatory is installed. Complete a first check, then pin CI:",
+          `  ${bin} demo`,
+          `  ${bin} setup-ci --all --command "npx -y <server-package>" --sarif`,
+          "  uses: KryptosAI/mcp-observatory/action@v1",
+          "",
+        ].join("\n"),
+      );
+      return;
+    }
+    process.argv.push("demo");
   }
 
   const commandName = process.argv[2] ?? "interactive";

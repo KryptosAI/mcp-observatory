@@ -215,7 +215,7 @@ describe("CLI/MCP Parity", () => {
   it("documents intentional CLI/MCP differences", () => {
     const intentionalDifferences = {
       "watch": "CLI runs a polling loop; MCP runs a single check + diff against previous",
-      "interactive menu": "CLI shows interactive arrow-key menu; MCP has no equivalent (by design)",
+      "interactive menu": "CLI no-args runs demo; --menu shows the arrow-key catalog. MCP has no equivalent (by design)",
       "color output": "CLI supports --no-color / ANSI; MCP returns plain text (by design)",
       "report": "CLI-only command for rendering existing artifacts (no MCP equivalent needed)",
       "serve": "CLI-only command that starts the MCP server itself",

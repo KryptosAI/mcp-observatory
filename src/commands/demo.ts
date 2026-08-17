@@ -1,3 +1,6 @@
+import { createRequire } from "node:module";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { Command } from "commander";
 
 import { runTarget } from "../index.js";
@@ -14,6 +17,35 @@ import {
   LOGO,
   printCiConversionCta,
 } from "./helpers.js";
+
+function packagedDemoTarget(timeoutMs: number): TargetConfig {
+  const require = createRequire(import.meta.url);
+  const here = path.dirname(fileURLToPath(import.meta.url));
+  let dir = here;
+  let packageRoot = "";
+  for (let i = 0; i < 6; i++) {
+    try {
+      const pkg = require(path.join(dir, "package.json")) as { name?: string };
+      if (pkg.name === "@kryptosai/mcp-observatory") {
+        packageRoot = dir;
+        break;
+      }
+    } catch {
+      // keep walking
+    }
+    dir = path.dirname(dir);
+  }
+  if (!packageRoot) {
+    throw new Error("Could not locate the packaged MCP Observatory demo server.");
+  }
+  return {
+    targetId: "mcp-observatory-demo",
+    adapter: "local-process",
+    command: process.execPath,
+    args: [path.join(packageRoot, "examples/demo-mcp-server.mjs")],
+    timeoutMs,
+  };
+}
 
 const DEMO_SERVERS: { name: string; targetId: string; command: string; args: string[]; desc: string }[] = [
   {
@@ -149,20 +181,13 @@ export function registerDemoCommands(program: Command): void {
         targetSource = targets[0]!.source;
         process.stdout.write(`\n  ${c(ANSI.dim, "Scanning first server...")}\n`);
       } else {
-        const demo = DEMO_SERVERS[0]!;
-        targetConfig = {
-          targetId: demo.targetId,
-          adapter: "local-process",
-          command: demo.command,
-          args: demo.args,
-          timeoutMs,
-        };
-        targetSource = `built-in demo (${demo.desc})`;
+        targetConfig = packagedDemoTarget(timeoutMs);
+        targetSource = "packaged local demo server";
         process.stdout.write(
           `\r  ${c(ANSI.yellow, "!")} No MCP servers configured.\n`,
         );
         process.stdout.write(
-          `    ${c(ANSI.dim, "Running built-in demo with")} ${c(ANSI.bold, demo.targetId)}\n`,
+          `    ${c(ANSI.dim, "Running packaged local demo server")}\n`,
         );
         process.stdout.write(
           `    ${c(ANSI.dim, `Tip: ${bin} suggest  → discover servers for your stack`)}\n`,
