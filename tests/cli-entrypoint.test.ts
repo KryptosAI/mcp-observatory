@@ -57,6 +57,7 @@ describe("CLI entrypoint", () => {
     expect(stdout).toContain("packaged local demo server");
     expect(stdout).toContain("mcp-observatory-demo");
     expect(stdout).toContain("Safety Grade");
+    expect(stdout).toContain("pricing?plan=individual");
   });
 
   it("prints a CI activation card when invoked with no arguments", () => {

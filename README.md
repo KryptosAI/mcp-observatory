@@ -58,6 +58,8 @@ Test a specific server:
 npx @kryptosai/mcp-observatory test npx -y @modelcontextprotocol/server-everything
 ```
 
+Keep a failing grade hosted: [Individual Pro $29](https://app.mcp-observatory.com/pricing?plan=individual) · [Team $299](https://app.mcp-observatory.com/pricing?plan=team)
+
 Add CI + Code Scanning in one command:
 
 ```bash

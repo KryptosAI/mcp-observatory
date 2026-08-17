@@ -212,7 +212,7 @@ function buildHtml(current: MatrixSummaryEntry[], history: HistoryEntry[], safet
       </tbody>
     </table></div>
 
-    <section class="final-cta"><div><div class="eyebrow">EVIDENCE FOR EVERY RELEASE DECISION</div><h2>Know what your agents can reach before they reach it.</h2><p>Run the free scan locally, or bring MCP Observatory into your release workflow.</p></div><div class="final-cta-actions"><a class="button primary" href="https://www.npmjs.com/package/@kryptosai/mcp-observatory">Run the free scan ↗</a><a class="button" href="/release-gate-pilot/">Talk to the team ↗</a><span class="download-proof"><strong>14K+</strong> package downloads</span></div></section>
+    <section class="final-cta"><div><div class="eyebrow">EVIDENCE FOR EVERY RELEASE DECISION</div><h2>Know what your agents can reach before they reach it.</h2><p>Run the free scan locally, then keep the failing gate hosted.</p></div><div class="final-cta-actions"><a class="button primary" href="https://app.mcp-observatory.com/pricing?plan=individual">Start $29 ↗</a><a class="button" href="https://www.npmjs.com/package/@kryptosai/mcp-observatory">Run the free scan ↗</a></div></section>
 
     <div class="footer">
       Powered by <a href="https://github.com/KryptosAI/mcp-observatory">MCP Observatory</a>

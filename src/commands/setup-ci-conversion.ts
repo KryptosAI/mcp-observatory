@@ -104,6 +104,7 @@ function printInitCiResult(result: InitCiResult, output: NodeJS.WriteStream | Wr
       : "Automation: weekly scheduled checks are enabled in the generated workflow.\n",
   );
   output.write("Verify: npx -y @kryptosai/mcp-observatory@latest setup-ci --doctor\n");
+  output.write("Keep CI history hosted: https://app.mcp-observatory.com/pricing?plan=team\n");
 }
 
 function recordConversion(status: SetupCiConversionResult["status"], options: SetupCiConversionOptions): void {
