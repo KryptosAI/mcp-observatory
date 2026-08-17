@@ -86,7 +86,7 @@ function diff(): DiffArtifact {
       { capability: "tools", name: "create_issue", severity: "high", changes: ["added required property type"] },
     ],
     responseChanges: [{ capability: "tools", name: "create_issue", change: "response shape changed" }],
-  } as DiffArtifact;
+  };
 }
 
 /** Every terminal surface that renders status symbols. */
@@ -161,7 +161,7 @@ describe("accessible mode", () => {
     const accessible = renderWatchNoChanges(artifact());
 
     // Same ANSI codes on both, only the glyph between them differs.
-    const codes = (s: string) => s.match(/\x1b\[\d+m/g) ?? [];
+    const codes = (s: string) => s.match(new RegExp(`${String.fromCharCode(0x1b)}\\[\\d+m`, "g")) ?? [];
     expect(codes(accessible)).toEqual(codes(plain));
   });
 });
