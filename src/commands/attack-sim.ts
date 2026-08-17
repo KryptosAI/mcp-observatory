@@ -204,7 +204,7 @@ export function registerAttackSimCommands(program: Command): void {
           campaign: options.campaign,
         });
       } else if (highCount > 0) {
-        maybePrintCloudCta("security");
+        maybePrintCloudCta("security", artifact.gate);
       }
 
       if (options.failOnHigh && highCount > 0) {

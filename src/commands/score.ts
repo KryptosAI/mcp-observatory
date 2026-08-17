@@ -219,7 +219,7 @@ export function registerScoreCommands(program: Command): void {
           target,
         });
       }
-      maybePrintCloudCta("security");
+      maybePrintCloudCta("security", artifact.gate);
 
       if (artifact.gate === "fail") {
         process.exitCode = 1;

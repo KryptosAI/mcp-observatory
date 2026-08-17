@@ -1,9 +1,8 @@
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { doctorSetupCi, initCi } from "../src/commands/init-ci.js";
-import { TOOL_VERSION } from "../src/version.js";
 
 const tempDirs: string[] = [];
 
@@ -34,7 +33,7 @@ describe("init-ci", () => {
     expect(result.badgeStatus).toBe("created");
 
     const workflowText = await readFile(workflow, "utf8");
-    expect(workflowText).toContain(`uses: KryptosAI/mcp-observatory/action@v${TOOL_VERSION}`);
+    expect(workflowText).toContain("uses: KryptosAI/mcp-observatory/action@v1");
     expect(workflowText).not.toContain("pull-requests: write");
     expect(workflowText).not.toContain("statuses: write");
     expect(workflowText).toContain("command: npx -y @example/mcp-server");
@@ -194,6 +193,20 @@ describe("init-ci", () => {
     expect(result.checks.find((check) => check.id === "workflow")).toMatchObject({ status: "pass" });
     expect(result.checks.find((check) => check.id === "action-ref")).toMatchObject({ status: "pass" });
     expect(result.checks.find((check) => check.id === "permissions")).toMatchObject({ status: "pass" });
+  });
+
+  it("warns when a workflow pins a patch Action tag instead of v1", async () => {
+    const dir = await tempDir();
+    const workflow = path.join(dir, ".github/workflows/mcp-observatory.yml");
+    await initCi({ command: "npx -y @example/mcp-server", workflow });
+    const current = await readFile(workflow, "utf8");
+    await writeFile(workflow, current.replace("action@v1", "action@v1.28.0"));
+
+    const result = await doctorSetupCi({ workflow });
+    expect(result.checks.find((check) => check.id === "action-ref")).toMatchObject({
+      status: "warn",
+      fix: "npx -y @kryptosai/mcp-observatory@latest setup-ci --doctor --fix",
+    });
   });
 
   it("reports missing setup-ci workflow as the blocking doctor failure", async () => {

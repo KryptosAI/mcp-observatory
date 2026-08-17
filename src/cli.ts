@@ -343,6 +343,8 @@ async function main(): Promise<void> {
         throw new Error(`Cloud upload failed (${response.status}): ${text}`);
       }
       process.stdout.write(`${text}\n`);
+      process.stdout.write(`Hosted dashboard: ${getCloudBaseUrl()}/dashboard\n`);
+      process.stdout.write(`Next: ${getBinName()} setup-ci --all --cloud --command "npx -y my-mcp-server"\n`);
       recordEvent(buildEvent("command_complete", "cloud-upload", "cli", {
         cloudUpload: true,
         org,
@@ -365,6 +367,8 @@ async function main(): Promise<void> {
       if (token.org) {
         process.stdout.write(`    Organization: ${c(ANSI.bold, token.org)}\n`);
       }
+      process.stdout.write(`    Dashboard: ${getCloudBaseUrl()}/dashboard\n`);
+      process.stdout.write(`    Upload: ${getBinName()} cloud upload .mcp-observatory/runs/<run>.json\n`);
     });
 
   cloudCmd

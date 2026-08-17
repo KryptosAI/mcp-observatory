@@ -250,7 +250,7 @@ export function registerEnterpriseReportCommands(program: Command): void {
         sampleReport: options.sample === true,
       }));
       if (options.output) {
-        maybePrintCloudCta("ci");
+        maybePrintCloudCta("ci", artifacts.some((artifact) => artifact.gate === "fail") ? "fail" : "pass");
       }
     });
 }

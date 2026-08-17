@@ -286,7 +286,7 @@ export function registerTestCommands(program: Command): void {
           deep: options.deep || options.invokeTools,
         });
       }
-      maybePrintCloudCta(options.security ? "security" : "general");
+      maybePrintCloudCta(options.security ? "security" : "general", artifact.gate);
 
       if (options.watch || conversionFlags.watch) {
         await watchAndRerun(options.target);

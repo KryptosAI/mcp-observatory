@@ -106,7 +106,7 @@ export function registerCiReportCommands(program: Command): void {
         }));
 
         if (options.format === "markdown") {
-          maybePrintCloudCta("ci");
+          maybePrintCloudCta("ci", report.hasRegressions || report.failCount > 0 ? "fail" : "pass");
         }
 
         if (report.hasRegressions) {

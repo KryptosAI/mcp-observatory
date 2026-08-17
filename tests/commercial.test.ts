@@ -55,7 +55,7 @@ describe("commercial cloud messaging", () => {
     delete process.env["MCP_OBSERVATORY_CLOUD_TOKEN"];
     const first = captureStdout();
 
-    maybePrintCloudCta("ci");
+    maybePrintCloudCta("ci", "fail");
 
     expect(first.output()).toContain("Production MCP teams");
     expect(first.output()).toContain("hosted CI history");
@@ -64,9 +64,20 @@ describe("commercial cloud messaging", () => {
     process.env["MCP_OBSERVATORY_CLOUD_TOKEN"] = "token";
     const second = captureStdout();
 
-    maybePrintCloudCta("ci");
+    maybePrintCloudCta("ci", "fail");
 
     expect(second.output()).toBe("");
+  });
+
+  it("does not print a CTA on passing gates", () => {
+    process.env["NO_COLOR"] = "1";
+    delete process.env["MCP_OBSERVATORY_CLOUD_TOKEN"];
+    const stdout = captureStdout();
+
+    maybePrintCloudCta("ci", "pass");
+    maybePrintCloudCta("ci");
+
+    expect(stdout.output()).toBe("");
   });
 
   it("suppresses the CTA in quiet mode even without a cloud token", () => {

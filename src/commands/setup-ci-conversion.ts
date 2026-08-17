@@ -42,7 +42,7 @@ function targetCommand(target: TargetConfig | undefined): string | undefined {
 }
 
 function conversionCommand(options: SetupCiConversionOptions): string | undefined {
-  const bin = options.bin ?? "npx @kryptosai/mcp-observatory";
+  const bin = options.bin ?? "npx -y @kryptosai/mcp-observatory@latest";
   const sarif = options.ciSarif === false ? "" : " --sarif";
   const schedule = " --schedule weekly";
   if (options.targetPath) return `${setupCiHint(undefined, options.targetPath, bin)}${sarif}${schedule}`;
@@ -103,7 +103,7 @@ function printInitCiResult(result: InitCiResult, output: NodeJS.WriteStream | Wr
       ? "Automation: weekly scheduled checks were requested, but the existing workflow was unchanged.\n"
       : "Automation: weekly scheduled checks are enabled in the generated workflow.\n",
   );
-  output.write("Verify: npx @kryptosai/mcp-observatory setup-ci --doctor\n");
+  output.write("Verify: npx -y @kryptosai/mcp-observatory@latest setup-ci --doctor\n");
 }
 
 function recordConversion(status: SetupCiConversionResult["status"], options: SetupCiConversionOptions): void {

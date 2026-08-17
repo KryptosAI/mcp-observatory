@@ -150,7 +150,7 @@ describe("command helper formatting continued", () => {
 
   it("detects npx invocation for copy-pasteable commands", () => {
     process.argv = ["node", "/Users/test/.npm/_npx/123/bin/mcp-observatory"];
-    expect(getBinName()).toBe("npx @kryptosai/mcp-observatory");
+    expect(getBinName()).toBe("npx -y @kryptosai/mcp-observatory@latest");
 
     process.argv = ["node", "/repo/dist/cli.js"];
     expect(getBinName()).toBe("mcp-observatory");

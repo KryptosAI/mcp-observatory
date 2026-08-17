@@ -4,7 +4,6 @@ import type { Command } from "commander";
 import { buildEvent, detectCiProvider, normalizeCampaign, recordEvent } from "../command-events.js";
 import { defaultRunsDirectory, findLatestSuccessfulRunArtifact, readArtifact } from "../storage.js";
 import type { RunArtifact } from "../types.js";
-import { TOOL_VERSION } from "../version.js";
 import { quoteShell } from "./helpers.js";
 import { getCloudAccessToken, getCloudBaseUrl } from "../commercial.js";
 
@@ -67,7 +66,7 @@ const DEFAULT_TARGET_CONFIG_PATH = "mcp-observatory.target.json";
 const DEFAULT_PR_BODY_PATH = "docs/mcp-observatory-pr-body.md";
 const DEFAULT_ISSUE_BODY_PATH = "docs/mcp-observatory-issue.md";
 const DEFAULT_SCORE_BADGE_PATH = "docs/mcp-observatory-score-badge.md";
-const DEFAULT_ACTION_REF = `v${TOOL_VERSION}`;
+const DEFAULT_ACTION_REF = "v1";
 const DEFAULT_WEEKLY_CRON = "0 9 * * 1";
 
 async function exists(filePath: string): Promise<boolean> {
@@ -555,7 +554,15 @@ export async function doctorSetupCi(options: InitCiOptions = {}): Promise<SetupC
         label: "Pinned Action",
         status: "warn",
         message: "Workflow uses action@main.",
-        fix: "Pin the action to a release tag or full commit SHA.",
+        fix: "Pin the action to v1 or a full commit SHA.",
+      });
+    } else if (/^v\d+\.\d+\.\d+$/.test(actionRef)) {
+      checks.push({
+        id: "action-ref",
+        label: "Pinned Action",
+        status: "warn",
+        message: `Workflow pins action@${actionRef}. Prefer action@v1 so hosted checkout copy stays current.`,
+        fix: "npx -y @kryptosai/mcp-observatory@latest setup-ci --doctor --fix",
       });
     } else {
       checks.push({

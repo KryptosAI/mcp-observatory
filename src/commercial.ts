@@ -49,8 +49,12 @@ export function cloudUpgradeLine(context: "ci" | "security" | "fleet" | "general
   ].join("\n");
 }
 
-export function maybePrintCloudCta(context: "ci" | "security" | "fleet" | "general" = "general"): void {
+export function maybePrintCloudCta(
+  context: "ci" | "security" | "fleet" | "general" = "general",
+  gate?: string,
+): void {
   if (isQuiet() || hasCloudToken()) return;
+  if (gate !== "fail" && gate !== "critical_risk") return;
   process.stdout.write(`${cloudUpgradeLine(context)}\n\n`);
 }
 

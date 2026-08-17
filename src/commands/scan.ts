@@ -284,7 +284,8 @@ async function runScan(
   }
 
   if (format === "terminal") {
-    maybePrintCloudCta(results.length > 1 ? "fleet" : securityCheck ? "security" : "general");
+    const scanGate = failCount > 0 ? "fail" : "pass";
+    maybePrintCloudCta(results.length > 1 ? "fleet" : securityCheck ? "security" : "general", scanGate);
   }
 
   recordEvent(buildEvent("command_complete", "scan", "cli", {

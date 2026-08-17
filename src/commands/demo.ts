@@ -333,7 +333,7 @@ export function registerDemoCommands(program: Command): void {
         stageOverride: "demo",
       }));
 
-      maybePrintCloudCta("general");
+      maybePrintCloudCta("general", "pass");
       recordSessionEnd(sessionId);
     });
 }

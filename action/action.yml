@@ -64,7 +64,7 @@ inputs:
   cloud-endpoint:
     description: "MCP Observatory Cloud API base URL."
     required: false
-    default: "https://mcp-observatory-api.william-weishuhn.workers.dev"
+    default: "https://app.mcp-observatory.com"
 
 outputs:
   gate:
