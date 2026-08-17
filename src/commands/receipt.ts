@@ -1,9 +1,9 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Command } from "commander";
 
 import { resolveAuditTarget, runAudit } from "../audit.js";
-import { buildMcpReceipt, receiptFormatFromPath, renderReceipt, signReceipt, type ReceiptEnvironmentClass, type ReceiptFormat } from "../receipt.js";
+import { buildMcpReceipt, generateReceiptKeyPair, receiptFormatFromPath, renderReceipt, signReceipt, verifyReceipt, type McpReceipt, type ReceiptEnvironmentClass, type ReceiptFormat } from "../receipt.js";
 import { buildEvent, recordEvent } from "../command-events.js";
 import { ANSI, c } from "./helpers.js";
 
@@ -77,7 +77,7 @@ async function writeMaybe(filePath: string | undefined, content: string): Promis
 }
 
 export function registerReceiptCommands(program: Command): void {
-  program
+  const receiptCmd = program
     .command("receipt")
     .passThroughOptions()
     .description("Emit a portable MCP trust receipt for a target.")
@@ -132,5 +132,60 @@ export function registerReceiptCommands(program: Command): void {
         receiptEnvironmentClass: options.environmentClass,
         receiptTopFindings: receipt.findings.length,
       }));
+    });
+
+  receiptCmd
+    .command("keygen")
+    .description("Generate an Ed25519 key pair for signing and verifying MCP receipts.")
+    .option("--public <path>", "Output path for the public key.", "mcp-observatory.pub")
+    .option("--private <path>", "Output path for the private key.", "mcp-observatory.key")
+    .option("--force", "Overwrite existing key files if they already exist.")
+    .action(async (options: { public: string; private: string; force?: boolean }) => {
+      if (path.resolve(options.public) === path.resolve(options.private)) {
+        process.stderr.write("Error: --public and --private must not point to the same file.\n");
+        process.exit(1);
+      }
+      if (!options.force) {
+        for (const target of [options.public, options.private]) {
+          const exists = await access(target).then(() => true, () => false);
+          if (exists) {
+            process.stderr.write(`Error: ${target} already exists. Use --force to overwrite (this invalidates any receipts signed with the old key).\n`);
+            process.exit(1);
+          }
+        }
+      }
+      const { publicKey, privateKey } = generateReceiptKeyPair();
+      await writeFile(options.public, publicKey, "utf8");
+      await writeFile(options.private, privateKey, { encoding: "utf8", mode: 0o600 });
+      process.stdout.write(
+        `Public key saved:  ${options.public}\n`
+        + `Private key saved: ${options.private}\n\n`
+        + "Keep the private key secure. Share the public key with anyone who needs to verify your receipts.\n",
+      );
+    });
+
+  receiptCmd
+    .command("verify")
+    .description("Verify a signed MCP receipt against a public key. Requires a JSON-format receipt; markdown receipts do not carry the signature.")
+    .argument("<file>", "Path to the receipt JSON file.")
+    .requiredOption("--key <path>", "Path to the Ed25519 public key file.")
+    .action(async (file: string, options: { key: string }) => {
+      const receiptText = await readFile(file, "utf8");
+      let receipt: McpReceipt;
+      try {
+        receipt = JSON.parse(receiptText) as McpReceipt;
+      } catch {
+        process.stderr.write(
+          `Error: could not parse ${file} as JSON. receipt verify requires a JSON-format receipt `
+          + "(generate one with --format json) — markdown receipts do not include the signature.\n",
+        );
+        process.exit(1);
+      }
+      const publicKey = await readFile(options.key);
+      if (!verifyReceipt(receipt, publicKey)) {
+        process.stderr.write(`✗ Receipt verification failed against ${options.key} — signature does not match, or the receipt is unsigned.\n`);
+        process.exit(1);
+      }
+      process.stdout.write(`✓ Receipt verified — signed by ${receipt.signer ?? "unknown"}\n`);
     });
 }
