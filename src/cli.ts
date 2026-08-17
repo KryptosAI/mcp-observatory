@@ -26,7 +26,8 @@ import { registerEnforceCommands } from "./commands/enforce.js";
 import { registerReceiptCommands } from "./commands/receipt.js";
 import { registerRiskGraphCommands } from "./commands/risk-graph.js";
 import { registerSkillScanCommands } from "./commands/skill-scan.js";
-import { getCloudUploadEndpoint, getCloudBaseUrl, printCloudInfo, getCloudAccessToken, cloudWhoami } from "./commercial.js";
+import { getCloudUploadEndpoint, getCloudBaseUrl, printCloudInfo, getCloudAccessToken, cloudWhoami, SELF_SERVE_PRICING_URL } from "./commercial.js";
+import { defaultRunsDirectory, findLatestRunArtifact } from "./storage.js";
 import { runTarget } from "./index.js";
 import type { RunArtifact, TargetConfig } from "./types.js";
 import { recordEvent, buildEvent } from "./command-events.js";
@@ -317,17 +318,27 @@ async function main(): Promise<void> {
 
   cloudCmd
     .command("upload")
-    .description("Upload a run artifact to MCP Observatory Cloud for a hosted pilot report.")
-    .argument("<artifact>", "Path to a run artifact JSON file.")
+    .description("Upload the latest local run receipt to MCP Observatory Cloud. Signs in and opens checkout when needed.")
+    .argument("[artifact]", "Optional path to a run artifact JSON file. Defaults to the newest local receipt.")
     .option("--org <org>", "Customer or organization slug. Defaults to MCP_OBSERVATORY_ORG.")
     .option("--endpoint <url>", "Hosted upload endpoint.", getCloudUploadEndpoint())
-    .action(async (artifactPath: string, options: { org?: string; endpoint: string }) => {
-      const token = await getCloudAccessToken();
+    .action(async (artifactPath: string | undefined, options: { org?: string; endpoint: string }) => {
+      let token = await getCloudAccessToken();
       if (!token) {
-        throw new Error("Authentication required. Set MCP_OBSERVATORY_CLOUD_TOKEN or run: mcp-observatory cloud login");
+        const { performCloudDeviceFlow, openBrowser } = await import("./auth.js");
+        const signedIn = await performCloudDeviceFlow(getCloudBaseUrl());
+        token = signedIn.accessToken;
+        process.stdout.write(`  ${c(ANSI.green, "✓")} Signed in as ${c(ANSI.bold, signedIn.email ?? signedIn.sub ?? "unknown")}\n`);
+        const checkout = `${SELF_SERVE_PRICING_URL}?plan=individual`;
+        process.stdout.write(`  Keep this receipt hosted · $29: ${checkout}\n`);
+        await openBrowser(checkout);
+      }
+      const resolvedPath = artifactPath ?? await findLatestRunArtifact(defaultRunsDirectory());
+      if (!resolvedPath) {
+        throw new Error(`No run artifact found. Run: ${getBinName()} demo`);
       }
       const org = options.org ?? process.env["MCP_OBSERVATORY_ORG"];
-      const artifact = validateRunArtifact(JSON.parse(await readFile(artifactPath, "utf8")));
+      const artifact = validateRunArtifact(JSON.parse(await readFile(resolvedPath, "utf8")));
       const endpoint = requireHttpUrl(options.endpoint, "Cloud upload endpoint");
       const response = await fetch(endpoint, {
         method: "POST",
@@ -336,7 +347,6 @@ async function main(): Promise<void> {
           "Content-Type": "application/json",
           ...(org ? { "X-MCP-Observatory-Org": org } : {}),
         },
-        // lgtm[js/file-data-in-network-request] This command explicitly uploads the user-provided artifact to a validated HTTPS endpoint.
         body: JSON.stringify(artifact),
       });
       const text = await response.text();
@@ -344,6 +354,7 @@ async function main(): Promise<void> {
         throw new Error(`Cloud upload failed (${response.status}): ${text}`);
       }
       process.stdout.write(`${text}\n`);
+      process.stdout.write(`Uploaded ${resolvedPath}\n`);
       process.stdout.write(`Hosted dashboard: ${getCloudBaseUrl()}/dashboard\n`);
       process.stdout.write(`Next: ${getBinName()} setup-ci --all --cloud --command "npx -y my-mcp-server"\n`);
       recordEvent(buildEvent("command_complete", "cloud-upload", "cli", {
@@ -369,7 +380,7 @@ async function main(): Promise<void> {
         process.stdout.write(`    Organization: ${c(ANSI.bold, token.org)}\n`);
       }
       process.stdout.write(`    Dashboard: ${getCloudBaseUrl()}/dashboard\n`);
-      process.stdout.write(`    Upload: ${getBinName()} cloud upload .mcp-observatory/runs/<run>.json\n`);
+      process.stdout.write(`    Upload: ${getBinName()} cloud upload\n`);
     });
 
   cloudCmd

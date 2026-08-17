@@ -92,7 +92,7 @@ async function discoverOidc(issuer: string): Promise<OidcDiscovery> {
   return (await res.json()) as OidcDiscovery;
 }
 
-async function openBrowser(url: string): Promise<void> {
+export async function openBrowser(url: string): Promise<void> {
   try {
     const command = process.platform === "darwin" ? "open" : process.platform === "win32" ? "cmd" : "xdg-open";
     const args = process.platform === "win32" ? ["/c", "start", "", url] : [url];

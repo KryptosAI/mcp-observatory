@@ -101,7 +101,7 @@ describe("commercial cloud messaging", () => {
     expect(stdout.output()).toContain("Individual Pro: $29/month");
     expect(stdout.output()).toContain("pricing?plan=team");
     expect(stdout.output()).toContain("Release Gate Pilot");
-    expect(stdout.output()).toContain("cloud upload .mcp-observatory/runs/<run>.json");
+    expect(stdout.output()).toContain("cloud upload");
     expect(stdout.output()).toContain("william@banksey.com");
   });
 

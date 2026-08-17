@@ -76,7 +76,7 @@ export function printCloudInfo(): void {
       "  Release Gate Pilot: $15,000 for 1-3 servers in ten business days.",
       "  https://mcp-observatory.com/release-gate-pilot/",
       "",
-      `Upload an artifact: ${getBinName()} cloud upload .mcp-observatory/runs/<run>.json`,
+      `Upload the latest receipt: ${getBinName()} cloud upload`,
       `Contact: ${CONTACT}`,
       "",
     ].join("\n"),

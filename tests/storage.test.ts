@@ -7,6 +7,7 @@ import {
   defaultRunsDirectory,
   ensureDirectory,
   findLatestArtifact,
+  findLatestRunArtifact,
   findLatestSuccessfulRunArtifact,
   readArtifact,
   writeRunArtifact,
@@ -154,6 +155,18 @@ describe("artifact lookup helpers", () => {
 
       await expect(findLatestSuccessfulRunArtifact(tmpDir)).resolves.toBe(passing);
       await expect(findLatestSuccessfulRunArtifact(path.join(tmpDir, "missing"))).resolves.toBeNull();
+    } finally {
+      await rm(tmpDir, { recursive: true, force: true });
+    }
+  });
+
+  it("finds the newest run including failing gates", async () => {
+    const tmpDir = await makeTempDir();
+    try {
+      await writeRunArtifact({ ...makeArtifact(), createdAt: "2026-01-01T00:00:00Z", gate: "pass" }, tmpDir);
+      const failing = await writeRunArtifact({ ...makeArtifact(), createdAt: "2026-01-02T00:00:00Z", gate: "fail" }, tmpDir);
+
+      await expect(findLatestRunArtifact(tmpDir)).resolves.toBe(failing);
     } finally {
       await rm(tmpDir, { recursive: true, force: true });
     }
