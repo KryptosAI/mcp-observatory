@@ -42,12 +42,12 @@ function renderNextActions(artifact: RunArtifact): string {
   lines.push("");
   lines.push(co(ANSI.bold, "Next Actions:"));
 
-  lines.push(`  → Auto-enforce: ${co(ANSI.bold, `npx @kryptosai/mcp-observatory enforce ${targetCmd}`)}`);
+  lines.push(`  ${sym("bullet")} Auto-enforce: ${co(ANSI.bold, `npx @kryptosai/mcp-observatory enforce ${targetCmd}`)}`);
 
   if (isSeatbeltAvailable()) {
-    lines.push(co(ANSI.dim, "  → This generates a policy AND starts the proxy — protecting you immediately"));
+    lines.push(co(ANSI.dim, `  ${sym("bullet")} This generates a policy AND starts the proxy — protecting you immediately`));
   } else {
-    lines.push(co(ANSI.dim, "  → Already know the risks? Enforce at runtime with mcp-seatbelt"));
+    lines.push(co(ANSI.dim, `  ${sym("bullet")} Already know the risks? Enforce at runtime with mcp-seatbelt`));
   }
 
   return lines.join("\n");
@@ -59,12 +59,12 @@ export { renderNextActions };
 
 function watchStatusIcon(status: CheckStatus): string {
   switch (status) {
-    case "pass": return co(ANSI.green, "✓");
-    case "fail": return co(ANSI.red, "✗");
+    case "pass": return co(ANSI.green, sym("pass"));
+    case "fail": return co(ANSI.red, sym("fail"));
     case "partial":
-    case "flaky": return co(ANSI.yellow, "⚠");
+    case "flaky": return co(ANSI.yellow, sym("warn"));
     case "unsupported":
-    case "skipped": return co(ANSI.dim, "–");
+    case "skipped": return co(ANSI.dim, sym("skip"));
   }
 }
 
@@ -123,9 +123,9 @@ export function renderWatchFirstRun(artifact: RunArtifact): string {
   return lines.join("\n");
 }
 
-/** No changes: header + ✓ */
+/** No changes: header + pass symbol */
 export function renderWatchNoChanges(artifact: RunArtifact): string {
-  return `${watchHeader(artifact)}\n${co(ANSI.green, "✓ No changes")}`;
+  return `${watchHeader(artifact)}\n${co(ANSI.green, `${sym("pass")} No changes`)}`;
 }
 
 /** Changes detected: header + only the changes */
@@ -135,24 +135,24 @@ export function renderWatchChanges(artifact: RunArtifact, diff: DiffArtifact): s
   if (diff.regressions.length > 0) {
     lines.push("");
     for (const e of diff.regressions) {
-      lines.push(co(ANSI.red, `  ✗ ${e.id}: ${e.fromStatus ?? "n/a"} → ${e.toStatus ?? "n/a"}  ${e.message}`));
+      lines.push(co(ANSI.red, `  ${sym("fail")} ${e.id}: ${e.fromStatus ?? "n/a"} → ${e.toStatus ?? "n/a"}  ${e.message}`));
     }
   }
   if (diff.recoveries.length > 0) {
     lines.push("");
     for (const e of diff.recoveries) {
-      lines.push(co(ANSI.green, `  ✓ ${e.id}: ${e.fromStatus ?? "n/a"} → ${e.toStatus ?? "n/a"}  ${e.message}`));
+      lines.push(co(ANSI.green, `  ${sym("pass")} ${e.id}: ${e.fromStatus ?? "n/a"} → ${e.toStatus ?? "n/a"}  ${e.message}`));
     }
   }
   if (diff.schemaDrift && diff.schemaDrift.length > 0) {
     lines.push("");
     for (const e of diff.schemaDrift) {
-      lines.push(co(ANSI.yellow, `  ⚠ ${e.name} (${e.capability}): ${e.changes.join(", ")}`));
+      lines.push(co(ANSI.yellow, `  ${sym("warn")} ${e.name} (${e.capability}): ${e.changes.join(", ")}`));
     }
   }
   if (diff.responseChanges && diff.responseChanges.length > 0) {
     for (const e of diff.responseChanges) {
-      lines.push(co(ANSI.yellow, `  ⚠ ${e.name} (${e.capability}): ${e.change}`));
+      lines.push(co(ANSI.yellow, `  ${sym("warn")} ${e.name} (${e.capability}): ${e.change}`));
     }
   }
 
@@ -167,6 +167,47 @@ const ANSI = {
   bold: "\x1b[1m",
   reset: "\x1b[0m",
 } as const;
+
+// ── Accessible status labels ────────────────────────────────────────────────
+// Screen readers either skip the Unicode status glyphs or announce them by
+// their character name ("check mark", "heavy multiplication x"), which carries
+// no status meaning. In accessible mode they are swapped for text labels.
+// Colour is orthogonal and stays on either way.
+
+const SYMBOLS = {
+  pass: "✓",
+  fail: "✗",
+  warn: "⚠",
+  skip: "–",
+  info: "ℹ",
+  bullet: "→",
+} as const;
+
+const ACCESSIBLE_SYMBOLS: Record<keyof typeof SYMBOLS, string> = {
+  pass: "[PASS]",
+  fail: "[FAIL]",
+  warn: "[WARN]",
+  skip: "[SKIP]",
+  info: "[INFO]",
+  bullet: ">",
+};
+
+let _accessibleMode = false;
+
+/** Swap Unicode status glyphs for screen-reader-friendly text labels. */
+export function setAccessibleMode(value: boolean): void {
+  _accessibleMode = value;
+}
+
+/** Whether accessible (text-label) status output is active. */
+export function isAccessibleMode(): boolean {
+  return _accessibleMode;
+}
+
+/** The glyph or text label for a status symbol, per the current mode. */
+function sym(name: keyof typeof SYMBOLS): string {
+  return _accessibleMode ? ACCESSIBLE_SYMBOLS[name] : SYMBOLS[name];
+}
 
 const _argvNoColor = process.argv.includes("--no-color");
 
@@ -259,7 +300,7 @@ function renderRunTerminal(artifact: RunArtifact): string {
     lines.push("");
     lines.push(co(ANSI.bold, "What Was Not Tested:"));
     for (const entry of notObserved) {
-      const icon = entry.severity === "warning" ? co(ANSI.yellow, "⚠") : co(ANSI.dim, "ℹ");
+      const icon = entry.severity === "warning" ? co(ANSI.yellow, sym("warn")) : co(ANSI.dim, sym("info"));
       lines.push(`  ${icon} ${entry.category}: ${entry.detail}`);
     }
   }
@@ -272,7 +313,7 @@ function renderRunTerminal(artifact: RunArtifact): string {
       lines.push("");
       lines.push(co(ANSI.red, "  Security:"));
       for (const d of diagnostics.slice(0, 3)) {
-        lines.push(`    ${co(ANSI.dim, "→")} ${d}`);
+        lines.push(`    ${co(ANSI.dim, sym("bullet"))} ${d}`);
       }
       if (diagnostics.length > 3) {
         lines.push(`    ${co(ANSI.dim, `  ...and ${diagnostics.length - 3} more (run with --security for full scan)`)}`);
