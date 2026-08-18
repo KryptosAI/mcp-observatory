@@ -60,7 +60,7 @@ If this repo is an MCP package, that tests `npx -y <package.json name>`. Otherwi
 
 Or generate a full workflow: `npx -y @kryptosai/mcp-observatory@latest setup-ci --all --command "npx -y my-mcp-server" --sarif`
 
-Install like Trivy’s script: `curl -fsSL https://raw.githubusercontent.com/KryptosAI/mcp-observatory/main/scripts/install.sh | sh`
+Install: `npx -y @kryptosai/mcp-observatory@latest` · `brew tap kryptosai/mcp-observatory https://github.com/KryptosAI/mcp-observatory && brew install mcp-observatory` · `curl -fsSL https://raw.githubusercontent.com/KryptosAI/mcp-observatory/main/scripts/install.sh | sh`
 
 Agents: `npx -y @kryptosai/mcp-observatory@latest serve`
 

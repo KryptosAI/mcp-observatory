@@ -6,6 +6,7 @@ import type { Command } from "commander";
 import { runTarget } from "../index.js";
 import type { TargetConfig } from "../types.js";
 import { scanForTargets } from "../discovery.js";
+import { inferLocalMcpTarget } from "../infer-local-mcp.js";
 import { buildEvent, generateSessionId, recordEvent, recordSessionEnd, recordSessionStart } from "../command-events.js";
 import { hasCloudToken, maybePrintCloudCta, SELF_SERVE_PRICING_URL } from "../commercial.js";
 import { extractObservatoryFindings } from "../findings.js";
@@ -183,17 +184,26 @@ export function registerDemoCommands(program: Command): void {
         targetSource = targets[0]!.source;
         process.stdout.write(`\n  ${c(ANSI.dim, "Scanning first server...")}\n`);
       } else {
-        targetConfig = packagedDemoTarget(timeoutMs);
-        targetSource = "packaged local demo server";
-        process.stdout.write(
-          `\r  ${c(ANSI.yellow, "!")} No MCP servers configured.\n`,
-        );
-        process.stdout.write(
-          `    ${c(ANSI.dim, "Running packaged local demo server")}\n`,
-        );
-        process.stdout.write(
-          `    ${c(ANSI.dim, `Tip: ${bin} suggest  → discover servers for your stack`)}\n`,
-        );
+        const inferred = inferLocalMcpTarget(process.cwd(), timeoutMs);
+        if (inferred) {
+          targetConfig = inferred;
+          targetSource = "this repository's MCP package";
+          process.stdout.write(
+            `\r  ${c(ANSI.green, "✓")} No client config. Testing ${c(ANSI.bold, inferred.targetId)} from package.json\n`,
+          );
+        } else {
+          targetConfig = packagedDemoTarget(timeoutMs);
+          targetSource = "packaged local demo server";
+          process.stdout.write(
+            `\r  ${c(ANSI.yellow, "!")} No MCP servers configured.\n`,
+          );
+          process.stdout.write(
+            `    ${c(ANSI.dim, "Running packaged local demo server")}\n`,
+          );
+          process.stdout.write(
+            `    ${c(ANSI.dim, `Tip: ${bin} suggest  → discover servers for your stack`)}\n`,
+          );
+        }
       }
 
       process.stdout.write("\n");
