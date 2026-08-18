@@ -20,7 +20,7 @@ export function isLikelyMcpPackage(pkg: Record<string, unknown>): boolean {
     ...(typeof pkg.devDependencies === "object" && pkg.devDependencies ? pkg.devDependencies as Record<string, unknown> : {}),
     ...(typeof pkg.peerDependencies === "object" && pkg.peerDependencies ? pkg.peerDependencies as Record<string, unknown> : {}),
   };
-  const scripts = typeof pkg.scripts === "object" && pkg.scripts ? Object.keys(pkg.scripts as Record<string, unknown>) : [];
+  const scripts = pkg.scripts && typeof pkg.scripts === "object" ? Object.keys(pkg.scripts) : [];
   return Boolean(pkg.mcpName) ||
     keywords.some((keyword) => /^(mcp|mcp-server|model-context-protocol)$/i.test(keyword)) ||
     Object.prototype.hasOwnProperty.call(deps, "@modelcontextprotocol/sdk") ||
