@@ -185,6 +185,7 @@ jobs:
             git commit -m "chore(formula): bump Homebrew formula to v${version}"
             git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:${GITHUB_REF_NAME}"
           fi
+          git fetch --tags origin
           if git rev-parse "v${version}" >/dev/null 2>&1; then
             git tag -f v1 "v${version}"
           else
