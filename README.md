@@ -66,6 +66,8 @@ Agents: `npx -y @kryptosai/mcp-observatory@latest serve`
 
 Default-deny connect: `npx -y @kryptosai/mcp-observatory@latest protect` rewrites every discovered client config (Cursor, Claude, VS Code, `.mcp.json`, …). Undo: `protect --undo`. HTTP/SSE servers are left alone.
 
+Runtime deny-default: `npx -y @kryptosai/mcp-observatory@latest enforce --start-proxy` writes a Seatbelt policy from the scan and starts the proxy. Local scan stays free.
+
 Proof: [Safety Index](https://mcp-observatory.com/safety-index/). Hosted history: [$29](https://app.mcp-observatory.com/pricing?plan=individual) · [$299](https://app.mcp-observatory.com/pricing?plan=team).
 
 ## Why MCP Observatory
@@ -549,7 +551,7 @@ The record/replay/verify pattern is inspired by:
 
 ## Works with mcp-seatbelt
 
-Scan before you trust. Enforce at runtime with [mcp-seatbelt](https://github.com/KryptosAI/mcp-seatbelt) — an MCP proxy that consumes Observatory receipts and blocks out-of-contract tool calls in production. Observatory validates; seatbelt enforces.
+Scan before you trust. Then run `npx -y @kryptosai/mcp-observatory@latest enforce --start-proxy` — Observatory writes a deny-default [mcp-seatbelt](https://github.com/KryptosAI/mcp-seatbelt) policy and starts the proxy. Observatory validates; seatbelt enforces.
 
 ## Works with agent-obs
 

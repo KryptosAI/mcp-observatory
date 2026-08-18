@@ -629,7 +629,7 @@ npx @kryptosai/mcp-observatory run --target ./target.json
 
 ## 与 mcp-seatbelt 协作
 
-扫描后再信任。通过 [mcp-seatbelt](https://github.com/KryptosAI/mcp-seatbelt) 进行运行时强制执行——这是一个 MCP 代理，消费 Observatory 凭证并在生产环境中阻止超出合约的工具调用。Observatory 验证；seatbelt 执行。
+扫描后再信任。运行 `npx -y @kryptosai/mcp-observatory@latest enforce --start-proxy`：Observatory 会写出默认拒绝的 [mcp-seatbelt](https://github.com/KryptosAI/mcp-seatbelt) 策略并启动代理。Observatory 验证；seatbelt 执行。
 
 ## 贡献
 
