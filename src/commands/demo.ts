@@ -8,6 +8,7 @@ import type { TargetConfig } from "../types.js";
 import { scanForTargets } from "../discovery.js";
 import { buildEvent, generateSessionId, recordEvent, recordSessionEnd, recordSessionStart } from "../command-events.js";
 import { hasCloudToken, maybePrintCloudCta, SELF_SERVE_PRICING_URL } from "../commercial.js";
+import { extractObservatoryFindings } from "../findings.js";
 import { defaultRunsDirectory, writeRunArtifact } from "../storage.js";
 import {
   ANSI,
@@ -294,6 +295,15 @@ export function registerDemoCommands(program: Command): void {
       }
 
       process.stdout.write("\n");
+
+      const fixes = extractObservatoryFindings(artifact).filter((finding) => finding.recommendation).slice(0, 3);
+      if (fixes.length > 0) {
+        process.stdout.write(`  ${c(ANSI.bold, "Issues to fix")}\n`);
+        for (const finding of fixes) {
+          process.stdout.write(`    ${finding.severity} ${finding.title}: ${finding.recommendation}\n`);
+        }
+        process.stdout.write("\n");
+      }
 
       // ── Step 6: Next steps ─────────────────────────────────────────────
 
