@@ -206,7 +206,7 @@ function renderPage(t: TargetEntry, artifact: RunArtifact | null, index: number,
     <div class="meta">
       <span class="badge cat">${esc(t.category)}</span>
       <span class="badge risk">${esc(t.riskClass)}</span>
-      ${artifact?.gate === "fail" ? '<span class="badge fail">Startup Failed</span>' : ""}
+      ${artifact?.fatalError ? '<span class="badge fail">Startup Failed</span>' : artifact?.gate === "fail" ? '<span class="badge fail">Blocked</span>' : ""}
     </div>
     <p class="why">${esc(t.whyItMatters)}</p>
   </div>
