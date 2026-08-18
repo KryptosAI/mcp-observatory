@@ -147,8 +147,14 @@ runs:
             mapfile -t COMMAND_PARTS < <(node -e 'const input=process.env.INPUT_COMMAND||"";const parts=[];let current="",quote=null,escaping=false;for(const char of input){if(escaping){current+=char;escaping=false;continue}if(char==="\\"){escaping=true;continue}if(quote){if(char===quote)quote=null;else current+=char;continue}if(char==="\""||char===String.fromCharCode(39)){quote=char;continue}if(/\s/.test(char)){if(current.length>0){parts.push(current);current=""}continue}current+=char}if(escaping)current+="\\";if(current.length>0)parts.push(current);for(const part of parts)console.log(part)')
             CMD_ARRAY=(mcp-observatory test "${COMMAND_PARTS[@]}")
           else
-            echo "No command or target set; scanning discovered MCP servers."
-            CMD_ARRAY=(mcp-observatory scan)
+            PKG="$(node -e 'try{const p=require("./package.json");const k=p.keywords||[];const mcp=p.mcpName||k.some((x)=>/mcp/i.test(String(x)));if(mcp&&p.name)process.stdout.write(String(p.name))}catch{}')"
+            if [ -n "$PKG" ]; then
+              echo "No command set; testing npx -y ${PKG}"
+              CMD_ARRAY=(mcp-observatory test npx -y "$PKG")
+            else
+              echo "::error::Set 'command' to the MCP server process, e.g. command: npx -y my-mcp-server"
+              exit 1
+            fi
           fi
 
           if [ "$INPUT_DEEP" = "true" ]; then

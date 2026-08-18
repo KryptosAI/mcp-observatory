@@ -56,7 +56,7 @@ npx -y @kryptosai/mcp-observatory@latest test npx -y @modelcontextprotocol/serve
 - uses: KryptosAI/mcp-observatory/action@v1
 ```
 
-Discovers configured servers. Pass `command:` only when you want a specific process.
+If this repo is an MCP package, that tests `npx -y <package.json name>`. Otherwise set `command:`.
 
 Or generate a full workflow: `npx -y @kryptosai/mcp-observatory@latest setup-ci --all --command "npx -y my-mcp-server" --sarif`
 

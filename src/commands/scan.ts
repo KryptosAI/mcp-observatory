@@ -10,6 +10,7 @@ import { buildEvent, generateSessionId, normalizeCampaign, recordEvent, recordSe
 import type { RunArtifact } from "../types.js";
 import { TOOL_VERSION } from "../version.js";
 import { maybePrintCloudCta } from "../commercial.js";
+import { defaultRunsDirectory, writeRunArtifact } from "../storage.js";
 import { renderActionReceipt } from "../action-receipt.js";
 import { ANSI, LOGO, c, isQuiet, setupCiHint, suggestFix, useColor } from "./helpers.js";
 import { firstNextStep } from "../utils/failure-diagnosis.js";
@@ -117,6 +118,7 @@ async function runScan(
         attackSimulation: attackSim ? {} : undefined,
       });
       artifacts.push(artifact);
+      await writeRunArtifact(artifact, defaultRunsDirectory(process.cwd()));
       const toolsCheck = artifact.checks.find((ch) => ch.id === "tools");
       const promptsCheck = artifact.checks.find((ch) => ch.id === "prompts");
       const resourcesCheck = artifact.checks.find((ch) => ch.id === "resources");
