@@ -1,5 +1,6 @@
 import { execSync } from "node:child_process";
 import type { CheckResult, CheckStatus, DiffArtifact, DiffEntry, RunArtifact } from "../types.js";
+import { extractObservatoryFindings } from "../findings.js";
 import { detectNotObserved } from "../receipt.js";
 import {
   describeCheckList,
@@ -275,6 +276,13 @@ function renderRunTerminal(artifact: RunArtifact): string {
   lines.push(`- skipped checks: ${describeCheckList(skippedChecks)}`);
   lines.push(`- unsupported checks: ${describeCheckList(unsupportedChecks)}`);
   lines.push(`Next step: ${recommendRunNextStep(artifact)}`);
+  const fixes = extractObservatoryFindings(artifact).filter((finding) => finding.recommendation).slice(0, 3);
+  if (fixes.length > 0) {
+    lines.push("Issues to fix:");
+    for (const finding of fixes) {
+      lines.push(`- ${finding.severity.toUpperCase()} ${finding.title}: ${finding.recommendation}`);
+    }
+  }
   lines.push(`CI: ${safety.ciCta}`);
 
   if (artifact.fatalError !== undefined) {

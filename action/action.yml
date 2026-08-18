@@ -147,8 +147,8 @@ runs:
             mapfile -t COMMAND_PARTS < <(node -e 'const input=process.env.INPUT_COMMAND||"";const parts=[];let current="",quote=null,escaping=false;for(const char of input){if(escaping){current+=char;escaping=false;continue}if(char==="\\"){escaping=true;continue}if(quote){if(char===quote)quote=null;else current+=char;continue}if(char==="\""||char===String.fromCharCode(39)){quote=char;continue}if(/\s/.test(char)){if(current.length>0){parts.push(current);current=""}continue}current+=char}if(escaping)current+="\\";if(current.length>0)parts.push(current);for(const part of parts)console.log(part)')
             CMD_ARRAY=(mcp-observatory test "${COMMAND_PARTS[@]}")
           else
-            echo "::error::Either 'command', 'target', or 'targets' input is required"
-            exit 1
+            echo "No command or target set; scanning discovered MCP servers."
+            CMD_ARRAY=(mcp-observatory scan)
           fi
 
           if [ "$INPUT_DEEP" = "true" ]; then

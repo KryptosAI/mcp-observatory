@@ -53,13 +53,14 @@ npx -y @kryptosai/mcp-observatory@latest test npx -y @modelcontextprotocol/serve
 ```
 
 ```yaml
-- uses: actions/checkout@v4
 - uses: KryptosAI/mcp-observatory/action@v1
-  with:
-    command: npx -y my-mcp-server
 ```
 
-Or generate that workflow: `npx -y @kryptosai/mcp-observatory@latest setup-ci --all --command "npx -y my-mcp-server" --sarif`
+Discovers configured servers. Pass `command:` only when you want a specific process.
+
+Or generate a full workflow: `npx -y @kryptosai/mcp-observatory@latest setup-ci --all --command "npx -y my-mcp-server" --sarif`
+
+Install like Trivy’s script: `curl -fsSL https://raw.githubusercontent.com/KryptosAI/mcp-observatory/main/scripts/install.sh | sh`
 
 Agents: `npx -y @kryptosai/mcp-observatory@latest serve`
 
@@ -348,7 +349,7 @@ Action inputs:
 
 | Input | Description | Default |
 |-------|-------------|---------|
-| `command` | Server command to test | (required if no `target`) |
+| `command` | Server command to test | (optional; omit to scan discovered servers) |
 | `target` | Path to target config JSON | |
 | `targets` | Path to MCP config file for multi-server matrix scan | |
 | `deep` | Also invoke safe tools | `false` |

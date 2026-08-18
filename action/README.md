@@ -27,7 +27,7 @@ jobs:
 
 | Input | Description | Default |
 |-------|-------------|---------|
-| `command` | Server command to test | (required if no `target`) |
+| `command` | Server command to test | (optional; omit to scan discovered servers) |
 | `target` | Path to target config JSON | (alternative to `command`) |
 | `baseline` | Path to baseline cassette for verification | |
 | `deep` | Also invoke safe tools | `false` |
