@@ -40,31 +40,30 @@ Also available in [Simplified Chinese](README.zh-CN.md).
 
 ## Get Started
 
-```bash
-npx @kryptosai/mcp-observatory demo
-```
-
-Scans your configured MCP servers, or a packaged local demo server if you have none, and shows a safety grade. No config required.
-
-No arguments runs the same demo. Open the old menu with `--menu`.
+No account. Local scan stays free.
 
 ```bash
-npx @kryptosai/mcp-observatory
+npx -y @kryptosai/mcp-observatory@latest
 ```
 
-Test a specific server:
+Grades your configured MCP servers, or a packaged demo if you have none.
 
 ```bash
-npx @kryptosai/mcp-observatory test npx -y @modelcontextprotocol/server-everything
+npx -y @kryptosai/mcp-observatory@latest test npx -y @modelcontextprotocol/server-everything
 ```
 
-Keep a failing grade hosted: [Individual Pro $29](https://app.mcp-observatory.com/pricing?plan=individual) · [Team $299](https://app.mcp-observatory.com/pricing?plan=team)
-
-Add CI + Code Scanning in one command:
-
-```bash
-npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif --schedule weekly
+```yaml
+- uses: actions/checkout@v4
+- uses: KryptosAI/mcp-observatory/action@v1
+  with:
+    command: npx -y my-mcp-server
 ```
+
+Or generate that workflow: `npx -y @kryptosai/mcp-observatory@latest setup-ci --all --command "npx -y my-mcp-server" --sarif`
+
+Agents: `npx -y @kryptosai/mcp-observatory@latest serve`
+
+Proof: [Safety Index](https://mcp-observatory.com/safety-index/). Hosted history: [$29](https://app.mcp-observatory.com/pricing?plan=individual) · [$299](https://app.mcp-observatory.com/pricing?plan=team).
 
 ## Why MCP Observatory
 

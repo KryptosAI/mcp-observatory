@@ -12,19 +12,19 @@ MCP Observatory is a free, local-first CI and security gate for Model Context Pr
 ## Fast Commands
 
 ```bash
-npx @kryptosai/mcp-observatory test npx -y @modelcontextprotocol/server-everything
+npx -y @kryptosai/mcp-observatory@latest
 ```
 
 ```bash
-npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y your-mcp-server"
+npx -y @kryptosai/mcp-observatory@latest test npx -y @modelcontextprotocol/server-everything
 ```
 
 ```bash
-npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y your-mcp-server" --sarif --campaign agent-ci
+npx -y @kryptosai/mcp-observatory@latest setup-ci --all --command "npx -y your-mcp-server" --sarif --campaign agent-ci
 ```
 
 ```bash
-claude mcp add mcp-observatory -- npx -y @kryptosai/mcp-observatory serve
+claude mcp add mcp-observatory -- npx -y @kryptosai/mcp-observatory@latest serve
 ```
 
 ## What It Checks

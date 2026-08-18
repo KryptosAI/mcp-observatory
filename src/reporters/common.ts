@@ -1,3 +1,4 @@
+import { extractObservatoryFindings } from "../findings.js";
 import type { CheckResult, CheckStatus, RunArtifact } from "../types.js";
 import { STATUS_RANK } from "../types.js";
 
@@ -69,6 +70,9 @@ export function recommendRunNextStep(artifact: RunArtifact): string {
   if (artifact.fatalError !== undefined) {
     return "Run the target command manually, compare stderr with the diagnosis below, and only raise timeoutMs if startup is genuinely slow.";
   }
+
+  const fix = extractObservatoryFindings(artifact).find((finding) => finding.recommendation)?.recommendation;
+  if (fix) return `Fix: ${fix}`;
 
   const failingChecks = findChecksByStatus(artifact.checks, "fail");
   if (failingChecks.length > 0) {
