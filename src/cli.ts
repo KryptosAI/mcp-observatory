@@ -26,6 +26,7 @@ import { registerEnforceCommands } from "./commands/enforce.js";
 import { registerReceiptCommands } from "./commands/receipt.js";
 import { registerRiskGraphCommands } from "./commands/risk-graph.js";
 import { registerSkillScanCommands } from "./commands/skill-scan.js";
+import { registerHandshakeCommands } from "./commands/handshake.js";
 import { getCloudUploadEndpoint, getCloudBaseUrl, printCloudInfo, getCloudAccessToken, cloudWhoami, SELF_SERVE_PRICING_URL } from "./commercial.js";
 import { defaultRunsDirectory, findLatestRunArtifact } from "./storage.js";
 import { runTarget } from "./index.js";
@@ -231,7 +232,7 @@ async function main(): Promise<void> {
   const bin = getBinName();
 
   // Update check (CLI only, not MCP server mode)
-  if (process.argv[2] !== "serve") {
+  if (process.argv[2] !== "serve" && process.argv[2] !== "wrap") {
     try {
       const { default: updateNotifier } = await import("update-notifier");
       const notifier = updateNotifier({
@@ -308,6 +309,7 @@ async function main(): Promise<void> {
   registerRiskGraphCommands(program);
   registerAttackSimCommands(program);
   registerSkillScanCommands(program);
+  registerHandshakeCommands(program);
 
   const cloudCmd = program
     .command("cloud")

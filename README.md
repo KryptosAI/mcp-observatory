@@ -64,6 +64,8 @@ Install: `npx -y @kryptosai/mcp-observatory@latest` · `brew tap kryptosai/mcp-o
 
 Agents: `npx -y @kryptosai/mcp-observatory@latest serve`
 
+Default-deny connect (local receipt required): `npx -y @kryptosai/mcp-observatory@latest protect` then restart the client. Unwrap is the `.observatory.bak` file.
+
 Proof: [Safety Index](https://mcp-observatory.com/safety-index/). Hosted history: [$29](https://app.mcp-observatory.com/pricing?plan=individual) · [$299](https://app.mcp-observatory.com/pricing?plan=team).
 
 ## Why MCP Observatory
