@@ -1,8 +1,9 @@
 import { spawn } from "node:child_process";
-import { copyFile, readFile, writeFile } from "node:fs/promises";
+import { access, copyFile, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { targetFromCommand } from "./commands/helpers.js";
+import { defaultConfigPaths } from "./discovery.js";
 import { defaultRunsDirectory, findLatestArtifact, readArtifact } from "./storage.js";
 import { slugify } from "./utils/ids.js";
 
@@ -39,14 +40,25 @@ export function wrapServerEntry(command: string, args: string[] = []): { command
   };
 }
 
+function serverMap(raw: Record<string, unknown>): Record<string, Record<string, unknown>> | null {
+  for (const key of ["mcpServers", "servers"]) {
+    const value = raw[key];
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      return value as Record<string, Record<string, unknown>>;
+    }
+  }
+  return null;
+}
+
 export async function protectMcpConfig(filePath: string): Promise<{ wrapped: number; skipped: number }> {
-  const raw = JSON.parse(await readFile(filePath, "utf8")) as { mcpServers?: Record<string, Record<string, unknown>> };
-  if (!raw.mcpServers || typeof raw.mcpServers !== "object") {
-    throw new Error(`${filePath} has no mcpServers object.`);
+  const raw = JSON.parse(await readFile(filePath, "utf8")) as Record<string, unknown>;
+  const servers = serverMap(raw);
+  if (!servers) {
+    throw new Error(`${filePath} has no mcpServers or servers object.`);
   }
   let wrapped = 0;
   let skipped = 0;
-  for (const server of Object.values(raw.mcpServers)) {
+  for (const server of Object.values(servers)) {
     if (typeof server.command !== "string") {
       skipped += 1;
       continue;
@@ -61,7 +73,12 @@ export async function protectMcpConfig(filePath: string): Promise<{ wrapped: num
     server.args = next.args;
     wrapped += 1;
   }
-  await copyFile(filePath, `${filePath}.observatory.bak`);
+  const backup = `${filePath}.observatory.bak`;
+  try {
+    await access(backup);
+  } catch {
+    await copyFile(filePath, backup);
+  }
   await writeFile(filePath, `${JSON.stringify(raw, null, 2)}\n`);
   return { wrapped, skipped };
 }
@@ -76,4 +93,29 @@ export async function execWrappedServer(command: string[]): Promise<number> {
 
 export function defaultProtectPath(cwd = process.cwd()): string {
   return path.join(cwd, ".mcp.json");
+}
+
+export async function findProtectableConfigs(cwd = process.cwd()): Promise<string[]> {
+  const candidates = [...new Set([defaultProtectPath(cwd), ...defaultConfigPaths()])];
+  const found: string[] = [];
+  for (const filePath of candidates) {
+    try {
+      await access(filePath);
+      found.push(filePath);
+    } catch {
+      // missing
+    }
+  }
+  return found;
+}
+
+export async function unprotectMcpConfig(filePath: string): Promise<boolean> {
+  const backup = `${filePath}.observatory.bak`;
+  try {
+    await access(backup);
+  } catch {
+    return false;
+  }
+  await rename(backup, filePath);
+  return true;
 }

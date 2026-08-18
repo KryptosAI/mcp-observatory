@@ -5,7 +5,9 @@ import {
   assertPassingReceipt,
   defaultProtectPath,
   execWrappedServer,
+  findProtectableConfigs,
   protectMcpConfig,
+  unprotectMcpConfig,
 } from "../handshake.js";
 
 export function registerHandshakeCommands(program: Command): void {
@@ -32,12 +34,29 @@ export function registerHandshakeCommands(program: Command): void {
 
   program
     .command("protect")
-    .description("Rewrite an mcp.json so stdio servers start through wrap (fail-closed).")
-    .argument("[file]", "Path to an MCP client config. Defaults to ./.mcp.json")
-    .action(async (file?: string) => {
-      const target = file ?? defaultProtectPath();
-      const result = await protectMcpConfig(target);
-      process.stdout.write(`Wrapped ${result.wrapped} server(s) in ${target} (${result.skipped} skipped). Backup: ${target}.observatory.bak\n`);
-      process.stdout.write("Restart the MCP client. Scan first: npx -y @kryptosai/mcp-observatory@latest test <command>\n");
+    .description("Rewrite MCP client configs so stdio servers start through wrap (fail-closed).")
+    .argument("[file]", "Optional single config path. Default: all discovered client configs.")
+    .option("--undo", "Restore .observatory.bak backups.", false)
+    .action(async (file?: string, options?: { undo?: boolean }) => {
+      const targets = file ? [file] : await findProtectableConfigs();
+      if (targets.length === 0) {
+        throw new Error(`No MCP client configs found. Create ${defaultProtectPath()} or pass a file.`);
+      }
+      for (const target of targets) {
+        if (options?.undo) {
+          const restored = await unprotectMcpConfig(target);
+          process.stdout.write(restored ? `Restored ${target}\n` : `No backup for ${target}\n`);
+          continue;
+        }
+        try {
+          const result = await protectMcpConfig(target);
+          process.stdout.write(`Wrapped ${result.wrapped} in ${target} (${result.skipped} skipped HTTP/already-wrapped). Backup: ${target}.observatory.bak\n`);
+        } catch (error) {
+          process.stdout.write(`Skipped ${target}: ${error instanceof Error ? error.message : String(error)}\n`);
+        }
+      }
+      if (!options?.undo) {
+        process.stdout.write("Restart MCP clients. Scan first: npx -y @kryptosai/mcp-observatory@latest test <command>\n");
+      }
     });
 }

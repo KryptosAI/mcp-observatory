@@ -4,7 +4,7 @@ import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { makeArtifact } from "./fixtures/test-helpers.js";
-import { assertPassingReceipt, protectMcpConfig, wrapServerEntry } from "../src/handshake.js";
+import { assertPassingReceipt, protectMcpConfig, unprotectMcpConfig, wrapServerEntry } from "../src/handshake.js";
 import { writeRunArtifact } from "../src/storage.js";
 
 const dirs: string[] = [];
@@ -47,5 +47,8 @@ describe("handshake", () => {
     const saved = JSON.parse(await readFile(file, "utf8")) as { mcpServers: { weather: { command: string; args: string[] } } };
     expect(saved.mcpServers.weather).toEqual(wrapServerEntry("uv", ["run", "weather.py"]));
     await expect(readFile(`${file}.observatory.bak`, "utf8")).resolves.toContain("uv");
+    await expect(unprotectMcpConfig(file)).resolves.toBe(true);
+    const restored = JSON.parse(await readFile(file, "utf8")) as { mcpServers: { weather: { command: string } } };
+    expect(restored.mcpServers.weather.command).toBe("uv");
   });
 });
