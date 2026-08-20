@@ -5,6 +5,7 @@ import { Command } from "commander";
 
 import { isCI } from "./ci.js";
 import { ANSI, LOGO, c, getBinName, isQuiet, setNoColor, setQuiet, useColor } from "./commands/helpers.js";
+import { setAccessibleMode } from "./reporters/terminal.js";
 import { registerDemoCommands } from "./commands/demo.js";
 import { registerDiffCommands } from "./commands/diff.js";
 import { registerLegacyCommands } from "./commands/legacy.js";
@@ -228,6 +229,11 @@ async function main(): Promise<void> {
   if (process.argv.includes("--quiet")) {
     setQuiet(true);
   }
+  // Capture --accessible the same way — reporters render before subcommand
+  // options are parsed, so this must be read from argv up front.
+  if (process.argv.includes("--accessible")) {
+    setAccessibleMode(true);
+  }
 
   const bin = getBinName();
 
@@ -259,6 +265,7 @@ async function main(): Promise<void> {
       return useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n` : LOGO + `  v${TOOL_VERSION}\n`;
     })())
     .option("--quiet", "Suppress logo and informational output.", false)
+    .option("--accessible", "Use [PASS]/[FAIL]/[WARN] text labels instead of Unicode status glyphs.", false)
     .addHelpText("after", (() => {
       const lines = [
         "",
