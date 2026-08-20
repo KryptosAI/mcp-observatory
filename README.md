@@ -60,7 +60,14 @@ If this repo is an MCP package, that tests `npx -y <package.json name>`. Otherwi
 
 Or generate a full workflow: `npx -y @kryptosai/mcp-observatory@latest setup-ci --all --command "npx -y my-mcp-server" --sarif`
 
-Install: `npx -y @kryptosai/mcp-observatory@latest` · `brew tap kryptosai/mcp-observatory https://github.com/KryptosAI/mcp-observatory && brew install mcp-observatory` · `curl -fsSL https://raw.githubusercontent.com/KryptosAI/mcp-observatory/main/scripts/install.sh | sh`
+Install: `npx -y @kryptosai/mcp-observatory@latest` · `brew tap kryptosai/mcp-observatory https://github.com/KryptosAI/mcp-observatory && brew install mcp-observatory` · `docker pull ghcr.io/kryptosai/mcp-observatory:latest` · `curl -fsSL https://raw.githubusercontent.com/KryptosAI/mcp-observatory/main/scripts/install.sh | sh`
+
+```bash
+docker run --rm ghcr.io/kryptosai/mcp-observatory:latest demo
+docker run --rm ghcr.io/kryptosai/mcp-observatory:latest test npx -y @modelcontextprotocol/server-everything
+```
+
+Scanning a server on the host needs network and, for local files, a volume mount (`-v "$PWD:$PWD" -w "$PWD"`).
 
 Agents: `npx -y @kryptosai/mcp-observatory@latest serve`
 
