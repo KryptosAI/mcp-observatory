@@ -103,7 +103,7 @@ describe("generateSubmission", () => {
     expect(sub.score.overall).toBe(85);
     expect(sub.score.grade).toBe("B");
     expect(sub.badgeSvg).toContain("<svg");
-    expect(sub.badgeSvg).toContain("85/100");
+    expect(sub.badgeSvg).toContain("Gold");
     expect(sub.submittedAt).toBeTruthy();
     expect(new Date(sub.submittedAt).getTime()).not.toBeNaN();
   });

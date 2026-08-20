@@ -76,6 +76,17 @@ describe("CLI entrypoint", () => {
     expect(stdout).toContain("scan");
     expect(stdout).toContain("test");
     expect(stdout).toContain("MCP");
+    expect(stdout).toContain("--accessible");
+  });
+
+  it("replaces status glyphs when --accessible is set", () => {
+    const args = ["run", "--target", "tests/fixtures/sample-target-config.json"];
+    const normal = runCli(args);
+    const accessible = runCli(["--accessible", ...args]);
+    expect(accessible.exitCode).toBe(0);
+    expect(normal.stdout).toContain("⚠");
+    expect(accessible.stdout).toContain("[WARN]");
+    expect(accessible.stdout).not.toContain("⚠");
   });
 
   it("scan subcommand shows help", () => {

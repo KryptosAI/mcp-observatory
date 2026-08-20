@@ -1,12 +1,17 @@
-import type { HealthGrade } from "./types.js";
+import { getTrustTier } from "./score.js";
+import type { HealthGrade, TrustTier } from "./types.js";
 
-const GRADE_COLORS: Record<HealthGrade, string> = {
-  A: "#4c1",
-  B: "#97ca00",
-  C: "#dfb317",
-  D: "#fe7d37",
-  F: "#e05d44",
+const TIER_COLORS: Record<TrustTier, string> = {
+  platinum: "#4F46E5",
+  gold: "#D97706",
+  silver: "#64748B",
+  bronze: "#C2410C",
+  unrated: "#6B7280",
 };
+
+function formatTier(tier: TrustTier): string {
+  return tier.charAt(0).toUpperCase() + tier.slice(1);
+}
 
 export interface BadgeOptions {
   label?: string;
@@ -15,9 +20,10 @@ export interface BadgeOptions {
 }
 
 export function generateBadgeSvg(options: BadgeOptions): string {
-  const label = options.label ?? "MCP Health";
-  const value = `${options.score}/100`;
-  const color = GRADE_COLORS[options.grade];
+  const label = options.label ?? "observatory";
+  const tier = getTrustTier(options.score);
+  const value = formatTier(tier);
+  const color = TIER_COLORS[tier];
 
   // Approximate text widths (7px per character for the 11px Verdana used by shields.io)
   const labelWidth = label.length * 7 + 10;
