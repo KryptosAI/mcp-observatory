@@ -35,9 +35,7 @@ Good contributions make the evidence clearer. Weak contributions usually add sur
 
 - Add one safe MCP target to the [MCP Target Registry](./docs/target-registry.md)
 - Follow the [Target Contribution Guide](./docs/target-contribution-guide.md) for a small first PR with evidence
-- [#3 Improve artifact output readability in the Markdown report](https://github.com/KryptosAI/mcp-observatory/issues/3)
-- [#6 Improve CLI startup error messaging for connection and setup failures](https://github.com/KryptosAI/mcp-observatory/issues/6)
-- [#1](https://github.com/KryptosAI/mcp-observatory/issues/1) and [#2](https://github.com/KryptosAI/mcp-observatory/issues/2) once a concrete passing server is identified
+- Pick from open [good first issues](https://github.com/KryptosAI/mcp-observatory/issues?q=is%3Aopen+label%3A%22good+first+issue%22) or [roadmap issues](https://github.com/KryptosAI/mcp-observatory/issues?q=is%3Aopen+label%3Aroadmap), tracked against the [ROADMAP](./ROADMAP.md)
 
 ## What Will Probably Be Declined
 
@@ -104,7 +102,7 @@ When you add a fixture:
 - prefer explicit evidence over clever test machinery
 - document what the fixture is proving and why it matters
 
-The `fixture contribution` issue template is the best starting point for proposing a new case.
+Propose the new case in a regular GitHub issue (blank issues are enabled), or use the [MCP target contribution](https://github.com/KryptosAI/mcp-observatory/issues/new?template=target-contribution.yml) template when the fixture backs a Safety Index target.
 
 ## Target Registry Contributions
 

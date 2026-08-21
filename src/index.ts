@@ -16,6 +16,7 @@ export {
   buildMcpReceipt,
   generateReceiptKeyPair,
   mapStatusToReceiptVerdict,
+  publicKeyFingerprint,
   renderReceipt,
   renderReceiptMarkdown,
   receiptFormatFromPath,

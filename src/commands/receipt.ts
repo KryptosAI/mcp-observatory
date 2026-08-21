@@ -3,7 +3,7 @@ import path from "node:path";
 import type { Command } from "commander";
 
 import { resolveAuditTarget, runAudit } from "../audit.js";
-import { buildMcpReceipt, generateReceiptKeyPair, receiptFormatFromPath, renderReceipt, signReceipt, verifyReceipt, type McpReceipt, type ReceiptEnvironmentClass, type ReceiptFormat } from "../receipt.js";
+import { buildMcpReceipt, generateReceiptKeyPair, publicKeyFingerprint, receiptFormatFromPath, renderReceipt, signReceipt, verifyReceipt, type McpReceipt, type ReceiptEnvironmentClass, type ReceiptFormat } from "../receipt.js";
 import { buildEvent, recordEvent } from "../command-events.js";
 import { ANSI, c } from "./helpers.js";
 
@@ -106,17 +106,21 @@ export function registerReceiptCommands(program: Command): void {
         outputPath: options.output,
         topFindingsLimit: Number.parseInt(options.topFindings ?? "5", 10),
       });
+      const format = receiptFormatFromPath(options.output, options.format);
+      if (format !== "json" && format !== "markdown") {
+        throw new Error("Unsupported receipt format. Use json or markdown.");
+      }
       if (options.signKey) {
         if (!options.signer) {
           process.stderr.write("Error: --signer is required when --sign-key is used.\n");
           process.exit(1);
         }
+        if (format !== "json") {
+          process.stderr.write("Error: --sign-key requires a JSON-format receipt; markdown receipts do not carry the signature. Use --format json.\n");
+          process.exit(1);
+        }
         const keyContent = await readFile(options.signKey);
         receipt = signReceipt(receipt, keyContent, options.signer);
-      }
-      const format = receiptFormatFromPath(options.output, options.format);
-      if (format !== "json" && format !== "markdown") {
-        throw new Error("Unsupported receipt format. Use json or markdown.");
       }
       await writeMaybe(options.output, renderReceipt(receipt, format));
       recordEvent(buildEvent("command_complete", "receipt", "cli", {
@@ -186,6 +190,6 @@ export function registerReceiptCommands(program: Command): void {
         process.stderr.write(`✗ Receipt verification failed against ${options.key} — signature does not match, or the receipt is unsigned.\n`);
         process.exit(1);
       }
-      process.stdout.write(`✓ Receipt verified — signed by ${receipt.signer ?? "unknown"}\n`);
+      process.stdout.write(`✓ Receipt verified — signed by ${receipt.signer ?? "unknown"} (public key fingerprint: ${publicKeyFingerprint(publicKey)})\n`);
     });
 }
