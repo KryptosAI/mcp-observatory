@@ -2998,5 +2998,22 @@
     "failureClass": "Vehicle/listing/dealer boundary",
     "whyItMatters": "PakWheels is Pakistan's largest automotive marketplace with 15M+ monthly visitors, handling new and used car sales, auto parts, reviews, and price comparisons. MCP servers exposing vehicle listings, seller data, and automotive commerce handle the country's dominant auto commerce platform.",
     "reproductionNotes": "Schema-only evaluation; requires PakWheels API credentials. Community package — exact npm name pending verification."
+  },
+  {
+    "id": "n8n-mcp",
+    "name": "n8n MCP",
+    "repo": "https://github.com/czlonkowski/n8n-mcp",
+    "packageName": "n8n-mcp",
+    "category": "Agent Runtime / Automation",
+    "command": "npx",
+    "args": [
+      "-y",
+      "n8n-mcp"
+    ],
+    "timeoutMs": 120000,
+    "riskClass": "Workflow automation surface",
+    "failureClass": "Workflow mutation/execution boundary",
+    "whyItMatters": "Agents may use n8n MCP to browse node documentation and, with credentials, create or execute workflow automations; the credential-free surface should be explicit before agents rely on it.",
+    "reproductionNotes": "Runs in docs-only mode without N8N_API_URL/N8N_API_KEY and lists node documentation/search tools; the 16 workflow-management tools require n8n API configuration and are not exercised."
   }
 ]

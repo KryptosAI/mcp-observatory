@@ -10,12 +10,12 @@ For the rules behind this page, see the [Safety Methodology](./methodology.md) a
 
 ## Snapshot
 
-- Evaluated servers: 175
-- Ready for CI: 24
+- Evaluated servers: 176
+- Ready for CI: 25
 - Needs review before production: 11
 - Unsafe default posture: 14
 - Not reproducible: 126
-- Latest run: 2026-07-22T21:37:06.047Z
+- Latest run: 2026-08-21T00:14:17.871Z
 
 ## Evaluations
 
@@ -196,6 +196,7 @@ For the rules behind this page, see the [Safety Methodology](./methodology.md) a
 | 173 | [Daraz MCP](https://github.com/shaheedghazi/daraz-mcp) | E-commerce | **Not reproducible** | `rerun` | Product/order/seller boundary | `npx -y daraz-mcp` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y daraz-mcp" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/daraz-mcp.json) / [report](./safety-index/artifacts/daraz-mcp.md) | Schema-only evaluation; requires Daraz Open Platform API credentials. Community package — exact npm name pending verification. |
 | 174 | [OLX Pakistan MCP](https://www.npmjs.com/package/olx-pakistan-mcp) | Classifieds | **Not reproducible** | `rerun` | Listing/ad/user boundary | `npx -y olx-pakistan-mcp` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y olx-pakistan-mcp" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/olx-pakistan-mcp.json) / [report](./safety-index/artifacts/olx-pakistan-mcp.md) | Schema-only evaluation; requires OLX Pakistan API credentials. Community package — exact npm name pending verification. |
 | 175 | [PakWheels MCP](https://www.npmjs.com/package/pakwheels-mcp) | Auto Marketplace | **Not reproducible** | `rerun` | Vehicle/listing/dealer boundary | `npx -y pakwheels-mcp` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y pakwheels-mcp" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/pakwheels-mcp.json) / [report](./safety-index/artifacts/pakwheels-mcp.md) | Schema-only evaluation; requires PakWheels API credentials. Community package — exact npm name pending verification. |
+| 176 | [n8n MCP](https://github.com/czlonkowski/n8n-mcp) | Agent Runtime / Automation | **Ready for CI** | `allow` | Workflow mutation/execution boundary | `npx -y n8n-mcp` | `npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y n8n-mcp" --sarif --schedule weekly` | [JSON](./safety-index/artifacts/n8n-mcp.json) / [report](./safety-index/artifacts/n8n-mcp.md) | Runs in docs-only mode without N8N_API_URL/N8N_API_KEY and lists node documentation/search tools; the 16 workflow-management tools require n8n API configuration and are not exercised. |
 
 ## Patterns Observed
 
@@ -367,6 +368,7 @@ For the rules behind this page, see the [Safety Methodology](./methodology.md) a
 - Web search/reader boundary: 1 server(s)
 - Web search/result boundary: 1 server(s)
 - Work item/repo/pipeline boundary: 1 server(s)
+- Workflow mutation/execution boundary: 1 server(s)
 - Write/merge tool boundary: 1 server(s)
 
 ## Publication Rules
