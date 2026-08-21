@@ -142,6 +142,7 @@ describe("receipt verify", () => {
     const program = makeProgram();
     await run(program, ["receipt", "verify", file, "--key", publicKeyPath]);
     expect(writeSpy).toHaveBeenCalledWith(expect.stringContaining("✓ Receipt verified — signed by maintainer@example.com"));
+    expect(writeSpy).toHaveBeenCalledWith(expect.stringMatching(/public key fingerprint: [0-9a-f]{32}/));
   });
 
   it("fails verification against the wrong public key", async () => {

@@ -99,6 +99,18 @@ Supported `environment_class` values:
 - `public_safety_index`
 - `private_fleet`
 
+## Signing And Verification
+
+Receipts can be signed with an Ed25519 key pair so downstream systems can prove who produced a receipt and detect tampering:
+
+```bash
+mcp-observatory receipt keygen --public mcp-observatory.pub --private mcp-observatory.key
+mcp-observatory receipt npx -y my-mcp-server --format json --output receipt.json --sign-key mcp-observatory.key --signer "your-org"
+mcp-observatory receipt verify receipt.json --key mcp-observatory.pub
+```
+
+The signature covers the entire receipt except the `signature` field itself; the `signer` identity label is part of the signed bytes, so rewriting the signer invalidates the signature. Signing requires `--format json` — markdown receipts do not carry a signature. Keep the private key secure and share only the public key. Verify prints the signer plus a truncated SHA-256 fingerprint of the public key so key identity can be confirmed out of band. Do not hand-edit or re-serialize signed JSON: canonicalization is field-order sensitive.
+
 ## Safe-Mode Guarantee
 
 Receipts inherit the same safe-mode posture as the audit and attack-simulation flow. MCP Observatory inspects metadata, schemas, startup behavior, and inert attack-readiness evidence. It does not execute destructive payloads, exfiltrate secrets, or contact attacker-controlled callbacks.

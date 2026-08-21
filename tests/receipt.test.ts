@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import { buildActionReceipt, recommendedActionForFinding, renderActionReceipt } from "../src/action-receipt.js";
 import { buildAuditReport } from "../src/audit.js";
-import { buildMcpReceipt, detectNotObserved, generateReceiptKeyPair, mapStatusToReceiptVerdict, receiptFormatFromPath, renderReceipt, renderReceiptMarkdown, signReceipt, verifyReceipt } from "../src/receipt.js";
+import { buildMcpReceipt, detectNotObserved, generateReceiptKeyPair, mapStatusToReceiptVerdict, publicKeyFingerprint, receiptFormatFromPath, renderReceipt, renderReceiptMarkdown, signReceipt, verifyReceipt } from "../src/receipt.js";
 import type { McpReceipt } from "../src/receipt.js";
 import { makeArtifact } from "./fixtures/test-helpers.js";
 
@@ -495,6 +495,29 @@ describe("Ed25519 receipt signing", () => {
     const signed = signReceipt(receipt, privateKey, "test@example.com");
     const tampered = { ...signed, receipt_type: "tampered" as const } as unknown as McpReceipt;
     expect(verifyReceipt(tampered, publicKey)).toBe(false);
+  });
+
+  it("detects signer tampering", () => {
+    const { publicKey, privateKey } = generateReceiptKeyPair();
+    const receipt = { receipt_type: "mcp-observatory-receipt" as const } as unknown as McpReceipt;
+    const signed = signReceipt(receipt, privateKey, "test@example.com");
+    const tampered = { ...signed, signer: "attacker@example.com" } as McpReceipt;
+    expect(verifyReceipt(tampered, publicKey)).toBe(false);
+  });
+
+  it("detects signature rewriting", () => {
+    const { publicKey, privateKey } = generateReceiptKeyPair();
+    const receipt = { receipt_type: "mcp-observatory-receipt" as const } as unknown as McpReceipt;
+    const signed = signReceipt(receipt, privateKey, "test@example.com");
+    const tampered = { ...signed, signature: Buffer.alloc(64, 1).toString("base64") } as McpReceipt;
+    expect(verifyReceipt(tampered, publicKey)).toBe(false);
+  });
+
+  it("computes a stable public key fingerprint", () => {
+    const { publicKey } = generateReceiptKeyPair();
+    const fingerprint = publicKeyFingerprint(publicKey);
+    expect(fingerprint).toMatch(/^[0-9a-f]{32}$/);
+    expect(publicKeyFingerprint(publicKey)).toBe(fingerprint);
   });
 
   it("rejects unsigned receipt", () => {
