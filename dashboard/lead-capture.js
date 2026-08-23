@@ -63,7 +63,10 @@
         button.disabled = false;
         button.textContent = kind === "buyer" ? "Request the pilot" : "Register the opportunity";
         status.hidden = false;
-        status.textContent = "We could not submit the form. Please try again or email us using the contact link below.";
+        const subject = kind === "buyer" ? "MCP Release Gate Pilot request" : "MCP Observatory partner deal registration";
+        const body = Object.entries(raw).filter(([, value]) => value).map(([key, value]) => `${key}: ${value}`).join("\n");
+        const mailto = `mailto:${config.fallbackEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        status.innerHTML = `<h3>We could not submit the form.</h3><p>Email us directly: <a href="${mailto}">${escapeHtml(config.fallbackEmail)}</a> (your request is pre-filled).</p>`;
       }
     });
   });
