@@ -49,12 +49,28 @@ export function cloudUpgradeLine(context: "ci" | "security" | "fleet" | "general
   ].join("\n");
 }
 
+export function cloudPassLine(context: "ci" | "security" | "fleet" | "general" = "general"): string {
+  const value =
+    context === "ci"
+      ? "hosted CI history and private-repo reports"
+      : context === "security"
+        ? "hosted security reports and certification"
+        : context === "fleet"
+          ? "fleet visibility and production support"
+          : "hosted history and private reports";
+  const plan = context === "ci" || context === "fleet" ? "team" : "individual";
+  return c(ANSI.dim, `  Production teams: ${value} — ${c(ANSI.cyan, `${SELF_SERVE_PRICING_URL}?plan=${plan}`)}`);
+}
+
 export function maybePrintCloudCta(
   context: "ci" | "security" | "fleet" | "general" = "general",
   gate?: string,
 ): void {
   if (isQuiet() || hasCloudToken()) return;
-  if (gate !== "fail" && gate !== "critical_risk") return;
+  if (gate !== "fail" && gate !== "critical_risk") {
+    process.stdout.write(`${cloudPassLine(context)}\n\n`);
+    return;
+  }
   process.stdout.write(`${cloudUpgradeLine(context)}\n\n`);
 }
 
