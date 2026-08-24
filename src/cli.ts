@@ -79,6 +79,13 @@ const MENU_GROUPS: MenuGroup[] = [
     ],
   },
   {
+    heading: "Hosted",
+    items: [
+      { command: ["cloud"], label: "cloud", outcome: "Hosted history, private reports, security review, and enterprise pilots" },
+      { command: ["cloud", "login"], label: "cloud login", outcome: "Connect this CLI to your hosted account" },
+    ],
+  },
+  {
     heading: "Scoring & Badges",
     items: [
       { command: ["score"],  label: "score",  outcome: "Health score (0-100) for a specific server" },
@@ -247,7 +254,7 @@ async function main(): Promise<void> {
       });
       notifier.notify({
         isGlobal: true,
-        message: "MCP Observatory update available: {currentVersion} → {latestVersion}\nRun latest receipts + CI: npx @kryptosai/mcp-observatory@latest attack-sim <cmd>\nUpgrade command: npx @kryptosai/mcp-observatory@latest",
+        message: "MCP Observatory update available: {currentVersion} → {latestVersion}\nRun latest receipts + CI: npx @kryptosai/mcp-observatory@latest attack-sim <cmd>\nUpgrade command: npx @kryptosai/mcp-observatory@latest\nHosted history + private reports: https://app.mcp-observatory.com/pricing",
       });
     } catch {
       // update-notifier not available — skip silently

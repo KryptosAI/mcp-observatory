@@ -69,15 +69,22 @@ describe("commercial cloud messaging", () => {
     expect(second.output()).toBe("");
   });
 
-  it("does not print a CTA on passing gates", () => {
+  it("prints a compact CTA on passing gates", () => {
     process.env["NO_COLOR"] = "1";
     delete process.env["MCP_OBSERVATORY_CLOUD_TOKEN"];
     const stdout = captureStdout();
 
     maybePrintCloudCta("ci", "pass");
-    maybePrintCloudCta("ci");
 
-    expect(stdout.output()).toBe("");
+    expect(stdout.output()).toContain("Production teams");
+    expect(stdout.output()).toContain("hosted CI history");
+    expect(stdout.output()).toContain("pricing?plan=team");
+
+    vi.restoreAllMocks();
+    const general = captureStdout();
+    maybePrintCloudCta();
+    expect(general.output()).toContain("hosted history and private reports");
+    expect(general.output()).toContain("pricing?plan=individual");
   });
 
   it("suppresses the CTA in quiet mode even without a cloud token", () => {
