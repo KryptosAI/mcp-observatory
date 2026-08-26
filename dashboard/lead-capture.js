@@ -21,6 +21,12 @@
   };
   const formIdFor = kind => kind === "buyer" ? config.buyerFormId : config.partnerFormId;
   const readyForHubSpot = kind => Boolean(config.hubspotPortalId && formIdFor(kind));
+  // Partner submissions need their own HubSpot form: the partner fields are
+  // rejected by the buyer form. Until a distinct partnerFormId is configured,
+  // partner leads go through email instead of silently failing in HubSpot.
+  const hubSpotReady = kind => kind === "partner" && config.partnerFormId === config.buyerFormId
+    ? false
+    : readyForHubSpot(kind);
 
   document.querySelectorAll("form[data-lead-form]").forEach(form => {
     const status = form.querySelector("[data-form-status]");
@@ -39,7 +45,7 @@
       button.textContent = "Sending…";
 
       try {
-        if (readyForHubSpot(kind)) {
+        if (hubSpotReady(kind)) {
           const fields = Object.entries(raw).filter(([, value]) => value !== "").map(([name, value]) => ({ name, value: String(value) }));
           const hutkMatch = document.cookie.match(/hubspotutk=([^;]+)/);
           const response = await fetch(`https://api.hsforms.com/submissions/v3/integration/submit/${config.hubspotPortalId}/${formIdFor(kind)}`, {
