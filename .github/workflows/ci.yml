@@ -48,3 +48,26 @@ jobs:
 
       - name: README smoke test
         run: npm run smoke
+
+  node-compatibility:
+    name: node-compatibility (${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22, 24]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Install with strict engine validation
+        run: npm ci --engine-strict
+
+      - name: Build and run CLI
+        run: npm run build && node dist/src/cli.js --version
