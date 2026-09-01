@@ -54,7 +54,7 @@ function inferMutationResource(paramName: string): string {
 function inferMutationOperation(toolName: string, paramName: string): string {
   if (/\bdelet|remov\b/i.test(toolName)) return "delete";
   if (/\bwrit|creat|sav\b/i.test(toolName)) return "write";
-  if (/\bexec|run|command|shell|cmd\b/i.test(toolName) || /^command|cmd|exec|shell$/i.test(paramName)) return "execute";
+  if (/\bexec|run|command|shell|cmd\b/i.test(toolName) || /^(?:command|cmd|exec|shell)$/i.test(paramName)) return "execute";
   return "write";
 }
 

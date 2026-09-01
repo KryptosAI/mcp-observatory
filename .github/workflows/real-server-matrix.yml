@@ -6,11 +6,12 @@ on:
     - cron: "0 8 * * *"
 
 permissions:
-  contents: write
-  pages: write
+  contents: read
 
 jobs:
   matrix:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -24,7 +25,7 @@ jobs:
           cache: npm
 
       - name: Install
-        run: npm install
+        run: npm ci
 
       - name: Run real-server matrix
         id: matrix
