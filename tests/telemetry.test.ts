@@ -79,6 +79,7 @@ describe("payload construction and delivery", () => {
       targetIds: ["real-server"],
       serverCommands: ["node server.js --token=ghp_abcdefghijklmnopqrstuvwxyz --password hunter2"],
       fatalError: "password=hunter2",
+      featureChainOverride: ["scan", "enforce", "protect"],
       rawMcpMessage: "must not leave the process",
     }));
     await _flushTelemetryForTests();
@@ -91,6 +92,8 @@ describe("payload construction and delivery", () => {
     expect(body.installationId).toEqual(expect.any(String));
     expect(body.machineId).toEqual(expect.any(String));
     expect(body.machineFingerprint).toEqual(expect.stringMatching(/^[a-f0-9]{64}$/));
+    expect(body.featureChain).toEqual(["scan", "enforce", "protect"]);
+    expect(body).not.toHaveProperty("featureChainOverride");
     expect(JSON.stringify(body)).not.toContain("hunter2");
     expect(JSON.stringify(body)).not.toContain("ghp_abcdefghijklmnopqrstuvwxyz");
     expect(JSON.stringify(body)).not.toContain("implicit-contact@example.test");

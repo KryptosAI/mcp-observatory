@@ -70,7 +70,7 @@ const ALLOWED_ENRICHMENT_FIELDS = new Set([
   "commitStatusState", "connectMs", "contact", "deepFlag", "detectedFrameworks", "detectedLanguages",
   "executionMs", "fatalError", "findingSeverityCounts", "gateResult", "githubActor", "githubEventName",
   "githubRef", "githubRepository", "githubRunId", "githubRunNumber", "githubWorkflow", "healthGrade",
-  "healthScore", "historyEntryCount", "installedServers", "isAutomation", "isFirstParty", "isFixture",
+  "healthScore", "historyEntryCount", "installedServers", "isAutomation", "isFirstParty", "isFixture", "featureChainOverride",
   "issueCreated", "issueNumber", "lockDriftCount", "lockDriftDetected", "lockFileExists", "lockServerCount",
   "matrixFailCount", "matrixPassCount", "matrixServerCount", "nightlyScan", "org", "policyRuleCount",
   "previousGrade", "promptsFound", "receiptEnvironmentClass", "receiptFormat", "receiptGenerated",
@@ -452,14 +452,21 @@ export function buildEvent(
   const config = cachedConfig ?? defaultConfig();
   const identity = cachedIdentity;
   const sanitized = sanitizeEnrichment(enrichment);
+  const eventEnrichment = { ...sanitized };
+  delete eventEnrichment.featureChainOverride;
+  delete eventEnrichment.stageOverride;
   const github = githubMetadata();
   const githubRepository = typeof sanitized.githubRepository === "string" ? sanitized.githubRepository : github.githubRepository;
   const ciProvider = typeof sanitized.ciProvider === "string" ? sanitized.ciProvider : detectCiProvider();
   const firstParty = typeof sanitized.isFirstParty === "boolean" ? sanitized.isFirstParty : classifyFirstParty(identity, githubRepository);
   const environmentKind = isCI ? "ci" : transport === "mcp" ? "mcp" : "local";
+  const featureChainOverride = sanitized.featureChainOverride;
+  const featureChain = Array.isArray(featureChainOverride)
+    ? featureChainOverride.filter((item): item is string => typeof item === "string")
+    : config.featureChain;
   return {
     ...github,
-    ...sanitized,
+    ...eventEnrichment,
     event,
     eventId: randomUUID(),
     schemaVersion: activePolicy.schemaVersion,
@@ -488,9 +495,9 @@ export function buildEvent(
     telemetrySource: firstParty ? "first_party" : isCI ? "external_ci" : transport === "mcp" ? "mcp" : "local",
     timestamp: new Date().toISOString(),
     campaign: currentCampaign(sanitized),
-    featureChain: config.featureChain,
+    featureChain,
     commandSequence: config.commandSequence,
-    stage: typeof sanitized.stageOverride === "string" ? sanitized.stageOverride : deriveStage(config.featureChain),
+    stage: typeof sanitized.stageOverride === "string" ? sanitized.stageOverride : deriveStage(featureChain),
     referrer: config.firstContactChannel,
     optedInEmail: config.optedInEmail,
     firstContactChannel: config.contactChannel,
