@@ -13,10 +13,13 @@ KryptosAI/mcp-observatory contains the open-core product:
 - public Safety Index and dashboard content
 - a thin hosted compatibility client for explicit cloud upload, login, logout,
   and whoami operations
+- the telemetry delivery client, jurisdiction policy handshake, local controls,
+  field allowlist, redaction, and bounded retry queue
 
 The public repository does not contain the hosted Worker implementation,
-telemetry intelligence, fleet operations, private metrics, internal compliance
-policies, hosted secrets, or customer operational data.
+raw telemetry administration/export, telemetry intelligence, fleet operations,
+private metrics, internal compliance policies, hosted secrets, or customer
+operational data.
 
 ## Private cloud repository
 
@@ -37,5 +40,7 @@ implementation rights. The new proprietary implementation begins in the
 private cloud repository, which was initialized from the hosted Worker subtree
 as a transition baseline.
 
-Future hosted-only features belong in the cloud repository. Public changes
-must remain runnable without a hosted account or private credentials.
+Future hosted-only features belong in the cloud repository. Private telemetry
+ingestion and intelligence belong in the private telemetry repository. Public
+changes must remain runnable without a hosted account or private credentials,
+and telemetry failure must never change a command result.

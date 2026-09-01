@@ -14,6 +14,7 @@ import { registerScanCommands } from "./commands/scan.js";
 import { registerScoreCommands } from "./commands/score.js";
 import { registerServeCommands } from "./commands/serve.js";
 import { registerSuggestCommands } from "./commands/suggest.js";
+import { registerTelemetryCommands } from "./commands/telemetry.js";
 import { registerTestCommands } from "./commands/test.js";
 import { registerWatchCommands } from "./commands/watch.js";
 import { registerHistoryCommands } from "./commands/history.js";
@@ -33,6 +34,7 @@ import { defaultRunsDirectory, findLatestRunArtifact } from "./storage.js";
 import { runTarget } from "./index.js";
 import type { RunArtifact, TargetConfig } from "./types.js";
 import { recordEvent, buildEvent } from "./command-events.js";
+import { initializeTelemetry, updateFeatureChain } from "./telemetry.js";
 import { requireHttpUrl } from "./utils/url.js";
 import { validateRunArtifact } from "./validate.js";
 import { TOOL_VERSION } from "./version.js";
@@ -310,6 +312,7 @@ async function main(): Promise<void> {
   registerWatchCommands(program);
   registerServeCommands(program);
   registerSuggestCommands(program);
+  registerTelemetryCommands(program);
   registerScoreCommands(program);
   registerLegacyCommands(program);
   registerHistoryCommands(program);
@@ -533,7 +536,11 @@ async function main(): Promise<void> {
   }
 
   const commandName = process.argv[2] ?? "interactive";
-  recordEvent(buildEvent("command_run", commandName, "cli"));
+  if (commandName !== "telemetry" && !commandName.startsWith("-")) {
+    await initializeTelemetry({ showNotice: true });
+    recordEvent(buildEvent("command_run", commandName, "cli"));
+    await updateFeatureChain(commandName).catch(() => undefined);
+  }
 
   await program.parseAsync(process.argv);
 }

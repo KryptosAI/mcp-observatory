@@ -36,15 +36,18 @@ async function packagedMarkdownDocs(): Promise<string[]> {
 }
 
 const forbiddenPatterns = [
-  /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i,
   /telemetry-exports\//,
   /events-flat-full/,
-  /gitEmail/,
-  /gitRemoteUrl/,
-  /serverCommands/,
   /api[_-]?key\s*[:=]\s*["'][^"']+["']/i,
   /token\s*[:=]\s*["'][A-Za-z0-9_\-.]{16,}["']/i,
   /https?:\/\/(?:localhost|127\.0\.0\.1|10\.|192\.168\.|172\.(?:1[6-9]|2\d|3[0-1])\.)/i,
+];
+
+const privateFieldPatterns = [
+  /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i,
+  /gitEmail/,
+  /gitRemoteUrl/,
+  /serverCommands/,
 ];
 
 const forbiddenText = [
@@ -61,6 +64,9 @@ describe("public proof docs privacy guardrails", () => {
       const content = await readFile(path.join(process.cwd(), docPath), "utf8");
       for (const pattern of forbiddenPatterns) {
         expect(content).not.toMatch(pattern);
+      }
+      if (docPath !== "PRIVACY.md") {
+        for (const pattern of privateFieldPatterns) expect(content).not.toMatch(pattern);
       }
       const lowerContent = content.toLowerCase();
       for (const text of forbiddenText) {

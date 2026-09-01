@@ -12,6 +12,7 @@ repository is the hosted workflow and intelligence product.
 - local enterprise report generation
 - public Safety Index content and dashboard
 - thin hosted upload/login/whoami compatibility client
+- telemetry delivery, policy handshake, redaction, preview, and user controls
 
 Anyone can run the open-core loop locally or in public CI without an account.
 
@@ -23,8 +24,9 @@ fleet coordination, blast-radius analysis, enterprise IAM, managed runners,
 private indexes, compliance workflows, and hosted decision APIs.
 
 Private telemetry and company intelligence remain in the separate
-KryptosAI/mcp-observatory-telemetry system. They are not part of the public
-package or public command surface.
+KryptosAI/mcp-observatory-telemetry system. The public package contains only
+the delivery client and user controls; raw events, exports, administration,
+private metrics, and intelligence are not part of the public command surface.
 
 The public health score in this repository is open source and locally
 reproducible. Hosted decisions and private intelligence are separate products.

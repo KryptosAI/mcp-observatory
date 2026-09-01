@@ -48,6 +48,14 @@ npx -y @kryptosai/mcp-observatory@latest
 
 Grades your configured MCP servers, or a packaged demo if you have none.
 
+Next, keep that check running in CI:
+
+```bash
+npx -y @kryptosai/mcp-observatory@latest setup-ci --all
+```
+
+MCP Observatory uses jurisdiction-aware product telemetry after showing the collection notice. Review the exact fields with `telemetry preview`, check the current policy with `telemetry status`, or stop collection at any time with `telemetry disable`, `MCP_OBSERVATORY_TELEMETRY=0`, or `DO_NOT_TRACK=1`. See the complete [privacy and telemetry notice](./PRIVACY.md).
+
 ```bash
 npx -y @kryptosai/mcp-observatory@latest test npx -y @modelcontextprotocol/server-everything
 ```
@@ -188,6 +196,7 @@ Or add it manually to your config:
 | `setup-ci` / `init-ci` | Create a GitHub Action and badge snippet for MCP compatibility/security checks |
 | `setup-ci --sarif` | Generate a workflow that uploads normalized findings to GitHub Code Scanning |
 | `setup-ci --doctor` | Inspect whether the repository has a complete CI adoption kit |
+| `telemetry status\|enable\|disable\|identify\|preview` | Inspect or control product telemetry and deliberately provide a contact email |
 | `risk-graph --input <path>` | Merge receipts and run artifacts into JSON, Markdown, and HTML MCP risk graphs |
 | `--no-attack-sim` | Opt out of the default safe attack simulation on `scan` or `test` |
 | `ci-report` | Generate CI report for GitHub issue creation |
@@ -404,8 +413,9 @@ For clearer internal account attribution in CI, set:
 
 ```bash
 MCP_OBSERVATORY_ORG=your-company.com
-MCP_OBSERVATORY_CONTACT=your-team-contact
 ```
+
+To deliberately associate a contact email with private telemetry analytics, run `mcp-observatory telemetry identify --email <address>`. Setting an organization does not authorize outreach.
 
 Testing Feishu/Lark integrations? See the [Feishu/Lark MCP guide](./docs/feishu-lark-mcp.md).
 

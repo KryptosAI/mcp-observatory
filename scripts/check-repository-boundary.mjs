@@ -8,8 +8,6 @@ const prohibitedPaths = [
   "scripts/export-telemetry-d1.ts",
   "scripts/metrics-dashboard.ts",
   "scripts/telemetry-company-intelligence.ts",
-  "src/telemetry.ts",
-  "src/commands/telemetry.ts",
   "docs/compliance",
   "docs/fleet-monitor.html",
   "docs/fleet-monitor-data.json",
@@ -40,7 +38,6 @@ async function walk(directory) {
 await walk(root);
 
 const prohibitedReferences = [
-  /from ["'][^"']*telemetry\.js["']/,
   /scripts\/(?:export-telemetry-d1|metrics-dashboard|telemetry-company-intelligence)/,
   /npm run (?:metrics|telemetry|intel):/,
   /CLOUDFLARE_API_TOKEN\s*[:=]\s*["'][^$]/,
