@@ -8,11 +8,13 @@ on:
 
 permissions:
   contents: read
-  security-events: write
-  id-token: write
 
 jobs:
   scorecard:
+    permissions:
+      contents: read
+      id-token: write
+      security-events: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
