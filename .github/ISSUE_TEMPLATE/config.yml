@@ -1,5 +1,8 @@
-blank_issues_enabled: true
+blank_issues_enabled: false
 contact_links:
+  - name: Report a security vulnerability privately
+    url: https://github.com/KryptosAI/mcp-observatory/security/policy
+    about: Follow the security policy instead of publishing sensitive vulnerability details in an issue.
   - name: Private production or enterprise pilot
     url: mailto:william@banksey.com
     about: Email for private repo CI, readiness reviews, certification, fleet visibility, or sensitive security context.

@@ -46,8 +46,9 @@ describe("auth module", () => {
       expect(mockedWriteFile).toHaveBeenCalledWith(
         expect.stringContaining("auth.json"),
         JSON.stringify(VALID_TOKEN, null, 2),
-        "utf8",
+        { encoding: "utf8", mode: 0o600 },
       );
+      expect(mockedMkdir).toHaveBeenCalledWith(expect.any(String), { recursive: true, mode: 0o700 });
     });
 
     it("returns null when token file doesn't exist", async () => {
@@ -179,7 +180,7 @@ describe("auth module", () => {
       expect(mockedWriteFile).toHaveBeenCalledWith(
         expect.stringContaining("auth.json"),
         "",
-        "utf8",
+        { encoding: "utf8", mode: 0o600 },
       );
     });
 
@@ -188,6 +189,33 @@ describe("auth module", () => {
       mockedWriteFile.mockRejectedValue(new Error("ENOENT"));
 
       await expect(auth.clearToken()).resolves.toBeUndefined();
+    });
+  });
+
+  describe("URL and browser launch hardening", () => {
+    it("rejects non-HTTP URLs and embedded credentials", async () => {
+      const auth = await importAuth();
+      expect(() => auth.requireSafeHttpUrl("file:///tmp/payload", "Test URL")).toThrow("HTTP or HTTPS");
+      expect(() => auth.requireSafeHttpUrl("https://user:secret@example.com", "Test URL")).toThrow("embedded credentials");
+    });
+
+    it("uses a non-shell Windows launcher and preserves metacharacters as one argument", async () => {
+      const auth = await importAuth();
+      const launch = auth.browserLaunch("https://example.com/activate?code=a%26calc.exe", "win32");
+      expect(launch.command).toBe("rundll32.exe");
+      expect(launch.args).toEqual([
+        "url.dll,FileProtocolHandler",
+        "https://example.com/activate?code=a%26calc.exe",
+      ]);
+    });
+
+    it("rejects hostile cloud endpoints before fetching", async () => {
+      const auth = await importAuth();
+      const mockFetch = vi.fn();
+      vi.stubGlobal("fetch", mockFetch);
+      await expect(auth.performCloudDeviceFlow("javascript:alert(1)")).rejects.toThrow("Cloud endpoint");
+      expect(mockFetch).not.toHaveBeenCalled();
+      vi.unstubAllGlobals();
     });
   });
 

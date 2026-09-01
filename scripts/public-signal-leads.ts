@@ -1,6 +1,7 @@
 #!/usr/bin/env npx tsx
 
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -97,10 +98,9 @@ export async function buildLeads(targetsPath: string): Promise<PublicSignalLead[
 const invokedPath = process.argv[1] ? path.resolve(process.argv[1]) : "";
 if (invokedPath === fileURLToPath(import.meta.url)) {
   const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-  const outDir = "/tmp/ws2026";
+  const outDir = await mkdtemp(path.join(tmpdir(), "mcp-observatory-leads-"));
   const outFile = path.join(outDir, "observatory-leads.json");
   const leads = await buildLeads(path.join(root, "docs/safety-index/targets.json"));
-  await mkdir(outDir, { recursive: true });
   await writeFile(outFile, `${JSON.stringify({ generatedAt: new Date().toISOString(), source: "docs/safety-index/targets.json", leads }, null, 2)}\n`);
   process.stdout.write(`Wrote ${leads.length} public-signal leads to ${outFile}\n\n`);
   for (const [index, lead] of leads.slice(0, 5).entries()) {

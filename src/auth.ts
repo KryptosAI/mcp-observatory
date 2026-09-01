@@ -44,15 +44,15 @@ export async function loadToken(): Promise<StoredToken | null> {
 }
 
 export async function saveToken(token: StoredToken): Promise<void> {
-  await mkdir(AUTH_DIR, { recursive: true });
-  await writeFile(TOKEN_FILE, JSON.stringify(token, null, 2), "utf8");
+  await mkdir(AUTH_DIR, { recursive: true, mode: 0o700 });
+  await writeFile(TOKEN_FILE, JSON.stringify(token, null, 2), { encoding: "utf8", mode: 0o600 });
   _cachedToken = token;
 }
 
 export async function clearToken(): Promise<void> {
   _cachedToken = null;
   try {
-    await writeFile(TOKEN_FILE, "", "utf8");
+    await writeFile(TOKEN_FILE, "", { encoding: "utf8", mode: 0o600 });
   } catch {
     // file may not exist
   }
@@ -85,17 +85,45 @@ interface OidcDiscovery {
   userinfo_endpoint?: string;
 }
 
+export function requireSafeHttpUrl(value: string, label = "URL"): URL {
+  let parsed: URL;
+  try {
+    parsed = new URL(value);
+  } catch {
+    throw new Error(`${label} must be a valid HTTP or HTTPS URL.`);
+  }
+  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
+    throw new Error(`${label} must use HTTP or HTTPS.`);
+  }
+  if (parsed.username || parsed.password) {
+    throw new Error(`${label} must not contain embedded credentials.`);
+  }
+  return parsed;
+}
+
+export function browserLaunch(url: string, platform = process.platform): { command: string; args: string[] } {
+  const safeUrl = requireSafeHttpUrl(url, "Browser URL").href;
+  if (platform === "darwin") return { command: "open", args: [safeUrl] };
+  if (platform === "win32") return { command: "rundll32.exe", args: ["url.dll,FileProtocolHandler", safeUrl] };
+  return { command: "xdg-open", args: [safeUrl] };
+}
+
 async function discoverOidc(issuer: string): Promise<OidcDiscovery> {
-  const url = `${issuer.replace(/\/$/, "")}/.well-known/openid-configuration`;
+  const issuerUrl = requireSafeHttpUrl(issuer, "OIDC issuer");
+  const url = new URL(".well-known/openid-configuration", `${issuerUrl.href.replace(/\/$/, "")}/`).href;
   const res = await fetch(url, { signal: AbortSignal.timeout(10_000) });
   if (!res.ok) throw new Error(`OIDC discovery failed (${res.status}): ${url}`);
-  return (await res.json()) as OidcDiscovery;
+  const discovery = (await res.json()) as OidcDiscovery;
+  requireSafeHttpUrl(discovery.token_endpoint, "OIDC token endpoint");
+  if (discovery.device_authorization_endpoint) {
+    requireSafeHttpUrl(discovery.device_authorization_endpoint, "OIDC device authorization endpoint");
+  }
+  return discovery;
 }
 
 export async function openBrowser(url: string): Promise<void> {
   try {
-    const command = process.platform === "darwin" ? "open" : process.platform === "win32" ? "cmd" : "xdg-open";
-    const args = process.platform === "win32" ? ["/c", "start", "", url] : [url];
+    const { command, args } = browserLaunch(url);
     await execFileAsync(command, args);
   } catch {
     // Printing the URL is sufficient when the environment has no GUI browser.
@@ -103,7 +131,7 @@ export async function openBrowser(url: string): Promise<void> {
 }
 
 export async function performCloudDeviceFlow(endpoint: string): Promise<StoredToken> {
-  const baseUrl = endpoint.replace(/\/$/, "");
+  const baseUrl = requireSafeHttpUrl(endpoint, "Cloud endpoint").href.replace(/\/$/, "");
   const deviceRes = await fetch(`${baseUrl}/auth/device`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -112,7 +140,7 @@ export async function performCloudDeviceFlow(endpoint: string): Promise<StoredTo
   if (!deviceRes.ok) throw new Error(`Cloud device authorization failed (${deviceRes.status}): ${await deviceRes.text()}`);
   const deviceData = await deviceRes.json() as { device_code: string; user_code: string; verification_uri: string; expires_in: number; interval?: number };
   process.stdout.write(`\n  Open this URL in your browser:\n  ${deviceData.verification_uri}\n\n  Enter this code: ${deviceData.user_code}\n\n  Waiting for authorization...\n`);
-  await openBrowser(deviceData.verification_uri);
+  await openBrowser(requireSafeHttpUrl(deviceData.verification_uri, "Verification URL").href);
   const deadline = Date.now() + deviceData.expires_in * 1000;
   const interval = (deviceData.interval ?? 5) * 1000;
   while (Date.now() < deadline) {
@@ -150,7 +178,9 @@ export async function performDeviceFlow(issuer: string, clientId: string): Promi
     throw new Error("The identity provider does not support device authorization flow.");
   }
 
-  const deviceRes = await fetch(config.device_authorization_endpoint, {
+  const deviceAuthorizationEndpoint = requireSafeHttpUrl(config.device_authorization_endpoint, "OIDC device authorization endpoint").href;
+  const tokenEndpoint = requireSafeHttpUrl(config.token_endpoint, "OIDC token endpoint").href;
+  const deviceRes = await fetch(deviceAuthorizationEndpoint, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({ client_id: clientId, scope: "openid profile email" }),
@@ -170,6 +200,7 @@ export async function performDeviceFlow(issuer: string, clientId: string): Promi
     expires_in: number;
     interval?: number;
   };
+  requireSafeHttpUrl(deviceData.verification_uri, "Verification URL");
 
   process.stdout.write(`\n  Open this URL in your browser:\n`);
   process.stdout.write(`  ${deviceData.verification_uri}\n`);
@@ -182,7 +213,7 @@ export async function performDeviceFlow(issuer: string, clientId: string): Promi
   while (Date.now() < deadline) {
     await new Promise(r => setTimeout(r, interval));
 
-    const tokenRes = await fetch(config.token_endpoint, {
+    const tokenRes = await fetch(tokenEndpoint, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
