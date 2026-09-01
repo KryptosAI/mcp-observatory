@@ -1,0 +1,37 @@
+name: Security report
+description: Report a security concern without exposing sensitive exploit details.
+title: "[Security] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include secrets, private data, or weaponized exploit details here.
+        Use the repository Security policy and private advisory flow for sensitive reports.
+  - type: dropdown
+    id: disclosure
+    attributes:
+      label: Disclosure safety
+      options:
+        - This is a public hardening request with no sensitive exploit details
+        - Sensitive details have been submitted through the private security channel
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Affected component and safe summary
+      description: Identify the affected version or workflow using only information safe for repository collaborators.
+    validations:
+      required: true
+  - type: textarea
+    id: mitigation
+    attributes:
+      label: Suggested mitigation
+      description: Describe a safe mitigation or containment step without publishing credentials or an exploit.
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Confirmation
+      options:
+        - label: I removed credentials, private data, and weaponized exploit details.
+          required: true
