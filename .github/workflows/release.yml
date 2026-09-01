@@ -6,13 +6,15 @@ on:
     branches: [main]
 
 permissions:
-  contents: write
-  issues: write
-  pull-requests: write
-  id-token: write
+  contents: read
 
 jobs:
   release:
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -171,55 +173,13 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: 385e00f98ceabbee25800bda2756cc75
         run: npx wrangler pages deploy dashboard --project-name mcp-observatory
 
-      - name: Prepare Homebrew formula update
-        id: homebrew-formula
-        if: steps.package-version.outputs.published == 'true'
-        run: |
-          set -euo pipefail
-          version="$(npm view @kryptosai/mcp-observatory version)"
-          node scripts/update-homebrew-formula.mjs "$version"
-          echo "version=${version}" >> "$GITHUB_OUTPUT"
-          if git diff --quiet -- Formula/mcp-observatory.rb; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Open protected Homebrew formula update
-        if: steps.homebrew-formula.outputs.changed == 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-          version="${{ steps.homebrew-formula.outputs.version }}"
-          branch="automation/homebrew-formula-v${version}"
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git switch -c "$branch"
-          git add Formula/mcp-observatory.rb
-          git commit -m "chore(formula): bump Homebrew formula to v${version}"
-          gh auth setup-git
-          git push --force-with-lease origin "$branch"
-          pr_url="$(gh pr list --head "$branch" --state open --json url --jq '.[0].url // empty')"
-          if [ -z "$pr_url" ]; then
-            pr_url="$(gh pr create \
-              --base main \
-              --head "$branch" \
-              --title "chore(formula): bump Homebrew formula to v${version}" \
-              --body "Updates the Homebrew formula to the npm package published by the release workflow. This PR is used so the automated update follows main branch protection.")"
-          fi
-          echo "Homebrew formula update: ${pr_url}"
-          for workflow in ci.yml coverage.yml action-test.yml codeql.yml; do
-            gh workflow run "$workflow" --ref "$branch"
-          done
-
       - name: Point action@v1 at the published package
         if: steps.package-version.outputs.published == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          version="${{ steps.homebrew-formula.outputs.version }}"
+          version="$(npm view @kryptosai/mcp-observatory version)"
           git fetch --tags origin
           if git rev-parse "v${version}" >/dev/null 2>&1; then
             git tag -f v1 "v${version}"
@@ -305,3 +265,63 @@ jobs:
             --notes-file "$body_file" \
             --target "$GITHUB_SHA" \
             --prerelease
+
+  homebrew-formula:
+    needs: release
+    permissions:
+      actions: write
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+
+      - name: Prepare Homebrew formula update
+        id: formula
+        run: |
+          set -euo pipefail
+          version="$(npm view @kryptosai/mcp-observatory version)"
+          node scripts/update-homebrew-formula.mjs "$version"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          if git diff --quiet -- Formula/mcp-observatory.rb; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open protected Homebrew formula update
+        if: steps.formula.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          version="${{ steps.formula.outputs.version }}"
+          branch="automation/homebrew-formula-v${version}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add Formula/mcp-observatory.rb
+          git commit -m "chore(formula): bump Homebrew formula to v${version}"
+          gh auth setup-git
+          git push --force-with-lease origin "$branch"
+          pr_url="$(gh pr list --head "$branch" --state open --json url --jq '.[0].url // empty')"
+          if [ -z "$pr_url" ]; then
+            pr_url="$(gh pr create \
+              --base main \
+              --head "$branch" \
+              --title "chore(formula): bump Homebrew formula to v${version}" \
+              --body "Updates the Homebrew formula to the npm package published by the release workflow. This PR is used so the automated update follows main branch protection.")"
+          fi
+          echo "Homebrew formula update: ${pr_url}"
+          for workflow in ci.yml coverage.yml action-test.yml codeql.yml; do
+            gh workflow run "$workflow" --ref "$branch"
+          done
