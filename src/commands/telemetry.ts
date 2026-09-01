@@ -58,8 +58,9 @@ export function registerTelemetryCommands(program: Command): void {
     .command("identify")
     .description("Associate an explicitly supplied email with telemetry.")
     .requiredOption("-e, --email <email>", "Email address to associate with this installation.")
-    .action(async (options: { email: string }) => {
-      await identifyTelemetry(options.email);
+    .option("-c, --channel <channel>", "Deliberately supplied contact-channel slug, such as email or github.")
+    .action(async (options: { email: string; channel?: string }) => {
+      await identifyTelemetry(options.email, options.channel);
       process.stdout.write("  Email associated with this installation for private analytics.\n\n");
     });
 }

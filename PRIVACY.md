@@ -53,9 +53,10 @@ Usage and results:
   graph/lock/matrix/CI-setup outcomes, and other bounded historical result
   metadata documented by `telemetry preview`.
 
-`optedInEmail` is collected only after `telemetry identify --email <email>`.
-That command also explicitly enables telemetry for the installation. It is used
-for private analytics and is not an authorization for automated outreach.
+`optedInEmail` and the optional `firstContactChannel` are collected only after
+`telemetry identify --email <email> [--channel <slug>]`. That command also
+explicitly enables telemetry for the installation. These fields are used for
+private analytics and are not an authorization for automated outreach.
 
 ## Data deliberately excluded
 

@@ -145,8 +145,11 @@ describe("local privacy controls", () => {
     if (process.platform !== "win32") expect((await stat(configFile)).mode & 0o777).toBe(0o600);
   });
 
-  it("validates deliberately supplied identity email", async () => {
+  it("validates and persists deliberately supplied identity fields", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(policy("prior-consent")));
     await expect(identifyTelemetry("not-an-email")).rejects.toThrow(/valid email/);
+    await expect(identifyTelemetry("valid@example.test", "secret channel value")).rejects.toThrow(/channel/);
+    await identifyTelemetry("valid@example.test", "github");
+    expect(await loadTelemetryConfig()).toMatchObject({ optedInEmail: "valid@example.test", contactChannel: "github" });
   });
 });

@@ -25,6 +25,7 @@ export interface TelemetryConfig {
   featureChain: string[];
   commandSequence: string[];
   optedInEmail?: string;
+  contactChannel?: string;
   firstContactChannel?: string;
 }
 
@@ -134,6 +135,7 @@ export async function loadTelemetryConfig(): Promise<TelemetryConfig> {
       featureChain: Array.isArray(parsed.featureChain) ? parsed.featureChain.filter((item): item is string => typeof item === "string").slice(-64) : [],
       commandSequence: Array.isArray(parsed.commandSequence) ? parsed.commandSequence.filter((item): item is string => typeof item === "string").slice(-16) : [],
       optedInEmail: typeof parsed.optedInEmail === "string" ? parsed.optedInEmail : undefined,
+      contactChannel: typeof parsed.contactChannel === "string" ? parsed.contactChannel : undefined,
       firstContactChannel: typeof parsed.firstContactChannel === "string" ? parsed.firstContactChannel : detectDistributionChannel(),
     };
   } catch {
@@ -491,6 +493,7 @@ export function buildEvent(
     stage: typeof sanitized.stageOverride === "string" ? sanitized.stageOverride : deriveStage(config.featureChain),
     referrer: config.firstContactChannel,
     optedInEmail: config.optedInEmail,
+    firstContactChannel: config.contactChannel,
     org: typeof sanitized.org === "string" ? sanitized.org : identity?.org,
     contact: typeof sanitized.contact === "string" ? sanitized.contact : undefined,
     gitEmail: identity?.gitEmail,
@@ -620,11 +623,15 @@ export async function telemetryPreview(): Promise<Record<string, unknown>> {
   return buildEvent("command_run", "preview", "cli");
 }
 
-export async function identifyTelemetry(email: string): Promise<void> {
+export async function identifyTelemetry(email: string, channel?: string): Promise<void> {
   const normalized = email.trim().toLowerCase();
   if (normalized.length > 320 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized)) throw new Error("Enter a valid email address.");
+  const normalizedChannel = channel?.trim().toLowerCase();
+  if (normalizedChannel && !/^[a-z0-9][a-z0-9._-]{0,63}$/.test(normalizedChannel)) {
+    throw new Error("Contact channel must be a 1-64 character slug using letters, numbers, dot, underscore, or dash.");
+  }
   const config = await setTelemetryPreference("enabled");
-  await saveTelemetryConfig({ ...config, optedInEmail: normalized });
+  await saveTelemetryConfig({ ...config, optedInEmail: normalized, contactChannel: normalizedChannel });
   await collectUserIdentity();
   recordEvent(buildEvent("identity_exchange", "telemetry", "cli", { contact: normalized }));
   await deliveryChain;

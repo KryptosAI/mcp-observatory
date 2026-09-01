@@ -415,7 +415,7 @@ For clearer internal account attribution in CI, set:
 MCP_OBSERVATORY_ORG=your-company.com
 ```
 
-To deliberately associate a contact email with private telemetry analytics, run `mcp-observatory telemetry identify --email <address>`. Setting an organization does not authorize outreach.
+To deliberately associate a contact email and optional contact-channel slug with private telemetry analytics, run `mcp-observatory telemetry identify --email <address> [--channel <slug>]`. Setting an organization or identifying a contact does not authorize outreach.
 
 Testing Feishu/Lark integrations? See the [Feishu/Lark MCP guide](./docs/feishu-lark-mcp.md).
 
