@@ -8,7 +8,7 @@ import type { TargetConfig } from "../types.js";
 import { scanForTargets } from "../discovery.js";
 import { inferLocalMcpTarget } from "../infer-local-mcp.js";
 import { buildEvent, generateSessionId, recordEvent, recordSessionEnd, recordSessionStart } from "../command-events.js";
-import { hasCloudToken, maybePrintCloudCta, SELF_SERVE_PRICING_URL } from "../commercial.js";
+import { hasCloudToken, maybePrintCloudCta } from "../commercial.js";
 import { extractObservatoryFindings } from "../findings.js";
 import { defaultRunsDirectory, writeRunArtifact } from "../storage.js";
 import {
@@ -382,7 +382,7 @@ export function registerDemoCommands(program: Command): void {
       const outPath = await writeRunArtifact(artifact, defaultRunsDirectory(process.cwd()));
       maybePrintCloudCta("general", artifact.gate);
       if (!isQuiet() && !hasCloudToken()) {
-        process.stdout.write(`  Keep this grade hosted · $29: ${SELF_SERVE_PRICING_URL}?plan=individual\n`);
+        process.stdout.write(`  Upload one hosted snapshot free: ${getBinName()} cloud upload\n`);
         process.stdout.write(`  ${c(ANSI.dim, `Receipt: ${outPath}`)}\n\n`);
       }
       recordSessionEnd(sessionId);

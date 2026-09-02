@@ -23,28 +23,28 @@ The `nsa-mcp` profile is not an official certification or government authorizati
 
 For buyer review, pair this pilot brief with the [public guidance crosswalk](./public-guidance-crosswalk.md), [procurement one-pager](./procurement-one-pager.md), and [security due diligence packet](./security-due-diligence.md).
 
-## 30 Day Pilot
+## Ten-Business-Day Release Gate Pilot
 
-A practical 30 day pilot measures whether MCP Observatory can become the release gate for MCP server adoption.
+A fixed `$15,000` pilot evaluates 1-3 critical MCP servers and establishes a reproducible release decision within ten business days.
 
-Week 1:
+Days 1-2:
 - inventory MCP servers and target startup commands
 - run baseline audits
 - upload SARIF to GitHub Code Scanning for selected repos
 
-Week 2:
+Days 3-5:
 - triage critical and high findings with security reviewers
 - tune target configs and suppressions only where risk is accepted
 - enable pull request audit checks for pilot repos
 
-Week 3:
+Days 6-8:
 - remediate top findings
 - rerun audits and compare trust status movement
-- add scheduled weekly checks
+- prepare the agreed recurring CI check
 
-Week 4:
-- produce pilot summary with findings, false-positive feedback, remediation rate, and CI adoption status
-- decide whether to expand to more repos or private fleet reporting
+Days 9-10:
+- produce the approve, gate, or defer decision with findings, false-positive feedback, and remediation order
+- deliver the CI/SARIF handoff and owner readout
 
 ## Success Metrics
 

@@ -72,6 +72,12 @@ async function main(): Promise<void> {
   let hasErrors = false;
 
   for (const artifact of artifactFiles) {
+    const serialized = JSON.stringify(artifact.content);
+    const isCheckedInExample = artifact.path.startsWith(path.join(root, "examples", "artifacts") + path.sep);
+    if (isCheckedInExample && /\/(?:Users|home)\/[^/]+\/|[A-Za-z]:\\\\Users\\\\[^\\]+\\\\/i.test(serialized)) {
+      hasErrors = true;
+      process.stderr.write(`Local workstation path found in ${artifact.path}\n`);
+    }
     const validate =
       artifact.content.artifactType === "diff" ? validateDiff : validateRun;
     const valid = validate(artifact.content);

@@ -1,12 +1,12 @@
-name: Private MCP pilot
-description: Request a private MCP attack simulation, readiness review, CI rollout, or fleet visibility pilot.
-title: "[Pilot] Private MCP attack simulation"
+name: MCP Release Gate Pilot
+description: Request the fixed $15,000, 1-3-server, ten-business-day release-decision engagement.
+title: "[Pilot] MCP Release Gate decision"
 labels: ["pilot", "commercial"]
 body:
   - type: markdown
     attributes:
       value: |
-        Use this for production or pre-production MCP usage where you want private attack simulation, compatibility, security, drift, CI, or fleet review.
+        Use this for production or pre-production MCP usage where you need an approve, gate, or defer decision for 1-3 critical MCP servers in ten business days.
 
         Do not paste secrets, private source code, customer data, private URLs, or proprietary MCP schemas into this public issue. If details are sensitive, keep this brief and email william@banksey.com.
   - type: input
@@ -22,14 +22,8 @@ body:
     attributes:
       label: Pilot type
       options:
-        - Attack Simulation Evidence Pack
-        - Attack Simulation Quickstart
-        - Platform Attack Simulation Pilot
-        - Private MCP readiness review
-        - Hosted CI history for private repos
-        - Recurring security/drift report
-        - MCP fleet visibility
-        - Certification/readiness badge
+        - Release Gate Pilot — 1 server
+        - Release Gate Pilot — 2-3 servers
         - Not sure yet
     validations:
       required: true

@@ -61,4 +61,4 @@ If MCP servers are becoming production dependencies, use the same evidence model
 - prioritized fixes and owner-ready next steps
 - Safety Index-style report for internal agent dependencies
 
-See the [MCP Readiness Review](./paid-pilot-offer.md). The default package starts at `$2,500`.
+See the [MCP Release Gate Pilot](./paid-pilot-offer.md). The fixed public package is `$15,000` for 1-3 critical MCP servers over ten business days.

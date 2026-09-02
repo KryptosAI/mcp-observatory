@@ -41,13 +41,13 @@ describe("commercial cloud messaging", () => {
   it("renders context-specific upgrade lines without color when NO_COLOR is set", () => {
     process.env["NO_COLOR"] = "1";
 
-    expect(cloudUpgradeLine("ci")).toContain("hosted CI history");
-    expect(cloudUpgradeLine("security")).toContain("hosted security reports");
-    expect(cloudUpgradeLine("fleet")).toContain("MCP fleet visibility");
-    expect(cloudUpgradeLine("general")).toContain("hosted reporting");
+    expect(cloudUpgradeLine("ci")).toContain("hosted CI ingestion");
+    expect(cloudUpgradeLine("security")).toContain("hosted evidence");
+    expect(cloudUpgradeLine("fleet")).toContain("one developer");
+    expect(cloudUpgradeLine("general")).toContain("hosted evidence");
     expect(cloudUpgradeLine()).toContain("https://app.mcp-observatory.com/pricing?plan=individual");
-    expect(cloudUpgradeLine("ci")).toContain("https://app.mcp-observatory.com/pricing?plan=team");
-    expect(cloudUpgradeLine()).toContain("mcp-observatory cloud login");
+    expect(cloudUpgradeLine("ci")).toContain("mcp-observatory cloud upload");
+    expect(cloudUpgradeLine("ci")).not.toContain("plan=team");
   });
 
   it("prints a CTA only when a cloud token is absent", () => {
@@ -57,8 +57,8 @@ describe("commercial cloud messaging", () => {
 
     maybePrintCloudCta("ci", "fail");
 
-    expect(first.output()).toContain("Production MCP teams");
-    expect(first.output()).toContain("hosted CI history");
+    expect(first.output()).toContain("Hosted option for one developer");
+    expect(first.output()).toContain("hosted CI ingestion");
 
     vi.restoreAllMocks();
     process.env["MCP_OBSERVATORY_CLOUD_TOKEN"] = "token";
@@ -76,15 +76,16 @@ describe("commercial cloud messaging", () => {
 
     maybePrintCloudCta("ci", "pass");
 
-    expect(stdout.output()).toContain("Production teams");
-    expect(stdout.output()).toContain("hosted CI history");
-    expect(stdout.output()).toContain("pricing?plan=team");
+    expect(stdout.output()).toContain("Hosted option for one developer");
+    expect(stdout.output()).toContain("hosted CI ingestion");
+    expect(stdout.output()).toContain("cloud upload");
+    expect(stdout.output()).not.toContain("plan=team");
 
     vi.restoreAllMocks();
     const general = captureStdout();
     maybePrintCloudCta();
-    expect(general.output()).toContain("hosted history and private reports");
-    expect(general.output()).toContain("pricing?plan=individual");
+    expect(general.output()).toContain("hosted evidence and scan history");
+    expect(general.output()).toContain("cloud upload");
   });
 
   it("suppresses the CTA in quiet mode even without a cloud token", () => {
@@ -106,7 +107,9 @@ describe("commercial cloud messaging", () => {
 
     expect(stdout.output()).toContain("MCP Observatory Cloud");
     expect(stdout.output()).toContain("Individual Pro: $29/month");
-    expect(stdout.output()).toContain("pricing?plan=team");
+    expect(stdout.output()).toContain("upload one hosted");
+    expect(stdout.output()).not.toContain("Team:");
+    expect(stdout.output()).not.toContain("pricing?plan=team");
     expect(stdout.output()).toContain("Release Gate Pilot");
     expect(stdout.output()).toContain("cloud upload");
     expect(stdout.output()).toContain("william@banksey.com");

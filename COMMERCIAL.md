@@ -1,15 +1,16 @@
 # MCP Observatory Commercial Offering
 
-Local CLI use stays free. Hosted history, private-repo CI, and fleet visibility are paid.
+Local CLI use stays free and unlimited. Every signed-in user can upload one hosted snapshot before paying. Retained history and hosted CI ingestion are paid.
 
 ## Self-serve
 
 | Plan | Price | Start |
 | --- | --- | --- |
 | Individual Pro | $29/month | https://app.mcp-observatory.com/pricing?plan=individual |
-| Team | $299/month | https://app.mcp-observatory.com/pricing?plan=team |
 
-Sign in with GitHub, subscribe, then run `npx @kryptosai/mcp-observatory cloud login`.
+Run a local scan, then use `npx @kryptosai/mcp-observatory cloud upload`. The CLI signs in with GitHub and uploads the free snapshot before showing the optional Individual Pro upgrade.
+
+Individual Pro is for one user and includes 90-day history, hosted CI ingestion, regression markers, score and gate history, and artifact downloads. See the [subscription and hosted-service terms](./TERMS.md).
 
 ## Release Gate Pilot
 

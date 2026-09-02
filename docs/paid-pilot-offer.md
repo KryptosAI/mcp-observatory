@@ -32,7 +32,7 @@ The public CLI produces reproducible evidence. The paid review packages that evi
 
 ## Starting Package
 
-MCP Release Gate Pilot: `$15,000` fixed scope for 1-3 critical MCP servers. The first two founding design partners may receive a `$10,000` rate in exchange for structured feedback and permission to publish an anonymized outcome.
+MCP Release Gate Pilot: `$15,000` fixed scope for 1-3 critical MCP servers over ten business days.
 
 Good fit:
 

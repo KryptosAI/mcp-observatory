@@ -1,12 +1,12 @@
-name: MCP certification or badge request
-description: Request help adding MCP Observatory checks, badges, or certification language to an MCP server.
-title: "[Certification] MCP Observatory check"
-labels: ["certification", "mcp-server"]
+name: MCP evidence or badge request
+description: Request help adding MCP Observatory checks, reports, or evidence-backed badges to an MCP server.
+title: "[Evidence] MCP Observatory check"
+labels: ["mcp-server"]
 body:
   - type: markdown
     attributes:
       value: |
-        Use this to request MCP Observatory CI, a compatibility/security badge, or certification guidance for a public MCP server.
+        Use this to request MCP Observatory CI, a compatibility/security report, or an evidence-backed badge for a public MCP server. These signals are not certification or endorsement.
 
         Do not paste secrets, private source code, customer data, private URLs, or proprietary MCP schemas into this public issue.
   - type: input
@@ -32,7 +32,8 @@ body:
         - Add README badge
         - Generate a health score badge
         - Review a failing MCP Observatory report
-        - Discuss paid certification or hosted history
+        - Discuss Individual Pro hosted history
+        - Discuss a Release Gate Pilot
     validations:
       required: true
   - type: textarea

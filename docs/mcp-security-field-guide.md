@@ -81,7 +81,7 @@ For private teams, start with static artifacts:
 - use SARIF where security review tools expect it
 - generate a static enterprise report for owner review
 
-For production MCP fleets, the next layer is hosted history, recurring security reports, certification review, support, and fleet visibility across repositories and agent environments.
+For one developer, the next layer is Individual Pro hosted history and CI ingestion. Teams needing a production decision can use the fixed `$15,000`, 1-3-server, ten-business-day Release Gate Pilot.
 
 ## Future Direction
 
@@ -91,7 +91,7 @@ The next generation of secure agentic systems will need more than ad hoc tool in
 - provenance for MCP packages and server configurations
 - schema locks and controlled drift review
 - runtime monitoring for production agent tool use
-- certification signals for high-trust MCP servers
+- evidence-backed approval signals for high-trust MCP servers
 - fleet inventory across teams, repositories, and hosts
 
 MCP Observatory starts with the smallest durable wedge: make MCP servers testable, visible, and auditable before agents depend on them.

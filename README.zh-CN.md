@@ -74,7 +74,7 @@ npx @kryptosai/mcp-observatory audit npx -y my-mcp-server --profile nsa-mcp --fo
 
 ## 试用
 
-运行公共证据循环：生成凭证、映射到风险图谱、添加 CI/SARIF，然后在服务器对生产环境至关重要时请求私有集群审查。
+运行公共证据循环：生成凭证、映射到风险图谱、添加 CI/SARIF，然后免费上传一份个人托管快照；若关键服务器需要人工发布决策，可申请固定范围的 Release Gate Pilot。
 
 ```bash
 npx @kryptosai/mcp-observatory audit npx -y my-mcp-server --profile nsa-mcp --format markdown --output report.md
@@ -192,7 +192,8 @@ Observatory 为维护者和团队提供：
 - **健康评分徽章** — 公开信任信号
 - **录制/回放/验证** — 用于回归测试的工作流
 - **MCP 服务器模式** — Agent 可直接检查其他 MCP 服务器
-- **生产支持路径** — 托管历史、私有仓库报告、认证、支持和集群可见性
+- **个人托管路径** — 免费保留一份最新快照；Individual Pro 为一位开发者提供 90 天历史、托管 CI、回归标记和制品下载
+- **人工发布决策** — `$15,000` Release Gate Pilot 在十个工作日内评估 1–3 个关键服务器
 
 参见[发布页面](./docs/launch.md)、[MCP 服务器的 GitHub Code Scanning](./docs/github-code-scanning-for-mcp.md)、[Code Scanning 演示](./docs/code-scanning-demo.md)、[目标图库](./docs/target-gallery.md)、[目标注册表](./docs/target-registry.md)、[目标贡献指南](./docs/target-contribution-guide.md)、[MCP Observatory 贡献者](./docs/contributor-recognition.md)、[Agent 任务包](./docs/agent-tasks.md)、[MCP 凭证](./docs/mcp-receipts.md)、[工具调用凭证](./docs/tool-call-receipts.md)、[MCP 风险图谱](./docs/receipt-graph.md)、[`setup-ci --doctor`](./docs/setup-ci-doctor.md)、[MCP 服务器安全实战指南](./docs/mcp-security-field-guide.md)、[安全方法论](./docs/methodology.md)、[MCP 服务器安全索引](./docs/mcp-server-safety-index.md)、[2026 年 6 月安全现场报告](./docs/mcp-safety-field-report-2026-06.md)、[参考评估](./docs/reference-evaluations.md)、[MCP lock 文件](./docs/mcp-lock-files.md)、[公开证明](./docs/proof.md)、[活动归因](./docs/campaign-attribution.md)、[本地指标仪表盘](./docs/metrics-dashboard.md)、[开源与商业边界](./docs/commercial-boundary.md)、[MCP 攻击模拟证据包](./docs/attack-simulation-pilot.md)、[私有 MCP 集群风险图谱](./docs/private-mcp-fleet-risk-graph.md) 和[商业支持](./COMMERCIAL.md)。
 
@@ -200,11 +201,11 @@ Observatory 为维护者和团队提供：
 
 MCP 服务器正在成为 AI 软件供应链的一部分。Agent 在关键任务工作流中依赖工具之前，需要可靠、可测试、可审计的工具。
 
-MCP Observatory 为安全和平台团队提供 MCP 服务器 CI、schema 漂移检测、安全发现、SARIF/HTML/Markdown 报告、GitHub Code Scanning 上传，以及通往认证或集群可见性的路径。本地开源使用保持免费；生产环境、私有仓库和集群使用可通过付费的 MCP 准备度审查进行。
+MCP Observatory 为安全和平台团队提供 MCP 服务器 CI、schema 漂移检测、安全发现、SARIF/HTML/Markdown 报告和 GitHub Code Scanning 上传。本地开源使用保持免费；个人用户可先免费上传一份托管快照，需要保留历史和托管 CI 时再选择每月 `$29` 的 Individual Pro。
 
 ## 生产支持
 
-本地开源使用在 MIT 许可下保持免费。在生产环境中运行 MCP 的团队可以使用[私有 MCP 集群风险图谱](./docs/private-mcp-fleet-risk-graph.md)和[MCP 攻击模拟证据包](./docs/attack-simulation-pilot.md)进行安全模式的攻击模拟、SARIF/Code Scanning 设置、CI 发布、私有证据报告以及面向负责人的修复建议。私有集群风险图谱试点起价为 `$50,000`；攻击模拟包起价为 `$15,000`；范围较小的准备度审查起价为 `$2,500`。
+本地开源使用在 MIT 许可下保持免费。唯一公开的人工服务入口是 MCP Release Gate Pilot：`$15,000`，覆盖 1–3 个关键 MCP 服务器，在 10 个工作日内交付安全模式证据、CI/SARIF 设置、发布决策和修复建议。更大范围只在完成该发布决策后另行界定。
 
 开源仓库是公共证据引擎。私有遥测情报、公司/账户优先级排序、商业排名权重、托管集群工作流和买方特定证据包不在 OSS 包范围内；详见[开源与商业边界](./docs/commercial-boundary.md)。
 
@@ -444,9 +445,9 @@ Action 输入：
 
 当工作流授予写入权限时，Action 可以评论 PR 并设置 commit 状态。`setup-ci` 默认生成只读的对第三方友好的工作流，并允许维护者稍后选择加入评论/状态。`init-ci` 作为向后兼容的别名继续可用。所有选项见 [`action/README.md`](./action/README.md)。
 
-生产团队可以添加托管 CI 历史、私有仓库报告、定期的安全报告、认证审查、支持和集群可见性。运行 `npx @kryptosai/mcp-observatory cloud`，参见 [COMMERCIAL.md](./COMMERCIAL.md)，或从 Issue 选择器发起试点请求。
+个人用户可先免费上传一份托管快照，需要 90 天历史和托管 CI 时再选择每月 `$29` 的 Individual Pro。需要生产发布决策的团队可申请 `$15,000`、1–3 个服务器、10 个工作日的 Release Gate Pilot。运行 `npx @kryptosai/mcp-observatory cloud`，或参见 [COMMERCIAL.md](./COMMERCIAL.md)。
 
-### Certified by MCP Observatory
+### MCP Observatory 公开证据
 
 MCP 服务器维护者可以将公开的兼容性/安全信号添加到其 README：
 
@@ -460,7 +461,7 @@ MCP 服务器维护者可以将公开的兼容性/安全信号添加到其 READM
 npx @kryptosai/mcp-observatory badge npx -y my-mcp-server --output docs/mcp-health.svg
 ```
 
-GitHub Action 模板、维护者 PR 正文和徽章发布手册参见[认证分发循环](./docs/certification-distribution.md)。
+GitHub Action 模板、维护者 PR 正文和徽章发布手册参见[证据分发循环](./docs/certification-distribution.md)。徽章只表示公开证据，不是认证或背书。
 
 从本地运行制品生成可用于试点的生产/安全报告：
 

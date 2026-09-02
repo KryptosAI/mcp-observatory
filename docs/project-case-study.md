@@ -32,9 +32,10 @@ repository handles telemetry and intelligence operations.
 
 ## Commercial path
 
-The free OSS wedge is local testing and public repository CI. Paid value is
-production/private use through hosted reporting, private repository history,
-recurring security reviews, support, and enterprise workflows.
+The free OSS wedge is unlimited local testing, public repository CI, and one
+latest hosted snapshot. Individual Pro adds one-user 90-day history, hosted CI,
+regression markers, and artifact downloads. The separate fixed-scope Release
+Gate Pilot provides an owner-ready decision for 1–3 critical servers.
 
 The public repository keeps its historical record, including previously
 published hosted code. New proprietary implementation belongs in the private

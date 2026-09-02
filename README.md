@@ -48,7 +48,13 @@ npx -y @kryptosai/mcp-observatory@latest
 
 Grades your configured MCP servers, or a packaged demo if you have none.
 
-Next, keep that check running in CI:
+Next, sign in with GitHub and upload one hosted snapshot free. The upload completes before any optional upgrade is shown:
+
+```bash
+npx -y @kryptosai/mcp-observatory@latest cloud upload
+```
+
+Then keep the local check running in CI:
 
 ```bash
 npx -y @kryptosai/mcp-observatory@latest setup-ci --all
@@ -83,7 +89,7 @@ Default-deny connect: `npx -y @kryptosai/mcp-observatory@latest protect` rewrite
 
 Runtime deny-default: `npx -y @kryptosai/mcp-observatory@latest enforce --start-proxy` writes a Seatbelt policy from the scan and starts the proxy. Local scan stays free.
 
-Proof: [Safety Index](https://mcp-observatory.com/safety-index/). Hosted history: [$29](https://app.mcp-observatory.com/pricing?plan=individual) · [$299](https://app.mcp-observatory.com/pricing?plan=team).
+Proof: [Safety Index](https://mcp-observatory.com/safety-index/). Upload one hosted snapshot free with `cloud upload`; [Individual Pro is $29/month](https://app.mcp-observatory.com/pricing?plan=individual) when you need retained history and hosted CI ingestion.
 
 ## Why MCP Observatory
 
@@ -101,7 +107,7 @@ Observatory gives maintainers and teams:
 - **Health score badges** for public trust signals
 - **Record/replay/verify** workflows for regression testing
 - **MCP server mode** so agents can inspect other MCP servers directly
-- **Production support path** for hosted history, private repo reporting, owner-ready remediation, support, and fleet visibility
+- **Production support path** for one-user hosted history, CI ingestion, and owner-ready Release Gate remediation
 
 See [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [MCP Receipts](./docs/mcp-receipts.md), [Troubleshooting](./docs/troubleshooting.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [MCP Observatory Contributors](./docs/contributor-recognition.md), [hosted client contract](./docs/api.md), [repository boundary](./docs/repository-boundary.md), [open core boundary](./docs/commercial-boundary.md), and [commercial support](./COMMERCIAL.md).
 
@@ -203,7 +209,7 @@ Or add it manually to your config:
 | `enterprise-report` | Generate a static production/security report from run artifacts |
 | `score <cmd>` | Score an MCP server's health (0-100) |
 | `badge <cmd>` | Generate an SVG health score badge for README |
-| `cloud` | Show hosted reporting, security review, and enterprise pilot options |
+| `cloud` | Show the free hosted snapshot, Individual Pro, and Release Gate Pilot options |
 
 Run with no arguments to start `demo`. Use `--menu` for the interactive catalog.
 

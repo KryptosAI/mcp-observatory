@@ -27,6 +27,10 @@ if (!tarballName) {
 }
 
 const tarballPath = path.join(packDir, tarballName);
+const packedFiles = execFileSync("tar", ["-tzf", tarballPath], { encoding: "utf8" });
+if (!packedFiles.split(/\r?\n/).includes("package/docs/paid-pilot-offer.md")) {
+  throw new Error("Packed install is missing docs/paid-pilot-offer.md linked from COMMERCIAL.md.");
+}
 const execDir = mkdtempSync(path.join(os.tmpdir(), "mcp-observatory-install-"));
 
 writeFileSync(path.join(execDir, "hello.txt"), "hello from packed install\n", "utf8");
