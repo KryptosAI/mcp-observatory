@@ -141,7 +141,7 @@ export function summarizeRunSafety(artifact: RunArtifact): SafetySummary {
       "Add MCP Observatory to CI so every server change gets the same check.",
     ],
     ciCta: verdict === "Blocked"
-      ? "Keep a hosted history of this failing gate: https://app.mcp-observatory.com/pricing?plan=team"
+      ? "Upload one hosted snapshot free: npx -y @kryptosai/mcp-observatory@latest cloud upload"
       : "Add CI: npx -y @kryptosai/mcp-observatory@latest setup-ci --all --command \"npx -y <server-package>\"",
   };
 }
@@ -176,7 +176,7 @@ export function summarizeDiffSafety(artifact: { gate: string; regressions: unkno
       "Keep this comparison running in CI for future MCP server changes.",
     ],
     ciCta: verdict === "Blocked"
-      ? "Keep a hosted history of this failing gate: https://app.mcp-observatory.com/pricing?plan=team"
+      ? "Upload one hosted snapshot free: npx -y @kryptosai/mcp-observatory@latest cloud upload"
       : "Add CI: npx -y @kryptosai/mcp-observatory@latest setup-ci --all --command \"npx -y <server-package>\"",
   };
 }

@@ -1,0 +1,29 @@
+# Proof Index
+
+These checked-in files are evidence, not decorative samples.
+
+## Passing Matrix
+
+| Target | Package | Version | Run Date | Why it matters | Artifact | Report |
+| --- | --- | --- | --- | --- | --- | --- |
+| `context7-server` | `@upstash/context7-mcp` | `4.0.4` | `2026-09-02T04:14:16.838Z` | Zero-config third-party tools server that keeps the matrix grounded in real package usage. | [JSON](./artifacts/context7-server.json) | [Markdown](./artifacts/context7-server-report.md) |
+| `everything-server` | `@modelcontextprotocol/server-everything` | `2.0.0` | `2026-09-02T04:14:20.577Z` | Broad official reference target that exercises tools, prompts, and resources in one run. | [JSON](./artifacts/everything-server.json) | [Markdown](./artifacts/everything-server-report.md) |
+| `filesystem-server` | `@modelcontextprotocol/server-filesystem` | `0.2.0` | `2026-09-02T04:14:23.047Z` | Baseline passing tools server that proves unsupported prompts and resources are not treated as failures. | [JSON](./artifacts/filesystem-server.json) | [Markdown](./artifacts/filesystem-server-report.md) |
+| `opentofu-server` | `@opentofu/opentofu-mcp-server` | `0.1.0` | `2026-09-02T04:14:23.892Z` | Resource-capable third-party target that broadens the matrix beyond the everything server. | [JSON](./artifacts/opentofu-server.json) | [Markdown](./artifacts/opentofu-server-report.md) |
+| `promptopia-server` | `promptopia-mcp` | `1.1.0` | `2026-09-02T04:14:25.709Z` | Filesystem-backed prompts server that gives the matrix a second third-party prompts-capable target. | [JSON](./artifacts/promptopia-server.json) | [Markdown](./artifacts/promptopia-server-report.md) |
+| `puppeteer-server` | `puppeteer-mcp-server` | `0.1.0` | `2026-09-02T04:14:29.362Z` | Browser-oriented third-party target that passes resources while surfacing an optional endpoint caveat. | [JSON](./artifacts/puppeteer-server.json) | [Markdown](./artifacts/puppeteer-server-report.md) |
+| `ref-tools-server` | `ref-tools-mcp` | `3.0.3` | `2026-09-02T04:14:37.404Z` | Third-party prompts-capable target that proves prompt support is not limited to official example servers. | [JSON](./artifacts/ref-tools-server.json) | [Markdown](./artifacts/ref-tools-server-report.md) |
+
+## Commands Used
+
+- `context7-server`: `npx -y @upstash/context7-mcp`
+- `everything-server`: `npx -y @modelcontextprotocol/server-everything`
+- `filesystem-server`: `npx -y @modelcontextprotocol/server-filesystem examples/filesystem-fixture`
+- `opentofu-server`: `npx -y @opentofu/opentofu-mcp-server`
+- `promptopia-server`: `npx -y promptopia-mcp`
+- `puppeteer-server`: `npx -y puppeteer-mcp-server`
+- `ref-tools-server`: `npx -y ref-tools-mcp`
+
+## Canonical Failure Proof
+
+- Startup diagnosis: [`server-pdf-startup-fail.json`](./artifacts/server-pdf-startup-fail.json) and [`server-pdf-startup-fail-report.md`](./artifacts/server-pdf-startup-fail-report.md)

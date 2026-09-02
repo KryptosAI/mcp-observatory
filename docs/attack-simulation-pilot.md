@@ -72,15 +72,15 @@ Do not send secrets, tokens, customer data, private schemas, or production URLs 
 
 Open a pilot request from the GitHub issue chooser or email `william@banksey.com`.
 
-## Outreach Copy
+## Release Gate Pilot Outreach Copy
 
-Subject: Safe MCP attack simulation before agents depend on tools
+Subject: A release decision before agents depend on MCP tools
 
 Hi,
 
 I build MCP Observatory, a GitHub-native security and CI gate for MCP servers.
 
-I am opening a small number of private MCP Attack Simulation Evidence Pack pilots for teams adopting MCP in production or pre-production. The work is safe-mode only: no destructive tool calls, no real data exfiltration, no attacker infrastructure. The deliverable is an evidence pack your security/platform team can use: attack-sim results, SARIF/Code Scanning, CI gate, drift baseline, executive verdicts, and owner-ready remediation notes.
+I am opening a small number of fixed $15,000 MCP Release Gate Pilots for teams adopting 1–3 critical MCP servers in production or pre-production. The ten-business-day work is safe-mode only: no destructive tool calls, no real data exfiltration, and no attacker infrastructure. The deliverable is an owner-ready approve, gate, or defer decision with attack-sim results, SARIF/Code Scanning, a CI gate, drift baseline, and remediation notes.
 
 If your agents depend on MCP servers, this answers: which servers are safe enough for CI, which need production review, and what should block a PR before the next schema/tool change ships.
 

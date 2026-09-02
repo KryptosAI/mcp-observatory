@@ -139,7 +139,7 @@ describe("MCP receipts", () => {
     expect(receipt.findings[0]!.blocks_ci).toBe(true);
     expect(receipt.reproduction.rerun_command).toContain("mcp-observatory audit npx -y @example/mcp-server");
     expect(receipt.maintainer_cta.map((cta) => cta.id)).toContain("add_ci");
-    expect(receipt.buyer_cta.map((cta) => cta.id)).toContain("request_private_fleet_receipt_pack");
+    expect(receipt.buyer_cta.map((cta) => cta.id)).toEqual(["request_release_gate_pilot"]);
   });
 
   it("renders markdown as a citable trust record", async () => {
@@ -151,7 +151,7 @@ describe("MCP receipts", () => {
     expect(markdown).toContain("## Verdict");
     expect(markdown).toContain("## Reproduction");
     expect(markdown).toContain("Claim this receipt");
-    expect(markdown).toContain("Request private fleet receipt pack");
+    expect(markdown).toContain("Request Release Gate Pilot");
   });
 
   it("builds HTTP receipts with artifact hashes and safe path handling", async () => {

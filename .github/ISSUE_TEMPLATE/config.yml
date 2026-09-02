@@ -5,7 +5,7 @@ contact_links:
     about: Follow the security policy instead of publishing sensitive vulnerability details in an issue.
   - name: Private production or enterprise pilot
     url: mailto:william@banksey.com
-    about: Email for private repo CI, readiness reviews, certification, fleet visibility, or sensitive security context.
+    about: Email for a fixed-scope Release Gate Pilot or sensitive security context.
   - name: Commercial pilot details
     url: https://github.com/KryptosAI/mcp-observatory/blob/main/COMMERCIAL.md
-    about: Pricing and pilot shapes for hosted reporting, security review, and fleet visibility.
+    about: Individual Pro and fixed-scope Release Gate Pilot pricing.

@@ -31,6 +31,6 @@ schema drift detection, and visible trust signals.
 That creates a GitHub Action and README badge snippet. The action can comment
 on pull requests and fail when MCP compatibility or security checks regress.
 
-Production teams can use the private cloud control plane for hosted reporting,
-private repository CI history, recurring security reviews, certification,
-support, and fleet workflows.
+Individual developers can use the private cloud control plane for hosted
+history and CI ingestion. Teams needing an owner-ready production decision can
+use the fixed `$15,000`, 1-3-server, ten-business-day Release Gate Pilot.

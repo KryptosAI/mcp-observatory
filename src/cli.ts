@@ -14,6 +14,7 @@ import { registerScanCommands } from "./commands/scan.js";
 import { registerScoreCommands } from "./commands/score.js";
 import { registerServeCommands } from "./commands/serve.js";
 import { registerSuggestCommands } from "./commands/suggest.js";
+import { registerTelemetryCommands } from "./commands/telemetry.js";
 import { registerTestCommands } from "./commands/test.js";
 import { registerWatchCommands } from "./commands/watch.js";
 import { registerHistoryCommands } from "./commands/history.js";
@@ -33,9 +34,11 @@ import { defaultRunsDirectory, findLatestRunArtifact } from "./storage.js";
 import { runTarget } from "./index.js";
 import type { RunArtifact, TargetConfig } from "./types.js";
 import { recordEvent, buildEvent } from "./command-events.js";
+import { initializeTelemetry, updateFeatureChain } from "./telemetry.js";
 import { requireHttpUrl } from "./utils/url.js";
 import { validateRunArtifact } from "./validate.js";
 import { TOOL_VERSION } from "./version.js";
+import { emitCloudUploadResponse } from "./cloud-upload.js";
 
 // ── Interactive Menu ─────────────────────────────────────────────────────────
 
@@ -81,8 +84,9 @@ const MENU_GROUPS: MenuGroup[] = [
   {
     heading: "Hosted",
     items: [
-      { command: ["cloud"], label: "cloud", outcome: "Hosted history, private reports, security review, and enterprise pilots" },
+      { command: ["cloud"], label: "cloud", outcome: "Free hosted snapshot, Individual Pro history, and the Release Gate Pilot" },
       { command: ["cloud", "login"], label: "cloud login", outcome: "Connect this CLI to your hosted account" },
+      { command: ["cloud", "upload"], label: "cloud upload", outcome: "Sign in and upload one hosted snapshot free" },
     ],
   },
   {
@@ -254,7 +258,7 @@ async function main(): Promise<void> {
       });
       notifier.notify({
         isGlobal: true,
-        message: "MCP Observatory update available: {currentVersion} → {latestVersion}\nRun latest receipts + CI: npx @kryptosai/mcp-observatory@latest attack-sim <cmd>\nUpgrade command: npx @kryptosai/mcp-observatory@latest\nHosted history + private reports: https://app.mcp-observatory.com/pricing",
+        message: "MCP Observatory update available: {currentVersion} → {latestVersion}\nRun latest receipts + CI: npx @kryptosai/mcp-observatory@latest attack-sim <cmd>\nUpgrade command: npx @kryptosai/mcp-observatory@latest\nIndividual Pro history + hosted CI: https://app.mcp-observatory.com/pricing",
       });
     } catch {
       // update-notifier not available — skip silently
@@ -310,6 +314,7 @@ async function main(): Promise<void> {
   registerWatchCommands(program);
   registerServeCommands(program);
   registerSuggestCommands(program);
+  registerTelemetryCommands(program);
   registerScoreCommands(program);
   registerLegacyCommands(program);
   registerHistoryCommands(program);
@@ -327,35 +332,32 @@ async function main(): Promise<void> {
 
   const cloudCmd = program
     .command("cloud")
-    .description("Show hosted reporting, security review, and enterprise pilot options.")
+    .description("Show the free hosted snapshot, Individual Pro, and Release Gate Pilot options.")
     .action(() => {
       printCloudInfo();
     });
 
   cloudCmd
     .command("upload")
-    .description("Upload the latest local run receipt to MCP Observatory Cloud. Signs in and opens checkout when needed.")
+    .description("Sign in and upload the latest local run receipt. The first hosted snapshot is free.")
     .argument("[artifact]", "Optional path to a run artifact JSON file. Defaults to the newest local receipt.")
-    .option("--org <org>", "Customer or organization slug. Defaults to MCP_OBSERVATORY_ORG.")
+    .option("--org <org>", "Legacy admin attribution; ignored for personal hosted accounts.")
     .option("--endpoint <url>", "Hosted upload endpoint.", getCloudUploadEndpoint())
     .action(async (artifactPath: string | undefined, options: { org?: string; endpoint: string }) => {
-      let token = await getCloudAccessToken();
-      if (!token) {
-        const { performCloudDeviceFlow, openBrowser } = await import("./auth.js");
-        const signedIn = await performCloudDeviceFlow(getCloudBaseUrl());
-        token = signedIn.accessToken;
-        process.stdout.write(`  ${c(ANSI.green, "✓")} Signed in as ${c(ANSI.bold, signedIn.email ?? signedIn.sub ?? "unknown")}\n`);
-        const checkout = `${SELF_SERVE_PRICING_URL}?plan=individual`;
-        process.stdout.write(`  Keep this receipt hosted · $29: ${checkout}\n`);
-        await openBrowser(checkout);
-      }
       const resolvedPath = artifactPath ?? await findLatestRunArtifact(defaultRunsDirectory());
       if (!resolvedPath) {
         throw new Error(`No run artifact found. Run: ${getBinName()} demo`);
       }
-      const org = options.org ?? process.env["MCP_OBSERVATORY_ORG"];
       const artifact = validateRunArtifact(JSON.parse(await readFile(resolvedPath, "utf8")));
       const endpoint = requireHttpUrl(options.endpoint, "Cloud upload endpoint");
+      let token = await getCloudAccessToken();
+      if (!token) {
+        const { performCloudDeviceFlow } = await import("./auth.js");
+        const signedIn = await performCloudDeviceFlow(getCloudBaseUrl());
+        token = signedIn.accessToken;
+        process.stdout.write(`  ${c(ANSI.green, "✓")} Signed in as ${c(ANSI.bold, signedIn.email ?? signedIn.sub ?? "unknown")}\n`);
+      }
+      const org = options.org ?? process.env["MCP_OBSERVATORY_ORG"];
       const response = await fetch(endpoint, {
         method: "POST",
         headers: {
@@ -365,14 +367,12 @@ async function main(): Promise<void> {
         },
         body: JSON.stringify(artifact),
       });
-      const text = await response.text();
-      if (!response.ok) {
-        throw new Error(`Cloud upload failed (${response.status}): ${text}`);
-      }
-      process.stdout.write(`${text}\n`);
-      process.stdout.write(`Uploaded ${resolvedPath}\n`);
-      process.stdout.write(`Hosted dashboard: ${getCloudBaseUrl()}/dashboard\n`);
-      process.stdout.write(`Next: ${getBinName()} setup-ci --all --cloud --command "npx -y my-mcp-server"\n`);
+      await emitCloudUploadResponse(response, {
+        artifactPath: resolvedPath,
+        dashboardUrl: getCloudBaseUrl(),
+        pricingUrl: SELF_SERVE_PRICING_URL,
+        binName: getBinName(),
+      });
       recordEvent(buildEvent("command_complete", "cloud-upload", "cli", {
         cloudUpload: true,
         org,
@@ -533,7 +533,11 @@ async function main(): Promise<void> {
   }
 
   const commandName = process.argv[2] ?? "interactive";
-  recordEvent(buildEvent("command_run", commandName, "cli"));
+  if (commandName !== "telemetry" && !commandName.startsWith("-")) {
+    await initializeTelemetry({ showNotice: true });
+    recordEvent(buildEvent("command_run", commandName, "cli"));
+    await updateFeatureChain(commandName).catch(() => undefined);
+  }
 
   await program.parseAsync(process.argv);
 }

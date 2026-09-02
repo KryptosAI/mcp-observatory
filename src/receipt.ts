@@ -427,10 +427,7 @@ export async function buildMcpReceipt(report: AuditReport, target: TargetConfig,
       { id: "provide_safe_startup_mode", label: "Provide safe startup mode", description: "Share a no-secret, non-destructive startup command for public receipt generation." },
     ],
     buyer_cta: [
-      { id: "request_private_fleet_receipt_pack", label: "Request private fleet receipt pack", description: "Generate receipts for internal MCP servers without publishing private evidence." },
-      { id: "request_attack_simulation_evidence_pack", label: "Request attack simulation evidence pack", description: "Package safe-mode attack simulation evidence for security review." },
-      { id: "request_ci_sarif_rollout", label: "Request CI/SARIF rollout", description: "Add release gates and GitHub Code Scanning for MCP dependencies." },
-      { id: "request_government_enterprise_pilot", label: "Request government/enterprise pilot", description: "Map receipts to procurement-friendly security evidence and pilot deliverables." },
+      { id: "request_release_gate_pilot", label: "Request Release Gate Pilot", description: "Get an owner-ready release decision for 1–3 critical MCP servers over ten business days for a fixed $15,000." },
     ],
   };
 }

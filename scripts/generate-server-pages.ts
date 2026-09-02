@@ -305,7 +305,6 @@ async function generateSitemap(ids: string[]): Promise<void> {
     { loc: `${BASE_URL}/partner-co-sell-kit/`, changefreq: "monthly", priority: "0.7" },
     { loc: `${BASE_URL}/privacy/`, changefreq: "yearly", priority: "0.4" },
     { loc: `${BASE_URL}/safety-index/`, changefreq: "daily", priority: "0.9" },
-    { loc: `${BASE_URL}/fleet-monitor.html`, changefreq: "daily", priority: "0.8" },
     ...ids.map(id => ({
       loc: `${BASE_URL}/safety-index/servers/${id}.html`,
       changefreq: "weekly" as const,

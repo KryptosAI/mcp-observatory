@@ -1,4 +1,4 @@
-import { readdir, readFile } from "node:fs/promises";
+import { access, readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 
 const root = path.resolve("dashboard");
@@ -31,8 +31,35 @@ const homepageTop = homepage.slice(0, homepage.indexOf('<div class="section-titl
 if (count(homepage, /Trust is a <span>production decision\.<\/span>/g) !== 1) failures.push("homepage: expected exactly one trust-led hero headline");
 if (count(homepage, /THE MOMENT BEFORE TRUST/g) !== 1) failures.push("homepage: expected exactly one trust-led eyebrow");
 if (!homepage.includes('class="logo-strip"')) failures.push("homepage: missing full-width company logo strip");
+if (!homepage.includes("Evaluated technologies, not MCP Observatory customers, endorsements, or partnerships.")) failures.push("homepage: missing evaluated-technologies disclaimer");
 if (!homepage.includes('class="hero-product"')) failures.push("homepage: missing product decision visual");
+if (!homepageTop.includes("@latest cloud upload") || !homepageTop.includes("one hosted snapshot free")) failures.push("homepage: missing free-snapshot onboarding step");
 if (/Used by|Trusted by|teams at/i.test(homepageTop)) failures.push("homepage: contains unsupported customer-style proof language");
+if (/pricing\?plan=team|Team · \$299|Start Team/i.test(homepage)) failures.push("homepage: contains a self-service Team claim");
+if (/Daily verification|rerun every day|Live compatibility matrix/i.test(homepage)) failures.push("homepage: overstates the freshness of recorded verification data");
+if (!homepage.includes("Individual Pro · $29/month")) failures.push("homepage: missing Individual Pro as the primary hosted plan");
+if (!homepage.includes("use <code>cloud upload</code> to see one hosted snapshot before paying")) failures.push("homepage: final CTA bypasses the free hosted snapshot");
+if (/Start \$29/i.test(homepage)) failures.push("homepage: starts paid checkout before the free hosted snapshot");
+for (const expectedTarget of ["playwright-mcp-server", "google-drive-server", "cloudflare-server"]) {
+  if (!homepage.includes(`/safety-index/servers/${expectedTarget}.html`)) failures.push(`homepage: missing substantiated logo link for ${expectedTarget}`);
+}
+if (/proof-logos\/(?:oracle|cisco|accenture)\.svg/i.test(homepage)) failures.push("homepage: contains an unsupported evaluated-technology logo");
+
+const sitemap = await readFile(path.join(root, "sitemap.xml"), "utf8");
+for (const match of sitemap.matchAll(/<loc>(.*?)<\/loc>/g)) {
+  const url = new URL(match[1]);
+  if (url.origin !== "https://mcp-observatory.com") continue;
+  const relativePath = url.pathname === "/"
+    ? "index.html"
+    : url.pathname.endsWith("/")
+      ? path.join(url.pathname.slice(1), "index.html")
+      : url.pathname.slice(1);
+  try {
+    await access(path.join(root, relativePath));
+  } catch {
+    failures.push(`sitemap: ${url.pathname} does not resolve to a dashboard file`);
+  }
+}
 
 for (const file of await htmlFiles(root)) {
   const source = await readFile(file, "utf8");

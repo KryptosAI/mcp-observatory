@@ -19,7 +19,7 @@ Each receipt has eight stable sections:
 - `findings`: the top findings only, with severity, control area, evidence summary, recommended fix, CI blocking status, and fingerprint
 - `reproduction`: exact rerun command, CI command, SARIF upload hint, and expected artifacts
 - `maintainer_cta`: claim/update receipt, add CI, fix findings, request rerun, and provide safe startup mode
-- `buyer_cta`: request private fleet receipt pack, attack simulation evidence pack, CI/SARIF rollout, or government/enterprise pilot
+- `buyer_cta`: request the fixed $15,000 Release Gate Pilot for 1–3 critical servers over ten business days
 
 The full audit report remains the place for every finding. The receipt is the compact trust record people and agents can cite.
 
@@ -125,6 +125,6 @@ Receipts are meant to become the object that directories, agents, CI gates, main
 - a graph can group receipts by capability boundary and recommended action
 - a maintainer can claim the receipt and add CI
 - an agent can decide whether to `allow`, `gate`, `rerun`, `quarantine`, or `escalate`
-- a buyer can ask for a private fleet receipt pack before approving internal MCP dependencies
+- a buyer can request a fixed-scope Release Gate Pilot before approving 1–3 critical MCP dependencies
 
-The public receipt proves the method. The private receipt pack turns it into a buyer-ready decision record.
+The public receipt proves the method. The Release Gate Pilot turns that method into a buyer-ready decision record without creating a separate public service offer.

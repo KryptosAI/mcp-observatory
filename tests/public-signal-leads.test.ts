@@ -18,12 +18,14 @@ describe("public-signal leads", () => {
     expect(draftNote(ranked[0]!)).toContain("enforce --start-proxy");
   });
 
-  it("surfaces enforce on the first screen and keeps the leads script unpublished", async () => {
+  it("surfaces one first scan and one free hosted next action while keeping the leads script unpublished", async () => {
     const readme = await readFile(path.join(process.cwd(), "README.md"), "utf8");
     const site = await readFile(path.join(process.cwd(), "dashboard/index.html"), "utf8");
     const pack = JSON.parse(await readFile(path.join(process.cwd(), "package.json"), "utf8")) as { files: string[] };
     expect(readme).toContain("enforce --start-proxy");
-    expect(site).toContain("enforce --start-proxy");
+    expect(site).toContain("First: successful local scan");
+    expect(site).toContain("Next: one hosted snapshot free");
+    expect(site).toContain("@latest cloud upload");
     expect(site).toContain("<h3>Enforce</h3>");
     expect(pack.files.some((entry) => entry.includes("public-signal-leads"))).toBe(false);
   });

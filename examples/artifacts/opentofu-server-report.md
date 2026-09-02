@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-03-19T04:26:55.684Z
+Generated at 2026-09-02T04:14:23.892Z
 
 ## Target and Environment Metadata
 
@@ -8,22 +8,47 @@ Generated at 2026-03-19T04:26:55.684Z
 - Adapter: `local-process`
 - Command: `npx -y @opentofu/opentofu-mcp-server`
 - Server: `opentofu 0.1.0`
-- Platform: `darwin 25.3.0`
-- Node: `v22.22.1`
+- Platform: `darwin 25.5.0`
+- Node: `v22.23.1`
 
 ## Executive Summary
 
+**Health Score: 89/100 (B)**
+
+| Dimension | Score | Weight |
+| --- | --- | --- |
+| Protocol Compliance | 100/100 | 30% |
+| Schema Quality | 60/100 | 20% |
+| Security | 100/100 | 20% |
+| Reliability | 83/100 | 20% |
+| Performance | 100/100 | 10% |
+
 | Gate | Total | Pass | Fail | Partial | Unsupported | Flaky | Skipped |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| pass | 4 | 3 | 0 | 0 | 1 | 0 | 0 |
+| pass | 7 | 5 | 0 | 1 | 1 | 0 | 0 |
 
 ## At a Glance
 
+- Safety verdict: **Needs review** — The server is usable, but caveated checks should be reviewed before agents depend on it.
+- Top risks: schema-quality: Found 1 quality finding(s) across 6 item(s): 1 warnings, 0 info.
+- Regression/schema drift: Run `mcp-observatory diff <previous-run.json> <current-run.json>` to classify regressions and schema drift.
 - Failing checks: none
-- Partial or flaky checks: none
+- Partial or flaky checks: schema-quality
 - Skipped checks: none
 - Unsupported checks: prompts
-- Suggested next step: Confirm that unsupported capabilities are intentional for this target: prompts.
+- Suggested next step: Fix: Review the check output and update the MCP server or target configuration before release.
+- CI next step: `Add CI: npx -y @kryptosai/mcp-observatory@latest setup-ci --all --command "npx -y <server-package>"`
+
+## What Was Not Tested
+
+- 🔒 network_egress: No outbound network calls were attempted during scan
+- 🔒 filesystem_mutation: Filesystem write operations were not exercised
+- ℹ️ credential_access: Credential scanning was performed (see security findings)
+- ℹ️ destructive_payloads: Destructive payloads were not attempted (safe-mode only)
+
+## Runtime Profile
+
+_Analyzed at 2026-09-02T04:14:25.696Z_
 
 ## Regressions and Recoveries
 
@@ -33,24 +58,27 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
+| healthy | conformance | pass | 0.80 | All 7 conformance checks passed. |
+| healthy | resources | pass | 0.60 | Advertised capability responded with the minimal expected shape (1 items). |
+| healthy | runtime-profile | pass | 0.10 | No egress or state mutation indicators detected in tool schemas. |
+| healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 2.07 | Advertised capability responded with the minimal expected shape (5 items). |
+| review | schema-quality | partial | 0.49 | Found 1 quality finding(s) across 6 item(s): 1 warnings, 0 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
-| healthy | resources | pass | 1.03 | Advertised capability responded with the minimal expected shape (1 items). |
-| healthy | semantics | pass | 0.00 | Advertised capabilities responded and returned the minimal expected shape: tools, resources. |
-| healthy | tools | pass | 2.94 | Advertised capability responded with the minimal expected shape (5 items). |
 
 ## Evidence Snippets
 
-### prompts — unsupported
+### conformance — pass
 
-Summary: Prompts are not advertised by the target.
+Summary: All 7 conformance checks passed.
 
-- Endpoint: `prompts/list`
-  - Advertised: `false`
-  - Responded: `false`
-  - Minimal shape present: `false`
-  - Item count: `0`
+- Endpoint: `conformance/check`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `7`
   - Identifiers: none
-  - Diagnostics: none
+  - Diagnostics: [pass] capabilities-present: Server returned capabilities object., [pass] server-info: Server provided initialization info., [pass] tools-capability-match: tools/list returned 5 tool(s). (+4 more)
 
 ### resources — pass
 
@@ -71,30 +99,22 @@ Summary: Advertised capability responded with the minimal expected shape (1 item
   - Identifiers: none
   - Diagnostics: none
 
-### semantics — pass
+### runtime-profile — pass
 
-Summary: Advertised capabilities responded and returned the minimal expected shape: tools, resources.
+Summary: No egress or state mutation indicators detected in tool schemas.
 
-- Endpoint: `tools/list`
+_No evidence was captured._
+
+### security-lite — pass
+
+Summary: No security issues detected (lightweight scan).
+
+- Endpoint: `security/scan-lite`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
-  - Item count: `5`
-  - Identifiers: search-opentofu-registry, get-provider-details, get-module-details, get-resource-docs, get-datasource-docs
-  - Diagnostics: none
-- Endpoint: `prompts/list`
-  - Advertised: `false`
-  - Responded: `false`
-  - Minimal shape present: `false`
   - Item count: `0`
   - Identifiers: none
-  - Diagnostics: none
-- Endpoint: `resources/list | resources/templates/list`
-  - Advertised: `true`
-  - Responded: `true`
-  - Minimal shape present: `true`
-  - Item count: `1`
-  - Identifiers: opentofu:registry-info
   - Diagnostics: none
 
 ### tools — pass
@@ -109,6 +129,30 @@ Summary: Advertised capability responded with the minimal expected shape (5 item
   - Identifiers: search-opentofu-registry, get-provider-details, get-module-details, get-resource-docs, get-datasource-docs
   - Diagnostics: none
 
+### schema-quality — partial
+
+Summary: Found 1 quality finding(s) across 6 item(s): 1 warnings, 0 info.
+
+- Endpoint: `schema-quality/scan`
+  - Advertised: `true`
+  - Responded: `true`
+  - Minimal shape present: `true`
+  - Item count: `1`
+  - Identifiers: opentofu-registry-info
+  - Diagnostics: [warning] resource "opentofu-registry-info": Missing description
+
+### prompts — unsupported
+
+Summary: Prompts are not advertised by the target.
+
+- Endpoint: `prompts/list`
+  - Advertised: `false`
+  - Responded: `false`
+  - Minimal shape present: `false`
+  - Item count: `0`
+  - Identifiers: none
+  - Diagnostics: none
+
 ## Reproduction Commands
 
 ```bash
@@ -120,5 +164,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-03-19T042655684Z_47b34ad4`
+- Run ID: `run_2026-09-02T041423892Z_8795ad13`
 - Gate: `pass`

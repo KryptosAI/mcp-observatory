@@ -28,17 +28,16 @@ It helps platform and security teams answer a concrete procurement question:
 | Adoption risk | Runs locally with no hosted dependency required. |
 | Remediation tracking | Supports repeatable audits, CI gates, and future baseline diffing. |
 
-## Pilot Package
+## Release Gate Pilot
 
-A 30 day pilot should include:
+The fixed `$15,000` pilot covers 1-3 critical MCP servers over ten business days and includes:
 
-- 5 to 25 MCP servers scanned
+- 1 to 3 named MCP servers scanned
 - baseline `nsa-mcp` audit reports
 - SARIF uploaded to GitHub Code Scanning for selected repos
-- CI gate enabled on at least 3 repos
-- weekly scheduled audit runs
+- a CI gate and reproducible rerun configuration for the agreed scope
 - reviewer false-positive feedback
-- final remediation and adoption summary
+- an approve, gate, or defer decision with owner-ready remediation
 
 ## Example Commands
 
@@ -60,7 +59,7 @@ MCP Observatory should not collect secrets, environment dumps, file contents, or
 - Runtime: Node.js 20+
 - Integration points: CLI, GitHub Actions, SARIF, Markdown, JSON
 - Hosted service: optional, not required for local audit evidence
-- Certification claim: none
+- Certification or compliance-attestation claim: none
 - Government endorsement claim: none
 - Best fit: AI platform, AppSec, DevSecOps, AI assurance, software supply chain, and agent runtime security teams
 

@@ -57,7 +57,8 @@ describe("CLI entrypoint", () => {
     expect(stdout).toContain("packaged local demo server");
     expect(stdout).toContain("mcp-observatory-demo");
     expect(stdout).toContain("Safety Grade");
-    expect(stdout).toContain("pricing?plan=individual");
+    expect(stdout).toContain("cloud upload");
+    expect(stdout).not.toContain("pricing?plan=team");
   });
 
   it("prints a CI activation card when invoked with no arguments", () => {
@@ -214,7 +215,42 @@ describe("CLI entrypoint", () => {
     expect(exitCode).toBe(0);
     expect(stdout).toContain("MCP Observatory Cloud");
     expect(stdout).toContain("Release Gate Pilot");
-    expect(stdout).toContain("pricing?plan=team");
+    expect(stdout).toContain("Individual Pro: $29/month");
+    expect(stdout).toContain("cloud upload");
+    expect(stdout).not.toContain("pricing?plan=team");
+  });
+
+  it("cloud upload advertises a free snapshot instead of checkout", () => {
+    const { stdout, exitCode } = runCli(["cloud", "upload", "--help"]);
+    expect(exitCode).toBe(0);
+    expect(stdout.replaceAll(/\s+/g, " ")).toContain("The first hosted snapshot is free.");
+    expect(stdout).not.toContain("opens checkout");
+  });
+
+  it("validates the local artifact before starting cloud authentication", () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "mcp-obs-cloud-order-"));
+    const invalidArtifact = path.join(tmpDir, "invalid.json");
+    fs.writeFileSync(invalidArtifact, "{", "utf8");
+
+    const { stdout, stderr, exitCode } = runCliWithStderr([
+      "cloud", "upload", invalidArtifact,
+    ], {
+      timeout: 5_000,
+      env: {
+        HOME: tmpDir,
+        USERPROFILE: tmpDir,
+        XDG_CONFIG_HOME: tmpDir,
+        MCP_OBSERVATORY_CLOUD_TOKEN: "",
+        MCP_OBSERVATORY_CLOUD_URL: "http://127.0.0.1:9",
+        MCP_OBSERVATORY_TELEMETRY: "0",
+        DO_NOT_TRACK: "1",
+      },
+    });
+
+    expect(exitCode).not.toBe(0);
+    expect(stderr).toMatch(/JSON at position|Unexpected end of JSON input/);
+    expect(stderr).not.toContain("fetch failed");
+    expect(stdout).not.toContain("Signed in");
   });
 
   it("diff runs two sample artifacts", () => {
@@ -422,7 +458,7 @@ describe("CLI entrypoint", () => {
       const markdown = fs.readFileSync(receiptPath, "utf8");
       expect(markdown).toContain("# MCP Observatory Receipt");
       expect(markdown).toContain("public_safety_index");
-      expect(markdown).toContain("Request private fleet receipt pack");
+      expect(markdown).toContain("Request Release Gate Pilot");
       expect(markdown).toContain("mcp-observatory setup-ci --all");
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });

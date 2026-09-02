@@ -48,6 +48,20 @@ npx -y @kryptosai/mcp-observatory@latest
 
 Grades your configured MCP servers, or a packaged demo if you have none.
 
+Next, sign in with GitHub and upload one hosted snapshot free. The upload completes before any optional upgrade is shown:
+
+```bash
+npx -y @kryptosai/mcp-observatory@latest cloud upload
+```
+
+Then keep the local check running in CI:
+
+```bash
+npx -y @kryptosai/mcp-observatory@latest setup-ci --all
+```
+
+MCP Observatory uses jurisdiction-aware product telemetry after showing the collection notice. Review the exact fields with `telemetry preview`, check the current policy with `telemetry status`, or stop collection at any time with `telemetry disable`, `MCP_OBSERVATORY_TELEMETRY=0`, or `DO_NOT_TRACK=1`. See the complete [privacy and telemetry notice](./PRIVACY.md).
+
 ```bash
 npx -y @kryptosai/mcp-observatory@latest test npx -y @modelcontextprotocol/server-everything
 ```
@@ -75,7 +89,7 @@ Default-deny connect: `npx -y @kryptosai/mcp-observatory@latest protect` rewrite
 
 Runtime deny-default: `npx -y @kryptosai/mcp-observatory@latest enforce --start-proxy` writes a Seatbelt policy from the scan and starts the proxy. Local scan stays free.
 
-Proof: [Safety Index](https://mcp-observatory.com/safety-index/). Hosted history: [$29](https://app.mcp-observatory.com/pricing?plan=individual) · [$299](https://app.mcp-observatory.com/pricing?plan=team).
+Proof: [Safety Index](https://mcp-observatory.com/safety-index/). Upload one hosted snapshot free with `cloud upload`; [Individual Pro is $29/month](https://app.mcp-observatory.com/pricing?plan=individual) when you need retained history and hosted CI ingestion.
 
 ## Why MCP Observatory
 
@@ -93,7 +107,7 @@ Observatory gives maintainers and teams:
 - **Health score badges** for public trust signals
 - **Record/replay/verify** workflows for regression testing
 - **MCP server mode** so agents can inspect other MCP servers directly
-- **Production support path** for hosted history, private repo reporting, owner-ready remediation, support, and fleet visibility
+- **Production support path** for one-user hosted history, CI ingestion, and owner-ready Release Gate remediation
 
 See [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [MCP Receipts](./docs/mcp-receipts.md), [Troubleshooting](./docs/troubleshooting.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [MCP Observatory Contributors](./docs/contributor-recognition.md), [hosted client contract](./docs/api.md), [repository boundary](./docs/repository-boundary.md), [open core boundary](./docs/commercial-boundary.md), and [commercial support](./COMMERCIAL.md).
 
@@ -188,13 +202,14 @@ Or add it manually to your config:
 | `setup-ci` / `init-ci` | Create a GitHub Action and badge snippet for MCP compatibility/security checks |
 | `setup-ci --sarif` | Generate a workflow that uploads normalized findings to GitHub Code Scanning |
 | `setup-ci --doctor` | Inspect whether the repository has a complete CI adoption kit |
+| `telemetry status\|enable\|disable\|identify\|preview` | Inspect or control product telemetry and deliberately provide a contact email |
 | `risk-graph --input <path>` | Merge receipts and run artifacts into JSON, Markdown, and HTML MCP risk graphs |
 | `--no-attack-sim` | Opt out of the default safe attack simulation on `scan` or `test` |
 | `ci-report` | Generate CI report for GitHub issue creation |
 | `enterprise-report` | Generate a static production/security report from run artifacts |
 | `score <cmd>` | Score an MCP server's health (0-100) |
 | `badge <cmd>` | Generate an SVG health score badge for README |
-| `cloud` | Show hosted reporting, security review, and enterprise pilot options |
+| `cloud` | Show the free hosted snapshot, Individual Pro, and Release Gate Pilot options |
 
 Run with no arguments to start `demo`. Use `--menu` for the interactive catalog.
 
@@ -404,8 +419,9 @@ For clearer internal account attribution in CI, set:
 
 ```bash
 MCP_OBSERVATORY_ORG=your-company.com
-MCP_OBSERVATORY_CONTACT=your-team-contact
 ```
+
+To deliberately associate a contact email and optional contact-channel slug with private telemetry analytics, run `mcp-observatory telemetry identify --email <address> [--channel <slug>]`. Setting an organization or identifying a contact does not authorize outreach.
 
 Testing Feishu/Lark integrations? See the [Feishu/Lark MCP guide](./docs/feishu-lark-mcp.md).
 

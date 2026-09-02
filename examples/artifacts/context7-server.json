@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-03-19T042651779Z_06a46a74",
-  "createdAt": "2026-03-19T04:26:51.781Z",
-  "toolVersion": "0.2.0",
+  "runId": "run_2026-09-02T041416837Z_598e509e",
+  "createdAt": "2026-09-02T04:14:16.838Z",
+  "toolVersion": "1.37.1",
   "target": {
     "targetId": "context7-server",
     "adapter": "local-process",
@@ -21,18 +21,18 @@
       "whyItMatters": "Zero-config third-party tools server that keeps the matrix grounded in real package usage."
     },
     "serverName": "Context7",
-    "serverVersion": "2.1.4"
+    "serverVersion": "4.0.4"
   },
   "environment": {
-    "platform": "darwin 25.3.0",
-    "nodeVersion": "v22.22.1"
+    "platform": "darwin 25.5.0",
+    "nodeVersion": "v22.23.1"
   },
   "summary": {
-    "total": 3,
-    "pass": 1,
+    "total": 7,
+    "pass": 7,
     "fail": 0,
     "partial": 0,
-    "unsupported": 2,
+    "unsupported": 0,
     "flaky": 0,
     "skipped": 0,
     "gate": "pass"
@@ -42,7 +42,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 3.1909590000000208,
+      "durationMs": 2.827874999999949,
       "message": "Advertised capability responded with the minimal expected shape (2 items).",
       "evidence": [
         {
@@ -56,42 +56,280 @@
             "query-docs"
           ],
           "diagnostics": [
-            "Context7 Documentation MCP Server v2.1.4 running on stdio"
-          ]
+            "Context7 Documentation MCP Server v4.0.4 running on stdio"
+          ],
+          "schemas": {
+            "resolve-library-id": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "description": "What to look up in the library's documentation. This is used to rank library results by relevance to what the user is trying to accomplish. The query is sent to the Context7 API for processing. Do not include any sensitive or confidential information such as API keys, passwords, credentials, personal data, or proprietary code in your query."
+                },
+                "libraryName": {
+                  "type": "string",
+                  "description": "Library name to search for and retrieve a Context7-compatible library ID. Use the official library name with proper punctuation — e.g., 'Next.js' instead of 'nextjs', 'Customer.io' instead of 'customerio', 'Three.js' instead of 'threejs'."
+                }
+              },
+              "required": [
+                "query",
+                "libraryName"
+              ],
+              "$schema": "https://json-schema.org/draft/2020-12/schema"
+            },
+            "query-docs": {
+              "type": "object",
+              "properties": {
+                "libraryId": {
+                  "type": "string",
+                  "description": "Exact Context7-compatible library ID (e.g., '/mongodb/docs', '/vercel/next.js', '/supabase/supabase', '/vercel/next.js/v14.3.0-canary.87') retrieved from 'resolve-library-id' or directly from user query in the format '/org/project' or '/org/project/version'."
+                },
+                "query": {
+                  "type": "string",
+                  "description": "What to look up in the library's documentation, scoped to a single concept. Be specific and include relevant details, but keep each query to one topic — if the user's question spans multiple distinct concepts, make a separate call per concept instead of combining them, unless the question is about how the concepts interact. Good: 'How to set up authentication with JWT in Express.js' or 'React useEffect cleanup function examples'. Bad (too vague): 'auth' or 'hooks'. Bad (too broad): 'routing and auth and caching in Next.js'. The query is sent to the Context7 API for processing. Do not include any sensitive or confidential information such as API keys, passwords, credentials, personal data, or proprietary code in your query."
+                }
+              },
+              "required": [
+                "libraryId",
+                "query"
+              ],
+              "$schema": "https://json-schema.org/draft/2020-12/schema"
+            }
+          }
         }
       ]
     },
     {
       "id": "prompts",
       "capability": "prompts",
-      "status": "unsupported",
-      "durationMs": 0.0027500000001055014,
-      "message": "Prompts are not advertised by the target.",
+      "status": "pass",
+      "durationMs": 1.042207999999846,
+      "message": "Advertised capability responded with the minimal expected shape (0 items).",
       "evidence": [
         {
           "endpoint": "prompts/list",
-          "advertised": false,
-          "responded": false,
-          "minimalShapePresent": false,
-          "diagnostics": []
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": [],
+          "diagnostics": [
+            "Context7 Documentation MCP Server v4.0.4 running on stdio"
+          ]
         }
       ]
     },
     {
       "id": "resources",
       "capability": "resources",
-      "status": "unsupported",
-      "durationMs": 0.0015419999999721767,
-      "message": "Resources are not advertised by the target.",
+      "status": "pass",
+      "durationMs": 0.9382080000000315,
+      "message": "Advertised capability responded with the minimal expected shape (0 items).",
       "evidence": [
         {
-          "endpoint": "resources/list | resources/templates/list",
-          "advertised": false,
-          "responded": false,
-          "minimalShapePresent": false,
-          "diagnostics": []
+          "endpoint": "resources/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": [],
+          "diagnostics": [
+            "Context7 Documentation MCP Server v4.0.4 running on stdio"
+          ]
+        },
+        {
+          "endpoint": "resources/templates/list",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": [],
+          "diagnostics": [
+            "Context7 Documentation MCP Server v4.0.4 running on stdio"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security-lite",
+      "capability": "security-lite",
+      "status": "pass",
+      "durationMs": 0.7142910000002303,
+      "message": "No security issues detected (lightweight scan).",
+      "evidence": [
+        {
+          "endpoint": "security/scan-lite",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0
+        }
+      ]
+    },
+    {
+      "id": "runtime-profile",
+      "capability": "runtime-profile",
+      "status": "pass",
+      "durationMs": 1.1140000000000327,
+      "message": "Detected 2 potential egress target(s) and 1 potential state mutation(s) with low confidence.",
+      "evidence": [
+        {
+          "endpoint": "runtime-profile/analyze",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 3,
+          "diagnostics": [
+            "Egress entries: 2",
+            "State mutations: 1",
+            "Confidence: medium"
+          ],
+          "findings": [
+            {
+              "target": "What to look up in the library's documentation. This is used to rank library results by relevance to what the user is trying to accomplish. The query is sent to the Context7 API for processing. Do not include any sensitive or confidential information such as API keys, passwords, credentials, personal data, or proprietary code in your query.",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "What to look up in the library's documentation, scoped to a single concept. Be specific and include relevant details, but keep each query to one topic — if the user's question spans multiple distinct concepts, make a separate call per concept instead of combining them, unless the question is about how the concepts interact. Good: 'How to set up authentication with JWT in Express.js' or 'React useEffect cleanup function examples'. Bad (too vague): 'auth' or 'hooks'. Bad (too broad): 'routing and auth and caching in Next.js'. The query is sent to the Context7 API for processing. Do not include any sensitive or confidential information such as API keys, passwords, credentials, personal data, or proprietary code in your query.",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "resource": "filesystem",
+              "operation": "write",
+              "scope": "working_directory",
+              "source": "description_analysis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conformance",
+      "capability": "conformance",
+      "status": "pass",
+      "durationMs": 2.097708000000239,
+      "message": "All 7 conformance checks passed.",
+      "evidence": [
+        {
+          "endpoint": "conformance/check",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 7,
+          "identifiers": [],
+          "diagnostics": [
+            "[pass] capabilities-present: Server returned capabilities object.",
+            "[pass] server-info: Server provided initialization info.",
+            "[pass] tools-capability-match: tools/list returned 2 tool(s).",
+            "[pass] prompts-capability-match: prompts/list returned 0 prompt(s).",
+            "[pass] resources-capability-match: resources/list returned 0 resource(s).",
+            "[pass] tool-response-content: No safe tool to invoke — content validation skipped.",
+            "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema-quality",
+      "capability": "schema-quality",
+      "status": "pass",
+      "durationMs": 1.0177920000000995,
+      "message": "All 2 item(s) have good schema quality.",
+      "evidence": [
+        {
+          "endpoint": "schema-quality/scan",
+          "advertised": true,
+          "responded": true,
+          "minimalShapePresent": true,
+          "itemCount": 0,
+          "identifiers": []
         }
       ]
     }
-  ]
+  ],
+  "healthScore": {
+    "overall": 100,
+    "grade": "A",
+    "dimensions": [
+      {
+        "name": "Protocol Compliance",
+        "weight": 0.3,
+        "score": 100,
+        "details": [
+          "conformance: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Schema Quality",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "schema-quality: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Security",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "security-lite: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Reliability",
+        "weight": 0.2,
+        "score": 100,
+        "details": [
+          "tools: pass (100/100)",
+          "prompts: pass (100/100)",
+          "resources: pass (100/100)"
+        ]
+      },
+      {
+        "name": "Performance",
+        "weight": 0.1,
+        "score": 100,
+        "details": [
+          "Connect: 3706ms",
+          "p95 latency: 3ms (3 operations)"
+        ]
+      }
+    ]
+  },
+  "performanceMetrics": {
+    "connectMs": 3706.426417,
+    "toolsListMs": 2.827874999999949,
+    "promptsListMs": 1.042207999999846,
+    "resourcesListMs": 0.9382080000000315
+  },
+  "runtimeProfile": {
+    "egress": [
+      {
+        "target": "What to look up in the library's documentation. This is used to rank library results by relevance to what the user is trying to accomplish. The query is sent to the Context7 API for processing. Do not include any sensitive or confidential information such as API keys, passwords, credentials, personal data, or proprietary code in your query.",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "What to look up in the library's documentation, scoped to a single concept. Be specific and include relevant details, but keep each query to one topic — if the user's question spans multiple distinct concepts, make a separate call per concept instead of combining them, unless the question is about how the concepts interact. Good: 'How to set up authentication with JWT in Express.js' or 'React useEffect cleanup function examples'. Bad (too vague): 'auth' or 'hooks'. Bad (too broad): 'routing and auth and caching in Next.js'. The query is sent to the Context7 API for processing. Do not include any sensitive or confidential information such as API keys, passwords, credentials, personal data, or proprietary code in your query.",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      }
+    ],
+    "stateMutations": [
+      {
+        "resource": "filesystem",
+        "operation": "write",
+        "scope": "working_directory",
+        "source": "description_analysis"
+      }
+    ],
+    "analyzedAt": "2026-09-02T04:14:20.552Z",
+    "confidence": "medium"
+  }
 }

@@ -131,4 +131,4 @@ Use the results as an engineering control:
 - compare artifacts between releases
 - review security findings and suppressions
 - document accepted risk for broad tools
-- escalate production/private usage to hosted reporting, certification, or fleet visibility when the server becomes operationally important
+- upload one free hosted snapshot, then use Individual Pro history or the fixed-scope Release Gate Pilot when the server becomes operationally important

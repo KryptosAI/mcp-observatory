@@ -58,7 +58,7 @@ Start here:
 - Target registry: `docs/target-registry.md`
 - Target contribution guide: `docs/target-contribution-guide.md`
 - Contribution guide: `CONTRIBUTING.md`
-- Certification distribution loop: `docs/certification-distribution.md`
+- Evidence distribution loop: `docs/certification-distribution.md`
 - GitHub issue tracker: https://github.com/KryptosAI/mcp-observatory/issues
 
 ## Positioning

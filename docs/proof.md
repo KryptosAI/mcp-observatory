@@ -33,13 +33,15 @@ MCP Observatory can:
 
 ## Commercial path
 
-The free wedge is local testing and public repository CI. Paid value is
-production/private use through the hosted control plane:
+The free wedge is unlimited local testing, public repository CI, and one latest
+hosted snapshot. Individual Pro adds one-user hosted continuity:
 
 - hosted CI history
-- private repository reporting
-- recurring security reviews
-- support and rollout review
-- fleet visibility and enterprise workflows
+- 90-day score and gate history
+- regression markers
+- artifact downloads
+
+The separate Release Gate Pilot is a fixed $15,000, 1–3-server, ten-business-day
+owner-ready release decision.
 
 See COMMERCIAL.md and the repository boundary document for the split.

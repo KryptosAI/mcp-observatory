@@ -43,6 +43,12 @@ interface SafetyTarget {
   whyItMatters: string;
 }
 
+const EVALUATED_TECHNOLOGIES = [
+  { name: "Microsoft", logo: "microsoft.svg", targetId: "playwright-mcp-server" },
+  { name: "Google", logo: "google.svg", targetId: "google-drive-server" },
+  { name: "Cloudflare", logo: "cloudflare.svg", targetId: "cloudflare-server" },
+] as const;
+
 function badge(targetId: string, gate: "pass" | "fail"): string {
   const label = "observatory";
   const message = gate === "pass" ? "passing" : "failing";
@@ -88,13 +94,18 @@ function escapeHtml(s: string): string {
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", {
-    year: "numeric", month: "short", day: "numeric",
+    year: "numeric", month: "short", day: "numeric", timeZone: "UTC",
   });
 }
 
 function buildHtml(current: MatrixSummaryEntry[], history: HistoryEntry[], safetyTargets: SafetyTarget[]): string {
   const passCount = current.filter(e => e.gate === "pass").length;
   const failCount = current.filter(e => e.gate === "fail").length;
+  const latestRecordedRun = current.reduce<string | undefined>((latest, entry) => {
+    if (latest === undefined) return entry.runDate;
+    return Date.parse(entry.runDate) > Date.parse(latest) ? entry.runDate : latest;
+  }, undefined);
+  const latestRecordedRunLabel = latestRecordedRun === undefined ? "not yet recorded" : formatDate(latestRecordedRun);
 
   const rows = current.map(entry => {
     const gateColor = entry.gate === "pass" ? "#4c1" : "#e05d44";
@@ -129,6 +140,15 @@ function buildHtml(current: MatrixSummaryEntry[], history: HistoryEntry[], safet
       <p>${escapeHtml(target.whyItMatters)}</p>
       <div class="card-footer"><span>${escapeHtml(target.failureClass)}</span><a href="https://github.com/KryptosAI/mcp-observatory/blob/main/docs/safety-index/artifacts/${escapeHtml(target.id)}.md">View proof ↗</a></div>
     </article>`).join("\n");
+  const targetIds = new Set(safetyTargets.map(target => target.id));
+  for (const technology of EVALUATED_TECHNOLOGIES) {
+    if (!targetIds.has(technology.targetId)) {
+      throw new Error(`Evaluated-technology logo ${technology.name} has no Safety Index target ${technology.targetId}`);
+    }
+  }
+  const evaluatedTechnologyLogos = EVALUATED_TECHNOLOGIES.map(technology =>
+    `<a class="logo-strip-logo" href="/safety-index/servers/${escapeHtml(technology.targetId)}.html" aria-label="View the ${escapeHtml(technology.name)} evaluation"><img src="/proof-logos/${escapeHtml(technology.logo)}" alt="${escapeHtml(technology.name)}"></a>`,
+  ).join("");
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -164,21 +184,21 @@ function buildHtml(current: MatrixSummaryEntry[], history: HistoryEntry[], safet
   <div class="container">
     <nav class="nav" aria-label="Primary navigation"><a class="brand" href="/" aria-label="MCP Observatory home" aria-current="page"><img src="/mcp-observatory-logo-v2.png" alt="MCP Observatory"></a><div class="navlinks"><a href="/safety-index/">Safety Index</a><a href="/release-gate-pilot/">Release Gate</a><a href="/partners/">Partners</a><a class="button" href="https://www.npmjs.com/package/@kryptosai/mcp-observatory">Install ↗</a></div></nav>
     <main id="main-content" class="home-main">
-    <section class="hero"><div><div class="eyebrow">THE MOMENT BEFORE TRUST</div><h1>Trust is a <span>production decision.</span></h1><p class="subtitle">MCP Observatory gives platform and security teams the evidence to approve, gate, or defer every MCP dependency—before agents build on it.</p><div class="hero-actions"><a class="button primary" href="https://www.npmjs.com/package/@kryptosai/mcp-observatory">Run the free scan ↗</a><a class="button" href="/safety-index/">See the evidence ↗</a></div><div class="try-command"><code>npx -y @kryptosai/mcp-observatory@latest enforce --start-proxy</code><span>Free local policy + proxy</span></div></div><aside class="hero-product" aria-label="MCP Observatory decision preview"><div class="product-windowbar"><span>MCP Observatory / Decision</span><span class="window-status">LIVE</span></div><div class="hero-product-heading"><div><span class="product-label">KUBERNETES MCP</span><strong>72</strong></div><span class="decision-badge blocked">BLOCKED</span></div><div class="decision-meter"><span></span></div><div class="decision-stats"><div><strong>0</strong><span>security /100</span></div><div><strong>3</strong><span>high-risk findings</span></div></div><div class="decision-checks"><div><span class="check-mark">✓</span> Tool permissions evaluated</div><div><span class="check-mark">✓</span> Schema drift checked</div><div><span class="check-mark">✓</span> CI release rule ready</div></div></aside></section>
-    <section class="logo-strip" aria-label="Organizations represented in observed evaluations"><div class="logo-strip-logos"><div class="logo-strip-logo"><img src="/proof-logos/microsoft.svg" alt="Microsoft"></div><div class="logo-strip-logo"><img src="/proof-logos/google.svg" alt="Google"></div><div class="logo-strip-logo"><img src="/proof-logos/oracle.svg" alt="Oracle"></div><div class="logo-strip-logo"><img src="/proof-logos/cisco.svg" alt="Cisco"></div><div class="logo-strip-logo"><img src="/proof-logos/accenture.svg" alt="Accenture"></div><div class="logo-strip-logo"><img src="/proof-logos/cloudflare.svg" alt="Cloudflare"></div></div></section>
+    <section class="hero"><div><div class="eyebrow">THE MOMENT BEFORE TRUST</div><h1>Trust is a <span>production decision.</span></h1><p class="subtitle">MCP Observatory gives platform and security teams the evidence to approve, gate, or defer every MCP dependency—before agents build on it.</p><div class="hero-actions"><a class="button primary" href="https://www.npmjs.com/package/@kryptosai/mcp-observatory">Run your first scan ↗</a></div><div class="try-command"><code>npx -y @kryptosai/mcp-observatory@latest</code><span>First: successful local scan</span></div><div class="try-command"><code>npx -y @kryptosai/mcp-observatory@latest cloud upload</code><span>Next: one hosted snapshot free</span></div></div><aside class="hero-product" aria-label="MCP Observatory decision preview"><div class="product-windowbar"><span>MCP Observatory / Decision</span><span class="window-status">LIVE</span></div><div class="hero-product-heading"><div><span class="product-label">KUBERNETES MCP</span><strong>72</strong></div><span class="decision-badge blocked">BLOCKED</span></div><div class="decision-meter"><span></span></div><div class="decision-stats"><div><strong>0</strong><span>security /100</span></div><div><strong>3</strong><span>high-risk findings</span></div></div><div class="decision-checks"><div><span class="check-mark">✓</span> Tool permissions evaluated</div><div><span class="check-mark">✓</span> Schema drift checked</div><div><span class="check-mark">✓</span> CI release rule ready</div></div></aside></section>
+    <section class="logo-strip" aria-label="Technologies represented in published evaluations"><div class="logo-strip-logos">${evaluatedTechnologyLogos}</div><p class="logo-strip-note">Evaluated technologies, not MCP Observatory customers, endorsements, or partnerships.</p></section>
     <section class="case-study product-proof"><div class="case-copy"><div class="eyebrow">PRODUCT PROOF</div><h2>Evidence for every release decision.</h2><p>Every agent is only as trustworthy as the tools it can reach. Observatory turns a server connection into a visible approve, gate, or defer decision before production.</p><a class="button" href="/safety-index/servers/kubernetes-server">Inspect the Kubernetes evidence ↗</a></div><div class="result-card"><div class="result-head"><div><span class="eyebrow">Kubernetes MCP</span><div class="result-score">72<small>/100</small></div></div><span class="blocked">BLOCKED</span></div><div class="result-bar"><span></span></div><div class="finding-row"><span>Protocol compliance</span><b>100/100</b></div><div class="finding-row"><span>Security</span><b style="color:var(--red)">0/100</b></div><div class="finding-row"><span>High-risk findings</span><b>3</b></div><div class="finding-row"><span>Medium findings</span><b>3</b></div></div></section>
     <section class="product-intro"><div class="eyebrow" style="justify-content:center">HOW IT WORKS</div><h2>Scan once. Enforce at runtime. Ship with confidence.</h2><p>One evidence loop for local development, CI, and production release review.</p></section>
     <section class="features"><article class="feature"><span class="feature-icon">01</span><h3>Scan</h3><p>Connect to an MCP server and enumerate tools, prompts, resources, schemas, and security boundaries.</p></article><article class="feature"><span class="feature-icon">02</span><h3>Evaluate</h3><p>Run deterministic behavioral, security, permission, and drift checks with receipts behind every finding.</p></article><article class="feature"><span class="feature-icon">03</span><h3>Enforce</h3><p>Write a deny-default Seatbelt policy from the findings and start the runtime proxy. Local scan stays free.</p></article><article class="feature"><span class="feature-icon">04</span><h3>Decide</h3><p>Approve, gate, or defer with a report, CI status, SARIF output, and an owner-ready next action.</p></article></section>
     <section class="team-section" id="teams"><div><div class="eyebrow">RELEASE-GATE WORKFLOW</div><h2>Don’t discover your security policy in production.</h2><p class="subtitle">Set the decision once, then keep it running in CI. The Release Gate Pilot gives platform and security teams private evidence, owner-ready remediation, and a durable rule for every critical MCP dependency.</p><div class="hero-actions"><a class="button primary" href="/release-gate-pilot/">Request a Release Gate Pilot ↗</a><a class="button" href="/partners/">Partner with us ↗</a></div></div><div class="team-points"><div><b>Approve.</b> Ship dependencies that meet the evidence threshold.</div><div><b>Gate.</b> Stop unsafe capability or permission drift before release.</div><div><b>Defer.</b> Keep unresolved findings visible with a clear owner and next action.</div></div></section>
-    <section class="team-section" id="pricing"><div><div class="eyebrow">Self-serve hosted plans</div><h2>Keep the evidence running after the scan.</h2><p class="subtitle">Start with the open-source CLI, then add hosted history and CI checks when you need them.</p><div class="hero-actions"><a class="button" href="https://app.mcp-observatory.com/pricing?plan=individual">Start Individual Pro · $29/mo ↗</a><a class="button primary" href="https://app.mcp-observatory.com/pricing?plan=team">Start Team · $299/mo ↗</a></div></div><div class="team-points"><div><b>Individual Pro · $29/month.</b> Hosted evidence, scan history, and CI checks for one developer.</div><div><b>Team · $299/month.</b> Fleet health, private evidence, and team release-gate workflows.</div><div><b>Need a scoped decision?</b> <a href="/release-gate-pilot/">Request the $15k Release Gate Pilot ↗</a></div></div></section>
+    <section class="team-section" id="pricing"><div><div class="eyebrow">Self-serve hosted</div><h2>See the hosted result before paying.</h2><p class="subtitle">Run locally, sign in with GitHub through <code>cloud upload</code>, and keep one latest snapshot free. Upgrade only when retained history and hosted CI become useful.</p><div class="hero-actions"><a class="button primary" href="https://app.mcp-observatory.com/pricing">Review Individual Pro · $29/mo ↗</a><a class="button" href="https://github.com/KryptosAI/mcp-observatory/blob/main/TERMS.md">Hosted terms ↗</a></div></div><div class="team-points"><div><b>Free hosted snapshot.</b> Sign in and upload one result before checkout.</div><div><b>Individual Pro · $29/month.</b> 90-day history, hosted CI ingestion, regression markers, and artifact downloads for one developer.</div><div><b>Need a scoped decision?</b> <a href="/release-gate-pilot/">Request the $15,000 Release Gate Pilot ↗</a></div></div></section>
     <section class="demo-section" id="demo"><div class="demo-copy"><div class="eyebrow">METHODOLOGY &amp; EVIDENCE</div><h2>Don’t trust a score you can’t inspect.</h2><p>Watch MCP Observatory connect to a server, enumerate its capabilities, run security checks, and produce the evidence behind the decision.</p><a class="button" href="https://www.npmjs.com/package/@kryptosai/mcp-observatory">Install and run it ↗</a></div><div class="demo-frame"><img src="/demo.gif" alt="MCP Observatory running a real MCP server security scan" loading="lazy"></div></section>
     <div class="section-title" id="index"><div class="eyebrow">MCP Safety Index</div><h2>${safetyTargets.length} evaluated servers</h2><p>A searchable evidence directory that grows automatically with the registry.</p></div>
-    <div class="index-note"><b>Indexed does not mean failed.</b><span>This directory includes runnable, credential-gated, and schema-only evaluations. Pass/fail applies only to the credential-free daily verification below.</span></div>
+    <div class="index-note"><b>Indexed does not mean failed.</b><span>This directory includes runnable, credential-gated, and schema-only evaluations. Pass/fail applies only to the latest recorded credential-free verification below.</span></div>
     <div class="directory-tools"><label class="field-label">Search indexed servers<input id="server-search" type="search" placeholder="Search servers, packages, categories, or risks…"></label><label class="field-label">Filter by category<select id="category-filter"><option value="">All categories</option>${categoryOptions}</select></label></div>
     <p class="directory-status" id="directory-status">Showing 12 of ${safetyTargets.length} servers</p>
     <div class="server-grid" id="server-grid">${safetyCards}</div>
     <button class="show-more" id="show-more" type="button">Show 12 more</button>
-    <div class="section-title"><div class="eyebrow">Daily verification</div><h2>Live compatibility matrix</h2><p>${current.length} credential-free targets rerun every day.</p></div>
+    <div class="section-title"><div class="eyebrow">Recorded verification</div><h2>Credential-free compatibility matrix</h2><p>${current.length} credential-free targets. Latest recorded run: ${latestRecordedRunLabel}; each row shows its actual check date.</p></div>
 
     <div class="summary">
       <div class="stat pass">
@@ -212,11 +232,11 @@ function buildHtml(current: MatrixSummaryEntry[], history: HistoryEntry[], safet
       </tbody>
     </table></div>
 
-    <section class="final-cta"><div><div class="eyebrow">EVIDENCE FOR EVERY RELEASE DECISION</div><h2>Know what your agents can reach before they reach it.</h2><p>Run the free scan locally, then keep the failing gate hosted.</p></div><div class="final-cta-actions"><a class="button primary" href="https://app.mcp-observatory.com/pricing?plan=individual">Start $29 ↗</a><a class="button" href="https://www.npmjs.com/package/@kryptosai/mcp-observatory">Run the free scan ↗</a></div></section>
+    <section class="final-cta"><div><div class="eyebrow">EVIDENCE FOR EVERY RELEASE DECISION</div><h2>Know what your agents can reach before they reach it.</h2><p>Run the free scan locally, then use <code>cloud upload</code> to see one hosted snapshot before paying.</p></div><div class="final-cta-actions"><a class="button primary" href="https://www.npmjs.com/package/@kryptosai/mcp-observatory">Run the free scan ↗</a><a class="button" href="https://app.mcp-observatory.com/pricing">Review Individual Pro ↗</a></div></section>
 
     <div class="footer">
       Powered by <a href="https://github.com/KryptosAI/mcp-observatory">MCP Observatory</a>
-      &middot; Updated ${formatDate(new Date().toISOString())}
+      &middot; Directory built ${formatDate(new Date().toISOString())}; verification dates are shown per row
     </div>
     </main>
   </div>

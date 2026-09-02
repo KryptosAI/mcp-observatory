@@ -1,4 +1,4 @@
-# Certification Distribution Loop
+# Evidence Distribution Loop
 
 Use this when opening helpful PRs to MCP server projects. The motion is simple: run MCP Observatory, give the maintainer a useful security/compatibility check, and leave them with a badge/report they can keep.
 
@@ -10,7 +10,7 @@ MCP Observatory gives MCP server maintainers:
 - A PR comment report on every change
 - A README badge they can show publicly
 - A local-first OSS path with no account required
-- A paid production path only if they need hosted history, private repo reporting, support, certification, or fleet visibility
+- A paid production path only if they need retained hosted history or a fixed-scope release decision
 
 ## Copy-Paste Badge
 
@@ -141,4 +141,4 @@ After a repo accepts the check or badge:
 
 - ask the maintainer to mention “tested with MCP Observatory” in their MCP directory listing
 - update the public proof docs with the accepted repo
-- invite production users to hosted reporting when they need private history or certification
+- invite production users to upload one free snapshot, then choose Individual Pro only if they need retained history
