@@ -34,7 +34,7 @@
 
 **Secure the MCP servers you're building.** MCP Observatory is the CI-native security tool for teams shipping custom MCP servers. Test during development, catch schema drift, simulate attacks, and generate compliance evidence — before agents depend on your servers.
 
-Also available in [Simplified Chinese](README.zh-CN.md).
+Also available in [Simplified Chinese](README-zh-CN.md).
 
 > **Runtime enforcement:** Use [mcp-seatbelt](https://github.com/KryptosAI/mcp-seatbelt) to block dangerous MCP tool calls at runtime based on observatory scan results.
 

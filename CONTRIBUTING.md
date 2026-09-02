@@ -6,7 +6,7 @@ This project adheres to a [Contributor Covenant Code of Conduct](./CODE_OF_CONDU
 
 ## International contributors
 
-Simplified Chinese docs: [README.zh-CN.md](README.zh-CN.md) and [CONTRIBUTING.zh-CN.md](CONTRIBUTING.zh-CN.md). Issues and pull requests in Chinese or Korean are welcome. A Gitee mirror is at https://gitee.com/williamweishuhn/mcp-observatory.
+Simplified Chinese docs: [README-zh-CN.md](README-zh-CN.md) and [CONTRIBUTING.zh-CN.md](CONTRIBUTING.zh-CN.md). Issues and pull requests in Chinese or Korean are welcome. A Gitee mirror is at https://gitee.com/williamweishuhn/mcp-observatory.
 
 ## Quickstart
 

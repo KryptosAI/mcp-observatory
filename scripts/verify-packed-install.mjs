@@ -28,8 +28,20 @@ if (!tarballName) {
 
 const tarballPath = path.join(packDir, tarballName);
 const packedFiles = execFileSync("tar", ["-tzf", tarballPath], { encoding: "utf8" });
-if (!packedFiles.split(/\r?\n/).includes("package/docs/paid-pilot-offer.md")) {
+const packedFileSet = new Set(packedFiles.split(/\r?\n/));
+if (!packedFileSet.has("package/docs/paid-pilot-offer.md")) {
   throw new Error("Packed install is missing docs/paid-pilot-offer.md linked from COMMERCIAL.md.");
+}
+const npmReadmeCandidates = [...packedFileSet]
+  .filter(file => /^package\/README(?:\..*)?$/i.test(file))
+  .sort();
+if (npmReadmeCandidates.length !== 1 || npmReadmeCandidates[0] !== "package/README.md") {
+  throw new Error(`Packed install has ambiguous npm README candidates: ${npmReadmeCandidates.join(", ")}`);
+}
+for (const readme of ["package/README.md", "package/README-zh-CN.md"]) {
+  if (!packedFileSet.has(readme)) {
+    throw new Error(`Packed install is missing ${readme}.`);
+  }
 }
 const execDir = mkdtempSync(path.join(os.tmpdir(), "mcp-observatory-install-"));
 

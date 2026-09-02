@@ -35,6 +35,7 @@
   "files": [
     "dist/src",
     "README.md",
+    "README-zh-CN.md",
     "COMMERCIAL.md",
     "CONTRIBUTORS.md",
     "PRIVACY.md",

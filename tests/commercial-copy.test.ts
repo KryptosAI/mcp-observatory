@@ -1,10 +1,10 @@
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 
 import { describe, expect, it } from "vitest";
 
 const USER_FACING_FILES = [
   "README.md",
-  "README.zh-CN.md",
+  "README-zh-CN.md",
   "COMMERCIAL.md",
   "TERMS.md",
   "src/cli.ts",
@@ -17,6 +17,7 @@ const USER_FACING_FILES = [
   "scripts/build-dashboard.ts",
   "scripts/generate-server-pages.ts",
   "dashboard/index.html",
+  "dashboard/_redirects",
   "dashboard/release-gate-pilot/index.html",
   "dashboard/sitemap.xml",
   "llms.txt",
@@ -48,6 +49,40 @@ async function combinedCopy(): Promise<string> {
 }
 
 describe("commercial copy consistency", () => {
+  it("keeps English as npm's only root README candidate", async () => {
+    const rootEntries = await readdir(process.cwd(), { withFileTypes: true });
+    const npmReadmeCandidates = rootEntries
+      .filter(entry => entry.isFile() && /^README(?:\..*)?$/i.test(entry.name))
+      .map(entry => entry.name)
+      .sort();
+    const packageJson = JSON.parse(await readFile("package.json", "utf8")) as { files?: string[] };
+    const englishReadme = await readFile("README.md", "utf8");
+    const chineseReadme = await readFile("README-zh-CN.md", "utf8");
+    const chineseDocsIndex = await readFile("docs/zh/README.md", "utf8");
+
+    expect(npmReadmeCandidates).toEqual(["README.md"]);
+    expect(packageJson.files).toContain("README-zh-CN.md");
+    expect(englishReadme).toContain("[Simplified Chinese](README-zh-CN.md)");
+    expect(chineseReadme).toContain("🇺🇸 English: [README.md](README.md)");
+    expect(chineseDocsIndex).toContain("[简体中文 README](../../README-zh-CN.md)");
+  });
+
+  it("redirects both public terms paths to the canonical terms", async () => {
+    const canonicalTermsUrl = "https://app.mcp-observatory.com/terms";
+    const redirects = (await readFile("dashboard/_redirects", "utf8"))
+      .split(/\r?\n/)
+      .map(line => line.trim())
+      .filter(line => line.length > 0 && !line.startsWith("#"));
+    const termsRules = redirects.filter(line => /^\/terms\/?\s/.test(line));
+    const dashboardSource = await readFile("scripts/build-dashboard.ts", "utf8");
+
+    expect(termsRules).toEqual([
+      `/terms ${canonicalTermsUrl} 302`,
+      `/terms/ ${canonicalTermsUrl} 302`,
+    ]);
+    expect(dashboardSource).toContain('href="/terms/"');
+  });
+
   it("does not advertise an unavailable self-service Team plan", async () => {
     const source = await combinedCopy();
 

@@ -1,4 +1,14 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+const authMocks = vi.hoisted(() => ({
+  getAccessToken: vi.fn(),
+  hasValidToken: vi.fn(),
+  whoami: vi.fn(),
+}));
+
+// Keep these wrapper tests hermetic: a developer's real auth file must never
+// affect assertions or appear in failure output. auth.test.ts covers storage.
+vi.mock("../src/auth.js", () => authMocks);
 
 import {
   cloudUpgradeLine,
@@ -13,6 +23,13 @@ import {
 import { setQuiet } from "../src/commands/helpers.js";
 
 const originalEnv = { ...process.env };
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  authMocks.getAccessToken.mockResolvedValue(null);
+  authMocks.hasValidToken.mockReturnValue(false);
+  authMocks.whoami.mockResolvedValue({ authenticated: false });
+});
 
 afterEach(() => {
   process.env = { ...originalEnv };
@@ -118,15 +135,19 @@ describe("commercial cloud messaging", () => {
   it("getCloudAccessToken prefers env token over stored token", async () => {
     process.env["MCP_OBSERVATORY_CLOUD_TOKEN"] = "env-token";
     expect(await getCloudAccessToken()).toBe("env-token");
+    expect(authMocks.getAccessToken).not.toHaveBeenCalled();
+
     delete process.env["MCP_OBSERVATORY_CLOUD_TOKEN"];
-    // Falls back to stored token (null when no auth.json exists)
+    // Falls back through the mocked auth boundary, never developer storage.
     expect(await getCloudAccessToken()).toBeNull();
+    expect(authMocks.getAccessToken).toHaveBeenCalledOnce();
   });
 
   it("cloudWhoami returns unauthenticated when no token exists", async () => {
     delete process.env["MCP_OBSERVATORY_CLOUD_TOKEN"];
     const info = await cloudWhoami();
     expect(info.authenticated).toBe(false);
+    expect(authMocks.whoami).toHaveBeenCalledOnce();
   });
 
   it("allows hosted upload endpoint overrides while preserving the production default", () => {
