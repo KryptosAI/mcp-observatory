@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { chmod, readFile, writeFile, mkdir } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { homedir } from "node:os";
 import path from "node:path";
@@ -8,6 +8,15 @@ const execFileAsync = promisify(execFile);
 
 const AUTH_DIR = path.join(homedir(), ".mcp-observatory");
 const TOKEN_FILE = path.join(AUTH_DIR, "auth.json");
+const AUTH_DIR_MODE = 0o700;
+const TOKEN_FILE_MODE = 0o600;
+const MAX_CLOUD_DEVICE_FLOW_SECONDS = 15 * 60;
+const MIN_CLOUD_POLL_INTERVAL_SECONDS = 1;
+const MAX_CLOUD_POLL_INTERVAL_SECONDS = 60;
+const MAX_CLOUD_ACCESS_TOKEN_LENGTH = 16_384;
+const MAX_CLOUD_IDENTITY_LENGTH = 320;
+const MAX_CLOUD_TOKEN_LIFETIME_SECONDS = 365 * 24 * 60 * 60;
+const MAX_CLOUD_RESPONSE_BYTES = 64 * 1024;
 
 export interface StoredToken {
   accessToken: string;
@@ -28,9 +37,23 @@ function tokenExpired(token: StoredToken): boolean {
   return Date.now() >= token.expiresAt - 60_000;
 }
 
+function isMissingPath(error: unknown): boolean {
+  return (error as NodeJS.ErrnoException)?.code === "ENOENT";
+}
+
+async function tightenExistingMode(filePath: string, mode: number): Promise<void> {
+  try {
+    await chmod(filePath, mode);
+  } catch (error) {
+    if (!isMissingPath(error)) throw error;
+  }
+}
+
 export async function loadToken(): Promise<StoredToken | null> {
   if (_cachedToken && !tokenExpired(_cachedToken)) return _cachedToken;
   try {
+    await chmod(AUTH_DIR, AUTH_DIR_MODE);
+    await chmod(TOKEN_FILE, TOKEN_FILE_MODE);
     const raw = await readFile(TOKEN_FILE, "utf8");
     _cachedToken = JSON.parse(raw) as StoredToken;
     if (tokenExpired(_cachedToken)) {
@@ -44,17 +67,23 @@ export async function loadToken(): Promise<StoredToken | null> {
 }
 
 export async function saveToken(token: StoredToken): Promise<void> {
-  await mkdir(AUTH_DIR, { recursive: true, mode: 0o700 });
-  await writeFile(TOKEN_FILE, JSON.stringify(token, null, 2), { encoding: "utf8", mode: 0o600 });
+  await mkdir(AUTH_DIR, { recursive: true, mode: AUTH_DIR_MODE });
+  await chmod(AUTH_DIR, AUTH_DIR_MODE);
+  await tightenExistingMode(TOKEN_FILE, TOKEN_FILE_MODE);
+  await writeFile(TOKEN_FILE, JSON.stringify(token, null, 2), { encoding: "utf8", mode: TOKEN_FILE_MODE });
+  await chmod(TOKEN_FILE, TOKEN_FILE_MODE);
   _cachedToken = token;
 }
 
 export async function clearToken(): Promise<void> {
   _cachedToken = null;
   try {
-    await writeFile(TOKEN_FILE, "", { encoding: "utf8", mode: 0o600 });
-  } catch {
-    // file may not exist
+    await chmod(AUTH_DIR, AUTH_DIR_MODE);
+    await tightenExistingMode(TOKEN_FILE, TOKEN_FILE_MODE);
+    await writeFile(TOKEN_FILE, "", { encoding: "utf8", mode: TOKEN_FILE_MODE });
+    await chmod(TOKEN_FILE, TOKEN_FILE_MODE);
+  } catch (error) {
+    if (!isMissingPath(error)) throw error;
   }
 }
 
@@ -83,6 +112,69 @@ interface OidcDiscovery {
   device_authorization_endpoint?: string;
   token_endpoint: string;
   userinfo_endpoint?: string;
+}
+
+interface CloudDeviceAuthorizationResponse extends Record<string, unknown> {
+  device_code: string;
+  user_code: string;
+  verification_uri: string;
+  expires_in: number;
+  interval?: number;
+}
+
+interface CloudTokenResponse extends Record<string, unknown> {
+  access_token: string;
+  expires_in?: number;
+  email?: string;
+  org?: string;
+}
+
+function parseCloudJsonResponse(text: string, endpoint: string, status: number): Record<string, unknown> {
+  try {
+    const value: unknown = JSON.parse(text);
+    if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("invalid payload");
+    return value as Record<string, unknown>;
+  } catch {
+    throw new Error(`Cloud endpoint ${endpoint} returned invalid JSON (${status}).`);
+  }
+}
+
+async function readCloudResponseText(response: Response, endpoint: string): Promise<string> {
+  const declaredLength = Number(response.headers?.get("content-length"));
+  if (Number.isFinite(declaredLength) && declaredLength > MAX_CLOUD_RESPONSE_BYTES) {
+    throw new Error(`Cloud endpoint ${endpoint} returned an oversized response (${response.status}).`);
+  }
+  const text = await response.text();
+  if (Buffer.byteLength(text, "utf8") > MAX_CLOUD_RESPONSE_BYTES) {
+    throw new Error(`Cloud endpoint ${endpoint} returned an oversized response (${response.status}).`);
+  }
+  return text;
+}
+
+function isCloudDeviceAuthorizationResponse(value: Record<string, unknown>): value is CloudDeviceAuthorizationResponse {
+  return typeof value["device_code"] === "string" && value["device_code"].length > 0 && value["device_code"].length <= 512
+    && typeof value["user_code"] === "string" && value["user_code"].length > 0 && value["user_code"].length <= 128
+    && typeof value["verification_uri"] === "string" && value["verification_uri"].length > 0 && value["verification_uri"].length <= 2_048
+    && typeof value["expires_in"] === "number" && Number.isFinite(value["expires_in"]) && value["expires_in"] > 0
+    && (value["interval"] === undefined
+      || (typeof value["interval"] === "number" && Number.isFinite(value["interval"]) && value["interval"] >= 0));
+}
+
+function isOptionalBoundedString(value: unknown, maxLength: number): value is string | undefined {
+  return value === undefined || (typeof value === "string" && value.length > 0 && value.length <= maxLength);
+}
+
+function isCloudTokenResponse(value: Record<string, unknown>): value is CloudTokenResponse {
+  return typeof value["access_token"] === "string"
+    && value["access_token"].trim().length > 0
+    && value["access_token"].length <= MAX_CLOUD_ACCESS_TOKEN_LENGTH
+    && (value["expires_in"] === undefined
+      || (typeof value["expires_in"] === "number"
+        && Number.isFinite(value["expires_in"])
+        && value["expires_in"] > 0
+        && value["expires_in"] <= MAX_CLOUD_TOKEN_LIFETIME_SECONDS))
+    && isOptionalBoundedString(value["email"], MAX_CLOUD_IDENTITY_LENGTH)
+    && isOptionalBoundedString(value["org"], MAX_CLOUD_IDENTITY_LENGTH);
 }
 
 export function requireSafeHttpUrl(value: string, label = "URL"): URL {
@@ -137,26 +229,43 @@ export async function performCloudDeviceFlow(endpoint: string): Promise<StoredTo
     headers: { "Content-Type": "application/json" },
     signal: AbortSignal.timeout(15_000),
   });
-  if (!deviceRes.ok) throw new Error(`Cloud device authorization failed (${deviceRes.status}): ${await deviceRes.text()}`);
-  const deviceData = await deviceRes.json() as { device_code: string; user_code: string; verification_uri: string; expires_in: number; interval?: number };
+  if (!deviceRes.ok) throw new Error(`Cloud device authorization failed at /auth/device (${deviceRes.status}).`);
+  const deviceText = await readCloudResponseText(deviceRes, "/auth/device");
+  const deviceData = parseCloudJsonResponse(deviceText, "/auth/device", deviceRes.status);
+  if (!isCloudDeviceAuthorizationResponse(deviceData)) {
+    throw new Error(`Cloud endpoint /auth/device returned an invalid response (${deviceRes.status}).`);
+  }
   process.stdout.write(`\n  Open this URL in your browser:\n  ${deviceData.verification_uri}\n\n  Enter this code: ${deviceData.user_code}\n\n  Waiting for authorization...\n`);
   await openBrowser(requireSafeHttpUrl(deviceData.verification_uri, "Verification URL").href);
-  const deadline = Date.now() + deviceData.expires_in * 1000;
-  const interval = (deviceData.interval ?? 5) * 1000;
+  const flowSeconds = Math.min(deviceData.expires_in, MAX_CLOUD_DEVICE_FLOW_SECONDS);
+  const deadline = Date.now() + flowSeconds * 1000;
+  const pollSeconds = Math.min(
+    Math.max(deviceData.interval ?? 5, MIN_CLOUD_POLL_INTERVAL_SECONDS),
+    MAX_CLOUD_POLL_INTERVAL_SECONDS,
+  );
+  const interval = pollSeconds * 1000;
   while (Date.now() < deadline) {
-    await new Promise(resolve => setTimeout(resolve, interval));
+    await new Promise(resolve => setTimeout(resolve, Math.min(interval, Math.max(0, deadline - Date.now()))));
+    if (Date.now() >= deadline) break;
+    const remaining = deadline - Date.now();
     const tokenRes = await fetch(`${baseUrl}/auth/device/token`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ device_code: deviceData.device_code }),
-      signal: AbortSignal.timeout(10_000),
+      signal: AbortSignal.timeout(Math.max(1, Math.min(10_000, remaining))),
     });
-    const tokenData = await tokenRes.json() as { access_token?: string; expires_in?: number; email?: string; org?: string; error?: string };
+    if (Date.now() >= deadline) break;
+    if (tokenRes.status === 429 || (tokenRes.status >= 500 && tokenRes.status <= 599)) continue;
+    const tokenText = await readCloudResponseText(tokenRes, "/auth/device/token");
+    if (Date.now() >= deadline) break;
+    const tokenData = parseCloudJsonResponse(tokenText, "/auth/device/token", tokenRes.status);
     if (!tokenRes.ok) {
-      if (tokenData.error === "authorization_pending") continue;
-      throw new Error(`Cloud token exchange failed (${tokenRes.status}): ${tokenData.error ?? "unknown"}`);
+      if (tokenData["error"] === "authorization_pending") continue;
+      throw new Error(`Cloud token exchange failed at /auth/device/token (${tokenRes.status}).`);
     }
-    if (!tokenData.access_token) throw new Error("Cloud token exchange returned no access token.");
+    if (!isCloudTokenResponse(tokenData)) {
+      throw new Error(`Cloud endpoint /auth/device/token returned an invalid response (${tokenRes.status}).`);
+    }
     const token: StoredToken = {
       accessToken: tokenData.access_token,
       expiresAt: tokenData.expires_in ? Date.now() + tokenData.expires_in * 1000 : undefined,
@@ -188,8 +297,7 @@ export async function performDeviceFlow(issuer: string, clientId: string): Promi
   });
 
   if (!deviceRes.ok) {
-    const text = await deviceRes.text();
-    throw new Error(`Device authorization failed (${deviceRes.status}): ${text}`);
+    throw new Error(`Device authorization failed (${deviceRes.status}).`);
   }
 
   const deviceData = (await deviceRes.json()) as {
@@ -231,7 +339,7 @@ export async function performDeviceFlow(issuer: string, clientId: string): Promi
         await new Promise(r => setTimeout(r, 5000));
         continue;
       }
-      throw new Error(`Token exchange failed (${tokenRes.status}): ${err.error ?? "unknown"}`);
+      throw new Error(`Token exchange failed (${tokenRes.status}).`);
     }
 
     const tokenData = (await tokenRes.json()) as {
