@@ -2,7 +2,7 @@
 
 MCP Observatory 的中文入口在仓库根目录，方便 GitHub 和中文 Agent 发现。
 
-- [简体中文 README](../../README.zh-CN.md)
+- [简体中文 README](../../README-zh-CN.md)
 - [贡献指南](../../CONTRIBUTING.zh-CN.md)
 - [Gitee 镜像](https://gitee.com/williamweishuhn/mcp-observatory)
 - [飞书 / Lark MCP 指南](../feishu-lark-mcp.md)

@@ -8,7 +8,7 @@
 
 我们欢迎来自中国、韩国、日本以及整个亚洲的贡献者。
 
-- [中文 README](README.zh-CN.md) — 简体中文文档
+- [中文 README](README-zh-CN.md) — 简体中文文档
 - 欢迎提交中文 issues 和 PRs
 - 我们使用 `good first issue`（新手友好）标签标注适合新手的任务
 - Gitee 镜像: https://gitee.com/williamweishuhn/mcp-observatory
