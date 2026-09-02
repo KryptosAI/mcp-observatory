@@ -109,7 +109,14 @@ describe("commercial copy consistency", () => {
     const sources = await Promise.all(files.map(file => readFile(file, "utf8")));
 
     for (const source of sources) {
-      expect(source).not.toMatch(/\/(?:Users|home)\/[^/]+\/|[A-Za-z]:\\\\Users\\\\[^\\\\]+\\\\/);
+      expect(source).not.toMatch(/\/(?:Users|home)\/[^/]+\/|[A-Za-z]:\\+Users\\+[^\\]+\\+/);
     }
+  });
+
+  it("detects plain-text and JSON-escaped Windows home paths", () => {
+    const localPathPattern = /[A-Za-z]:\\+Users\\+[^\\]+\\+/;
+    expect("C:\\Users\\william\\repo").toMatch(localPathPattern);
+    expect("C:\\\\Users\\\\william\\\\repo").toMatch(localPathPattern);
+    expect("C:\\ProgramData\\mcp-observatory").not.toMatch(localPathPattern);
   });
 });
