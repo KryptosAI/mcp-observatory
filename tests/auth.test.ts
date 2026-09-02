@@ -1,13 +1,19 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("node:fs/promises", () => ({
+  chmod: vi.fn(),
   readFile: vi.fn(),
   writeFile: vi.fn(),
   mkdir: vi.fn(),
 }));
 
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+vi.mock("node:child_process", () => ({
+  execFile: vi.fn((_command: string, _args: string[], callback: (error: Error | null) => void) => callback(null)),
+}));
 
+import { chmod, readFile, writeFile, mkdir } from "node:fs/promises";
+
+const mockedChmod = vi.mocked(chmod);
 const mockedReadFile = vi.mocked(readFile);
 const mockedWriteFile = vi.mocked(writeFile);
 const mockedMkdir = vi.mocked(mkdir);
@@ -29,8 +35,15 @@ async function importAuth() {
 describe("auth module", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockedChmod.mockResolvedValue(undefined);
     mockedMkdir.mockResolvedValue(undefined);
     mockedWriteFile.mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.useRealTimers();
+    vi.restoreAllMocks();
   });
 
   describe("saveToken / loadToken", () => {
@@ -49,6 +62,58 @@ describe("auth module", () => {
         { encoding: "utf8", mode: 0o600 },
       );
       expect(mockedMkdir).toHaveBeenCalledWith(expect.any(String), { recursive: true, mode: 0o700 });
+    });
+
+    it("tightens legacy permissive auth storage before loading a token", async () => {
+      const auth = await importAuth();
+      await auth.clearToken();
+      vi.clearAllMocks();
+      mockedChmod.mockResolvedValue(undefined);
+      mockedReadFile.mockResolvedValue(JSON.stringify(VALID_TOKEN));
+
+      await expect(auth.loadToken()).resolves.toEqual(VALID_TOKEN);
+
+      expect(mockedChmod).toHaveBeenNthCalledWith(1, expect.stringMatching(/\.mcp-observatory$/), 0o700);
+      expect(mockedChmod).toHaveBeenNthCalledWith(2, expect.stringContaining("auth.json"), 0o600);
+      expect(mockedReadFile).toHaveBeenCalledAfter(mockedChmod);
+    });
+
+    it("fails closed when legacy permissions cannot be tightened before load", async () => {
+      const auth = await importAuth();
+      await auth.clearToken();
+      vi.clearAllMocks();
+      mockedChmod.mockRejectedValue(Object.assign(new Error("access denied"), { code: "EACCES" }));
+
+      await expect(auth.loadToken()).resolves.toBeNull();
+
+      expect(mockedReadFile).not.toHaveBeenCalled();
+    });
+
+    it("treats the empty logged-out marker as no stored token", async () => {
+      const auth = await importAuth();
+      await auth.clearToken();
+      vi.clearAllMocks();
+      mockedChmod.mockResolvedValue(undefined);
+      mockedReadFile.mockResolvedValue("");
+
+      await expect(auth.loadToken()).resolves.toBeNull();
+    });
+
+    it("tightens legacy permissive auth storage when saving a token", async () => {
+      const auth = await importAuth();
+
+      await auth.saveToken(VALID_TOKEN);
+
+      expect(mockedChmod).toHaveBeenCalledWith(expect.stringMatching(/\.mcp-observatory$/), 0o700);
+      expect(mockedChmod).toHaveBeenCalledWith(expect.stringContaining("auth.json"), 0o600);
+      expect(mockedChmod).toHaveBeenCalledTimes(3);
+      const writeOrder = mockedWriteFile.mock.invocationCallOrder[0]!;
+      const tokenChmodOrders = mockedChmod.mock.calls.flatMap((call, index) =>
+        String(call[0]).endsWith("auth.json") ? [mockedChmod.mock.invocationCallOrder[index]!] : [],
+      );
+      expect(tokenChmodOrders).toHaveLength(2);
+      expect(tokenChmodOrders[0]).toBeLessThan(writeOrder);
+      expect(tokenChmodOrders[1]).toBeGreaterThan(writeOrder);
     });
 
     it("returns null when token file doesn't exist", async () => {
@@ -186,9 +251,32 @@ describe("auth module", () => {
 
     it("succeeds even when file doesn't exist", async () => {
       const auth = await importAuth();
-      mockedWriteFile.mockRejectedValue(new Error("ENOENT"));
+      mockedWriteFile.mockRejectedValue(Object.assign(new Error("ENOENT"), { code: "ENOENT" }));
 
       await expect(auth.clearToken()).resolves.toBeUndefined();
+    });
+
+    it("reports failures that could leave a stored token behind", async () => {
+      const auth = await importAuth();
+      mockedWriteFile.mockRejectedValue(Object.assign(new Error("access denied"), { code: "EACCES" }));
+
+      await expect(auth.clearToken()).rejects.toThrow("access denied");
+    });
+
+    it("tightens legacy permissive auth storage while clearing it", async () => {
+      const auth = await importAuth();
+
+      await auth.clearToken();
+
+      expect(mockedChmod).toHaveBeenCalledWith(expect.stringMatching(/\.mcp-observatory$/), 0o700);
+      expect(mockedChmod).toHaveBeenCalledWith(expect.stringContaining("auth.json"), 0o600);
+      const writeOrder = mockedWriteFile.mock.invocationCallOrder[0]!;
+      const tokenChmodOrders = mockedChmod.mock.calls.flatMap((call, index) =>
+        String(call[0]).endsWith("auth.json") ? [mockedChmod.mock.invocationCallOrder[index]!] : [],
+      );
+      expect(tokenChmodOrders).toHaveLength(2);
+      expect(tokenChmodOrders[0]).toBeLessThan(writeOrder);
+      expect(tokenChmodOrders[1]).toBeGreaterThan(writeOrder);
     });
   });
 
@@ -215,6 +303,143 @@ describe("auth module", () => {
       vi.stubGlobal("fetch", mockFetch);
       await expect(auth.performCloudDeviceFlow("javascript:alert(1)")).rejects.toThrow("Cloud endpoint");
       expect(mockFetch).not.toHaveBeenCalled();
+      vi.unstubAllGlobals();
+    });
+  });
+
+  describe("performCloudDeviceFlow", () => {
+    const deviceResponse = {
+      device_code: "device-123",
+      user_code: "ABCD-EFGH",
+      verification_uri: "https://app.example.test/auth/device?user_code=ABCD-EFGH",
+      expires_in: 300,
+      interval: 1,
+    };
+
+    beforeEach(() => {
+      vi.spyOn(process.stdout, "write").mockImplementation(() => true);
+    });
+
+    it.each(["", "<html>upstream error</html>"])("rejects an empty or non-JSON start response", async (body) => {
+      const auth = await importAuth();
+      const mockFetch = vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        text: () => Promise.resolve(body),
+      });
+      vi.stubGlobal("fetch", mockFetch);
+
+      const result = auth.performCloudDeviceFlow("https://app.example.test");
+      await expect(result).rejects.toThrow("Cloud endpoint /auth/device returned invalid JSON (200).");
+      await expect(result).rejects.not.toThrow("upstream error");
+
+      vi.unstubAllGlobals();
+    });
+
+    it.each(["", "<html>secret response</html>"])("rejects an empty or non-JSON poll response", async (body) => {
+      const auth = await importAuth();
+      const mockFetch = vi.fn()
+        .mockResolvedValueOnce({
+          ok: true,
+          status: 200,
+          text: () => Promise.resolve(JSON.stringify(deviceResponse)),
+        })
+        .mockResolvedValueOnce({
+          ok: false,
+          status: 400,
+          text: () => Promise.resolve(body),
+        });
+      vi.stubGlobal("fetch", mockFetch);
+
+      const result = auth.performCloudDeviceFlow("https://app.example.test");
+      await expect(result).rejects.toThrow("Cloud endpoint /auth/device/token returned invalid JSON (400).");
+      await expect(result).rejects.not.toThrow("secret response");
+
+      vi.unstubAllGlobals();
+    });
+
+    it("rejects a successful response with a malformed access token", async () => {
+      const auth = await importAuth();
+      const mockFetch = vi.fn()
+        .mockResolvedValueOnce({
+          ok: true,
+          status: 200,
+          text: () => Promise.resolve(JSON.stringify(deviceResponse)),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          status: 200,
+          text: () => Promise.resolve(JSON.stringify({ access_token: { nested: "not-a-token" } })),
+        });
+      vi.stubGlobal("fetch", mockFetch);
+
+      await expect(auth.performCloudDeviceFlow("https://app.example.test")).rejects.toThrow(
+        "Cloud endpoint /auth/device/token returned an invalid response (200).",
+      );
+      expect(mockedWriteFile).not.toHaveBeenCalled();
+    });
+
+    it("does not poll or accept a token after the device deadline", async () => {
+      const auth = await importAuth();
+      const mockFetch = vi.fn().mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        text: () => Promise.resolve(JSON.stringify({
+          ...deviceResponse,
+          expires_in: 0.01,
+        })),
+      });
+      vi.stubGlobal("fetch", mockFetch);
+
+      await expect(auth.performCloudDeviceFlow("https://app.example.test")).rejects.toThrow(
+        "Cloud device authorization timed out. Please try again.",
+      );
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+      expect(mockedWriteFile).not.toHaveBeenCalled();
+    });
+
+    it("recovers after transient poll responses", async () => {
+      const auth = await importAuth();
+      const mockFetch = vi.fn()
+        .mockResolvedValueOnce({
+          ok: true,
+          status: 200,
+          text: () => Promise.resolve(JSON.stringify(deviceResponse)),
+        })
+        .mockResolvedValueOnce({
+          ok: false,
+          status: 429,
+          text: () => Promise.resolve(""),
+        })
+        .mockResolvedValueOnce({
+          ok: false,
+          status: 503,
+          text: () => Promise.resolve("<html>temporarily unavailable</html>"),
+        })
+        .mockResolvedValueOnce({
+          ok: false,
+          status: 400,
+          text: () => Promise.resolve(JSON.stringify({ error: "authorization_pending" })),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          status: 200,
+          text: () => Promise.resolve(JSON.stringify({
+            access_token: "new-access-token",
+            expires_in: 3600,
+            email: "user@example.com",
+            org: "personal-1",
+          })),
+        });
+      vi.stubGlobal("fetch", mockFetch);
+
+      await expect(auth.performCloudDeviceFlow("https://app.example.test")).resolves.toMatchObject({
+        accessToken: "new-access-token",
+        email: "user@example.com",
+        org: "personal-1",
+      });
+      expect(mockFetch).toHaveBeenCalledTimes(5);
+
       vi.unstubAllGlobals();
     });
   });
