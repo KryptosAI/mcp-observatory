@@ -245,7 +245,11 @@ export async function performCloudDeviceFlow(endpoint: string): Promise<StoredTo
   );
   const interval = pollSeconds * 1000;
   while (Date.now() < deadline) {
-    await new Promise(resolve => setTimeout(resolve, Math.min(interval, Math.max(0, deadline - Date.now()))));
+    const remainingBeforeSleep = deadline - Date.now();
+    if (remainingBeforeSleep <= 0) break;
+    const sleepMs = Math.min(interval, remainingBeforeSleep);
+    await new Promise(resolve => setTimeout(resolve, sleepMs));
+    if (sleepMs >= remainingBeforeSleep) break;
     if (Date.now() >= deadline) break;
     const remaining = deadline - Date.now();
     const tokenRes = await fetch(`${baseUrl}/auth/device/token`, {
