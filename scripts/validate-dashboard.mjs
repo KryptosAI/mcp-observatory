@@ -28,8 +28,10 @@ if (/body::before\s*\{[^}]*display:none/.test(css) === false) failures.push("dec
 
 const homepage = await readFile(path.join(root, "index.html"), "utf8");
 const homepageTop = homepage.slice(0, homepage.indexOf('<div class="section-title" id="index">'));
-if (count(homepage, /Trust is a <span>production decision\.<\/span>/g) !== 1) failures.push("homepage: expected exactly one trust-led hero headline");
-if (count(homepage, /THE MOMENT BEFORE TRUST/g) !== 1) failures.push("homepage: expected exactly one trust-led eyebrow");
+if (count(homepage, /Is this agent <span>safe to ship\?<\/span>/g) !== 1) failures.push("homepage: expected exactly one plain-language hero headline");
+if (count(homepage, /AGENT WORKFLOW SAFETY/g) !== 1) failures.push("homepage: expected exactly one workflow-safety eyebrow");
+if (!homepage.includes("MCP is just the name of the plug.")) failures.push("homepage: missing plain-language MCP definition");
+if (!homepage.includes("See a scored tool")) failures.push("homepage: missing non-CLI primary CTA");
 if (!homepage.includes('class="logo-strip"')) failures.push("homepage: missing full-width company logo strip");
 if (!homepage.includes("Evaluated technologies, not MCP Observatory customers, endorsements, or partnerships.")) failures.push("homepage: missing evaluated-technologies disclaimer");
 if (!homepage.includes('class="hero-product"')) failures.push("homepage: missing product decision visual");
@@ -65,7 +67,7 @@ for (const file of await htmlFiles(root)) {
   const source = await readFile(file, "utf8");
   const rel = path.relative(process.cwd(), file);
   if (!/href="\/m3\.css(?:\?[^"]*)?"/.test(source)) failures.push(`${rel}: missing shared m3.css`);
-  if (count(source, /<main\b/gi) !== 1) failures.push(`${rel}: expected exactly one main landmark`);
+  if (count(source, /<main\b/gi) !== 1) failures.push(`${rel}: expected exactly one main landmark");
   if (count(source, /<h1\b/gi) !== 1) failures.push(`${rel}: expected exactly one h1`);
   const headingLevels = [...source.matchAll(/<h([1-6])\b/gi)].map(match => Number(match[1]));
   if (headingLevels[0] !== 1) failures.push(`${rel}: h1 is not the first heading`);
