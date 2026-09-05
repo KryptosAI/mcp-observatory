@@ -40,6 +40,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Validate public dashboard
+        run: npm run dashboard:validate
+
       - name: Packed install verification
         run: npm run verify:packed-install
 

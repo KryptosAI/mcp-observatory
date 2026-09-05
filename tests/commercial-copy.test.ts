@@ -1,4 +1,5 @@
 import { readdir, readFile } from "node:fs/promises";
+import { runInNewContext } from "node:vm";
 
 import { describe, expect, it } from "vitest";
 
@@ -102,7 +103,7 @@ describe("commercial copy consistency", () => {
     expect(source).not.toMatch(/paid certification|certification review|certification conversations/i);
   });
 
-  it("keeps the public offers and logo disclosure explicit", async () => {
+  it("keeps the public offers and logo-led credibility proof explicit", async () => {
     const commercial = await readFile("COMMERCIAL.md", "utf8");
     const terms = await readFile("TERMS.md", "utf8");
     const dashboardSource = await readFile("scripts/build-dashboard.ts", "utf8");
@@ -114,8 +115,197 @@ describe("commercial copy consistency", () => {
     expect(terms).toContain("renew monthly");
     expect(terms).toContain("Acceptable Use");
     expect(terms).toContain("Hosted Data");
-    expect(dashboardSource).toContain("Evaluated technologies, not MCP Observatory customers, endorsements, or partnerships.");
+    expect(dashboardSource).toContain("Used by developers at");
+    expect(dashboardSource).toContain("Recognizable systems. Inspectable evidence.");
+    expect(dashboardSource).not.toContain("Evaluated technologies, not MCP Observatory customers, endorsements, or partnerships.");
+    for (const logo of ["accenture.svg", "cisco.svg", "oracle.svg"]) {
+      expect(dashboardSource).toContain(logo);
+    }
     expect(dashboardSource).toContain("@latest cloud upload");
+  });
+
+  it("keeps the homepage conversion path accessible, current, and lightweight", async () => {
+    const dashboardSource = await readFile("scripts/build-dashboard.ts", "utf8");
+    const dashboard = await readFile("dashboard/index.html", "utf8");
+    const safetyTargets = JSON.parse(await readFile("docs/safety-index/targets.json", "utf8")) as Array<{ id: string; name: string }>;
+    const css = await readFile("dashboard/m3.css", "utf8");
+    const siteScript = await readFile("dashboard/site.js", "utf8");
+
+    expect(dashboardSource).not.toContain("<style>");
+    expect(dashboard.match(/data-copy-command=/g)).toHaveLength(2);
+    expect(dashboard).toContain('id="command-copy-status" role="status" aria-live="polite"');
+    expect(dashboard).toContain("PUBLISHED EVIDENCE");
+    expect(dashboard.match(/class="technology-logo-card /g)).toHaveLength(18);
+    expect(dashboard.match(/class="organization-logo"/g)).toHaveLength(3);
+    const technologyTargets = [
+      ["Microsoft", "clarity-server"],
+      ["Google", "chrome-devtools-mcp-server"],
+      ["Cloudflare", "cloudflare-server"],
+      ["GitHub", "github-mcp-server"],
+      ["GitLab", "gitlab-server"],
+      ["Docker", "docker-server"],
+      ["Kubernetes", "kubernetes-server"],
+      ["MongoDB", "mongodb-server"],
+      ["Redis", "redis-server"],
+      ["PostgreSQL", "postgres-server"],
+      ["Supabase", "supabase-server"],
+      ["Sentry", "sentry-server"],
+      ["Stripe", "stripe-server"],
+      ["Shopify", "shopify-mcp-server"],
+      ["Notion", "notion-server"],
+      ["Figma", "figma-server"],
+      ["Linear", "linear-server"],
+      ["Coinbase", "coinbase-cds-server"],
+    ] as const;
+    for (const [brand, targetId] of technologyTargets) {
+      const target = safetyTargets.find(candidate => candidate.id === targetId);
+      expect(target, `missing Safety Index metadata for ${targetId}`).toBeDefined();
+      const href = `href="/safety-index/servers/${targetId}.html"`;
+      const cardStart = dashboard.indexOf(href);
+      const cardEnd = dashboard.indexOf("</a>", cardStart);
+      const card = dashboard.slice(cardStart, cardEnd);
+      expect(cardStart, `missing evidence card for ${brand}`).toBeGreaterThanOrEqual(0);
+      expect(card).toContain(`<strong>${brand}</strong>`);
+      expect(card).toContain(`aria-label="Inspect published evidence for ${target?.name}"`);
+      expect(card).toContain(`title="${target?.name}"`);
+    }
+    expect(dashboard).toContain("Used by developers at");
+    expect(dashboard).toMatch(/Browse all \d+ indexed servers/);
+    expect(dashboard).not.toMatch(/>\s*LIVE\s*</i);
+    const verifiedCards = dashboard.match(/class="verified-card"/g) ?? [];
+    expect(verifiedCards.length).toBeGreaterThan(0);
+    expect(verifiedCards.length).toBeLessThanOrEqual(3);
+    expect(dashboard.match(/<time datetime="[^"]+">/g)).toHaveLength(verifiedCards.length);
+    expect(dashboard).not.toContain('id="server-search"');
+    expect(dashboard).toContain('href="/safety-index/">Explore the full Safety Index');
+    expect(Buffer.byteLength(dashboard, "utf8")).toBeLessThanOrEqual(75_000);
+    expect(dashboard.match(/rel="stylesheet"/g)).toHaveLength(1);
+    expect(dashboard).toContain('rel="stylesheet" href="/m3.css');
+    expect(dashboard).toContain('src="/site.js?v=20260902"');
+    expect(css).toContain("m3.css owns all homepage layout and visual styling");
+    expect(siteScript).toContain('[data-copy-command]');
+  });
+
+  it("copies the primary command and announces success", async () => {
+    const siteScript = await readFile("dashboard/site.js", "utf8");
+    const status = { textContent: "" };
+    let click: (() => Promise<void>) | undefined;
+    const button = {
+      textContent: "Copy command",
+      getAttribute: (name: string) => name === "data-copy-command" ? "npx observatory" : null,
+      addEventListener: (_event: string, listener: () => Promise<void>) => {
+        click = listener;
+      },
+    };
+    let copied = "";
+    const timers: Array<() => void> = [];
+
+    runInNewContext(siteScript, {
+      document: {
+        querySelector: () => status,
+        querySelectorAll: () => [button],
+      },
+      navigator: { clipboard: { writeText: (value: string) => {
+        copied = value;
+        return Promise.resolve();
+      } } },
+      window: {
+        clearTimeout: () => undefined,
+        setTimeout: (callback: () => void) => {
+          timers.push(callback);
+          return timers.length;
+        },
+      },
+    });
+
+    await click?.();
+
+    expect(copied).toBe("npx observatory");
+    expect(button.textContent).toBe("Copied");
+    expect(status.textContent).toBe("Command copied to your clipboard.");
+    expect(timers).toHaveLength(2);
+
+    await click?.();
+    expect(button.textContent).toBe("Copied");
+    expect(timers).toHaveLength(4);
+    timers.forEach(callback => callback());
+    expect(button.textContent).toBe("Copy command");
+  });
+
+  it("uses one light public design system for Safety Index pages", async () => {
+    const generator = await readFile("scripts/generate-server-pages.ts", "utf8");
+    const css = await readFile("dashboard/m3.css", "utf8");
+    const safetyIndexScript = await readFile("dashboard/safety-index.js", "utf8");
+
+    for (const file of [
+      "dashboard/safety-index/index.html",
+      "dashboard/safety-index/servers/context7-server.html",
+    ]) {
+      const source = await readFile(file, "utf8");
+      expect(source).toContain('<meta name="theme-color" content="#f9fbfc">');
+      expect(source).not.toContain("evidence-theme");
+      expect(source).not.toContain("color-scheme:dark");
+      expect(source).not.toMatch(/<style\b/i);
+      expect(source).not.toMatch(/style=/i);
+    }
+
+    expect(generator).not.toContain("evidence-theme");
+    expect(generator).not.toContain("color-scheme:dark");
+    expect(css).toContain("color-scheme:light");
+    expect(css).toMatch(/\.safety-detail-page \.grade-detail\{width:100%\}/);
+    expect(safetyIndexScript).toContain('#categoryFilter');
+    expect(safetyIndexScript).toContain('#resultCount');
+  });
+
+  it("keeps Safety Index filtering compact and CSP-compatible", async () => {
+    const index = await readFile("dashboard/safety-index/index.html", "utf8");
+    const headers = await readFile("dashboard/_headers", "utf8");
+
+    expect(index).toContain('id="search"');
+    expect(index).toContain('id="categoryFilter"');
+    expect(index).toContain('id="resultCount" role="status" aria-live="polite"');
+    expect(index).toContain('class="table-wrap" role="region" aria-label="MCP server safety index" tabindex="0"');
+    expect(index).not.toContain('id="catFilters"');
+    expect(index).toContain('<script src="/safety-index.js?v=20260902" defer></script>');
+    expect(index).not.toMatch(/<script(?:\s[^>]*)?>\s*(?!<\/script>)/i);
+    expect(headers).toContain("script-src 'self'");
+    expect(headers).toContain("style-src 'self'");
+    expect(headers).not.toContain("'unsafe-inline'");
+  });
+
+  it("filters Safety Index rows by search and category", async () => {
+    const script = await readFile("dashboard/safety-index.js", "utf8");
+    const rows = [
+      { dataset: { name: "Context7", package: "@upstash/context7-mcp", category: "Documentation / Search" }, hidden: false },
+      { dataset: { name: "Memory", package: "@modelcontextprotocol/server-memory", category: "Reference / Memory" }, hidden: false },
+    ];
+    const listeners: Record<string, () => void> = {};
+    const search = { value: "", addEventListener: (event: string, listener: () => void) => { listeners[event] = listener; } };
+    const category = { value: "", addEventListener: (event: string, listener: () => void) => { listeners[event] = listener; } };
+    const resultCount = { textContent: "Showing all 2 servers" };
+    const table = { querySelectorAll: () => rows };
+
+    runInNewContext(script, {
+      document: {
+        querySelector: (selector: string) => ({
+          "#serverTable": table,
+          "#search": search,
+          "#categoryFilter": category,
+          "#resultCount": resultCount,
+        })[selector],
+      },
+    });
+
+    search.value = "context7";
+    listeners.input?.();
+    expect(rows.map(row => row.hidden)).toEqual([false, true]);
+    expect(resultCount.textContent).toBe("Showing 1 of 2 servers");
+
+    search.value = "";
+    category.value = "Reference / Memory";
+    listeners.change?.();
+    expect(rows.map(row => row.hidden)).toEqual([true, false]);
+    expect(resultCount.textContent).toBe("Showing 1 of 2 servers");
   });
 
   it("keeps checkout behind a successful free upload", async () => {
