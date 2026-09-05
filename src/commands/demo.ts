@@ -310,7 +310,9 @@ export function registerDemoCommands(program: Command): void {
 
       process.stdout.write("\n");
 
-      const fixes = extractObservatoryFindings(artifact).filter((finding) => finding.recommendation).slice(0, 3);
+      const fixes = extractObservatoryFindings(artifact)
+        .filter((finding) => finding.severity !== "info" && finding.recommendation)
+        .slice(0, 3);
       if (fixes.length > 0) {
         process.stdout.write(`  ${c(ANSI.bold, "Issues to fix")}\n`);
         for (const finding of fixes) {
