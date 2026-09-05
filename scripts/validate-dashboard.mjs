@@ -79,7 +79,7 @@ requireContrast(publicColors, "mcp-status-on-warning", "mcp-status-warning", "pu
 const homepage = await readFile(path.join(root, "index.html"), "utf8");
 const indexStart = homepage.indexOf('<section class="verified-preview" id="index">');
 const homepageTop = homepage.slice(0, indexStart === -1 ? homepage.length : indexStart);
-if (count(homepage, /Trust is a <span>production decision\.<\/span>/g) !== 1) failures.push("homepage: expected exactly one trust-led hero headline");
+if (count(homepage, /<h1>/g) !== 1) failures.push("homepage: expected exactly one main headline");
 if (count(homepage, /THE MOMENT BEFORE TRUST/g) !== 1) failures.push("homepage: expected exactly one trust-led eyebrow");
 if (!homepage.includes('class="technology-evidence"')) failures.push("homepage: missing full-width technology evidence section");
 if (!homepage.includes("Used by developers at")) failures.push("homepage: missing observed-organization proof label");

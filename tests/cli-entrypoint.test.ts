@@ -61,6 +61,23 @@ describe("CLI entrypoint", () => {
     expect(stdout).not.toContain("pricing?plan=team");
   });
 
+  it("explicit example mode ignores configured servers and saves a usable receipt", () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "mcp-obs-example-"));
+    fs.writeFileSync(path.join(tmpDir, ".mcp.json"), JSON.stringify({ mcpServers: {
+      "must-not-start": { command: "this-command-must-never-execute" },
+    } }));
+    try {
+      const result = runCli(["demo", "--example"], { cwd: tmpDir, env: { MCP_OBSERVATORY_TELEMETRY: "0" } });
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain("Your configured servers are not started");
+      expect(result.stdout).toContain("mcp-observatory-demo");
+      expect(result.stdout).toContain("Receipt saved:");
+      expect(result.stdout).not.toContain("must-not-start");
+      const files = fs.readdirSync(path.join(tmpDir, ".mcp-observatory", "runs"));
+      expect(files.some(file => file.endsWith(".json"))).toBe(true);
+    } finally { fs.rmSync(tmpDir, { recursive: true, force: true }); }
+  });
+
   it("prints a CI activation card when invoked with no arguments", () => {
     const { stdout, exitCode } = runCli([], { env: { CI: "true" } });
     expect(exitCode).toBe(0);

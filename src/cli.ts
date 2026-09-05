@@ -346,7 +346,7 @@ async function main(): Promise<void> {
     .action(async (artifactPath: string | undefined, options: { org?: string; endpoint: string }) => {
       const resolvedPath = artifactPath ?? await findLatestRunArtifact(defaultRunsDirectory());
       if (!resolvedPath) {
-        throw new Error(`No run artifact found. Run: ${getBinName()} demo`);
+        throw new Error(`No run artifact found in this project folder. Run a scan here first: ${getBinName()} demo\nIf you already scanned elsewhere, return to that folder or pass the receipt path: ${getBinName()} cloud upload path/to/receipt.json\nSetup help: https://mcp-observatory.com/start/`);
       }
       const artifact = validateRunArtifact(JSON.parse(await readFile(resolvedPath, "utf8")));
       const endpoint = requireHttpUrl(options.endpoint, "Cloud upload endpoint");

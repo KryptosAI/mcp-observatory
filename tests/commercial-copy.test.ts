@@ -181,7 +181,7 @@ describe("commercial copy consistency", () => {
     expect(Buffer.byteLength(dashboard, "utf8")).toBeLessThanOrEqual(75_000);
     expect(dashboard.match(/rel="stylesheet"/g)).toHaveLength(1);
     expect(dashboard).toContain('rel="stylesheet" href="/m3.css');
-    expect(dashboard).toContain('src="/site.js?v=20260902"');
+    expect(dashboard).toContain('src="/site.js?v=20260905"');
     expect(css).toContain("m3.css owns all homepage layout and visual styling");
     expect(siteScript).toContain('[data-copy-command]');
   });

@@ -217,6 +217,7 @@ function renderPage(t: TargetEntry, artifact: RunArtifact | null, index: number,
 async function generateSitemap(ids: string[]): Promise<void> {
   const urls = [
     { loc: `${BASE_URL}/`, changefreq: "daily", priority: "1.0" },
+    { loc: `${BASE_URL}/start/`, changefreq: "monthly", priority: "0.9" },
     { loc: `${BASE_URL}/release-gate-pilot/`, changefreq: "weekly", priority: "0.9" },
     { loc: `${BASE_URL}/partners/`, changefreq: "weekly", priority: "0.8" },
     { loc: `${BASE_URL}/release-gate-evidence-pack/`, changefreq: "monthly", priority: "0.8" },

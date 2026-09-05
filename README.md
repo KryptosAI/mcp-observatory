@@ -40,25 +40,33 @@ Also available in [Simplified Chinese](README-zh-CN.md).
 
 ## Get Started
 
-No account. Local scan stays free.
+**[Step-by-step setup guide](https://mcp-observatory.com/start/)** · macOS, Windows, Linux · Node.js 20+ and npm ([install Node.js LTS](https://nodejs.org/en/download)).
+
+### 1. Run your first scan
+
+Open Terminal or PowerShell in your project folder and paste:
 
 ```bash
 npx -y @kryptosai/mcp-observatory@latest
 ```
 
-Grades your configured MCP servers, or a packaged demo if you have none.
+This downloads Observatory and checks your first configured MCP server. With no configured server, it uses an included example. To try only that example, run `npx -y @kryptosai/mcp-observatory@latest demo --example`.
 
-Next, sign in with GitHub and upload one hosted snapshot free. The upload completes before any optional upgrade is shown:
+### 2. Read the result
+
+The terminal shows the target, grade, findings, and saved receipt path. Failed checks are findings to review, not a request to pay. If connection failed, fix the startup command or credentials and rerun. A demo grade describes the example, not your own server.
+
+### 3. Save one hosted snapshot free (optional)
+
+In the **same project folder**, run:
 
 ```bash
 npx -y @kryptosai/mcp-observatory@latest cloud upload
 ```
 
-Then keep the local check running in CI:
+Open the verification link printed in the terminal, confirm the code, connect with GitHub, then return to the terminal. Wait for **Upload complete** and open the dashboard link. No separate account setup or payment method is needed. Free includes one target, the latest snapshot, seven-day retention, and ten uploads per month.
 
-```bash
-npx -y @kryptosai/mcp-observatory@latest setup-ci --all
-```
+Local scans and local CI stay free. [Individual Pro is $29/month](https://app.mcp-observatory.com/pricing?plan=individual) when you need 10 targets, 90-day history, hosted CI ingestion, or hosted HTTP scans.
 
 MCP Observatory uses jurisdiction-aware product telemetry after showing the collection notice. Review the exact fields with `telemetry preview`, check the current policy with `telemetry status`, or stop collection at any time with `telemetry disable`, `MCP_OBSERVATORY_TELEMETRY=0`, or `DO_NOT_TRACK=1`. See the complete [privacy and telemetry notice](./PRIVACY.md).
 
