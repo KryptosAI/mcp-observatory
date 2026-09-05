@@ -70,6 +70,7 @@ describe("CLI entrypoint", () => {
       const result = runCli(["demo", "--example"], { cwd: tmpDir, env: { MCP_OBSERVATORY_TELEMETRY: "0" } });
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toContain("Your configured servers are not started");
+      expect(result.stdout).not.toContain("Issues to fix");
       expect(result.stdout).toContain("mcp-observatory-demo");
       expect(result.stdout).toContain("Receipt saved:");
       expect(result.stdout).not.toContain("must-not-start");
