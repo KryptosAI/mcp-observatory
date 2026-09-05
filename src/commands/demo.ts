@@ -8,7 +8,6 @@ import type { TargetConfig } from "../types.js";
 import { scanForTargets } from "../discovery.js";
 import { inferLocalMcpTarget } from "../infer-local-mcp.js";
 import { buildEvent, generateSessionId, recordEvent, recordSessionEnd, recordSessionStart } from "../command-events.js";
-import { hasCloudToken, maybePrintCloudCta } from "../commercial.js";
 import { extractObservatoryFindings } from "../findings.js";
 import { defaultRunsDirectory, writeRunArtifact } from "../storage.js";
 import {
@@ -18,7 +17,6 @@ import {
   getBinName,
   isQuiet,
   LOGO,
-  printCiConversionCta,
 } from "./helpers.js";
 
 function packagedDemoTarget(timeoutMs: number): TargetConfig {
@@ -111,10 +109,11 @@ export function registerDemoCommands(program: Command): void {
     .command("demo")
     .description("Quick interactive demo — scan your MCP servers and see your safety grade")
     .option("--server <name>", `Demo with a built-in server: ${DEMO_SERVERS.map(s => s.name).join(", ")}`)
+    .option("--example", "Scan only the packaged example; do not discover or start your configured servers.", false)
     .option("--deep", "Run full tool invocation and security checks (takes longer)", false)
     .option("--timeout <ms>", "Timeout in milliseconds", "15000")
     .option("--no-color", "Disable colored output")
-    .action(async (options: { server?: string; deep?: boolean; timeout: string }) => {
+    .action(async (options: { server?: string; example?: boolean; deep?: boolean; timeout: string }) => {
       const sessionId = generateSessionId();
       recordSessionStart(sessionId);
       const t0 = Date.now();
@@ -140,12 +139,17 @@ export function registerDemoCommands(program: Command): void {
       // ── Step 1: Select target ──────────────────────────────────────────
 
       process.stdout.write(`  ${c(ANSI.dim, "⟳")} Discovering your MCP servers...`);
-      const targets = await scanForTargets();
+      const targets = options.example ? [] : await scanForTargets();
 
       let targetConfig: TargetConfig;
       let targetSource: string;
 
-      if (options.server) {
+      if (options.example) {
+        if (options.server) throw new Error("Choose either --example or --server, not both.");
+        targetConfig = packagedDemoTarget(timeoutMs);
+        targetSource = "packaged local demo server";
+        process.stdout.write("\r  Using the packaged example. Your configured servers are not started.\n");
+      } else if (options.server) {
         const serverName = options.server.toLowerCase();
         const demo = DEMO_SERVERS.find(s => s.name === serverName);
         if (!demo) {
@@ -318,28 +322,8 @@ export function registerDemoCommands(program: Command): void {
       // ── Step 6: Next steps ─────────────────────────────────────────────
 
       if (artifact.gate === "pass") {
-        process.stdout.write(`  ${c(ANSI.green, "✓")} ${c(ANSI.bold, "All checks passed!")}\n\n`);
+        process.stdout.write(`  ${c(ANSI.green, "✓")} ${c(ANSI.bold, "Passed the configured release gate.")}\n\n`);
 
-        if (!isQuiet()) {
-          process.stdout.write(`  ${c(ANSI.bold, "What's next?")}\n`);
-          const serverCount = targets.length > 1 ? targets.length : "";
-          if (serverCount) {
-            process.stdout.write(
-              `    ${c(ANSI.cyan, "$")} ${c(ANSI.bold, `${bin} scan`)}${serverCount ? "" : ""} ${c(ANSI.dim, `— scan all ${serverCount} servers`)}\n`,
-            );
-          }
-          process.stdout.write(
-            `    ${c(ANSI.cyan, "$")} ${c(ANSI.bold, `${bin} diff`)} <run1> <run2>  ${c(ANSI.dim, "- compare before/after")}\n`,
-          );
-          process.stdout.write(
-            `    ${c(ANSI.cyan, "$")} ${c(ANSI.bold, `${bin} badge`)} <server>      ${c(ANSI.dim, "- generate a safety badge")}\n`,
-          );
-          process.stdout.write(
-            `    ${c(ANSI.cyan, "$")} ${c(ANSI.bold, `${bin} setup-ci`)}             ${c(ANSI.dim, "- add to CI pipeline")}\n`,
-          );
-        }
-
-        printCiConversionCta({ bin, context: "keep this safety grade visible in CI", target: targetConfig });
       } else {
         process.stdout.write(`  ${c(ANSI.yellow, "!")} ${c(ANSI.bold, "Some checks need attention")}\n\n`);
 
@@ -380,10 +364,14 @@ export function registerDemoCommands(program: Command): void {
       }));
 
       const outPath = await writeRunArtifact(artifact, defaultRunsDirectory(process.cwd()));
-      maybePrintCloudCta("general", artifact.gate);
-      if (!isQuiet() && !hasCloudToken()) {
-        process.stdout.write(`  Upload one hosted snapshot free: ${getBinName()} cloud upload\n`);
-        process.stdout.write(`  ${c(ANSI.dim, `Receipt: ${outPath}`)}\n\n`);
+      if (!isQuiet()) {
+        process.stdout.write(`  Receipt saved: ${outPath}\n`);
+        if (targetConfig.targetId === "mcp-observatory-demo") {
+          process.stdout.write("  This is the included example, not a result for your own server.\n");
+        }
+        process.stdout.write(`\n  Next: save this result online (optional, free)\n    ${bin} cloud upload\n`);
+        process.stdout.write("  Run it in this same folder. Connect GitHub in the browser, then return here.\n");
+        process.stdout.write("  Local scanning stays free. Setup help: https://mcp-observatory.com/start/\n\n");
       }
       recordSessionEnd(sessionId);
     });

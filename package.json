@@ -177,6 +177,7 @@
     "ajv": "8.20.0",
     "eslint": "^10.8.0",
     "globals": "^17.8.0",
+    "simple-icons": "16.29.0",
     "tsx": "4.23.12",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.65.0",
