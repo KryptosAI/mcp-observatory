@@ -71,7 +71,9 @@
         "security",
         "security-lite",
         "conformance",
-        "schema-quality"
+        "schema-quality",
+        "runtime-profile",
+        "source-audit"
       ]
     },
     "diffEntry": {

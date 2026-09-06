@@ -1,4 +1,4 @@
-# Permission-change and Codex-discovery salvage
+# Observatory prototype salvage
 
 This branch starts from current upstream `011ed59` and preserves the first-scan,
 hosted activation and informational-diagnostic fixes shipped in September.
@@ -36,13 +36,23 @@ are parsed consistently. Invalid TOML is rejected as a whole. Disabled servers
 are skipped; explicitly named bearer-token environment variables are resolved.
 Tests use fixture configs and isolate both home and working directories.
 
-## Preserved work outside this branch
+## Source audit
+
+The five-rule source-audit prototype is now integrated as a bounded local JS/TS
+review command and optional scan flag. It reports incomplete coverage explicitly,
+resolves local bindings instead of trusting variable names, omits source and secret
+contents, and treats suspicious flows as review signals. The old generic guard
+heuristic and zero-file success behavior were removed. See [source-audit.md](source-audit.md)
+for the supported analysis, exclusions, resource limits and exit-code contract.
+The integrated suite passes 772 tests, including 52 new source/CLI cases; lint,
+typecheck and build pass. Original source and tests remain in the preserved copies.
+
+## Remaining prototypes
 
 The old dashboards, metrics/telemetry changes, sales scripts and research-paper
-drafts remain in their original copies. The experimental source-audit,
-toxic-flow, typosquatting and alternate introspection machinery also remain
-there: these are separate feature designs, not dependencies of this integrated
-permission-change/discovery repair. Their original source and tests are retained.
+drafts remain in their original copies. Toxic-flow, typosquatting and alternate
+introspection machinery are still being evaluated independently. Their original
+source and tests are retained.
 No old generated dashboard or historical corpus result was transplanted as new
 evidence. Corpus outputs here are regenerated from the recovered evaluator.
 The optional `mcp-diff` comparison requires that independent Python tool.

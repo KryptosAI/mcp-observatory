@@ -11,6 +11,7 @@ import { registerDiffCommands } from "./commands/diff.js";
 import { registerLegacyCommands } from "./commands/legacy.js";
 import { registerRecordReplayCommands } from "./commands/record-replay.js";
 import { registerScanCommands } from "./commands/scan.js";
+import { registerSourceAuditCommands } from "./commands/source-audit.js";
 import { registerScoreCommands } from "./commands/score.js";
 import { registerServeCommands } from "./commands/serve.js";
 import { registerSuggestCommands } from "./commands/suggest.js";
@@ -307,6 +308,7 @@ async function main(): Promise<void> {
 
   // Register all command modules
   registerScanCommands(program, bin);
+  registerSourceAuditCommands(program);
   registerTestCommands(program);
   registerDemoCommands(program);
   registerDiffCommands(program);
