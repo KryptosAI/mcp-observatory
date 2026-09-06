@@ -1,0 +1,148 @@
+{
+  "schemaVersion": "permission-delta-evaluation/v1",
+  "evaluation": {
+    "kind": "hand-extracted-real-release-cases",
+    "claimScope": "The cases record direct classifier results for two source-backed MCP release pairs.",
+    "generator": "scripts/evaluate-permission-delta-conformance.ts",
+    "evaluator": "src/permission-delta.ts",
+    "corpus": "docs/permission-delta-corpus/real-release-case.json",
+    "corpusSha256": "41cc24794113b2b450b820b4e9af8c7faa2a78bffc008a5891a53c73f112ee9e",
+    "gatePrecedence": [
+      "widening",
+      "review",
+      "narrowing-or-neutral",
+      "no-deltas"
+    ],
+    "sources": [
+      {
+        "server": "Notion MCP Server",
+        "repository": "https://github.com/makenotion/notion-mcp-server",
+        "baseRevision": "v2.1.0",
+        "baseCommit": "7e254df95e805861db8c052f5c325a1bb77a7560",
+        "headRevision": "v2.3.1",
+        "headCommit": "d282ce9c167d34705bc24074c856c84cba0f3344",
+        "comparison": "https://github.com/makenotion/notion-mcp-server/compare/v2.1.0...v2.3.1",
+        "schemaSource": "scripts/notion-openapi.json, /v1/pages/{page_id}/markdown",
+        "extraction": "The head release adds retrieve-page-markdown and update-page-markdown. The schemas are normalized from the released OpenAPI operation inputs; Notion-Version is omitted because the released MCP converter treats it as a server-managed header."
+      },
+      {
+        "server": "GitHub MCP Server",
+        "repository": "https://github.com/github/github-mcp-server",
+        "baseRevision": "v0.7.0",
+        "baseCommit": "42e5ce9b88ee289bb8d7a297c1d8a580e06c9e86",
+        "headRevision": "v0.8.0",
+        "headCommit": "b5e33481793a6dbca5cf688ddf391ad410042d63",
+        "changeCommit": "d15026b0eb2a2e5d3265a2601798ab28017dc719",
+        "comparison": "https://github.com/github/github-mcp-server/compare/v0.7.0...v0.8.0",
+        "schemaSource": "pkg/github/__toolsnaps__/get_file_contents.snap and pkg/github/repositories.go",
+        "extraction": "The change commit replaces mcp.Required() with mcp.DefaultString('/') for path, and the checked-in released tool snapshot removes path from the required array and records the default. The normalized schemas omit descriptions and tool annotations but preserve every input keyword inspected by the classifier."
+      }
+    ]
+  },
+  "summary": {
+    "totalPairs": 2,
+    "gateDecisions": {
+      "WOULD BLOCK": 1,
+      "WOULD QUEUE": 1,
+      "PASS": 0,
+      "NO DELTAS": 0
+    },
+    "deltasByRisk": {
+      "narrowing": 0,
+      "neutral": 0,
+      "review": 2,
+      "widening": 1
+    },
+    "totalDeltas": 3
+  },
+  "results": [
+    {
+      "id": "notion-v2.1.0-v2.3.1",
+      "description": "Notion MCP Server: two page-Markdown tool contracts added",
+      "inputSha256": "307106f1995c060096de66e2b0e2b85d7870ceadb11a00c433222745467fb069",
+      "observed": {
+        "signs": {
+          "narrowing": false,
+          "neutral": false,
+          "review": true,
+          "widening": false
+        },
+        "counts": {
+          "narrowing": 0,
+          "neutral": 0,
+          "review": 2,
+          "widening": 0
+        },
+        "action": "WOULD QUEUE",
+        "deltas": [
+          {
+            "capability": "tools",
+            "name": "retrieve-page-markdown",
+            "risk": "review",
+            "change": "tool contract added",
+            "reason": "A newly advertised tool creates an authority boundary that was not part of the approved contract set."
+          },
+          {
+            "capability": "tools",
+            "name": "update-page-markdown",
+            "risk": "review",
+            "change": "tool contract added",
+            "reason": "A newly advertised tool creates an authority boundary that was not part of the approved contract set."
+          }
+        ]
+      },
+      "regressionExpectation": {
+        "signs": {
+          "narrowing": false,
+          "neutral": false,
+          "review": true,
+          "widening": false
+        },
+        "matches": true
+      }
+    },
+    {
+      "id": "github-v0.7.0-v0.8.0",
+      "description": "GitHub MCP Server: get_file_contents path became optional",
+      "inputSha256": "12fb3d40273b1c28b41be9241cf875d7a279c1c391a9977adf7e52ac91099d06",
+      "observed": {
+        "signs": {
+          "narrowing": false,
+          "neutral": false,
+          "review": false,
+          "widening": true
+        },
+        "counts": {
+          "narrowing": 0,
+          "neutral": 0,
+          "review": 0,
+          "widening": 1
+        },
+        "action": "WOULD BLOCK",
+        "deltas": [
+          {
+            "capability": "tools",
+            "name": "get_file_contents",
+            "risk": "widening",
+            "change": "required permission field 'path' became optional",
+            "reason": "A missing permission-like field may now be defaulted or repaired by the server.",
+            "field": "path",
+            "witness": {
+              "owner": "",
+              "repo": ""
+            }
+          }
+        ]
+      },
+      "regressionExpectation": {
+        "signs": {
+          "narrowing": false,
+          "neutral": false,
+          "review": false,
+          "widening": true
+        },
+        "matches": true
+      }
+    }
+  ]
+}

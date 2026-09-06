@@ -191,7 +191,8 @@ export interface ResponseChangeEntry {
   change: string;
 }
 
-export type PermissionDeltaRisk = "neutral" | "review" | "widening";
+export type PermissionDeltaRisk = "narrowing" | "neutral" | "review" | "widening";
+export type PermissionDeltaThreshold = "review" | "widening";
 
 export interface PermissionDeltaEntry {
   capability: CheckId;
@@ -200,6 +201,7 @@ export interface PermissionDeltaEntry {
   change: string;
   reason: string;
   field?: string;
+  witness?: Record<string, unknown>;
 }
 
 export interface DiffSummary {

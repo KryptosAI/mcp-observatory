@@ -2,6 +2,7 @@ import { access, readFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { z } from "zod";
+import { parse as parseToml } from "smol-toml";
 
 import type { TargetConfig } from "./types.js";
 
@@ -16,6 +17,8 @@ const mcpServerEntrySchema = z.object({
   args: z.array(z.unknown()).optional(),
   env: z.record(z.string(), z.unknown()).optional(),
   authToken: z.string().optional(),
+  bearer_token_env_var: z.string().optional(),
+  enabled: z.boolean().optional(),
 }).passthrough();
 
 const mcpConfigSchema = z.object({
@@ -71,7 +74,10 @@ function opencodeConfigPaths(): string[] {
 
 function codexConfigPaths(): string[] {
   const home = os.homedir();
-  return [path.join(home, ".codex", "config.json")];
+  return [
+    path.join(home, ".codex", "config.toml"),
+    path.join(home, ".codex", "config.json"),
+  ];
 }
 
 function geminiCliConfigPaths(): string[] {
@@ -216,6 +222,27 @@ async function tryReadJson(filePath: string): Promise<McpConfig | undefined> {
   }
 }
 
+function parseCodexTomlTargets(content: string, source: string): DiscoveredTarget[] {
+  const config = parseToml(content);
+  const servers = config["mcp_servers"];
+  if (servers === null || typeof servers !== "object" || Array.isArray(servers)) return [];
+  const parsed = mcpConfigSchema.safeParse({ mcpServers: servers });
+  return parsed.success ? extractTargets(parsed.data, source) : [];
+}
+
+async function readTargetsFromConfigPath(filePath: string): Promise<DiscoveredTarget[]> {
+  const data = await tryReadJson(filePath);
+  if (data !== undefined) return extractTargets(data, filePath);
+
+  if (!filePath.endsWith(".toml")) return [];
+  try {
+    const content = await readFile(filePath, "utf8");
+    return parseCodexTomlTargets(content, filePath);
+  } catch {
+    return [];
+  }
+}
+
 function extractTargets(data: McpConfig, source: string): DiscoveredTarget[] {
   const results: DiscoveredTarget[] = [];
 
@@ -223,16 +250,20 @@ function extractTargets(data: McpConfig, source: string): DiscoveredTarget[] {
     const parsed = mcpServerEntrySchema.safeParse(entry);
     if (!parsed.success) continue;
     const serverEntry = parsed.data;
+    if (serverEntry.enabled === false) continue;
 
     // HTTP/SSE server (has url field)
     if (serverEntry.url) {
+      const bearerToken = serverEntry.bearer_token_env_var
+        ? process.env[serverEntry.bearer_token_env_var]
+        : undefined;
       results.push({
         source,
         config: {
           targetId: name,
           adapter: "http",
           url: serverEntry.url,
-          authToken: serverEntry.authToken,
+          authToken: serverEntry.authToken ?? bearerToken,
           timeoutMs: 15_000,
         }
       });
@@ -288,10 +319,7 @@ export async function scanForTargets(configPath?: string): Promise<DiscoveredTar
   const seen = new Set<string>();
 
   for (const p of paths) {
-    const data = await tryReadJson(p);
-    if (data === undefined) continue;
-
-    const targets = extractTargets(data, p);
+    const targets = await readTargetsFromConfigPath(p);
     for (const target of targets) {
       const key = target.config.adapter === "http"
         ? target.config.url
@@ -385,10 +413,7 @@ async function scanForTargetsFromPaths(configPaths: string[]): Promise<Discovere
   const seen = new Set<string>();
 
   for (const p of configPaths) {
-    const data = await tryReadJson(p);
-    if (data === undefined) continue;
-
-    const targets = extractTargets(data, p);
+    const targets = await readTargetsFromConfigPath(p);
     for (const target of targets) {
       const key = target.config.adapter === "http"
         ? target.config.url

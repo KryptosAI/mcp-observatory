@@ -78,6 +78,7 @@ function optionalSchemaDriftSeverityCounts(value: unknown): Record<SchemaDriftSe
 function optionalPermissionDeltaRiskCounts(value: unknown): Record<PermissionDeltaRisk, number> | undefined {
   if (!isObject(value)) return undefined;
   return {
+    narrowing: typeof value["narrowing"] === "number" ? value["narrowing"] : 0,
     neutral: typeof value["neutral"] === "number" ? value["neutral"] : 0,
     review: typeof value["review"] === "number" ? value["review"] : 0,
     widening: typeof value["widening"] === "number" ? value["widening"] : 0,

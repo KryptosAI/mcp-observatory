@@ -165,6 +165,7 @@
     "@modelcontextprotocol/sdk": "^1.29.0",
     "ci-info": "^4.4.0",
     "commander": "14.0.3",
+    "smol-toml": "^1.8.0",
     "update-notifier": "^7.3.1",
     "zod": "4.5.2"
   },
