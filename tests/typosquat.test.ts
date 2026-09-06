@@ -92,7 +92,7 @@ describe("advisory name comparisons",()=>{
     expect(matches).toHaveLength(1);expect(matches[0]?.closestKnown).toBe(npm);
     expect(matches[0]?.distance).toBe(1);expect(matches[0]?.severity).toBe("warning");
     expect(matches[0]?.confidence).toBe("name-similarity");expect(matches[0]?.disposition).toBe("review");
-    expect(matches[0]?.reference.sourceUrl).toMatch(/github.com\/modelcontextprotocol\/servers\/blob\/[a-f0-9]{40}\//);
+    expect(matches[0]?.reference.sourceUrl).toBe("https://github.com/modelcontextprotocol/servers/blob/d73f99efbfd40c3aa1b61e88728b3d49fb52608f/src/filesystem/package.json");
     expect(matches[0]?.recommendation).not.toMatch(/npm (?:uninstall|install)/);
   });
   it("never mixes npm and Python namespaces",()=>{
@@ -121,7 +121,9 @@ describe("advisory name comparisons",()=>{
   it("ships a finite catalogue of dated manifest references rather than an official-package allowlist",()=>{
     expect(PACKAGE_REFERENCES).toHaveLength(9);
     for(const reference of PACKAGE_REFERENCES) {
-      expect(reference.sourceUrl).toMatch(/^https:\/\/github.com\/[^/]+\/[^/]+\/blob\/[a-f0-9]{40}\//);
+      const source=new URL(reference.sourceUrl);
+      expect(source.origin).toBe("https://github.com");
+      expect(source.pathname).toMatch(/^\/[^/]+\/[^/]+\/blob\/[a-f0-9]{40}\//);
       expect(reference.verifiedAt).toBe("2026-09-06");
     }
     expect(reviewCommandPackages("npx",[npm]).scope).toContain("ownership");
