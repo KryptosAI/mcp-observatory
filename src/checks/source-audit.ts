@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { constants } from "node:fs";
-import { lstat, open, opendir, realpath } from "node:fs/promises";
+import { lstat, open, opendir, realpath, type FileHandle } from "node:fs/promises";
 import * as path from "node:path";
 import { performance } from "node:perf_hooks";
 import { Node, Project, SyntaxKind, ts } from "ts-morph";
@@ -249,12 +249,21 @@ export async function auditSource(sourcePath: string, options: SourceAuditOption
     if (++entries > limits.maxEntries || performance.now() - startedAt > limits.maxDurationMs) {
       problem(file, "Traversal or elapsed-time limit reached."); stopped = true; return;
     }
+    let handle:FileHandle | undefined;
     try {
-      const stat = await lstat(candidate);
-      if (stat.isSymbolicLink()) { result.coverage.excluded++; return; }
+      // Open first. Type, identity and size checks below apply to the descriptor
+      // actually read, rather than authorizing a later pathname-based open.
+      handle=await open(candidate,constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
+      const opened=await handle.stat();
+      const named=await lstat(candidate);
+      if (named.isSymbolicLink()) { result.coverage.excluded++; return; }
+      if (named.dev !== opened.dev || named.ino !== opened.ino) {
+        problem(file,"Source identity changed after opening.");return;
+      }
       if (!within(await realpath(candidate))) { problem(file, "Path escapes the selected source root."); return; }
-      if (stat.isDirectory()) {
+      if (opened.isDirectory()) {
         if (candidate !== root && EXCLUDED.has(path.basename(candidate))) { result.coverage.excluded++; return; }
+        await handle.close();handle=undefined;
         const names: string[] = [];
         for await (const entry of await opendir(candidate)) {
           if (names.length + entries >= limits.maxEntries) {
@@ -268,31 +277,25 @@ export async function auditSource(sourcePath: string, options: SourceAuditOption
         }
         return;
       }
-      if (!stat.isFile() || !EXTENSION.test(candidate) || /\.d\.[cm]?ts$|\.min\.js$/.test(candidate)) { result.coverage.excluded++; return; }
+      if (!opened.isFile() || !EXTENSION.test(candidate) || /\.d\.[cm]?ts$|\.min\.js$/.test(candidate)) { result.coverage.excluded++; return; }
       if (result.filesScanned >= limits.maxFiles) { problem(file, "Source file limit reached."); stopped = true; return; }
-      if (stat.size > limits.maxFileBytes || bytes + stat.size > limits.maxTotalBytes) {
+      if (opened.size > limits.maxFileBytes || bytes + opened.size > limits.maxTotalBytes) {
         problem(file, "Source byte limit reached."); return;
       }
-      const handle = await open(candidate, constants.O_RDONLY | constants.O_NOFOLLOW);
-      let buffer: Buffer;
-      try {
-        const opened = await handle.stat();
-        if (!opened.isFile() || opened.dev !== stat.dev || opened.ino !== stat.ino ||
-            opened.size > limits.maxFileBytes || bytes + opened.size > limits.maxTotalBytes) {
-          problem(file, "Source changed or exceeded byte limits before reading."); return;
-        }
-        buffer = Buffer.alloc(Math.min(limits.maxFileBytes, limits.maxTotalBytes - bytes) + 1);
-        let bytesRead = 0;
-        while (bytesRead < buffer.length) {
-          const chunk = await handle.read(buffer, bytesRead, buffer.length - bytesRead, bytesRead);
-          if (chunk.bytesRead === 0) break;
-          bytesRead += chunk.bytesRead;
-        }
-        buffer = buffer.subarray(0, bytesRead);
-        if (bytesRead > limits.maxFileBytes || bytes + bytesRead > limits.maxTotalBytes || bytesRead !== opened.size) {
-          problem(file, "Source changed or exceeded byte limits while reading."); return;
-        }
-      } finally { await handle.close(); }
+      let buffer = Buffer.alloc(Math.min(limits.maxFileBytes, limits.maxTotalBytes - bytes) + 1);
+      let bytesRead = 0;
+      while (bytesRead < buffer.length) {
+        const chunk = await handle.read(buffer, bytesRead, buffer.length - bytesRead, bytesRead);
+        if (chunk.bytesRead === 0) break;
+        bytesRead += chunk.bytesRead;
+      }
+      buffer = buffer.subarray(0, bytesRead);
+      const finished=await handle.stat();
+      if (bytesRead > limits.maxFileBytes || bytes + bytesRead > limits.maxTotalBytes || bytesRead !== opened.size ||
+          finished.size !== opened.size || finished.mtimeMs !== opened.mtimeMs || finished.ctimeMs !== opened.ctimeMs) {
+        problem(file, "Source changed or exceeded byte limits while reading."); return;
+      }
+      await handle.close();handle=undefined;
       bytes += buffer.length;
       const content = new TextDecoder("utf-8", { fatal: true }).decode(buffer);
       const checked = inspectFile(content, file);
@@ -302,7 +305,12 @@ export async function auditSource(sourcePath: string, options: SourceAuditOption
       const remaining = limits.maxFindings - result.findings.length;
       result.findings.push(...checked.findings.slice(0, remaining));
       if (checked.findings.length > remaining) { problem(file, "Finding limit reached."); stopped = true; }
-    } catch { problem(file, "Source could not be read or analyzed; error details omitted to protect source contents."); }
+    } catch (error) {
+      if (error && typeof error === "object" && "code" in error && error.code === "ELOOP") result.coverage.excluded++;
+      else problem(file, "Source could not be read or analyzed; error details omitted to protect source contents.");
+    } finally {
+      if (handle) await handle.close().catch(() => { problem(file,"Source handle could not be closed."); });
+    }
   };
   await visit(root);
   if (!result.filesScanned) problem(".", "No supported source files were analyzed.");

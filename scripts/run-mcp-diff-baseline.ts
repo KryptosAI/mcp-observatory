@@ -1,8 +1,9 @@
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 
 interface CorpusInput {
   base: Record<string, unknown>;
@@ -58,16 +59,20 @@ function asTools(schemas: Record<string, unknown>): Array<{ name: string; descri
   return Object.entries(schemas).map(([name, inputSchema]) => ({ name, description: "", inputSchema }));
 }
 
+export function writeBaselineInputs(base:Record<string,unknown>,head:Record<string,unknown>,workDir:string):{baseFile:string;headFile:string} {
+  const pairDir=mkdtempSync(path.join(workDir,"pair-"));
+  const baseFile=path.join(pairDir,"base.json"),headFile=path.join(pairDir,"head.json");
+  writeFileSync(baseFile,JSON.stringify(asTools(base)),{encoding:"utf8",flag:"wx",mode:0o600});
+  writeFileSync(headFile,JSON.stringify(asTools(head)),{encoding:"utf8",flag:"wx",mode:0o600});
+  return {baseFile,headFile};
+}
+
 function mcpDiffSchemas(
   base: Record<string, unknown>,
   head: Record<string, unknown>,
   workDir: string,
-  pairId: string,
 ): { verdict: BaselineEntry["mcpDiffVerdict"]; changes: McpDiffChange[] } {
-  const baseFile = path.join(workDir, `${pairId}-base.json`);
-  const headFile = path.join(workDir, `${pairId}-head.json`);
-  writeFileSync(baseFile, JSON.stringify(asTools(base)), "utf8");
-  writeFileSync(headFile, JSON.stringify(asTools(head)), "utf8");
+  const {baseFile,headFile}=writeBaselineInputs(base,head,workDir);
 
   const output = execFileSync("python3", ["-c", PYTHON_DRIVER, baseFile, headFile], { encoding: "utf8" });
   const changes = JSON.parse(output) as McpDiffChange[];
@@ -87,7 +92,7 @@ function comparePair(
   action: string,
   workDir: string,
 ): BaselineEntry {
-  const { verdict, changes } = mcpDiffSchemas(input.base, input.head, workDir, pairId);
+  const { verdict, changes } = mcpDiffSchemas(input.base, input.head, workDir);
   const permissionEscalates = action === "WOULD BLOCK" || action === "WOULD QUEUE";
   const mcpDiffPasses = verdict === "compatible";
   return {
@@ -111,8 +116,7 @@ async function main(): Promise<void> {
   const resultMap = new Map<string, string>();
   for (const result of [...resultsData.results, ...realResultsData.results]) resultMap.set(result.id, result.observed.action);
 
-  const workDir = path.join(tmpdir(), `mcp-diff-baseline-${Date.now()}`);
-  mkdirSync(workDir, { recursive: true });
+  const workDir = mkdtempSync(path.join(tmpdir(), "mcp-diff-baseline-"));
 
   try {
     const entries: BaselineEntry[] = [];
@@ -176,7 +180,6 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
+  main().catch((error) => { console.error(error); process.exitCode=1; });
+}
