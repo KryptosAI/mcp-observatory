@@ -1,4 +1,5 @@
 import { access, readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import os from "node:os";
 import path from "node:path";
 import { z } from "zod";
@@ -313,6 +314,16 @@ function extractTargets(data: McpConfig, source: string): DiscoveredTarget[] {
 
 // ── Public API ──────────────────────────────────────────────────────────────
 
+function targetIdentity(config:TargetConfig):string {
+  const sortedPairs = (record:Record<string,string> | undefined) => Object.entries(record ?? {}).sort(([a],[b]) => a.localeCompare(b));
+  const identity = config.adapter === "http"
+    ? [config.adapter,config.url,config.authToken ?? null,sortedPairs(config.headers)]
+    : [config.adapter,config.command,config.args,config.cwd ?? null,sortedPairs(config.env)];
+  // The digest is private dedupe state, never report evidence. Credentials must
+  // distinguish execution contexts without being printed in identity diagnostics.
+  return createHash("sha256").update(JSON.stringify(identity)).digest("hex");
+}
+
 export async function scanForTargets(configPath?: string): Promise<DiscoveredTarget[]> {
   const paths = configPath ? [configPath] : defaultConfigPaths();
   const allTargets: DiscoveredTarget[] = [];
@@ -321,9 +332,7 @@ export async function scanForTargets(configPath?: string): Promise<DiscoveredTar
   for (const p of paths) {
     const targets = await readTargetsFromConfigPath(p);
     for (const target of targets) {
-      const key = target.config.adapter === "http"
-        ? target.config.url
-        : `${target.config.command} ${target.config.args.join(" ")}`;
+      const key = targetIdentity(target.config);
       if (!seen.has(key)) {
         seen.add(key);
         allTargets.push(target);
@@ -415,9 +424,7 @@ async function scanForTargetsFromPaths(configPaths: string[]): Promise<Discovere
   for (const p of configPaths) {
     const targets = await readTargetsFromConfigPath(p);
     for (const target of targets) {
-      const key = target.config.adapter === "http"
-        ? target.config.url
-        : `${target.config.command} ${target.config.args.join(" ")}`;
+      const key = targetIdentity(target.config);
       if (!seen.has(key)) {
         seen.add(key);
         allTargets.push(target);

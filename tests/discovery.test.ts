@@ -48,9 +48,12 @@ describe("scanForTargets", () => {
           args: ["-y", "example-mcp", 42, null],
           env: { SAFE_MODE: "1" },
         },
-        duplicate: {
+        differentContext: {
           command: "npx",
           args: ["-y", "example-mcp"],
+        },
+        exactDuplicate: {
+          command: "npx", args: ["-y", "example-mcp"], env: { SAFE_MODE: "1" },
         },
         invalid: {
           args: ["missing-command"],
@@ -61,7 +64,8 @@ describe("scanForTargets", () => {
 
     const targets = await scanForTargets(configPath);
 
-    expect(targets).toHaveLength(2);
+    expect(targets).toHaveLength(3);
+    expect(targets[2]?.config.targetId).toBe("differentContext");
     expect(targets[0]).toMatchObject({
       source: configPath,
       config: {
@@ -81,6 +85,24 @@ describe("scanForTargets", () => {
         env: { SAFE_MODE: "1" },
       },
     });
+  });
+
+  it("keeps argument boundaries and authentication contexts distinct during deduplication", async () => {
+    const dir = await mkdtemp(path.join(os.tmpdir(), "mcp-observatory-context-"));
+    const configPath = path.join(dir, "config.json");
+    await writeFile(configPath, JSON.stringify({mcpServers:{
+      oneArgument:{command:"node",args:["a b"]},
+      twoArguments:{command:"node",args:["a","b"]},
+      authenticatedA:{url:"https://example.test/mcp",authToken:"fixture-a"},
+      authenticatedB:{url:"https://example.test/mcp",authToken:"fixture-b"},
+      authenticatedDuplicate:{url:"https://example.test/mcp",authToken:"fixture-a"},
+      ordered:{command:"node",args:["server"],env:{A:"1",B:"2"}},
+      reordered:{command:"node",args:["server"],env:{B:"2",A:"1"}},
+    }}));
+    const targets=await scanForTargets(configPath);
+    expect(targets.map(target=>target.config.targetId)).toEqual([
+      "oneArgument","twoArguments","authenticatedA","authenticatedB","ordered",
+    ]);
   });
 
   it("extracts MCP targets from Codex TOML config", async () => {

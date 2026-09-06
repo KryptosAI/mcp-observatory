@@ -73,7 +73,8 @@
         "conformance",
         "schema-quality",
         "runtime-profile",
-        "source-audit"
+        "source-audit",
+        "toxic-flow"
       ]
     },
     "diffEntry": {

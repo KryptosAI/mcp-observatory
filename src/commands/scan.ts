@@ -16,6 +16,7 @@ import { ANSI, LOGO, c, isQuiet, setupCiHint, suggestFix, useColor } from "./hel
 import { firstNextStep } from "../utils/failure-diagnosis.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
 import { runSourceAudit } from "./source-audit.js";
+import { analyzeToxicFlows, renderToxicFlowAnalysis } from "../checks/toxic-flow.js";
 // ── Scan implementation ─────────────────────────────────────────────────────
 
 type SkillScanOption = string | boolean | undefined;
@@ -198,6 +199,12 @@ async function runScan(
       failCount++;
       categoryCounts.failed++;
     }
+  }
+
+  if (targets.length > 1) {
+    const crossServer = analyzeToxicFlows(artifacts, {expectedTargetIds:targets.map(target => target.config.targetId)});
+    process.stdout.write("\n" + renderToxicFlowAnalysis(crossServer));
+    if (crossServer.status === "incomplete") process.exitCode = 2;
   }
 
   // ── Summary ──────────────────────────────────────────────────────────

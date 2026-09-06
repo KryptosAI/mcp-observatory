@@ -47,10 +47,20 @@ for the supported analysis, exclusions, resource limits and exit-code contract.
 The integrated suite passes 772 tests, including 52 new source/CLI cases; lint,
 typecheck and build pass. Original source and tests remain in the preserved copies.
 
+## Cross-server review
+
+Cross-server analysis is integrated as advisory capability combinations and exact
+name-collision review, with actual tool/run identities, directional findings,
+explicit incomplete inventories and bounded work. It replaces critical exploit
+claims based on category names alone. See [cross-server-review.md](cross-server-review.md).
+The full integrated suite passes 798 tests, including 25 cross-server/API/CLI cases
+and an additional discovery-context regression. Lint, build, smoke and the public
+repository boundary check pass.
+
 ## Remaining prototypes
 
 The old dashboards, metrics/telemetry changes, sales scripts and research-paper
-drafts remain in their original copies. Toxic-flow, typosquatting and alternate
+drafts remain in their original copies. Typosquatting and alternate
 introspection machinery are still being evaluated independently. Their original
 source and tests are retained.
 No old generated dashboard or historical corpus result was transplanted as new

@@ -81,6 +81,7 @@
     "docs/setup-ci-doctor.md",
     "docs/security-due-diligence.md",
     "docs/source-audit.md",
+    "docs/cross-server-review.md",
     "docs/target-contribution-guide.md",
     "docs/target-gallery.md",
     "docs/target-registry.md",

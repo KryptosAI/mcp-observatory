@@ -9,7 +9,7 @@ export type CheckStatus =
   | "unsupported"
   | "flaky"
   | "skipped";
-export type CheckId = "tools" | "prompts" | "resources" | "tools-invoke" | "security" | "security-lite" | "attack-sim" | "conformance" | "schema-quality" | "runtime-profile" | "source-audit";
+export type CheckId = "tools" | "prompts" | "resources" | "tools-invoke" | "security" | "security-lite" | "attack-sim" | "conformance" | "schema-quality" | "runtime-profile" | "source-audit" | "toxic-flow";
 
 export const STATUS_RANK: Record<CheckStatus, number> = {
   pass: 6, partial: 5, flaky: 4, unsupported: 3, skipped: 2, fail: 1
