@@ -15,30 +15,33 @@
         "headCommit": "d282ce9c167d34705bc24074c856c84cba0f3344",
         "comparison": "https://github.com/makenotion/notion-mcp-server/compare/v2.1.0...v2.3.1",
         "schemaSource": "scripts/notion-openapi.json, /v1/pages/{page_id}/markdown",
-        "extraction": "The head release adds retrieve-page-markdown and update-page-markdown. The schemas are normalized from the released OpenAPI operation inputs; Notion-Version is omitted because the released MCP converter treats it as a server-managed header."
+        "extraction": "The pinned released converter produces both operation schemas. The released proxy prefixes their advertised names with API-. Only annotations and unused definitions are removed; format, defaults, anyOf string fallbacks and nested input constraints are preserved. See release-inputs.json and EXTRACTION.md."
       },
       "normalizedInput": {
         "base": {},
         "head": {
-          "retrieve-page-markdown": {
+          "API-retrieve-page-markdown": {
             "type": "object",
             "properties": {
               "page_id": {
-                "type": "string"
+                "type": "string",
+                "format": "uuid"
               },
               "include_transcript": {
-                "type": "boolean"
+                "type": "boolean",
+                "default": false
               }
             },
             "required": [
               "page_id"
             ]
           },
-          "update-page-markdown": {
+          "API-update-page-markdown": {
             "type": "object",
             "properties": {
               "page_id": {
-                "type": "string"
+                "type": "string",
+                "format": "uuid"
               },
               "type": {
                 "type": "string",
@@ -50,93 +53,127 @@
                 ]
               },
               "replace_content": {
-                "type": "object",
-                "properties": {
-                  "new_str": {
-                    "type": "string"
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "new_str": {
+                        "type": "string"
+                      },
+                      "allow_deleting_content": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "new_str"
+                    ],
+                    "additionalProperties": true
                   },
-                  "allow_deleting_content": {
-                    "type": "boolean"
+                  {
+                    "type": "string"
                   }
-                },
-                "required": [
-                  "new_str"
                 ]
               },
               "update_content": {
-                "type": "object",
-                "properties": {
-                  "content_updates": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "old_str": {
-                          "type": "string"
-                        },
-                        "new_str": {
-                          "type": "string"
-                        },
-                        "replace_all_matches": {
-                          "type": "boolean"
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "content_updates": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "old_str": {
+                              "type": "string"
+                            },
+                            "new_str": {
+                              "type": "string"
+                            },
+                            "replace_all_matches": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "old_str",
+                            "new_str"
+                          ],
+                          "additionalProperties": true
                         }
                       },
-                      "required": [
-                        "old_str",
-                        "new_str"
-                      ]
-                    }
+                      "allow_deleting_content": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "content_updates"
+                    ],
+                    "additionalProperties": true
                   },
-                  "allow_deleting_content": {
-                    "type": "boolean"
+                  {
+                    "type": "string"
                   }
-                },
-                "required": [
-                  "content_updates"
                 ]
               },
               "insert_content": {
-                "type": "object",
-                "properties": {
-                  "content": {
-                    "type": "string"
-                  },
-                  "after": {
-                    "type": "string"
-                  },
-                  "position": {
+                "anyOf": [
+                  {
                     "type": "object",
                     "properties": {
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "start",
-                          "end"
-                        ]
+                      "content": {
+                        "type": "string"
+                      },
+                      "after": {
+                        "type": "string"
+                      },
+                      "position": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "start",
+                              "end"
+                            ]
+                          }
+                        },
+                        "additionalProperties": true
                       }
-                    }
+                    },
+                    "required": [
+                      "content"
+                    ],
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "string"
                   }
-                },
-                "required": [
-                  "content"
                 ]
               },
               "replace_content_range": {
-                "type": "object",
-                "properties": {
-                  "content": {
-                    "type": "string"
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "content": {
+                        "type": "string"
+                      },
+                      "content_range": {
+                        "type": "string"
+                      },
+                      "allow_deleting_content": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "content",
+                      "content_range"
+                    ],
+                    "additionalProperties": true
                   },
-                  "content_range": {
+                  {
                     "type": "string"
-                  },
-                  "allow_deleting_content": {
-                    "type": "boolean"
                   }
-                },
-                "required": [
-                  "content",
-                  "content_range"
                 ]
               }
             },
@@ -172,7 +209,6 @@
       "normalizedInput": {
         "base": {
           "get_file_contents": {
-            "type": "object",
             "properties": {
               "owner": {
                 "type": "string"
@@ -194,19 +230,19 @@
               "owner",
               "repo",
               "path"
-            ]
+            ],
+            "type": "object"
           }
         },
         "head": {
           "get_file_contents": {
-            "type": "object",
             "properties": {
               "owner": {
                 "type": "string"
               },
               "path": {
-                "type": "string",
-                "default": "/"
+                "default": "/",
+                "type": "string"
               },
               "ref": {
                 "type": "string"
@@ -221,7 +257,8 @@
             "required": [
               "owner",
               "repo"
-            ]
+            ],
+            "type": "object"
           }
         }
       },

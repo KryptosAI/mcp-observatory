@@ -261,7 +261,9 @@ function compareSchemaPermissionSurface(
             ? "Accepted values now include a broader permission or mutation surface."
             : "Only permission-insensitive, non-mutating enum values were added.",
           field,
-          widening ? sampleAcceptedObject(headInspection, undefined, { [field]: added[0] }) : undefined,
+          widening ? sampleAcceptedObject(headInspection, undefined, {
+            [field]: sensitive ? added[0] : added.find(isMutatingValue),
+          }) : undefined,
         ));
       }
 

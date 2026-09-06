@@ -67,7 +67,9 @@ function grantOf(toolSchemas: ToolSchema): Grant {
   }
 
   const mutations = new Set<string>();
-  if (Array.isArray(property["enum"])) {
+  // Mutation atoms must occur in an accepted request. An unsatisfiable
+  // schema has an empty grant, even if an unrelated optional enum says write.
+  if (projections.size > 0 && Array.isArray(property["enum"])) {
     for (const value of property["enum"]) {
       if (value === "write" && acceptsType(property["type"], value)) {
         mutations.add(`${field}:write`);

@@ -5,8 +5,9 @@
     "claimScope": "The cases record direct classifier results for two source-backed MCP release pairs.",
     "generator": "scripts/evaluate-permission-delta-conformance.ts",
     "evaluator": "src/permission-delta.ts",
+    "evaluatorSha256": "31944c2cfa5b8b3d73f1828e4971e8d92a994f3768eaaa797081b673edb7e194",
     "corpus": "docs/permission-delta-corpus/real-release-case.json",
-    "corpusSha256": "41cc24794113b2b450b820b4e9af8c7faa2a78bffc008a5891a53c73f112ee9e",
+    "corpusSha256": "3ede3e93f31ed6e44c46d453ff08b238734d40f762ed97d8ba1cda158dea4b36",
     "gatePrecedence": [
       "widening",
       "review",
@@ -23,7 +24,7 @@
         "headCommit": "d282ce9c167d34705bc24074c856c84cba0f3344",
         "comparison": "https://github.com/makenotion/notion-mcp-server/compare/v2.1.0...v2.3.1",
         "schemaSource": "scripts/notion-openapi.json, /v1/pages/{page_id}/markdown",
-        "extraction": "The head release adds retrieve-page-markdown and update-page-markdown. The schemas are normalized from the released OpenAPI operation inputs; Notion-Version is omitted because the released MCP converter treats it as a server-managed header."
+        "extraction": "The pinned released converter produces both operation schemas. The released proxy prefixes their advertised names with API-. Only annotations and unused definitions are removed; format, defaults, anyOf string fallbacks and nested input constraints are preserved. See release-inputs.json and EXTRACTION.md."
       },
       {
         "server": "GitHub MCP Server",
@@ -59,7 +60,7 @@
     {
       "id": "notion-v2.1.0-v2.3.1",
       "description": "Notion MCP Server: two page-Markdown tool contracts added",
-      "inputSha256": "307106f1995c060096de66e2b0e2b85d7870ceadb11a00c433222745467fb069",
+      "inputSha256": "93fa97b5ffb2468040716d36d17e04cbe45ec869177880a5d28bd0002bab9748",
       "observed": {
         "signs": {
           "narrowing": false,
@@ -77,14 +78,14 @@
         "deltas": [
           {
             "capability": "tools",
-            "name": "retrieve-page-markdown",
+            "name": "API-retrieve-page-markdown",
             "risk": "review",
             "change": "tool contract added",
             "reason": "A newly advertised tool creates an authority boundary that was not part of the approved contract set."
           },
           {
             "capability": "tools",
-            "name": "update-page-markdown",
+            "name": "API-update-page-markdown",
             "risk": "review",
             "change": "tool contract added",
             "reason": "A newly advertised tool creates an authority boundary that was not part of the approved contract set."
@@ -104,7 +105,7 @@
     {
       "id": "github-v0.7.0-v0.8.0",
       "description": "GitHub MCP Server: get_file_contents path became optional",
-      "inputSha256": "12fb3d40273b1c28b41be9241cf875d7a279c1c391a9977adf7e52ac91099d06",
+      "inputSha256": "672addd06d98854fea40a7ec38a9f4e16042aa56dedd5edbc5553b7ed06c0318",
       "observed": {
         "signs": {
           "narrowing": false,

@@ -5,6 +5,7 @@
     "claimScope": "A pass means the classifier emitted exactly the expected presence or absence of each of the four signs for that fixture. It is not an accuracy, recall, or external-validity measurement.",
     "generator": "scripts/evaluate-permission-delta-conformance.ts",
     "evaluator": "src/permission-delta.ts",
+    "evaluatorSha256": "31944c2cfa5b8b3d73f1828e4971e8d92a994f3768eaaa797081b673edb7e194",
     "corpus": "docs/permission-delta-corpus/corpus.json",
     "corpusSha256": "b7513756305728207370d8bd44d13381d7961fc17838a314b431a021bac587e6",
     "gatePrecedence": [

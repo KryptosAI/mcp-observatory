@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
+import { z } from "zod";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 
@@ -299,9 +300,16 @@ const CORPUS: CorpusPair[] = [
   },
 ];
 
-// These cases retain the released classifier-relevant schema keywords while
-// omitting descriptions, response schemas, and server-managed inputs. The
+// These cases use hash-verified extraction of the released converter/snapshots,
+// omitting schema annotations, unused definitions and unselected tool contracts. The
 // provenance record identifies the immutable source for each normalization.
+const releaseInput = z.object({
+  base: z.record(z.string(), z.record(z.string(), z.unknown())),
+  head: z.record(z.string(), z.record(z.string(), z.unknown())),
+});
+const RELEASE_INPUTS = z.object({ notion: releaseInput, github: releaseInput }).parse(
+  JSON.parse(readFileSync(new URL("../docs/permission-delta-corpus/release-inputs.json", import.meta.url), "utf8")),
+);
 const REAL_RELEASE_CASES: CorpusPair[] = [
   {
     id: "notion-v2.1.0-v2.3.1",
@@ -316,44 +324,9 @@ const REAL_RELEASE_CASES: CorpusPair[] = [
       headCommit: "d282ce9c167d34705bc24074c856c84cba0f3344",
       comparison: "https://github.com/makenotion/notion-mcp-server/compare/v2.1.0...v2.3.1",
       schemaSource: "scripts/notion-openapi.json, /v1/pages/{page_id}/markdown",
-      extraction: "The head release adds retrieve-page-markdown and update-page-markdown. The schemas are normalized from the released OpenAPI operation inputs; Notion-Version is omitted because the released MCP converter treats it as a server-managed header.",
+      extraction: "The pinned released converter produces both operation schemas. The released proxy prefixes their advertised names with API-. Only annotations and unused definitions are removed; format, defaults, anyOf string fallbacks and nested input constraints are preserved. See release-inputs.json and EXTRACTION.md.",
     },
-    base: {},
-    head: schemas(
-      tool("retrieve-page-markdown", s("object", {
-        page_id: prop("string"),
-        include_transcript: prop("boolean"),
-      }, ["page_id"])),
-      tool("update-page-markdown", s("object", {
-        page_id: prop("string"),
-        type: prop("string", ["replace_content", "update_content", "insert_content", "replace_content_range"]),
-        replace_content: s("object", {
-          new_str: prop("string"),
-          allow_deleting_content: prop("boolean"),
-        }, ["new_str"]),
-        update_content: s("object", {
-          content_updates: {
-            type: "array",
-            items: s("object", {
-              old_str: prop("string"),
-              new_str: prop("string"),
-              replace_all_matches: prop("boolean"),
-            }, ["old_str", "new_str"]),
-          },
-          allow_deleting_content: prop("boolean"),
-        }, ["content_updates"]),
-        insert_content: s("object", {
-          content: prop("string"),
-          after: prop("string"),
-          position: s("object", { type: prop("string", ["start", "end"]) }),
-        }, ["content"]),
-        replace_content_range: s("object", {
-          content: prop("string"),
-          content_range: prop("string"),
-          allow_deleting_content: prop("boolean"),
-        }, ["content", "content_range"]),
-      }, ["page_id", "type"])),
-    ),
+    ...RELEASE_INPUTS.notion,
     expectedWidening: false,
     expectedReview: true,
     expectedNarrowing: false,
@@ -376,24 +349,7 @@ const REAL_RELEASE_CASES: CorpusPair[] = [
       schemaSource: "pkg/github/__toolsnaps__/get_file_contents.snap and pkg/github/repositories.go",
       extraction: "The change commit replaces mcp.Required() with mcp.DefaultString('/') for path, and the checked-in released tool snapshot removes path from the required array and records the default. The normalized schemas omit descriptions and tool annotations but preserve every input keyword inspected by the classifier.",
     },
-    base: schemas(
-      tool("get_file_contents", s("object", {
-        owner: prop("string"),
-        path: prop("string"),
-        ref: prop("string"),
-        repo: prop("string"),
-        sha: prop("string"),
-      }, ["owner", "repo", "path"])),
-    ),
-    head: schemas(
-      tool("get_file_contents", s("object", {
-        owner: prop("string"),
-        path: { type: "string", default: "/" },
-        ref: prop("string"),
-        repo: prop("string"),
-        sha: prop("string"),
-      }, ["owner", "repo"])),
-    ),
+    ...RELEASE_INPUTS.github,
     expectedWidening: true,
     expectedReview: false,
     expectedNarrowing: false,
@@ -643,6 +599,7 @@ async function main(): Promise<void> {
       claimScope: "A pass means the classifier emitted exactly the expected presence or absence of each of the four signs for that fixture. It is not an accuracy, recall, or external-validity measurement.",
       generator: "scripts/evaluate-permission-delta-conformance.ts",
       evaluator: "src/permission-delta.ts",
+      evaluatorSha256: sha256(readFileSync(new URL("../src/permission-delta.ts", import.meta.url), "utf8")),
       corpus: "docs/permission-delta-corpus/corpus.json",
       corpusSha256: sha256(corpusJson),
       gatePrecedence: ["widening", "review", "narrowing-or-neutral", "no-deltas"],
@@ -686,6 +643,7 @@ async function main(): Promise<void> {
       claimScope: "The cases record direct classifier results for two source-backed MCP release pairs.",
       generator: "scripts/evaluate-permission-delta-conformance.ts",
       evaluator: "src/permission-delta.ts",
+      evaluatorSha256: sha256(readFileSync(new URL("../src/permission-delta.ts", import.meta.url), "utf8")),
       corpus: "docs/permission-delta-corpus/real-release-case.json",
       corpusSha256: sha256(realCorpusJson),
       gatePrecedence: ["widening", "review", "narrowing-or-neutral", "no-deltas"],

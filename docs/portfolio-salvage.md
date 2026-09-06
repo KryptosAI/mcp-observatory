@@ -68,12 +68,29 @@ The unsupported “official” catalogue and automatic replacement shell command
 removed. See [package-name-review.md](package-name-review.md) for grammar, limits,
 provenance, false-positive/coverage limits and exit codes.
 
-## Remaining prototypes
+## Manuscript and research evidence
 
-The old dashboards, metrics/telemetry changes, sales scripts and research-paper
-drafts remain in their original copies. Alternate
-introspection machinery is still being evaluated independently. Their original
-source and tests are retained.
-No old generated dashboard or historical corpus result was transplanted as new
-evidence. Corpus outputs here are regenerated from the recovered evaluator.
-The optional `mcp-diff` comparison requires that independent Python tool.
+The paper is recovered as a revised research draft with a canonical Markdown
+source, generated LaTeX body, bibliography and named/anonymous-author wrappers.
+It defines mutations through complete accepted requests, distinguishes abstract
+request grants from actual server authority, and gives explicit fragment-scoped
+arguments. A new AJV model checks 114,244 two-field endpoint pairs alongside
+the original 2,048-pair model. Its stronger witness check exposed an insensitive
+enum case that selected a pure addition; the witness now selects the mutation.
+
+Six hash-verified upstream files support executable release extraction, including
+the actual Notion API- tool names and converter string fallbacks. The pinned
+mcp-diff 0.1.0 engine is run directly with source/version checks and current
+classifier decisions. Results describe policy disagreements, not security misses.
+Unsupported linear-time, ecosystem, novelty and ablation claims were withdrawn.
+See [the manuscript](permission-delta-paper.md) and
+[reproduction protocol](permission-delta-corpus/EXTRACTION.md).
+
+## Other preserved prototypes
+
+Private owner metrics were recovered in the separate private telemetry repository,
+outside this public boundary. The old public checkout markup was evaluated as
+obsolete relative to the current hosted activation flow. Alternate introspection
+and unrelated sales prototypes remain in the preserved original working trees;
+they are not included in this salvage. Old generated outputs are not evidence
+for this branch: the research corpus and baseline results are freshly regenerated.
