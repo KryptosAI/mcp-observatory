@@ -13,6 +13,7 @@ import { registerRecordReplayCommands } from "./commands/record-replay.js";
 import { registerScanCommands } from "./commands/scan.js";
 import { registerSourceAuditCommands } from "./commands/source-audit.js";
 import { registerToxicFlowCommands } from "./commands/toxic-flow.js";
+import { registerPackageCheckCommands } from "./commands/package-check.js";
 import { registerScoreCommands } from "./commands/score.js";
 import { registerServeCommands } from "./commands/serve.js";
 import { registerSuggestCommands } from "./commands/suggest.js";
@@ -232,6 +233,7 @@ async function showInteractiveMenu(): Promise<string[] | null> {
 // ── Main ────────────────────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
+  const packageReviewOnly=process.argv.slice(2).find(arg=>!["--quiet","--accessible","--no-color"].includes(arg))==="package-check";
   // Capture --no-color before Commander strips it from process.argv
   if (process.argv.includes("--no-color")) {
     setNoColor(true);
@@ -251,7 +253,7 @@ async function main(): Promise<void> {
   const bin = getBinName();
 
   // Update check (CLI only, not MCP server mode)
-  if (process.argv[2] !== "serve" && process.argv[2] !== "wrap") {
+  if (!packageReviewOnly && process.argv[2] !== "serve" && process.argv[2] !== "wrap") {
     try {
       const { default: updateNotifier } = await import("update-notifier");
       const notifier = updateNotifier({
@@ -311,6 +313,7 @@ async function main(): Promise<void> {
   registerScanCommands(program, bin);
   registerSourceAuditCommands(program);
   registerToxicFlowCommands(program);
+  registerPackageCheckCommands(program);
   registerTestCommands(program);
   registerDemoCommands(program);
   registerDiffCommands(program);
@@ -537,7 +540,7 @@ async function main(): Promise<void> {
   }
 
   const commandName = process.argv[2] ?? "interactive";
-  if (commandName !== "telemetry" && !commandName.startsWith("-")) {
+  if (!packageReviewOnly && commandName !== "telemetry" && !commandName.startsWith("-")) {
     await initializeTelemetry({ showNotice: true });
     recordEvent(buildEvent("command_run", commandName, "cli"));
     await updateFeatureChain(commandName).catch(() => undefined);

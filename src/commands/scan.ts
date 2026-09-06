@@ -17,6 +17,7 @@ import { firstNextStep } from "../utils/failure-diagnosis.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
 import { runSourceAudit } from "./source-audit.js";
 import { analyzeToxicFlows, renderToxicFlowAnalysis } from "../checks/toxic-flow.js";
+import { renderPackageNameReview,reviewCommandPackages } from "../utils/typosquat.js";
 // ── Scan implementation ─────────────────────────────────────────────────────
 
 type SkillScanOption = string | boolean | undefined;
@@ -92,6 +93,14 @@ async function runScan(
     process.stdout.write(`  ${c(ANSI.cyan, "●")} ${c(ANSI.bold, t.config.targetId)} ${c(ANSI.dim, `← ${t.source}`)}\n`);
   }
   process.stdout.write("\n");
+
+  for (const target of targets) {
+    if(target.config.adapter!=="local-process")continue;
+    const review=reviewCommandPackages(target.config.command,target.config.args);
+    if(review.findings.length || review.status==="unsupported") {
+      process.stdout.write(`  Package request for ${JSON.stringify(target.config.targetId)}:\n`+renderPackageNameReview(review));
+    }
+  }
 
   interface ScanRow {
     targetId: string;

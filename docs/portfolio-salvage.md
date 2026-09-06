@@ -57,11 +57,22 @@ The full integrated suite passes 798 tests, including 25 cross-server/API/CLI ca
 and an additional discovery-context regression. Lint, build, smoke and the public
 repository boundary check pass.
 
+## Package-name review
+
+The typosquatting prototype is integrated as advisory package-name comparison,
+with ecosystem-aware structured argument parsing and nine dated, pinned upstream
+manifest references. Unsupported wrapper syntax and non-registry sources retain
+explicit coverage diagnostics. The standalone CLI does not start the reviewed
+command; ordinary scans include the advice before their normal server execution.
+The unsupported “official” catalogue and automatic replacement shell commands are
+removed. See [package-name-review.md](package-name-review.md) for grammar, limits,
+provenance, false-positive/coverage limits and exit codes.
+
 ## Remaining prototypes
 
 The old dashboards, metrics/telemetry changes, sales scripts and research-paper
-drafts remain in their original copies. Typosquatting and alternate
-introspection machinery are still being evaluated independently. Their original
+drafts remain in their original copies. Alternate
+introspection machinery is still being evaluated independently. Their original
 source and tests are retained.
 No old generated dashboard or historical corpus result was transplanted as new
 evidence. Corpus outputs here are regenerated from the recovered evaluator.
