@@ -15,6 +15,9 @@ import { renderActionReceipt } from "../action-receipt.js";
 import { ANSI, LOGO, c, isQuiet, setupCiHint, suggestFix, useColor } from "./helpers.js";
 import { firstNextStep } from "../utils/failure-diagnosis.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
+import { runSourceAudit } from "./source-audit.js";
+import { analyzeToxicFlows, renderToxicFlowAnalysis } from "../checks/toxic-flow.js";
+import { renderPackageNameReview,reviewCommandPackages } from "../utils/typosquat.js";
 // ── Scan implementation ─────────────────────────────────────────────────────
 
 type SkillScanOption = string | boolean | undefined;
@@ -51,6 +54,7 @@ async function runScan(
   attackSim = true,
   conversionFlags: SetupCiConversionFlags = {},
   skillScanOption?: SkillScanOption,
+  sourceAuditPath?: string,
 ): Promise<void> {
   const sessionId = generateSessionId();
   recordSessionStart(sessionId);
@@ -72,6 +76,7 @@ async function runScan(
     }
   }
 
+  if (sourceAuditPath) await runSourceAudit(sourceAuditPath);
   const targets = await scanForTargets(configPath);
 
   if (targets.length === 0) {
@@ -88,6 +93,14 @@ async function runScan(
     process.stdout.write(`  ${c(ANSI.cyan, "●")} ${c(ANSI.bold, t.config.targetId)} ${c(ANSI.dim, `← ${t.source}`)}\n`);
   }
   process.stdout.write("\n");
+
+  for (const target of targets) {
+    if(target.config.adapter!=="local-process")continue;
+    const review=reviewCommandPackages(target.config.command,target.config.args);
+    if(review.findings.length || review.status==="unsupported") {
+      process.stdout.write(`  Package request for ${JSON.stringify(target.config.targetId)}:\n`+renderPackageNameReview(review));
+    }
+  }
 
   interface ScanRow {
     targetId: string;
@@ -195,6 +208,12 @@ async function runScan(
       failCount++;
       categoryCounts.failed++;
     }
+  }
+
+  if (targets.length > 1) {
+    const crossServer = analyzeToxicFlows(artifacts, {expectedTargetIds:targets.map(target => target.config.targetId)});
+    process.stdout.write("\n" + renderToxicFlowAnalysis(crossServer));
+    if (crossServer.status === "incomplete") process.exitCode = 2;
   }
 
   // ── Summary ──────────────────────────────────────────────────────────
@@ -318,7 +337,7 @@ async function runScan(
   }));
 
   if (failCount > 0) {
-    process.exitCode = 1;
+    process.exitCode = Math.max(Number(process.exitCode) || 0, 1);
   }
 
   if (skillScanOption !== undefined) {
@@ -360,11 +379,12 @@ export function registerScanCommands(program: Command, bin: string): void {
     .option("--no-color", "Disable colored output.")
     .option("--quiet", "Suppress logo and informational output.", false)
     .option("--skill-scan [path]", "Also scan skill directories for security risks. Auto-discovers from agent skill paths when no path given.")
+    .option("--source-audit <path>", "Also review local JS/TS source; incomplete coverage exits 2. Findings are advisory.")
     .option("--enforce", "After scan, show the enforce command for the first target.");
 
   // `scan` with no subcommand — basic scan
-  scanCmd.action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string; skillScan?: SkillScanOption; enforce?: boolean } & SetupCiConversionFlags) => {
-    await runScan(bin, options.config, false, options.security, options.format, options.attackSim !== false, options, options.skillScan);
+  scanCmd.action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string; skillScan?: SkillScanOption; sourceAudit?: string; enforce?: boolean } & SetupCiConversionFlags) => {
+    await runScan(bin, options.config, false, options.security, options.format, options.attackSim !== false, options, options.skillScan, options.sourceAudit);
     if (options.enforce && !isQuiet()) {
       process.stdout.write(`\n  ${c(ANSI.bold, "Next:")} ${c(ANSI.cyan, `npx @kryptosai/mcp-observatory enforce --deep npx -y <your-server>`)}\n`);
       process.stdout.write(`  ${c(ANSI.dim, "Enforce mode runs a scan AND auto-generates seatbelt policy for runtime protection.")}\n\n`);
@@ -386,14 +406,16 @@ export function registerScanCommands(program: Command, bin: string): void {
     .option("--no-ci-sarif", "Generate post-scan CI without GitHub Code Scanning SARIF upload.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
     .option("--quiet", "Suppress logo and informational output.", false)
-    .action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string; skillScan?: SkillScanOption; enforce?: boolean } & SetupCiConversionFlags) => {
+    .option("--source-audit <path>", "Also review local JS/TS source; incomplete coverage exits 2. Findings are advisory.")
+    .action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string; skillScan?: SkillScanOption; sourceAudit?: string; enforce?: boolean } & SetupCiConversionFlags) => {
       const parentConfig = scanCmd.opts().config as string | undefined;
       const parentSecurity = scanCmd.opts().security as boolean | undefined;
       const parentFormat = scanCmd.opts().format as string;
       const parentAttackSim = scanCmd.opts().attackSim as boolean | undefined;
       const parentSkillScan = scanCmd.opts().skillScan as SkillScanOption;
       const resolvedSkillScan = options.skillScan !== undefined ? options.skillScan : parentSkillScan;
-      await runScan(bin, options.config ?? parentConfig, true, options.security ?? parentSecurity ?? true, options.format ?? parentFormat, options.attackSim !== false && parentAttackSim !== false, options, resolvedSkillScan);
+      const sourceAudit = options.sourceAudit ?? scanCmd.opts().sourceAudit as string | undefined;
+      await runScan(bin, options.config ?? parentConfig, true, options.security ?? parentSecurity ?? true, options.format ?? parentFormat, options.attackSim !== false && parentAttackSim !== false, options, resolvedSkillScan, sourceAudit);
       if (options.enforce && !isQuiet()) {
         process.stdout.write(`\n  ${c(ANSI.bold, "Next:")} ${c(ANSI.cyan, `npx @kryptosai/mcp-observatory enforce --deep npx -y <your-server>`)}\n`);
         process.stdout.write(`  ${c(ANSI.dim, "Enforce mode runs a scan AND auto-generates seatbelt policy for runtime protection.")}\n\n`);

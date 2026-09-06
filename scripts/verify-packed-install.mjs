@@ -32,6 +32,9 @@ const packedFileSet = new Set(packedFiles.split(/\r?\n/));
 if (!packedFileSet.has("package/docs/paid-pilot-offer.md")) {
   throw new Error("Packed install is missing docs/paid-pilot-offer.md linked from COMMERCIAL.md.");
 }
+if (!packedFileSet.has("package/docs/package-name-review.md")) {
+  throw new Error("Packed install is missing the package-name review contract.");
+}
 const npmReadmeCandidates = [...packedFileSet]
   .filter(file => /^package\/README(?:\..*)?$/i.test(file))
   .sort();
@@ -75,6 +78,14 @@ const versionOutput = run(
 
 if (versionOutput.length === 0) {
   throw new Error("Packed install version output was empty.");
+}
+
+const packageReview = JSON.parse(run("npx", ["--yes", `--package=${tarballPath}`,
+  "mcp-observatory", "package-check", "--format", "json", "--",
+  "npx", "-y", "@modelcontextprotocol/server-filesytem@latest"], execDir));
+if (packageReview.status !== "parsed" ||
+    packageReview.findings?.[0]?.closestKnown !== "@modelcontextprotocol/server-filesystem") {
+  throw new Error("Packed package-check did not produce its expected advisory JSON.");
 }
 
 const runOutput = run(

@@ -57,7 +57,9 @@
         "attack-sim",
         "conformance",
         "schema-quality",
-        "runtime-profile"
+        "runtime-profile",
+        "source-audit",
+        "toxic-flow"
       ]
     },
     "evidenceSummary": {

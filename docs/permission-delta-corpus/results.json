@@ -1,0 +1,862 @@
+{
+  "schemaVersion": "permission-delta-evaluation/v1",
+  "evaluation": {
+    "kind": "author-constructed-synthetic-conformance",
+    "claimScope": "A pass means the classifier emitted exactly the expected presence or absence of each of the four signs for that fixture. It is not an accuracy, recall, or external-validity measurement.",
+    "generator": "scripts/evaluate-permission-delta-conformance.ts",
+    "evaluator": "src/permission-delta.ts",
+    "evaluatorSha256": "31944c2cfa5b8b3d73f1828e4971e8d92a994f3768eaaa797081b673edb7e194",
+    "corpus": "docs/permission-delta-corpus/corpus.json",
+    "corpusSha256": "b7513756305728207370d8bd44d13381d7961fc17838a314b431a021bac587e6",
+    "gatePrecedence": [
+      "widening",
+      "review",
+      "narrowing-or-neutral",
+      "no-deltas"
+    ]
+  },
+  "summary": {
+    "totalPairs": 16,
+    "passCount": 16,
+    "failCount": 0,
+    "passRatePct": 100,
+    "byClass": {
+      "seeded-escalation-scenario": {
+        "total": 7,
+        "pass": 7,
+        "ratePct": 100
+      },
+      "synthetic-rule-coverage": {
+        "total": 8,
+        "pass": 8,
+        "ratePct": 100
+      },
+      "limit-case": {
+        "total": 1,
+        "pass": 1,
+        "ratePct": 100
+      }
+    },
+    "gateDecisions": {
+      "WOULD BLOCK": 4,
+      "WOULD QUEUE": 5,
+      "PASS": 7,
+      "NO DELTAS": 0
+    },
+    "deltasByRisk": {
+      "narrowing": 4,
+      "neutral": 7,
+      "review": 5,
+      "widening": 4
+    },
+    "totalDeltas": 20,
+    "alertReduction": {
+      "baseline": "binary-change-detection",
+      "baselineAlerts": 16,
+      "reviewThreshold": {
+        "alerts": 9,
+        "reductionPct": 43.75
+      },
+      "wideningThreshold": {
+        "alerts": 4,
+        "reductionPct": 75
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "rugpull-01",
+      "description": "Mode enum escalation (read → read+write)",
+      "class": "seeded-escalation-scenario",
+      "inputSha256": "931d587c3f7855a9be03534eb6023ef7d9b2736e33c2e0f3240e8789096f0880",
+      "expected": {
+        "rule": "W3 (enum expansion on sensitive field)",
+        "signs": {
+          "narrowing": false,
+          "neutral": false,
+          "review": false,
+          "widening": true
+        }
+      },
+      "observed": {
+        "signs": {
+          "narrowing": false,
+          "neutral": false,
+          "review": false,
+          "widening": true
+        },
+        "counts": {
+          "narrowing": 0,
+          "neutral": 0,
+          "review": 0,
+          "widening": 1
+        },
+        "action": "WOULD BLOCK",
+        "deltas": [
+          {
+            "capability": "tools",
+            "name": "file_tool",
+            "risk": "widening",
+            "change": "enum values for 'mode' expanded",
+            "reason": "Accepted values now include a broader permission or mutation surface.",
+            "field": "mode",
+            "witness": {
+              "path": "",
+              "mode": "write"
+            }
+          }
+        ]
+      },
+      "checks": {
+        "widening": true,
+        "review": true,
+        "narrowing": true,
+        "neutral": true
+      },
+      "pass": true
+    },
+    {
+      "id": "rugpull-02",
+      "description": "additionalProperties wall removed",
+      "class": "seeded-escalation-scenario",
+      "inputSha256": "c72d4a15cecc0cf5ddec9920e5ff36bbd456b5b7c86736c5ba2a983ce8e228bd",
+      "expected": {
+        "rule": "W1 (additionalProperties widened)",
+        "signs": {
+          "narrowing": false,
+          "neutral": false,
+          "review": false,
+          "widening": true
+        }
+      },
+      "observed": {
+        "signs": {
+          "narrowing": false,
+          "neutral": false,
+          "review": false,
+          "widening": true
+        },
+        "counts": {
+          "narrowing": 0,
+          "neutral": 0,
+          "review": 0,
+          "widening": 1
+        },
+        "action": "WOULD BLOCK",
+        "deltas": [
+          {
+            "capability": "tools",
+            "name": "api",
+            "risk": "widening",
+            "change": "additionalProperties widened",
+            "reason": "Schema moved from explicit-property-only to accepting additional input keys.",
+            "witness": {
+              "endpoint": "",
+              "permission_delta_secret": "permission-delta-witness"
+            }
+          }
+        ]
+      },
+      "checks": {
+        "widening": true,
+        "review": true,
+        "narrowing": true,
+        "neutral": true
+      },
+      "pass": true
+    },
+    {
+      "id": "rugpull-03",
+      "description": "Required sensitive field becomes optional (server-side default)",
+      "class": "seeded-escalation-scenario",
+      "inputSha256": "6c980bc50721740c0031e5a0c0a01cb0567c46b5de32ecb2b8dbc5976fff3091",
+      "expected": {
+        "rule": "W2 (required permission field became optional)",
+        "signs": {
+          "narrowing": false,
+          "neutral": false,
+          "review": false,
+          "widening": true
+        }
+      },
+      "observed": {
+        "signs": {
+          "narrowing": false,
+          "neutral": false,
+          "review": false,
+          "widening": true
+        },
+        "counts": {
+          "narrowing": 0,
+          "neutral": 0,
+          "review": 0,
+          "widening": 1
+        },
+        "action": "WOULD BLOCK",
+        "deltas": [
+          {
+            "capability": "tools",
+            "name": "run_cmd",
+            "risk": "widening",
+            "change": "required permission field 'scope' became optional",
+            "reason": "A missing permission-like field may now be defaulted or repaired by the server.",
+            "field": "scope",
+            "witness": {
+              "command": ""
+            }
+          }
+        ]
+      },
+      "checks": {
+        "widening": true,
+        "review": true,
+        "narrowing": true,
+        "neutral": true
+      },
+      "pass": true
+    },
+    {
+      "id": "rugpull-04",
+      "description": "New sensitive field added (secret backdoor param)",
+      "class": "seeded-escalation-scenario",
+      "inputSha256": "5aaebf80a1d1164a07221b1542044e5268e6483eb16d416d0b0330ffe9396188",
+      "expected": {
+        "rule": "R1 (new permission-sensitive field added)",
+        "signs": {
+          "narrowing": false,
+          "neutral": false,
+          "review": true,
+          "widening": false
+        }
+      },
+      "observed": {
+        "signs": {
+          "narrowing": false,
+          "neutral": false,
+          "review": true,
+          "widening": false
+        },
+        "counts": {
+          "narrowing": 0,
+          "neutral": 0,
+          "review": 1,
+          "widening": 0
+        },
+        "action": "WOULD QUEUE",
+        "deltas": [
+          {
+            "capability": "tools",
+            "name": "search",
+            "risk": "review",
+            "change": "permission-sensitive field 'token' added",
+            "reason": "A new permission selector or mutation coordinate entered the accepted payload surface.",
+            "field": "token"
+          }
+        ]
+      },
+      "checks": {
+        "widening": true,
+        "review": true,
+        "narrowing": true,
+        "neutral": true
+      },
+      "pass": true
+    },
+    {
+      "id": "rugpull-05",
+      "description": "Sensitive field removed (authority shifts server-side)",
+      "class": "seeded-escalation-scenario",
+      "inputSha256": "6547e90b92c41db31727a7ee4c4c976b882dda8b45126498a9f5343741e5bc00",
+      "expected": {
+        "rule": "R2 (permission-sensitive field removed)",
+        "signs": {
+          "narrowing": false,
+          "neutral": false,
+          "review": true,
+          "widening": false
+        }
+      },
+      "observed": {
+        "signs": {
+          "narrowing": false,
+          "neutral": false,
+          "review": true,
+          "widening": false
+        },
+        "counts": {
+          "narrowing": 0,
+          "neutral": 0,
+          "review": 1,
+          "widening": 0
+        },
+        "action": "WOULD QUEUE",
+        "deltas": [
+          {
+            "capability": "tools",
+            "name": "get",
+            "risk": "review",
+            "change": "permission-sensitive field 'role' removed",
+            "reason": "A previously explicit permission selector or mutation coordinate disappeared and may have shifted server-side.",
+            "field": "role"
+          }
+        ]
+      },
+      "checks": {
+        "widening": true,
+        "review": true,
+        "narrowing": true,
+        "neutral": true
+      },
+      "pass": true
+    },
+    {
+      "id": "rugpull-06",
+      "description": "Type broadened on sensitive field (string → string|number)",
+      "class": "seeded-escalation-scenario",
+      "inputSha256": "3bbbf38a99fe9bd854620349b047a17a72abec900cf6c7997c981ba18081c99c",
+      "expected": {
+        "rule": "R3 (type broadened on permission field)",
+        "signs": {
+          "narrowing": false,
+          "neutral": false,
+          "review": true,
+          "widening": false
+        }
+      },
+      "observed": {
+        "signs": {
+          "narrowing": false,
+          "neutral": false,
+          "review": true,
+          "widening": false
+        },
+        "counts": {
+          "narrowing": 0,
+          "neutral": 0,
+          "review": 1,
+          "widening": 0
+        },
+        "action": "WOULD QUEUE",
+        "deltas": [
+          {
+            "capability": "tools",
+            "name": "connect",
+            "risk": "review",
+            "change": "type for permission field 'host' broadened",
+            "reason": "A permission-bearing carrier gained types or moved to an incomparable set and requires review.",
+            "field": "host"
+          }
+        ]
+      },
+      "checks": {
+        "widening": true,
+        "review": true,
+        "narrowing": true,
+        "neutral": true
+      },
+      "pass": true
+    },
+    {
+      "id": "neutral-01",
+      "description": "Optional insensitive field added",
+      "class": "synthetic-rule-coverage",
+      "inputSha256": "cdc3e49cd820f8b5e69dc99965fc099de69a12835fa541c84cf5f20c017e8eeb",
+      "expected": {
+        "rule": "N1 (optional parser field added)",
+        "signs": {
+          "narrowing": false,
+          "neutral": true,
+          "review": false,
+          "widening": false
+        }
+      },
+      "observed": {
+        "signs": {
+          "narrowing": false,
+          "neutral": true,
+          "review": false,
+          "widening": false
+        },
+        "counts": {
+          "narrowing": 0,
+          "neutral": 1,
+          "review": 0,
+          "widening": 0
+        },
+        "action": "PASS",
+        "deltas": [
+          {
+            "capability": "tools",
+            "name": "search",
+            "risk": "neutral",
+            "change": "optional parser field 'format' added",
+            "reason": "Parser shape changed without a permission-sensitive field name or mutation boundary.",
+            "field": "format"
+          }
+        ]
+      },
+      "checks": {
+        "widening": true,
+        "review": true,
+        "narrowing": true,
+        "neutral": true
+      },
+      "pass": true
+    },
+    {
+      "id": "neutral-02",
+      "description": "Enum expansion on insensitive, non-mutating field",
+      "class": "synthetic-rule-coverage",
+      "inputSha256": "74352a2b1af3acdb01b483a552f13a00c9528d7113d554d2ab064c1602239739",
+      "expected": {
+        "rule": "N2 (enum expanded on insensitive, non-mutating)",
+        "signs": {
+          "narrowing": false,
+          "neutral": true,
+          "review": false,
+          "widening": false
+        }
+      },
+      "observed": {
+        "signs": {
+          "narrowing": false,
+          "neutral": true,
+          "review": false,
+          "widening": false
+        },
+        "counts": {
+          "narrowing": 0,
+          "neutral": 1,
+          "review": 0,
+          "widening": 0
+        },
+        "action": "PASS",
+        "deltas": [
+          {
+            "capability": "tools",
+            "name": "render",
+            "risk": "neutral",
+            "change": "enum values for 'format' expanded",
+            "reason": "Only permission-insensitive, non-mutating enum values were added.",
+            "field": "format"
+          }
+        ]
+      },
+      "checks": {
+        "widening": true,
+        "review": true,
+        "narrowing": true,
+        "neutral": true
+      },
+      "pass": true
+    },
+    {
+      "id": "narrow-01",
+      "description": "additionalProperties tightened (open → closed)",
+      "class": "synthetic-rule-coverage",
+      "inputSha256": "cdf206aeb09d8ad4438370eebc5605ba188641a117ff4dea76c060839d4554f8",
+      "expected": {
+        "rule": "D1 (additionalProperties narrowed)",
+        "signs": {
+          "narrowing": true,
+          "neutral": false,
+          "review": false,
+          "widening": false
+        }
+      },
+      "observed": {
+        "signs": {
+          "narrowing": true,
+          "neutral": false,
+          "review": false,
+          "widening": false
+        },
+        "counts": {
+          "narrowing": 1,
+          "neutral": 0,
+          "review": 0,
+          "widening": 0
+        },
+        "action": "PASS",
+        "deltas": [
+          {
+            "capability": "tools",
+            "name": "api",
+            "risk": "narrowing",
+            "change": "additionalProperties narrowed",
+            "reason": "Schema moved from accepting undeclared input keys to an explicit-property-only surface."
+          }
+        ]
+      },
+      "checks": {
+        "widening": true,
+        "review": true,
+        "narrowing": true,
+        "neutral": true
+      },
+      "pass": true
+    },
+    {
+      "id": "narrow-02",
+      "description": "Required insensitive field added",
+      "class": "synthetic-rule-coverage",
+      "inputSha256": "ebe7420b3574190d70bea8caa50d2f6a0a5b747568d6ac01c7d2d9d6d32dca60",
+      "expected": {
+        "rule": "D2 (required parser field added)",
+        "signs": {
+          "narrowing": true,
+          "neutral": false,
+          "review": false,
+          "widening": false
+        }
+      },
+      "observed": {
+        "signs": {
+          "narrowing": true,
+          "neutral": false,
+          "review": false,
+          "widening": false
+        },
+        "counts": {
+          "narrowing": 1,
+          "neutral": 0,
+          "review": 0,
+          "widening": 0
+        },
+        "action": "PASS",
+        "deltas": [
+          {
+            "capability": "tools",
+            "name": "log",
+            "risk": "narrowing",
+            "change": "required parser field 'source' added",
+            "reason": "A required, permission-insensitive coordinate contracts accepted requests without expanding the grant.",
+            "field": "source"
+          }
+        ]
+      },
+      "checks": {
+        "widening": true,
+        "review": true,
+        "narrowing": true,
+        "neutral": true
+      },
+      "pass": true
+    },
+    {
+      "id": "narrow-03",
+      "description": "Mutating enum value removed",
+      "class": "synthetic-rule-coverage",
+      "inputSha256": "b0a1306a611a2ab641874d4b3dd995411830856b5cd9ab75cfafbd8c957874ac",
+      "expected": {
+        "rule": "D3 (enum narrowed on sensitive/mutating)",
+        "signs": {
+          "narrowing": true,
+          "neutral": false,
+          "review": false,
+          "widening": false
+        }
+      },
+      "observed": {
+        "signs": {
+          "narrowing": true,
+          "neutral": false,
+          "review": false,
+          "widening": false
+        },
+        "counts": {
+          "narrowing": 1,
+          "neutral": 0,
+          "review": 0,
+          "widening": 0
+        },
+        "action": "PASS",
+        "deltas": [
+          {
+            "capability": "tools",
+            "name": "manage",
+            "risk": "narrowing",
+            "change": "enum values for 'mode' narrowed",
+            "reason": "Previously projected permission values or advertised mutation modes are no longer accepted.",
+            "field": "mode"
+          }
+        ]
+      },
+      "checks": {
+        "widening": true,
+        "review": true,
+        "narrowing": true,
+        "neutral": true
+      },
+      "pass": true
+    },
+    {
+      "id": "multi-01",
+      "description": "Tool added to server",
+      "class": "synthetic-rule-coverage",
+      "inputSha256": "1b871fa9c44d981ce90898d2794375e2332acde199847eb61b3cc4be79799141",
+      "expected": {
+        "rule": "tool-set change (new tool)",
+        "signs": {
+          "narrowing": false,
+          "neutral": false,
+          "review": true,
+          "widening": false
+        }
+      },
+      "observed": {
+        "signs": {
+          "narrowing": false,
+          "neutral": false,
+          "review": true,
+          "widening": false
+        },
+        "counts": {
+          "narrowing": 0,
+          "neutral": 0,
+          "review": 1,
+          "widening": 0
+        },
+        "action": "WOULD QUEUE",
+        "deltas": [
+          {
+            "capability": "tools",
+            "name": "write",
+            "risk": "review",
+            "change": "tool contract added",
+            "reason": "A newly advertised tool creates an authority boundary that was not part of the approved contract set."
+          }
+        ]
+      },
+      "checks": {
+        "widening": true,
+        "review": true,
+        "narrowing": true,
+        "neutral": true
+      },
+      "pass": true
+    },
+    {
+      "id": "multi-02",
+      "description": "Harmless optional field added",
+      "class": "synthetic-rule-coverage",
+      "inputSha256": "5af039d189c46ece8d17517dc38f33a598bcde30aa76bf1bd2b29bb450e66628",
+      "expected": {
+        "rule": "N1 only",
+        "signs": {
+          "narrowing": false,
+          "neutral": true,
+          "review": false,
+          "widening": false
+        }
+      },
+      "observed": {
+        "signs": {
+          "narrowing": false,
+          "neutral": true,
+          "review": false,
+          "widening": false
+        },
+        "counts": {
+          "narrowing": 0,
+          "neutral": 1,
+          "review": 0,
+          "widening": 0
+        },
+        "action": "PASS",
+        "deltas": [
+          {
+            "capability": "tools",
+            "name": "read",
+            "risk": "neutral",
+            "change": "optional parser field 'verbose' added",
+            "reason": "Parser shape changed without a permission-sensitive field name or mutation boundary.",
+            "field": "verbose"
+          }
+        ]
+      },
+      "checks": {
+        "widening": true,
+        "review": true,
+        "narrowing": true,
+        "neutral": true
+      },
+      "pass": true
+    },
+    {
+      "id": "limit-01",
+      "description": "Enum rotation (remove 'list', add 'delete') — widening + narrowing pair",
+      "class": "limit-case",
+      "inputSha256": "b4b3e714391a3fcfc5ab91a4abec5592d309cab0e3dc22291369feba4b59255a",
+      "expected": {
+        "rule": "W3 + D3 (rotation)",
+        "signs": {
+          "narrowing": true,
+          "neutral": false,
+          "review": false,
+          "widening": true
+        }
+      },
+      "observed": {
+        "signs": {
+          "narrowing": true,
+          "neutral": false,
+          "review": false,
+          "widening": true
+        },
+        "counts": {
+          "narrowing": 1,
+          "neutral": 0,
+          "review": 0,
+          "widening": 1
+        },
+        "action": "WOULD BLOCK",
+        "deltas": [
+          {
+            "capability": "tools",
+            "name": "manage",
+            "risk": "widening",
+            "change": "enum values for 'mode' expanded",
+            "reason": "Accepted values now include a broader permission or mutation surface.",
+            "field": "mode",
+            "witness": {
+              "mode": "delete"
+            }
+          },
+          {
+            "capability": "tools",
+            "name": "manage",
+            "risk": "narrowing",
+            "change": "enum values for 'mode' narrowed",
+            "reason": "Previously projected permission values or advertised mutation modes are no longer accepted.",
+            "field": "mode"
+          }
+        ]
+      },
+      "checks": {
+        "widening": true,
+        "review": true,
+        "narrowing": true,
+        "neutral": true
+      },
+      "pass": true
+    },
+    {
+      "id": "combo-01",
+      "description": "Realistic multi-tool release: benign refactoring only",
+      "class": "synthetic-rule-coverage",
+      "inputSha256": "77388fa81f31b78b000971099b8c23feb9e5617c83c6abf4eb5384730fb0628a",
+      "expected": {
+        "rule": "2× N1 (all benign refactoring)",
+        "signs": {
+          "narrowing": false,
+          "neutral": true,
+          "review": false,
+          "widening": false
+        }
+      },
+      "observed": {
+        "signs": {
+          "narrowing": false,
+          "neutral": true,
+          "review": false,
+          "widening": false
+        },
+        "counts": {
+          "narrowing": 0,
+          "neutral": 2,
+          "review": 0,
+          "widening": 0
+        },
+        "action": "PASS",
+        "deltas": [
+          {
+            "capability": "tools",
+            "name": "read_file",
+            "risk": "neutral",
+            "change": "optional parser field 'encoding' added",
+            "reason": "Parser shape changed without a permission-sensitive field name or mutation boundary.",
+            "field": "encoding"
+          },
+          {
+            "capability": "tools",
+            "name": "search",
+            "risk": "neutral",
+            "change": "optional parser field 'limit' added",
+            "reason": "Parser shape changed without a permission-sensitive field name or mutation boundary.",
+            "field": "limit"
+          }
+        ]
+      },
+      "checks": {
+        "widening": true,
+        "review": true,
+        "narrowing": true,
+        "neutral": true
+      },
+      "pass": true
+    },
+    {
+      "id": "combo-02",
+      "description": "Multi-tool: privilege escalation hidden in benign release",
+      "class": "seeded-escalation-scenario",
+      "inputSha256": "99254b77f9b45df3f8d9aabcdb0f3b9fd16f8745d2306a5132eba905b3b98458",
+      "expected": {
+        "rule": "R1 (tool-set: new exec tool) + 2× N1 (benign fields)",
+        "signs": {
+          "narrowing": false,
+          "neutral": true,
+          "review": true,
+          "widening": false
+        }
+      },
+      "observed": {
+        "signs": {
+          "narrowing": false,
+          "neutral": true,
+          "review": true,
+          "widening": false
+        },
+        "counts": {
+          "narrowing": 0,
+          "neutral": 2,
+          "review": 1,
+          "widening": 0
+        },
+        "action": "WOULD QUEUE",
+        "deltas": [
+          {
+            "capability": "tools",
+            "name": "read",
+            "risk": "neutral",
+            "change": "optional parser field 'encoding' added",
+            "reason": "Parser shape changed without a permission-sensitive field name or mutation boundary.",
+            "field": "encoding"
+          },
+          {
+            "capability": "tools",
+            "name": "config",
+            "risk": "neutral",
+            "change": "optional parser field 'value' added",
+            "reason": "Parser shape changed without a permission-sensitive field name or mutation boundary.",
+            "field": "value"
+          },
+          {
+            "capability": "tools",
+            "name": "exec",
+            "risk": "review",
+            "change": "tool contract added",
+            "reason": "A newly advertised tool creates an authority boundary that was not part of the approved contract set."
+          }
+        ]
+      },
+      "checks": {
+        "widening": true,
+        "review": true,
+        "narrowing": true,
+        "neutral": true
+      },
+      "pass": true
+    }
+  ]
+}

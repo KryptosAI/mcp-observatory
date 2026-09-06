@@ -1,9 +1,10 @@
 import { detectPermissionDeltas } from "./permission-delta.js";
 import { diffSchemas } from "./schema-diff.js";
-import type { CheckResult, DiffArtifact, DiffEntry, PermissionDeltaEntry, ResponseChangeEntry, RunArtifact, SchemaDriftEntry, SchemaDriftSeverity } from "./types.js";
+import type { CheckResult, DiffArtifact, DiffEntry, PermissionDeltaEntry, PermissionDeltaRisk, PermissionDeltaThreshold, ResponseChangeEntry, RunArtifact, SchemaDriftEntry, SchemaDriftSeverity } from "./types.js";
 import { SCHEMA_VERSION, STATUS_RANK } from "./types.js";
 
 export interface DiffOptions {
+  failOnPermissionDelta?: PermissionDeltaThreshold;
   failOnSchemaDrift?: SchemaDriftSeverity;
 }
 
@@ -12,6 +13,11 @@ const SCHEMA_DRIFT_SEVERITY_RANK: Record<SchemaDriftSeverity, number> = {
   medium: 2,
   high: 3,
 };
+
+function permissionDeltaGateFailed(entries: PermissionDeltaEntry[], threshold: PermissionDeltaThreshold | undefined): boolean {
+  if (threshold === undefined) return false;
+  return entries.some((entry) => entry.risk === "widening" || (threshold === "review" && entry.risk === "review"));
+}
 
 function toEntry(base: CheckResult | undefined, head: CheckResult | undefined): DiffEntry {
   const source = head ?? base;
@@ -76,10 +82,9 @@ export function diffArtifacts(base: RunArtifact, head: RunArtifact, options: Dif
   for (const checkId of checkIds) {
     const baseCheck = baseChecks.get(checkId);
     const headCheck = headChecks.get(checkId);
-    if (baseCheck === undefined || headCheck === undefined) continue;
 
-    const baseSchemas = extractSchemas(baseCheck);
-    const headSchemas = extractSchemas(headCheck);
+    const baseSchemas = baseCheck === undefined ? undefined : extractSchemas(baseCheck);
+    const headSchemas = headCheck === undefined ? undefined : extractSchemas(headCheck);
     if (baseSchemas === undefined && headSchemas === undefined) continue;
 
     const drift = diffSchemas(checkId, baseSchemas ?? {}, headSchemas ?? {});
@@ -118,9 +123,11 @@ export function diffArtifacts(base: RunArtifact, head: RunArtifact, options: Dif
   }
 
   const schemaDriftSeverityCounts = countSchemaDriftSeverities(schemaDrift);
+  const permissionDeltaRiskCounts = countPermissionDeltaRisks(permissionDeltas);
   const schemaDriftGateFailed = options.failOnSchemaDrift !== undefined
     && schemaDrift.some((entry) => SCHEMA_DRIFT_SEVERITY_RANK[entry.severity] >= SCHEMA_DRIFT_SEVERITY_RANK[options.failOnSchemaDrift!]);
-  const gate = regressions.length > 0 || schemaDriftGateFailed ? ("fail" as const) : ("pass" as const);
+  const permissionGateFailed = permissionDeltaGateFailed(permissionDeltas, options.failOnPermissionDelta);
+  const gate = regressions.length > 0 || schemaDriftGateFailed || permissionGateFailed ? ("fail" as const) : ("pass" as const);
   const summary = {
     regressions: regressions.length,
     recoveries: recoveries.length,
@@ -130,6 +137,8 @@ export function diffArtifacts(base: RunArtifact, head: RunArtifact, options: Dif
     schemaDriftCount: schemaDrift.length > 0 ? schemaDrift.length : undefined,
     schemaDriftSeverityCounts: schemaDrift.length > 0 ? schemaDriftSeverityCounts : undefined,
     responseChangeCount: responseChanges.length > 0 ? responseChanges.length : undefined,
+    permissionDeltaCount: permissionDeltas.length > 0 ? permissionDeltas.length : undefined,
+    permissionDeltaRiskCounts: permissionDeltas.length > 0 ? permissionDeltaRiskCounts : undefined,
     gate
   };
 
@@ -175,5 +184,14 @@ function countSchemaDriftSeverities(entries: SchemaDriftEntry[]): Record<SchemaD
     info: entries.filter((entry) => entry.severity === "info").length,
     medium: entries.filter((entry) => entry.severity === "medium").length,
     high: entries.filter((entry) => entry.severity === "high").length,
+  };
+}
+
+function countPermissionDeltaRisks(entries: PermissionDeltaEntry[]): Record<PermissionDeltaRisk, number> {
+  return {
+    narrowing: entries.filter((entry) => entry.risk === "narrowing").length,
+    neutral: entries.filter((entry) => entry.risk === "neutral").length,
+    review: entries.filter((entry) => entry.risk === "review").length,
+    widening: entries.filter((entry) => entry.risk === "widening").length,
   };
 }

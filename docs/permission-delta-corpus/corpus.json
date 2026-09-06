@@ -1,0 +1,806 @@
+{
+  "schemaVersion": "permission-delta-evaluation/v1",
+  "kind": "author-constructed-synthetic-conformance-fixtures",
+  "claimScope": "These fixtures test sign-presence conformance against author-specified expectations. They do not estimate empirical accuracy, recall, or ecosystem prevalence.",
+  "pairs": [
+    {
+      "id": "rugpull-01",
+      "description": "Mode enum escalation (read → read+write)",
+      "class": "seeded-escalation-scenario",
+      "expectedRule": "W3 (enum expansion on sensitive field)",
+      "expectedSigns": {
+        "narrowing": false,
+        "neutral": false,
+        "review": false,
+        "widening": true
+      },
+      "input": {
+        "base": {
+          "file_tool": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "read"
+                ]
+              }
+            },
+            "required": [
+              "path",
+              "mode"
+            ]
+          }
+        },
+        "head": {
+          "file_tool": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "read",
+                  "write"
+                ]
+              }
+            },
+            "required": [
+              "path",
+              "mode"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rugpull-02",
+      "description": "additionalProperties wall removed",
+      "class": "seeded-escalation-scenario",
+      "expectedRule": "W1 (additionalProperties widened)",
+      "expectedSigns": {
+        "narrowing": false,
+        "neutral": false,
+        "review": false,
+        "widening": true
+      },
+      "input": {
+        "base": {
+          "api": {
+            "type": "object",
+            "properties": {
+              "endpoint": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "endpoint"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "head": {
+          "api": {
+            "type": "object",
+            "properties": {
+              "endpoint": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "endpoint"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rugpull-03",
+      "description": "Required sensitive field becomes optional (server-side default)",
+      "class": "seeded-escalation-scenario",
+      "expectedRule": "W2 (required permission field became optional)",
+      "expectedSigns": {
+        "narrowing": false,
+        "neutral": false,
+        "review": false,
+        "widening": true
+      },
+      "input": {
+        "base": {
+          "run_cmd": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              },
+              "scope": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command",
+              "scope"
+            ]
+          }
+        },
+        "head": {
+          "run_cmd": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              },
+              "scope": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rugpull-04",
+      "description": "New sensitive field added (secret backdoor param)",
+      "class": "seeded-escalation-scenario",
+      "expectedRule": "R1 (new permission-sensitive field added)",
+      "expectedSigns": {
+        "narrowing": false,
+        "neutral": false,
+        "review": true,
+        "widening": false
+      },
+      "input": {
+        "base": {
+          "search": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ]
+          }
+        },
+        "head": {
+          "search": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string"
+              },
+              "token": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rugpull-05",
+      "description": "Sensitive field removed (authority shifts server-side)",
+      "class": "seeded-escalation-scenario",
+      "expectedRule": "R2 (permission-sensitive field removed)",
+      "expectedSigns": {
+        "narrowing": false,
+        "neutral": false,
+        "review": true,
+        "widening": false
+      },
+      "input": {
+        "base": {
+          "get": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "role": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "path"
+            ]
+          }
+        },
+        "head": {
+          "get": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "path"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "rugpull-06",
+      "description": "Type broadened on sensitive field (string → string|number)",
+      "class": "seeded-escalation-scenario",
+      "expectedRule": "R3 (type broadened on permission field)",
+      "expectedSigns": {
+        "narrowing": false,
+        "neutral": false,
+        "review": true,
+        "widening": false
+      },
+      "input": {
+        "base": {
+          "connect": {
+            "type": "object",
+            "properties": {
+              "host": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "host"
+            ]
+          }
+        },
+        "head": {
+          "connect": {
+            "type": "object",
+            "properties": {
+              "host": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              }
+            },
+            "required": [
+              "host"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "neutral-01",
+      "description": "Optional insensitive field added",
+      "class": "synthetic-rule-coverage",
+      "expectedRule": "N1 (optional parser field added)",
+      "expectedSigns": {
+        "narrowing": false,
+        "neutral": true,
+        "review": false,
+        "widening": false
+      },
+      "input": {
+        "base": {
+          "search": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ]
+          }
+        },
+        "head": {
+          "search": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string"
+              },
+              "format": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "neutral-02",
+      "description": "Enum expansion on insensitive, non-mutating field",
+      "class": "synthetic-rule-coverage",
+      "expectedRule": "N2 (enum expanded on insensitive, non-mutating)",
+      "expectedSigns": {
+        "narrowing": false,
+        "neutral": true,
+        "review": false,
+        "widening": false
+      },
+      "input": {
+        "base": {
+          "render": {
+            "type": "object",
+            "properties": {
+              "format": {
+                "type": "string",
+                "enum": [
+                  "png"
+                ]
+              }
+            }
+          }
+        },
+        "head": {
+          "render": {
+            "type": "object",
+            "properties": {
+              "format": {
+                "type": "string",
+                "enum": [
+                  "png",
+                  "svg"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "narrow-01",
+      "description": "additionalProperties tightened (open → closed)",
+      "class": "synthetic-rule-coverage",
+      "expectedRule": "D1 (additionalProperties narrowed)",
+      "expectedSigns": {
+        "narrowing": true,
+        "neutral": false,
+        "review": false,
+        "widening": false
+      },
+      "input": {
+        "base": {
+          "api": {
+            "type": "object",
+            "properties": {
+              "endpoint": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "endpoint"
+            ]
+          }
+        },
+        "head": {
+          "api": {
+            "type": "object",
+            "properties": {
+              "endpoint": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "endpoint"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "id": "narrow-02",
+      "description": "Required insensitive field added",
+      "class": "synthetic-rule-coverage",
+      "expectedRule": "D2 (required parser field added)",
+      "expectedSigns": {
+        "narrowing": true,
+        "neutral": false,
+        "review": false,
+        "widening": false
+      },
+      "input": {
+        "base": {
+          "log": {
+            "type": "object",
+            "properties": {
+              "level": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "head": {
+          "log": {
+            "type": "object",
+            "properties": {
+              "level": {
+                "type": "string"
+              },
+              "source": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "source"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "narrow-03",
+      "description": "Mutating enum value removed",
+      "class": "synthetic-rule-coverage",
+      "expectedRule": "D3 (enum narrowed on sensitive/mutating)",
+      "expectedSigns": {
+        "narrowing": true,
+        "neutral": false,
+        "review": false,
+        "widening": false
+      },
+      "input": {
+        "base": {
+          "manage": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "read",
+                  "write",
+                  "delete"
+                ]
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          }
+        },
+        "head": {
+          "manage": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "read",
+                  "write"
+                ]
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "multi-01",
+      "description": "Tool added to server",
+      "class": "synthetic-rule-coverage",
+      "expectedRule": "tool-set change (new tool)",
+      "expectedSigns": {
+        "narrowing": false,
+        "neutral": false,
+        "review": true,
+        "widening": false
+      },
+      "input": {
+        "base": {
+          "read": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "path"
+            ]
+          }
+        },
+        "head": {
+          "read": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "path"
+            ]
+          },
+          "write": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "path",
+              "content"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "multi-02",
+      "description": "Harmless optional field added",
+      "class": "synthetic-rule-coverage",
+      "expectedRule": "N1 only",
+      "expectedSigns": {
+        "narrowing": false,
+        "neutral": true,
+        "review": false,
+        "widening": false
+      },
+      "input": {
+        "base": {
+          "read": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "path"
+            ]
+          }
+        },
+        "head": {
+          "read": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "verbose": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "path"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "limit-01",
+      "description": "Enum rotation (remove 'list', add 'delete') — widening + narrowing pair",
+      "class": "limit-case",
+      "expectedRule": "W3 + D3 (rotation)",
+      "expectedSigns": {
+        "narrowing": true,
+        "neutral": false,
+        "review": false,
+        "widening": true
+      },
+      "input": {
+        "base": {
+          "manage": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "read",
+                  "list"
+                ]
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          }
+        },
+        "head": {
+          "manage": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "read",
+                  "delete"
+                ]
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "combo-01",
+      "description": "Realistic multi-tool release: benign refactoring only",
+      "class": "synthetic-rule-coverage",
+      "expectedRule": "2× N1 (all benign refactoring)",
+      "expectedSigns": {
+        "narrowing": false,
+        "neutral": true,
+        "review": false,
+        "widening": false
+      },
+      "input": {
+        "base": {
+          "read_file": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "path"
+            ],
+            "additionalProperties": false
+          },
+          "search": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ]
+          },
+          "status": {
+            "type": "object",
+            "properties": {
+              "verbose": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "head": {
+          "read_file": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "encoding": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "path"
+            ],
+            "additionalProperties": false
+          },
+          "search": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string"
+              },
+              "limit": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "query"
+            ]
+          },
+          "status": {
+            "type": "object",
+            "properties": {
+              "verbose": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "combo-02",
+      "description": "Multi-tool: privilege escalation hidden in benign release",
+      "class": "seeded-escalation-scenario",
+      "expectedRule": "R1 (tool-set: new exec tool) + 2× N1 (benign fields)",
+      "expectedSigns": {
+        "narrowing": false,
+        "neutral": true,
+        "review": true,
+        "widening": false
+      },
+      "input": {
+        "base": {
+          "read": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "path"
+            ],
+            "additionalProperties": false
+          },
+          "config": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "key"
+            ]
+          }
+        },
+        "head": {
+          "read": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "encoding": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "path"
+            ],
+            "additionalProperties": false
+          },
+          "config": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "key"
+            ]
+          },
+          "exec": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "command"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
