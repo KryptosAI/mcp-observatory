@@ -5,10 +5,11 @@ import {
   readArtifact,
 } from "../index.js";
 import { buildEvent, recordEvent } from "../command-events.js";
-import type { SchemaDriftEntry, SchemaDriftSeverity } from "../types.js";
+import type { PermissionDeltaEntry, PermissionDeltaThreshold, SchemaDriftEntry, SchemaDriftSeverity } from "../types.js";
 import { formatOutput, printCiConversionCta, writeOutput } from "./helpers.js";
 
 const SCHEMA_DRIFT_SEVERITIES = new Set<SchemaDriftSeverity>(["info", "medium", "high"]);
+const PERMISSION_DELTA_THRESHOLDS = new Set<PermissionDeltaThreshold>(["widening", "review"]);
 const SCHEMA_DRIFT_SEVERITY_RANK: Record<SchemaDriftSeverity, number> = {
   info: 1,
   medium: 2,
@@ -23,9 +24,22 @@ function parseSchemaDriftSeverity(value: string | undefined): SchemaDriftSeverit
   throw new Error(`Invalid schema drift severity "${value}". Expected one of: info, medium, high.`);
 }
 
+function parsePermissionDeltaThreshold(value: string | undefined): PermissionDeltaThreshold | undefined {
+  if (value === undefined) return undefined;
+  if (PERMISSION_DELTA_THRESHOLDS.has(value as PermissionDeltaThreshold)) {
+    return value as PermissionDeltaThreshold;
+  }
+  throw new Error(`Invalid permission-delta threshold "${value}". Expected one of: widening, review.`);
+}
+
 function hasSchemaDriftAtOrAbove(entries: SchemaDriftEntry[] | undefined, severity: SchemaDriftSeverity | undefined): boolean {
   if (severity === undefined || entries === undefined) return false;
   return entries.some((entry) => SCHEMA_DRIFT_SEVERITY_RANK[entry.severity] >= SCHEMA_DRIFT_SEVERITY_RANK[severity]);
+}
+
+function hasPermissionDeltaAtThreshold(entries: PermissionDeltaEntry[] | undefined, threshold: PermissionDeltaThreshold | undefined): boolean {
+  if (threshold === undefined || entries === undefined) return false;
+  return entries.some((entry) => entry.risk === "widening" || (threshold === "review" && entry.risk === "review"));
 }
 
 export function registerDiffCommands(program: Command): void {
@@ -39,9 +53,11 @@ export function registerDiffCommands(program: Command): void {
     .option("--no-color", "Disable colored output.")
     .option("--fail-on-regression", "Exit with code 1 when regressions are present.", false)
     .option("--fail-on-schema-drift <severity>", "Exit with code 1 when schema drift at or above severity is present: info, medium, or high.")
+    .option("--fail-on-permission-delta <threshold>", "Exit with code 1 on permission widening, or on widening and review-class changes: widening or review.")
     .action(
       async (base: string, head: string, options: {
         failOnRegression?: boolean;
+        failOnPermissionDelta?: string;
         failOnSchemaDrift?: string;
         format: "html" | "json" | "junit" | "markdown" | "pr-comment" | "sarif" | "terminal";
         output?: string;
@@ -54,8 +70,9 @@ export function registerDiffCommands(program: Command): void {
         }
 
         const t0 = Date.now();
+        const failOnPermissionDelta = parsePermissionDeltaThreshold(options.failOnPermissionDelta);
         const failOnSchemaDrift = parseSchemaDriftSeverity(options.failOnSchemaDrift);
-        const artifact = diffArtifacts(baseArtifact, headArtifact, { failOnSchemaDrift });
+        const artifact = diffArtifacts(baseArtifact, headArtifact, { failOnPermissionDelta, failOnSchemaDrift });
         const output = formatOutput(artifact, options.format);
         await writeOutput(output, options.format, options.output);
         if (options.format === "terminal" && artifact.gate !== "fail") {
@@ -74,6 +91,7 @@ export function registerDiffCommands(program: Command): void {
 
         if (
           (options.failOnRegression && artifact.regressions.length > 0)
+          || hasPermissionDeltaAtThreshold(artifact.permissionDeltas, failOnPermissionDelta)
           || hasSchemaDriftAtOrAbove(artifact.schemaDrift, failOnSchemaDrift)
         ) {
           process.exitCode = 1;

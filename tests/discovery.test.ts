@@ -23,8 +23,10 @@ import {
 
 describe("scanForTargets", () => {
   it("returns an array (may be empty if no configs exist)", async () => {
-    const targets = await scanForTargets();
-    expect(Array.isArray(targets)).toBe(true);
+    const dir = await mkdtemp(path.join(os.tmpdir(), "mcp-observatory-empty-home-"));
+    const spy = vi.spyOn(os, "homedir").mockReturnValue(dir);
+    const cwdSpy = vi.spyOn(process, "cwd").mockReturnValue(dir);
+    try { expect((await scanForTargets()).length).toBe(0); } finally { spy.mockRestore(); cwdSpy.mockRestore(); }
   });
 
   it("returns empty array for a nonexistent config path", async () => {
@@ -46,9 +48,12 @@ describe("scanForTargets", () => {
           args: ["-y", "example-mcp", 42, null],
           env: { SAFE_MODE: "1" },
         },
-        duplicate: {
+        differentContext: {
           command: "npx",
           args: ["-y", "example-mcp"],
+        },
+        exactDuplicate: {
+          command: "npx", args: ["-y", "example-mcp"], env: { SAFE_MODE: "1" },
         },
         invalid: {
           args: ["missing-command"],
@@ -59,7 +64,8 @@ describe("scanForTargets", () => {
 
     const targets = await scanForTargets(configPath);
 
-    expect(targets).toHaveLength(2);
+    expect(targets).toHaveLength(3);
+    expect(targets[2]?.config.targetId).toBe("differentContext");
     expect(targets[0]).toMatchObject({
       source: configPath,
       config: {
@@ -77,6 +83,73 @@ describe("scanForTargets", () => {
         command: "npx",
         args: ["-y", "example-mcp"],
         env: { SAFE_MODE: "1" },
+      },
+    });
+  });
+
+  it("keeps argument boundaries and authentication contexts distinct during deduplication", async () => {
+    const dir = await mkdtemp(path.join(os.tmpdir(), "mcp-observatory-context-"));
+    const configPath = path.join(dir, "config.json");
+    await writeFile(configPath, JSON.stringify({mcpServers:{
+      oneArgument:{command:"node",args:["a b"]},
+      twoArguments:{command:"node",args:["a","b"]},
+      authenticatedA:{url:"https://example.test/mcp",authToken:"fixture-a"},
+      authenticatedB:{url:"https://example.test/mcp",authToken:"fixture-b"},
+      authenticatedDuplicate:{url:"https://example.test/mcp",authToken:"fixture-a"},
+      ordered:{command:"node",args:["server"],env:{A:"1",B:"2"}},
+      reordered:{command:"node",args:["server"],env:{B:"2",A:"1"}},
+    }}));
+    const targets=await scanForTargets(configPath);
+    expect(targets.map(target=>target.config.targetId)).toEqual([
+      "oneArgument","twoArguments","authenticatedA","authenticatedB","ordered",
+    ]);
+  });
+
+  it("extracts MCP targets from Codex TOML config", async () => {
+    const dir = await mkdtemp(path.join(os.tmpdir(), "mcp-observatory-discovery-"));
+    const configPath = path.join(dir, "config.toml");
+    await writeFile(configPath, `
+[mcp_servers.notion]
+url = "https://mcp.notion.com/mcp"
+
+[mcp_servers.playwright]
+command = "npx"
+args = [
+  "@playwright/mcp@latest",
+  "--isolated"
+]
+
+[mcp_servers.playwright.env]
+MCP_ENV = "test"
+
+[mcp_servers.playwright.tools.browser_tabs]
+approval_mode = "approve"
+
+[mcp_servers.disabled]
+command = "npx"
+args = ["-y", "disabled-mcp"]
+enabled = false
+`, "utf8");
+
+    const targets = await scanForTargets(configPath);
+
+    expect(targets).toHaveLength(2);
+    expect(targets[0]).toMatchObject({
+      source: configPath,
+      config: {
+        targetId: "notion",
+        adapter: "http",
+        url: "https://mcp.notion.com/mcp",
+      },
+    });
+    expect(targets[1]).toMatchObject({
+      source: configPath,
+      config: {
+        targetId: "playwright",
+        adapter: "local-process",
+        command: "npx",
+        args: ["@playwright/mcp@latest", "--isolated"],
+        env: { MCP_ENV: "test" },
       },
     });
   });
@@ -141,7 +214,10 @@ describe("defaultConfigPaths — agent coverage", () => {
 
   it("includes Codex config paths", () => {
     const paths = defaultConfigPaths();
-    verifyPathsContain(paths, [path.join(".codex", "config.json")], "Codex");
+    verifyPathsContain(paths, [
+      path.join(".codex", "config.toml"),
+      path.join(".codex", "config.json"),
+    ], "Codex");
   });
 
   it("includes Gemini CLI config paths", () => {
@@ -317,6 +393,22 @@ describe("per-agent discovery functions", () => {
     expect(targets[0]!.config.targetId).toBe("test-server");
   });
 
+  it("discoverFromCodex reads ~/.codex/config.toml", async () => {
+    vi.spyOn(os, "homedir").mockReturnValue(tmpDir);
+    const configDir = path.join(tmpDir, ".codex");
+    await mkdir(configDir, { recursive: true });
+    const configPath = path.join(configDir, "config.toml");
+    await writeFile(configPath, `
+[mcp_servers.notion]
+url = "https://mcp.notion.com/mcp"
+`, "utf8");
+
+    const targets = await discoverFromCodex();
+    expect(targets).toHaveLength(1);
+    expect(targets[0]!.config.targetId).toBe("notion");
+    expect(targets[0]!.source).toContain(path.join(".codex", "config.toml"));
+  });
+
   it("discoverFromGeminiCli reads ~/.gemini/mcp.json", async () => {
     vi.spyOn(os, "homedir").mockReturnValue(tmpDir);
     await setupAgentConfig(tmpDir, ".gemini", "mcp.json");
@@ -376,6 +468,7 @@ describe("per-agent discovery functions", () => {
 
   it("scanForTargets discovers from all agents when configs exist", async () => {
     vi.spyOn(os, "homedir").mockReturnValue(tmpDir);
+    vi.spyOn(process, "cwd").mockReturnValue(tmpDir);
     await setupAgentConfig(tmpDir, ".cursor", "mcp.json");
     await setupAgentConfig(tmpDir, ".windsurf", "mcp.json");
 

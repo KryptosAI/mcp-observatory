@@ -78,6 +78,7 @@ function optionalSchemaDriftSeverityCounts(value: unknown): Record<SchemaDriftSe
 function optionalPermissionDeltaRiskCounts(value: unknown): Record<PermissionDeltaRisk, number> | undefined {
   if (!isObject(value)) return undefined;
   return {
+    narrowing: typeof value["narrowing"] === "number" ? value["narrowing"] : 0,
     neutral: typeof value["neutral"] === "number" ? value["neutral"] : 0,
     review: typeof value["review"] === "number" ? value["review"] : 0,
     widening: typeof value["widening"] === "number" ? value["widening"] : 0,
@@ -100,7 +101,7 @@ function requireStatus(value: unknown, label: string): CheckStatus {
 }
 
 function requireCheckId(value: unknown, label: string): string {
-  const ids = new Set(["tools", "prompts", "resources", "tools-invoke", "security", "security-lite", "attack-sim", "conformance", "schema-quality", "runtime-profile"]);
+  const ids = new Set(["tools", "prompts", "resources", "tools-invoke", "security", "security-lite", "attack-sim", "conformance", "schema-quality", "runtime-profile", "source-audit", "toxic-flow"]);
   if (typeof value !== "string" || !ids.has(value)) {
     throw new Error(`${label} has invalid check id '${String(value)}'.`);
   }
