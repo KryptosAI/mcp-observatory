@@ -204,10 +204,10 @@ function buildVerifiedPreview(current: MatrixSummaryEntry[], safetyTargets: Safe
     const gateLabel = entry.gate === "pass" ? "Passed" : "Gated";
     return `<article class="verified-card">
       <div class="verified-card-head"><span class="status-chip ${entry.gate}">${gateLabel}</span><time datetime="${escapeHtml(entry.runDate)}">${formatDate(entry.runDate)}</time></div>
-      <h3><a href="/safety-index/servers/${escapeHtml(entry.targetId)}.html">${escapeHtml(name)}</a></h3>
+      <h3><a href="/safety-index/servers/${escapeHtml(entry.targetId)}">${escapeHtml(name)}</a></h3>
       <code>${escapeHtml(entry.packageName)}</code>
       <p>${escapeHtml(reason)}</p>
-      <a class="text-link" href="/safety-index/servers/${escapeHtml(entry.targetId)}.html">Inspect the evidence <span aria-hidden="true">↗</span></a>
+      <a class="text-link" href="/safety-index/servers/${escapeHtml(entry.targetId)}">Inspect the evidence <span aria-hidden="true">↗</span></a>
     </article>`;
   }).join("\n");
 }
@@ -234,7 +234,7 @@ function buildHtml(current: MatrixSummaryEntry[], safetyTargets: SafetyTarget[])
       const target = targetById.get(technology.targetId);
       if (target === undefined) throw new Error(`Missing Safety Index target ${technology.targetId}`);
       const targetName = escapeHtml(target.name);
-      return `<li><a class="technology-logo-card ${technology.kind}" href="/safety-index/servers/${escapeHtml(technology.targetId)}.html" aria-label="Inspect published evidence for ${targetName}"><span class="technology-logo-mark"><img src="/proof-logos/${escapeHtml(technology.logo)}" alt="" width="${technology.width}" height="${technology.height}" aria-hidden="true"></span><span class="technology-logo-copy"><strong>${escapeHtml(technology.name)}</strong><span title="${targetName}">${targetName}</span></span></a></li>`;
+      return `<li><a class="technology-logo-card ${technology.kind}" href="/safety-index/servers/${escapeHtml(technology.targetId)}" aria-label="Inspect published evidence for ${targetName}"><span class="technology-logo-mark"><img src="/proof-logos/${escapeHtml(technology.logo)}" alt="" width="${technology.width}" height="${technology.height}" aria-hidden="true"></span><span class="technology-logo-copy"><strong>${escapeHtml(technology.name)}</strong><span title="${targetName}">${targetName}</span></span></a></li>`;
     }).join("");
     return `<section class="technology-logo-group"><h3>${escapeHtml(group.label)}</h3><ul class="technology-logo-grid">${cards}</ul></section>`;
   }).join("");
@@ -267,7 +267,7 @@ function buildHtml(current: MatrixSummaryEntry[], safetyTargets: SafetyTarget[])
     <main id="main-content" class="home-main">
       <section class="hero"><div class="hero-copy"><div class="eyebrow">THE MOMENT BEFORE TRUST</div><h1>Check your MCP servers.<br><span>Know what to fix.</span></h1><p class="subtitle">Find broken tools, risky permissions, and changes that could break your agents. Start with a free local scan; keep release history and hosted CI with Pro.</p><div class="command-panel" id="get-started"><div class="command-label">Run in your terminal · no account needed</div><div class="command-row"><code id="primary-scan-command">npx -y @kryptosai/mcp-observatory@latest</code><button class="button primary copy-command" type="button" data-copy-command="npx -y @kryptosai/mcp-observatory@latest" aria-describedby="command-copy-status">Copy command</button></div><p class="setup-prerequisite">Node.js 20+ · macOS, Windows, Linux · <a href="/start/">Step-by-step setup guide</a></p></div><div class="next-step"><div><span>After the scan</span><strong>Next: one hosted snapshot free.</strong><p>Run this in the same project folder. It connects GitHub, uploads your result, and prints your dashboard link.</p></div><button class="button copy-command" type="button" data-copy-command="npx -y @kryptosai/mcp-observatory@latest cloud upload" aria-describedby="command-copy-status">Copy upload</button></div><p class="copy-status" id="command-copy-status" role="status" aria-live="polite"></p></div><aside class="hero-product" aria-label="Published MCP Observatory decision example"><div class="product-windowbar"><span>MCP Observatory / Decision</span><span class="window-status">PUBLISHED EVIDENCE</span></div><div class="hero-product-heading"><div><span class="product-label">KUBERNETES MCP</span><strong>72</strong></div><span class="decision-badge blocked">BLOCKED</span></div><div class="decision-meter"><span></span></div><div class="decision-stats"><div><strong>0</strong><span>security /100</span></div><div><strong>3</strong><span>high-risk findings</span></div></div><div class="decision-checks"><div><span class="check-mark">✓</span> Tool permissions evaluated</div><div><span class="check-mark">✓</span> Schema drift checked</div><div><span class="check-mark">✓</span> CI release rule ready</div></div></aside></section>
       <section class="technology-evidence" aria-labelledby="technology-evidence-title"><div class="technology-evidence-inner"><div class="organization-proof"><p>Used by developers at</p><ul class="organization-logos" aria-label="Organizations represented in observed MCP Observatory usage">${observedOrganizationLogos}</ul></div><header class="technology-evidence-head"><div><div class="eyebrow">PUBLISHED TECHNOLOGY EVIDENCE</div><h2 id="technology-evidence-title">Recognizable systems. Inspectable evidence.</h2><p>Every mark below opens the exact MCP package, scope, score, and findings behind the evaluation.</p></div><div class="technology-evidence-metric" aria-label="${evaluatedTechnologies.length} recognizable technologies linked to published evidence"><strong>${evaluatedTechnologies.length}</strong><span>technology marks<br>linked to evidence</span></div></header><div class="technology-logo-groups">${evaluatedTechnologyGroups}</div><footer class="technology-evidence-footer"><a class="button" href="/safety-index/">Browse all ${safetyTargets.length} indexed servers</a></footer></div></section>
-      <section class="case-study product-proof"><div class="case-copy"><div class="eyebrow">PRODUCT PROOF</div><h2>Evidence for every release decision.</h2><p>Every agent is only as trustworthy as the tools it can reach. Observatory turns a server connection into a visible approve, gate, or defer decision before production.</p><a class="button" href="/safety-index/servers/kubernetes-server.html">Inspect the Kubernetes evidence <span aria-hidden="true">↗</span></a></div><div class="result-card"><div class="result-head"><div><span class="eyebrow">Kubernetes MCP</span><div class="result-score">72<small>/100</small></div></div><span class="blocked">BLOCKED</span></div><div class="result-bar"><span></span></div><div class="finding-row"><span>Protocol compliance</span><b>100/100</b></div><div class="finding-row"><span>Security</span><b class="finding-fail">0/100</b></div><div class="finding-row"><span>High-risk findings</span><b>3</b></div><div class="finding-row"><span>Medium findings</span><b>3</b></div></div></section>
+      <section class="case-study product-proof"><div class="case-copy"><div class="eyebrow">PRODUCT PROOF</div><h2>Evidence for every release decision.</h2><p>Every agent is only as trustworthy as the tools it can reach. Observatory turns a server connection into a visible approve, gate, or defer decision before production.</p><a class="button" href="/safety-index/servers/kubernetes-server">Inspect the Kubernetes evidence <span aria-hidden="true">↗</span></a></div><div class="result-card"><div class="result-head"><div><span class="eyebrow">Kubernetes MCP</span><div class="result-score">72<small>/100</small></div></div><span class="blocked">BLOCKED</span></div><div class="result-bar"><span></span></div><div class="finding-row"><span>Protocol compliance</span><b>100/100</b></div><div class="finding-row"><span>Security</span><b class="finding-fail">0/100</b></div><div class="finding-row"><span>High-risk findings</span><b>3</b></div><div class="finding-row"><span>Medium findings</span><b>3</b></div></div></section>
       <section class="product-intro"><div class="eyebrow centered">HOW IT WORKS</div><h2>Scan once. Enforce at runtime. Ship with confidence.</h2><p>One evidence loop for local development, CI, and production release review.</p></section>
       <section class="features"><article class="feature"><span class="feature-icon">01</span><h3>Scan</h3><p>Connect to an MCP server and enumerate tools, prompts, resources, schemas, and security boundaries.</p></article><article class="feature"><span class="feature-icon">02</span><h3>Evaluate</h3><p>Run deterministic behavioral, security, permission, and drift checks with receipts behind every finding.</p></article><article class="feature"><span class="feature-icon">03</span><h3>Enforce</h3><p>Write a deny-default Seatbelt policy from the findings and start the runtime proxy. Local scan stays free.</p></article><article class="feature"><span class="feature-icon">04</span><h3>Decide</h3><p>Approve, gate, or defer with a report, CI status, SARIF output, and an owner-ready next action.</p></article></section>
       <section class="team-section" id="teams"><div><div class="eyebrow">RELEASE-GATE WORKFLOW</div><h2>Don’t discover your security policy in production.</h2><p class="subtitle">Set the decision once, then keep it running in CI. The Release Gate Pilot gives platform and security teams private evidence, owner-ready remediation, and a durable rule for every critical MCP dependency.</p><div class="hero-actions"><a class="button primary" href="/release-gate-pilot/">Request a Release Gate Pilot <span aria-hidden="true">↗</span></a><a class="button" href="/partners/">Partner with us <span aria-hidden="true">↗</span></a></div></div><div class="team-points"><div><b>Approve.</b> Ship dependencies that meet the evidence threshold.</div><div><b>Gate.</b> Stop unsafe capability or permission drift before release.</div><div><b>Defer.</b> Keep unresolved findings visible with a clear owner and next action.</div></div></section>
@@ -279,6 +279,33 @@ function buildHtml(current: MatrixSummaryEntry[], safetyTargets: SafetyTarget[])
     </main>
   </div>
   <script src="/site.js?v=20260905" defer></script>
+</body>
+</html>`;
+}
+
+function notFoundPage(): string {
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f9fbfc">
+  <meta name="robots" content="noindex">
+  <title>Page not found · MCP Observatory</title>
+  <link rel="icon" href="/mcp-observatory-favicon-v2.png" type="image/png" sizes="1254x1254">
+  <link rel="stylesheet" href="/m3.css?v=20260905">
+</head>
+<body class="safety-index-page">
+  <div class="container">
+    <main id="main-content" class="section">
+      <div class="panel">
+        <p class="eyebrow">NOT FOUND</p>
+        <h1>That page is not part of MCP Observatory.</h1>
+        <p class="sub">Use the Safety Index to inspect published evidence or start a free local scan on your own MCP server.</p>
+        <div class="links"><a class="button" href="/safety-index/">Browse the Safety Index</a><a class="button" href="/start/">Run a free scan</a></div>
+      </div>
+    </main>
+  </div>
 </body>
 </html>`;
 }
@@ -299,6 +326,7 @@ async function main(): Promise<void> {
   ) as SafetyTarget[];
 
   await writeFile(path.join(dashboardDir, "index.html"), buildHtml(current, safetyTargets), "utf8");
+  await writeFile(path.join(dashboardDir, "404.html"), notFoundPage(), "utf8");
   await mkdir(path.join(dashboardDir, "start"), { recursive: true });
   await writeFile(path.join(dashboardDir, "start", "index.html"), onboardingPage(), "utf8");
   await copyFile(demoPath, path.join(dashboardDir, "demo.gif"));
@@ -311,7 +339,7 @@ async function main(): Promise<void> {
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
   X-Frame-Options: DENY
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.hsforms.com; frame-ancestors 'none'; base-uri 'self'; form-action 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.hsforms.com https://app.mcp-observatory.com; frame-ancestors 'none'; base-uri 'self'; form-action 'none'
 `, "utf8");
   await writeFile(path.join(dashboardDir, "robots.txt"), "User-agent: *\nAllow: /\nSitemap: https://mcp-observatory.com/sitemap.xml\n", "utf8");
 

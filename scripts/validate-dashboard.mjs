@@ -68,6 +68,7 @@ if (!css.includes("m3.css owns all homepage layout and visual styling")) failure
 if (!siteScript.includes("[data-copy-command]")) failures.push("site.js is missing command-copy behavior");
 if (!safetyIndexScript.includes("#categoryFilter") || !safetyIndexScript.includes("#resultCount")) failures.push("safety-index.js is missing index-filter behavior");
 if (!headers.includes("script-src 'self'") || !headers.includes("style-src 'self'")) failures.push("_headers must restrict scripts and styles to same-origin assets");
+if (!headers.includes("connect-src 'self' https://api.hsforms.com https://app.mcp-observatory.com")) failures.push("_headers must permit the privacy-preserving funnel endpoint and no other third-party connections");
 if (headers.includes("'unsafe-inline'")) failures.push("_headers must not permit inline scripts or styles");
 const publicColors = cssBlock(css, ":root");
 requireContrast(publicColors, "md-sys-color-on-surface", "md-sys-color-surface", "public body text");
@@ -125,7 +126,7 @@ for (const expectedTarget of [
   "linear-server",
   "coinbase-cds-server",
 ]) {
-  if (!homepage.includes(`/safety-index/servers/${expectedTarget}.html`)) failures.push(`homepage: missing substantiated logo link for ${expectedTarget}`);
+  if (!homepage.includes(`/safety-index/servers/${expectedTarget}"`)) failures.push(`homepage: missing canonical substantiated logo link for ${expectedTarget}`);
 }
 for (const organizationLogo of ["accenture.svg", "cisco.svg", "oracle.svg"]) {
   if (!homepage.includes(`/proof-logos/${organizationLogo}`)) failures.push(`homepage: missing observed-organization logo ${organizationLogo}`);
@@ -150,9 +151,26 @@ for (const match of sitemap.matchAll(/<loc>(.*?)<\/loc>/g)) {
   try {
     await access(path.join(root, relativePath));
   } catch {
-    failures.push(`sitemap: ${url.pathname} does not resolve to a dashboard file`);
+    try {
+      await access(path.join(root, `${relativePath}.html`));
+    } catch {
+      failures.push(`sitemap: ${url.pathname} does not resolve to a dashboard file`);
+    }
   }
 }
+
+if (sitemap.includes("/safety-index/servers/") && sitemap.includes(".html</loc>")) {
+  failures.push("sitemap: Safety Index profiles must use canonical extension-less URLs");
+}
+
+const notFound = await readFile(path.join(root, "404.html"), "utf8");
+if (!notFound.includes('meta name="robots" content="noindex"')) failures.push("404 page must not be indexed");
+if (!notFound.includes("That page is not part of MCP Observatory.")) failures.push("404 page must provide an intentional non-application response");
+if (!notFound.includes('href="/start/"')) failures.push("404 page must provide a safe recovery path");
+
+const funnel = await readFile(path.join(root, "funnel.js"), "utf8");
+if (!funnel.includes('navigator.doNotTrack === "1"') || !funnel.includes("credentials: \"omit\"")) failures.push("funnel script must honor DNT and avoid browser credentials");
+if (!funnel.includes("profile_view") || !funnel.includes("scan_cta")) failures.push("funnel script is missing profile and scan CTA events");
 
 for (const file of await htmlFiles(root)) {
   const source = await readFile(file, "utf8");

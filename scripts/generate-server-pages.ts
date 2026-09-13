@@ -81,7 +81,7 @@ function scoreMeter(score: number, label: string): string {
 function renderPage(t: TargetEntry, artifact: RunArtifact | null, index: number, total: number): string {
   const title = `${t.name} — Safety Report | MCP Observatory`;
   const desc = `Safety evaluation for ${t.packageName}: ${t.whyItMatters.substring(0, 150)}${t.whyItMatters.length > 150 ? "..." : ""}`;
-  const pageUrl = `${BASE_URL}/safety-index/servers/${t.id}.html`;
+  const pageUrl = `${BASE_URL}/safety-index/servers/${t.id}`;
   const hs = artifact?.healthScore;
 
   return `<!DOCTYPE html>
@@ -102,7 +102,7 @@ function renderPage(t: TargetEntry, artifact: RunArtifact | null, index: number,
   <title>${esc(title)}</title>
   <link rel="stylesheet" href="/m3.css?v=20260902">
 </head>
-<body class="safety-detail-page">
+<body class="safety-detail-page" data-funnel-page="profile_view" data-funnel-target="${esc(t.id)}">
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <div class="container">
   <nav class="nav" aria-label="Primary navigation">
@@ -190,6 +190,15 @@ function renderPage(t: TargetEntry, artifact: RunArtifact | null, index: number,
   </div>
   `}
 
+  <section class="section scan-cta" aria-labelledby="scan-your-server">
+    <div class="panel">
+      <p class="eyebrow">RUN YOUR OWN CHECK</p>
+      <h2 id="scan-your-server">Check your ${esc(t.name)} setup for free.</h2>
+      <p>Published evidence is a starting point. Run MCP Observatory against your own configuration, then keep one hosted result free before choosing whether history and CI are useful.</p>
+      <div class="links"><a class="button" href="/start/" data-funnel-event="scan_cta" data-funnel-target="${esc(t.id)}">Run a free scan</a><a class="button" href="https://www.npmjs.com/package/@kryptosai/mcp-observatory">View installation options ↗</a></div>
+    </div>
+  </section>
+
   <div class="links">
     ${t.repo ? `<a href="${esc(t.repo)}" target="_blank" rel="noopener" class="button">View Repository →</a>` : ""}
     ${t.publicProof ? `<a href="${esc(t.publicProof)}" target="_blank" rel="noopener" class="button">Public Proof →</a>` : ""}
@@ -210,6 +219,7 @@ function renderPage(t: TargetEntry, artifact: RunArtifact | null, index: number,
     <p>Open-source MIT license &middot; <a href="https://github.com/KryptosAI/mcp-observatory">github.com/KryptosAI/mcp-observatory</a></p>
   </div>
 </footer>
+<script src="/funnel.js?v=20260912" defer></script>
 </body>
 </html>`;
 }
@@ -225,7 +235,7 @@ async function generateSitemap(ids: string[]): Promise<void> {
     { loc: `${BASE_URL}/privacy/`, changefreq: "yearly", priority: "0.4" },
     { loc: `${BASE_URL}/safety-index/`, changefreq: "daily", priority: "0.9" },
     ...ids.map(id => ({
-      loc: `${BASE_URL}/safety-index/servers/${id}.html`,
+      loc: `${BASE_URL}/safety-index/servers/${id}`,
       changefreq: "weekly" as const,
       priority: "0.6",
     })),
@@ -277,11 +287,11 @@ async function main(): Promise<void> {
     // Replace placeholder prev/next with real links
     html = html.replace(
       `<a href="./${esc(targets.length > 1 ? "" : "")}">&larr; Previous</a>`,
-      prevTarget ? `<a href="./${esc(prevTarget.id)}.html">&larr; ${esc(prevTarget.name)}</a>` : "<span></span>",
+      prevTarget ? `<a href="./${esc(prevTarget.id)}">&larr; ${esc(prevTarget.name)}</a>` : "<span></span>",
     );
     html = html.replace(
       `<a href="./${esc(targets.length > 1 ? "" : "")}">Next &rarr;</a>`,
-      nextTarget ? `<a href="./${esc(nextTarget.id)}.html">${esc(nextTarget.name)} &rarr;</a>` : "<span></span>",
+      nextTarget ? `<a href="./${esc(nextTarget.id)}">${esc(nextTarget.name)} &rarr;</a>` : "<span></span>",
     );
     html = html.replace(/[ \t]+$/gm, "");
 
@@ -373,7 +383,7 @@ function generateIndexPage(targets: TargetEntry[]): string {
         ${targets.map((t, i) => `
         <tr data-category="${esc(t.category)}" data-name="${esc(t.name)}" data-package="${esc(t.packageName)}">
           <td class="row-number">${i + 1}</td>
-          <td class="server-name"><a href="./servers/${esc(t.id)}.html">${esc(t.name)}</a></td>
+          <td class="server-name"><a href="./servers/${esc(t.id)}">${esc(t.name)}</a></td>
           <td class="category-cell">${esc(t.category)}</td>
           <td class="risk-cell">${esc(t.riskClass)}</td>
           <td class="package-cell">${esc(t.packageName)}</td>
