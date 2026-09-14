@@ -283,6 +283,128 @@ function buildHtml(current: MatrixSummaryEntry[], safetyTargets: SafetyTarget[])
 </html>`;
 }
 
+/**
+ * The public homepage deliberately teaches the product before asking a visitor
+ * to run anything. Keep the local scan and the optional hosted product as
+ * distinct moments in the journey.
+ */
+function buildLandingPage(current: MatrixSummaryEntry[], safetyTargets: SafetyTarget[]): string {
+  const passCount = current.filter(entry => entry.gate === "pass").length;
+  const latestRecordedRun = current.reduce<string | undefined>((latest, entry) => {
+    if (latest === undefined) return entry.runDate;
+    return Date.parse(entry.runDate) > Date.parse(latest) ? entry.runDate : latest;
+  }, undefined);
+  const latestRecordedRunLabel = latestRecordedRun === undefined ? "the latest recorded run" : formatDate(latestRecordedRun);
+  const verifiedPreview = buildVerifiedPreview(current, safetyTargets);
+  const demoCommand = "npx -y @kryptosai/mcp-observatory@latest demo --example";
+  const installCommand = "npm install -g @kryptosai/mcp-observatory";
+  const brewCommand = "brew tap kryptosai/mcp-observatory https://github.com/KryptosAI/mcp-observatory && brew install mcp-observatory";
+  const dockerCommand = "docker run --rm ghcr.io/kryptosai/mcp-observatory:latest demo";
+
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f9fbfc">
+  <meta name="description" content="MCP Observatory scans MCP servers locally for broken tools, risky permissions, schema changes, and compatibility issues before they break your agents.">
+  <meta property="og:title" content="MCP Observatory — Find MCP problems before they break your agents">
+  <meta property="og:description" content="Run local MCP checks, inspect prioritized findings, and add hosted history only when you need it.">
+  <meta property="og:image" content="https://mcp-observatory.com/mcp-release-gate-og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://mcp-observatory.com">
+  <link rel="icon" href="/mcp-observatory-favicon-v2.png" type="image/png" sizes="1254x1254">
+  <link rel="apple-touch-icon" href="/mcp-observatory-favicon-v2.png">
+  <link rel="stylesheet" href="/m3.css?v=20260914">
+  <title>MCP Observatory — Find MCP problems before they break your agents</title>
+</head>
+<body class="marketing-theme landing-page">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div class="container">
+    <nav class="nav landing-nav" aria-label="Primary navigation">
+      <a class="brand" href="/" aria-label="MCP Observatory home" aria-current="page"><img src="/mcp-observatory-logo-v2.png" alt="MCP Observatory" width="1536" height="329"></a>
+      <div class="navlinks"><a href="/safety-index/">Safety Index</a><a href="https://github.com/KryptosAI/mcp-observatory#quick-start">Docs</a><a href="/release-gate-pilot/">Release Gate</a><a href="https://app.mcp-observatory.com/pricing">Pricing</a><a href="https://app.mcp-observatory.com/dashboard">Sign in</a><a class="button" href="#install">Get started free</a></div>
+    </nav>
+    <main id="main-content" class="landing-main">
+      <section class="landing-hero" aria-labelledby="landing-title">
+        <div class="landing-hero-copy">
+          <p class="eyebrow">Developer security for MCP</p>
+          <h1 id="landing-title">Find MCP problems before they break your agents.</h1>
+          <p class="landing-lede">MCP Observatory scans your servers locally for broken tools, risky permissions, schema changes, and compatibility issues—then gives you a prioritized report showing what to fix.</p>
+          <p class="landing-trust">Runs locally. No account required. Nothing uploaded unless you choose to share a snapshot.</p>
+          <div class="landing-actions"><a class="button primary" href="#example">See an example scan <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span></a><a class="text-link" href="https://github.com/KryptosAI/mcp-observatory#quick-start">Read the docs <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span></a></div>
+        </div>
+        <section class="scan-window" aria-label="Example MCP Observatory scan report">
+          <header><span class="scan-window-title"><span class="material-symbols-rounded" aria-hidden="true">terminal</span>MCP Observatory</span><span class="scan-window-status"><span class="material-symbols-rounded" aria-hidden="true">check_circle</span>Local scan complete</span></header>
+          <div class="scan-window-body">
+            <div class="scan-window-run"><code>$ mcp-observatory scan</code><span>18 tools checked</span></div>
+            <div class="scan-window-progress" aria-label="All checks completed"><span></span></div>
+            <dl class="scan-summary"><div><dt>18</dt><dd>Tools checked</dd></div><div class="attention"><dt>2</dt><dd>Permission risks</dd></div><div class="critical"><dt>1</dt><dd>Breaking change</dd></div><div><dt>15</dt><dd>Healthy tools</dd></div></dl>
+            <div class="scan-findings" role="list" aria-label="Example report findings">
+              <div class="finding finding-critical" role="listitem"><span class="material-symbols-rounded" aria-hidden="true">error</span><div><strong>search_documents</strong><p>Required input changed from string to array.</p></div><b>Update types</b></div>
+              <div class="finding finding-attention" role="listitem"><span class="material-symbols-rounded" aria-hidden="true">warning</span><div><strong>filesystem.read</strong><p>Read scope is broader than expected.</p></div><b>Restrict paths</b></div>
+              <div class="finding" role="listitem"><span class="material-symbols-rounded" aria-hidden="true">info</span><div><strong>web.fetch</strong><p>Response latency increased in this run.</p></div><b>Review</b></div>
+            </div>
+            <a class="scan-report-link" href="#example">View recommended fixes <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span></a>
+          </div>
+        </section>
+      </section>
+
+      <section class="checks-section" aria-labelledby="checks-title">
+        <div class="section-kicker"><p class="eyebrow">What Observatory checks</p><h2 id="checks-title">A more reliable foundation for your agents.</h2><p>One local scan makes the issues that can reach an agent visible before a release does.</p></div>
+        <div class="check-columns">
+          <article><span class="material-symbols-rounded" aria-hidden="true">build</span><h3>Broken tools</h3><p>Find tools that fail, return invalid responses, or no longer match their schemas.</p></article>
+          <article><span class="material-symbols-rounded" aria-hidden="true">security</span><h3>Permission risks</h3><p>Flag overly broad capabilities, sensitive scopes, and unsafe tool boundaries.</p></article>
+          <article><span class="material-symbols-rounded" aria-hidden="true">schema</span><h3>Breaking changes</h3><p>Catch MCP changes that could break the agents already using your server.</p></article>
+          <article><span class="material-symbols-rounded" aria-hidden="true">monitoring</span><h3>Release regressions</h3><p>Compare results to see what changed across a version or release.</p></article>
+        </div>
+      </section>
+
+      <section class="example-section" id="example" aria-labelledby="example-title">
+        <div class="example-copy"><p class="eyebrow">Example output</p><h2 id="example-title">Clear findings. Specific next steps.</h2><p>A report gives each issue context, severity, and a practical fix—so a warning turns into a useful engineering decision.</p><a class="text-link" href="/safety-index/">Inspect published Safety Index evidence <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span></a></div>
+        <div class="example-report" aria-label="Example report with recommended fixes">
+          <header><span>Example MCP scan report</span><span>v1.2.0</span></header>
+          <div class="example-metrics"><span><b>18</b> tools checked</span><span><b>2</b> need attention</span><span><b>1</b> breaking change</span></div>
+          <div class="report-grid report-grid-head"><span>Severity</span><span>Tool / issue</span><span>Recommended fix</span></div>
+          <div class="report-grid"><span class="severity critical"><span class="material-symbols-rounded" aria-hidden="true">error</span>High</span><span><b>search_documents</b><small>Input schema changed</small></span><span>Update the tool call and regenerate client types.</span></div>
+          <div class="report-grid"><span class="severity attention"><span class="material-symbols-rounded" aria-hidden="true">warning</span>Medium</span><span><b>filesystem.read</b><small>Overly broad permission</small></span><span>Restrict local paths to an explicit allowlist.</span></div>
+          <div class="report-grid"><span class="severity neutral"><span class="material-symbols-rounded" aria-hidden="true">info</span>Low</span><span><b>web.fetch</b><small>Slower response time</small></span><span>Pin the upstream version before release.</span></div>
+        </div>
+      </section>
+
+      <section class="demo-band" id="demo" aria-labelledby="demo-title">
+        <div><p class="eyebrow">See it in action</p><h2 id="demo-title">Run a free sample scan.</h2><p>Try Observatory locally in about 30 seconds. It uses a demo MCP server, so it does not access your own project.</p><div class="demo-command"><code>${demoCommand}</code><button class="button primary copy-command" type="button" data-copy-command="${demoCommand}" aria-describedby="command-copy-status">Copy demo command</button></div><p class="demo-note">Free sample scan · No project access · No account required</p></div>
+        <ol class="demo-steps"><li><span>1</span><div><strong>Run the command</strong><p>Launch a local sample scan.</p></div></li><li><span>2</span><div><strong>Read the findings</strong><p>See tools, permissions, schemas, and changes.</p></div></li><li><span>3</span><div><strong>Choose your next action</strong><p>Keep it local or scan your own server.</p></div></li></ol>
+      </section>
+
+      <section class="install-section" id="install" aria-labelledby="install-title">
+        <div class="section-kicker"><p class="eyebrow">Install once. Use it locally.</p><h2 id="install-title">Start with your own MCP server.</h2><p>Choose the setup that fits your environment, then run a local scan whenever your server changes.</p></div>
+        <div class="install-methods">
+          <article><header><span class="material-symbols-rounded" aria-hidden="true">terminal</span><h3>Homebrew</h3><span>macOS</span></header><code>${brewCommand}</code><button class="copy-inline copy-command" type="button" data-copy-command="${brewCommand}" aria-label="Copy Homebrew install command"><span class="material-symbols-rounded" aria-hidden="true">content_copy</span></button></article>
+          <article><header><span class="material-symbols-rounded" aria-hidden="true">package_2</span><h3>npm</h3><span>macOS, Linux, Windows</span></header><code>${installCommand}</code><button class="copy-inline copy-command" type="button" data-copy-command="${installCommand}" aria-label="Copy npm install command"><span class="material-symbols-rounded" aria-hidden="true">content_copy</span></button></article>
+          <article><header><span class="material-symbols-rounded" aria-hidden="true">deployed_code</span><h3>Docker</h3><span>Any platform</span></header><code>${dockerCommand}</code><button class="copy-inline copy-command" type="button" data-copy-command="${dockerCommand}" aria-label="Copy Docker command"><span class="material-symbols-rounded" aria-hidden="true">content_copy</span></button></article>
+        </div>
+        <div class="real-scan"><div><p class="eyebrow">Then scan</p><h3>Run a local check against your configured server.</h3></div><code>mcp-observatory scan</code><a class="text-link" href="https://github.com/KryptosAI/mcp-observatory#quick-start">Installation guide <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span></a></div>
+      </section>
+
+      <section class="docs-section" aria-labelledby="docs-title"><div class="section-kicker"><p class="eyebrow">Documentation</p><h2 id="docs-title">Go deeper when you’re ready.</h2><p>Clear paths for the first scan, the methodology behind it, and CI adoption.</p></div><div class="docs-links"><a href="https://github.com/KryptosAI/mcp-observatory#quick-start"><span class="material-symbols-rounded" aria-hidden="true">description</span><strong>Getting started</strong><p>Install Observatory and run your first local scan.</p><span class="link-arrow material-symbols-rounded" aria-hidden="true">arrow_forward</span></a><a href="/safety-index/"><span class="material-symbols-rounded" aria-hidden="true">fact_check</span><strong>What we check</strong><p>See published evidence and the Safety Index methodology.</p><span class="link-arrow material-symbols-rounded" aria-hidden="true">arrow_forward</span></a><a href="https://github.com/KryptosAI/mcp-observatory/blob/main/docs/automatic-ci-integration.md"><span class="material-symbols-rounded" aria-hidden="true">account_tree</span><strong>CI/CD</strong><p>Turn a local check into a repeatable release signal.</p><span class="link-arrow material-symbols-rounded" aria-hidden="true">arrow_forward</span></a></div></section>
+
+      <section class="hosted-section" aria-labelledby="hosted-title"><div><p class="eyebrow">Optional hosted history</p><h2 id="hosted-title">Keep evidence with Individual Pro.</h2><p>Use the same scanner locally, then add hosted history, regression markers, CI ingestion, and artifact downloads when they become useful.</p><p class="hosted-reassurance">Local scanning and local CI remain free. Telemetry choice never changes access.</p></div><ul><li><span class="material-symbols-rounded" aria-hidden="true">check</span>90-day history for up to ten targets</li><li><span class="material-symbols-rounded" aria-hidden="true">check</span>Hosted CI ingestion and regression markers</li><li><span class="material-symbols-rounded" aria-hidden="true">check</span>Artifact downloads and a personal dashboard</li></ul><a class="button" href="https://app.mcp-observatory.com/pricing">Explore Individual Pro <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span></a></section>
+
+      <section class="verified-preview landing-evidence" id="index"><div class="section-title"><div><p class="eyebrow">Published Safety Index evidence</p><h2>Inspectable results, not a vanity count.</h2><p>${passCount} of ${current.length} credential-free targets passed on ${latestRecordedRunLabel}. Every listed server links to its scope and evidence.</p></div><a class="button" href="/safety-index/">Browse the Safety Index <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span></a></div><div class="verified-grid">${verifiedPreview}</div></section>
+      <p class="copy-status" id="command-copy-status" role="status" aria-live="polite"></p>
+      <footer class="footer"><a href="https://github.com/KryptosAI/mcp-observatory">MCP Observatory</a> · <a href="https://github.com/KryptosAI/mcp-observatory#quick-start">Documentation</a> · <a href="/terms/">Terms</a></footer>
+    </main>
+  </div>
+  <script src="/site.js?v=20260914" defer></script>
+</body>
+</html>`;
+}
+
+// Retained temporarily for a low-risk rollback while the new landing page is
+// evaluated; it is intentionally not part of the generated public site.
+void buildHtml;
+
 function notFoundPage(): string {
   return `<!doctype html>
 <html lang="en">
@@ -325,7 +447,7 @@ async function main(): Promise<void> {
     await readFile(safetyTargetsPath, "utf8"),
   ) as SafetyTarget[];
 
-  await writeFile(path.join(dashboardDir, "index.html"), buildHtml(current, safetyTargets), "utf8");
+  await writeFile(path.join(dashboardDir, "index.html"), buildLandingPage(current, safetyTargets), "utf8");
   await writeFile(path.join(dashboardDir, "404.html"), notFoundPage(), "utf8");
   await mkdir(path.join(dashboardDir, "start"), { recursive: true });
   await writeFile(path.join(dashboardDir, "start", "index.html"), onboardingPage(), "utf8");
