@@ -18,15 +18,19 @@ describe("public-signal leads", () => {
     expect(draftNote(ranked[0]!)).toContain("enforce --start-proxy");
   });
 
-  it("surfaces one first scan and one free hosted next action while keeping the leads script unpublished", async () => {
+  it("teaches the local product before offering a clearly labelled sample demo or hosted history", async () => {
     const readme = await readFile(path.join(process.cwd(), "README.md"), "utf8");
     const site = await readFile(path.join(process.cwd(), "dashboard/index.html"), "utf8");
     const pack = JSON.parse(await readFile(path.join(process.cwd(), "package.json"), "utf8")) as { files: string[] };
     expect(readme).toContain("enforce --start-proxy");
-    expect(site).toContain("Run in your terminal · no account needed");
-    expect(site).toContain("Next: one hosted snapshot free");
-    expect(site).toContain("@latest cloud upload");
-    expect(site).toContain("<h3>Enforce</h3>");
+    expect(site).toContain("Find MCP problems before they break your agents.");
+    expect(site).toContain("Runs locally. No account required. Nothing uploaded unless you choose to share a snapshot.");
+    expect(site).toContain("Run a free sample scan.");
+    expect(site).toContain("Copy demo command");
+    expect(site).toContain("demo --example");
+    expect(site).toContain("Keep evidence with Individual Pro.");
+    expect(site.indexOf('id="demo"')).toBeLessThan(site.indexOf('id="install"'));
+    expect(site.indexOf('id="install"')).toBeLessThan(site.indexOf('class="hosted-section"'));
     expect(pack.files.some((entry) => entry.includes("public-signal-leads"))).toBe(false);
   });
 });

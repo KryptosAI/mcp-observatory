@@ -62,12 +62,13 @@ const headers = await readFile(path.join(root, "_headers"), "utf8");
 if (!css.includes("focus-visible")) failures.push("m3.css is missing focus-visible states");
 if (!css.includes("prefers-reduced-motion")) failures.push("m3.css is missing reduced-motion handling");
 if (!css.includes("min-height:48px")) failures.push("m3.css is missing the 48px target baseline");
-if (/font-size:\s*10px/.test(css)) failures.push("m3.css contains deprecated 10px text");
+if (/font-size:\s*(?:[1-9]|10)px/.test(css)) failures.push("m3.css contains text below the 11px minimum");
 if (/body::before\s*\{[^}]*display:none/.test(css) === false) failures.push("decorative grid suppression is missing");
 if (!css.includes("m3.css owns all homepage layout and visual styling")) failures.push("m3.css is not marked as the canonical homepage style layer");
 if (!siteScript.includes("[data-copy-command]")) failures.push("site.js is missing command-copy behavior");
 if (!safetyIndexScript.includes("#categoryFilter") || !safetyIndexScript.includes("#resultCount")) failures.push("safety-index.js is missing index-filter behavior");
 if (!headers.includes("script-src 'self'") || !headers.includes("style-src 'self'")) failures.push("_headers must restrict scripts and styles to same-origin assets");
+if (!headers.includes("connect-src 'self' https://api.hsforms.com https://app.mcp-observatory.com")) failures.push("_headers must permit the privacy-preserving funnel endpoint and no other third-party connections");
 if (headers.includes("'unsafe-inline'")) failures.push("_headers must not permit inline scripts or styles");
 const publicColors = cssBlock(css, ":root");
 requireContrast(publicColors, "md-sys-color-on-surface", "md-sys-color-surface", "public body text");
@@ -79,57 +80,40 @@ requireContrast(publicColors, "mcp-status-on-warning", "mcp-status-warning", "pu
 const homepage = await readFile(path.join(root, "index.html"), "utf8");
 const indexStart = homepage.indexOf('<section class="verified-preview" id="index">');
 const homepageTop = homepage.slice(0, indexStart === -1 ? homepage.length : indexStart);
-if (count(homepage, /<h1>/g) !== 1) failures.push("homepage: expected exactly one main headline");
-if (count(homepage, /THE MOMENT BEFORE TRUST/g) !== 1) failures.push("homepage: expected exactly one trust-led eyebrow");
-if (!homepage.includes('class="technology-evidence"')) failures.push("homepage: missing full-width technology evidence section");
-if (!homepage.includes("Used by developers at")) failures.push("homepage: missing observed-organization proof label");
-if (count(homepage, /class="organization-logo"/g) !== 3) failures.push("homepage: expected three observed-organization logos");
-if (count(homepage, /class="technology-logo-card /g) !== 18) failures.push("homepage: expected eighteen evidence-linked technology logos");
-if (!homepage.includes('class="hero-product"')) failures.push("homepage: missing product decision visual");
-if (!homepageTop.includes("@latest cloud upload") || !homepageTop.includes("one hosted snapshot free")) failures.push("homepage: missing free-snapshot onboarding step");
-if (count(homepageTop, /id="primary-scan-command"/g) !== 1) failures.push("homepage: expected one primary scan command above the evidence preview");
-if (count(homepage, /data-copy-command=/g) !== 2) failures.push("homepage: expected copy controls for the local scan and cloud upload");
+if (count(homepage, /<h1\b/g) !== 1) failures.push("homepage: expected exactly one main headline");
+if (!homepage.includes("Find MCP problems before they break your agents.")) failures.push("homepage: missing the explicit product explanation headline");
+if (!homepage.includes("Runs locally. No account required. Nothing uploaded unless you choose to share a snapshot.")) failures.push("homepage: missing the local-first trust statement");
+if (!homepage.includes('class="scan-window"')) failures.push("homepage: missing the above-fold report example");
+for (const label of ["Broken tools", "Permission risks", "Breaking changes", "Release regressions"]) {
+  if (!homepage.includes(label)) failures.push(`homepage: missing ${label} explanation`);
+}
+const demoIndex = homepage.indexOf('id="demo"');
+const installIndex = homepage.indexOf('id="install"');
+const docsIndex = homepage.indexOf('class="docs-section"');
+const hostedIndex = homepage.indexOf('class="hosted-section"');
+if (demoIndex === -1 || installIndex === -1 || docsIndex === -1 || hostedIndex === -1 || !(demoIndex < installIndex && installIndex < docsIndex && docsIndex < hostedIndex)) {
+  failures.push("homepage: must present demo, install, docs, then optional hosted history in that order");
+}
+if (!homepage.includes("Run a free sample scan.") || !homepage.includes("Copy demo command")) failures.push("homepage: missing a clearly labelled free demo");
+if (!homepage.includes("demo --example") || !homepage.includes("does not access your own project")) failures.push("homepage: demo must state its exact sample-server behavior");
+if (homepageTop.includes("cloud upload")) failures.push("homepage: must not prompt hosted upload before explaining the local product");
+if (count(homepage, /data-copy-command=/g) < 4) failures.push("homepage: expected copy controls for the demo and all install methods");
 if (!homepage.includes('id="command-copy-status" role="status" aria-live="polite"')) failures.push("homepage: missing accessible copy confirmation");
-if (!homepage.includes("PUBLISHED EVIDENCE") || />\s*LIVE\s*</i.test(homepage)) failures.push("homepage: product proof must use published-evidence wording instead of LIVE");
-if (/Trusted by|customers include|customer logos|teams at/i.test(homepageTop)) failures.push("homepage: contains unsupported customer-style proof language");
+if (!homepage.includes("Published Safety Index evidence")) failures.push("homepage: missing the published-evidence section");
+if (/Trusted by|customers include|customer logos|teams at|Used by developers at/i.test(homepage)) failures.push("homepage: contains unsupported customer-style proof language");
 if (/pricing\?plan=team|Team · \$299|Start Team/i.test(homepage)) failures.push("homepage: contains a self-service Team claim");
 if (/Daily verification|rerun every day|Live compatibility matrix/i.test(homepage)) failures.push("homepage: overstates the freshness of recorded verification data");
-if (!homepage.includes("Individual Pro · $29/month")) failures.push("homepage: missing Individual Pro as the primary hosted plan");
-if (!homepage.includes("use <code>cloud upload</code> to see one hosted snapshot before paying")) failures.push("homepage: final CTA bypasses the free hosted snapshot");
+if (!homepage.includes("Individual Pro")) failures.push("homepage: missing Individual Pro as the optional hosted plan");
+if (!homepage.includes("Local scanning and local CI remain free. Telemetry choice never changes access.")) failures.push("homepage: must preserve local and telemetry access assurances");
 if (/Start \$29/i.test(homepage)) failures.push("homepage: starts paid checkout before the free hosted snapshot");
 const verifiedCardCount = count(homepage, /class="verified-card"/g);
 if (verifiedCardCount < 1 || verifiedCardCount > 3) failures.push(`homepage: expected 1-3 verified preview cards, found ${verifiedCardCount}`);
 if (count(homepage, /<time datetime="[^"]+">/g) !== verifiedCardCount) failures.push("homepage: every verified preview card must show its recorded date");
 if (/id="server-search"|id="category-filter"|id="show-more"/.test(homepage)) failures.push("homepage: embeds the full Safety Index directory instead of a verified preview");
-if (!homepage.includes('href="/safety-index/">Explore the full Safety Index')) failures.push("homepage: missing full Safety Index link from preview");
+if (!homepage.includes('href="/safety-index/">Browse the Safety Index')) failures.push("homepage: missing full Safety Index link from preview");
 if (Buffer.byteLength(homepage, "utf8") > 75_000) failures.push("homepage: exceeds the 75 KB HTML budget");
 if (/<style\b/i.test(homepage)) failures.push("homepage: contains an inline style layer instead of canonical m3.css");
 if (count(homepage, /rel="stylesheet"/g) !== 1 || !homepage.includes('rel="stylesheet" href="/m3.css')) failures.push("homepage: m3.css must be the only stylesheet");
-for (const expectedTarget of [
-  "clarity-server",
-  "chrome-devtools-mcp-server",
-  "cloudflare-server",
-  "github-mcp-server",
-  "gitlab-server",
-  "docker-server",
-  "kubernetes-server",
-  "mongodb-server",
-  "redis-server",
-  "postgres-server",
-  "supabase-server",
-  "sentry-server",
-  "stripe-server",
-  "shopify-mcp-server",
-  "notion-server",
-  "figma-server",
-  "linear-server",
-  "coinbase-cds-server",
-]) {
-  if (!homepage.includes(`/safety-index/servers/${expectedTarget}.html`)) failures.push(`homepage: missing substantiated logo link for ${expectedTarget}`);
-}
-for (const organizationLogo of ["accenture.svg", "cisco.svg", "oracle.svg"]) {
-  if (!homepage.includes(`/proof-logos/${organizationLogo}`)) failures.push(`homepage: missing observed-organization logo ${organizationLogo}`);
-}
 for (const match of homepage.matchAll(/src="\/(proof-logos\/[^"]+)"/g)) {
   try {
     await access(path.join(root, match[1]));
@@ -150,9 +134,26 @@ for (const match of sitemap.matchAll(/<loc>(.*?)<\/loc>/g)) {
   try {
     await access(path.join(root, relativePath));
   } catch {
-    failures.push(`sitemap: ${url.pathname} does not resolve to a dashboard file`);
+    try {
+      await access(path.join(root, `${relativePath}.html`));
+    } catch {
+      failures.push(`sitemap: ${url.pathname} does not resolve to a dashboard file`);
+    }
   }
 }
+
+if (sitemap.includes("/safety-index/servers/") && sitemap.includes(".html</loc>")) {
+  failures.push("sitemap: Safety Index profiles must use canonical extension-less URLs");
+}
+
+const notFound = await readFile(path.join(root, "404.html"), "utf8");
+if (!notFound.includes('meta name="robots" content="noindex"')) failures.push("404 page must not be indexed");
+if (!notFound.includes("That page is not part of MCP Observatory.")) failures.push("404 page must provide an intentional non-application response");
+if (!notFound.includes('href="/start/"')) failures.push("404 page must provide a safe recovery path");
+
+const funnel = await readFile(path.join(root, "funnel.js"), "utf8");
+if (!funnel.includes('navigator.doNotTrack === "1"') || !funnel.includes("credentials: \"omit\"")) failures.push("funnel script must honor DNT and avoid browser credentials");
+if (!funnel.includes("profile_view") || !funnel.includes("scan_cta")) failures.push("funnel script is missing profile and scan CTA events");
 
 for (const file of await htmlFiles(root)) {
   const source = await readFile(file, "utf8");

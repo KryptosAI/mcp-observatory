@@ -103,10 +103,10 @@ describe("commercial copy consistency", () => {
     expect(source).not.toMatch(/paid certification|certification review|certification conversations/i);
   });
 
-  it("keeps the public offers and logo-led credibility proof explicit", async () => {
+  it("keeps the public offers explicit without turning evaluated technologies into customer claims", async () => {
     const commercial = await readFile("COMMERCIAL.md", "utf8");
     const terms = await readFile("TERMS.md", "utf8");
-    const dashboardSource = await readFile("scripts/build-dashboard.ts", "utf8");
+    const dashboard = await readFile("dashboard/index.html", "utf8");
 
     expect(commercial).toContain("Individual Pro | $29/month");
     expect(commercial).toContain("$15,000");
@@ -115,73 +115,35 @@ describe("commercial copy consistency", () => {
     expect(terms).toContain("renew monthly");
     expect(terms).toContain("Acceptable Use");
     expect(terms).toContain("Hosted Data");
-    expect(dashboardSource).toContain("Used by developers at");
-    expect(dashboardSource).toContain("Recognizable systems. Inspectable evidence.");
-    expect(dashboardSource).not.toContain("Evaluated technologies, not MCP Observatory customers, endorsements, or partnerships.");
-    for (const logo of ["accenture.svg", "cisco.svg", "oracle.svg"]) {
-      expect(dashboardSource).toContain(logo);
-    }
-    expect(dashboardSource).toContain("@latest cloud upload");
+    expect(dashboard).toContain("Published Safety Index evidence");
+    expect(dashboard).toContain("Explore Individual Pro");
+    expect(dashboard).not.toMatch(/Trusted by|customers include|customer logos|teams at|Used by developers at/i);
   });
 
   it("keeps the homepage conversion path accessible, current, and lightweight", async () => {
     const dashboardSource = await readFile("scripts/build-dashboard.ts", "utf8");
     const dashboard = await readFile("dashboard/index.html", "utf8");
-    const safetyTargets = JSON.parse(await readFile("docs/safety-index/targets.json", "utf8")) as Array<{ id: string; name: string }>;
     const css = await readFile("dashboard/m3.css", "utf8");
     const siteScript = await readFile("dashboard/site.js", "utf8");
 
     expect(dashboardSource).not.toContain("<style>");
-    expect(dashboard.match(/data-copy-command=/g)).toHaveLength(2);
+    expect(dashboard.match(/data-copy-command=/g)).toHaveLength(4);
     expect(dashboard).toContain('id="command-copy-status" role="status" aria-live="polite"');
-    expect(dashboard).toContain("PUBLISHED EVIDENCE");
-    expect(dashboard.match(/class="technology-logo-card /g)).toHaveLength(18);
-    expect(dashboard.match(/class="organization-logo"/g)).toHaveLength(3);
-    const technologyTargets = [
-      ["Microsoft", "clarity-server"],
-      ["Google", "chrome-devtools-mcp-server"],
-      ["Cloudflare", "cloudflare-server"],
-      ["GitHub", "github-mcp-server"],
-      ["GitLab", "gitlab-server"],
-      ["Docker", "docker-server"],
-      ["Kubernetes", "kubernetes-server"],
-      ["MongoDB", "mongodb-server"],
-      ["Redis", "redis-server"],
-      ["PostgreSQL", "postgres-server"],
-      ["Supabase", "supabase-server"],
-      ["Sentry", "sentry-server"],
-      ["Stripe", "stripe-server"],
-      ["Shopify", "shopify-mcp-server"],
-      ["Notion", "notion-server"],
-      ["Figma", "figma-server"],
-      ["Linear", "linear-server"],
-      ["Coinbase", "coinbase-cds-server"],
-    ] as const;
-    for (const [brand, targetId] of technologyTargets) {
-      const target = safetyTargets.find(candidate => candidate.id === targetId);
-      expect(target, `missing Safety Index metadata for ${targetId}`).toBeDefined();
-      const href = `href="/safety-index/servers/${targetId}.html"`;
-      const cardStart = dashboard.indexOf(href);
-      const cardEnd = dashboard.indexOf("</a>", cardStart);
-      const card = dashboard.slice(cardStart, cardEnd);
-      expect(cardStart, `missing evidence card for ${brand}`).toBeGreaterThanOrEqual(0);
-      expect(card).toContain(`<strong>${brand}</strong>`);
-      expect(card).toContain(`aria-label="Inspect published evidence for ${target?.name}"`);
-      expect(card).toContain(`title="${target?.name}"`);
-    }
-    expect(dashboard).toContain("Used by developers at");
-    expect(dashboard).toMatch(/Browse all \d+ indexed servers/);
+    expect(dashboard).toContain("Find MCP problems before they break your agents.");
+    expect(dashboard).toContain("Run a free sample scan.");
+    expect(dashboard).toContain("Copy demo command");
+    expect(dashboard).toContain("Published Safety Index evidence");
     expect(dashboard).not.toMatch(/>\s*LIVE\s*</i);
     const verifiedCards = dashboard.match(/class="verified-card"/g) ?? [];
     expect(verifiedCards.length).toBeGreaterThan(0);
     expect(verifiedCards.length).toBeLessThanOrEqual(3);
     expect(dashboard.match(/<time datetime="[^"]+">/g)).toHaveLength(verifiedCards.length);
     expect(dashboard).not.toContain('id="server-search"');
-    expect(dashboard).toContain('href="/safety-index/">Explore the full Safety Index');
+    expect(dashboard).toContain('href="/safety-index/">Browse the Safety Index');
     expect(Buffer.byteLength(dashboard, "utf8")).toBeLessThanOrEqual(75_000);
     expect(dashboard.match(/rel="stylesheet"/g)).toHaveLength(1);
     expect(dashboard).toContain('rel="stylesheet" href="/m3.css');
-    expect(dashboard).toContain('src="/site.js?v=20260905"');
+    expect(dashboard).toContain('src="/site.js?v=20260914"');
     expect(css).toContain("m3.css owns all homepage layout and visual styling");
     expect(siteScript).toContain('[data-copy-command]');
   });

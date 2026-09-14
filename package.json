@@ -92,8 +92,9 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "cli": "tsx src/cli.ts",
-    "dashboard:build": "tsx scripts/build-dashboard.ts",
+    "dashboard:build": "tsx scripts/build-dashboard.ts && tsx scripts/generate-server-pages.ts",
     "dashboard:validate": "node scripts/validate-dashboard.mjs",
+    "traffic:smoke": "node scripts/traffic-quality-smoke.mjs",
     "integration:real": "tsx scripts/run-real-server-matrix.ts",
     "evaluate:permission-delta": "tsx scripts/evaluate-permission-delta-conformance.ts",
     "evaluate:permission-delta:mcp-diff": "tsx scripts/run-mcp-diff-baseline.ts",
