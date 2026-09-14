@@ -23,7 +23,8 @@ describe("public-signal leads", () => {
     const site = await readFile(path.join(process.cwd(), "dashboard/index.html"), "utf8");
     const pack = JSON.parse(await readFile(path.join(process.cwd(), "package.json"), "utf8")) as { files: string[] };
     expect(readme).toContain("enforce --start-proxy");
-    expect(site).toContain("Run in your terminal · no account needed");
+    expect(site).toContain("Start a free scan · no account needed");
+    expect(site).toContain("This command runs a free example demo.");
     expect(site).toContain("Next: one hosted snapshot free");
     expect(site).toContain("@latest cloud upload");
     expect(site).toContain("<h3>Enforce</h3>");
