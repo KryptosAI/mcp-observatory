@@ -166,7 +166,7 @@
     "ci-info": "^4.4.0",
     "commander": "14.0.3",
     "update-notifier": "^7.3.1",
-    "zod": "4.5.2"
+    "zod": "4.5.4"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
