@@ -1,6 +1,5 @@
 /* MCP Observatory Material 3 theme layer. Keep all shared public-site styling here. */
-@font-face{font-family:Roboto;src:url('/fonts/roboto-latin.ttf') format('truetype');font-style:normal;font-weight:100 900;font-display:swap}
-@font-face{font-family:'Material Symbols Rounded';src:url('/fonts/material-symbols-rounded.ttf') format('truetype');font-style:normal;font-weight:100 700;font-display:swap}
+@font-face{font-family:Roboto;src:url('/fonts/roboto-latin.woff2') format('woff2'),url('/fonts/roboto-latin.ttf') format('truetype');font-style:normal;font-weight:100 900;font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+FEFF,U+FFFD}
 
 :root{
   color-scheme:light;

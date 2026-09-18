@@ -234,7 +234,7 @@ function buildHtml(current: MatrixSummaryEntry[], safetyTargets: SafetyTarget[])
       const target = targetById.get(technology.targetId);
       if (target === undefined) throw new Error(`Missing Safety Index target ${technology.targetId}`);
       const targetName = escapeHtml(target.name);
-      return `<li><a class="technology-logo-card ${technology.kind}" href="/safety-index/servers/${escapeHtml(technology.targetId)}.html" aria-label="Inspect published evidence for ${targetName}"><span class="technology-logo-mark"><img src="/proof-logos/${escapeHtml(technology.logo)}" alt="" width="${technology.width}" height="${technology.height}" aria-hidden="true"></span><span class="technology-logo-copy"><strong>${escapeHtml(technology.name)}</strong><span title="${targetName}">${targetName}</span></span></a></li>`;
+      return `<li><a class="technology-logo-card ${technology.kind}" href="/safety-index/servers/${escapeHtml(technology.targetId)}.html" aria-label="${escapeHtml(technology.name)} ${targetName} — inspect published evidence"><span class="technology-logo-mark"><img src="/proof-logos/${escapeHtml(technology.logo)}" alt="" width="${technology.width}" height="${technology.height}" aria-hidden="true"></span><span class="technology-logo-copy"><strong>${escapeHtml(technology.name)}</strong><span title="${targetName}">${targetName}</span></span></a></li>`;
     }).join("");
     return `<section class="technology-logo-group"><h3>${escapeHtml(group.label)}</h3><ul class="technology-logo-grid">${cards}</ul></section>`;
   }).join("");
@@ -257,6 +257,7 @@ function buildHtml(current: MatrixSummaryEntry[], safetyTargets: SafetyTarget[])
   <link rel="canonical" href="https://mcp-observatory.com">
   <link rel="icon" href="/mcp-observatory-favicon-v2.png" type="image/png" sizes="1254x1254">
   <link rel="apple-touch-icon" href="/mcp-observatory-favicon-v2.png">
+  <link rel="preload" href="/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/m3.css?v=20260905">
   <title>MCP Observatory — MCP Release Gate</title>
 </head>
