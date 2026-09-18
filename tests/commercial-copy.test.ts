@@ -166,7 +166,12 @@ describe("commercial copy consistency", () => {
       const card = dashboard.slice(cardStart, cardEnd);
       expect(cardStart, `missing evidence card for ${brand}`).toBeGreaterThanOrEqual(0);
       expect(card).toContain(`<strong>${brand}</strong>`);
-      expect(card).toContain(`aria-label="Inspect published evidence for ${target?.name}"`);
+      // The accessible name has to contain the visible label. It used to read
+      // "Inspect published evidence for <target>" while the card shows
+      // "<brand> <target>", which `label-content-name-mismatch` flags for anyone
+      // navigating by voice: what they say does not match what they see. The
+      // label now quotes the visible text verbatim.
+      expect(card).toContain(`aria-label="${brand} ${target?.name} — inspect published evidence"`);
       expect(card).toContain(`title="${target?.name}"`);
     }
     expect(dashboard).toContain("Used by developers at");
