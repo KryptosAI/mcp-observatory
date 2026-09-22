@@ -307,6 +307,8 @@ async function main(): Promise<void> {
   await copyFile(logoPath, path.join(dashboardDir, "mcp-observatory-logo-v2.png"));
   await copyFile(faviconSvgPath, path.join(dashboardDir, "mcp-observatory-favicon.svg"));
   await copyFile(faviconPath, path.join(dashboardDir, "mcp-observatory-favicon-v2.png"));
+  // Keep the brand migration in every scheduled dashboard build.
+  await copyFile(path.join(root, "scripts", "dashboard-redirects.txt"), path.join(dashboardDir, "_redirects"));
   await writeFile(path.join(dashboardDir, "_headers"), `/*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
