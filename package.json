@@ -173,15 +173,15 @@
     "@types/node": "^26.1.2",
     "@typescript-eslint/eslint-plugin": "^8.65.0",
     "@typescript-eslint/parser": "^8.65.0",
-    "@vitest/coverage-v8": "4.1.11",
+    "@vitest/coverage-v8": "5.0.1",
     "ajv": "8.20.0",
     "eslint": "^10.8.0",
     "globals": "^17.8.0",
-    "simple-icons": "16.29.0",
-    "tsx": "4.23.12",
+    "simple-icons": "16.31.0",
+    "tsx": "4.23.13",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.65.0",
-    "vitest": "4.1.11"
+    "vitest": "5.0.1"
   },
   "overrides": {
     "undici": ">=7.29.0",
