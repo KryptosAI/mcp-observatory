@@ -102,7 +102,7 @@ function renderPage(t: TargetEntry, artifact: RunArtifact | null, index: number,
   <title>${esc(title)}</title>
   <link rel="stylesheet" href="/m3.css?v=20260902">
 </head>
-<body class="safety-detail-page" data-funnel-page="profile_view" data-funnel-target="${esc(t.id)}">
+<body class="safety-detail-page">
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <div class="container">
   <nav class="nav" aria-label="Primary navigation">
@@ -195,7 +195,7 @@ function renderPage(t: TargetEntry, artifact: RunArtifact | null, index: number,
       <p class="eyebrow">RUN YOUR OWN CHECK</p>
       <h2 id="scan-your-server">Check your ${esc(t.name)} setup for free.</h2>
       <p>Published evidence is a starting point. Run MCP Observatory against your own configuration, then keep one hosted result free before choosing whether history and CI are useful.</p>
-      <div class="links"><a class="button" href="/start/" data-funnel-event="scan_cta" data-funnel-target="${esc(t.id)}">Run a free scan</a><a class="button" href="https://www.npmjs.com/package/@kryptosai/mcp-observatory">View installation options ↗</a></div>
+      <div class="links"><a class="button" href="/start/">Run a free scan</a><a class="button" href="https://www.npmjs.com/package/@kryptosai/mcp-observatory">View installation options ↗</a></div>
     </div>
   </section>
 
@@ -219,7 +219,6 @@ function renderPage(t: TargetEntry, artifact: RunArtifact | null, index: number,
     <p>Open-source MIT license &middot; <a href="https://github.com/KryptosAI/mcp-observatory">github.com/KryptosAI/mcp-observatory</a></p>
   </div>
 </footer>
-<script src="/funnel.js?v=20260912" defer></script>
 </body>
 </html>`;
 }

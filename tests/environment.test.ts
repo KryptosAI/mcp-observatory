@@ -1,7 +1,7 @@
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { detectEnvironment } from "../src/environment.js";
 
@@ -18,6 +18,7 @@ describe("detectEnvironment", () => {
 
   it("returns empty arrays for a directory with no project files", async () => {
     const dir = await tempProject();
+    const home = vi.spyOn(os, "homedir").mockReturnValue(dir);
     try {
       const env = await detectEnvironment(dir);
       expect(env.languages).toEqual([]);
@@ -26,6 +27,7 @@ describe("detectEnvironment", () => {
       expect(env.cloud).toEqual([]);
       expect(env.services).toEqual([]);
     } finally {
+      home.mockRestore();
       await rm(dir, { recursive: true });
     }
   });
