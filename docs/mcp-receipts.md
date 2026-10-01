@@ -19,7 +19,7 @@ Each receipt has eight stable sections:
 - `findings`: the top findings only, with severity, control area, evidence summary, recommended fix, CI blocking status, and fingerprint
 - `reproduction`: exact rerun command, CI command, SARIF upload hint, and expected artifacts
 - `maintainer_cta`: claim/update receipt, add CI, fix findings, request rerun, and provide safe startup mode
-- `buyer_cta`: request private fleet receipt pack, attack simulation evidence pack, CI/SARIF rollout, or government/enterprise pilot
+- `buyer_cta`: request the fixed $15,000 Release Gate Pilot for 1–3 critical servers over ten business days
 
 The full audit report remains the place for every finding. The receipt is the compact trust record people and agents can cite.
 
@@ -99,6 +99,18 @@ Supported `environment_class` values:
 - `public_safety_index`
 - `private_fleet`
 
+## Signing And Verification
+
+Receipts can be signed with an Ed25519 key pair so downstream systems can prove who produced a receipt and detect tampering:
+
+```bash
+mcp-observatory receipt keygen --public mcp-observatory.pub --private mcp-observatory.key
+mcp-observatory receipt npx -y my-mcp-server --format json --output receipt.json --sign-key mcp-observatory.key --signer "your-org"
+mcp-observatory receipt verify receipt.json --key mcp-observatory.pub
+```
+
+The signature covers the entire receipt except the `signature` field itself; the `signer` identity label is part of the signed bytes, so rewriting the signer invalidates the signature. Signing requires `--format json` — markdown receipts do not carry a signature. Keep the private key secure and share only the public key. Verify prints the signer plus a truncated SHA-256 fingerprint of the public key so key identity can be confirmed out of band. Do not hand-edit or re-serialize signed JSON: canonicalization is field-order sensitive.
+
 ## Safe-Mode Guarantee
 
 Receipts inherit the same safe-mode posture as the audit and attack-simulation flow. MCP Observatory inspects metadata, schemas, startup behavior, and inert attack-readiness evidence. It does not execute destructive payloads, exfiltrate secrets, or contact attacker-controlled callbacks.
@@ -113,6 +125,6 @@ Receipts are meant to become the object that directories, agents, CI gates, main
 - a graph can group receipts by capability boundary and recommended action
 - a maintainer can claim the receipt and add CI
 - an agent can decide whether to `allow`, `gate`, `rerun`, `quarantine`, or `escalate`
-- a buyer can ask for a private fleet receipt pack before approving internal MCP dependencies
+- a buyer can request a fixed-scope Release Gate Pilot before approving 1–3 critical MCP dependencies
 
-The public receipt proves the method. The private receipt pack turns it into a buyer-ready decision record.
+The public receipt proves the method. The Release Gate Pilot turns that method into a buyer-ready decision record without creating a separate public service offer.

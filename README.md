@@ -1,5 +1,3 @@
-> 🇨🇳 中文文档: [README.zh-CN.md](README.zh-CN.md) | 欢迎中国开发者贡献!
-
 <p align="center">
   <img src="docs/assets/mcp-observatory-logo.png" alt="MCP Observatory" width="482"/>
 </p>
@@ -30,39 +28,80 @@
 [![MCP Market](https://img.shields.io/badge/MCP_Market-premium-gold)](https://mcpmarket.com)
 [![MCP Hub China](https://img.shields.io/badge/MCP_Hub_China-listed-red)](https://mcp-hub.cn)
 [![OpenTools](https://img.shields.io/badge/OpenTools-listed-green)](https://opentools.ai)
-[![Gitee](https://img.shields.io/badge/Gitee-镜像-orange)](https://gitee.com/williamweishuhn/mcp-observatory)
+[![Gitee](https://img.shields.io/badge/Gitee-mirror-orange)](https://gitee.com/williamweishuhn/mcp-observatory)
 
 </details>
 
 **Secure the MCP servers you're building.** MCP Observatory is the CI-native security tool for teams shipping custom MCP servers. Test during development, catch schema drift, simulate attacks, and generate compliance evidence — before agents depend on your servers.
 
+Also available in [Simplified Chinese](README-zh-CN.md).
+
 > **Runtime enforcement:** Use [mcp-seatbelt](https://github.com/KryptosAI/mcp-seatbelt) to block dangerous MCP tool calls at runtime based on observatory scan results.
 
 ## Get Started
 
-```bash
-npx @kryptosai/mcp-observatory demo
-```
+**[Step-by-step setup guide](https://mcp-observatory.com/start/)** · macOS, Windows, Linux · Node.js 20+ and npm ([install Node.js LTS](https://nodejs.org/en/download)).
 
-Scans your configured MCP servers (or a built-in demo server if you have none) and shows your safety grade in seconds. No config, no arguments — instant value.
+### 1. Run your first scan
 
-Have servers? Scan them all:
+Open Terminal or PowerShell in your project folder and paste:
 
 ```bash
-npx @kryptosai/mcp-observatory
+npx -y @kryptosai/mcp-observatory@latest
 ```
 
-Test a specific server:
+This downloads Observatory and checks your first configured MCP server. With no configured server, it uses an included example. To try only that example, run `npx -y @kryptosai/mcp-observatory@latest demo --example`.
+
+### 2. Read the result
+
+The terminal shows the target, grade, findings, and saved receipt path. Failed checks are findings to review, not a request to pay. If connection failed, fix the startup command or credentials and rerun. A demo grade describes the example, not your own server.
+
+### 3. Save one hosted snapshot free (optional)
+
+In the **same project folder**, run:
 
 ```bash
-npx @kryptosai/mcp-observatory test npx -y @modelcontextprotocol/server-everything
+npx -y @kryptosai/mcp-observatory@latest cloud upload
 ```
 
-Add CI + Code Scanning in one command:
+Open the verification link printed in the terminal, confirm the code, connect with GitHub, then return to the terminal. Wait for **Upload complete** and open the dashboard link. No separate account setup or payment method is needed. Free includes one target, the latest snapshot, seven-day retention, and ten uploads per month.
+
+Local scans and local CI stay free. [Individual Pro is $29/month](https://app.mcp-observatory.com/pricing?plan=individual) when you need 10 targets, 90-day history, hosted CI ingestion, or hosted HTTP scans.
+
+MCP Observatory uses jurisdiction-aware product telemetry after showing the collection notice. Review the exact fields with `telemetry preview`, check the current policy with `telemetry status`, or stop collection at any time with `telemetry disable`, `MCP_OBSERVATORY_TELEMETRY=0`, or `DO_NOT_TRACK=1`. See the complete [privacy and telemetry notice](./PRIVACY.md).
 
 ```bash
-npx @kryptosai/mcp-observatory setup-ci --all --command "npx -y my-mcp-server" --sarif --schedule weekly
+npx -y @kryptosai/mcp-observatory@latest test npx -y @modelcontextprotocol/server-everything
 ```
+
+```yaml
+- uses: KryptosAI/mcp-observatory/action@v1
+```
+
+If this repo is an MCP package, that tests `npx -y <package.json name>`. Otherwise set `command:`.
+
+Or generate a full workflow: `npx -y @kryptosai/mcp-observatory@latest setup-ci --all --command "npx -y my-mcp-server" --sarif`
+
+Install: `npx -y @kryptosai/mcp-observatory@latest` · `brew tap kryptosai/mcp-observatory https://github.com/KryptosAI/mcp-observatory && brew install mcp-observatory` · `docker pull ghcr.io/kryptosai/mcp-observatory:latest` · `curl -fsSL https://raw.githubusercontent.com/KryptosAI/mcp-observatory/main/scripts/install.sh | sh`
+
+```bash
+docker run --rm ghcr.io/kryptosai/mcp-observatory:latest demo
+docker run --rm ghcr.io/kryptosai/mcp-observatory:latest test npx -y @modelcontextprotocol/server-everything
+```
+
+Scanning a server on the host needs network and, for local files, a volume mount (`-v "$PWD:$PWD" -w "$PWD"`).
+
+Agents: `npx -y @kryptosai/mcp-observatory@latest serve`
+
+Default-deny connect: `npx -y @kryptosai/mcp-observatory@latest protect` rewrites every discovered client config (Cursor, Claude, VS Code, `.mcp.json`, …). Undo: `protect --undo`. HTTP/SSE servers are left alone.
+
+Runtime deny-default: `npx -y @kryptosai/mcp-observatory@latest enforce --start-proxy` writes a Seatbelt policy from the scan and starts the proxy. Local scan stays free.
+
+Proof: [Safety Index](https://mcp-observatory.com/safety-index/). Upload one hosted snapshot free with `cloud upload`; [Individual Pro is $29/month](https://app.mcp-observatory.com/pricing?plan=individual) when you need retained history and hosted CI ingestion.
+
+## Learn from production usage
+
+Connect real tool calls to user intent with the [usage-learning SDK and CLI](./docs/usage-learning.md): sanitized invocation evidence, opted-in “asked / expected / got” reports, selected conversation excerpts, one-click dissatisfaction flags, intent grouping across captured requests, and regression-case export. Run `mcp-observatory usage review --dir private-usage` to inspect linked evidence in a loopback-only browser screen. Server logs cannot reveal unshared conversations; observed execution and inferred breakdown signals stay separate. Collection is local and requires explicit integration.
 
 ## Why MCP Observatory
 
@@ -80,23 +119,27 @@ Observatory gives maintainers and teams:
 - **Health score badges** for public trust signals
 - **Record/replay/verify** workflows for regression testing
 - **MCP server mode** so agents can inspect other MCP servers directly
-- **Production support path** for hosted history, private repo reporting, certification, support, and fleet visibility
+- **Production support path** for one-user hosted history, CI ingestion, and owner-ready Release Gate remediation
 
-See the [launch page](./docs/launch.md), [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [Code Scanning demo](./docs/code-scanning-demo.md), [target gallery](./docs/target-gallery.md), [target registry](./docs/target-registry.md), [target contribution guide](./docs/target-contribution-guide.md), [MCP Observatory Contributors](./docs/contributor-recognition.md), [Agent Task Pack](./docs/agent-tasks.md), [MCP Receipts](./docs/mcp-receipts.md), [Tool-call receipts](./docs/tool-call-receipts.md), [MCP Risk Graph](./docs/receipt-graph.md), [`setup-ci --doctor`](./docs/setup-ci-doctor.md), [MCP server security field guide](./docs/mcp-security-field-guide.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [June 2026 safety field report](./docs/mcp-safety-field-report-2026-06.md), [reference evaluations](./docs/reference-evaluations.md), [MCP lock files](./docs/mcp-lock-files.md), [public proof](./docs/proof.md), [campaign attribution](./docs/campaign-attribution.md), [local metrics dashboard](./docs/metrics-dashboard.md), [open core boundary](./docs/commercial-boundary.md), [MCP Attack Simulation Evidence Pack](./docs/attack-simulation-pilot.md), [Private MCP Fleet Risk Graph](./docs/private-mcp-fleet-risk-graph.md), and [commercial support](./COMMERCIAL.md).
+See [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [MCP Receipts](./docs/mcp-receipts.md), [Troubleshooting](./docs/troubleshooting.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [MCP Observatory Contributors](./docs/contributor-recognition.md), [hosted client contract](./docs/api.md), [repository boundary](./docs/repository-boundary.md), [open core boundary](./docs/commercial-boundary.md), and [commercial support](./COMMERCIAL.md).
+
+### Self-Assessment
+
+We scan ourselves with mcp-observatory on every release. [See results →](docs/self-assessment.md)
 
 ## For Security And Platform Teams
 
 MCP servers are becoming part of the AI software supply chain. Agents need reliable, testable, auditable tools before those tools become dependencies in mission-critical workflows.
 
-Whether you're shipping one MCP server or running a fleet, MCP Observatory gives you CI-native security scoring, attack simulation, schema drift detection, SARIF/HTML/Markdown reports, and GitHub Code Scanning — from your first `npx` command to production deployment. Local development stays free; teams running private repos, fleets, or compliance pipelines can upgrade through a paid MCP Readiness Review.
+Whether you're shipping one MCP server or running a fleet, MCP Observatory gives you CI-native security scoring, attack simulation, schema drift detection, SARIF/HTML/Markdown reports, and GitHub Code Scanning — from your first `npx` command to production deployment. Local development stays free; teams with a near-term production approval decision can use the fixed-scope [MCP Release Gate Pilot](./docs/paid-pilot-offer.md).
 
 ## Production Support
 
-Local OSS use stays free under MIT. Teams running MCP in production can use the [Private MCP Fleet Risk Graph](./docs/private-mcp-fleet-risk-graph.md) and [MCP Attack Simulation Evidence Pack](./docs/attack-simulation-pilot.md) for safe-mode attack simulation, SARIF/Code Scanning setup, CI rollout, private evidence reporting, and owner-ready remediation notes. Private fleet risk graph pilots start at `$50,000`; attack simulation packages start at `$15,000`; narrow readiness reviews start at `$2,500`.
+Local OSS use stays free under MIT. Teams running MCP in production can use the [MCP Release Gate Pilot](./docs/paid-pilot-offer.md) for safe-mode evidence, SARIF/Code Scanning setup, CI rollout, private reporting, and owner-ready remediation notes. The fixed public entry offer is `$15,000` for 1-3 critical MCP servers over ten business days; broader work is scoped after the release decision.
 
-The open source repo is the public evidence engine. Private telemetry intelligence, company/account prioritization, commercial ranking weights, hosted fleet workflows, and buyer-specific evidence packs stay outside the OSS package; see the [open core boundary](./docs/commercial-boundary.md).
+The open source repo is the portable evidence engine. Hosted authentication, retention, organization workflows, fleet coordination, and private intelligence stay outside the OSS package; see the [repository boundary](./docs/repository-boundary.md).
 
-Run `npx @kryptosai/mcp-observatory cloud`, open a pilot request from the issue chooser, or see [COMMERCIAL.md](./COMMERCIAL.md). Also see [privacy and telemetry](./PRIVACY.md), [campaign attribution](./docs/campaign-attribution.md), and [terms for production use](./TERMS.md).
+Run `npx @kryptosai/mcp-observatory cloud`, open a pilot request from the issue chooser, or see [COMMERCIAL.md](./COMMERCIAL.md). Also see [privacy](./PRIVACY.md), [campaign attribution](./docs/campaign-attribution.md), and [terms for production use](./TERMS.md).
 
 ## How It Compares
 
@@ -109,12 +152,12 @@ Run `npx @kryptosai/mcp-observatory cloud`, open a pilot request from the issue 
 | Health scoring (0-100) | ✓ | ✗ | ✗ | ✗ |
 | SARIF output | ✓ | ✓ | ✓ | ✓ |
 | CI/CD native (setup-ci) | ✓ | ✓ | ✓ | ✓ |
-| Safety index (17+ servers) | ✓ | ✗ | ✗ | ✗ |
+| Public Safety Index | ✓ | ✗ | ✗ | ✗ |
 | Runtime enforcement via mcp-seatbelt | ✓ | ✗ | ✗ | ✗ |
 
 ## Quick Start
 
-Scan every MCP server in your Claude config:
+Run a first check. No arguments starts `demo` (your servers, or the packaged local demo):
 
 ```bash
 npx @kryptosai/mcp-observatory
@@ -171,15 +214,16 @@ Or add it manually to your config:
 | `setup-ci` / `init-ci` | Create a GitHub Action and badge snippet for MCP compatibility/security checks |
 | `setup-ci --sarif` | Generate a workflow that uploads normalized findings to GitHub Code Scanning |
 | `setup-ci --doctor` | Inspect whether the repository has a complete CI adoption kit |
+| `telemetry status\|enable\|disable\|identify\|preview` | Inspect or control product telemetry and deliberately provide a contact email |
 | `risk-graph --input <path>` | Merge receipts and run artifacts into JSON, Markdown, and HTML MCP risk graphs |
 | `--no-attack-sim` | Opt out of the default safe attack simulation on `scan` or `test` |
 | `ci-report` | Generate CI report for GitHub issue creation |
 | `enterprise-report` | Generate a static production/security report from run artifacts |
 | `score <cmd>` | Score an MCP server's health (0-100) |
 | `badge <cmd>` | Generate an SVG health score badge for README |
-| `cloud` | Show hosted reporting, security review, and enterprise pilot options |
+| `cloud` | Show the free hosted snapshot, Individual Pro, and Release Gate Pilot options |
 
-Run with no arguments for an interactive menu:
+Run with no arguments to start `demo`. Use `--menu` for the interactive catalog.
 
 ## What It Does
 
@@ -306,7 +350,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: KryptosAI/mcp-observatory/action@v1.28.0
+      - uses: KryptosAI/mcp-observatory/action@v1
         with:
           command: npx -y my-mcp-server
           deep: true
@@ -315,11 +359,35 @@ jobs:
           set-status: false
 ```
 
+### GitLab CI
+
+Runs the same `test` scan on merge requests and on `main`, publishing the SARIF as a GitLab SAST report so findings appear in the merge request security widget. This matches what `setup-ci --ci-provider gitlab-ci` generates.
+
+```yaml
+# .gitlab-ci.yml
+mcp-observatory:
+  image: node:22
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == 'main'
+  script:
+    - npx @kryptosai/mcp-observatory test npx -y my-mcp-server --deep --security --sarif mcp-observatory.sarif
+  artifacts:
+    reports:
+      sast: mcp-observatory.sarif
+```
+
+Or let the CLI write it for you:
+
+```bash
+npx @kryptosai/mcp-observatory setup-ci --ci-provider gitlab-ci --command "npx -y my-mcp-server"
+```
+
 Action inputs:
 
 | Input | Description | Default |
 |-------|-------------|---------|
-| `command` | Server command to test | (required if no `target`) |
+| `command` | Server command to test | (optional; omit to scan discovered servers) |
 | `target` | Path to target config JSON | |
 | `targets` | Path to MCP config file for multi-server matrix scan | |
 | `deep` | Also invoke safe tools | `false` |
@@ -332,9 +400,9 @@ Action inputs:
 
 The action can comment on PRs and set commit statuses when the workflow grants write permissions. `setup-ci` generates read-only third-party-friendly workflows by default and lets maintainers opt into comments/statuses later. `init-ci` remains available as a backward-compatible alias. See [`action/README.md`](./action/README.md) for all options.
 
-Production teams can add hosted CI history, private-repo reporting, recurring security reports, certification review, support, and fleet visibility. Run `npx @kryptosai/mcp-observatory cloud`, see [COMMERCIAL.md](./COMMERCIAL.md), or open a pilot request from the issue chooser.
+Production teams with a near-term MCP approval decision can use the fixed-scope [MCP Release Gate Pilot](./docs/paid-pilot-offer.md): an approve, gate, or defer decision for 1–3 servers in ten business days. See [COMMERCIAL.md](./COMMERCIAL.md) or request a decision at [mcp-observatory.com/release-gate-pilot](https://mcp-observatory.com/release-gate-pilot/).
 
-### Certified by MCP Observatory
+### Evidence badges for MCP Observatory
 
 MCP server maintainers can add a public compatibility/security signal to their README:
 
@@ -348,7 +416,7 @@ Or generate a score badge from a live check:
 npx @kryptosai/mcp-observatory badge npx -y my-mcp-server --output docs/mcp-health.svg
 ```
 
-See the [certification distribution loop](./docs/certification-distribution.md) for the GitHub Action template, maintainer PR body, and badge rollout playbook.
+See the [evidence distribution loop](./docs/certification-distribution.md) for the GitHub Action template, maintainer PR body, and badge rollout playbook. A badge is a public evidence signal, not a certification or endorsement.
 
 Generate a pilot-ready production/security report from local run artifacts:
 
@@ -363,8 +431,9 @@ For clearer internal account attribution in CI, set:
 
 ```bash
 MCP_OBSERVATORY_ORG=your-company.com
-MCP_OBSERVATORY_CONTACT=your-team-contact
 ```
+
+To deliberately associate a contact email and optional contact-channel slug with private telemetry analytics, run `mcp-observatory telemetry identify --email <address> [--channel <slug>]`. Setting an organization or identifying a contact does not authorize outreach.
 
 Testing Feishu/Lark integrations? See the [Feishu/Lark MCP guide](./docs/feishu-lark-mcp.md).
 
@@ -517,11 +586,11 @@ The record/replay/verify pattern is inspired by:
 
 ## Works with mcp-seatbelt
 
-Scan before you trust. Enforce at runtime with [mcp-seatbelt](https://github.com/KryptosAI/mcp-seatbelt) — an MCP proxy that consumes Observatory receipts and blocks out-of-contract tool calls in production. Observatory validates; seatbelt enforces.
+Scan before you trust. Then run `npx -y @kryptosai/mcp-observatory@latest enforce --start-proxy` — Observatory writes a deny-default [mcp-seatbelt](https://github.com/KryptosAI/mcp-seatbelt) policy and starts the proxy. Observatory validates; seatbelt enforces.
 
 ## Works with agent-obs
 
-Secure your servers with Observatory. Trace your agents with [agent-obs](https://github.com/KryptosAI/agent-observability) — an open-source agent execution tracer that records every tool call, computes A-F session grades, and shows you exactly where your agents spend time, burn tokens, and hit errors. Observatory tells you if a server is safe. agent-obs tells you what your agent did with it.
+Secure your servers with Observatory. Trace your agents with [agent-obs](https://github.com/KryptosAI/agent-observability) — an open-source agent execution tracer that records every tool call, computes A-F session grades, and shows you exactly where your agents spend time, burn tokens, and hit errors. Observatory tells you if a server is safe. agent-obs tells you what your agent did with it. Free, local-first, `npm install -g agent-obs`.
 
 ## Contributors ✨
 

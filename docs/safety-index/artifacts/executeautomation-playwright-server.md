@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-17T00:36:35.804Z
+Generated at 2026-07-22T21:36:45.277Z
 
 ## Target and Environment Metadata
 
@@ -9,7 +9,7 @@ Generated at 2026-07-17T00:36:35.804Z
 - Command: `npx -y @executeautomation/playwright-mcp-server`
 - Server: `playwright-mcp 1.0.11`
 - Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Node: `v22.23.1`
 
 ## Executive Summary
 
@@ -108,7 +108,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-17T00:36:36.896Z_
+_Analyzed at 2026-07-22T21:36:53.387Z_
 
 ## Regressions and Recoveries
 
@@ -118,15 +118,15 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 3.19 | All 7 conformance checks passed. |
-| healthy | resources | pass | 5.60 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
-| healthy | tools | pass | 4.92 | Advertised capability responded with the minimal expected shape (33 items). |
-| review | runtime-profile | partial | 0.23 | Detected 24 potential egress target(s) and 24 potential state mutation(s) with high confidence. |
-| review | schema-quality | partial | 2.47 | Found 1 quality finding(s) across 34 item(s): 1 warnings, 0 info. |
+| healthy | conformance | pass | 2.11 | All 7 conformance checks passed. |
+| healthy | resources | pass | 0.65 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
+| healthy | tools | pass | 1.26 | Advertised capability responded with the minimal expected shape (33 items). |
+| review | runtime-profile | partial | 0.22 | Detected 24 potential egress target(s) and 24 potential state mutation(s) with high confidence. |
+| review | schema-quality | partial | 0.65 | Found 1 quality finding(s) across 34 item(s): 1 warnings, 0 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
-| act now | attack-sim | fail | 0.99 | Safe attack simulation found 6 finding(s): 1 high, 5 medium, 0 low. |
-| act now | security | fail | 0.49 | Found 1 security finding(s): 1 high, 0 medium, 0 low. |
-| act now | security-lite | fail | 0.07 | Found 1 security finding(s): 1 high, 0 medium, 0 low. |
+| act now | attack-sim | fail | 0.96 | Safe attack simulation found 6 finding(s): 1 high, 5 medium, 0 low. |
+| act now | security | fail | 0.45 | Found 1 security finding(s): 1 high, 0 medium, 0 low. |
+| act now | security-lite | fail | 0.06 | Found 1 security finding(s): 1 high, 0 medium, 0 low. |
 
 ## Evidence Snippets
 
@@ -152,14 +152,14 @@ Summary: Advertised capability responded with the minimal expected shape, but on
   - Minimal shape present: `true`
   - Item count: `1`
   - Identifiers: console://logs
-  - Diagnostics: none
+  - Diagnostics: npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
 - Endpoint: `resources/templates/list`
   - Advertised: `true`
   - Responded: `false`
   - Minimal shape present: `false`
   - Item count: `0`
   - Identifiers: none
-  - Diagnostics: MCP error -32601: Method not found
+  - Diagnostics: MCP error -32601: Method not found, npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
 
 ### tools — pass
 
@@ -171,7 +171,7 @@ Summary: Advertised capability responded with the minimal expected shape (33 ite
   - Minimal shape present: `true`
   - Item count: `33`
   - Identifiers: start_codegen_session, end_codegen_session, get_codegen_session, clear_codegen_session, playwright_navigate (+28 more)
-  - Diagnostics: none
+  - Diagnostics: npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
 
 ### runtime-profile — partial
 
@@ -256,5 +256,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-17T003635804Z_80d49c91`
+- Run ID: `run_2026-07-22T213645277Z_86a41099`
 - Gate: `fail`

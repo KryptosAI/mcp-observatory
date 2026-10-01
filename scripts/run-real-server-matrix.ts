@@ -1,4 +1,5 @@
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 
 import {
@@ -54,6 +55,32 @@ function relativeToRoot(filePath: string): string {
   return `./${path.relative(root, filePath).replaceAll(path.sep, "/")}`;
 }
 
+function relativeToProofIndex(rootRelativePath: string): string {
+  const absolutePath = path.resolve(root, rootRelativePath);
+  return `./${path.relative(path.dirname(proofIndexPath), absolutePath).replaceAll(path.sep, "/")}`;
+}
+
+function scrubLocalPaths(value: unknown): unknown {
+  if (typeof value === "string") {
+    return value
+      .replaceAll(root, ".")
+      .replaceAll(os.homedir(), "$HOME")
+      .replace(/\/(?:Users|home)\/[^/]+/g, "$HOME")
+      .replace(/[A-Za-z]:\\Users\\[^\\]+/gi, "$HOME");
+  }
+  if (Array.isArray(value)) {
+    const entries: unknown[] = value;
+    return entries.map(entry => scrubLocalPaths(entry));
+  }
+  if (value !== null && typeof value === "object") {
+    const record = value as Record<string, unknown>;
+    return Object.fromEntries(
+      Object.entries(record).map(([key, entry]) => [key, scrubLocalPaths(entry)]),
+    );
+  }
+  return value;
+}
+
 function checkStatus(
   artifact: Awaited<ReturnType<typeof runTarget>>,
   checkId: "tools" | "prompts" | "resources",
@@ -83,8 +110,8 @@ async function writeSummaryAndIndex(entries: MatrixSummaryEntry[]): Promise<void
       `\`${entry.packageVersion ?? "unknown"}\``,
       `\`${entry.runDate}\``,
       entry.whyItMatters,
-      `[JSON](${entry.artifactPath})`,
-      `[Markdown](${entry.reportPath}) |`
+      `[JSON](${relativeToProofIndex(entry.artifactPath)})`,
+      `[Markdown](${relativeToProofIndex(entry.reportPath)}) |`
     ].join(" | ")),
     "",
     "## Commands Used",
@@ -114,7 +141,7 @@ async function main(): Promise<void> {
       await readFile(targetPath, "utf8"),
     ) as TargetConfig;
     process.stdout.write(`${target.targetId}: starting\n`);
-    const artifact = await runTarget(target);
+    const artifact = scrubLocalPaths(await runTarget(target)) as Awaited<ReturnType<typeof runTarget>>;
     const artifactPath = path.join(
       artifactsDir,
       `${artifact.target.targetId}.json`,
@@ -165,7 +192,9 @@ async function main(): Promise<void> {
   } catch {
     // No history yet
   }
-  history.push({ date: new Date().toISOString().split("T")[0]!, entries: summaryEntries });
+  const historyDate = new Date().toISOString().split("T")[0]!;
+  history = history.filter(entry => entry.date !== historyDate);
+  history.push({ date: historyDate, entries: summaryEntries });
   if (history.length > 90) history = history.slice(-90);
   await writeFile(matrixHistoryPath, JSON.stringify(history, null, 2) + "\n", "utf8");
 

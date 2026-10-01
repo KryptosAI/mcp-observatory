@@ -6,29 +6,27 @@
 
 ## 🌏 欢迎国际贡献者
 
-我们欢迎来自中国、韩国、日本以及整个亚洲的贡献者。这是一个早期项目——贡献者可以在它成为基础设施之前帮助塑造方向。
+我们欢迎来自中国、韩国、日本以及整个亚洲的贡献者。
 
-- [中文 README](README.zh-CN.md) — 简体中文文档
+- [中文 README](README-zh-CN.md) — 简体中文文档
 - 欢迎提交中文 issues 和 PRs
-- 我们使用 `新手友好` 标签标注适合新手的任务
+- 我们使用 `good first issue`（新手友好）标签标注适合新手的任务
 - Gitee 镜像: https://gitee.com/williamweishuhn/mcp-observatory
 
-加入我们，你的贡献将定义 MCP 安全工具的发展方向。
-
-## ⚡ 5 分钟快速开始
+## 5 分钟快速开始
 
 ```bash
 git clone https://github.com/KryptosAI/mcp-observatory.git
 cd mcp-observatory
 npm install
-npm test          # 约30秒，471个测试应全部通过
+npm test
 npm run typecheck # 约5秒，无错误
 npm run lint      # 约5秒，干净通过
 ```
 
 准备就绪。挑选一个标记为 [新手友好](https://github.com/KryptosAI/mcp-observatory/issues?q=is%3Aopen+label%3A%22good+first+issue%22) 的 issue 开始吧。
 
-这个仓库刻意保持小巧。好的贡献让证据更清晰；弱的贡献通常增加表面面积的速度比增加信任的速度更快。
+好的贡献让证据更清晰；弱的贡献通常增加复杂度的速度比增加信任的速度更快。
 
 ## 什么是好的贡献
 
@@ -42,9 +40,7 @@ npm run lint      # 约5秒，干净通过
 
 - 向 [MCP Target Registry](./docs/target-registry.md) 添加一个安全的 MCP 目标
 - 按照 [Target Contribution Guide](./docs/target-contribution-guide.md) 提交带证据的小型首次 PR
-- [#3 改善 artifact 输出在 Markdown 报告中的可读性](https://github.com/KryptosAI/mcp-observatory/issues/3)
-- [#6 改善 CLI 启动错误消息，覆盖连接和配置失败场景](https://github.com/KryptosAI/mcp-observatory/issues/6)
-- [#1](https://github.com/KryptosAI/mcp-observatory/issues/1) 和 [#2](https://github.com/KryptosAI/mcp-observatory/issues/2)，在确定一个通过测试的服务器后推进
+- 从开放的 [good first issue](https://github.com/KryptosAI/mcp-observatory/issues?q=is%3Aopen+label%3A%22good+first+issue%22) 或 [roadmap issue](https://github.com/KryptosAI/mcp-observatory/issues?q=is%3Aopen+label%3Aroadmap) 中挑选，对照 [ROADMAP](./ROADMAP.md) 推进
 
 ## 可能不会被接受的贡献
 
@@ -55,7 +51,7 @@ npm run lint      # 约5秒，干净通过
 
 ## 基本原则
 
-- 保持 v1 以 CLI 为先。
+- 保持 CLI 作为主要界面。
 - 不要将项目变成通用仪表板。
 - 将 artifact schema 和 Markdown 报告视为核心产品界面。
 - 保持项目作为官方合规工具的补充定位。
@@ -111,7 +107,7 @@ npm run integration:real
 - 偏好明确的证据而非巧妙的测试技巧
 - 记录这个 fixture 在证明什么、为什么重要
 
-`fixture contribution` issue 模板是提出新案例的最佳起点。
+通过普通 GitHub issue（已启用空白 issue）提出新案例，或当 fixture 支撑某个 Safety Index 目标时使用 [MCP target contribution](https://github.com/KryptosAI/mcp-observatory/issues/new?template=target-contribution.yml) 模板。
 
 ## Target Registry 贡献
 

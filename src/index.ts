@@ -16,6 +16,7 @@ export {
   buildMcpReceipt,
   generateReceiptKeyPair,
   mapStatusToReceiptVerdict,
+  publicKeyFingerprint,
   renderReceipt,
   renderReceiptMarkdown,
   receiptFormatFromPath,
@@ -99,7 +100,7 @@ export { renderSarif } from "./reporters/sarif.js";
 export { taxonomyForFinding, taxonomyForRule, taxonomyTags, type RiskTaxonomy } from "./risk-taxonomy.js";
 export { renderTerminal, renderWatchFirstRun, renderWatchNoChanges, renderWatchChanges } from "./reporters/terminal.js";
 export { runTarget, runTargetRecording, type RunOptions, type RunResult } from "./runner.js";
-export { computeHealthScore, type ScoreWeights, DEFAULT_WEIGHTS } from "./score.js";
+export { computeHealthScore, getTrustTier, type ScoreWeights, DEFAULT_WEIGHTS } from "./score.js";
 export {
   defaultRunsDirectory,
   findLatestArtifact,
@@ -133,3 +134,5 @@ export {
   type SmitheryConnection,
   type SmitheryServerListResponse,
 } from "./integrations/index.js";
+
+export * from "./usage/index.js";

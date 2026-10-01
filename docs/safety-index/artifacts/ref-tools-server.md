@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-17T00:36:26.429Z
+Generated at 2026-07-22T21:36:11.247Z
 
 ## Target and Environment Metadata
 
@@ -9,7 +9,7 @@ Generated at 2026-07-17T00:36:26.429Z
 - Command: `npx -y ref-tools-mcp`
 - Server: `Ref 3.0.3`
 - Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Node: `v22.23.1`
 
 ## Executive Summary
 
@@ -57,7 +57,7 @@ The following targets were identified as potentially reachable by this server (c
 | The URL of the webpage to read. | unknown | description_analysis | medium |
 | ref_read_url | unknown | description_analysis | low |
 
-_Analyzed at 2026-07-17T00:36:27.010Z_
+_Analyzed at 2026-07-22T21:36:18.803Z_
 
 ## Regressions and Recoveries
 
@@ -67,14 +67,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.20 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | attack-sim | pass | 0.27 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
 | healthy | conformance | pass | 0.46 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 0.29 | Advertised capability responded with the minimal expected shape (2 items). |
-| healthy | schema-quality | pass | 0.47 | All 4 item(s) have good schema quality. |
-| healthy | security | pass | 0.14 | No security issues detected. |
-| healthy | security-lite | pass | 0.02 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 1.04 | Advertised capability responded with the minimal expected shape (2 items). |
-| review | runtime-profile | partial | 0.11 | Detected 4 potential egress target(s) and 0 potential state mutation(s) with high confidence. |
+| healthy | prompts | pass | 0.24 | Advertised capability responded with the minimal expected shape (2 items). |
+| healthy | schema-quality | pass | 0.57 | All 4 item(s) have good schema quality. |
+| healthy | security | pass | 0.19 | No security issues detected. |
+| healthy | security-lite | pass | 0.04 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 0.94 | Advertised capability responded with the minimal expected shape (2 items). |
+| review | runtime-profile | partial | 0.17 | Detected 4 potential egress target(s) and 0 potential state mutation(s) with high confidence. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
 ## Evidence Snippets
@@ -113,7 +113,7 @@ Summary: Advertised capability responded with the minimal expected shape (2 item
   - Minimal shape present: `true`
   - Item count: `2`
   - Identifiers: search_docs, my_docs
-  - Diagnostics: Ref MCP Server running on stdio
+  - Diagnostics: npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead, Ref MCP Server running on stdio
 
 ### schema-quality — pass
 
@@ -161,7 +161,7 @@ Summary: Advertised capability responded with the minimal expected shape (2 item
   - Minimal shape present: `true`
   - Item count: `2`
   - Identifiers: ref_search_documentation, ref_read_url
-  - Diagnostics: Ref MCP Server running on stdio
+  - Diagnostics: npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead, Ref MCP Server running on stdio
 
 ### runtime-profile — partial
 
@@ -198,5 +198,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-17T003626429Z_130951f0`
+- Run ID: `run_2026-07-22T213611247Z_2cf54dbb`
 - Gate: `pass`

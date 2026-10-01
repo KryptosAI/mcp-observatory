@@ -4,7 +4,7 @@ import {
   diffArtifacts,
   readArtifact,
 } from "../index.js";
-import { buildEvent, recordEvent } from "../telemetry.js";
+import { buildEvent, recordEvent } from "../command-events.js";
 import type { SchemaDriftEntry, SchemaDriftSeverity } from "../types.js";
 import { formatOutput, printCiConversionCta, writeOutput } from "./helpers.js";
 

@@ -1,167 +1,158 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { access, mkdtemp, readFile, rm, stat } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-afterEach(() => {
-  vi.restoreAllMocks();
-  vi.unstubAllEnvs();
+import {
+  _flushTelemetryForTests,
+  _resetTelemetryForTests,
+  buildEvent,
+  identifyTelemetry,
+  initializeTelemetry,
+  isTelemetryEnabled,
+  loadTelemetryConfig,
+  recordEvent,
+  setTelemetryPreference,
+} from "../src/telemetry.js";
+
+let telemetryDirectory: string;
+
+function policy(mode: "notice-and-opt-out" | "prior-consent"): Response {
+  return Response.json({ mode, noticeVersion: "2026-09-01", schemaVersion: 2 });
+}
+
+beforeEach(async () => {
+  telemetryDirectory = await mkdtemp(path.join(os.tmpdir(), "mcp-observatory-telemetry-test-"));
+  vi.stubEnv("MCP_OBSERVATORY_CONFIG_DIR", telemetryDirectory);
+  vi.stubEnv("NODE_ENV", "");
+  vi.stubEnv("DO_NOT_TRACK", "");
+  vi.stubEnv("MCP_OBSERVATORY_TELEMETRY", "");
+  vi.stubEnv("MCP_OBSERVATORY_TELEMETRY_DISABLED", "");
+  vi.stubEnv("MCP_OBSERVATORY_TELEMETRY_URL", "https://telemetry.example.test/v1/events");
+  vi.stubEnv("MCP_OBSERVATORY_TELEMETRY_POLICY_URL", "https://telemetry.example.test/v1/policy");
+  _resetTelemetryForTests();
 });
 
-describe("telemetry", () => {
-  describe("isTelemetryEnabled", () => {
-    it("returns false when DO_NOT_TRACK=1", async () => {
-      vi.stubEnv("DO_NOT_TRACK", "1");
-      const { isTelemetryEnabled, _resetConfigCache } = await import("../src/telemetry.js");
-      _resetConfigCache();
-      expect(isTelemetryEnabled()).toBe(false);
-    });
+afterEach(async () => {
+  vi.restoreAllMocks();
+  vi.unstubAllEnvs();
+  await rm(telemetryDirectory, { recursive: true, force: true });
+});
 
-    it("returns false when MCP_OBSERVATORY_TELEMETRY_DISABLED=1", async () => {
-      vi.stubEnv("MCP_OBSERVATORY_TELEMETRY_DISABLED", "1");
-      const { isTelemetryEnabled, _resetConfigCache } = await import("../src/telemetry.js");
-      _resetConfigCache();
-      expect(isTelemetryEnabled()).toBe(false);
-    });
-
-    it("returns true when no env vars are set", async () => {
-      vi.stubEnv("DO_NOT_TRACK", "");
-      vi.stubEnv("MCP_OBSERVATORY_TELEMETRY_DISABLED", "");
-      const { isTelemetryEnabled, _resetConfigCache } = await import("../src/telemetry.js");
-      _resetConfigCache();
-      expect(isTelemetryEnabled()).toBe(true);
-    });
+describe("collection precedence", () => {
+  it("requires an affirmative choice in prior-consent mode", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(policy("prior-consent"));
+    vi.stubGlobal("fetch", fetchMock);
+    expect(await initializeTelemetry({ showNotice: false })).toBe(false);
+    expect(isTelemetryEnabled()).toBe(false);
+    expect((await loadTelemetryConfig()).telemetryPreference).toBe("unset");
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
-  describe("detectCI", () => {
-    it("detects GitHub Actions", async () => {
-      vi.stubEnv("GITHUB_ACTIONS", "true");
-      // ci-info reads env at import time, so we test via telemetry's detectCI
-      const { detectCI } = await import("../src/telemetry.js");
-      const result = detectCI();
-      // ci-info may or may not detect this depending on import caching,
-      // but our wrapper should at minimum return the right shape
-      expect(result).toHaveProperty("isCI");
-      expect(result).toHaveProperty("ciName");
-    });
-
-    it("returns isCI=false in normal env", async () => {
-      vi.stubEnv("CI", "");
-      vi.stubEnv("GITHUB_ACTIONS", "");
-      vi.stubEnv("GITLAB_CI", "");
-      const { detectCI } = await import("../src/telemetry.js");
-      const result = detectCI();
-      expect(result).toHaveProperty("isCI");
-      expect(result).toHaveProperty("ciName");
-    });
+  it("enables after notice in notice-and-opt-out mode", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(policy("notice-and-opt-out")));
+    expect(await initializeTelemetry({ showNotice: false })).toBe(true);
+    expect(isTelemetryEnabled()).toBe(true);
+    expect((await loadTelemetryConfig()).telemetryPreference).toBe("enabled");
   });
 
-  describe("recordEvent", () => {
-    it("does not throw when endpoint is unreachable", async () => {
-      vi.stubEnv("DO_NOT_TRACK", "");
-      vi.stubEnv("MCP_OBSERVATORY_TELEMETRY_DISABLED", "");
-      vi.stubEnv("MCP_OBSERVATORY_TELEMETRY_URL", "http://localhost:1/nope");
-      const { recordEvent, buildEvent, _resetConfigCache } = await import("../src/telemetry.js");
-      _resetConfigCache();
-      // Should not throw
-      expect(() => recordEvent(buildEvent("test", "test_cmd", "cli"))).not.toThrow();
-    });
+  it("lets explicit disable and DO_NOT_TRACK override policy", async () => {
+    vi.stubEnv("DO_NOT_TRACK", "1");
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    expect(await initializeTelemetry({ showNotice: false })).toBe(false);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+});
 
-    it("skips fetch when telemetry is disabled", async () => {
-      vi.stubEnv("DO_NOT_TRACK", "1");
-      const fetchSpy = vi.spyOn(globalThis, "fetch");
-      const { recordEvent, buildEvent, _resetConfigCache } = await import("../src/telemetry.js");
-      _resetConfigCache();
-      recordEvent(buildEvent("test", "test_cmd", "cli"));
-      expect(fetchSpy).not.toHaveBeenCalled();
-    });
-
-    it("logs to stderr in debug mode instead of calling fetch", async () => {
-      vi.stubEnv("DO_NOT_TRACK", "");
-      vi.stubEnv("MCP_OBSERVATORY_TELEMETRY_DISABLED", "");
-      vi.stubEnv("MCP_OBSERVATORY_TELEMETRY_DEBUG", "1");
-      const stderrSpy = vi.spyOn(process.stderr, "write").mockImplementation(() => true);
-      const fetchSpy = vi.spyOn(globalThis, "fetch");
-      const { recordEvent, buildEvent, _resetConfigCache } = await import("../src/telemetry.js");
-      _resetConfigCache();
-      recordEvent(buildEvent("test", "test_cmd", "cli"));
-      expect(fetchSpy).not.toHaveBeenCalled();
-      expect(stderrSpy).toHaveBeenCalledWith(expect.stringContaining("[telemetry]"));
-    });
+describe("payload construction and delivery", () => {
+  it("sends the rich identifiers while dropping unknown fields and redacting secrets", async () => {
+    vi.stubEnv("MCP_OBSERVATORY_CONTACT", "implicit-contact@example.test");
+    const requests: Array<{ url: string; init?: RequestInit }> = [];
+    vi.stubGlobal("fetch", vi.fn((input: string | URL | Request, init?: RequestInit): Promise<Response> => {
+      const url = input instanceof Request ? input.url : input.toString();
+      requests.push({ url, init });
+      return Promise.resolve(url.endsWith("/v1/policy") ? policy("notice-and-opt-out") : Response.json({ ok: true }));
+    }));
+    await initializeTelemetry({ showNotice: false });
+    recordEvent(buildEvent("command_complete", "test", "cli", {
+      targetIds: ["real-server"],
+      serverCommands: ["node server.js --token=ghp_abcdefghijklmnopqrstuvwxyz --password hunter2"],
+      fatalError: "password=hunter2",
+      featureChainOverride: ["scan", "enforce", "protect"],
+      rawMcpMessage: "must not leave the process",
+    }));
+    await _flushTelemetryForTests();
+    const posted = requests.find((request) => request.init?.method === "POST");
+    expect(posted).toBeDefined();
+    const postedBody = posted?.init?.body;
+    expect(typeof postedBody).toBe("string");
+    const body = JSON.parse(postedBody as string) as Record<string, unknown>;
+    expect(body).toMatchObject({ schemaVersion: 2, noticeVersion: "2026-09-01", event: "command_complete" });
+    expect(body.installationId).toEqual(expect.any(String));
+    expect(body.machineId).toEqual(expect.any(String));
+    expect(body.machineFingerprint).toEqual(expect.stringMatching(/^[a-f0-9]{64}$/));
+    expect(body.featureChain).toEqual(["scan", "enforce", "protect"]);
+    expect(body).not.toHaveProperty("featureChainOverride");
+    expect(JSON.stringify(body)).not.toContain("hunter2");
+    expect(JSON.stringify(body)).not.toContain("ghp_abcdefghijklmnopqrstuvwxyz");
+    expect(JSON.stringify(body)).not.toContain("implicit-contact@example.test");
+    expect(body).not.toHaveProperty("rawMcpMessage");
   });
 
-  describe("buildEvent", () => {
-    it("returns a well-formed event", async () => {
-      const { buildEvent } = await import("../src/telemetry.js");
-      const event = buildEvent("command_run", "scan", "cli");
-      expect(event.event).toBe("command_run");
-      expect(event.command).toBe("scan");
-      expect(event.transport).toBe("cli");
-      expect(event.os).toBe(process.platform);
-      expect(event.arch).toBe(process.arch);
-      expect(event.nodeVersion).toBe(process.version);
-      expect(event.version).toBeDefined();
-    });
+  it("never executes or fetches a hostile non-HTTP endpoint", async () => {
+    vi.stubEnv("MCP_OBSERVATORY_TELEMETRY", "1");
+    vi.stubEnv("MCP_OBSERVATORY_TELEMETRY_URL", "file:///tmp/telemetry;touch-pwned");
+    vi.stubEnv("MCP_OBSERVATORY_TELEMETRY_POLICY_URL", "javascript:alert(1)");
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    expect(await initializeTelemetry({ showNotice: false })).toBe(true);
+    recordEvent(buildEvent("command_run", "scan; touch pwned", "cli"));
+    await _flushTelemetryForTests();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
 
-    it("includes declared org and contact when provided", async () => {
-      vi.stubEnv("MCP_OBSERVATORY_ORG", "example.com");
-      vi.stubEnv("MCP_OBSERVATORY_CONTACT", "ops@example.com");
-      const { buildEvent, collectUserIdentity, _resetIdentityCache } = await import("../src/telemetry.js");
-      _resetIdentityCache();
-      await collectUserIdentity();
-      const event = buildEvent("command_run", "scan", "cli");
-      expect(event.org).toBe("example.com");
-      expect(event.contact).toBe("ops@example.com");
-    });
+  it("rejects cleartext telemetry endpoints outside loopback", async () => {
+    vi.stubEnv("MCP_OBSERVATORY_TELEMETRY", "1");
+    vi.stubEnv("MCP_OBSERVATORY_TELEMETRY_URL", "http://telemetry.example.test/v1/events");
+    vi.stubEnv("MCP_OBSERVATORY_TELEMETRY_POLICY_URL", "http://telemetry.example.test/v1/policy");
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    expect(await initializeTelemetry({ showNotice: false })).toBe(true);
+    recordEvent(buildEvent("command_run", "scan", "cli"));
+    await _flushTelemetryForTests();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
 
-    it("includes a campaign from the environment when provided", async () => {
-      vi.stubEnv("MCP_OBSERVATORY_CAMPAIGN", "maintainer-pr");
-      const { buildEvent } = await import("../src/telemetry.js");
-      const event = buildEvent("command_run", "scan", "cli");
-      expect(event.campaign).toBe("maintainer-pr");
-    });
+  it("queues failed delivery and removes the queue on opt-out", async () => {
+    vi.stubGlobal("fetch", vi.fn((input: string | URL | Request): Promise<Response> => {
+      const url = input instanceof Request ? input.url : input.toString();
+      if (url.endsWith("/v1/policy")) return Promise.resolve(policy("notice-and-opt-out"));
+      return Promise.reject(new Error("offline"));
+    }));
+    await initializeTelemetry({ showNotice: false });
+    recordEvent(buildEvent("command_run", "scan", "cli"));
+    await _flushTelemetryForTests();
+    await expect(access(path.join(telemetryDirectory, "telemetry-queue.json"))).resolves.toBeUndefined();
+    await setTelemetryPreference("disabled");
+    await expect(access(path.join(telemetryDirectory, "telemetry-queue.json"))).rejects.toThrow();
+  });
+});
 
-    it("rejects invalid campaign slugs", async () => {
-      const { normalizeCampaign } = await import("../src/telemetry.js");
-      expect(normalizeCampaign("agent-ci")).toBe("agent-ci");
-      expect(() => normalizeCampaign("x")).toThrow(/Campaign must be/);
-      expect(() => normalizeCampaign("bad slug")).toThrow(/Campaign must be/);
-      expect(() => normalizeCampaign("https://example.com")).toThrow(/Campaign must be/);
-    });
+describe("local privacy controls", () => {
+  it("writes owner-only configuration permissions", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(policy("notice-and-opt-out")));
+    await initializeTelemetry({ showNotice: false });
+    const configFile = path.join(telemetryDirectory, "config.json");
+    expect(JSON.parse(await readFile(configFile, "utf8"))).toHaveProperty("installationId");
+    if (process.platform !== "win32") expect((await stat(configFile)).mode & 0o777).toBe(0o600);
+  });
 
-    it("classifies MCP Observatory GitHub Actions as first-party CI", async () => {
-      vi.stubEnv("GITHUB_ACTIONS", "true");
-      vi.stubEnv("GITHUB_REPOSITORY", "KryptosAI/mcp-observatory");
-      vi.stubEnv("GITHUB_WORKFLOW", "Release");
-      vi.stubEnv("GITHUB_RUN_ID", "123");
-      vi.stubEnv("GITHUB_RUN_NUMBER", "74");
-      vi.stubEnv("GITHUB_EVENT_NAME", "workflow_dispatch");
-      vi.stubEnv("GITHUB_REF", "refs/heads/main");
-      vi.stubEnv("GITHUB_ACTOR", "KryptosAI");
-      const { buildEvent } = await import("../src/telemetry.js");
-      const event = buildEvent("command_run", "run", "cli");
-      expect(event.githubRepository).toBe("KryptosAI/mcp-observatory");
-      expect(event.githubWorkflow).toBe("Release");
-      expect(event.githubRunId).toBe("123");
-      expect(event.githubRunNumber).toBe("74");
-      expect(event.githubEventName).toBe("workflow_dispatch");
-      expect(event.githubRef).toBe("refs/heads/main");
-      expect(event.githubActor).toBe("KryptosAI");
-      expect(event.isFirstParty).toBe(true);
-      expect(event.telemetrySource).toBe("first_party_ci");
-    });
-
-    it("classifies other GitHub Actions repositories as external CI", async () => {
-      vi.stubEnv("GITHUB_ACTIONS", "true");
-      vi.stubEnv("GITHUB_REPOSITORY", "Acme/private-mcp");
-      const { buildEvent } = await import("../src/telemetry.js");
-      const event = buildEvent("command_run", "ci-report", "cli");
-      expect(event.githubRepository).toBe("Acme/private-mcp");
-      expect(event.isFirstParty).toBe(false);
-      expect(event.telemetrySource).toBe("external_ci");
-    });
-
-    it("classifies local CLI and MCP transport usage separately", async () => {
-      const { classifyTelemetrySource } = await import("../src/telemetry.js");
-      expect(classifyTelemetrySource({ transport: "cli", isCI: false }).telemetrySource).toBe("local");
-      expect(classifyTelemetrySource({ transport: "mcp", isCI: false }).telemetrySource).toBe("mcp");
-    });
+  it("validates and persists deliberately supplied identity fields", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(policy("prior-consent")));
+    await expect(identifyTelemetry("not-an-email")).rejects.toThrow(/valid email/);
+    await expect(identifyTelemetry("valid@example.test", "secret channel value")).rejects.toThrow(/channel/);
+    await identifyTelemetry("valid@example.test", "github");
+    expect(await loadTelemetryConfig()).toMatchObject({ optedInEmail: "valid@example.test", contactChannel: "github" });
   });
 });

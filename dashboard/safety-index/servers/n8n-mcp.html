@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f9fbfc">
+  <meta name="description" content="Safety evaluation for n8n-mcp: Agents may use n8n MCP to browse node documentation and, with credentials, create or execute workflow automations; the credential-free surface should ...">
+  <meta property="og:title" content="n8n MCP — Safety Report | MCP Observatory">
+  <meta property="og:description" content="Safety evaluation for n8n-mcp: Agents may use n8n MCP to browse node documentation and, with credentials, create or execute workflow automations; the credential-free surface should ...">
+  <meta property="og:image" content="https://mcp-observatory.com/mcp-observatory-logo-v2.png">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://mcp-observatory.com/mcp-observatory-logo-v2.png">
+  <link rel="canonical" href="https://mcp-observatory.com/safety-index/servers/n8n-mcp.html">
+  <link rel="icon" href="/mcp-observatory-favicon-v2.png" type="image/png" sizes="1254x1254">
+  <title>n8n MCP — Safety Report | MCP Observatory</title>
+  <link rel="stylesheet" href="/m3.css?v=20260902">
+</head>
+<body class="safety-detail-page">
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<div class="container">
+  <nav class="nav" aria-label="Primary navigation">
+    <a href="/" class="brand" aria-label="MCP Observatory home"><img src="/mcp-observatory-logo-v2.png" alt="" width="1536" height="329"></a>
+    <div class="navlinks">
+      <a href="/safety-index/" aria-current="page">Safety Index</a>
+      <a href="/release-gate-pilot/">Release Gate</a>
+      <a href="/partners/">Partners</a>
+      <a href="https://www.npmjs.com/package/@kryptosai/mcp-observatory">Install ↗</a>
+    </div>
+  </nav>
+
+  <main id="main-content">
+  <div class="breadcrumb">
+    <a href="/safety-index/">Safety Index</a> &rsaquo; n8n MCP
+  </div>
+
+  <div class="hero">
+    <h1>n8n MCP</h1>
+    <div class="meta">
+      <span class="badge cat">Agent Runtime / Automation</span>
+      <span class="badge risk">Workflow automation surface</span>
+
+    </div>
+    <p class="why">Agents may use n8n MCP to browse node documentation and, with credentials, create or execute workflow automations; the credential-free surface should be explicit before agents rely on it.</p>
+  </div>
+
+
+  <div class="grade-card">
+    <div class="grade-letter tone-success">B</div>
+    <div class="grade-detail">
+      <div class="grade-score">89 / 100 <span class="grade-context">overall</span></div>
+      <div class="grade-bar"><progress class="score-meter tone-warning" max="100" value="89" aria-label="Overall safety score: 89 out of 100">89%</progress></div>
+    </div>
+  </div>
+
+
+
+  <div class="section">
+    <h2>Score Dimensions</h2>
+    <div class="panel">
+
+      <div class="dim-row">
+        <div class="dim-name">Protocol Compliance</div>
+        <div class="dim-score">100/100</div>
+        <div class="dim-bar"><progress class="score-meter tone-success" max="100" value="100" aria-label="Protocol Compliance: 100 out of 100">100%</progress></div>
+        <div class="dim-pct">30%</div>
+      </div>
+      <div class="dim-row">
+        <div class="dim-name">Schema Quality</div>
+        <div class="dim-score">60/100</div>
+        <div class="dim-bar"><progress class="score-meter tone-error" max="100" value="60" aria-label="Schema Quality: 60 out of 100">60%</progress></div>
+        <div class="dim-pct">20%</div>
+      </div>
+      <div class="dim-row">
+        <div class="dim-name">Security</div>
+        <div class="dim-score">100/100</div>
+        <div class="dim-bar"><progress class="score-meter tone-success" max="100" value="100" aria-label="Security: 100 out of 100">100%</progress></div>
+        <div class="dim-pct">20%</div>
+      </div>
+      <div class="dim-row">
+        <div class="dim-name">Reliability</div>
+        <div class="dim-score">83/100</div>
+        <div class="dim-bar"><progress class="score-meter tone-warning" max="100" value="83" aria-label="Reliability: 83 out of 100">83%</progress></div>
+        <div class="dim-pct">20%</div>
+      </div>
+      <div class="dim-row">
+        <div class="dim-name">Performance</div>
+        <div class="dim-score">100/100</div>
+        <div class="dim-bar"><progress class="score-meter tone-success" max="100" value="100" aria-label="Performance: 100 out of 100">100%</progress></div>
+        <div class="dim-pct">10%</div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="section">
+    <h2>Check Results</h2>
+    <div class="panel">
+      <div class="check-summary">
+        <span class="tone-success">7 pass</span>
+        <span class="tone-error">0 fail</span>
+        <span class="tone-warning">1 partial</span>
+        <span class="tone-neutral">1 skipped</span>
+      </div>
+
+      <div class="check-row">
+        <div class="check-id">tools</div>
+        <div class="check-status tone-success">Pass</div>
+        <div class="check-msg">Advertised capability responded with the minimal expected shape (7 items).</div>
+      </div>
+      <div class="check-row">
+        <div class="check-id">prompts</div>
+        <div class="check-status tone-neutral">N/A</div>
+        <div class="check-msg">Prompts are not advertised by the target.</div>
+      </div>
+      <div class="check-row">
+        <div class="check-id">resources</div>
+        <div class="check-status tone-success">Pass</div>
+        <div class="check-msg">Advertised capability responded with the minimal expected shape (2 items).</div>
+      </div>
+      <div class="check-row">
+        <div class="check-id">security-lite</div>
+        <div class="check-status tone-success">Pass</div>
+        <div class="check-msg">No security issues detected (lightweight scan).</div>
+      </div>
+      <div class="check-row">
+        <div class="check-id">runtime-profile</div>
+        <div class="check-status tone-success">Pass</div>
+        <div class="check-msg">Detected 1 potential egress target(s) and 2 potential state mutation(s) with low confidence.</div>
+      </div>
+      <div class="check-row">
+        <div class="check-id">conformance</div>
+        <div class="check-status tone-success">Pass</div>
+        <div class="check-msg">All 7 conformance checks passed.</div>
+      </div>
+      <div class="check-row">
+        <div class="check-id">schema-quality</div>
+        <div class="check-status tone-warning">Partial</div>
+        <div class="check-msg">Found 2 quality finding(s) across 9 item(s): 0 warnings, 2 info.</div>
+      </div>
+      <div class="check-row">
+        <div class="check-id">security</div>
+        <div class="check-status tone-success">Pass</div>
+        <div class="check-msg">No security issues detected.</div>
+      </div>
+      <div class="check-row">
+        <div class="check-id">attack-sim</div>
+        <div class="check-status tone-success">Pass</div>
+        <div class="check-msg">Safe attack simulation found no high-risk MCP attack-readiness findings.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="links">
+    <a href="https://github.com/czlonkowski/n8n-mcp" target="_blank" rel="noopener" class="button">View Repository →</a>
+
+    <a href="https://github.com/KryptosAI/mcp-observatory/blob/main/docs/safety-index/artifacts/n8n-mcp.json" target="_blank" rel="noopener" class="button">Raw Artifact →</a>
+    <a href="https://github.com/KryptosAI/mcp-observatory/blob/main/docs/safety-index/artifacts/n8n-mcp.md" target="_blank" rel="noopener" class="button">Full Report →</a>
+  </div>
+
+  <div class="nav-pager">
+    <a href="./pakwheels-mcp.html">&larr; PakWheels MCP</a>
+    <span></span>
+  </div>
+</div>
+</main>
+
+<footer>
+  <div class="container">
+    <p>MCP Observatory Safety Index &middot; 176 servers evaluated &middot; <a href="/sitemap.xml">Sitemap</a></p>
+    <p>Open-source MIT license &middot; <a href="https://github.com/KryptosAI/mcp-observatory">github.com/KryptosAI/mcp-observatory</a></p>
+  </div>
+</footer>
+</body>
+</html>

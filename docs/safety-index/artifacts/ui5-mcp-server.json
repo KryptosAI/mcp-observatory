@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-17T003628663Z_79935e31",
-  "createdAt": "2026-07-17T00:36:28.663Z",
-  "toolVersion": "1.33.0",
+  "runId": "run_2026-07-22T213623516Z_9f467868",
+  "createdAt": "2026-07-22T21:36:23.516Z",
+  "toolVersion": "1.34.1",
   "target": {
     "targetId": "ui5-mcp-server",
     "adapter": "local-process",
@@ -22,11 +22,11 @@
       "whyItMatters": "UI5 agents can scaffold applications, run UI5-specific analysis, and fetch framework guidance, so teams need reproducible evidence before trusting the tool surface."
     },
     "serverName": "UI5",
-    "serverVersion": "0.2.14"
+    "serverVersion": "0.2.15"
   },
   "environment": {
     "platform": "darwin 25.5.0",
-    "nodeVersion": "v22.22.1"
+    "nodeVersion": "v22.23.1"
   },
   "summary": {
     "total": 9,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 6.485999999998967,
+      "durationMs": 6.080625000002328,
       "message": "Advertised capability responded with the minimal expected shape (10 items).",
       "evidence": [
         {
@@ -64,7 +64,10 @@
             "run_manifest_validation",
             "get_typescript_conversion_guidelines"
           ],
-          "diagnostics": [],
+          "diagnostics": [
+            "npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting [redacted-email]",
+            "npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting [redacted-email]"
+          ],
           "schemas": {
             "get_guidelines": {
               "type": "object",
@@ -306,7 +309,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.00112500000068394,
+      "durationMs": 0.000750000006519258,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -322,7 +325,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.0020839999997406267,
+      "durationMs": 0.0021249999990686774,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -338,7 +341,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.04324999999880674,
+      "durationMs": 0.04349999999976717,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -354,7 +357,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "pass",
-      "durationMs": 0.13175000000046566,
+      "durationMs": 0.1323329999941052,
       "message": "Detected 4 potential egress target(s) and 23 potential state mutation(s) with low confidence.",
       "evidence": [
         {
@@ -539,7 +542,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 7.999833999998373,
+      "durationMs": 6.915166999999201,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -565,7 +568,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "pass",
-      "durationMs": 3.1947500000005675,
+      "durationMs": 3.36408400000073,
       "message": "All 10 item(s) have good schema quality.",
       "evidence": [
         {
@@ -582,7 +585,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 3.4622500000004948,
+      "durationMs": 2.984415999999328,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -598,7 +601,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "pass",
-      "durationMs": 3.3021669999998267,
+      "durationMs": 2.935749999996915,
       "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
       "evidence": [
         {
@@ -657,17 +660,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 1336ms",
+          "Connect: 5726ms",
           "p95 latency: 6ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 1336.3704159999998,
-    "toolsListMs": 6.485999999998967,
-    "promptsListMs": 0.00112500000068394,
-    "resourcesListMs": 0.0020839999997406267
+    "connectMs": 5725.920125000004,
+    "toolsListMs": 6.080625000002328,
+    "promptsListMs": 0.000750000006519258,
+    "resourcesListMs": 0.0021249999990686774
   },
   "runtimeProfile": {
     "egress": [
@@ -836,7 +839,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-17T00:36:30.010Z",
+    "analyzedAt": "2026-07-22T21:36:29.251Z",
     "confidence": "medium"
   }
 }

@@ -198,7 +198,7 @@ export async function writeOutput(content: string, format: string, outputPath?: 
 export function getBinName(): string {
   const script = process.argv[1] ?? "";
   if (script.includes(".npm/_npx") || script.includes("npx")) {
-    return "npx @kryptosai/mcp-observatory";
+    return "npx -y @kryptosai/mcp-observatory@latest";
   }
   return "mcp-observatory";
 }
@@ -208,7 +208,7 @@ export function quoteShell(value: string): string {
   return `"${value.replaceAll("\\", "\\\\").replaceAll("\"", "\\\"")}"`;
 }
 
-export function setupCiHint(target?: TargetConfig, targetPath?: string, bin = "npx @kryptosai/mcp-observatory"): string {
+export function setupCiHint(target?: TargetConfig, targetPath?: string, bin = "npx -y @kryptosai/mcp-observatory@latest"): string {
   if (targetPath) {
     return `${bin} setup-ci --all --target ${quoteShell(targetPath)}`;
   }
@@ -230,7 +230,7 @@ export function printCiConversionCta(options: {
   targetPath?: string;
 }): void {
   if (isQuiet() || !shouldPrintConversionCta()) return;
-  const bin = options.bin ?? "npx @kryptosai/mcp-observatory";
+  const bin = options.bin ?? "npx -y @kryptosai/mcp-observatory@latest";
   process.stdout.write(`  ${c(ANSI.bold, "Next:")} ${options.context ?? "keep this passing in CI"}\n`);
   process.stdout.write(`  ${c(ANSI.dim, "$")} ${c(ANSI.cyan, setupCiHint(options.target, options.targetPath, bin))}\n`);
   process.stdout.write(`  ${c(ANSI.dim, `Check adoption: ${bin} setup-ci --doctor`)}\n`);

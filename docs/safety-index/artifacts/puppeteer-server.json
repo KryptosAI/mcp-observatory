@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-17T003630838Z_79c90307",
-  "createdAt": "2026-07-17T00:36:30.838Z",
-  "toolVersion": "1.33.0",
+  "runId": "run_2026-07-22T213631152Z_2d7a9a9e",
+  "createdAt": "2026-07-22T21:36:31.152Z",
+  "toolVersion": "1.34.1",
   "target": {
     "targetId": "puppeteer-server",
     "adapter": "local-process",
@@ -26,7 +26,7 @@
   },
   "environment": {
     "platform": "darwin 25.5.0",
-    "nodeVersion": "v22.22.1"
+    "nodeVersion": "v22.23.1"
   },
   "summary": {
     "total": 9,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 0.9452080000010028,
+      "durationMs": 0.46808299999975134,
       "message": "Advertised capability responded with the minimal expected shape (8 items).",
       "evidence": [
         {
@@ -62,7 +62,9 @@
             "puppeteer_hover",
             "puppeteer_evaluate"
           ],
-          "diagnostics": [],
+          "diagnostics": [
+            "npm warn deprecated puppeteer@23.11.1: < 24.15.0 is no longer supported"
+          ],
           "schemas": {
             "puppeteer_connect_active_tab": {
               "type": "object",
@@ -192,7 +194,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0009579999987181509,
+      "durationMs": 0.000624999993306119,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -208,7 +210,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 0.7948749999995925,
+      "durationMs": 0.7605830000029528,
       "message": "Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported.",
       "evidence": [
         {
@@ -220,7 +222,9 @@
           "identifiers": [
             "console://logs"
           ],
-          "diagnostics": []
+          "diagnostics": [
+            "npm warn deprecated puppeteer@23.11.1: < 24.15.0 is no longer supported"
+          ]
         },
         {
           "endpoint": "resources/templates/list",
@@ -228,7 +232,8 @@
           "responded": false,
           "minimalShapePresent": false,
           "diagnostics": [
-            "MCP error -32601: Method not found"
+            "MCP error -32601: Method not found",
+            "npm warn deprecated puppeteer@23.11.1: < 24.15.0 is no longer supported"
           ]
         }
       ]
@@ -237,7 +242,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.040333999999347725,
+      "durationMs": 0.0450840000048629,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -253,7 +258,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "partial",
-      "durationMs": 0.06991700000071432,
+      "durationMs": 0.12491700000100536,
       "message": "Detected 3 potential egress target(s) and 2 potential state mutation(s) with high confidence.",
       "evidence": [
         {
@@ -306,7 +311,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 989.7696660000001,
+      "durationMs": 1367.534166999998,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -332,7 +337,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 0.39787499999874854,
+      "durationMs": 0.552958000000217,
       "message": "Found 2 quality finding(s) across 9 item(s): 1 warnings, 1 info.",
       "evidence": [
         {
@@ -370,7 +375,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 0.11245899999994435,
+      "durationMs": 0.1897919999973965,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -386,7 +391,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "fail",
-      "durationMs": 0.44720799999959127,
+      "durationMs": 0.6696250000022701,
       "message": "Safe attack simulation found 1 finding(s): 1 high, 0 medium, 0 low.",
       "evidence": [
         {
@@ -468,17 +473,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 748ms",
+          "Connect: 4429ms",
           "p95 latency: 1ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 747.8179999999993,
-    "toolsListMs": 0.9452080000010028,
-    "promptsListMs": 0.0009579999987181509,
-    "resourcesListMs": 0.7948749999995925
+    "connectMs": 4428.586792000002,
+    "toolsListMs": 0.46808299999975134,
+    "promptsListMs": 0.000624999993306119,
+    "resourcesListMs": 0.7605830000029528
   },
   "runtimeProfile": {
     "egress": [
@@ -515,7 +520,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-17T00:36:31.588Z",
+    "analyzedAt": "2026-07-22T21:36:35.582Z",
     "confidence": "high"
   }
 }

@@ -2,7 +2,7 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import type { Command } from "commander";
 import type { RunArtifact } from "../types.js";
-import { buildEvent, recordEvent } from "../telemetry.js";
+import { buildEvent, recordEvent } from "../command-events.js";
 import { validateRunArtifact } from "../validate.js";
 import { defaultRunsDirectory } from "../storage.js";
 import { maybePrintCloudCta } from "../commercial.js";
@@ -106,7 +106,7 @@ export function registerCiReportCommands(program: Command): void {
         }));
 
         if (options.format === "markdown") {
-          maybePrintCloudCta("ci");
+          maybePrintCloudCta("ci", report.hasRegressions || report.failCount > 0 ? "fail" : "pass");
         }
 
         if (report.hasRegressions) {

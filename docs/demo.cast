@@ -1,4 +1,4 @@
-{"version":3,"term":{"cols":80,"rows":24},"timestamp":1783453692,"command":"npx --yes @kryptosai/mcp-observatory score npx -y mcp-server-kubernetes","env":{"SHELL":"/bin/zsh"}}
+{"version":2,"width":80,"height":24,"timestamp":1783453692,"command":"npx --yes @kryptosai/mcp-observatory score npx -y mcp-server-kubernetes","env":{"SHELL":"/bin/zsh"}}
 [0.299, "o", "\u001b[1G\u001b[0K⠙"]
 [0.085, "o", "\u001b[1G\u001b[0K⠹"]
 [0.082, "o", "\u001b[1G"]
@@ -15,7 +15,6 @@
 [0.000, "o", "    \u001b[2m→\u001b[0m resources: pass (100/100)\r\n"]
 [0.000, "o", "    \u001b[2m→\u001b[0m tools-invoke: partial (60/100)\r\n"]
 [0.000, "o", "\r\n"]
-[0.000, "o", "\u001b[2m  Production MCP teams: hosted security reports, certification, and controlled drift review.\u001b[0m\r\n\u001b[2m  Run \u001b[36mnpx @kryptosai/mcp-observatory cloud\u001b[0m or contact william@banksey.com.\u001b[0m\r\n\r\n"]
+[0.000, "o", "\u001b[2m  Upload one hosted snapshot free before choosing Individual Pro.\u001b[0m\r\n\u001b[2m  Try it: \u001b[36mnpx @kryptosai/mcp-observatory cloud upload\u001b[0m.\u001b[0m\r\n\r\n"]
 [0.134, "o", "\u001b[1G\u001b[0K⠙"]
 [0.001, "o", "\u001b[1G\u001b[0K"]
-[0.004, "x", "1"]

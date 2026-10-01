@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-17T00:36:30.038Z
+Generated at 2026-07-22T21:36:29.288Z
 
 ## Target and Environment Metadata
 
@@ -9,7 +9,7 @@ Generated at 2026-07-17T00:36:30.038Z
 - Command: `npx -y @opentofu/opentofu-mcp-server`
 - Server: `opentofu 0.1.0`
 - Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Node: `v22.23.1`
 
 ## Executive Summary
 
@@ -48,7 +48,7 @@ Generated at 2026-07-17T00:36:30.038Z
 
 ## Runtime Profile
 
-_Analyzed at 2026-07-17T00:36:30.825Z_
+_Analyzed at 2026-07-22T21:36:31.134Z_
 
 ## Regressions and Recoveries
 
@@ -58,14 +58,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.47 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 0.75 | All 7 conformance checks passed. |
-| healthy | resources | pass | 0.62 | Advertised capability responded with the minimal expected shape (1 items). |
+| healthy | attack-sim | pass | 0.53 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 0.91 | All 7 conformance checks passed. |
+| healthy | resources | pass | 0.81 | Advertised capability responded with the minimal expected shape (1 items). |
 | healthy | runtime-profile | pass | 0.08 | No egress or state mutation indicators detected in tool schemas. |
-| healthy | security | pass | 0.17 | No security issues detected. |
-| healthy | security-lite | pass | 0.02 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 2.11 | Advertised capability responded with the minimal expected shape (5 items). |
-| review | schema-quality | partial | 0.51 | Found 1 quality finding(s) across 6 item(s): 1 warnings, 0 info. |
+| healthy | security | pass | 0.20 | No security issues detected. |
+| healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 2.48 | Advertised capability responded with the minimal expected shape (5 items). |
+| review | schema-quality | partial | 0.59 | Found 1 quality finding(s) across 6 item(s): 1 warnings, 0 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 
 ## Evidence Snippets
@@ -190,5 +190,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-17T003630038Z_fbe94d05`
+- Run ID: `run_2026-07-22T213629288Z_a481f4ed`
 - Gate: `pass`

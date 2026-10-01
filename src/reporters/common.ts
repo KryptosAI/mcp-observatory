@@ -1,3 +1,4 @@
+import { extractObservatoryFindings } from "../findings.js";
 import type { CheckResult, CheckStatus, RunArtifact } from "../types.js";
 import { STATUS_RANK } from "../types.js";
 
@@ -70,6 +71,9 @@ export function recommendRunNextStep(artifact: RunArtifact): string {
     return "Run the target command manually, compare stderr with the diagnosis below, and only raise timeoutMs if startup is genuinely slow.";
   }
 
+  const fix = extractObservatoryFindings(artifact).find((finding) => finding.recommendation)?.recommendation;
+  if (fix) return `Fix: ${fix}`;
+
   const failingChecks = findChecksByStatus(artifact.checks, "fail");
   if (failingChecks.length > 0) {
     return `Start with the failing checks: ${describeCheckList(failingChecks)}.`;
@@ -136,7 +140,9 @@ export function summarizeRunSafety(artifact: RunArtifact): SafetySummary {
       recommendRunNextStep(artifact),
       "Add MCP Observatory to CI so every server change gets the same check.",
     ],
-    ciCta: "Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command \"npx -y <server-package>\"",
+    ciCta: verdict === "Blocked"
+      ? "Upload one hosted snapshot free: npx -y @kryptosai/mcp-observatory@latest cloud upload"
+      : "Add CI: npx -y @kryptosai/mcp-observatory@latest setup-ci --all --command \"npx -y <server-package>\"",
   };
 }
 
@@ -169,6 +175,8 @@ export function summarizeDiffSafety(artifact: { gate: string; regressions: unkno
       regressionCount > 0 ? "Fix or explicitly accept the listed regressions before release." : "Save this diff as release evidence.",
       "Keep this comparison running in CI for future MCP server changes.",
     ],
-    ciCta: "Add CI: npx @kryptosai/mcp-observatory setup-ci --all --command \"npx -y <server-package>\"",
+    ciCta: verdict === "Blocked"
+      ? "Upload one hosted snapshot free: npx -y @kryptosai/mcp-observatory@latest cloud upload"
+      : "Add CI: npx -y @kryptosai/mcp-observatory@latest setup-ci --all --command \"npx -y <server-package>\"",
   };
 }

@@ -71,7 +71,10 @@ Replace the link target with the merged proof card or PR for your contribution.
 | --- | --- | --- |
 | [William Weishuhn](https://github.com/KryptosAI) | Founding maintainer, CI Integrator, SARIF Fixer, Docs/Agent Prompt Contributor | [All Contributors entry](../CONTRIBUTORS.md), [Code Scanning demo](./code-scanning-demo.md), [Agent Task Pack](./agent-tasks.md) |
 | [Lee Sang Hoon](https://github.com/leemeo3) | Target Verifier, Safety Index Contributor, Infrastructure Contributor | [PR #144](https://github.com/KryptosAI/mcp-observatory/pull/144), [PR #159](https://github.com/KryptosAI/mcp-observatory/pull/159), [PR #188](https://github.com/KryptosAI/mcp-observatory/pull/188) |
-| [Tanish Kumar](https://github.com/tanishxdev) | Code Contributor (Legacy CLI deprecation warnings) | [PR #187](https://github.com/KryptosAI/mcp-observatory/pull/187) |
+| [Chris Brown](https://github.com/albatrossflyon-coder) | Code Contributor, Docs Contributor | [PR #297](https://github.com/KryptosAI/mcp-observatory/pull/297) (`--timeout` flag), [PR #283](https://github.com/KryptosAI/mcp-observatory/pull/283) (remediation hints) |
+| [addielarue](https://github.com/addielaruee) | Code Contributor | [PR #295](https://github.com/KryptosAI/mcp-observatory/pull/295) (`--ci-provider` flag) |
+| [GG](https://github.com/Cryptoteep) | Code Contributor, Maintenance | [PR #177](https://github.com/KryptosAI/mcp-observatory/pull/177) |
+| [yuehua1213](https://github.com/yuehua1213) | Bug Reporter | [Issue #319](https://github.com/KryptosAI/mcp-observatory/issues/319) (lockfile schema ordering bug) |
 
 External contributors are added after a merged PR, an accepted target artifact, or maintainer-confirmed upstream adoption.
 

@@ -8,7 +8,7 @@ import {
 } from "../index.js";
 import { appendHistory, buildHistoryEntry } from "../history.js";
 import { defaultRunsDirectory } from "../storage.js";
-import { buildEvent, normalizeCampaign, recordEvent } from "../telemetry.js";
+import { buildEvent, normalizeCampaign, recordEvent } from "../command-events.js";
 import { ANSI, c, colorStatus, formatOutput, resolveTarget, writeOutput } from "./helpers.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
 import { runWatchMode } from "./watch.js";
@@ -22,7 +22,7 @@ export function registerLegacyCommands(program: Command): void {
     .option("--watch", "Re-run checks on an interval.", false)
     .option("--interval <seconds>", "Interval in seconds for watch mode.", "30")
     .option("--invoke-tools", "Actually call safe tools to verify they execute.", false)
-    .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.")
+    .option("--campaign <slug>", "Attach a safe campaign/source slug for attribution.")
     .option("--setup-ci", "Offer CI conversion after a successful check; use with --yes in non-interactive runs to write files.", false)
     .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
@@ -43,7 +43,7 @@ export function registerLegacyCommands(program: Command): void {
       const summary = renderTerminal(artifact);
       process.stdout.write(`${summary}\nArtifact: ${outPath}\n`);
 
-      // Track history + telemetry
+      // Track history
       await appendHistory(buildHistoryEntry(artifact)).catch(() => {});
       const toolCount = artifact.checks.find(ch => ch.id === "tools")?.evidence[0]?.itemCount ?? 0;
       const promptCount = artifact.checks.find(ch => ch.id === "prompts")?.evidence[0]?.itemCount ?? 0;

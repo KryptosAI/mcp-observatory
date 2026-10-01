@@ -1,10 +1,10 @@
-# MCP Readiness Review
+# MCP Release Gate Pilot
 
 ## Offer
 
-Private MCP readiness review + CI rollout + SARIF/Code Scanning setup + drift/security report.
+In ten business days, we give a team an evidence-backed approve, gate, or defer decision for 1-3 critical MCP servers before production agents depend on them. The fixed-scope pilot includes private evidence, CI rollout, SARIF/Code Scanning setup, drift baseline, and owner-ready remediation.
 
-For teams that need a higher-confidence security deliverable before production agent dependency, use the [MCP Attack Simulation Evidence Pack](./attack-simulation-pilot.md). That package starts at `$15,000` and adds safe-mode attack simulation, executive evidence, and owner-ready remediation notes.
+For work that requires a broader attack-simulation or fleet scope, begin with this pilot; any follow-on work is scoped after the release decision is complete.
 
 This is a fixed-scope services package for teams that are starting to depend on MCP servers in production or pre-production. It uses the same evidence model as the public Safety Index, but the reviewed targets, findings, and recommendations stay private unless the customer approves otherwise.
 
@@ -28,17 +28,11 @@ The public CLI produces reproducible evidence. The paid review packages that evi
 - executive summary with “safe for agent dependency” verdicts
 - prioritized remediation notes and owner-ready next steps
 - maintainer PR support for public or partner-owned MCP repos
-- optional certification language for servers that pass agreed checks
+- optional customer-approved public evidence summary after delivery
 
 ## Starting Package
 
-MCP Readiness Review: starts at `$2,500`.
-
-Higher-confidence attack simulation packages:
-
-- Attack Simulation Quickstart: `$15,000`
-- Attack Simulation Evidence Pack: `$25,000`
-- Platform Attack Simulation Pilot: `$50,000`
+MCP Release Gate Pilot: `$15,000` fixed scope for 1-3 critical MCP servers over ten business days.
 
 Good fit:
 
@@ -48,17 +42,17 @@ Good fit:
 - a maintainer wants public trust signals for an MCP project
 - a company has private MCP servers and needs owner-ready remediation notes
 
-Large fleets, recurring reviews, hosted history, support, or certification programs can move into a custom production pilot.
+Large fleets, recurring reviews, hosted history, support, or customer-approved public evidence programs can move into a separately scoped follow-on engagement.
 
 ## Simple Outreach Copy
 
-Subject: MCP readiness review
+Subject: MCP Release Gate Pilot
 
 Hi,
 
 I build MCP Observatory, the CI and security gate for MCP servers before agents depend on them.
 
-I am offering a fixed-scope MCP Readiness Review for teams running MCP in production or pre-production. It includes CI rollout, SARIF/Code Scanning setup, schema/security review, drift checks, and a private readiness report for selected MCP servers.
+I am offering a fixed-scope MCP Release Gate Pilot for teams running MCP in production or pre-production. It produces an approve, gate, or defer decision for 1-3 critical servers, plus CI rollout, SARIF/Code Scanning setup, safe-mode evidence, and a private owner-ready report.
 
 If MCP is becoming part of your agent infrastructure, I can help answer which servers are ready for agents, what should block a PR, and which findings need owner attention first.
 

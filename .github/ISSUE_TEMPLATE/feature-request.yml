@@ -1,0 +1,29 @@
+name: Feature request
+description: Propose a focused improvement to MCP testing, evidence, or CI workflows.
+title: "[Feature] "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Describe the agent, maintainer, or security workflow that is blocked today.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Explain the observable behavior you want without prescribing an architecture.
+    validations:
+      required: true
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility considerations
+      description: Note any CLI, report, schema, privacy, licensing, or hosted-service implications.
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Example or evidence
+      description: Link a public MCP server, safe fixture, or concrete workflow when possible.

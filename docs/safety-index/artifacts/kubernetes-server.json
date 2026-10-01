@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-17T003636918Z_5edd3f96",
-  "createdAt": "2026-07-17T00:36:36.918Z",
-  "toolVersion": "1.33.0",
+  "runId": "run_2026-07-22T213653411Z_2017efe0",
+  "createdAt": "2026-07-22T21:36:53.411Z",
+  "toolVersion": "1.34.1",
   "target": {
     "targetId": "kubernetes-server",
     "adapter": "local-process",
@@ -22,11 +22,11 @@
       "whyItMatters": "Kubernetes MCP servers can expose cluster mutation, pod exec, manifest apply/delete, and broad kubectl command surfaces to agents."
     },
     "serverName": "kubernetes",
-    "serverVersion": "4.0.4"
+    "serverVersion": "4.0.7"
   },
   "environment": {
     "platform": "darwin 25.5.0",
-    "nodeVersion": "v22.22.1"
+    "nodeVersion": "v22.23.1"
   },
   "summary": {
     "total": 9,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 2.041291999998066,
+      "durationMs": 4.435042000004614,
       "message": "Advertised capability responded with the minimal expected shape (23 items).",
       "evidence": [
         {
@@ -78,10 +78,10 @@
             "ping"
           ],
           "diagnostics": [
-            "Starting Kubernetes MCP server v4.0.4, handling commands...",
-            "Telemetry: Disabled",
-            "(node:41154) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
-            "(Use `node --trace-deprecation ...` to show where the warning was created)"
+            "npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead",
+            "npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting [redacted-email]",
+            "Starting Kubernetes MCP server v4.0.7, handling commands...",
+            "Telemetry: Disabled"
           ],
           "schemas": {
             "cleanup": {
@@ -184,7 +184,7 @@
                 },
                 "filename": {
                   "type": "string",
-                  "description": "Path to a YAML file to apply (optional - use either manifest or filename)"
+                  "description": "Path to a YAML file to apply (optional - use either manifest or filename). The path is read on the machine running the MCP server, so it is rejected when the server runs over a remote (SSE/Streamable HTTP) transport; use 'manifest' to pass the file's contents instead."
                 },
                 "namespace": {
                   "type": "string",
@@ -235,7 +235,7 @@
                 },
                 "filename": {
                   "type": "string",
-                  "description": "Path to a YAML file to delete resources from (optional)"
+                  "description": "Path to a YAML file to delete resources from (optional). The path is read on the machine running the MCP server, so it is rejected when the server runs over a remote (SSE/Streamable HTTP) transport; use 'manifest' to pass the file's contents instead."
                 },
                 "allNamespaces": {
                   "type": "boolean",
@@ -753,7 +753,7 @@
                 },
                 "valuesFile": {
                   "type": "string",
-                  "description": "Path to values file (alternative to values object)"
+                  "description": "Path to values file (alternative to values object). The path is read on the machine running the MCP server, so it is rejected when the server runs over a remote (SSE/Streamable HTTP) transport; use 'values' to pass the values inline instead."
                 },
                 "useTemplate": {
                   "type": "boolean",
@@ -803,7 +803,7 @@
                 },
                 "valuesFile": {
                   "type": "string",
-                  "description": "Path to values file (alternative to values object)"
+                  "description": "Path to values file (alternative to values object). The path is read on the machine running the MCP server, so it is rejected when the server runs over a remote (SSE/Streamable HTTP) transport; use 'values' to pass the values inline instead."
                 }
               },
               "required": [
@@ -1076,7 +1076,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "pass",
-      "durationMs": 0.42466699999931734,
+      "durationMs": 0.3023749999993015,
       "message": "Advertised capability responded with the minimal expected shape (1 item).",
       "evidence": [
         {
@@ -1089,10 +1089,10 @@
             "k8s-diagnose"
           ],
           "diagnostics": [
-            "Starting Kubernetes MCP server v4.0.4, handling commands...",
-            "Telemetry: Disabled",
-            "(node:41154) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
-            "(Use `node --trace-deprecation ...` to show where the warning was created)"
+            "npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead",
+            "npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting [redacted-email]",
+            "Starting Kubernetes MCP server v4.0.7, handling commands...",
+            "Telemetry: Disabled"
           ]
         }
       ]
@@ -1101,7 +1101,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 0.9475420000017039,
+      "durationMs": 0.4437499999985448,
       "message": "Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported.",
       "evidence": [
         {
@@ -1118,10 +1118,10 @@
             "k8s://nodes"
           ],
           "diagnostics": [
-            "Starting Kubernetes MCP server v4.0.4, handling commands...",
-            "Telemetry: Disabled",
-            "(node:41154) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
-            "(Use `node --trace-deprecation ...` to show where the warning was created)"
+            "npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead",
+            "npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting [redacted-email]",
+            "Starting Kubernetes MCP server v4.0.7, handling commands...",
+            "Telemetry: Disabled"
           ]
         },
         {
@@ -1131,10 +1131,10 @@
           "minimalShapePresent": false,
           "diagnostics": [
             "MCP error -32601: Method not found",
-            "Starting Kubernetes MCP server v4.0.4, handling commands...",
-            "Telemetry: Disabled",
-            "(node:41154) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
-            "(Use `node --trace-deprecation ...` to show where the warning was created)"
+            "npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead",
+            "npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting [redacted-email]",
+            "Starting Kubernetes MCP server v4.0.7, handling commands...",
+            "Telemetry: Disabled"
           ]
         }
       ]
@@ -1143,7 +1143,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "fail",
-      "durationMs": 0.07570800000030431,
+      "durationMs": 0.06599999999889405,
       "message": "Found 8 security finding(s): 3 high, 3 medium, 2 low.",
       "evidence": [
         {
@@ -1228,23 +1228,35 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "partial",
-      "durationMs": 0.407959000000119,
-      "message": "Detected 11 potential egress target(s) and 76 potential state mutation(s) with high confidence.",
+      "durationMs": 0.29337500000110595,
+      "message": "Detected 15 potential egress target(s) and 76 potential state mutation(s) with high confidence.",
       "evidence": [
         {
           "endpoint": "runtime-profile/analyze",
           "advertised": true,
           "responded": true,
           "minimalShapePresent": true,
-          "itemCount": 87,
+          "itemCount": 91,
           "diagnostics": [
-            "Egress entries: 11",
+            "Egress entries: 15",
             "State mutations: 76",
             "Confidence: high"
           ],
           "findings": [
             {
+              "target": "Path to a YAML file to apply (optional - use either manifest or filename). The path is read on the machine running the MCP server, so it is rejected when the server runs over a remote (SSE/Streamable HTTP) transport; use 'manifest' to pass the file's contents instead.",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
               "target": "If true, immediately remove resources from API and bypass graceful deletion",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "Path to a YAML file to delete resources from (optional). The path is read on the machine running the MCP server, so it is rejected when the server runs over a remote (SSE/Streamable HTTP) transport; use 'manifest' to pass the file's contents instead.",
               "protocol": "unknown",
               "source": "description_analysis",
               "confidence": "medium"
@@ -1292,7 +1304,19 @@
               "confidence": "medium"
             },
             {
+              "target": "Path to values file (alternative to values object). The path is read on the machine running the MCP server, so it is rejected when the server runs over a remote (SSE/Streamable HTTP) transport; use 'values' to pass the values inline instead.",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
               "target": "Helm repository URL (optional if using local chart path)",
+              "protocol": "unknown",
+              "source": "description_analysis",
+              "confidence": "medium"
+            },
+            {
+              "target": "Path to values file (alternative to values object). The path is read on the machine running the MCP server, so it is rejected when the server runs over a remote (SSE/Streamable HTTP) transport; use 'values' to pass the values inline instead.",
               "protocol": "unknown",
               "source": "description_analysis",
               "confidence": "medium"
@@ -1773,7 +1797,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 2.1241660000014235,
+      "durationMs": 2.017166999998153,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -1799,7 +1823,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 0.9270419999993464,
+      "durationMs": 0.7020419999971637,
       "message": "Found 7 quality finding(s) across 29 item(s): 0 warnings, 7 info.",
       "evidence": [
         {
@@ -1873,7 +1897,7 @@
       "id": "security",
       "capability": "security",
       "status": "fail",
-      "durationMs": 0.4053329999987909,
+      "durationMs": 0.39741700000013225,
       "message": "Found 8 security finding(s): 3 high, 3 medium, 2 low.",
       "evidence": [
         {
@@ -1958,7 +1982,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "fail",
-      "durationMs": 1.5383750000000873,
+      "durationMs": 1.0201669999951264,
       "message": "Safe attack simulation found 5 finding(s): 3 high, 2 medium, 0 low.",
       "evidence": [
         {
@@ -2125,22 +2149,34 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 1788ms",
-          "p95 latency: 2ms (3 operations)"
+          "Connect: 5610ms",
+          "p95 latency: 4ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 1788.1130420000009,
-    "toolsListMs": 2.041291999998066,
-    "promptsListMs": 0.42466699999931734,
-    "resourcesListMs": 0.9475420000017039
+    "connectMs": 5609.807458999996,
+    "toolsListMs": 4.435042000004614,
+    "promptsListMs": 0.3023749999993015,
+    "resourcesListMs": 0.4437499999985448
   },
   "runtimeProfile": {
     "egress": [
       {
+        "target": "Path to a YAML file to apply (optional - use either manifest or filename). The path is read on the machine running the MCP server, so it is rejected when the server runs over a remote (SSE/Streamable HTTP) transport; use 'manifest' to pass the file's contents instead.",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
         "target": "If true, immediately remove resources from API and bypass graceful deletion",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "Path to a YAML file to delete resources from (optional). The path is read on the machine running the MCP server, so it is rejected when the server runs over a remote (SSE/Streamable HTTP) transport; use 'manifest' to pass the file's contents instead.",
         "protocol": "unknown",
         "source": "description_analysis",
         "confidence": "medium"
@@ -2188,7 +2224,19 @@
         "confidence": "medium"
       },
       {
+        "target": "Path to values file (alternative to values object). The path is read on the machine running the MCP server, so it is rejected when the server runs over a remote (SSE/Streamable HTTP) transport; use 'values' to pass the values inline instead.",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
         "target": "Helm repository URL (optional if using local chart path)",
+        "protocol": "unknown",
+        "source": "description_analysis",
+        "confidence": "medium"
+      },
+      {
+        "target": "Path to values file (alternative to values object). The path is read on the machine running the MCP server, so it is rejected when the server runs over a remote (SSE/Streamable HTTP) transport; use 'values' to pass the values inline instead.",
         "protocol": "unknown",
         "source": "description_analysis",
         "confidence": "medium"
@@ -2664,7 +2712,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-17T00:36:38.710Z",
+    "analyzedAt": "2026-07-22T21:36:59.027Z",
     "confidence": "high"
   }
 }

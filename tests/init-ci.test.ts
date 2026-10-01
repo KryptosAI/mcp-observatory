@@ -1,9 +1,8 @@
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { doctorSetupCi, initCi } from "../src/commands/init-ci.js";
-import { TOOL_VERSION } from "../src/version.js";
 
 const tempDirs: string[] = [];
 
@@ -34,7 +33,7 @@ describe("init-ci", () => {
     expect(result.badgeStatus).toBe("created");
 
     const workflowText = await readFile(workflow, "utf8");
-    expect(workflowText).toContain(`uses: KryptosAI/mcp-observatory/action@v${TOOL_VERSION}`);
+    expect(workflowText).toContain("uses: KryptosAI/mcp-observatory/action@v1");
     expect(workflowText).not.toContain("pull-requests: write");
     expect(workflowText).not.toContain("statuses: write");
     expect(workflowText).toContain("command: npx -y @example/mcp-server");
@@ -196,6 +195,20 @@ describe("init-ci", () => {
     expect(result.checks.find((check) => check.id === "permissions")).toMatchObject({ status: "pass" });
   });
 
+  it("warns when a workflow pins a patch Action tag instead of v1", async () => {
+    const dir = await tempDir();
+    const workflow = path.join(dir, ".github/workflows/mcp-observatory.yml");
+    await initCi({ command: "npx -y @example/mcp-server", workflow });
+    const current = await readFile(workflow, "utf8");
+    await writeFile(workflow, current.replace("action@v1", "action@v1.28.0"));
+
+    const result = await doctorSetupCi({ workflow });
+    expect(result.checks.find((check) => check.id === "action-ref")).toMatchObject({
+      status: "warn",
+      fix: "npx -y @kryptosai/mcp-observatory@latest setup-ci --doctor --fix",
+    });
+  });
+
   it("reports missing setup-ci workflow as the blocking doctor failure", async () => {
     const dir = await tempDir();
     const workflow = path.join(dir, ".github/workflows/mcp-observatory.yml");
@@ -286,5 +299,46 @@ describe("init-ci", () => {
 
   it("rejects target config generation when an existing target is supplied", async () => {
     await expect(initCi({ target: "./target.json", targetConfig: true })).rejects.toThrow("Use either --target or --target-config");
+  });
+
+  it("honors an explicit --ci-provider override instead of auto-detecting", async () => {
+    const dir = await tempDir();
+    const workflow = path.join(dir, ".gitlab-ci.yml");
+
+    const result = await initCi({
+      command: "npx -y @example/mcp-server",
+      workflow,
+      ciProvider: "gitlab-ci",
+    });
+
+    expect(result.workflowStatus).toBe("created");
+    const workflowText = await readFile(workflow, "utf8");
+    expect(workflowText).toContain("mcp-observatory:");
+    expect(workflowText).toContain("npx @kryptosai/mcp-observatory test npx -y @example/mcp-server");
+  });
+
+  it("rejects an invalid --ci-provider value and lists the valid options", async () => {
+    await expect(initCi({ command: "npx -y server", ciProvider: "jenkins" as never })).rejects.toThrow(
+      'Invalid --ci-provider "jenkins". Valid options: github-actions, gitlab-ci, circleci, bitbucket-pipelines, azure-pipelines.',
+    );
+  });
+
+  it("validates --ci-provider in doctor mode too", async () => {
+    await expect(doctorSetupCi({ ciProvider: "travis" as never })).rejects.toThrow('Invalid --ci-provider "travis"');
+  });
+
+  it("derives the default workflow path from --ci-provider when --workflow is omitted", async () => {
+    const dir = await tempDir();
+    const originalCwd = process.cwd();
+    process.chdir(dir);
+    try {
+      const result = await initCi({ command: "npx -y @example/mcp-server", ciProvider: "gitlab-ci" });
+      expect(result.workflowPath).toBe(".gitlab-ci.yml");
+      expect(result.workflowStatus).toBe("created");
+      const workflowText = await readFile(path.join(dir, ".gitlab-ci.yml"), "utf8");
+      expect(workflowText).toContain("mcp-observatory:");
+    } finally {
+      process.chdir(originalCwd);
+    }
   });
 });

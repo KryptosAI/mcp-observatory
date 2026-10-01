@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-17T00:36:30.838Z
+Generated at 2026-07-22T21:36:31.152Z
 
 ## Target and Environment Metadata
 
@@ -9,7 +9,7 @@ Generated at 2026-07-17T00:36:30.838Z
 - Command: `npx -y puppeteer-mcp-server`
 - Server: `example-servers/puppeteer 0.1.0`
 - Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Node: `v22.23.1`
 
 ## Executive Summary
 
@@ -66,7 +66,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-17T00:36:31.588Z_
+_Analyzed at 2026-07-22T21:36:35.582Z_
 
 ## Regressions and Recoveries
 
@@ -76,15 +76,15 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 989.77 | All 7 conformance checks passed. |
-| healthy | resources | pass | 0.79 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
-| healthy | security | pass | 0.11 | No security issues detected. |
-| healthy | security-lite | pass | 0.04 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 0.95 | Advertised capability responded with the minimal expected shape (8 items). |
-| review | runtime-profile | partial | 0.07 | Detected 3 potential egress target(s) and 2 potential state mutation(s) with high confidence. |
-| review | schema-quality | partial | 0.40 | Found 2 quality finding(s) across 9 item(s): 1 warnings, 1 info. |
+| healthy | conformance | pass | 1367.53 | All 7 conformance checks passed. |
+| healthy | resources | pass | 0.76 | Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported. |
+| healthy | security | pass | 0.19 | No security issues detected. |
+| healthy | security-lite | pass | 0.05 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 0.47 | Advertised capability responded with the minimal expected shape (8 items). |
+| review | runtime-profile | partial | 0.12 | Detected 3 potential egress target(s) and 2 potential state mutation(s) with high confidence. |
+| review | schema-quality | partial | 0.55 | Found 2 quality finding(s) across 9 item(s): 1 warnings, 1 info. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
-| act now | attack-sim | fail | 0.45 | Safe attack simulation found 1 finding(s): 1 high, 0 medium, 0 low. |
+| act now | attack-sim | fail | 0.67 | Safe attack simulation found 1 finding(s): 1 high, 0 medium, 0 low. |
 
 ## Evidence Snippets
 
@@ -110,14 +110,14 @@ Summary: Advertised capability responded with the minimal expected shape, but on
   - Minimal shape present: `true`
   - Item count: `1`
   - Identifiers: console://logs
-  - Diagnostics: none
+  - Diagnostics: npm warn deprecated puppeteer@23.11.1: < 24.15.0 is no longer supported
 - Endpoint: `resources/templates/list`
   - Advertised: `true`
   - Responded: `false`
   - Minimal shape present: `false`
   - Item count: `0`
   - Identifiers: none
-  - Diagnostics: MCP error -32601: Method not found
+  - Diagnostics: MCP error -32601: Method not found, npm warn deprecated puppeteer@23.11.1: < 24.15.0 is no longer supported
 
 ### security — pass
 
@@ -153,7 +153,7 @@ Summary: Advertised capability responded with the minimal expected shape (8 item
   - Minimal shape present: `true`
   - Item count: `8`
   - Identifiers: puppeteer_connect_active_tab, puppeteer_navigate, puppeteer_screenshot, puppeteer_click, puppeteer_fill (+3 more)
-  - Diagnostics: none
+  - Diagnostics: npm warn deprecated puppeteer@23.11.1: < 24.15.0 is no longer supported
 
 ### runtime-profile — partial
 
@@ -214,5 +214,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-17T003630838Z_79c90307`
+- Run ID: `run_2026-07-22T213631152Z_2d7a9a9e`
 - Gate: `fail`

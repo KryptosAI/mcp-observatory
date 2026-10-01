@@ -138,4 +138,4 @@ Private:
 - buyer-specific remediation notes
 - hosted retention, alerts, SIEM export, and incident timeline workflows
 
-See [Open Core And Commercial Boundary](./commercial-boundary.md) and [Private MCP Fleet Risk Graph](./private-mcp-fleet-risk-graph.md).
+See [Open Core And Commercial Boundary](./commercial-boundary.md) and the [repository boundary](./repository-boundary.md).

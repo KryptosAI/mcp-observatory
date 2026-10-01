@@ -2,9 +2,9 @@ import readline from "node:readline/promises";
 import type { Readable, Writable } from "node:stream";
 
 import type { RunArtifact, TargetConfig } from "../types.js";
-import { buildEvent, detectCiProvider, recordEvent } from "../telemetry.js";
+import { buildEvent, detectCiProvider, recordEvent } from "../command-events.js";
 import { initCi, type InitCiOptions, type InitCiResult } from "./init-ci.js";
-import { ANSI, c, quoteShell, setupCiHint } from "./helpers.js";
+import { ANSI, c, isQuiet, quoteShell, setupCiHint } from "./helpers.js";
 
 export interface SetupCiConversionFlags {
   setupCi?: boolean;
@@ -42,7 +42,7 @@ function targetCommand(target: TargetConfig | undefined): string | undefined {
 }
 
 function conversionCommand(options: SetupCiConversionOptions): string | undefined {
-  const bin = options.bin ?? "npx @kryptosai/mcp-observatory";
+  const bin = options.bin ?? "npx -y @kryptosai/mcp-observatory@latest";
   const sarif = options.ciSarif === false ? "" : " --sarif";
   const schedule = " --schedule weekly";
   if (options.targetPath) return `${setupCiHint(undefined, options.targetPath, bin)}${sarif}${schedule}`;
@@ -103,7 +103,9 @@ function printInitCiResult(result: InitCiResult, output: NodeJS.WriteStream | Wr
       ? "Automation: weekly scheduled checks were requested, but the existing workflow was unchanged.\n"
       : "Automation: weekly scheduled checks are enabled in the generated workflow.\n",
   );
-  output.write("Verify: npx @kryptosai/mcp-observatory setup-ci --doctor\n");
+  output.write("Verify: npx -y @kryptosai/mcp-observatory@latest setup-ci --doctor\n");
+  output.write("Upload one snapshot free: npx -y @kryptosai/mcp-observatory@latest cloud upload\n");
+  output.write("Keep CI history with Individual Pro: https://app.mcp-observatory.com/pricing?plan=individual\n");
 }
 
 function recordConversion(status: SetupCiConversionResult["status"], options: SetupCiConversionOptions): void {
@@ -157,9 +159,11 @@ export async function maybeConvertPassingCheckToCi(options: SetupCiConversionOpt
     return { status: "skipped", command };
   }
 
-  output.write(`\nCI conversion available:\n  ${command}\n`);
-  if (options.setupCi === true) {
-    output.write("Non-interactive mode will only write files when --setup-ci --yes is present.\n");
+  if (!isQuiet()) {
+    output.write(`\nCI conversion available:\n  ${command}\n`);
+    if (options.setupCi === true) {
+      output.write("Non-interactive mode will only write files when --setup-ci --yes is present.\n");
+    }
   }
   recordConversion("hinted", options);
   return { status: "hinted", command };

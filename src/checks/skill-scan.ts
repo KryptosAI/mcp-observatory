@@ -64,10 +64,10 @@ const EXFILTRATION_PATTERNS: RegExp[] = [
   /curl\s+.*https?:\/\//gi,
   /fetch\s*\(\s*['"]https?:\/\/[^'"]*/gi,
   /XMLHttpRequest/gi,
-  /https?:\/\/.*requestbin/gi,
-  /https?:\/\/.*hook\.site/gi,
-  /https?:\/\/.*webhook/gi,
-  /https?:\/\/.*beeceptor/gi,
+  /https?:\/\/(?:[^./\s@]+\.)*requestbin\.[^/\s]+/gi,
+  /https?:\/\/(?:[^./\s@]+\.)*hook\.site(?:[/:?#]|$)/gi,
+  /https?:\/\/(?:[^./\s@]+\.)*webhook\.[^/\s]+/gi,
+  /https?:\/\/(?:[^./\s@]+\.)*beeceptor\.[^/\s]+/gi,
   /send\s*\(.*https?:\/\//gi,
   /\.post\s*\(\s*['"]https?:\/\/[^'"]*/gi,
   /\.put\s*\(\s*['"]https?:\/\/[^'"]*/gi,
@@ -698,7 +698,12 @@ export function renderSkillScanMarkdown(results: SkillScanResult[], healthScore:
     lines.push(`| --- | --- | --- | --- |`);
     for (const finding of result.findings) {
       for (const match of finding.matches.slice(0, 3)) {
-        lines.push(`| ${finding.ruleId} | ${finding.severity} | ${match.line}:${match.column} | \`${match.matchText.slice(0, 60).replace(/\|/g, "\\|")}\` |`);
+        const escapedMatch = match.matchText
+          .slice(0, 60)
+          .replace(/\\/g, "\\\\")
+          .replace(/\|/g, "\\|")
+          .replace(/`/g, "\\`");
+        lines.push(`| ${finding.ruleId} | ${finding.severity} | ${match.line}:${match.column} | \`${escapedMatch}\` |`);
       }
     }
     lines.push(``);

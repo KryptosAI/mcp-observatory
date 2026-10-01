@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-17T003635804Z_80d49c91",
-  "createdAt": "2026-07-17T00:36:35.804Z",
-  "toolVersion": "1.33.0",
+  "runId": "run_2026-07-22T213645277Z_86a41099",
+  "createdAt": "2026-07-22T21:36:45.277Z",
+  "toolVersion": "1.34.1",
   "target": {
     "targetId": "executeautomation-playwright-server",
     "adapter": "local-process",
@@ -26,7 +26,7 @@
   },
   "environment": {
     "platform": "darwin 25.5.0",
-    "nodeVersion": "v22.22.1"
+    "nodeVersion": "v22.23.1"
   },
   "summary": {
     "total": 9,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 4.915915999998106,
+      "durationMs": 1.264208000000508,
       "message": "Advertised capability responded with the minimal expected shape (33 items).",
       "evidence": [
         {
@@ -87,7 +87,9 @@
             "playwright_save_as_pdf",
             "playwright_click_and_switch_tab"
           ],
-          "diagnostics": [],
+          "diagnostics": [
+            "npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead"
+          ],
           "schemas": {
             "start_codegen_session": {
               "type": "object",
@@ -746,7 +748,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0011660000018309802,
+      "durationMs": 0.0007919999989098869,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -762,7 +764,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 5.5963750000009895,
+      "durationMs": 0.6492920000018785,
       "message": "Advertised capability responded with the minimal expected shape, but one optional resource endpoint appears unsupported.",
       "evidence": [
         {
@@ -774,7 +776,9 @@
           "identifiers": [
             "console://logs"
           ],
-          "diagnostics": []
+          "diagnostics": [
+            "npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead"
+          ]
         },
         {
           "endpoint": "resources/templates/list",
@@ -782,7 +786,8 @@
           "responded": false,
           "minimalShapePresent": false,
           "diagnostics": [
-            "MCP error -32601: Method not found"
+            "MCP error -32601: Method not found",
+            "npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead"
           ]
         }
       ]
@@ -791,7 +796,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "fail",
-      "durationMs": 0.06979099999807659,
+      "durationMs": 0.06404199999815319,
       "message": "Found 1 security finding(s): 1 high, 0 medium, 0 low.",
       "evidence": [
         {
@@ -821,7 +826,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "partial",
-      "durationMs": 0.22587499999644933,
+      "durationMs": 0.2202499999984866,
       "message": "Detected 24 potential egress target(s) and 24 potential state mutation(s) with high confidence.",
       "evidence": [
         {
@@ -1132,7 +1137,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 3.189042000001791,
+      "durationMs": 2.1078750000015134,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -1158,7 +1163,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 2.474167000000307,
+      "durationMs": 0.6493750000008731,
       "message": "Found 1 quality finding(s) across 34 item(s): 1 warnings, 0 info.",
       "evidence": [
         {
@@ -1188,7 +1193,7 @@
       "id": "security",
       "capability": "security",
       "status": "fail",
-      "durationMs": 0.48879200000010314,
+      "durationMs": 0.45116699999925913,
       "message": "Found 1 security finding(s): 1 high, 0 medium, 0 low.",
       "evidence": [
         {
@@ -1218,7 +1223,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "fail",
-      "durationMs": 0.9892079999990528,
+      "durationMs": 0.9599580000067363,
       "message": "Safe attack simulation found 6 finding(s): 1 high, 5 medium, 0 low.",
       "evidence": [
         {
@@ -1394,17 +1399,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 1081ms",
-          "p95 latency: 6ms (3 operations)"
+          "Connect: 8107ms",
+          "p95 latency: 1ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 1080.8530410000021,
-    "toolsListMs": 4.915915999998106,
-    "promptsListMs": 0.0011660000018309802,
-    "resourcesListMs": 5.5963750000009895
+    "connectMs": 8107.433917000002,
+    "toolsListMs": 1.264208000000508,
+    "promptsListMs": 0.0007919999989098869,
+    "resourcesListMs": 0.6492920000018785
   },
   "runtimeProfile": {
     "egress": [
@@ -1699,7 +1704,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-17T00:36:36.896Z",
+    "analyzedAt": "2026-07-22T21:36:53.387Z",
     "confidence": "high"
   }
 }

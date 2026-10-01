@@ -144,14 +144,14 @@ That's it. Three commands, one platform, full coverage.
 
 ## Enterprise Story
 
-### Observatory Cloud — Hosted CI, Private Reports, Certification
+### Observatory Cloud — Hosted History and Release Evidence
 
 Security teams don't want to run scanners on developer laptops. Observatory Cloud provides:
 
-- Hosted scanning pipeline with private, per-organization reports
-- Certification badges for verified-safe MCP servers — publish your safety score on npm, Smithery, and GitHub
-- Compliance export for SOC 2, ISO 27001, and PCI DSS audit trails
-- Team dashboards showing MCP risk posture across all projects
+- One free hosted snapshot before checkout
+- Individual Pro history, CI ingestion, regression markers, and artifact downloads for one developer
+- Evidence exports that can support a customer's own review process without claiming certification or compliance
+- A fixed `$15,000`, 1-3-server, ten-business-day Release Gate Pilot for owner-ready production decisions
 
 ### Seatbelt Proxy — On-Premises Runtime Enforcement
 

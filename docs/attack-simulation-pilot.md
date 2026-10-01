@@ -8,8 +8,6 @@ This is a fixed-scope security and platform package. It does not run destructive
 
 See the [sample attack simulation evidence pack](./sample-attack-simulation-evidence-pack.md) for the buyer-facing deliverable shape.
 
-See the [attack simulation growth sprint](./attack-simulation-growth-sprint.md) for target accounts, outreach copy, and the `$100k` pipeline path.
-
 ## Why This Exists
 
 MCP servers are becoming part of the AI software supply chain. A scanner can say “risk exists.” An evidence pack shows:
@@ -20,15 +18,9 @@ MCP servers are becoming part of the AI software supply chain. A scanner can say
 - what a maintainer or internal owner should change first
 - how to keep re-running the evidence after MCP servers update
 
-## Packages
+## Engagement model
 
-| Package | Price | Best Fit | Typical Scope |
-| --- | ---: | --- | --- |
-| Attack Simulation Quickstart | $15,000 | One high-value MCP server or one team adopting MCP | 1-3 servers, private report, SARIF, CI gate |
-| Attack Simulation Evidence Pack | $25,000 | Security/platform team reviewing MCP before production use | Up to 10 servers, executive packet, remediation notes, CI rollout |
-| Platform Attack Simulation Pilot | $50,000 | Company building or approving MCP across teams | Up to 25 servers, fleet inventory, recurring review plan, stakeholder readout |
-
-Custom enterprise scope is available for major AI labs, developer platforms, cloud providers, and teams running MCP across many repositories or agent runtimes.
+The public entry offer is the [MCP Release Gate Pilot](./paid-pilot-offer.md): 1-3 critical servers, ten business days, and an evidence-backed release decision. Broader attack-simulation work is scoped only after that pilot establishes the customer's actual authority boundaries, fixtures, and decision owners.
 
 ## What It Includes
 
@@ -80,15 +72,15 @@ Do not send secrets, tokens, customer data, private schemas, or production URLs 
 
 Open a pilot request from the GitHub issue chooser or email `william@banksey.com`.
 
-## Outreach Copy
+## Release Gate Pilot Outreach Copy
 
-Subject: Safe MCP attack simulation before agents depend on tools
+Subject: A release decision before agents depend on MCP tools
 
 Hi,
 
 I build MCP Observatory, a GitHub-native security and CI gate for MCP servers.
 
-I am opening a small number of private MCP Attack Simulation Evidence Pack pilots for teams adopting MCP in production or pre-production. The work is safe-mode only: no destructive tool calls, no real data exfiltration, no attacker infrastructure. The deliverable is an evidence pack your security/platform team can use: attack-sim results, SARIF/Code Scanning, CI gate, drift baseline, executive verdicts, and owner-ready remediation notes.
+I am opening a small number of fixed $15,000 MCP Release Gate Pilots for teams adopting 1–3 critical MCP servers in production or pre-production. The ten-business-day work is safe-mode only: no destructive tool calls, no real data exfiltration, and no attacker infrastructure. The deliverable is an owner-ready approve, gate, or defer decision with attack-sim results, SARIF/Code Scanning, a CI gate, drift baseline, and remediation notes.
 
 If your agents depend on MCP servers, this answers: which servers are safe enough for CI, which need production review, and what should block a PR before the next schema/tool change ships.
 

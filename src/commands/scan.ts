@@ -6,10 +6,11 @@ import {
   runTarget,
 } from "../index.js";
 import { appendHistory, buildHistoryEntry } from "../history.js";
-import { buildEvent, generateSessionId, normalizeCampaign, recordEvent, recordSessionEnd, recordSessionStart } from "../telemetry.js";
+import { buildEvent, generateSessionId, normalizeCampaign, recordEvent, recordSessionEnd, recordSessionStart } from "../command-events.js";
 import type { RunArtifact } from "../types.js";
 import { TOOL_VERSION } from "../version.js";
 import { maybePrintCloudCta } from "../commercial.js";
+import { defaultRunsDirectory, writeRunArtifact } from "../storage.js";
 import { renderActionReceipt } from "../action-receipt.js";
 import { ANSI, LOGO, c, isQuiet, setupCiHint, suggestFix, useColor } from "./helpers.js";
 import { firstNextStep } from "../utils/failure-diagnosis.js";
@@ -117,6 +118,7 @@ async function runScan(
         attackSimulation: attackSim ? {} : undefined,
       });
       artifacts.push(artifact);
+      await writeRunArtifact(artifact, defaultRunsDirectory(process.cwd()));
       const toolsCheck = artifact.checks.find((ch) => ch.id === "tools");
       const promptsCheck = artifact.checks.find((ch) => ch.id === "prompts");
       const resourcesCheck = artifact.checks.find((ch) => ch.id === "resources");
@@ -237,17 +239,21 @@ async function runScan(
     const firstServerCmd = firstTarget.adapter === "local-process"
       ? `${firstTarget.command} ${(firstTarget.args ?? []).join(" ")}`
       : firstTarget.targetId;
-    process.stdout.write(`\n  ${c(ANSI.bold, "Protect at runtime:")} ${c(ANSI.cyan, `npx @kryptosai/mcp-observatory enforce ${firstServerCmd}`)}\n`);
+    if (!isQuiet()) {
+      process.stdout.write(`\n  ${c(ANSI.bold, "Protect at runtime:")} ${c(ANSI.cyan, `npx @kryptosai/mcp-observatory enforce ${firstServerCmd}`)}\n`);
+    }
   }
 
   // ── Next step ────────────────────────────────────────────────────────
-  process.stdout.write("\n");
-  if (!invokeTools && totalTools > 0) {
-    process.stdout.write(c(ANSI.dim, `  Next: ${c(ANSI.cyan, `${bin} scan deep`)} to also test that tools run\n`));
-  } else {
-    process.stdout.write(c(ANSI.dim, `  Run ${c(ANSI.cyan, `${bin} --help`)} for more commands\n`));
+  if (!isQuiet()) {
+    process.stdout.write("\n");
+    if (!invokeTools && totalTools > 0) {
+      process.stdout.write(c(ANSI.dim, `  Next: ${c(ANSI.cyan, `${bin} scan deep`)} to also test that tools run\n`));
+    } else {
+      process.stdout.write(c(ANSI.dim, `  Run ${c(ANSI.cyan, `${bin} --help`)} for more commands\n`));
+    }
+    process.stdout.write("\n");
   }
-  process.stdout.write("\n");
 
   if (failCount === 0) {
     if (artifacts.length === 1 && targets[0]) {
@@ -263,10 +269,12 @@ async function runScan(
         campaign: conversionFlags.campaign,
       });
     } else if (conversionFlags.noSetupCi !== true) {
-      const sarif = conversionFlags.ciSarif === false ? "" : " --sarif";
-      process.stdout.write(`CI conversion available for a specific target:\n  ${setupCiHint(undefined, undefined, bin)}${sarif} --schedule weekly\n`);
-      if (conversionFlags.setupCi === true) {
-        process.stdout.write("Non-interactive mode will only write files when --setup-ci --yes is present, and multi-target scans need a single target config.\n");
+      if (!isQuiet()) {
+        const sarif = conversionFlags.ciSarif === false ? "" : " --sarif";
+        process.stdout.write(`CI conversion available for a specific target:\n  ${setupCiHint(undefined, undefined, bin)}${sarif} --schedule weekly\n`);
+        if (conversionFlags.setupCi === true) {
+          process.stdout.write("Non-interactive mode will only write files when --setup-ci --yes is present, and multi-target scans need a single target config.\n");
+        }
       }
     }
   }
@@ -278,7 +286,8 @@ async function runScan(
   }
 
   if (format === "terminal") {
-    maybePrintCloudCta(results.length > 1 ? "fleet" : securityCheck ? "security" : "general");
+    const scanGate = failCount > 0 ? "fail" : "pass";
+    maybePrintCloudCta(results.length > 1 ? "fleet" : securityCheck ? "security" : "general", scanGate);
   }
 
   recordEvent(buildEvent("command_complete", "scan", "cli", {
@@ -342,7 +351,7 @@ export function registerScanCommands(program: Command, bin: string): void {
     .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
     .option("--no-attack-sim", "Skip the default safe attack-readiness simulation.")
     .option("--format <format>", "Output format: terminal or pr-comment-matrix.", "terminal")
-    .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.")
+    .option("--campaign <slug>", "Attach a safe campaign/source slug for attribution.")
     .option("--setup-ci", "Offer CI conversion after a successful one-target scan; use with --yes in non-interactive runs to write files.", false)
     .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
@@ -356,7 +365,7 @@ export function registerScanCommands(program: Command, bin: string): void {
   // `scan` with no subcommand — basic scan
   scanCmd.action(async (options: { config?: string; security?: boolean; attackSim?: boolean; format: string; skillScan?: SkillScanOption; enforce?: boolean } & SetupCiConversionFlags) => {
     await runScan(bin, options.config, false, options.security, options.format, options.attackSim !== false, options, options.skillScan);
-    if (options.enforce) {
+    if (options.enforce && !isQuiet()) {
       process.stdout.write(`\n  ${c(ANSI.bold, "Next:")} ${c(ANSI.cyan, `npx @kryptosai/mcp-observatory enforce --deep npx -y <your-server>`)}\n`);
       process.stdout.write(`  ${c(ANSI.dim, "Enforce mode runs a scan AND auto-generates seatbelt policy for runtime protection.")}\n\n`);
     }
@@ -370,7 +379,7 @@ export function registerScanCommands(program: Command, bin: string): void {
     .option("--security", "Run deep security scan (credential patterns, response analysis). Lightweight security is always included.")
     .option("--no-attack-sim", "Skip the default safe attack-readiness simulation.")
     .option("--format <format>", "Output format: terminal or pr-comment-matrix.", "terminal")
-    .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.")
+    .option("--campaign <slug>", "Attach a safe campaign/source slug for attribution.")
     .option("--setup-ci", "Offer CI conversion after a successful one-target scan; use with --yes in non-interactive runs to write files.", false)
     .option("--yes", "Confirm CI conversion without prompting. Only writes when used with --setup-ci.", false)
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
@@ -385,9 +394,9 @@ export function registerScanCommands(program: Command, bin: string): void {
       const parentSkillScan = scanCmd.opts().skillScan as SkillScanOption;
       const resolvedSkillScan = options.skillScan !== undefined ? options.skillScan : parentSkillScan;
       await runScan(bin, options.config ?? parentConfig, true, options.security ?? parentSecurity ?? true, options.format ?? parentFormat, options.attackSim !== false && parentAttackSim !== false, options, resolvedSkillScan);
-      if (options.enforce) {
+      if (options.enforce && !isQuiet()) {
         process.stdout.write(`\n  ${c(ANSI.bold, "Next:")} ${c(ANSI.cyan, `npx @kryptosai/mcp-observatory enforce --deep npx -y <your-server>`)}\n`);
         process.stdout.write(`  ${c(ANSI.dim, "Enforce mode runs a scan AND auto-generates seatbelt policy for runtime protection.")}\n\n`);
       }
-    });
+  });
 }

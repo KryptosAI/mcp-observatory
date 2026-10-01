@@ -6,7 +6,7 @@ import path from "node:path";
 /**
  * Run a command via execFile and return { stdout, stderr }.
  */
-function execCommand(
+export function execCommand(
   cmd: string,
   args: string[],
 ): Promise<{ stdout: string; stderr: string }> {

@@ -5,12 +5,12 @@ import { extractObservatoryFindings } from "../findings.js";
 import { runTarget } from "../index.js";
 import { renderAttackSimulationMarkdown } from "../reporters/attack-sim.js";
 import { renderSarif } from "../reporters/sarif.js";
-import { buildEvent, normalizeCampaign, recordEvent } from "../telemetry.js";
+import { buildEvent, normalizeCampaign, recordEvent } from "../command-events.js";
 import type { RunArtifact } from "../types.js";
 import { validateRunArtifact } from "../validate.js";
 import { renderActionReceipt } from "../action-receipt.js";
 import { maybePrintCloudCta } from "../commercial.js";
-import { ANSI, c, getBinName, quoteShell, resolveTarget, targetFromCommand, writeOutput } from "./helpers.js";
+import { ANSI, c, getBinName, isQuiet, quoteShell, resolveTarget, targetFromCommand, writeOutput } from "./helpers.js";
 import { maybeConvertPassingCheckToCi, type SetupCiConversionFlags } from "./setup-ci-conversion.js";
 
 interface AttackSimOptions extends SetupCiConversionFlags {
@@ -132,7 +132,7 @@ export function registerAttackSimCommands(program: Command): void {
     .option("--no-setup-ci", "Suppress the post-success CI conversion prompt and hint.")
     .option("--no-ci-sarif", "Generate post-check CI without GitHub Code Scanning SARIF upload.")
     .option("--force", "Overwrite existing generated CI adoption files.", false)
-    .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.")
+    .option("--campaign <slug>", "Attach a safe campaign/source slug for attribution.")
     .option("--no-color", "Disable colored output.")
     .action(async (commandArgs: string[], options: AttackSimOptions) => {
       const extracted = extractTrailingAttackFlags(commandArgs, options);
@@ -167,7 +167,9 @@ export function registerAttackSimCommands(program: Command): void {
         process.stdout.write(`    ${c(ANSI.dim, "→")} [${finding.severity}] ${finding.message}\n`);
       }
       process.stdout.write(`    ${c(ANSI.dim, "→")} ${renderActionReceipt(artifact).split("\n")[0]}\n`);
-      process.stdout.write(`\n  ${c(ANSI.bold, "Reproduce:")} ${c(ANSI.cyan, repro)}\n\n`);
+      if (!isQuiet()) {
+        process.stdout.write(`\n  ${c(ANSI.bold, "Reproduce:")} ${c(ANSI.cyan, repro)}\n\n`);
+      }
 
       if (options.json) {
         await writeOutput(JSON.stringify(artifact, null, 2), "json", options.json);
@@ -202,7 +204,7 @@ export function registerAttackSimCommands(program: Command): void {
           campaign: options.campaign,
         });
       } else if (highCount > 0) {
-        maybePrintCloudCta("security");
+        maybePrintCloudCta("security", artifact.gate);
       }
 
       if (options.failOnHigh && highCount > 0) {

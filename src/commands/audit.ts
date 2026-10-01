@@ -10,8 +10,8 @@ import {
   runAudit,
 } from "../audit.js";
 import { buildMcpReceipt, receiptFormatFromPath, renderReceipt } from "../receipt.js";
-import { buildEvent, generateSessionId, recordEvent, recordSessionEnd, recordSessionStart } from "../telemetry.js";
-import { ANSI, c } from "./helpers.js";
+import { buildEvent, generateSessionId, recordEvent, recordSessionEnd, recordSessionStart } from "../command-events.js";
+import { ANSI, c, isQuiet } from "./helpers.js";
 
 type AuditFormat = "json" | "markdown" | "sarif";
 
@@ -124,8 +124,10 @@ export function registerAuditCommands(program: Command): void {
       }
 
       const enforceTargetCmd = target.targetId;
-      process.stdout.write(`\n  ${c(ANSI.bold, "Protect at runtime:")} ${c(ANSI.cyan, `npx @kryptosai/mcp-observatory enforce ${enforceTargetCmd}`)}\n`);
-      process.stdout.write(`  ${c(ANSI.dim, "Generates seatbelt policy to block dangerous tool calls at runtime.")}\n\n`);
+      if (!isQuiet()) {
+        process.stdout.write(`\n  ${c(ANSI.bold, "Protect at runtime:")} ${c(ANSI.cyan, `npx @kryptosai/mcp-observatory enforce ${enforceTargetCmd}`)}\n`);
+        process.stdout.write(`  ${c(ANSI.dim, "Generates seatbelt policy to block dangerous tool calls at runtime.")}\n\n`);
+      }
 
       recordEvent(buildEvent("command_complete", "audit", "cli", {
         serversScanned: 1,

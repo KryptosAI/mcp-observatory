@@ -36,15 +36,18 @@ async function packagedMarkdownDocs(): Promise<string[]> {
 }
 
 const forbiddenPatterns = [
-  /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i,
   /telemetry-exports\//,
   /events-flat-full/,
-  /gitEmail/,
-  /gitRemoteUrl/,
-  /serverCommands/,
   /api[_-]?key\s*[:=]\s*["'][^"']+["']/i,
   /token\s*[:=]\s*["'][A-Za-z0-9_\-.]{16,}["']/i,
   /https?:\/\/(?:localhost|127\.0\.0\.1|10\.|192\.168\.|172\.(?:1[6-9]|2\d|3[0-1])\.)/i,
+];
+
+const privateFieldPatterns = [
+  /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i,
+  /gitEmail/,
+  /gitRemoteUrl/,
+  /serverCommands/,
 ];
 
 const forbiddenText = [
@@ -62,6 +65,9 @@ describe("public proof docs privacy guardrails", () => {
       for (const pattern of forbiddenPatterns) {
         expect(content).not.toMatch(pattern);
       }
+      if (docPath !== "PRIVACY.md") {
+        for (const pattern of privateFieldPatterns) expect(content).not.toMatch(pattern);
+      }
       const lowerContent = content.toLowerCase();
       for (const text of forbiddenText) {
         expect(lowerContent).not.toContain(text);
@@ -71,14 +77,15 @@ describe("public proof docs privacy guardrails", () => {
 
   it("keeps README action examples read-only and pinned", async () => {
     const content = await readFile(path.join(process.cwd(), "README.md"), "utf8");
-    expect(content).toContain("KryptosAI/mcp-observatory/action@v1.28.0");
+    expect(content).toContain("KryptosAI/mcp-observatory/action@v1");
+    expect(content).not.toContain("KryptosAI/mcp-observatory/action@v1.28.0");
     expect(content).not.toContain("KryptosAI/mcp-observatory/action@main");
     expect(content).not.toContain("pull-requests: write\n  statuses: write");
   });
 
   it("keeps Action README examples pinned", async () => {
     const content = await readFile(path.join(process.cwd(), "action/README.md"), "utf8");
-    expect(content).toContain("KryptosAI/mcp-observatory/action@v1.28.0");
+    expect(content).toContain("KryptosAI/mcp-observatory/action@v1");
     expect(content).not.toContain("KryptosAI/mcp-observatory/action@main");
   });
 

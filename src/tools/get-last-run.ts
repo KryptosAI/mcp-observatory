@@ -8,7 +8,7 @@ import { errorMessage } from "../utils/errors.js";
 import { formatRun, logRequest } from "./helpers.js";
 
 export const name = "get_last_run";
-export const description = "Use this to retrieve the last check results for a server. Finds the most recent run artifact by target ID so you can review previous results or diff against a new run.";
+export const description = "Return the last Observatory run for a server, including handshake allow/deny from the local receipt. No hosted account required.";
 export const schema = {
   targetId: z.string().describe("The target ID to find the last run for (e.g. server name or command)."),
 };
@@ -41,8 +41,9 @@ export async function handler({ targetId }: { targetId: string }) {
     }
 
     logRequest("get_last_run", startMs);
+    const connect = artifact.gate === "pass" && !artifact.fatalError ? "allow" : "deny";
     return {
-      content: [{ type: "text" as const, text: `${formatRun(artifact)}\n\nFile: ${path.join(dir, latest)}` }],
+      content: [{ type: "text" as const, text: `handshake: ${connect}\ngate: ${artifact.gate}\n${formatRun(artifact)}\n\nFile: ${path.join(dir, latest)}` }],
     };
   } catch (error) {
     const msg = errorMessage(error);

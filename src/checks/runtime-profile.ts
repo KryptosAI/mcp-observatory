@@ -46,7 +46,7 @@ function inferProtocol(value: string): string {
 }
 
 function inferMutationResource(paramName: string): string {
-  if (/^env|^environ/i.test(paramName)) return "environment";
+  if (/^(?:env|environ)/i.test(paramName)) return "environment";
   if (/^(command|cmd|exec|shell)$/i.test(paramName)) return "network";
   return "filesystem";
 }
@@ -54,13 +54,13 @@ function inferMutationResource(paramName: string): string {
 function inferMutationOperation(toolName: string, paramName: string): string {
   if (/\bdelet|remov\b/i.test(toolName)) return "delete";
   if (/\bwrit|creat|sav\b/i.test(toolName)) return "write";
-  if (/\bexec|run|command|shell|cmd\b/i.test(toolName) || /^command|cmd|exec|shell$/i.test(paramName)) return "execute";
+  if (/\bexec|run|command|shell|cmd\b/i.test(toolName) || /^(?:command|cmd|exec|shell)$/i.test(paramName)) return "execute";
   return "write";
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function inferMutationScope(schemaProperties: Record<string, Record<string, unknown>> | undefined, paramName: string, _toolName: string): string {
-  if (/^env|^environ/i.test(paramName)) return "global";
+  if (/^(?:env|environ)/i.test(paramName)) return "global";
   if (/^(command|cmd|exec|shell)$/i.test(paramName)) return "specific_path";
   if (schemaProperties?.[paramName]?.default !== undefined) return "specific_path";
   return "working_directory";

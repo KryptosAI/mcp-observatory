@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "fail",
-  "runId": "run_2026-07-17T003638730Z_9e4736a4",
-  "createdAt": "2026-07-17T00:36:38.730Z",
-  "toolVersion": "1.33.0",
+  "runId": "run_2026-07-22T213659053Z_eb25a7da",
+  "createdAt": "2026-07-22T21:36:59.053Z",
+  "toolVersion": "1.34.1",
   "target": {
     "targetId": "chrome-devtools-mcp-server",
     "adapter": "local-process",
@@ -26,7 +26,7 @@
   },
   "environment": {
     "platform": "darwin 25.5.0",
-    "nodeVersion": "v22.22.1"
+    "nodeVersion": "v22.23.1"
   },
   "summary": {
     "total": 9,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 5.126208999998198,
+      "durationMs": 4.688999999998487,
       "message": "Advertised capability responded with the minimal expected shape (29 items).",
       "evidence": [
         {
@@ -809,7 +809,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "unsupported",
-      "durationMs": 0.0029159999976400286,
+      "durationMs": 0.0013749999925494194,
       "message": "Prompts are not advertised by the target.",
       "evidence": [
         {
@@ -825,7 +825,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.006000000001222361,
+      "durationMs": 0.004082999992533587,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -841,7 +841,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "fail",
-      "durationMs": 0.08212500000081491,
+      "durationMs": 0.08429199999955017,
       "message": "Found 30 security finding(s): 1 high, 7 medium, 22 low.",
       "evidence": [
         {
@@ -1095,7 +1095,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "partial",
-      "durationMs": 0.5307919999977457,
+      "durationMs": 0.2758330000069691,
       "message": "Detected 9 potential egress target(s) and 36 potential state mutation(s) with high confidence.",
       "evidence": [
         {
@@ -1388,7 +1388,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 525.9972909999997,
+      "durationMs": 1366.8285409999953,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -1414,7 +1414,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 0.9111249999987194,
+      "durationMs": 1.1888749999925494,
       "message": "Found 10 quality finding(s) across 29 item(s): 0 warnings, 10 info.",
       "evidence": [
         {
@@ -1516,7 +1516,7 @@
       "id": "security",
       "capability": "security",
       "status": "fail",
-      "durationMs": 0.6520000000018626,
+      "durationMs": 0.817416999998386,
       "message": "Found 30 security finding(s): 1 high, 7 medium, 22 low.",
       "evidence": [
         {
@@ -1770,7 +1770,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "partial",
-      "durationMs": 0.7598749999997381,
+      "durationMs": 1.0837500000052387,
       "message": "Safe attack simulation found 9 finding(s): 0 high, 9 medium, 0 low.",
       "evidence": [
         {
@@ -2023,17 +2023,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 909ms",
+          "Connect: 2516ms",
           "p95 latency: 5ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 908.7971249999973,
-    "toolsListMs": 5.126208999998198,
-    "promptsListMs": 0.0029159999976400286,
-    "resourcesListMs": 0.006000000001222361
+    "connectMs": 2515.9537920000075,
+    "toolsListMs": 4.688999999998487,
+    "promptsListMs": 0.0013749999925494194,
+    "resourcesListMs": 0.004082999992533587
   },
   "runtimeProfile": {
     "egress": [
@@ -2310,7 +2310,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-17T00:36:39.647Z",
+    "analyzedAt": "2026-07-22T21:37:01.575Z",
     "confidence": "high"
   }
 }

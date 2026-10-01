@@ -5,6 +5,9 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+    ignore:
+      - dependency-name: "typescript"
+        versions: [">=6"]
     groups:
       dev-tooling:
         dependency-type: "development"

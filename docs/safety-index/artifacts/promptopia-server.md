@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-17T00:36:23.563Z
+Generated at 2026-07-22T21:36:07.368Z
 
 ## Target and Environment Metadata
 
@@ -9,7 +9,7 @@ Generated at 2026-07-17T00:36:23.563Z
 - Command: `npx -y promptopia-mcp`
 - Server: `promptopia-mcp 1.1.0`
 - Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Node: `v22.23.1`
 
 ## Executive Summary
 
@@ -58,7 +58,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | delete | working_directory | description_analysis |
 
-_Analyzed at 2026-07-17T00:36:24.418Z_
+_Analyzed at 2026-07-22T21:36:09.215Z_
 
 ## Regressions and Recoveries
 
@@ -68,14 +68,14 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 0.53 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 1.97 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 1.87 | Advertised capability responded with the minimal expected shape (1 item). |
-| healthy | runtime-profile | pass | 0.08 | Detected 0 potential egress target(s) and 4 potential state mutation(s) with low confidence. |
-| healthy | security | pass | 0.22 | No security issues detected. |
-| healthy | security-lite | pass | 0.03 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 5.43 | Advertised capability responded with the minimal expected shape (7 items). |
-| review | schema-quality | partial | 0.63 | Found 1 quality finding(s) across 8 item(s): 0 warnings, 1 info. |
+| healthy | attack-sim | pass | 0.90 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 1.78 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 1.15 | Advertised capability responded with the minimal expected shape (1 item). |
+| healthy | runtime-profile | pass | 0.09 | Detected 0 potential egress target(s) and 4 potential state mutation(s) with low confidence. |
+| healthy | security | pass | 0.28 | No security issues detected. |
+| healthy | security-lite | pass | 0.04 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 2.21 | Advertised capability responded with the minimal expected shape (7 items). |
+| review | schema-quality | partial | 0.71 | Found 1 quality finding(s) across 8 item(s): 0 warnings, 1 info. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
 ## Evidence Snippets
@@ -199,5 +199,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-17T003623563Z_bf28dbdf`
+- Run ID: `run_2026-07-22T213607368Z_1451641c`
 - Gate: `pass`

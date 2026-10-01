@@ -1,9 +1,35 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { cloudUpgradeLine, hasCloudToken, maybePrintCloudCta, printCloudInfo } from "../src/commercial.js";
+const authMocks = vi.hoisted(() => ({
+  getAccessToken: vi.fn(),
+  hasValidToken: vi.fn(),
+  whoami: vi.fn(),
+}));
+
+// Keep these wrapper tests hermetic: a developer's real auth file must never
+// affect assertions or appear in failure output. auth.test.ts covers storage.
+vi.mock("../src/auth.js", () => authMocks);
+
+import {
+  cloudUpgradeLine,
+  hasCloudToken,
+  maybePrintCloudCta,
+  printCloudInfo,
+  getCloudAccessToken,
+  cloudWhoami,
+  getCloudUploadEndpoint,
+  DEFAULT_CLOUD_UPLOAD_ENDPOINT,
+} from "../src/commercial.js";
 import { setQuiet } from "../src/commands/helpers.js";
 
 const originalEnv = { ...process.env };
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  authMocks.getAccessToken.mockResolvedValue(null);
+  authMocks.hasValidToken.mockReturnValue(false);
+  authMocks.whoami.mockResolvedValue({ authenticated: false });
+});
 
 afterEach(() => {
   process.env = { ...originalEnv };
@@ -32,11 +58,13 @@ describe("commercial cloud messaging", () => {
   it("renders context-specific upgrade lines without color when NO_COLOR is set", () => {
     process.env["NO_COLOR"] = "1";
 
-    expect(cloudUpgradeLine("ci")).toContain("hosted CI history");
-    expect(cloudUpgradeLine("security")).toContain("hosted security reports");
-    expect(cloudUpgradeLine("fleet")).toContain("MCP fleet visibility");
-    expect(cloudUpgradeLine("general")).toContain("hosted reporting");
-    expect(cloudUpgradeLine()).toContain("mcp-observatory cloud");
+    expect(cloudUpgradeLine("ci")).toContain("hosted CI ingestion");
+    expect(cloudUpgradeLine("security")).toContain("hosted evidence");
+    expect(cloudUpgradeLine("fleet")).toContain("one developer");
+    expect(cloudUpgradeLine("general")).toContain("hosted evidence");
+    expect(cloudUpgradeLine()).toContain("https://app.mcp-observatory.com/pricing?plan=individual");
+    expect(cloudUpgradeLine("ci")).toContain("mcp-observatory cloud upload");
+    expect(cloudUpgradeLine("ci")).not.toContain("plan=team");
   });
 
   it("prints a CTA only when a cloud token is absent", () => {
@@ -44,18 +72,37 @@ describe("commercial cloud messaging", () => {
     delete process.env["MCP_OBSERVATORY_CLOUD_TOKEN"];
     const first = captureStdout();
 
-    maybePrintCloudCta("ci");
+    maybePrintCloudCta("ci", "fail");
 
-    expect(first.output()).toContain("Production MCP teams");
-    expect(first.output()).toContain("hosted CI history");
+    expect(first.output()).toContain("Hosted option for one developer");
+    expect(first.output()).toContain("hosted CI ingestion");
 
     vi.restoreAllMocks();
     process.env["MCP_OBSERVATORY_CLOUD_TOKEN"] = "token";
     const second = captureStdout();
 
-    maybePrintCloudCta("ci");
+    maybePrintCloudCta("ci", "fail");
 
     expect(second.output()).toBe("");
+  });
+
+  it("prints a compact CTA on passing gates", () => {
+    process.env["NO_COLOR"] = "1";
+    delete process.env["MCP_OBSERVATORY_CLOUD_TOKEN"];
+    const stdout = captureStdout();
+
+    maybePrintCloudCta("ci", "pass");
+
+    expect(stdout.output()).toContain("Hosted option for one developer");
+    expect(stdout.output()).toContain("hosted CI ingestion");
+    expect(stdout.output()).toContain("cloud upload");
+    expect(stdout.output()).not.toContain("plan=team");
+
+    vi.restoreAllMocks();
+    const general = captureStdout();
+    maybePrintCloudCta();
+    expect(general.output()).toContain("hosted evidence and scan history");
+    expect(general.output()).toContain("cloud upload");
   });
 
   it("suppresses the CTA in quiet mode even without a cloud token", () => {
@@ -76,8 +123,38 @@ describe("commercial cloud messaging", () => {
     printCloudInfo();
 
     expect(stdout.output()).toContain("MCP Observatory Cloud");
-    expect(stdout.output()).toContain("Team Pilot");
-    expect(stdout.output()).toContain("cloud upload .mcp-observatory/runs/<run>.json");
+    expect(stdout.output()).toContain("Individual Pro: $29/month");
+    expect(stdout.output()).toContain("upload one hosted");
+    expect(stdout.output()).not.toContain("Team:");
+    expect(stdout.output()).not.toContain("pricing?plan=team");
+    expect(stdout.output()).toContain("Release Gate Pilot");
+    expect(stdout.output()).toContain("cloud upload");
     expect(stdout.output()).toContain("william@banksey.com");
+  });
+
+  it("getCloudAccessToken prefers env token over stored token", async () => {
+    process.env["MCP_OBSERVATORY_CLOUD_TOKEN"] = "env-token";
+    expect(await getCloudAccessToken()).toBe("env-token");
+    expect(authMocks.getAccessToken).not.toHaveBeenCalled();
+
+    delete process.env["MCP_OBSERVATORY_CLOUD_TOKEN"];
+    // Falls back through the mocked auth boundary, never developer storage.
+    expect(await getCloudAccessToken()).toBeNull();
+    expect(authMocks.getAccessToken).toHaveBeenCalledOnce();
+  });
+
+  it("cloudWhoami returns unauthenticated when no token exists", async () => {
+    delete process.env["MCP_OBSERVATORY_CLOUD_TOKEN"];
+    const info = await cloudWhoami();
+    expect(info.authenticated).toBe(false);
+    expect(authMocks.whoami).toHaveBeenCalledOnce();
+  });
+
+  it("allows hosted upload endpoint overrides while preserving the production default", () => {
+    delete process.env["MCP_OBSERVATORY_CLOUD_ENDPOINT"];
+    expect(getCloudUploadEndpoint()).toBe(DEFAULT_CLOUD_UPLOAD_ENDPOINT);
+
+    process.env["MCP_OBSERVATORY_CLOUD_ENDPOINT"] = "https://staging.example/api/v1/artifacts";
+    expect(getCloudUploadEndpoint()).toBe("https://staging.example/api/v1/artifacts");
   });
 });

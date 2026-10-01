@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-17T00:36:40.236Z
+Generated at 2026-07-22T21:37:03.140Z
 
 ## Target and Environment Metadata
 
@@ -9,7 +9,7 @@ Generated at 2026-07-17T00:36:40.236Z
 - Command: `npx -y @modelcontextprotocol/server-slack`
 - Server: `unknown `
 - Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Node: `v22.23.1`
 
 ## Executive Summary
 
@@ -56,6 +56,7 @@ Next steps:
 - Check whether the package expects a different transport or an app-oriented startup flow.
 - Use the recent stderr lines below before assuming this is a harness bug.
 Recent stderr:
+- npm warn deprecated @modelcontextprotocol/server-slack@2025.4.25: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 - Please set SLACK_BOT_TOKEN and SLACK_TEAM_ID environment variables
 ```
 
@@ -98,5 +99,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-17T003640236Z_77e3fca5`
+- Run ID: `run_2026-07-22T213703140Z_812bbb80`
 - Gate: `fail`

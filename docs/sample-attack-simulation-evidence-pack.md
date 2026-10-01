@@ -68,8 +68,4 @@ This evidence pack uses inert metadata, schema, drift, and safe captured-evidenc
 
 ## Commercial Fit
 
-This sample maps to the [MCP Attack Simulation Evidence Pack](./attack-simulation-pilot.md):
-
-- Quickstart: 1-3 servers, private report, SARIF, CI gate
-- Evidence Pack: up to 10 servers, executive packet, remediation notes, CI rollout
-- Platform Pilot: up to 25 servers, fleet inventory, recurring review plan, stakeholder readout
+This is an illustrative example of the evidence shape for the [MCP Release Gate Pilot](./paid-pilot-offer.md): $15,000 for 1–3 critical servers over ten business days. It is not a customer case study, benchmark, certification, or compliance attestation.

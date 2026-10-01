@@ -1,0 +1,18 @@
+# ClearFrame is the commercial home of MCP Observatory.
+# Exact human-page routes only: keep public JSON, badges, reports and documentation at their existing URLs.
+/ https://clearframecode.com/observatory/ 301
+/index.html https://clearframecode.com/observatory/ 301
+/pricing https://clearframecode.com/pricing/ 301
+/pricing/ https://clearframecode.com/pricing/ 301
+/start https://clearframecode.com/observatory/#setup 301
+/start/ https://clearframecode.com/observatory/#setup 301
+/start/index.html https://clearframecode.com/observatory/#setup 301
+/dashboard https://clearframecode.com/observatory/#scans 301
+/dashboard/ https://clearframecode.com/observatory/#scans 301
+/safety-index https://clearframecode.com/observatory/#index 301
+/safety-index/ https://clearframecode.com/observatory/#index 301
+/safety-index/index.html https://clearframecode.com/observatory/#index 301
+
+# Preserve the existing hosted-app legal routes. This does not change the hosted app.
+/terms https://app.mcp-observatory.com/terms 302
+/terms/ https://app.mcp-observatory.com/terms 302

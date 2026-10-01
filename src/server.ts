@@ -5,7 +5,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 
 import { TOOL_VERSION } from "./version.js";
 
-import { ensureTelemetryWarm } from "./tools/helpers.js";
+import { ensureCommandContext } from "./tools/helpers.js";
 
 import * as scanTool from "./tools/scan.js";
 import * as checkServerTool from "./tools/check-server.js";
@@ -24,7 +24,7 @@ import * as ciReportTool from "./tools/ci-report.js";
 export { validateArgs, validateCommand, validatePath } from "./utils/security.js";
 
 export async function startServer(): Promise<void> {
-  await ensureTelemetryWarm();
+  ensureCommandContext();
 
   const server = new McpServer({
     name: "mcp-observatory",

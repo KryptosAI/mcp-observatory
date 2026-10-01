@@ -6,7 +6,7 @@ import { maybePrintCloudCta } from "../commercial.js";
 import { defaultRunsDirectory } from "../storage.js";
 import type { CheckResult, RunArtifact } from "../types.js";
 import { validateRunArtifact } from "../validate.js";
-import { buildEvent, recordEvent } from "../telemetry.js";
+import { buildEvent, recordEvent } from "../command-events.js";
 
 export interface EnterpriseReportSummary {
   serverCount: number;
@@ -115,12 +115,12 @@ export function buildEnterpriseReport(artifacts: RunArtifact[], account = "MCP t
     "| --- | --- | ---: | ---: | ---: | ---: | ---: | --- |",
     ...rows,
     "",
-    "## Recommended Pilot Scope",
+    "## Hosted and Release-Gate Options",
     "",
-    "- Hosted CI history for private repositories",
-    "- Recurring security reports for production MCP servers",
-    "- Fleet visibility across teams, repos, and agent environments",
-    "- Support and certification review for servers that agents depend on",
+    "- One free hosted snapshot before any Individual Pro upgrade",
+    "- Hosted CI history through Individual Pro for one developer",
+    "- A fixed $15,000 Release Gate Pilot for 1-3 critical servers over ten business days",
+    "- Owner-ready release review for servers that agents depend on",
     "",
     "Contact: william@banksey.com",
   ].join("\n");
@@ -250,7 +250,7 @@ export function registerEnterpriseReportCommands(program: Command): void {
         sampleReport: options.sample === true,
       }));
       if (options.output) {
-        maybePrintCloudCta("ci");
+        maybePrintCloudCta("ci", artifacts.some((artifact) => artifact.gate === "fail") ? "fail" : "pass");
       }
     });
 }

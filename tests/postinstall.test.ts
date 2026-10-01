@@ -65,6 +65,8 @@ describe("postinstall CI helper", () => {
       expect(workflow).toContain('- cron: "0 9 * * 1"');
       expect(workflow).toContain("security-events: write");
       expect(workflow).toContain("upload-sarif: true");
+      expect(workflow).toContain("KryptosAI/mcp-observatory/action@v1");
+      expect(workflow).not.toContain("action@v1.36.5");
     } finally {
       await rm(dir, { recursive: true, force: true });
     }

@@ -1,22 +1,20 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.KryptosAI/mcp-observatory",
-  "description": "Test, secure, and monitor MCP servers. Auto-discovery, drift detection, SARIF, record/replay/verify.",
-  "repository": {
-    "url": "https://github.com/KryptosAI/mcp-observatory",
-    "source": "github"
-  },
-  "version": "1.28.2",
+  "description": "MCP security scanner. CI-native testing, attack simulation, health scoring, and SARIF.",
+  "version": "1.36.1",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@kryptosai/mcp-observatory",
-      "version": "1.28.2",
+      "version": "1.36.1",
       "transport": {
         "type": "stdio"
-      },
-      "arguments": ["serve"],
-      "environmentVariables": []
+      }
     }
-  ]
+  ],
+  "repository": {
+    "source": "github",
+    "url": "https://github.com/KryptosAI/mcp-observatory"
+  }
 }

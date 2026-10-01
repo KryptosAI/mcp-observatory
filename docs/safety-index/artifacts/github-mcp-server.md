@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-17T00:36:28.068Z
+Generated at 2026-07-22T21:36:21.269Z
 
 ## Target and Environment Metadata
 
@@ -9,7 +9,7 @@ Generated at 2026-07-17T00:36:28.068Z
 - Command: `npx -y @modelcontextprotocol/server-github`
 - Server: `github-mcp-server 0.6.2`
 - Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Node: `v22.23.1`
 
 ## Executive Summary
 
@@ -80,7 +80,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-17T00:36:28.651Z_
+_Analyzed at 2026-07-22T21:36:23.496Z_
 
 ## Regressions and Recoveries
 
@@ -90,12 +90,12 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 1.17 | All 7 conformance checks passed. |
-| healthy | tools | pass | 3.11 | Advertised capability responded with the minimal expected shape (26 items). |
-| review | attack-sim | partial | 0.90 | Safe attack simulation found 5 finding(s): 0 high, 5 medium, 0 low. |
-| review | runtime-profile | partial | 0.30 | Detected 0 potential egress target(s) and 27 potential state mutation(s) with high confidence. |
-| review | schema-quality | partial | 0.53 | Found 51 quality finding(s) across 26 item(s): 0 warnings, 51 info. |
-| review | security | partial | 0.69 | Found 1 security finding(s): 0 high, 1 medium, 0 low. |
+| healthy | conformance | pass | 1.07 | All 7 conformance checks passed. |
+| healthy | tools | pass | 4.72 | Advertised capability responded with the minimal expected shape (26 items). |
+| review | attack-sim | partial | 1.52 | Safe attack simulation found 5 finding(s): 0 high, 5 medium, 0 low. |
+| review | runtime-profile | partial | 0.29 | Detected 0 potential egress target(s) and 27 potential state mutation(s) with high confidence. |
+| review | schema-quality | partial | 0.56 | Found 51 quality finding(s) across 26 item(s): 0 warnings, 51 info. |
+| review | security | partial | 0.82 | Found 1 security finding(s): 0 high, 1 medium, 0 low. |
 | review | security-lite | partial | 0.06 | Found 1 security finding(s): 0 high, 1 medium, 0 low. |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
@@ -124,7 +124,7 @@ Summary: Advertised capability responded with the minimal expected shape (26 ite
   - Minimal shape present: `true`
   - Item count: `26`
   - Identifiers: create_or_update_file, search_repositories, create_repository, get_file_contents, push_files (+21 more)
-  - Diagnostics: GitHub MCP Server running on stdio
+  - Diagnostics: npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead, npm warn deprecated @modelcontextprotocol/server-github@2025.4.8: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info., GitHub MCP Server running on stdio
 
 ### attack-sim — partial
 
@@ -221,5 +221,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-17T003628068Z_156f1c06`
+- Run ID: `run_2026-07-22T213621269Z_ad0dd168`
 - Gate: `pass`

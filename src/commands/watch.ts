@@ -9,7 +9,7 @@ import { renderWatchFirstRun, renderWatchNoChanges, renderWatchChanges } from ".
 import { isCI } from "../ci.js";
 import { defaultRunsDirectory, findLatestArtifact, readArtifact } from "../storage.js";
 import { appendHistory, buildHistoryEntry } from "../history.js";
-import { buildEvent, recordEvent } from "../telemetry.js";
+import { buildEvent, recordEvent } from "../command-events.js";
 import { ANSI, c, formatOutput, targetFromCommand } from "./helpers.js";
 
 // ── One-shot mode ────────────────────────────────────────────────────────────

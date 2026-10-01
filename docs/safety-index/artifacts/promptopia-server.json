@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-17T003623563Z_bf28dbdf",
-  "createdAt": "2026-07-17T00:36:23.563Z",
-  "toolVersion": "1.33.0",
+  "runId": "run_2026-07-22T213607368Z_1451641c",
+  "createdAt": "2026-07-22T21:36:07.368Z",
+  "toolVersion": "1.34.1",
   "target": {
     "targetId": "promptopia-server",
     "adapter": "local-process",
@@ -26,7 +26,7 @@
   },
   "environment": {
     "platform": "darwin 25.5.0",
-    "nodeVersion": "v22.22.1"
+    "nodeVersion": "v22.23.1"
   },
   "summary": {
     "total": 9,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 5.427625000000262,
+      "durationMs": 2.2095420000005106,
       "message": "Advertised capability responded with the minimal expected shape (7 items).",
       "evidence": [
         {
@@ -267,7 +267,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "pass",
-      "durationMs": 1.8686659999993935,
+      "durationMs": 1.1485840000004828,
       "message": "Advertised capability responded with the minimal expected shape (1 item).",
       "evidence": [
         {
@@ -290,7 +290,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "unsupported",
-      "durationMs": 0.0031249999992724042,
+      "durationMs": 0.0027919999993173406,
       "message": "Resources are not advertised by the target.",
       "evidence": [
         {
@@ -306,7 +306,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.02679199999965931,
+      "durationMs": 0.03666700000030687,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -322,7 +322,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "pass",
-      "durationMs": 0.07820800000081363,
+      "durationMs": 0.08891700000094716,
       "message": "Detected 0 potential egress target(s) and 4 potential state mutation(s) with low confidence.",
       "evidence": [
         {
@@ -369,7 +369,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 1.9656669999994847,
+      "durationMs": 1.7756670000017039,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -395,7 +395,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "partial",
-      "durationMs": 0.6250829999999041,
+      "durationMs": 0.7107919999998558,
       "message": "Found 1 quality finding(s) across 8 item(s): 0 warnings, 1 info.",
       "evidence": [
         {
@@ -425,7 +425,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 0.22325000000000728,
+      "durationMs": 0.2787079999998241,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -441,7 +441,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "pass",
-      "durationMs": 0.53387500000008,
+      "durationMs": 0.8958750000001601,
       "message": "Safe attack simulation found no high-risk MCP attack-readiness findings.",
       "evidence": [
         {
@@ -500,17 +500,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 847ms",
-          "p95 latency: 5ms (3 operations)"
+          "Connect: 1843ms",
+          "p95 latency: 2ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 846.9272500000006,
-    "toolsListMs": 5.427625000000262,
-    "promptsListMs": 1.8686659999993935,
-    "resourcesListMs": 0.0031249999992724042
+    "connectMs": 1843.1624159999992,
+    "toolsListMs": 2.2095420000005106,
+    "promptsListMs": 1.1485840000004828,
+    "resourcesListMs": 0.0027919999993173406
   },
   "runtimeProfile": {
     "stateMutations": [
@@ -539,7 +539,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-17T00:36:24.418Z",
+    "analyzedAt": "2026-07-22T21:36:09.215Z",
     "confidence": "medium"
   }
 }

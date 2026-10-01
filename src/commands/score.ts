@@ -4,15 +4,17 @@ import type { Command } from "commander";
 
 import { generateBadgeSvg } from "../badge.js";
 import { auditScore, resolveAuditTarget, runAudit } from "../audit.js";
+import { getTrustTier } from "../score.js";
+import type { TrustTier } from "../types.js";
 import {
   runTarget,
   writeRunArtifact,
 } from "../index.js";
 import { defaultRunsDirectory } from "../storage.js";
-import { buildEvent, generateSessionId, recordEvent, recordSessionEnd, recordSessionStart } from "../telemetry.js";
+import { buildEvent, generateSessionId, recordEvent, recordSessionEnd, recordSessionStart } from "../command-events.js";
 import { maybePrintCloudCta } from "../commercial.js";
 import { extractObservatoryFindings } from "../findings.js";
-import { ANSI, c, formatOutput, printCiConversionCta, targetFromCommand, writeOutput } from "./helpers.js";
+import { ANSI, c, formatOutput, isQuiet, printCiConversionCta, targetFromCommand, writeOutput } from "./helpers.js";
 
 function extractTrailingProfileScoreFlags(
   args: string[],
@@ -44,6 +46,20 @@ function extractTrailingProfileScoreFlags(
     }
   }
   return { commandArgs, options: nextOptions };
+}
+
+/** Terminal colour per trust tier. Metal-ish, and distinct from the grade colour. */
+const TIER_COLORS: Record<TrustTier, string> = {
+  platinum: ANSI.cyan,
+  gold: ANSI.yellow,
+  silver: ANSI.blue,
+  bronze: ANSI.dim,
+  unrated: ANSI.dim,
+};
+
+/** "gold" -> "Gold". The tier is stored lowercase but reads as a label. */
+function formatTier(tier: TrustTier): string {
+  return tier.charAt(0).toUpperCase() + tier.slice(1);
 }
 
 export function registerScoreCommands(program: Command): void {
@@ -154,7 +170,9 @@ export function registerScoreCommands(program: Command): void {
         : score.grade === "C" ? ANSI.yellow
         : ANSI.red;
 
-      process.stdout.write(c(ANSI.bold, `  MCP Health Score: ${c(gradeColor, `${score.overall}/100`)} (${c(gradeColor, score.grade)})\n\n`));
+      const tier = getTrustTier(score.overall);
+
+      process.stdout.write(c(ANSI.bold, `  MCP Health Score: ${c(gradeColor, `${score.overall}/100`)} (${c(gradeColor, score.grade)})  Tier: ${c(TIER_COLORS[tier], formatTier(tier))}\n\n`));
 
       for (const dim of score.dimensions) {
         const filled = Math.round(dim.score / 5);
@@ -186,12 +204,14 @@ export function registerScoreCommands(program: Command): void {
       const protectLine = "Protect this server at runtime:";
       const enforceLine = `npx @kryptosai/mcp-observatory enforce ${enforceTargetCmd}`;
       const pad = (s: string, w: number) => s + " ".repeat(Math.max(0, w - s.length));
-      process.stdout.write(`  ${c(ANSI.bold, "╔")}${"═".repeat(boxWidth)}${c(ANSI.bold, "╗")}\n`);
-      process.stdout.write(`  ${c(ANSI.bold, "║")}  ${pad(scoreLine, boxWidth - 2)}${c(ANSI.bold, "║")}\n`);
-      process.stdout.write(`  ${c(ANSI.bold, "║")}  ${pad(protectLine, boxWidth - 2)}${c(ANSI.bold, "║")}\n`);
-      process.stdout.write(`  ${c(ANSI.bold, "║")}  ${pad(enforceLine, boxWidth - 2)}${c(ANSI.bold, "║")}\n`);
-      process.stdout.write(`  ${c(ANSI.bold, "╚")}${"═".repeat(boxWidth)}${c(ANSI.bold, "╝")}\n`);
-      process.stdout.write("\n");
+      if (!isQuiet()) {
+        process.stdout.write(`  ${c(ANSI.bold, "╔")}${"═".repeat(boxWidth)}${c(ANSI.bold, "╗")}\n`);
+        process.stdout.write(`  ${c(ANSI.bold, "║")}  ${pad(scoreLine, boxWidth - 2)}${c(ANSI.bold, "║")}\n`);
+        process.stdout.write(`  ${c(ANSI.bold, "║")}  ${pad(protectLine, boxWidth - 2)}${c(ANSI.bold, "║")}\n`);
+        process.stdout.write(`  ${c(ANSI.bold, "║")}  ${pad(enforceLine, boxWidth - 2)}${c(ANSI.bold, "║")}\n`);
+        process.stdout.write(`  ${c(ANSI.bold, "╚")}${"═".repeat(boxWidth)}${c(ANSI.bold, "╝")}\n`);
+        process.stdout.write("\n");
+      }
 
       if (artifact.gate !== "fail") {
         printCiConversionCta({
@@ -199,7 +219,7 @@ export function registerScoreCommands(program: Command): void {
           target,
         });
       }
-      maybePrintCloudCta("security");
+      maybePrintCloudCta("security", artifact.gate);
 
       if (artifact.gate === "fail") {
         process.exitCode = 1;

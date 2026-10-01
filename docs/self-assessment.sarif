@@ -1,0 +1,1114 @@
+{
+  "$schema": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/schemas/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "mcp-observatory",
+          "version": "1.33.1",
+          "informationUri": "https://github.com/KryptosAI/mcp-observatory",
+          "rules": [
+            {
+              "id": "mcp-observatory/security/shell-injection",
+              "name": "Security: shell-injection",
+              "shortDescription": {
+                "text": "Security: shell-injection"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Constrain command execution tools with strict allowlists, typed inputs, and clear destructive annotations."
+              },
+              "helpUri": "https://github.com/KryptosAI/mcp-observatory/tree/main/docs",
+              "properties": {
+                "category": "security",
+                "checkId": "security-lite",
+                "controlRefs": [
+                  "mcp-observatory:tool-safety",
+                  "mcp-observatory:command-execution"
+                ],
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "security",
+                  "mcp-observatory:tool-safety",
+                  "mcp-observatory:command-execution"
+                ]
+              }
+            },
+            {
+              "id": "mcp-observatory/runtime-profile/diagnostic",
+              "name": "runtime-profile: diagnostic",
+              "shortDescription": {
+                "text": "runtime-profile: diagnostic"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "Review the check output and update the MCP server or target configuration before release."
+              },
+              "helpUri": "https://github.com/KryptosAI/mcp-observatory/tree/main/docs",
+              "properties": {
+                "category": "runtime-profile",
+                "checkId": "runtime-profile",
+                "controlRefs": [
+                  "mcp-observatory:runtime-profile"
+                ],
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "runtime-profile",
+                  "mcp-observatory:runtime-profile"
+                ]
+              }
+            },
+            {
+              "id": "mcp-observatory/conformance/diagnostic",
+              "name": "conformance: diagnostic",
+              "shortDescription": {
+                "text": "conformance: diagnostic"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "text": "Review the check output and update the MCP server or target configuration before release."
+              },
+              "helpUri": "https://github.com/KryptosAI/mcp-observatory/tree/main/docs",
+              "properties": {
+                "category": "conformance",
+                "checkId": "conformance",
+                "controlRefs": [
+                  "mcp-observatory:conformance"
+                ],
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "conformance",
+                  "mcp-observatory:conformance"
+                ]
+              }
+            },
+            {
+              "id": "mcp-observatory/schema-quality/schema-has-properties-but-no-required-array-declared",
+              "name": "Schema quality: Has properties but no 'required' array declared",
+              "shortDescription": {
+                "text": "Schema quality: Has properties but no 'required' array declared"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "text": "Add clear names, descriptions, and strict JSON schema metadata so agents can call the MCP server safely."
+              },
+              "helpUri": "https://github.com/KryptosAI/mcp-observatory/tree/main/docs",
+              "properties": {
+                "category": "schema-quality",
+                "checkId": "schema-quality",
+                "controlRefs": [
+                  "mcp-observatory:schema-quality",
+                  "mcp-observatory:agent-readiness"
+                ],
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "schema-quality",
+                  "mcp-observatory:schema-quality",
+                  "mcp-observatory:agent-readiness"
+                ]
+              }
+            },
+            {
+              "id": "mcp-observatory/attack-sim/permission-boundary/broad-destructive-tool",
+              "name": "Attack simulation: permission-boundary",
+              "shortDescription": {
+                "text": "Attack simulation: permission-boundary"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Constrain this tool with typed inputs, allowlists, explicit read-only/destructive annotations, and a harmless CI fixture.\n\nRecommended action: quarantine."
+              },
+              "helpUri": "https://github.com/KryptosAI/mcp-observatory/tree/main/docs",
+              "properties": {
+                "category": "attack-sim",
+                "checkId": "attack-sim",
+                "recommendedAction": "quarantine",
+                "controlRefs": [
+                  "mcp-observatory:tool-safety",
+                  "mcp-observatory:least-privilege"
+                ],
+                "tags": [
+                  "mcp",
+                  "mcp-observatory",
+                  "attack-sim",
+                  "mcp-observatory:tool-safety",
+                  "mcp-observatory:least-privilege"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "automationDetails": {
+        "id": "mcp-observatory/@kryptosai/mcp-observatory"
+      },
+      "results": [
+        {
+          "ruleId": "mcp-observatory/security/shell-injection",
+          "level": "error",
+          "message": {
+            "text": "Tool \"check_server\" has parameter \"command\" which may allow arbitrary command execution."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security-lite/shell-injection/6602bc7a"
+          },
+          "properties": {
+            "id": "mcp-observatory/security-lite/shell-injection/6602bc7a",
+            "category": "security",
+            "checkId": "security-lite",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "tool",
+              "name": "check_server"
+            },
+            "severity": "high",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/shell-injection",
+          "level": "error",
+          "message": {
+            "text": "Tool \"score_server\" has parameter \"command\" which may allow arbitrary command execution."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security-lite/shell-injection/63400ea9"
+          },
+          "properties": {
+            "id": "mcp-observatory/security-lite/shell-injection/63400ea9",
+            "category": "security",
+            "checkId": "security-lite",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "tool",
+              "name": "score_server"
+            },
+            "severity": "high",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/shell-injection",
+          "level": "error",
+          "message": {
+            "text": "Tool \"record\" has parameter \"command\" which may allow arbitrary command execution."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security-lite/shell-injection/e56b5342"
+          },
+          "properties": {
+            "id": "mcp-observatory/security-lite/shell-injection/e56b5342",
+            "category": "security",
+            "checkId": "security-lite",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "tool",
+              "name": "record"
+            },
+            "severity": "high",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/shell-injection",
+          "level": "error",
+          "message": {
+            "text": "Tool \"verify\" has parameter \"command\" which may allow arbitrary command execution."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security-lite/shell-injection/54146bd5"
+          },
+          "properties": {
+            "id": "mcp-observatory/security-lite/shell-injection/54146bd5",
+            "category": "security",
+            "checkId": "security-lite",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "tool",
+              "name": "verify"
+            },
+            "severity": "high",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/security/shell-injection",
+          "level": "error",
+          "message": {
+            "text": "Tool \"watch\" has parameter \"command\" which may allow arbitrary command execution."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/security-lite/shell-injection/ef1cf526"
+          },
+          "properties": {
+            "id": "mcp-observatory/security-lite/shell-injection/ef1cf526",
+            "category": "security",
+            "checkId": "security-lite",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "tool",
+              "name": "watch"
+            },
+            "severity": "high",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "security",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:command-execution"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/runtime-profile/diagnostic",
+          "level": "warning",
+          "message": {
+            "text": "Egress entries: 0"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/runtime-profile/diagnostic/f3f11d9b"
+          },
+          "properties": {
+            "id": "mcp-observatory/runtime-profile/diagnostic/f3f11d9b",
+            "category": "runtime-profile",
+            "checkId": "runtime-profile",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "check",
+              "name": "runtime-profile"
+            },
+            "severity": "medium",
+            "controlRefs": [
+              "mcp-observatory:runtime-profile"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "runtime-profile",
+              "mcp-observatory:runtime-profile"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/runtime-profile/diagnostic",
+          "level": "warning",
+          "message": {
+            "text": "State mutations: 40"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/runtime-profile/diagnostic/3662702c"
+          },
+          "properties": {
+            "id": "mcp-observatory/runtime-profile/diagnostic/3662702c",
+            "category": "runtime-profile",
+            "checkId": "runtime-profile",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "check",
+              "name": "runtime-profile"
+            },
+            "severity": "medium",
+            "controlRefs": [
+              "mcp-observatory:runtime-profile"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "runtime-profile",
+              "mcp-observatory:runtime-profile"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/runtime-profile/diagnostic",
+          "level": "warning",
+          "message": {
+            "text": "Confidence: high"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/runtime-profile/diagnostic/2f81ec00"
+          },
+          "properties": {
+            "id": "mcp-observatory/runtime-profile/diagnostic/2f81ec00",
+            "category": "runtime-profile",
+            "checkId": "runtime-profile",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "check",
+              "name": "runtime-profile"
+            },
+            "severity": "medium",
+            "controlRefs": [
+              "mcp-observatory:runtime-profile"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "runtime-profile",
+              "mcp-observatory:runtime-profile"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] capabilities-present: Server returned capabilities object."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/conformance/diagnostic/af42f61d"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/af42f61d",
+            "category": "conformance",
+            "checkId": "conformance",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "check",
+              "name": "conformance"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:conformance"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "conformance",
+              "mcp-observatory:conformance"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] server-info: Server provided initialization info."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/conformance/diagnostic/2ac1f6bf"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/2ac1f6bf",
+            "category": "conformance",
+            "checkId": "conformance",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "check",
+              "name": "conformance"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:conformance"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "conformance",
+              "mcp-observatory:conformance"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] tools-capability-match: tools/list returned 13 tool(s)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/conformance/diagnostic/baa1e4df"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/baa1e4df",
+            "category": "conformance",
+            "checkId": "conformance",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "check",
+              "name": "conformance"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:conformance"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "conformance",
+              "mcp-observatory:conformance"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] prompts-capability-match: Prompts not advertised — endpoint check skipped."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/conformance/diagnostic/f50c7fcb"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/f50c7fcb",
+            "category": "conformance",
+            "checkId": "conformance",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "check",
+              "name": "conformance"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:conformance"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "conformance",
+              "mcp-observatory:conformance"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] resources-capability-match: Resources not advertised — endpoint check skipped."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/conformance/diagnostic/229379fa"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/229379fa",
+            "category": "conformance",
+            "checkId": "conformance",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "check",
+              "name": "conformance"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:conformance"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "conformance",
+              "mcp-observatory:conformance"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] tool-response-content: Tool \"scan\" response has valid content array."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/conformance/diagnostic/b17e9217"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/b17e9217",
+            "category": "conformance",
+            "checkId": "conformance",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "check",
+              "name": "conformance"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:conformance"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "conformance",
+              "mcp-observatory:conformance"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/conformance/diagnostic",
+          "level": "note",
+          "message": {
+            "text": "[pass] error-handling: Server returned proper error code -32601 for unknown method."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/conformance/diagnostic/080cd0ee"
+          },
+          "properties": {
+            "id": "mcp-observatory/conformance/diagnostic/080cd0ee",
+            "category": "conformance",
+            "checkId": "conformance",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "check",
+              "name": "conformance"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:conformance"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "conformance",
+              "mcp-observatory:conformance"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/schema-quality/schema-has-properties-but-no-required-array-declared",
+          "level": "note",
+          "message": {
+            "text": "tool \"scan\": Has properties but no 'required' array declared"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/schema-quality/schema-has-properties-but-no-required-array-declared/fd3999d4"
+          },
+          "properties": {
+            "id": "mcp-observatory/schema-quality/schema-has-properties-but-no-required-array-declared/fd3999d4",
+            "category": "schema-quality",
+            "checkId": "schema-quality",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "tool",
+              "name": "scan"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "schema-quality",
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/schema-quality/schema-has-properties-but-no-required-array-declared",
+          "level": "note",
+          "message": {
+            "text": "tool \"suggest_servers\": Has properties but no 'required' array declared"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/schema-quality/schema-has-properties-but-no-required-array-declared/3553c0f5"
+          },
+          "properties": {
+            "id": "mcp-observatory/schema-quality/schema-has-properties-but-no-required-array-declared/3553c0f5",
+            "category": "schema-quality",
+            "checkId": "schema-quality",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "tool",
+              "name": "suggest_servers"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "schema-quality",
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/schema-quality/schema-has-properties-but-no-required-array-declared",
+          "level": "note",
+          "message": {
+            "text": "tool \"lock_verify\": Has properties but no 'required' array declared"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/schema-quality/schema-has-properties-but-no-required-array-declared/86579158"
+          },
+          "properties": {
+            "id": "mcp-observatory/schema-quality/schema-has-properties-but-no-required-array-declared/86579158",
+            "category": "schema-quality",
+            "checkId": "schema-quality",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "tool",
+              "name": "lock_verify"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "schema-quality",
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/schema-quality/schema-has-properties-but-no-required-array-declared",
+          "level": "note",
+          "message": {
+            "text": "tool \"get_history\": Has properties but no 'required' array declared"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/schema-quality/schema-has-properties-but-no-required-array-declared/9505292b"
+          },
+          "properties": {
+            "id": "mcp-observatory/schema-quality/schema-has-properties-but-no-required-array-declared/9505292b",
+            "category": "schema-quality",
+            "checkId": "schema-quality",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "tool",
+              "name": "get_history"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "schema-quality",
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/schema-quality/schema-has-properties-but-no-required-array-declared",
+          "level": "note",
+          "message": {
+            "text": "tool \"ci_report\": Has properties but no 'required' array declared"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/schema-quality/schema-has-properties-but-no-required-array-declared/32b8f9a2"
+          },
+          "properties": {
+            "id": "mcp-observatory/schema-quality/schema-has-properties-but-no-required-array-declared/32b8f9a2",
+            "category": "schema-quality",
+            "checkId": "schema-quality",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "tool",
+              "name": "ci_report"
+            },
+            "severity": "info",
+            "controlRefs": [
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "schema-quality",
+              "mcp-observatory:schema-quality",
+              "mcp-observatory:agent-readiness"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/attack-sim/permission-boundary/broad-destructive-tool",
+          "level": "error",
+          "message": {
+            "text": "Tool \"check_server\" combines broad parameters (command) with destructive or non-read-only behavior."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/attack-sim/attack-sim/permission-boundary/broad-destructive-tool/583685e1"
+          },
+          "properties": {
+            "id": "mcp-observatory/attack-sim/attack-sim/permission-boundary/broad-destructive-tool/583685e1",
+            "category": "attack-sim",
+            "checkId": "attack-sim",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "tool",
+              "name": "check_server"
+            },
+            "severity": "high",
+            "recommendedAction": "quarantine",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:least-privilege"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "attack-sim",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:least-privilege"
+            ]
+          }
+        },
+        {
+          "ruleId": "mcp-observatory/attack-sim/permission-boundary/broad-destructive-tool",
+          "level": "error",
+          "message": {
+            "text": "Tool \"watch\" combines broad parameters (command) with destructive or non-read-only behavior."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "/Users/williamweishuhn/Documents/GitHub/mcp-observatory/.mcp-observatory/runs/2026-07-22T15-22-48.716Z--kryptosai-mcp-observatory.json"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-observatory/finding-id": "mcp-observatory/attack-sim/attack-sim/permission-boundary/broad-destructive-tool/3ac96d9e"
+          },
+          "properties": {
+            "id": "mcp-observatory/attack-sim/attack-sim/permission-boundary/broad-destructive-tool/3ac96d9e",
+            "category": "attack-sim",
+            "checkId": "attack-sim",
+            "targetId": "@kryptosai/mcp-observatory",
+            "subject": {
+              "type": "tool",
+              "name": "watch"
+            },
+            "severity": "high",
+            "recommendedAction": "quarantine",
+            "controlRefs": [
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:least-privilege"
+            ],
+            "tags": [
+              "mcp",
+              "mcp-observatory",
+              "attack-sim",
+              "mcp-observatory:tool-safety",
+              "mcp-observatory:least-privilege"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

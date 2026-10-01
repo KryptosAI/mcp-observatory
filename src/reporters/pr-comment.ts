@@ -257,6 +257,7 @@ function renderDiffComment(artifact: DiffArtifact): string {
   sections.push("");
   sections.push(`### Next action`);
   sections.push(`> ${safety.nextActions[0]}`);
+  sections.push(`> ${safety.ciCta}`);
 
   sections.push(prCommentFooter());
   return sections.join("\n");

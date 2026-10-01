@@ -92,7 +92,10 @@ describe("post-check setup-ci conversion", () => {
     expect(sink.text()).toContain("Convert this passing MCP check into CI + Code Scanning? [Y/n]");
     expect(sink.text()).toContain("Code Scanning: SARIF upload is enabled");
     expect(sink.text()).toContain("Automation: weekly scheduled checks are enabled");
-    expect(sink.text()).toContain("Verify: npx @kryptosai/mcp-observatory setup-ci --doctor");
+    expect(sink.text()).toContain("Verify: npx -y @kryptosai/mcp-observatory@latest setup-ci --doctor");
+    expect(sink.text()).toContain("cloud upload");
+    expect(sink.text()).toContain("https://app.mcp-observatory.com/pricing?plan=individual");
+    expect(sink.text()).not.toContain("plan=team");
   });
 
   it("lets interactive users answer n without writing files", async () => {

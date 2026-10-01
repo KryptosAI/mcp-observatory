@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-17T00:36:42.256Z
+Generated at 2026-07-22T21:37:05.638Z
 
 ## Target and Environment Metadata
 
@@ -9,7 +9,7 @@ Generated at 2026-07-17T00:36:42.256Z
 - Command: `npx -y @anthropic/mcp-server-qdrant`
 - Server: `unknown `
 - Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Node: `v22.23.1`
 
 ## Executive Summary
 
@@ -56,11 +56,11 @@ Next steps:
 - Check whether the package expects a different transport or an app-oriented startup flow.
 - Use the recent stderr lines below before assuming this is a harness bug.
 Recent stderr:
-- npm error 404  The requested resource '@anthropic/mcp-server-qdrant@*' could not be found or you do not have permission to access it.
+- npm error 404  '@anthropic/mcp-server-qdrant@*' is not in this registry.
 - npm error 404
 - npm error 404 Note that you can also install from a
 - npm error 404 tarball, folder, http url, or git url.
-- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-17T00_36_42_327Z-debug-0.log
+- npm error A complete log of this run can be found in: /Users/williamweishuhn/.npm/_logs/2026-07-22T21_37_05_718Z-debug-0.log
 ```
 
 ## Full Capability Status Table
@@ -102,5 +102,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-17T003642256Z_e23961d6`
+- Run ID: `run_2026-07-22T213705638Z_fd326d2f`
 - Gate: `fail`

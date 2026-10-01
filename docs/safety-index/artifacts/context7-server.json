@@ -2,9 +2,9 @@
   "artifactType": "run",
   "schemaVersion": "1.0.0",
   "gate": "pass",
-  "runId": "run_2026-07-17T003622609Z_7a792254",
-  "createdAt": "2026-07-17T00:36:22.609Z",
-  "toolVersion": "1.33.0",
+  "runId": "run_2026-07-22T213605555Z_ade0c612",
+  "createdAt": "2026-07-22T21:36:05.555Z",
+  "toolVersion": "1.34.1",
   "target": {
     "targetId": "context7-server",
     "adapter": "local-process",
@@ -22,11 +22,11 @@
       "whyItMatters": "Documentation retrieval tools can return untrusted text into agent context."
     },
     "serverName": "Context7",
-    "serverVersion": "3.2.3"
+    "serverVersion": "3.2.4"
   },
   "environment": {
     "platform": "darwin 25.5.0",
-    "nodeVersion": "v22.22.1"
+    "nodeVersion": "v22.23.1"
   },
   "summary": {
     "total": 9,
@@ -43,7 +43,7 @@
       "id": "tools",
       "capability": "tools",
       "status": "pass",
-      "durationMs": 1.6870420000004742,
+      "durationMs": 1.5909579999988637,
       "message": "Advertised capability responded with the minimal expected shape (2 items).",
       "evidence": [
         {
@@ -57,7 +57,7 @@
             "query-docs"
           ],
           "diagnostics": [
-            "Context7 Documentation MCP Server v3.2.3 running on stdio"
+            "Context7 Documentation MCP Server v3.2.4 running on stdio"
           ],
           "schemas": {
             "resolve-library-id": {
@@ -104,7 +104,7 @@
       "id": "prompts",
       "capability": "prompts",
       "status": "pass",
-      "durationMs": 0.29366699999991397,
+      "durationMs": 0.297167000000627,
       "message": "Advertised capability responded with the minimal expected shape (0 items).",
       "evidence": [
         {
@@ -115,7 +115,7 @@
           "itemCount": 0,
           "identifiers": [],
           "diagnostics": [
-            "Context7 Documentation MCP Server v3.2.3 running on stdio"
+            "Context7 Documentation MCP Server v3.2.4 running on stdio"
           ]
         }
       ]
@@ -124,7 +124,7 @@
       "id": "resources",
       "capability": "resources",
       "status": "pass",
-      "durationMs": 0.6708749999997963,
+      "durationMs": 0.4810830000005808,
       "message": "Advertised capability responded with the minimal expected shape (0 items).",
       "evidence": [
         {
@@ -135,7 +135,7 @@
           "itemCount": 0,
           "identifiers": [],
           "diagnostics": [
-            "Context7 Documentation MCP Server v3.2.3 running on stdio"
+            "Context7 Documentation MCP Server v3.2.4 running on stdio"
           ]
         },
         {
@@ -146,7 +146,7 @@
           "itemCount": 0,
           "identifiers": [],
           "diagnostics": [
-            "Context7 Documentation MCP Server v3.2.3 running on stdio"
+            "Context7 Documentation MCP Server v3.2.4 running on stdio"
           ]
         }
       ]
@@ -155,7 +155,7 @@
       "id": "security-lite",
       "capability": "security-lite",
       "status": "pass",
-      "durationMs": 0.029540999999881024,
+      "durationMs": 0.028207999999722233,
       "message": "No security issues detected (lightweight scan).",
       "evidence": [
         {
@@ -171,7 +171,7 @@
       "id": "runtime-profile",
       "capability": "runtime-profile",
       "status": "pass",
-      "durationMs": 0.2849999999998545,
+      "durationMs": 0.2734999999993306,
       "message": "Detected 2 potential egress target(s) and 1 potential state mutation(s) with low confidence.",
       "evidence": [
         {
@@ -212,7 +212,7 @@
       "id": "conformance",
       "capability": "conformance",
       "status": "pass",
-      "durationMs": 1.110458999999537,
+      "durationMs": 1.0957499999985885,
       "message": "All 7 conformance checks passed.",
       "evidence": [
         {
@@ -238,7 +238,7 @@
       "id": "schema-quality",
       "capability": "schema-quality",
       "status": "pass",
-      "durationMs": 0.73174999999992,
+      "durationMs": 0.5889999999999418,
       "message": "All 2 item(s) have good schema quality.",
       "evidence": [
         {
@@ -255,7 +255,7 @@
       "id": "security",
       "capability": "security",
       "status": "pass",
-      "durationMs": 0.21841700000004494,
+      "durationMs": 0.24424999999973807,
       "message": "No security issues detected.",
       "evidence": [
         {
@@ -271,7 +271,7 @@
       "id": "attack-sim",
       "capability": "attack-sim",
       "status": "partial",
-      "durationMs": 1.2029160000001866,
+      "durationMs": 1.0029999999987922,
       "message": "Safe attack simulation found 2 finding(s): 0 high, 2 medium, 0 low.",
       "evidence": [
         {
@@ -369,17 +369,17 @@
         "weight": 0.1,
         "score": 100,
         "details": [
-          "Connect: 939ms",
+          "Connect: 1793ms",
           "p95 latency: 2ms (3 operations)"
         ]
       }
     ]
   },
   "performanceMetrics": {
-    "connectMs": 939.1923340000003,
-    "toolsListMs": 1.6870420000004742,
-    "promptsListMs": 0.29366699999991397,
-    "resourcesListMs": 0.6708749999997963
+    "connectMs": 1793.4585000000006,
+    "toolsListMs": 1.5909579999988637,
+    "promptsListMs": 0.297167000000627,
+    "resourcesListMs": 0.4810830000005808
   },
   "runtimeProfile": {
     "egress": [
@@ -404,7 +404,7 @@
         "source": "description_analysis"
       }
     ],
-    "analyzedAt": "2026-07-17T00:36:23.552Z",
+    "analyzedAt": "2026-07-22T21:36:07.352Z",
     "confidence": "medium"
   }
 }

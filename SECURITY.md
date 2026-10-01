@@ -4,7 +4,7 @@
 
 Please do not open public issues for suspected vulnerabilities.
 
-Use GitHub private vulnerability reporting from this repository's Security tab. If that is unavailable, email the maintainer listed on the repository profile with a short description and a way to contact you privately.
+Use [GitHub private vulnerability reporting](https://github.com/KryptosAI/mcp-observatory/security/advisories/new). If that is unavailable, email the maintainer listed on the repository profile with a short description and a way to contact you privately.
 
 Include:
 

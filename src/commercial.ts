@@ -3,7 +3,17 @@ import { hasValidToken } from "./auth.js";
 import { getAccessToken, whoami } from "./auth.js";
 
 const CONTACT = "william@banksey.com";
-export const DEFAULT_CLOUD_UPLOAD_ENDPOINT = "https://mcp-observatory-api.kryptosai.workers.dev/api/v1/artifacts";
+export const DEFAULT_CLOUD_UPLOAD_ENDPOINT = "https://app.mcp-observatory.com/api/v1/artifacts";
+export const DEFAULT_CLOUD_BASE_URL = "https://app.mcp-observatory.com";
+export const SELF_SERVE_PRICING_URL = `${DEFAULT_CLOUD_BASE_URL}/pricing`;
+
+export function getCloudBaseUrl(): string {
+  return process.env["MCP_OBSERVATORY_CLOUD_URL"]?.trim() || DEFAULT_CLOUD_BASE_URL;
+}
+
+export function getCloudUploadEndpoint(): string {
+  return process.env["MCP_OBSERVATORY_CLOUD_ENDPOINT"]?.trim() || DEFAULT_CLOUD_UPLOAD_ENDPOINT;
+}
 
 export function hasCloudToken(): boolean {
   return Boolean(process.env["MCP_OBSERVATORY_CLOUD_TOKEN"]) || hasValidToken();
@@ -23,21 +33,41 @@ export function cloudUpgradeLine(context: "ci" | "security" | "fleet" | "general
   const bin = getBinName();
   const value =
     context === "ci"
-      ? "hosted CI history, private-repo reporting, and production badges"
+      ? "hosted CI ingestion, 90-day history, and regression markers"
       : context === "security"
-        ? "hosted security reports, certification, and controlled drift review"
+        ? "hosted evidence, score history, and artifact downloads"
         : context === "fleet"
-          ? "MCP fleet visibility, drift reports, and production support"
-          : "hosted reporting, security review, and enterprise support";
+          ? "hosted evidence history for one developer"
+          : "hosted evidence, scan history, and CI ingestion";
 
   return [
-    c(ANSI.dim, `  Production MCP teams: ${value}.`),
-    c(ANSI.dim, `  Run ${c(ANSI.cyan, `${bin} cloud`)} or contact ${CONTACT}.`),
+    c(ANSI.dim, `  Hosted option for one developer: ${value}.`),
+    c(ANSI.dim, `  Upload one hosted snapshot free: ${c(ANSI.cyan, `${bin} cloud upload`)}`),
+    c(ANSI.dim, `  Add Individual Pro · $29/month only when you need history: ${c(ANSI.cyan, `${SELF_SERVE_PRICING_URL}?plan=individual`)}`),
   ].join("\n");
 }
 
-export function maybePrintCloudCta(context: "ci" | "security" | "fleet" | "general" = "general"): void {
+export function cloudPassLine(context: "ci" | "security" | "fleet" | "general" = "general"): string {
+  const value =
+    context === "ci"
+      ? "hosted CI ingestion and 90-day history"
+      : context === "security"
+        ? "hosted evidence and score history"
+        : context === "fleet"
+          ? "hosted evidence for one developer"
+          : "hosted evidence and scan history";
+  return c(ANSI.dim, `  Hosted option for one developer: ${value}. Upload one snapshot free with ${c(ANSI.cyan, `${getBinName()} cloud upload`)}.`);
+}
+
+export function maybePrintCloudCta(
+  context: "ci" | "security" | "fleet" | "general" = "general",
+  gate?: string,
+): void {
   if (isQuiet() || hasCloudToken()) return;
+  if (gate !== "fail" && gate !== "critical_risk") {
+    process.stdout.write(`${cloudPassLine(context)}\n\n`);
+    return;
+  }
   process.stdout.write(`${cloudUpgradeLine(context)}\n\n`);
 }
 
@@ -47,24 +77,18 @@ export function printCloudInfo(): void {
       "",
       c(ANSI.bold, "MCP Observatory Cloud"),
       "",
-      "Free local OSS use remains available. Production teams can add hosted reporting,",
-      "private-repo CI, security reports, certification, support, and MCP fleet visibility.",
+      "Free local OSS use remains unlimited. Sign in with GitHub and upload one hosted",
+      "snapshot before deciding whether retained history is worth paying for.",
       "",
-      "Pilot pricing:",
-      "  Team Pilot:       starts at $299/month",
-      "  Business Pilot:   starts at $999/month",
-      "  Enterprise Pilot: starts at $3k/month",
-      "  Strategic:        custom, $250k+/year",
+      "Self-serve hosted plan:",
+      `  Individual Pro: $29/month — ${SELF_SERVE_PRICING_URL}?plan=individual`,
+      "  One user, hosted history, CI ingestion, regression markers, and artifact downloads.",
+      `  Try the free snapshot first: ${getBinName()} cloud upload`,
       "",
-      "Paid pilot paths:",
-      "  1. Private MCP readiness review + remediation packet",
-      "  2. Hosted CI history for private repos",
-      "  3. Recurring security/drift reports",
-      "  4. Certification/readiness badge for MCP servers",
-      "  5. MCP fleet inventory and production support",
+      "Need a human production decision?",
+      "  Release Gate Pilot: $15,000 for 1-3 servers in ten business days.",
+      "  https://mcp-observatory.com/release-gate-pilot/",
       "",
-      "To enable hosted uploads, set MCP_OBSERVATORY_CLOUD_TOKEN after receiving a pilot token.",
-      `Upload an artifact: ${getBinName()} cloud upload .mcp-observatory/runs/<run>.json`,
       `Contact: ${CONTACT}`,
       "",
     ].join("\n"),

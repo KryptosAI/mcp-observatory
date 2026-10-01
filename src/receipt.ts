@@ -1,4 +1,4 @@
-import { createHash, sign, verify, generateKeyPairSync, type KeyObject } from "node:crypto";
+import { createHash, createPublicKey, sign, verify, generateKeyPairSync, type KeyObject } from "node:crypto";
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import os from "node:os";
@@ -427,10 +427,7 @@ export async function buildMcpReceipt(report: AuditReport, target: TargetConfig,
       { id: "provide_safe_startup_mode", label: "Provide safe startup mode", description: "Share a no-secret, non-destructive startup command for public receipt generation." },
     ],
     buyer_cta: [
-      { id: "request_private_fleet_receipt_pack", label: "Request private fleet receipt pack", description: "Generate receipts for internal MCP servers without publishing private evidence." },
-      { id: "request_attack_simulation_evidence_pack", label: "Request attack simulation evidence pack", description: "Package safe-mode attack simulation evidence for security review." },
-      { id: "request_ci_sarif_rollout", label: "Request CI/SARIF rollout", description: "Add release gates and GitHub Code Scanning for MCP dependencies." },
-      { id: "request_government_enterprise_pilot", label: "Request government/enterprise pilot", description: "Map receipts to procurement-friendly security evidence and pilot deliverables." },
+      { id: "request_release_gate_pilot", label: "Request Release Gate Pilot", description: "Get an owner-ready release decision for 1–3 critical MCP servers over ten business days for a fixed $15,000." },
     ],
   };
 }
@@ -576,20 +573,31 @@ export function receiptFormatFromPath(outputPath: string | undefined, fallback: 
 
 function canonicalReceiptBytes(receipt: McpReceipt): Buffer {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { signer, signature, ...rest } = receipt as McpReceipt & { signer?: string; signature?: string };
+  const { signature, ...rest } = receipt as McpReceipt & { signature?: string };
   return Buffer.from(JSON.stringify(rest), "utf8");
 }
 
 export function signReceipt(receipt: McpReceipt, privateKey: string | Buffer | KeyObject, signer: string): McpReceipt {
-  const data = canonicalReceiptBytes(receipt);
+  // The signer label is part of the signed bytes, so it must be attached
+  // before canonicalization. Only the signature itself is excluded.
+  const unsigned = { ...receipt, signer };
+  const data = canonicalReceiptBytes(unsigned);
   const sig = sign(null, data, privateKey);
-  return { ...receipt, signer, signature: sig.toString("base64") };
+  return { ...unsigned, signature: sig.toString("base64") };
 }
 
 export function verifyReceipt(receipt: McpReceipt, publicKey: string | Buffer | KeyObject): boolean {
   if (!receipt.signature) return false;
   const data = canonicalReceiptBytes(receipt);
   return verify(null, data, publicKey, Buffer.from(receipt.signature, "base64"));
+}
+
+export function publicKeyFingerprint(publicKey: string | Buffer | KeyObject): string {
+  const keyObject = typeof publicKey === "string" || Buffer.isBuffer(publicKey)
+    ? createPublicKey(publicKey)
+    : publicKey;
+  const der = keyObject.export({ type: "spki", format: "der" });
+  return createHash("sha256").update(der).digest("hex").slice(0, 32);
 }
 
 export function generateReceiptKeyPair(): { publicKey: string; privateKey: string } {

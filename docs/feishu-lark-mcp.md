@@ -45,7 +45,7 @@ jobs:
       MCP_OBSERVATORY_CONTACT: your-team-contact
     steps:
       - uses: actions/checkout@v4
-      - uses: KryptosAI/mcp-observatory/action@v1.28.0
+      - uses: KryptosAI/mcp-observatory/action@v1
         with:
           target: feishu-target.json
           security: true
@@ -60,6 +60,6 @@ npx @kryptosai/mcp-observatory enterprise-report \
   --output feishu-mcp-report.html
 ```
 
-Production teams can use the report for MCP owner reviews, private-repo CI history, security review, and certification conversations.
+Production teams can use the report for MCP owner reviews, private-repo CI history, security review, and release decisions.
 
-Open a pilot request from the GitHub issue chooser for production Feishu/Lark MCP usage, hosted reporting, private deployment, or fleet visibility.
+Open a request for the fixed $15,000 Release Gate Pilot when 1–3 critical Feishu/Lark MCP servers need an owner-ready release decision within ten business days.

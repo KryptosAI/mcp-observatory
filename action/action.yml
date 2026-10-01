@@ -57,6 +57,14 @@ inputs:
     description: "MCP Observatory npm version to install. Use 'latest' for the newest release or pin a version for reproducible CI."
     required: false
     default: "latest"
+  cloud-token:
+    description: "MCP Observatory Cloud token for private-repo fleet reporting. Store this in a GitHub Actions secret."
+    required: false
+    default: ""
+  cloud-endpoint:
+    description: "MCP Observatory Cloud API base URL."
+    required: false
+    default: "https://app.mcp-observatory.com"
 
 outputs:
   gate:
@@ -139,8 +147,14 @@ runs:
             mapfile -t COMMAND_PARTS < <(node -e 'const input=process.env.INPUT_COMMAND||"";const parts=[];let current="",quote=null,escaping=false;for(const char of input){if(escaping){current+=char;escaping=false;continue}if(char==="\\"){escaping=true;continue}if(quote){if(char===quote)quote=null;else current+=char;continue}if(char==="\""||char===String.fromCharCode(39)){quote=char;continue}if(/\s/.test(char)){if(current.length>0){parts.push(current);current=""}continue}current+=char}if(escaping)current+="\\";if(current.length>0)parts.push(current);for(const part of parts)console.log(part)')
             CMD_ARRAY=(mcp-observatory test "${COMMAND_PARTS[@]}")
           else
-            echo "::error::Either 'command', 'target', or 'targets' input is required"
-            exit 1
+            PKG="$(node -e 'try{const p=require("./package.json");const k=p.keywords||[];const mcp=p.mcpName||k.some((x)=>/mcp/i.test(String(x)));if(mcp&&p.name)process.stdout.write(String(p.name))}catch{}')"
+            if [ -n "$PKG" ]; then
+              echo "No command set; testing npx -y ${PKG}"
+              CMD_ARRAY=(mcp-observatory test npx -y "$PKG")
+            else
+              echo "::error::Set 'command' to the MCP server process, e.g. command: npx -y my-mcp-server"
+              exit 1
+            fi
           fi
 
           if [ "$INPUT_DEEP" = "true" ]; then
@@ -181,6 +195,22 @@ runs:
       uses: github/codeql-action/upload-sarif@v4
       with:
         sarif_file: ${{ steps.run.outputs.sarif_path }}
+
+    - name: Upload to MCP Observatory Cloud
+      if: inputs.cloud-token != '' && steps.run.outputs.artifact_path != ''
+      shell: bash
+      env:
+        MCP_OBSERVATORY_CLOUD_TOKEN: ${{ inputs.cloud-token }}
+        CLOUD_ENDPOINT: ${{ inputs.cloud-endpoint }}
+        ARTIFACT_PATH: ${{ steps.run.outputs.artifact_path }}
+      run: |
+        if [ -f "$ARTIFACT_PATH" ]; then
+          npx @kryptosai/mcp-observatory cloud upload "$ARTIFACT_PATH" --endpoint "${CLOUD_ENDPOINT}/api/v1/artifacts"
+        else
+          find "$ARTIFACT_PATH" -type f -name '*.json' -print0 | while IFS= read -r -d '' artifact; do
+            npx @kryptosai/mcp-observatory cloud upload "$artifact" --endpoint "${CLOUD_ENDPOINT}/api/v1/artifacts"
+          done
+        fi
 
     - name: Verify against baseline
       if: inputs.baseline != ''

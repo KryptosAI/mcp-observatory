@@ -1,12 +1,11 @@
-import { loadTelemetryConfig, recordEvent, buildEvent } from "../telemetry.js";
+import { recordEvent, buildEvent } from "../command-events.js";
 import type { RunArtifact } from "../types.js";
 
-let telemetryWarm = false;
+let eventsWarm = false;
 
-export async function ensureTelemetryWarm(): Promise<void> {
-  if (telemetryWarm) return;
-  await loadTelemetryConfig();
-  telemetryWarm = true;
+export function ensureCommandContext(): void {
+  if (eventsWarm) return;
+  eventsWarm = true;
 }
 
 export function logRequest(tool: string, startMs: number, error?: boolean, enrichment?: { targetIds?: string[]; healthScore?: number; gateResult?: string }): void {

@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-17T00:36:27.019Z
+Generated at 2026-07-22T21:36:18.823Z
 
 ## Target and Environment Metadata
 
@@ -9,7 +9,7 @@ Generated at 2026-07-17T00:36:27.019Z
 - Command: `npx -y @cyanheads/git-mcp-server`
 - Server: `@cyanheads/git-mcp-server 2.15.1`
 - Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Node: `v22.23.1`
 
 ## Executive Summary
 
@@ -185,7 +185,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-17T00:36:27.964Z_
+_Analyzed at 2026-07-22T21:36:21.144Z_
 
 ## Regressions and Recoveries
 
@@ -195,15 +195,15 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | conformance | pass | 35.40 | All 7 conformance checks passed. |
-| healthy | prompts | pass | 0.72 | Advertised capability responded with the minimal expected shape (1 item). |
-| healthy | resources | pass | 0.60 | Advertised capability responded with the minimal expected shape (2 items). |
-| healthy | tools | pass | 30.21 | Advertised capability responded with the minimal expected shape (28 items). |
-| review | attack-sim | partial | 18.71 | Safe attack simulation found 19 finding(s): 0 high, 19 medium, 0 low. |
+| healthy | conformance | pass | 43.23 | All 7 conformance checks passed. |
+| healthy | prompts | pass | 0.73 | Advertised capability responded with the minimal expected shape (1 item). |
+| healthy | resources | pass | 0.67 | Advertised capability responded with the minimal expected shape (2 items). |
+| healthy | tools | pass | 30.89 | Advertised capability responded with the minimal expected shape (28 items). |
+| review | attack-sim | partial | 28.21 | Safe attack simulation found 19 finding(s): 0 high, 19 medium, 0 low. |
 | review | runtime-profile | partial | 0.50 | Detected 7 potential egress target(s) and 118 potential state mutation(s) with high confidence. |
-| review | schema-quality | partial | 18.77 | Found 17 quality finding(s) across 30 item(s): 0 warnings, 17 info. |
-| review | security | partial | 17.21 | Found 19 security finding(s): 0 high, 19 medium, 0 low. |
-| review | security-lite | partial | 0.08 | Found 19 security finding(s): 0 high, 19 medium, 0 low. |
+| review | schema-quality | partial | 20.17 | Found 17 quality finding(s) across 30 item(s): 0 warnings, 17 info. |
+| review | security | partial | 18.15 | Found 19 security finding(s): 0 high, 19 medium, 0 low. |
+| review | security-lite | partial | 0.09 | Found 19 security finding(s): 0 high, 19 medium, 0 low. |
 
 ## Evidence Snippets
 
@@ -229,7 +229,7 @@ Summary: Advertised capability responded with the minimal expected shape (1 item
   - Minimal shape present: `true`
   - Item count: `1`
   - Identifiers: git_wrapup
-  - Diagnostics: {"level":30,"time":1784248587909,"env":"development","version":"2.15.1","pid":39477,"transport":"stdio","requestId":"D733W-M7R8R","timestamp":"2026-07-17T00:36:27.905Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Attempting to connect stdio transport..."}, {"level":20,"time":1784248587909,"env":"development","version":"2.15.1","pid":39477,"transport":"stdio","requestId":"D733W-M7R8R","timestamp":"2026-07-17T00:36:27.905Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Creating StdioServerTransport instance..."}, {"level":20,"time":1784248587909,"env":"development","version":"2.15.1","pid":39477,"transport":"stdio","requestId":"D733W-M7R8R","timestamp":"2026-07-17T00:36:27.905Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Connecting McpServer instance to StdioServerTransport..."} (+2 more)
+  - Diagnostics: {"level":30,"time":1784756181087,"env":"development","version":"2.15.1","pid":41545,"transport":"stdio","requestId":"H466U-D6QYI","timestamp":"2026-07-22T21:36:21.083Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Attempting to connect stdio transport..."}, {"level":20,"time":1784756181087,"env":"development","version":"2.15.1","pid":41545,"transport":"stdio","requestId":"H466U-D6QYI","timestamp":"2026-07-22T21:36:21.083Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Creating StdioServerTransport instance..."}, {"level":20,"time":1784756181087,"env":"development","version":"2.15.1","pid":41545,"transport":"stdio","requestId":"H466U-D6QYI","timestamp":"2026-07-22T21:36:21.083Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Connecting McpServer instance to StdioServerTransport..."} (+2 more)
 
 ### resources — pass
 
@@ -241,14 +241,14 @@ Summary: Advertised capability responded with the minimal expected shape (2 item
   - Minimal shape present: `true`
   - Item count: `1`
   - Identifiers: git://working-directory
-  - Diagnostics: {"level":30,"time":1784248587909,"env":"development","version":"2.15.1","pid":39477,"transport":"stdio","requestId":"D733W-M7R8R","timestamp":"2026-07-17T00:36:27.905Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Attempting to connect stdio transport..."}, {"level":20,"time":1784248587909,"env":"development","version":"2.15.1","pid":39477,"transport":"stdio","requestId":"D733W-M7R8R","timestamp":"2026-07-17T00:36:27.905Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Creating StdioServerTransport instance..."}, {"level":20,"time":1784248587909,"env":"development","version":"2.15.1","pid":39477,"transport":"stdio","requestId":"D733W-M7R8R","timestamp":"2026-07-17T00:36:27.905Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Connecting McpServer instance to StdioServerTransport..."} (+2 more)
+  - Diagnostics: {"level":30,"time":1784756181087,"env":"development","version":"2.15.1","pid":41545,"transport":"stdio","requestId":"H466U-D6QYI","timestamp":"2026-07-22T21:36:21.083Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Attempting to connect stdio transport..."}, {"level":20,"time":1784756181087,"env":"development","version":"2.15.1","pid":41545,"transport":"stdio","requestId":"H466U-D6QYI","timestamp":"2026-07-22T21:36:21.083Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Creating StdioServerTransport instance..."}, {"level":20,"time":1784756181087,"env":"development","version":"2.15.1","pid":41545,"transport":"stdio","requestId":"H466U-D6QYI","timestamp":"2026-07-22T21:36:21.083Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Connecting McpServer instance to StdioServerTransport..."} (+2 more)
 - Endpoint: `resources/templates/list`
   - Advertised: `true`
   - Responded: `true`
   - Minimal shape present: `true`
   - Item count: `1`
   - Identifiers: git://working-directory
-  - Diagnostics: {"level":30,"time":1784248587909,"env":"development","version":"2.15.1","pid":39477,"transport":"stdio","requestId":"D733W-M7R8R","timestamp":"2026-07-17T00:36:27.905Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Attempting to connect stdio transport..."}, {"level":20,"time":1784248587909,"env":"development","version":"2.15.1","pid":39477,"transport":"stdio","requestId":"D733W-M7R8R","timestamp":"2026-07-17T00:36:27.905Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Creating StdioServerTransport instance..."}, {"level":20,"time":1784248587909,"env":"development","version":"2.15.1","pid":39477,"transport":"stdio","requestId":"D733W-M7R8R","timestamp":"2026-07-17T00:36:27.905Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Connecting McpServer instance to StdioServerTransport..."} (+2 more)
+  - Diagnostics: {"level":30,"time":1784756181087,"env":"development","version":"2.15.1","pid":41545,"transport":"stdio","requestId":"H466U-D6QYI","timestamp":"2026-07-22T21:36:21.083Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Attempting to connect stdio transport..."}, {"level":20,"time":1784756181087,"env":"development","version":"2.15.1","pid":41545,"transport":"stdio","requestId":"H466U-D6QYI","timestamp":"2026-07-22T21:36:21.083Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Creating StdioServerTransport instance..."}, {"level":20,"time":1784756181087,"env":"development","version":"2.15.1","pid":41545,"transport":"stdio","requestId":"H466U-D6QYI","timestamp":"2026-07-22T21:36:21.083Z","operation":"connectStdioTransport","transportType":"Stdio","msg":"Connecting McpServer instance to StdioServerTransport..."} (+2 more)
 
 ### tools — pass
 
@@ -333,5 +333,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-17T003627019Z_11f6ae05`
+- Run ID: `run_2026-07-22T213618823Z_8f4e0844`
 - Gate: `pass`

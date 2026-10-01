@@ -1,11 +1,11 @@
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Command } from "commander";
-import { buildEvent, detectCiProvider, normalizeCampaign, recordEvent } from "../telemetry.js";
+import { buildEvent, detectCiProvider, normalizeCampaign, recordEvent } from "../command-events.js";
 import { defaultRunsDirectory, findLatestSuccessfulRunArtifact, readArtifact } from "../storage.js";
 import type { RunArtifact } from "../types.js";
-import { TOOL_VERSION } from "../version.js";
 import { quoteShell } from "./helpers.js";
+import { getCloudAccessToken, getCloudBaseUrl } from "../commercial.js";
 
 export interface InitCiOptions {
   command?: string;
@@ -28,6 +28,7 @@ export interface InitCiOptions {
   fix?: boolean;
   fromLastRun?: boolean;
   campaign?: string;
+  cloud?: boolean;
   ciProvider?: "github-actions" | "gitlab-ci" | "circleci" | "bitbucket-pipelines" | "azure-pipelines";
 }
 
@@ -51,13 +52,21 @@ function providerLabel(provider: string): string {
   return PROVIDER_LABELS[provider] ?? "CI Workflow";
 }
 
+const VALID_CI_PROVIDERS = Object.keys(CI_FILE_PATHS);
+
+function validateCiProvider(provider: string | undefined): void {
+  if (provider !== undefined && !VALID_CI_PROVIDERS.includes(provider)) {
+    throw new Error(`Invalid --ci-provider "${provider}". Valid options: ${VALID_CI_PROVIDERS.join(", ")}.`);
+  }
+}
+
 const DEFAULT_WORKFLOW_PATH = ".github/workflows/mcp-observatory.yml";
 const DEFAULT_BADGE_PATH = "docs/mcp-observatory-badge.md";
 const DEFAULT_TARGET_CONFIG_PATH = "mcp-observatory.target.json";
 const DEFAULT_PR_BODY_PATH = "docs/mcp-observatory-pr-body.md";
 const DEFAULT_ISSUE_BODY_PATH = "docs/mcp-observatory-issue.md";
 const DEFAULT_SCORE_BADGE_PATH = "docs/mcp-observatory-score-badge.md";
-const DEFAULT_ACTION_REF = `v${TOOL_VERSION}`;
+const DEFAULT_ACTION_REF = "v1";
 const DEFAULT_WEEKLY_CRON = "0 9 * * 1";
 
 async function exists(filePath: string): Promise<boolean> {
@@ -84,7 +93,7 @@ function githubActionsYaml(options: InitCiOptions): string {
   const statusEnabled = options.setStatus === true;
   const sarifEnabled = options.sarif === true;
   const schedule = normalizeSchedule(options.schedule);
-  const actionRef = options.actionRef?.trim() || DEFAULT_ACTION_REF;
+  const actionRef = options.actionRef?.trim() || (options.cloud ? "main" : DEFAULT_ACTION_REF);
   const lines = [
     "name: MCP Observatory",
     "",
@@ -134,6 +143,12 @@ function githubActionsYaml(options: InitCiOptions): string {
     `          set-status: ${statusEnabled ? "true" : "false"}`,
   );
   if (sarifEnabled) lines.push("          upload-sarif: true");
+  if (options.cloud) {
+    lines.push(
+      "          cloud-token: ${{ secrets.MCP_OBSERVATORY_CLOUD_TOKEN }}",
+      `          cloud-endpoint: ${getCloudBaseUrl()}`,
+    );
+  }
   if (!commentsEnabled && !statusEnabled && !sarifEnabled) {
     lines.push("          # Read-only by default for low-friction external PRs. Maintainers can enable PR comments/statuses later.");
   }
@@ -495,6 +510,7 @@ function doctorFixOptions(options: InitCiOptions, workflow: string | undefined):
 }
 
 export async function doctorSetupCi(options: InitCiOptions = {}): Promise<SetupCiDoctorResult> {
+  validateCiProvider(options.ciProvider);
   const detectedProvider = options.ciProvider ?? detectCiProvider() ?? "github-actions";
   const defaultPath = CI_FILE_PATHS[detectedProvider] ?? DEFAULT_WORKFLOW_PATH;
   const workflowPath = options.workflow ?? defaultPath;
@@ -538,7 +554,15 @@ export async function doctorSetupCi(options: InitCiOptions = {}): Promise<SetupC
         label: "Pinned Action",
         status: "warn",
         message: "Workflow uses action@main.",
-        fix: "Pin the action to a release tag or full commit SHA.",
+        fix: "Pin the action to v1 or a full commit SHA.",
+      });
+    } else if (/^v\d+\.\d+\.\d+$/.test(actionRef)) {
+      checks.push({
+        id: "action-ref",
+        label: "Pinned Action",
+        status: "warn",
+        message: `Workflow pins action@${actionRef}. Prefer action@v1 so hosted checkout copy stays current.`,
+        fix: "npx -y @kryptosai/mcp-observatory@latest setup-ci --doctor --fix",
       });
     } else {
       checks.push({
@@ -595,6 +619,7 @@ export async function doctorSetupCi(options: InitCiOptions = {}): Promise<SetupC
 }
 
 export async function initCi(options: InitCiOptions): Promise<InitCiResult> {
+  validateCiProvider(options.ciProvider);
   if (options.command && options.target) {
     throw new Error("Use either --command or --target, not both.");
   }
@@ -644,7 +669,8 @@ function addInitCiOptions(command: Command): Command {
   return command
     .option("--command <command>", "MCP server command to test, for example: 'npx -y my-mcp-server'")
     .option("--target <file>", "Target config JSON path to use instead of a command.")
-    .option("--workflow <file>", "Workflow output path.", DEFAULT_WORKFLOW_PATH)
+    .option("--workflow <file>", "Workflow output path. Defaults to the path for the detected or selected CI provider.")
+    .option("--ci-provider <provider>", `Override auto-detected CI provider (${VALID_CI_PROVIDERS.join(", ")}).`)
     .option("--badge", "Also write a README badge snippet.", false)
     .option("--badge-file <file>", "Badge snippet output path.", DEFAULT_BADGE_PATH)
     .option("--target-config [file]", "Also write an example target config and point the workflow at it.")
@@ -661,7 +687,8 @@ function addInitCiOptions(command: Command): Command {
     .option("--doctor", "Inspect the current repository's MCP Observatory CI adoption state.", false)
     .option("--fix", "With --doctor, repair the adoption kit with deep, security, SARIF, and weekly scheduled checks.", false)
     .option("--from-last-run", "Generate the adoption kit from the latest successful local run artifact.", false)
-    .option("--campaign <slug>", "Attach a safe campaign/source slug to telemetry for attribution.")
+    .option("--campaign <slug>", "Attach a safe campaign/source slug for attribution.")
+    .option("--cloud", "Require MCP Observatory Cloud login and upload private-repo CI artifacts.", false)
     .option("--identify <email>", "Opt-in: share your email to help us understand who uses Observatory. Never shared, never spammed.");
 }
 
@@ -726,6 +753,17 @@ function initCiAction(commandName: "init-ci" | "setup-ci"): (options: InitCiOpti
         all: true,
       };
       process.stdout.write(`Using latest successful run: ${latestPath}\n`);
+    }
+
+    if (options.cloud) {
+      let token = await getCloudAccessToken();
+      if (!token) {
+        const auth = await import("../auth.js");
+        const signedIn = await auth.performCloudDeviceFlow(getCloudBaseUrl());
+        token = signedIn.accessToken;
+      }
+      if (!token) throw new Error("Cloud authentication is required before writing private-repo CI.");
+      process.stdout.write("Cloud authentication confirmed. Add the token to your repository as MCP_OBSERVATORY_CLOUD_TOKEN.\n");
     }
 
     const result = await initCi(options);

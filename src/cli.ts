@@ -4,7 +4,8 @@ import { readFile, writeFile } from "node:fs/promises";
 import { Command } from "commander";
 
 import { isCI } from "./ci.js";
-import { ANSI, LOGO, c, getBinName, setNoColor, setQuiet, useColor } from "./commands/helpers.js";
+import { ANSI, LOGO, c, getBinName, isQuiet, setNoColor, setQuiet, useColor } from "./commands/helpers.js";
+import { setAccessibleMode } from "./reporters/terminal.js";
 import { registerDemoCommands } from "./commands/demo.js";
 import { registerDiffCommands } from "./commands/diff.js";
 import { registerLegacyCommands } from "./commands/legacy.js";
@@ -13,6 +14,7 @@ import { registerScanCommands } from "./commands/scan.js";
 import { registerScoreCommands } from "./commands/score.js";
 import { registerServeCommands } from "./commands/serve.js";
 import { registerSuggestCommands } from "./commands/suggest.js";
+import { registerUsageCommands } from "./commands/usage.js";
 import { registerTelemetryCommands } from "./commands/telemetry.js";
 import { registerTestCommands } from "./commands/test.js";
 import { registerWatchCommands } from "./commands/watch.js";
@@ -27,13 +29,17 @@ import { registerEnforceCommands } from "./commands/enforce.js";
 import { registerReceiptCommands } from "./commands/receipt.js";
 import { registerRiskGraphCommands } from "./commands/risk-graph.js";
 import { registerSkillScanCommands } from "./commands/skill-scan.js";
-import { DEFAULT_CLOUD_UPLOAD_ENDPOINT, printCloudInfo, getCloudAccessToken, cloudWhoami } from "./commercial.js";
+import { registerHandshakeCommands } from "./commands/handshake.js";
+import { getCloudUploadEndpoint, getCloudBaseUrl, printCloudInfo, getCloudAccessToken, cloudWhoami, SELF_SERVE_PRICING_URL } from "./commercial.js";
+import { defaultRunsDirectory, findLatestRunArtifact } from "./storage.js";
 import { runTarget } from "./index.js";
 import type { RunArtifact, TargetConfig } from "./types.js";
-import { loadTelemetryConfig, collectUserIdentity, recordEvent, buildEvent, updateFeatureChain } from "./telemetry.js";
+import { recordEvent, buildEvent } from "./command-events.js";
+import { initializeTelemetry, updateFeatureChain } from "./telemetry.js";
 import { requireHttpUrl } from "./utils/url.js";
 import { validateRunArtifact } from "./validate.js";
 import { TOOL_VERSION } from "./version.js";
+import { emitCloudUploadResponse } from "./cloud-upload.js";
 
 // ── Interactive Menu ─────────────────────────────────────────────────────────
 
@@ -53,7 +59,8 @@ const MENU_GROUPS: MenuGroup[] = [
   {
     heading: "",
     items: [
-      { command: ["test"],         label: "test <cmd>", outcome: "Test a specific MCP server",                        recommended: true },
+      { command: ["demo"],         label: "demo",       outcome: "Scan your servers or a built-in demo and get a grade", recommended: true },
+      { command: ["test"],         label: "test <cmd>", outcome: "Test a specific MCP server" },
       { command: ["scan"],         label: "scan",       outcome: "Check all your configured MCP servers" },
       { command: ["scan", "deep"], label: "scan deep",  outcome: "^ plus invoke tools to verify they work" },
       { command: ["skill-scan"],   label: "skill-scan <path>", outcome: "Scan skill files for security risks" },
@@ -73,6 +80,14 @@ const MENU_GROUPS: MenuGroup[] = [
       { command: ["risk-graph"],     label: "risk-graph",   outcome: "Map MCP receipts and artifacts into an agent toolchain graph" },
       { command: ["attack-sim"],     label: "attack-sim",   outcome: "Safely simulate MCP attack-readiness" },
       { command: ["enterprise-report"], label: "enterprise-report", outcome: "Generate a production/security report" },
+    ],
+  },
+  {
+    heading: "Hosted",
+    items: [
+      { command: ["cloud"], label: "cloud", outcome: "Free hosted snapshot, Individual Pro history, and the Release Gate Pilot" },
+      { command: ["cloud", "login"], label: "cloud login", outcome: "Connect this CLI to your hosted account" },
+      { command: ["cloud", "upload"], label: "cloud upload", outcome: "Sign in and upload one hosted snapshot free" },
     ],
   },
   {
@@ -101,7 +116,7 @@ async function showInteractiveMenu(): Promise<string[] | null> {
   }
 
   const allItems = getAllMenuItems();
-  let cursor = 0; // start on "scan" (recommended)
+  let cursor = 0;
 
   const write = (s: string) => process.stdout.write(s);
 
@@ -226,15 +241,16 @@ async function main(): Promise<void> {
   if (process.argv.includes("--quiet")) {
     setQuiet(true);
   }
+  // Capture --accessible the same way — reporters render before subcommand
+  // options are parsed, so this must be read from argv up front.
+  if (process.argv.includes("--accessible")) {
+    setAccessibleMode(true);
+  }
 
   const bin = getBinName();
 
-  // Telemetry: load config and warm identity cache in background
-  await loadTelemetryConfig();
-  await collectUserIdentity().catch(() => {});
-
   // Update check (CLI only, not MCP server mode)
-  if (process.argv[2] !== "serve") {
+  if (process.argv[2] !== "serve" && process.argv[2] !== "wrap") {
     try {
       const { default: updateNotifier } = await import("update-notifier");
       const notifier = updateNotifier({
@@ -243,7 +259,7 @@ async function main(): Promise<void> {
       });
       notifier.notify({
         isGlobal: true,
-        message: "MCP Observatory update available: {currentVersion} → {latestVersion}\nRun latest receipts + CI: npx @kryptosai/mcp-observatory@latest attack-sim <cmd>\nUpgrade command: npx @kryptosai/mcp-observatory@latest",
+        message: "MCP Observatory update available: {currentVersion} → {latestVersion}\nRun latest receipts + CI: npx @kryptosai/mcp-observatory@latest attack-sim <cmd>\nUpgrade command: npx @kryptosai/mcp-observatory@latest\nIndividual Pro history + hosted CI: https://app.mcp-observatory.com/pricing",
       });
     } catch {
       // update-notifier not available — skip silently
@@ -256,8 +272,12 @@ async function main(): Promise<void> {
     .enablePositionalOptions()
     .description("Test your MCP servers for breaking changes.")
     .version(TOOL_VERSION)
-    .addHelpText("before", useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n` : LOGO + `  v${TOOL_VERSION}\n`)
+    .addHelpText("before", (() => {
+      if (isQuiet()) return "";
+      return useColor() ? c(ANSI.cyan, LOGO) + `  ${c(ANSI.dim, `v${TOOL_VERSION}`)}\n` : LOGO + `  v${TOOL_VERSION}\n`;
+    })())
     .option("--quiet", "Suppress logo and informational output.", false)
+    .option("--accessible", "Use [PASS]/[FAIL]/[WARN] text labels instead of Unicode status glyphs.", false)
     .addHelpText("after", (() => {
       const lines = [
         "",
@@ -295,9 +315,10 @@ async function main(): Promise<void> {
   registerWatchCommands(program);
   registerServeCommands(program);
   registerSuggestCommands(program);
+  registerTelemetryCommands(program);
+  registerUsageCommands(program);
   registerScoreCommands(program);
   registerLegacyCommands(program);
-  registerTelemetryCommands(program);
   registerHistoryCommands(program);
   registerCiReportCommands(program);
   registerEnterpriseReportCommands(program);
@@ -309,28 +330,36 @@ async function main(): Promise<void> {
   registerRiskGraphCommands(program);
   registerAttackSimCommands(program);
   registerSkillScanCommands(program);
+  registerHandshakeCommands(program);
 
   const cloudCmd = program
     .command("cloud")
-    .description("Show hosted reporting, security review, and enterprise pilot options.")
+    .description("Show the free hosted snapshot, Individual Pro, and Release Gate Pilot options.")
     .action(() => {
       printCloudInfo();
     });
 
   cloudCmd
     .command("upload")
-    .description("Upload a run artifact to MCP Observatory Cloud for a hosted pilot report.")
-    .argument("<artifact>", "Path to a run artifact JSON file.")
-    .option("--org <org>", "Customer or organization slug. Defaults to MCP_OBSERVATORY_ORG.")
-    .option("--endpoint <url>", "Hosted upload endpoint.", DEFAULT_CLOUD_UPLOAD_ENDPOINT)
-    .action(async (artifactPath: string, options: { org?: string; endpoint: string }) => {
-      const token = await getCloudAccessToken();
+    .description("Sign in and upload the latest local run receipt. The first hosted snapshot is free.")
+    .argument("[artifact]", "Optional path to a run artifact JSON file. Defaults to the newest local receipt.")
+    .option("--org <org>", "Legacy admin attribution; ignored for personal hosted accounts.")
+    .option("--endpoint <url>", "Hosted upload endpoint.", getCloudUploadEndpoint())
+    .action(async (artifactPath: string | undefined, options: { org?: string; endpoint: string }) => {
+      const resolvedPath = artifactPath ?? await findLatestRunArtifact(defaultRunsDirectory());
+      if (!resolvedPath) {
+        throw new Error(`No run artifact found in this project folder. Run a scan here first: ${getBinName()} demo\nIf you already scanned elsewhere, return to that folder or pass the receipt path: ${getBinName()} cloud upload path/to/receipt.json\nSetup help: https://mcp-observatory.com/start/`);
+      }
+      const artifact = validateRunArtifact(JSON.parse(await readFile(resolvedPath, "utf8")));
+      const endpoint = requireHttpUrl(options.endpoint, "Cloud upload endpoint");
+      let token = await getCloudAccessToken();
       if (!token) {
-        throw new Error("Authentication required. Set MCP_OBSERVATORY_CLOUD_TOKEN or run: mcp-observatory cloud login");
+        const { performCloudDeviceFlow } = await import("./auth.js");
+        const signedIn = await performCloudDeviceFlow(getCloudBaseUrl());
+        token = signedIn.accessToken;
+        process.stdout.write(`  ${c(ANSI.green, "✓")} Signed in as ${c(ANSI.bold, signedIn.email ?? signedIn.sub ?? "unknown")}\n`);
       }
       const org = options.org ?? process.env["MCP_OBSERVATORY_ORG"];
-      const artifact = validateRunArtifact(JSON.parse(await readFile(artifactPath, "utf8")));
-      const endpoint = requireHttpUrl(options.endpoint, "Cloud upload endpoint");
       const response = await fetch(endpoint, {
         method: "POST",
         headers: {
@@ -338,14 +367,14 @@ async function main(): Promise<void> {
           "Content-Type": "application/json",
           ...(org ? { "X-MCP-Observatory-Org": org } : {}),
         },
-        // lgtm[js/file-data-in-network-request] This command explicitly uploads the user-provided artifact to a validated HTTPS endpoint.
         body: JSON.stringify(artifact),
       });
-      const text = await response.text();
-      if (!response.ok) {
-        throw new Error(`Cloud upload failed (${response.status}): ${text}`);
-      }
-      process.stdout.write(`${text}\n`);
+      await emitCloudUploadResponse(response, {
+        artifactPath: resolvedPath,
+        dashboardUrl: getCloudBaseUrl(),
+        pricingUrl: SELF_SERVE_PRICING_URL,
+        binName: getBinName(),
+      });
       recordEvent(buildEvent("command_complete", "cloud-upload", "cli", {
         cloudUpload: true,
         org,
@@ -360,15 +389,16 @@ async function main(): Promise<void> {
     .action(async (options: { issuer?: string; clientId?: string }) => {
       const issuer = options.issuer ?? process.env["MCP_OBSERVATORY_OIDC_ISSUER"];
       const clientId = options.clientId ?? process.env["MCP_OBSERVATORY_OIDC_CLIENT_ID"];
-      if (!issuer || !clientId) {
-        throw new Error("OIDC issuer and client ID are required. Set MCP_OBSERVATORY_OIDC_ISSUER and MCP_OBSERVATORY_OIDC_CLIENT_ID, or pass --issuer and --client-id.");
-      }
-      const { performDeviceFlow } = await import("./auth.js");
-      const token = await performDeviceFlow(issuer, clientId);
+      const { performDeviceFlow, performCloudDeviceFlow } = await import("./auth.js");
+      const token = issuer && clientId
+        ? await performDeviceFlow(issuer, clientId)
+        : await performCloudDeviceFlow(getCloudBaseUrl());
       process.stdout.write(`  ${c(ANSI.green, "✓")} Signed in as ${c(ANSI.bold, token.email ?? token.sub ?? "unknown")}\n`);
       if (token.org) {
         process.stdout.write(`    Organization: ${c(ANSI.bold, token.org)}\n`);
       }
+      process.stdout.write(`    Dashboard: ${getCloudBaseUrl()}/dashboard\n`);
+      process.stdout.write(`    Upload: ${getBinName()} cloud upload\n`);
     });
 
   cloudCmd
@@ -482,17 +512,34 @@ async function main(): Promise<void> {
       }
     });
 
-  // Interactive menu when invoked with no arguments
-  if (process.argv.length === 2 && !isCI) {
+  if (process.argv[2] === "--menu") {
+    process.argv.splice(2, 1);
     const choice = await showInteractiveMenu();
     if (!choice) return;
     process.argv.push(...choice);
+  } else if (process.argv.length === 2) {
+    if (isCI) {
+      process.stdout.write(
+        [
+          "",
+          "MCP Observatory is installed. Complete a first check, then pin CI:",
+          `  ${bin} demo`,
+          `  ${bin} setup-ci --all --command "npx -y <server-package>" --sarif`,
+          "  uses: KryptosAI/mcp-observatory/action@v1",
+          "",
+        ].join("\n"),
+      );
+      return;
+    }
+    process.argv.push("demo");
   }
 
-  // Telemetry: record command usage
   const commandName = process.argv[2] ?? "interactive";
-  recordEvent(buildEvent("command_run", commandName, "cli"));
-  updateFeatureChain(commandName).catch(() => {});
+  if (commandName !== "telemetry" && !commandName.startsWith("-")) {
+    await initializeTelemetry({ showNotice: true });
+    recordEvent(buildEvent("command_run", commandName, "cli"));
+    await updateFeatureChain(commandName).catch(() => undefined);
+  }
 
   await program.parseAsync(process.argv);
 }

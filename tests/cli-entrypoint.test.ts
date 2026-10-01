@@ -39,18 +39,53 @@ function runCliWithStderr(args: string[], opts?: { cwd?: string; timeout?: numbe
   };
 }
 
-function telemetryEvents(stderr: string): Array<Record<string, unknown>> {
-  return stderr
-    .split("\n")
-    .filter((line) => line.startsWith("[telemetry] "))
-    .map((line) => JSON.parse(line.slice("[telemetry] ".length)) as Record<string, unknown>);
-}
-
 describe("CLI entrypoint", () => {
   it("prints version with --version", () => {
     const { stdout, exitCode } = runCli(["--version"]);
     expect(exitCode).toBe(0);
     expect(stdout.trim()).toMatch(/^\d+\.\d+\.\d+$/);
+  });
+
+  it("demo grades the packaged local server when no MCP servers are configured", () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "mcp-obs-demo-"));
+    const { stdout, exitCode } = runCli(["demo"], {
+      cwd: tmpDir,
+      timeout: 30_000,
+      env: { HOME: tmpDir, USERPROFILE: tmpDir, XDG_CONFIG_HOME: tmpDir },
+    });
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("packaged local demo server");
+    expect(stdout).toContain("mcp-observatory-demo");
+    expect(stdout).toContain("Safety Grade");
+    expect(stdout).toContain("cloud upload");
+    expect(stdout).not.toContain("pricing?plan=team");
+  });
+
+  it("explicit example mode ignores configured servers and saves a usable receipt", () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "mcp-obs-example-"));
+    fs.writeFileSync(path.join(tmpDir, ".mcp.json"), JSON.stringify({ mcpServers: {
+      "must-not-start": { command: "this-command-must-never-execute" },
+    } }));
+    try {
+      const result = runCli(["demo", "--example"], { cwd: tmpDir, env: { MCP_OBSERVATORY_TELEMETRY: "0" } });
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain("Your configured servers are not started");
+      expect(result.stdout).not.toContain("Issues to fix");
+      expect(result.stdout).toContain("mcp-observatory-demo");
+      expect(result.stdout).toContain("Receipt saved:");
+      expect(result.stdout).not.toContain("must-not-start");
+      const files = fs.readdirSync(path.join(tmpDir, ".mcp-observatory", "runs"));
+      expect(files.some(file => file.endsWith(".json"))).toBe(true);
+    } finally { fs.rmSync(tmpDir, { recursive: true, force: true }); }
+  });
+
+  it("prints a CI activation card when invoked with no arguments", () => {
+    const { stdout, exitCode } = runCli([], { env: { CI: "true" } });
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("action@v1");
+    expect(stdout).toContain("setup-ci --all");
+    expect(stdout).toContain("demo");
+    expect(stdout).not.toContain("Usage:");
   });
 
   it("prints help with --help", () => {
@@ -60,6 +95,17 @@ describe("CLI entrypoint", () => {
     expect(stdout).toContain("scan");
     expect(stdout).toContain("test");
     expect(stdout).toContain("MCP");
+    expect(stdout).toContain("--accessible");
+  });
+
+  it("replaces status glyphs when --accessible is set", () => {
+    const args = ["run", "--target", "tests/fixtures/sample-target-config.json"];
+    const normal = runCli(args);
+    const accessible = runCli(["--accessible", ...args]);
+    expect(accessible.exitCode).toBe(0);
+    expect(normal.stdout).toContain("⚠");
+    expect(accessible.stdout).toContain("[WARN]");
+    expect(accessible.stdout).not.toContain("⚠");
   });
 
   it("scan subcommand shows help", () => {
@@ -186,7 +232,43 @@ describe("CLI entrypoint", () => {
     const { stdout, exitCode } = runCli(["cloud"]);
     expect(exitCode).toBe(0);
     expect(stdout).toContain("MCP Observatory Cloud");
-    expect(stdout).toContain("Enterprise Pilot");
+    expect(stdout).toContain("Release Gate Pilot");
+    expect(stdout).toContain("Individual Pro: $29/month");
+    expect(stdout).toContain("cloud upload");
+    expect(stdout).not.toContain("pricing?plan=team");
+  });
+
+  it("cloud upload advertises a free snapshot instead of checkout", () => {
+    const { stdout, exitCode } = runCli(["cloud", "upload", "--help"]);
+    expect(exitCode).toBe(0);
+    expect(stdout.replaceAll(/\s+/g, " ")).toContain("The first hosted snapshot is free.");
+    expect(stdout).not.toContain("opens checkout");
+  });
+
+  it("validates the local artifact before starting cloud authentication", () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "mcp-obs-cloud-order-"));
+    const invalidArtifact = path.join(tmpDir, "invalid.json");
+    fs.writeFileSync(invalidArtifact, "{", "utf8");
+
+    const { stdout, stderr, exitCode } = runCliWithStderr([
+      "cloud", "upload", invalidArtifact,
+    ], {
+      timeout: 5_000,
+      env: {
+        HOME: tmpDir,
+        USERPROFILE: tmpDir,
+        XDG_CONFIG_HOME: tmpDir,
+        MCP_OBSERVATORY_CLOUD_TOKEN: "",
+        MCP_OBSERVATORY_CLOUD_URL: "http://127.0.0.1:9",
+        MCP_OBSERVATORY_TELEMETRY: "0",
+        DO_NOT_TRACK: "1",
+      },
+    });
+
+    expect(exitCode).not.toBe(0);
+    expect(stderr).toMatch(/JSON at position|Unexpected end of JSON input/);
+    expect(stderr).not.toContain("fetch failed");
+    expect(stdout).not.toContain("Signed in");
   });
 
   it("diff runs two sample artifacts", () => {
@@ -231,19 +313,21 @@ describe("CLI entrypoint", () => {
 
     const withAttack = runCliWithStderr(["test", "node", fixture, "--no-setup-ci"], {
       cwd: tmpDir,
-      env: { MCP_OBSERVATORY_TELEMETRY_DEBUG: "1" },
+      env: {},
     });
     expect(withAttack.exitCode).toBe(0);
-    const withAttackComplete = telemetryEvents(withAttack.stderr).find((event) => event["event"] === "command_complete" && event["command"] === "test");
-    expect((withAttackComplete?.["checkStatuses"] as Record<string, string> | undefined)?.["attack-sim"]).toBe("pass");
+    const runFiles = fs.readdirSync(path.join(tmpDir, ".mcp-observatory", "runs"));
+    const withAttackArtifact = JSON.parse(fs.readFileSync(path.join(tmpDir, ".mcp-observatory", "runs", runFiles[0]!), "utf8")) as { checks: Array<{ id: string }> };
+    expect(withAttackArtifact.checks.some((check) => check.id === "attack-sim")).toBe(true);
 
     const withoutAttack = runCliWithStderr(["test", "node", fixture, "--no-attack-sim", "--no-setup-ci"], {
       cwd: tmpDir,
-      env: { MCP_OBSERVATORY_TELEMETRY_DEBUG: "1" },
+      env: {},
     });
     expect(withoutAttack.exitCode).toBe(0);
-    const withoutAttackComplete = telemetryEvents(withoutAttack.stderr).find((event) => event["event"] === "command_complete" && event["command"] === "test");
-    expect((withoutAttackComplete?.["checkStatuses"] as Record<string, string> | undefined)?.["attack-sim"]).toBeUndefined();
+    const withoutAttackFiles = fs.readdirSync(path.join(tmpDir, ".mcp-observatory", "runs"));
+    const withoutAttackArtifact = JSON.parse(fs.readFileSync(path.join(tmpDir, ".mcp-observatory", "runs", withoutAttackFiles.at(-1)!), "utf8")) as { checks: Array<{ id: string }> };
+    expect(withoutAttackArtifact.checks.some((check) => check.id === "attack-sim")).toBe(false);
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
@@ -392,7 +476,7 @@ describe("CLI entrypoint", () => {
       const markdown = fs.readFileSync(receiptPath, "utf8");
       expect(markdown).toContain("# MCP Observatory Receipt");
       expect(markdown).toContain("public_safety_index");
-      expect(markdown).toContain("Request private fleet receipt pack");
+      expect(markdown).toContain("Request Release Gate Pilot");
       expect(markdown).toContain("mcp-observatory setup-ci --all");
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
@@ -494,14 +578,10 @@ describe("CLI entrypoint", () => {
 
     const { stderr, exitCode } = runCliWithStderr(["test", "node", fixture, "--campaign", "maintainer-pr", "--no-setup-ci"], {
       cwd: tmpDir,
-      env: {
-        MCP_OBSERVATORY_TELEMETRY_DEBUG: "1",
-      },
+      env: {},
     });
     expect(exitCode).toBe(0);
-    const complete = telemetryEvents(stderr).find((event) => event["event"] === "command_complete" && event["command"] === "test");
-    expect(complete?.["campaign"]).toBe("maintainer-pr");
-    expect(JSON.stringify(complete?.["serverCommands"])).not.toContain("--campaign");
+    expect(stderr).not.toContain("[telemetry]");
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
@@ -514,13 +594,10 @@ describe("CLI entrypoint", () => {
       cwd: tmpDir,
       env: {
         MCP_OBSERVATORY_CAMPAIGN: "bot-runtime-review",
-        MCP_OBSERVATORY_TELEMETRY_DEBUG: "1",
       },
     });
     expect(exitCode).toBe(0);
-    const events = telemetryEvents(stderr);
-    expect(events.find((event) => event["event"] === "command_run")?.["campaign"]).toBe("bot-runtime-review");
-    expect(events.find((event) => event["event"] === "command_complete")?.["campaign"]).toBe("bot-runtime-review");
+    expect(stderr).not.toContain("[telemetry]");
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 

@@ -1,6 +1,6 @@
 # MCP Observatory Run Report
 
-Generated at 2026-07-17T00:36:34.877Z
+Generated at 2026-07-22T21:36:43.015Z
 
 ## Target and Environment Metadata
 
@@ -9,7 +9,7 @@ Generated at 2026-07-17T00:36:34.877Z
 - Command: `npx -y @antv/mcp-server-chart`
 - Server: `mcp-server-chart 0.8.x`
 - Platform: `darwin 25.5.0`
-- Node: `v22.22.1`
+- Node: `v22.23.1`
 
 ## Executive Summary
 
@@ -170,7 +170,7 @@ The following state-modifying operations were identified from tool schemas:
 | filesystem | write | working_directory | description_analysis |
 | filesystem | write | working_directory | description_analysis |
 
-_Analyzed at 2026-07-17T00:36:35.788Z_
+_Analyzed at 2026-07-22T21:36:45.254Z_
 
 ## Regressions and Recoveries
 
@@ -180,13 +180,13 @@ _Use the `diff` command against another run artifact to classify regressions and
 
 | Focus | Check | Status | Duration (ms) | Message |
 | --- | --- | --- | --- | --- |
-| healthy | attack-sim | pass | 1.50 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
-| healthy | conformance | pass | 1.33 | All 7 conformance checks passed. |
-| healthy | runtime-profile | pass | 0.40 | Detected 0 potential egress target(s) and 117 potential state mutation(s) with low confidence. |
-| healthy | schema-quality | pass | 1.63 | All 27 item(s) have good schema quality. |
-| healthy | security | pass | 0.77 | No security issues detected. |
-| healthy | security-lite | pass | 0.07 | No security issues detected (lightweight scan). |
-| healthy | tools | pass | 1.84 | Advertised capability responded with the minimal expected shape (27 items). |
+| healthy | attack-sim | pass | 1.83 | Safe attack simulation found no high-risk MCP attack-readiness findings. |
+| healthy | conformance | pass | 1.31 | All 7 conformance checks passed. |
+| healthy | runtime-profile | pass | 0.41 | Detected 0 potential egress target(s) and 117 potential state mutation(s) with low confidence. |
+| healthy | schema-quality | pass | 1.33 | All 27 item(s) have good schema quality. |
+| healthy | security | pass | 0.93 | No security issues detected. |
+| healthy | security-lite | pass | 0.29 | No security issues detected (lightweight scan). |
+| healthy | tools | pass | 1.66 | Advertised capability responded with the minimal expected shape (27 items). |
 | confirm intent | prompts | unsupported | 0.00 | Prompts are not advertised by the target. |
 | confirm intent | resources | unsupported | 0.00 | Resources are not advertised by the target. |
 
@@ -274,7 +274,7 @@ Summary: Advertised capability responded with the minimal expected shape (27 ite
   - Minimal shape present: `true`
   - Item count: `27`
   - Identifiers: generate_area_chart, generate_bar_chart, generate_boxplot_chart, generate_column_chart, generate_district_map (+22 more)
-  - Diagnostics: [MCP-Server-Chart] 2026-07-17T00:36:35.779Z ℹ️  setting up tool handlers..., [MCP-Server-Chart] 2026-07-17T00:36:35.781Z ℹ️  tool handlers set up, [MCP-Server-Chart] 2026-07-17T00:36:35.781Z ✅ Stdio MCP Server started
+  - Diagnostics: [MCP-Server-Chart] 2026-07-22T21:36:45.246Z ℹ️  setting up tool handlers..., [MCP-Server-Chart] 2026-07-22T21:36:45.247Z ℹ️  tool handlers set up, [MCP-Server-Chart] 2026-07-22T21:36:45.248Z ✅ Stdio MCP Server started
 
 ### prompts — unsupported
 
@@ -311,5 +311,5 @@ npm run cli -- report --run <path-to-run-artifact.json> --format markdown
 
 - Artifact type: `run`
 - Schema version: `1.0.0`
-- Run ID: `run_2026-07-17T003634877Z_d8b79bb5`
+- Run ID: `run_2026-07-22T213643015Z_c3b027f6`
 - Gate: `pass`
