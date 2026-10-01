@@ -7,6 +7,9 @@
 /start https://clearframecode.com/observatory/#setup 301
 /start/ https://clearframecode.com/observatory/#setup 301
 /start/index.html https://clearframecode.com/observatory/#setup 301
+/guide https://clearframecode.com/observatory/#guide 301
+/guide/ https://clearframecode.com/observatory/#guide 301
+/guide/index.html https://clearframecode.com/observatory/#guide 301
 /dashboard https://clearframecode.com/observatory/#scans 301
 /dashboard/ https://clearframecode.com/observatory/#scans 301
 /safety-index https://clearframecode.com/observatory/#index 301
