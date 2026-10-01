@@ -160,7 +160,7 @@ describe("commercial copy consistency", () => {
     for (const [brand, targetId] of technologyTargets) {
       const target = safetyTargets.find(candidate => candidate.id === targetId);
       expect(target, `missing Safety Index metadata for ${targetId}`).toBeDefined();
-      const href = `href="/safety-index/servers/${targetId}.html"`;
+      const href = `href="/safety-index/servers/${targetId}"`;
       const cardStart = dashboard.indexOf(href);
       const cardEnd = dashboard.indexOf("</a>", cardStart);
       const card = dashboard.slice(cardStart, cardEnd);
