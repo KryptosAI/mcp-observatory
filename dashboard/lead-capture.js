@@ -30,6 +30,8 @@
 
   document.querySelectorAll("form[data-lead-form]").forEach(form => {
     const status = form.querySelector("[data-form-status]");
+    // The confirmation must remain visible when the submitted form is hidden.
+    form.after(status);
     form.addEventListener("submit", async event => {
       event.preventDefault();
       const kind = form.dataset.leadKind;
@@ -57,9 +59,16 @@
         } else {
           const subject = kind === "buyer" ? "MCP Release Gate Pilot request" : "MCP Observatory partner deal registration";
           const body = Object.entries(raw).filter(([, value]) => value).map(([key, value]) => `${key}: ${value}`).join("\n");
-          window.location.href = `mailto:${config.fallbackEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+          const mailto = `mailto:${config.fallbackEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+          button.disabled = false;
+          button.textContent = kind === "buyer" ? "Request the pilot" : "Register the opportunity";
+          status.hidden = false;
+          status.innerHTML = `<h3>Finish sending your request by email.</h3><p>Your request has not been submitted yet. <a href="${escapeHtml(mailto)}">Open the prepared email</a>, then send it to ${escapeHtml(config.fallbackEmail)}. Your form stays here if you need to make changes.</p>`;
+          return;
         }
         form.hidden = true;
+        // Author styles set .lead-form to display:grid, overriding [hidden].
+        form.style.display = "none";
         const next = qualified && config.meetingUrl
           ? `<a class="button primary" href="${escapeHtml(config.meetingUrl)}">Book your 20-minute fit call ↗</a><p>Choose a time now. We will review your context before the call.</p>`
           : "<p>Thank you. We will review the request and reply within one business day. Please do not send credentials, private URLs, or source code until we agree the scope.</p>";
