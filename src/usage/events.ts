@@ -6,11 +6,17 @@ const consent = z.object({
   optedIn: z.literal(true), userReviewed: z.literal(true),
   reviewedAt: z.iso.datetime(), policyVersion: z.string().min(1).max(100),
 }).strict();
+export const requestContextSchema = z.object({
+  text, provenance: z.enum(["user_written", "model_summary", "tool_args"]),
+  intent: z.string().min(1).max(200).optional(),
+}).strict();
+export type RequestContext = z.infer<typeof requestContextSchema>;
 export const callEventSchema = z.object({
   version: z.literal(1), kind: z.literal("call"), id, at: z.iso.datetime(),
   server: z.string().min(1).max(200), tool: z.string().min(1).max(200),
   correlationId: id, latencyMs: z.number().finite().nonnegative(),
   status: z.enum(["ok", "tool_error", "exception"]),
+  request: requestContextSchema.optional(),
   args: z.record(z.string(), z.unknown()), result: z.unknown().optional(),
   error: z.object({ category: z.enum(["tool_error", "exception"]), message: text }).optional(),
   capture: z.object({ argumentKeys: z.array(z.string()), resultIncluded: z.boolean(), transport: z.enum(["http", "stdio"]).optional() }),
@@ -18,7 +24,8 @@ export const callEventSchema = z.object({
 export const reportInputSchema = z.object({
   callIds: z.array(id).max(100), asked: text, expected: text, got: text,
   outcome: z.enum(["success", "failure", "unclear"]),
-  provenance: z.enum(["user_written", "model_summary"]), consent,
+  provenance: z.enum(["user_written", "model_summary", "tool_args", "unavailable"]), consent,
+  flag: z.boolean().optional(),
   excerpt: z.array(z.object({
     role: z.enum(["user", "assistant", "tool"]), text,
     provenance: z.enum(["user_text", "assistant_text", "tool_output", "model_summary"]),

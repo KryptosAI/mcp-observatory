@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { usageEventSchema, type UsageEvent, type ReportEvent, type CallEvent } from "./events.js";
+import { usageRequests } from "./requests.js";
 import type { Cassette } from "../cassette.js";
 
 export interface IntentAnalysisOptions {
@@ -24,51 +25,60 @@ function cosine(a: number[], b: number[]): number {
 }
 export async function analyzeUsage(events: UsageEvent[], options: IntentAnalysisOptions = {}) {
   events = events.map(event => usageEventSchema.parse(event));
-  const reports = events.filter((e): e is ReportEvent => e.kind === "report").sort((a, b) => a.id.localeCompare(b.id));
   const calls = events.filter((e): e is CallEvent => e.kind === "call");
+  const reports = events.filter((e): e is ReportEvent => e.kind === "report");
+  const requests = usageRequests(events);
+  const classified = requests.filter(r => r.provenance !== "unavailable");
   const threshold = options.threshold ?? (options.embed ? 0.8 : 0.45);
   if (!Number.isFinite(threshold) || threshold <= 0 || threshold > 1) throw new Error("threshold must be in (0, 1]");
-  const vectors = reports.length ? (options.embed ? await options.embed(reports.map(r => r.asked)) : lexicalVectors(reports.map(r => r.asked))) : [];
+  const vectors = classified.length ? (options.embed ? await options.embed(classified.map(r => r.asked)) : lexicalVectors(classified.map(r => r.asked))) : [];
   const dimensions = vectors[0]?.length ?? 0;
-  if (vectors.length !== reports.length || vectors.some(v => v.length !== dimensions || v.some(n => !Number.isFinite(n))) || (options.embed && reports.length && (!dimensions || vectors.some(v => Math.hypot(...v) === 0)))) {
-    throw new Error("Embedding provider must return one finite, nonzero, equally sized vector per report");
+  if (vectors.length !== classified.length || vectors.some(v => v.length !== dimensions || v.some(n => !Number.isFinite(n))) || (options.embed && classified.length && (!dimensions || vectors.some(v => Math.hypot(...v) === 0)))) {
+    throw new Error("Embedding provider must return one finite, nonzero, equally sized vector per request");
   }
   const groups: number[][] = [];
-  for (let i = 0; i < reports.length; i++) {
-    const group = groups.find(g => g.every(j => cosine(vectors[i] ?? [], vectors[j] ?? []) >= threshold));
+  for (let i = 0; i < classified.length; i++) {
+    const group = groups.find(g => g.every(j => {
+      const a = classified[i]!, b = classified[j]!;
+      if (a.intent || b.intent) return Boolean(a.intent && a.intent === b.intent);
+      return cosine(vectors[i] ?? [], vectors[j] ?? []) >= threshold;
+    }));
     if (group) group.push(i); else groups.push([i]);
   }
   const clusters = groups.map(indices => {
-    const members = indices.map(i => reports[i]!);
-    const ids = new Set(members.flatMap(r => r.callIds));
-    const linked = calls.filter(c => ids.has(c.id));
+    const members = indices.map(i => classified[i]!);
+    const linked = members.flatMap(r => r.calls);
+    const memberReports = members.flatMap(r => r.reports);
     const frequencies = new Map<string, number>();
     for (const member of members) for (const term of new Set(terms(member.asked))) frequencies.set(term, (frequencies.get(term) ?? 0) + 1);
-    const label = [...frequencies].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 5).map(([t]) => t).join(" / ") || "Insufficient retained text";
+    const label = members[0]?.intent ?? ([...frequencies].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 5).map(([t]) => t).join(" / ") || "Insufficient retained text");
+    const failureRequests = members.filter(m => m.outcome === "failure").length;
+    const knownOutcomes = members.filter(m => m.outcome !== "unknown").length;
     return {
       id: createHash("sha256").update(members.map(m => m.id).join("|")).digest("hex").slice(0, 16),
-      label, labelProvenance: "inferred_keywords", count: members.length,
-      reportIds: members.map(m => m.id), callIds: linked.map(c => c.id),
-      missingCallIds: [...ids].filter(id => !linked.some(c => c.id === id)),
-      reportedFailures: members.filter(m => m.outcome === "failure").length,
+      label, labelProvenance: members[0]?.intent ? "supplied_intent" : "inferred_keywords", count: members.length,
+      requestIds: members.map(m => m.id), reportIds: memberReports.map(m => m.id), callIds: linked.map(c => c.id),
+      missingCallIds: members.flatMap(m => m.missingCallIds),
+      failureRequests, knownOutcomes, unknownOutcomes: members.length - knownOutcomes,
+      failureRate: knownOutcomes ? failureRequests / knownOutcomes : null,
+      reportedFailures: memberReports.filter(m => m.outcome === "failure").length,
       observedCallErrors: linked.filter(c => c.status !== "ok").length,
-      examples: members.slice(0, 3).map(m => ({ reportId: m.id, asked: m.asked, expected: m.expected, got: m.got, provenance: m.provenance, outcome: m.outcome })),
-      breakdowns: members.flatMap(m => {
-        const errors = linked.filter(c => m.callIds.includes(c.id) && c.status !== "ok");
-        const corrections = m.excerpt.flatMap((turn, index) => turn.role === "user" && turn.provenance === "user_text" && /\b(no|wrong|instead|meant|not what|try again)\b/i.test(turn.text)
-          ? [{ evidence: "possible_user_correction", status: "inferred", turnIndex: index, reportId: m.id, text: turn.text }] : []);
-        return [
-          ...errors.map(c => ({ evidence: "runtime_error", status: "observed", reportId: m.id, callId: c.id, category: c.status })),
+      examples: members.slice(0, 3).map(m => ({ requestId: m.id, reportId: m.reports[0]?.id, asked: m.asked, expected: m.reports[0]?.expected, got: m.reports[0]?.got, provenance: m.provenance, outcome: m.outcome })),
+      breakdowns: [
+        ...linked.filter(c => c.status !== "ok").map(c => ({ evidence: "runtime_error", status: "observed", callId: c.id, category: c.status, message: c.error?.message })),
+        ...memberReports.flatMap(m => [
           ...(m.outcome === "failure" ? [{ evidence: "reported_outcome_mismatch", status: "user_reported", reportId: m.id, provenance: m.provenance }] : []),
-          ...corrections,
-        ];
-      }),
+          ...m.excerpt.flatMap((turn, index) => turn.role === "user" && turn.provenance === "user_text" && /\b(no|wrong|instead|meant|not what|try again)\b/i.test(turn.text)
+            ? [{ evidence: "possible_user_correction", status: "inferred", turnIndex: index, reportId: m.id, text: turn.text }] : []),
+        ]),
+      ],
     };
-  }).sort((a, b) => b.count - a.count || a.id.localeCompare(b.id));
+  }).sort((a, b) => b.failureRequests - a.failureRequests || b.count - a.count || a.id.localeCompare(b.id));
   return {
     version: 1, method: options.embed ? "semantic_embeddings" : "lexical_cosine", threshold,
-    scope: "Only retained opted-in reports; not representative of all users or unshared conversations.",
-    totalCalls: calls.length, totalReports: reports.length, clusters,
+    scope: "Retained instrumented requests and opted-in reports. A successful tool call is an unknown user outcome until feedback is supplied; rates use known outcomes only.",
+    totalCalls: calls.length, totalReports: reports.length, totalRequests: requests.length, clusters,
+    unclassified: requests.filter(r => r.provenance === "unavailable").map(r => ({ requestId: r.id, outcome: r.outcome, callIds: r.calls.map(c => c.id) })),
     tools: [...new Set(calls.map(c => `${c.server}/${c.tool}`))].sort().map(tool => {
       const rows = calls.filter(c => `${c.server}/${c.tool}` === tool);
       const latencies = rows.map(c => c.latencyMs).sort((a, b) => a - b);
