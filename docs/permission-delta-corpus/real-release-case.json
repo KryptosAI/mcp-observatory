@@ -1,0 +1,273 @@
+{
+  "schemaVersion": "permission-delta-evaluation/v1",
+  "kind": "hand-extracted-real-release-cases",
+  "claimScope": "These two release-time case studies preserve their source revisions, normalized changed tool inputs, and observed classifier outputs.",
+  "cases": [
+    {
+      "id": "notion-v2.1.0-v2.3.1",
+      "description": "Notion MCP Server: two page-Markdown tool contracts added",
+      "provenance": {
+        "server": "Notion MCP Server",
+        "repository": "https://github.com/makenotion/notion-mcp-server",
+        "baseRevision": "v2.1.0",
+        "baseCommit": "7e254df95e805861db8c052f5c325a1bb77a7560",
+        "headRevision": "v2.3.1",
+        "headCommit": "d282ce9c167d34705bc24074c856c84cba0f3344",
+        "comparison": "https://github.com/makenotion/notion-mcp-server/compare/v2.1.0...v2.3.1",
+        "schemaSource": "scripts/notion-openapi.json, /v1/pages/{page_id}/markdown",
+        "extraction": "The pinned released converter produces both operation schemas. The released proxy prefixes their advertised names with API-. Only annotations and unused definitions are removed; format, defaults, anyOf string fallbacks and nested input constraints are preserved. See release-inputs.json and EXTRACTION.md."
+      },
+      "normalizedInput": {
+        "base": {},
+        "head": {
+          "API-retrieve-page-markdown": {
+            "type": "object",
+            "properties": {
+              "page_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "include_transcript": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "required": [
+              "page_id"
+            ]
+          },
+          "API-update-page-markdown": {
+            "type": "object",
+            "properties": {
+              "page_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "replace_content",
+                  "update_content",
+                  "insert_content",
+                  "replace_content_range"
+                ]
+              },
+              "replace_content": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "new_str": {
+                        "type": "string"
+                      },
+                      "allow_deleting_content": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "new_str"
+                    ],
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "update_content": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "content_updates": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "old_str": {
+                              "type": "string"
+                            },
+                            "new_str": {
+                              "type": "string"
+                            },
+                            "replace_all_matches": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "old_str",
+                            "new_str"
+                          ],
+                          "additionalProperties": true
+                        }
+                      },
+                      "allow_deleting_content": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "content_updates"
+                    ],
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "insert_content": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "content": {
+                        "type": "string"
+                      },
+                      "after": {
+                        "type": "string"
+                      },
+                      "position": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "start",
+                              "end"
+                            ]
+                          }
+                        },
+                        "additionalProperties": true
+                      }
+                    },
+                    "required": [
+                      "content"
+                    ],
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "replace_content_range": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "content": {
+                        "type": "string"
+                      },
+                      "content_range": {
+                        "type": "string"
+                      },
+                      "allow_deleting_content": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "content",
+                      "content_range"
+                    ],
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "page_id",
+              "type"
+            ]
+          }
+        }
+      },
+      "regressionExpectation": {
+        "narrowing": false,
+        "neutral": false,
+        "review": true,
+        "widening": false
+      }
+    },
+    {
+      "id": "github-v0.7.0-v0.8.0",
+      "description": "GitHub MCP Server: get_file_contents path became optional",
+      "provenance": {
+        "server": "GitHub MCP Server",
+        "repository": "https://github.com/github/github-mcp-server",
+        "baseRevision": "v0.7.0",
+        "baseCommit": "42e5ce9b88ee289bb8d7a297c1d8a580e06c9e86",
+        "headRevision": "v0.8.0",
+        "headCommit": "b5e33481793a6dbca5cf688ddf391ad410042d63",
+        "changeCommit": "d15026b0eb2a2e5d3265a2601798ab28017dc719",
+        "comparison": "https://github.com/github/github-mcp-server/compare/v0.7.0...v0.8.0",
+        "schemaSource": "pkg/github/__toolsnaps__/get_file_contents.snap and pkg/github/repositories.go",
+        "extraction": "The change commit replaces mcp.Required() with mcp.DefaultString('/') for path, and the checked-in released tool snapshot removes path from the required array and records the default. The normalized schemas omit descriptions and tool annotations but preserve every input keyword inspected by the classifier."
+      },
+      "normalizedInput": {
+        "base": {
+          "get_file_contents": {
+            "properties": {
+              "owner": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "ref": {
+                "type": "string"
+              },
+              "repo": {
+                "type": "string"
+              },
+              "sha": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "owner",
+              "repo",
+              "path"
+            ],
+            "type": "object"
+          }
+        },
+        "head": {
+          "get_file_contents": {
+            "properties": {
+              "owner": {
+                "type": "string"
+              },
+              "path": {
+                "default": "/",
+                "type": "string"
+              },
+              "ref": {
+                "type": "string"
+              },
+              "repo": {
+                "type": "string"
+              },
+              "sha": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "owner",
+              "repo"
+            ],
+            "type": "object"
+          }
+        }
+      },
+      "regressionExpectation": {
+        "narrowing": false,
+        "neutral": false,
+        "review": false,
+        "widening": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,261 @@
+{
+  "schemaVersion": "permission-delta-release-extraction/v1",
+  "extractionDate": "2026-09-06",
+  "extractorSha256": "65042156fc9b4503c36c9c0a387bdbf113cc6af22b83c3a7eb6702a7ea68cb82",
+  "sources": [
+    {
+      "file": "notion-base.json",
+      "url": "https://raw.githubusercontent.com/makenotion/notion-mcp-server/7e254df95e805861db8c052f5c325a1bb77a7560/scripts/notion-openapi.json",
+      "sha256": "2564039e86f4318021736368992591ef9768e9d8e7935999519b10186480153f"
+    },
+    {
+      "file": "notion-head.json",
+      "url": "https://raw.githubusercontent.com/makenotion/notion-mcp-server/d282ce9c167d34705bc24074c856c84cba0f3344/scripts/notion-openapi.json",
+      "sha256": "d33548174dfc6ebad012fc73b1483532c7887d8c97fd6deb62d56c742e96baba"
+    },
+    {
+      "file": "notion-parser.ts",
+      "url": "https://raw.githubusercontent.com/makenotion/notion-mcp-server/d282ce9c167d34705bc24074c856c84cba0f3344/src/openapi-mcp-server/openapi/parser.ts",
+      "sha256": "b7109dfabc2fa12b97c29a8f7b8c126dc60c9fcfcb9e829fb09321b5ac8193bc"
+    },
+    {
+      "file": "notion-proxy.ts",
+      "url": "https://raw.githubusercontent.com/makenotion/notion-mcp-server/d282ce9c167d34705bc24074c856c84cba0f3344/src/openapi-mcp-server/mcp/proxy.ts",
+      "sha256": "83263d50dd40658f329ed437ec8f3bfcf4a3927e273143ed66fb897df6b19ff4"
+    },
+    {
+      "file": "github-base.snap",
+      "url": "https://raw.githubusercontent.com/github/github-mcp-server/42e5ce9b88ee289bb8d7a297c1d8a580e06c9e86/pkg/github/__toolsnaps__/get_file_contents.snap",
+      "sha256": "a28edcf2331403b4ab77ef06f3a47a2d018061d8c0a0c7bab6315a787edf81aa"
+    },
+    {
+      "file": "github-head.snap",
+      "url": "https://raw.githubusercontent.com/github/github-mcp-server/b5e33481793a6dbca5cf688ddf391ad410042d63/pkg/github/__toolsnaps__/get_file_contents.snap",
+      "sha256": "c3dd1c79e99ba80c92d1e1c730c48463bd9cf1182f1f61e049231cbb008d47c9"
+    }
+  ],
+  "normalization": "Remove schema annotations and unused Notion $defs; preserve all remaining converter/snapshot input keywords. Only selected changed tool contracts are included.",
+  "notion": {
+    "base": {},
+    "head": {
+      "API-retrieve-page-markdown": {
+        "type": "object",
+        "properties": {
+          "page_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "include_transcript": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "page_id"
+        ]
+      },
+      "API-update-page-markdown": {
+        "type": "object",
+        "properties": {
+          "page_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "replace_content",
+              "update_content",
+              "insert_content",
+              "replace_content_range"
+            ]
+          },
+          "replace_content": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "new_str": {
+                    "type": "string"
+                  },
+                  "allow_deleting_content": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "new_str"
+                ],
+                "additionalProperties": true
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "update_content": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "content_updates": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "old_str": {
+                          "type": "string"
+                        },
+                        "new_str": {
+                          "type": "string"
+                        },
+                        "replace_all_matches": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "old_str",
+                        "new_str"
+                      ],
+                      "additionalProperties": true
+                    }
+                  },
+                  "allow_deleting_content": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "content_updates"
+                ],
+                "additionalProperties": true
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "insert_content": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string"
+                  },
+                  "after": {
+                    "type": "string"
+                  },
+                  "position": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "start",
+                          "end"
+                        ]
+                      }
+                    },
+                    "additionalProperties": true
+                  }
+                },
+                "required": [
+                  "content"
+                ],
+                "additionalProperties": true
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "replace_content_range": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string"
+                  },
+                  "content_range": {
+                    "type": "string"
+                  },
+                  "allow_deleting_content": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "content",
+                  "content_range"
+                ],
+                "additionalProperties": true
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "required": [
+          "page_id",
+          "type"
+        ]
+      }
+    }
+  },
+  "github": {
+    "base": {
+      "get_file_contents": {
+        "properties": {
+          "owner": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "ref": {
+            "type": "string"
+          },
+          "repo": {
+            "type": "string"
+          },
+          "sha": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "owner",
+          "repo",
+          "path"
+        ],
+        "type": "object"
+      }
+    },
+    "head": {
+      "get_file_contents": {
+        "properties": {
+          "owner": {
+            "type": "string"
+          },
+          "path": {
+            "default": "/",
+            "type": "string"
+          },
+          "ref": {
+            "type": "string"
+          },
+          "repo": {
+            "type": "string"
+          },
+          "sha": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "owner",
+          "repo"
+        ],
+        "type": "object"
+      }
+    }
+  }
+}

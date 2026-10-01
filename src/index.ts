@@ -45,6 +45,13 @@ export {
 } from "./cassette.js";
 export { runConformanceCheck } from "./checks/conformance.js";
 export { runSchemaQualityCheck } from "./checks/schema-quality.js";
+export { auditSource, runSourceAuditCheck } from "./checks/source-audit.js";
+export { analyzeToxicFlows, detectToxicFlows, runToxicFlowCheck } from "./checks/toxic-flow.js";
+export type { ToxicFlowAnalysis, ToxicFlowFinding, ToxicFlowOptions } from "./checks/toxic-flow.js";
+export { checkTyposquat,checkAllTargets,extractPackageName,extractCommandPackages,reviewCommandPackages,levenshteinDistance,renderTyposquatWarnings } from "./utils/typosquat.js";
+export type { PackageIdentity,PackageExtraction,PackageNameReview,TyposquatMatch,PackageReference,PackageEcosystem } from "./utils/typosquat.js";
+export { PACKAGE_REFERENCES } from "./utils/package-references.js";
+export type { SourceAuditCheckId, SourceAuditFinding, SourceAuditOptions, SourceAuditResult } from "./checks/source-audit.js";
 export { runAttackSimulationCheck, type AttackSimulationFinding, type AttackSimulationOptions } from "./checks/attack-sim.js";
 export { runLightweightSecurityCheck, runSecurityCheck } from "./checks/security.js";
 export { analyzeRuntimeProfile, runRuntimeProfileCheck } from "./checks/runtime-profile.js";
