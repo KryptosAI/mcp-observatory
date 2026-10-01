@@ -65,6 +65,7 @@ if (redirects !== redirectSource) failures.push("_redirects: generated rules dif
 const humanRedirectPaths = new Set([
   "/", "/index.html", "/pricing", "/pricing/", "/start", "/start/", "/start/index.html",
   "/dashboard", "/dashboard/", "/safety-index", "/safety-index/", "/safety-index/index.html",
+  "/guide", "/guide/", "/guide/index.html",
   "/terms", "/terms/",
 ]);
 for (const line of redirects.split("\n").map(value => value.trim()).filter(value => value && !value.startsWith("#"))) {

@@ -26,7 +26,7 @@ it("recreates the ClearFrame redirects on a clean dashboard build without replac
       await copyFile(path.resolve(relative), destination);
     }
 
-    const protectedFiles = [
+    const protectedFiles = ["guide/images/scan.jpg", "guide/samples/base.json",
       "safety-index/api-data.json",
       "safety-index/servers/existing-server.html",
       "badges/existing-server.svg",
@@ -52,6 +52,7 @@ it("recreates the ClearFrame redirects on a clean dashboard build without replac
       .map(line => line.split(/\s+/));
     expect(rules).toContainEqual(["/", "https://clearframecode.com/observatory/", "301"]);
     expect(rules).toContainEqual(["/start/", "https://clearframecode.com/observatory/#setup", "301"]);
+    expect(rules).toContainEqual(["/guide/", "https://clearframecode.com/observatory/#guide", "301"]);
     expect(rules).toContainEqual(["/dashboard", "https://clearframecode.com/observatory/#scans", "301"]);
     expect(rules).toContainEqual(["/pricing", "https://clearframecode.com/pricing/", "301"]);
     expect(rules).toContainEqual(["/terms/", "https://app.mcp-observatory.com/terms", "302"]);
