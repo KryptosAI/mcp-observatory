@@ -26,7 +26,7 @@ it("recreates the ClearFrame redirects on a clean dashboard build without replac
       await copyFile(path.resolve(relative), destination);
     }
 
-    const protectedFiles = [
+    const protectedFiles = ["guide/images/scan.jpg", "guide/samples/base.json",
       "safety-index/api-data.json",
       "safety-index/servers/existing-server.html",
       "badges/existing-server.svg",
