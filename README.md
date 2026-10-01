@@ -101,7 +101,7 @@ Proof: [Safety Index](https://mcp-observatory.com/safety-index/). Upload one hos
 
 ## Learn from production usage
 
-Connect real tool calls to user intent with the [usage-learning SDK and CLI](./docs/usage-learning.md): sanitized invocation evidence, opted-in “asked / expected / got” reports, selected conversation excerpts, intent clustering, and regression-case export. Server logs cannot reveal unshared conversations; observed execution and inferred breakdown signals stay separate. Collection is local and requires explicit integration.
+Connect real tool calls to user intent with the [usage-learning SDK and CLI](./docs/usage-learning.md): sanitized invocation evidence, opted-in “asked / expected / got” reports, selected conversation excerpts, one-click dissatisfaction flags, intent grouping across captured requests, and regression-case export. Run `mcp-observatory usage review --dir private-usage` to inspect linked evidence in a loopback-only browser screen. Server logs cannot reveal unshared conversations; observed execution and inferred breakdown signals stay separate. Collection is local and requires explicit integration.
 
 ## Why MCP Observatory
 

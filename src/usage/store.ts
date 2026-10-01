@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { mkdir, readFile, readdir, writeFile, rename, unlink } from "node:fs/promises";
 import path from "node:path";
+import { usageRequests } from "./requests.js";
 import { callEventSchema, reportInputSchema, usageEventSchema, sanitizeValue, redactText, type UsageEvent, type ReportInput, type ReportEvent, type CallEvent } from "./events.js";
 
 export interface UsageStoreOptions { retentionDays?: number; now?: () => Date }
@@ -8,6 +9,7 @@ export interface UsageStoreOptions { retentionDays?: number; now?: () => Date }
 export class UsageStore {
   readonly retentionDays: number;
   private readonly now: () => Date;
+  private flagQueue: Promise<void> = Promise.resolve();
   constructor(readonly directory: string, options: UsageStoreOptions = {}) {
     this.retentionDays = options.retentionDays ?? 7;
     if (!Number.isFinite(this.retentionDays) || this.retentionDays <= 0) throw new Error("retentionDays must be positive");
@@ -23,6 +25,10 @@ export class UsageStore {
     valid.server = redactText(valid.server);
     valid.tool = redactText(valid.tool);
     if (Object.hasOwn(valid, "result")) valid.result = sanitizeValue(valid.result);
+    if (valid.request) {
+      valid.request.text = redactText(valid.request.text);
+      if (valid.request.intent) valid.request.intent = redactText(valid.request.intent);
+    }
     if (valid.error) valid.error.message = redactText(valid.error.message);
     await this.write(valid);
   }
@@ -64,6 +70,25 @@ export class UsageStore {
     }) as ReportEvent;
     await this.write(event);
     return event;
+  }
+  /** One explicit human action; context comes from the retained call group shown by the host UI. */
+  async flag(callId: string, consent: ReportInput["consent"]): Promise<ReportEvent> {
+    const pending = this.flagQueue.then(() => this.recordFlag(callId, consent));
+    this.flagQueue = pending.then(() => undefined, () => undefined);
+    return pending;
+  }
+  private async recordFlag(callId: string, consent: ReportInput["consent"]): Promise<ReportEvent> {
+    reportInputSchema.shape.consent.parse(consent);
+    const request = usageRequests(await this.read()).find(r => r.calls.some(c => c.id === callId));
+    if (!request) throw new Error("Unknown or expired call");
+    const duplicate = request.reports.find(r => r.flag);
+    if (duplicate) return duplicate;
+    return this.report({
+      callIds: request.calls.map(c => c.id), asked: request.asked, provenance: request.provenance,
+      expected: "User flagged: this was not what I wanted; desired behavior has not been supplied",
+      got: request.calls.map(c => `${c.tool}: ${c.error?.message ?? (Object.hasOwn(c, "result") ? JSON.stringify(c.result) : "Result payload was not captured")}`).join("\n").slice(0, 12000),
+      outcome: "failure", flag: true, consent, excerpt: [],
+    });
   }
   /** Physically remove expired records. Read/analytics already exclude them. Schedule this in the host. */
   async prune(): Promise<number> {
