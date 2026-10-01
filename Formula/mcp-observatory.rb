@@ -1,8 +1,8 @@
 class McpObservatory < Formula
   desc "CI-native security gate for MCP servers"
   homepage "https://github.com/KryptosAI/mcp-observatory"
-  url "https://registry.npmjs.org/@kryptosai/mcp-observatory/-/mcp-observatory-1.45.5.tgz"
-  sha256 "55a6bb54d36a6128bd48bc08bce8eef8e2f7e3dbedc7c16cfdad069aa475163e"
+  url "https://registry.npmjs.org/@kryptosai/mcp-observatory/-/mcp-observatory-1.46.0.tgz"
+  sha256 "87b41e930e0b2514469ccc56dc738d0ab0229791b2a008e2498b31dcf24835c4"
   license "MIT"
 
   depends_on "node"
