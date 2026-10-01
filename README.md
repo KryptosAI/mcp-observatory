@@ -99,6 +99,10 @@ Runtime deny-default: `npx -y @kryptosai/mcp-observatory@latest enforce --start-
 
 Proof: [Safety Index](https://mcp-observatory.com/safety-index/). Upload one hosted snapshot free with `cloud upload`; [Individual Pro is $29/month](https://app.mcp-observatory.com/pricing?plan=individual) when you need retained history and hosted CI ingestion.
 
+## Learn from production usage
+
+Connect real tool calls to user intent with the [usage-learning SDK and CLI](./docs/usage-learning.md): sanitized invocation evidence, opted-in “asked / expected / got” reports, selected conversation excerpts, intent clustering, and regression-case export. Server logs cannot reveal unshared conversations; observed execution and inferred breakdown signals stay separate. Collection is local and requires explicit integration.
+
 ## Why MCP Observatory
 
 MCP servers are becoming production dependencies. If agents rely on them, teams need a way to catch broken tools, unsafe schemas, schema drift, slow responses, and security footguns before those failures reach users.
