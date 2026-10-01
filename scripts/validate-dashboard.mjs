@@ -137,7 +137,7 @@ for (const expectedTarget of [
   "linear-server",
   "coinbase-cds-server",
 ]) {
-  if (!homepage.includes(`/safety-index/servers/${expectedTarget}.html`)) failures.push(`homepage: missing substantiated logo link for ${expectedTarget}`);
+  if (!homepage.includes(`/safety-index/servers/${expectedTarget}`)) failures.push(`homepage: missing substantiated logo link for ${expectedTarget}`);
 }
 for (const organizationLogo of ["accenture.svg", "cisco.svg", "oracle.svg"]) {
   if (!homepage.includes(`/proof-logos/${organizationLogo}`)) failures.push(`homepage: missing observed-organization logo ${organizationLogo}`);
@@ -160,7 +160,10 @@ for (const match of sitemap.matchAll(/<loc>(.*?)<\/loc>/g)) {
       ? path.join(url.pathname.slice(1), "index.html")
       : url.pathname.slice(1);
   try {
-    await access(path.join(root, relativePath));
+    await access(path.join(root, relativePath)).catch(async () => {
+      if (path.extname(relativePath)) throw new Error("Missing sitemap artifact");
+      await access(path.join(root, relativePath + ".html"));
+    });
   } catch {
     failures.push(`sitemap: ${url.pathname} does not resolve to a dashboard file`);
   }
@@ -205,3 +208,6 @@ if (failures.length) {
 }
 
 console.log(`Dashboard validation passed for ${await htmlFiles(root).then(files => files.length)} HTML pages.`);
+
+const notFound = await readFile(path.join(root, "404.html"), "utf8");
+if (!notFound.includes('meta name="robots" content="noindex"') || !notFound.includes('href="/start/"')) throw new Error("404 recovery page is incomplete");

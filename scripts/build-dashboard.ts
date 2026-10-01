@@ -204,10 +204,10 @@ function buildVerifiedPreview(current: MatrixSummaryEntry[], safetyTargets: Safe
     const gateLabel = entry.gate === "pass" ? "Passed" : "Gated";
     return `<article class="verified-card">
       <div class="verified-card-head"><span class="status-chip ${entry.gate}">${gateLabel}</span><time datetime="${escapeHtml(entry.runDate)}">${formatDate(entry.runDate)}</time></div>
-      <h3><a href="/safety-index/servers/${escapeHtml(entry.targetId)}.html">${escapeHtml(name)}</a></h3>
+      <h3><a href="/safety-index/servers/${escapeHtml(entry.targetId)}">${escapeHtml(name)}</a></h3>
       <code>${escapeHtml(entry.packageName)}</code>
       <p>${escapeHtml(reason)}</p>
-      <a class="text-link" href="/safety-index/servers/${escapeHtml(entry.targetId)}.html">Inspect the evidence <span aria-hidden="true">↗</span></a>
+      <a class="text-link" href="/safety-index/servers/${escapeHtml(entry.targetId)}">Inspect the evidence <span aria-hidden="true">↗</span></a>
     </article>`;
   }).join("\n");
 }
@@ -234,7 +234,7 @@ function buildHtml(current: MatrixSummaryEntry[], safetyTargets: SafetyTarget[])
       const target = targetById.get(technology.targetId);
       if (target === undefined) throw new Error(`Missing Safety Index target ${technology.targetId}`);
       const targetName = escapeHtml(target.name);
-      return `<li><a class="technology-logo-card ${technology.kind}" href="/safety-index/servers/${escapeHtml(technology.targetId)}.html" aria-label="${escapeHtml(technology.name)} ${targetName} — inspect published evidence"><span class="technology-logo-mark"><img src="/proof-logos/${escapeHtml(technology.logo)}" alt="" width="${technology.width}" height="${technology.height}" aria-hidden="true"></span><span class="technology-logo-copy"><strong>${escapeHtml(technology.name)}</strong><span title="${targetName}">${targetName}</span></span></a></li>`;
+      return `<li><a class="technology-logo-card ${technology.kind}" href="/safety-index/servers/${escapeHtml(technology.targetId)}" aria-label="${escapeHtml(technology.name)} ${targetName} — inspect published evidence"><span class="technology-logo-mark"><img src="/proof-logos/${escapeHtml(technology.logo)}" alt="" width="${technology.width}" height="${technology.height}" aria-hidden="true"></span><span class="technology-logo-copy"><strong>${escapeHtml(technology.name)}</strong><span title="${targetName}">${targetName}</span></span></a></li>`;
     }).join("");
     return `<section class="technology-logo-group"><h3>${escapeHtml(group.label)}</h3><ul class="technology-logo-grid">${cards}</ul></section>`;
   }).join("");
@@ -284,6 +284,33 @@ function buildHtml(current: MatrixSummaryEntry[], safetyTargets: SafetyTarget[])
 </html>`;
 }
 
+function notFoundPage(): string {
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f9fbfc">
+  <meta name="robots" content="noindex">
+  <title>Page not found · MCP Observatory</title>
+  <link rel="icon" href="/mcp-observatory-favicon-v2.png" type="image/png" sizes="1254x1254">
+  <link rel="stylesheet" href="/m3.css?v=20260905">
+</head>
+<body class="safety-index-page">
+  <div class="container">
+    <main id="main-content" class="section">
+      <div class="panel">
+        <p class="eyebrow">NOT FOUND</p>
+        <h1>That page is not part of MCP Observatory.</h1>
+        <p class="sub">Use the Safety Index to inspect published evidence or start a free local scan on your own MCP server.</p>
+        <div class="links"><a class="button" href="/safety-index/">Browse the Safety Index</a><a class="button" href="/start/">Run a free scan</a></div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>`;
+}
+
 async function main(): Promise<void> {
   await mkdir(badgesDir, { recursive: true });
   await mkdir(apiDir, { recursive: true });
@@ -300,6 +327,7 @@ async function main(): Promise<void> {
   ) as SafetyTarget[];
 
   await writeFile(path.join(dashboardDir, "index.html"), buildHtml(current, safetyTargets), "utf8");
+  await writeFile(path.join(dashboardDir, "404.html"), notFoundPage(), "utf8");
   await mkdir(path.join(dashboardDir, "start"), { recursive: true });
   await writeFile(path.join(dashboardDir, "start", "index.html"), onboardingPage(), "utf8");
   await copyFile(demoPath, path.join(dashboardDir, "demo.gif"));
@@ -309,13 +337,7 @@ async function main(): Promise<void> {
   await copyFile(faviconPath, path.join(dashboardDir, "mcp-observatory-favicon-v2.png"));
   // Keep the brand migration in every scheduled dashboard build.
   await copyFile(path.join(root, "scripts", "dashboard-redirects.txt"), path.join(dashboardDir, "_redirects"));
-  await writeFile(path.join(dashboardDir, "_headers"), `/*
-  X-Content-Type-Options: nosniff
-  Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
-  X-Frame-Options: DENY
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.hsforms.com; frame-ancestors 'none'; base-uri 'self'; form-action 'none'
-`, "utf8");
+  await writeFile(path.join(dashboardDir, "_headers"), "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()\n  X-Frame-Options: DENY\n  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.hsforms.com https://cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'none'\n\n/fonts/*\n  Cache-Control: public, max-age=31536000, immutable\n  Access-Control-Allow-Origin: *\n\n/m3.css\n  Cache-Control: public, max-age=86400, must-revalidate\n", "utf8");
   await writeFile(path.join(dashboardDir, "robots.txt"), "User-agent: *\nAllow: /\nSitemap: https://mcp-observatory.com/sitemap.xml\n", "utf8");
 
   for (const entry of current) {
