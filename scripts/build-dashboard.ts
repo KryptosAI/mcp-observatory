@@ -337,13 +337,7 @@ async function main(): Promise<void> {
   await copyFile(faviconPath, path.join(dashboardDir, "mcp-observatory-favicon-v2.png"));
   // Keep the brand migration in every scheduled dashboard build.
   await copyFile(path.join(root, "scripts", "dashboard-redirects.txt"), path.join(dashboardDir, "_redirects"));
-  await writeFile(path.join(dashboardDir, "_headers"), `/*
-  X-Content-Type-Options: nosniff
-  Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
-  X-Frame-Options: DENY
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.hsforms.com; frame-ancestors 'none'; base-uri 'self'; form-action 'none'
-`, "utf8");
+  await writeFile(path.join(dashboardDir, "_headers"), "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()\n  X-Frame-Options: DENY\n  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.hsforms.com https://cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'none'\n\n/fonts/*\n  Cache-Control: public, max-age=31536000, immutable\n  Access-Control-Allow-Origin: *\n\n/m3.css\n  Cache-Control: public, max-age=86400, must-revalidate\n", "utf8");
   await writeFile(path.join(dashboardDir, "robots.txt"), "User-agent: *\nAllow: /\nSitemap: https://mcp-observatory.com/sitemap.xml\n", "utf8");
 
   for (const entry of current) {
