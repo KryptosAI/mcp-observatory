@@ -87,7 +87,9 @@
     "examples/demo-mcp-server.mjs",
     "examples/insecure-mcp-server",
     "scripts/postinstall.mjs",
-    "schemas"
+    "schemas",
+    "docs/usage-learning.md",
+    "examples/usage-learning.mjs"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
