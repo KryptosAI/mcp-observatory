@@ -23,8 +23,8 @@ document.querySelectorAll('.guide-menu a[href^="#"]').forEach(link => link.addEv
  const visible = new Set();
  const observer = new IntersectionObserver(entries => {
   entries.forEach(entry => entry.isIntersecting ? visible.add(entry.target) : visible.delete(entry.target));
-  const first = sections.find(section => !section.hidden && visible.has(section) && section.getBoundingClientRect().bottom > 120);
+  const first = sections.find(section => !section.hidden && visible.has(section));
   if (first) mark(first.id);
- }, { rootMargin: '-24px 0px -45% 0px' });
+ }, { rootMargin: '-120px 0px -45% 0px' });
  sections.forEach(section => observer.observe(section));
 })();
