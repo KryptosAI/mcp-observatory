@@ -11,3 +11,20 @@ const apply = () => {
 input.addEventListener('input', apply);
 document.querySelectorAll('.guide-menu a[href^="#"]').forEach(link => link.addEventListener('click', () => { input.value = ''; apply(); }));
 })();
+// Keep the contents list oriented to the section currently being read.
+(() => {
+ const sections = [...document.querySelectorAll('[data-guide-topic], #samples')];
+ const links = [...document.querySelectorAll('.guide-menu a[href^="#"]')];
+ const mark = id => links.forEach(link => {
+  if (link.hash === `#${id}`) link.setAttribute('aria-current', 'location');
+  else link.removeAttribute('aria-current');
+ });
+ if (!('IntersectionObserver' in window)) return;
+ const visible = new Set();
+ const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => entry.isIntersecting ? visible.add(entry.target) : visible.delete(entry.target));
+  const first = sections.find(section => !section.hidden && visible.has(section));
+  if (first) mark(first.id);
+ }, { rootMargin: '-120px 0px -45% 0px' });
+ sections.forEach(section => observer.observe(section));
+})();
