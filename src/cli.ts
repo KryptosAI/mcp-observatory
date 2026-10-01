@@ -17,6 +17,7 @@ import { registerPackageCheckCommands } from "./commands/package-check.js";
 import { registerScoreCommands } from "./commands/score.js";
 import { registerServeCommands } from "./commands/serve.js";
 import { registerSuggestCommands } from "./commands/suggest.js";
+import { registerUsageCommands } from "./commands/usage.js";
 import { registerTelemetryCommands } from "./commands/telemetry.js";
 import { registerTestCommands } from "./commands/test.js";
 import { registerWatchCommands } from "./commands/watch.js";
@@ -322,6 +323,7 @@ async function main(): Promise<void> {
   registerServeCommands(program);
   registerSuggestCommands(program);
   registerTelemetryCommands(program);
+  registerUsageCommands(program);
   registerScoreCommands(program);
   registerLegacyCommands(program);
   registerHistoryCommands(program);

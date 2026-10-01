@@ -59,6 +59,18 @@ const css = await readFile(path.join(root, "m3.css"), "utf8");
 const siteScript = await readFile(path.join(root, "site.js"), "utf8");
 const safetyIndexScript = await readFile(path.join(root, "safety-index.js"), "utf8");
 const headers = await readFile(path.join(root, "_headers"), "utf8");
+const redirects = await readFile(path.join(root, "_redirects"), "utf8");
+const redirectSource = await readFile(path.resolve("scripts/dashboard-redirects.txt"), "utf8");
+if (redirects !== redirectSource) failures.push("_redirects: generated rules differ from scripts/dashboard-redirects.txt; rebuild the dashboard");
+const humanRedirectPaths = new Set([
+  "/", "/index.html", "/pricing", "/pricing/", "/start", "/start/", "/start/index.html",
+  "/dashboard", "/dashboard/", "/safety-index", "/safety-index/", "/safety-index/index.html",
+  "/terms", "/terms/",
+]);
+for (const line of redirects.split("\n").map(value => value.trim()).filter(value => value && !value.startsWith("#"))) {
+  const [source] = line.split(/\s+/);
+  if (!humanRedirectPaths.has(source)) failures.push(`_redirects: unexpected route ${source}; public data, badges, reports and documentation must remain reachable`);
+}
 if (!css.includes("focus-visible")) failures.push("m3.css is missing focus-visible states");
 if (!css.includes("prefers-reduced-motion")) failures.push("m3.css is missing reduced-motion handling");
 if (!css.includes("min-height:48px")) failures.push("m3.css is missing the 48px target baseline");
