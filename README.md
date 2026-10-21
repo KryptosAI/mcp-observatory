@@ -120,7 +120,7 @@ Observatory gives maintainers and teams:
 - **Health score badges** for public trust signals
 - **Record/replay/verify** workflows for regression testing
 - **MCP server mode** so agents can inspect other MCP servers directly
-- **Production support path** for one-user hosted history, CI ingestion, and owner-ready Release Gate remediation
+- **Review and remediation** with free local history, CI, and optional ClearFrame CLI or Mac tasks
 
 See [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [MCP Receipts](./docs/mcp-receipts.md), [Troubleshooting](./docs/troubleshooting.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [MCP Observatory Contributors](./docs/contributor-recognition.md), [hosted client contract](./docs/api.md), [repository boundary](./docs/repository-boundary.md), [open-source policy](./docs/commercial-boundary.md), and [free project policy](./COMMERCIAL.md).
 
@@ -426,7 +426,7 @@ npx @kryptosai/mcp-observatory badge npx -y my-mcp-server --output docs/mcp-heal
 
 See the [evidence distribution loop](./docs/certification-distribution.md) for the GitHub Action template, maintainer PR body, and badge rollout playbook. A badge is a public evidence signal, not a certification or endorsement.
 
-Generate a pilot-ready production/security report from local run artifacts:
+Generate a production/security report from local run artifacts:
 
 ```bash
 npx @kryptosai/mcp-observatory enterprise-report \
