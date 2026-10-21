@@ -34,6 +34,7 @@
   },
   "files": [
     "dist/src",
+    "dist/hosting/src/ui",
     "README.md",
     "README-zh-CN.md",
     "COMMERCIAL.md",
@@ -97,7 +98,7 @@
     "docs/feature-coverage.md"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && node scripts/copy-ui-assets.mjs",
     "cli": "tsx src/cli.ts",
     "dashboard:build": "tsx scripts/build-dashboard.ts && tsx scripts/generate-server-pages.ts && tsx scripts/build-guide-samples.ts",
     "dashboard:validate": "node scripts/validate-dashboard.mjs",
