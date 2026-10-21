@@ -20,3 +20,8 @@ migrations_dir = "migrations"
 
 [triggers]
 crons = ["0 3 * * *"]
+
+[[rules]]
+type = "Data"
+globs = ["**/*.woff2"]
+fallthrough = true

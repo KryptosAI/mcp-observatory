@@ -37,3 +37,31 @@ it("rejects cross-origin requests, writes and traversal, and excludes symlinks o
   expect((await fetch(url + "/artifact?file=../package.json")).status).toBe(404);
   expect((await fetch(url)).headers.get("content-security-policy")).toContain("frame-ancestors 'none'");
 });
+
+it("serves the bundled ClearFrame fonts locally and keeps appearance choices with filtering", async () => {
+  const { url } = await setup();
+  const css = await (await fetch(url + "/ui/clearframe.css")).text();
+  expect(css).toContain(".cf-button");
+  expect(css).toContain("prefers-color-scheme:light");
+  expect(css).not.toMatch(/url\(["']?https?:/);
+  const font = await fetch(url + "/ui/inter.woff2");
+  expect(font.headers.get("content-type")).toBe("font/woff2");
+  expect(new TextDecoder().decode((await font.arrayBuffer()).slice(0, 4))).toBe("wOF2");
+  const page = await (await fetch(url + "/?theme=light&q=missing")).text();
+  expect(page).toContain('data-theme="light"');
+  expect(page).toContain('name="theme" value="light"');
+  expect(page).toContain("No matching receipts");
+  expect(page).toContain("Show all local receipts");
+});
+
+it("offers actionable recovery when the selected receipt path cannot be listed", async () => {
+  const { dir } = await setup();
+  const server = await startLocalDashboard(path.join(dir, "a.json")); servers.push(server);
+  const response = await fetch(server.url);
+  expect(response.status).toBe(500);
+  const page = await response.text();
+  expect(page).toContain("permission to read it");
+  expect(page).toContain("Try again");
+  expect(page).not.toContain(dir);
+  expect((await fetch(server.url + "/ui/clearframe.css")).status).toBe(200);
+});
