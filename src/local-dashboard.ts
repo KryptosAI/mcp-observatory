@@ -1,6 +1,7 @@
 import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
-import { readdir, readFile, lstat } from "node:fs/promises";
+import { constants } from "node:fs";
+import { readdir, open, lstat } from "node:fs/promises";
 import path from "node:path";
 import { renderHtml } from "./reporters/html.js";
 import { validateRunArtifact } from "./validate.js";
@@ -19,10 +20,32 @@ export async function listLocalRuns(directory: string): Promise<Array<{ file: st
   for (const file of files.filter(f => f.isFile() && f.name.endsWith(".json")).sort((a, b) => b.name.localeCompare(a.name)).slice(0, 2000)) {
     try {
       const absolute = path.join(directory, file.name);
-      const info = await lstat(absolute);
-      if (!info.isFile() || info.size > 5_000_000) continue;
-      const artifact = validateRunArtifact(JSON.parse(await readFile(absolute, "utf8")));
-      runs.push({ file: file.name, artifact });
+      const noFollow = typeof constants.O_NOFOLLOW === "number" ? constants.O_NOFOLLOW : 0;
+      const nonblock = typeof constants.O_NONBLOCK === "number" ? constants.O_NONBLOCK : 0;
+      const handle = await open(absolute, constants.O_RDONLY | noFollow | nonblock);
+      try {
+        const info = await handle.stat();
+        if (!info.isFile() || info.size > 5_000_000) continue;
+        // Windows has no O_NOFOLLOW. Reject reparse/symlink entries and require
+        // the pathname to identify the same inode as the already-open handle.
+        if (!noFollow) {
+          const entry = await lstat(absolute, { bigint: true });
+          const opened = await handle.stat({ bigint: true });
+          if (!entry.isFile() || entry.isSymbolicLink() || entry.dev !== opened.dev || entry.ino !== opened.ino) continue;
+        }
+        // Read only through this descriptor and bound allocation even if a
+        // different process grows or replaces the directory entry during read.
+        const buffer = Buffer.alloc(info.size + 1);
+        let size = 0;
+        while (size < buffer.length) {
+          const chunk = await handle.read(buffer, size, buffer.length - size, size);
+          if (!chunk.bytesRead) break;
+          size += chunk.bytesRead;
+        }
+        if (size !== info.size) continue;
+        const artifact = validateRunArtifact(JSON.parse(buffer.subarray(0, size).toString("utf8")));
+        runs.push({ file: file.name, artifact });
+      } finally { await handle.close(); }
     } catch { /* A corrupt receipt must not hide the other local evidence. */ }
   }
   return runs.sort((a, b) => b.artifact.createdAt.localeCompare(a.artifact.createdAt));
