@@ -1,6 +1,6 @@
 # MCP Observatory Security and Data-Handling Statement
 
-This statement describes the default data boundary for an MCP Release Gate Pilot. It is not a substitute for a signed customer agreement or a security questionnaire.
+All Observatory features are free and MIT licensed. Review local history with `mcp-observatory dashboard`; prepare an optional ClearFrame CLI or Mac task with `mcp-observatory clearframe`. See [the project policy](../COMMERCIAL.md).
 
 ## Default boundary
 

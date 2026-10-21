@@ -6,7 +6,7 @@ engineers, and security reviewers can inspect.
 
 ## Product
 
-The open-core product provides:
+The free MIT-licensed product provides:
 
 - CLI checks for MCP servers
 - MCP server mode
@@ -25,18 +25,10 @@ MCP adapters, check runners, reporters, artifact schemas, and a GitHub Action
 wrapper. It supports local-process and HTTP targets and keeps the evidence
 loop runnable without an account or private credentials.
 
-The private cloud repository handles hosted authentication, organization
-isolation, retention, hosted scans, approvals, scheduled rescans, private
-indexes, and enterprise workflow coordination. The separate telemetry
-repository handles telemetry and intelligence operations.
+The public hosting source provides GitHub sign-in, account isolation, artifact storage, multi-target history, hosted HTTP checks, downloads and retention cleanup. It uses the operator’s own configuration and includes no production secrets or customer data. ClearFrame-only account, inference and billing implementation remains separate.
 
-## Commercial path
+## Open-source adoption path
 
-The free OSS wedge is unlimited local testing, public repository CI, and one
-latest hosted snapshot. Individual Pro adds one-user 90-day history, hosted CI,
-regression markers, and artifact downloads. The separate fixed-scope Release
-Gate Pilot provides an owner-ready decision for 1–3 critical servers.
+All Observatory features are free and MIT licensed. Run a scan, inspect reports and local history with `mcp-observatory dashboard`, then prepare a review task with `mcp-observatory clearframe`.
 
-The public repository keeps its historical record, including previously
-published hosted code. New proprietary implementation belongs in the private
-cloud repository.
+ClearFrame CLI and Mac are optional agent tools with their own account and usage terms. Observatory does not require them. See [the project policy](../COMMERCIAL.md) and [ClearFrame workflow](./clearframe.md).

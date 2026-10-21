@@ -1,0 +1,22 @@
+# Configure your own resources before deployment. No production resource IDs are included.
+name = "mcp-observatory-community"
+main = "src/worker.ts"
+compatibility_date = "2026-10-21"
+compatibility_flags = ["global_fetch_strictly_public"]
+
+[vars]
+APP_BASE_URL = "http://localhost:8787"
+GITHUB_REDIRECT_URI = "http://localhost:8787/auth/callback"
+
+[[kv_namespaces]]
+binding = "SCAN_CACHE"
+id = "00000000000000000000000000000000"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "mcp-observatory-community"
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
+
+[triggers]
+crons = ["0 3 * * *"]

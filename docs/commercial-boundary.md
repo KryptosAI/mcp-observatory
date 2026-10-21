@@ -1,38 +1,7 @@
-# Open core and hosted control plane
+# Open-source policy
 
-The MIT repository is the portable evidence product. The private cloud
-repository is the hosted workflow and intelligence product.
+All MCP Observatory product features are MIT licensed. There is no open-core or proprietary Observatory feature tier. New scan, report, history, integration, hosting and remediation features belong in the public repository and must work without private credentials, except credentials needed to operate your own optional deployment.
 
-## What Stays Open
+ClearFrame is a separate optional agent product. Observatory links to its CLI and Mac app and prepares local tasks, but never requires it to inspect evidence, changes a scan verdict to drive conversion, or automatically starts inference.
 
-- local scanner and MCP server mode
-- evidence engine, receipts, schemas, scoring, baselines, diffs
-- deterministic behavioral evaluations and public benchmarks
-- JSON, Markdown, HTML, JUnit, SARIF, and CI reports
-- local enterprise report generation
-- public Safety Index content and dashboard
-- thin hosted upload/login/whoami compatibility client
-- telemetry delivery, policy handshake, redaction, preview, and user controls
-
-Anyone can run the open-core loop locally or in public CI without an account.
-
-## What Stays Proprietary
-
-KryptosAI/mcp-observatory-cloud owns hosted authentication, organization
-isolation, storage and retention, hosted scans, approvals, scheduled rescans,
-fleet coordination, blast-radius analysis, enterprise IAM, managed runners,
-private indexes, compliance workflows, and hosted decision APIs.
-
-Private telemetry and company intelligence remain in the separate
-KryptosAI/mcp-observatory-telemetry system. The public package contains only
-the delivery client and user controls; raw events, exports, administration,
-private metrics, and intelligence are not part of the public command surface.
-
-The public health score in this repository is open source and locally
-reproducible. Hosted decisions and private intelligence are separate products.
-
-## History note
-
-The public Git history contains previously published hosted code. It is legacy
-history and is retained for historical integrity. New proprietary hosted
-implementation starts in the private cloud repository.
+Customer records, credentials, and production telemetry are private data, not source code to publish. The [public hosting source](../hosting/README.md) excludes ClearFrame-only inference, account integrations, billing and production configuration. The existing shared managed account service remains available for compatibility; self-hosting does not merge identities or migrate its records.

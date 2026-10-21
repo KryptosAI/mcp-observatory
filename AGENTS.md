@@ -25,10 +25,12 @@ MCP Observatory helps agents test other MCP tools before relying on them. Keep c
 
 ```bash
 npm install
+npm ci --prefix hosting
 npm run lint
 npm run typecheck
 npm test
 npm run smoke
+npm --prefix hosting run check
 ```
 
 For a real target sweep:
@@ -79,3 +81,7 @@ Why agents care:
 ```
 
 Use `docs/target-registry.md` and `docs/target-contribution-guide.md`.
+
+## Product direction (2026-10-21)
+
+All Observatory product features are MIT licensed and free. Keep the first scan, local reports, history, CI and task preparation independent of accounts. The optional ClearFrame CLI/Mac handoff must be explicit and must not change scan results or automatically start inference. Hosting source belongs in `hosting/`; exclude production configuration, credentials, customer data, and ClearFrame-only implementation.

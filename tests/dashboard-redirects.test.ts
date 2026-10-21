@@ -54,7 +54,7 @@ it("recreates the ClearFrame redirects on a clean dashboard build without replac
     expect(rules).toContainEqual(["/start/", "https://clearframecode.com/observatory/#setup", "301"]);
     expect(rules).toContainEqual(["/guide/", "https://clearframecode.com/observatory/#guide", "301"]);
     expect(rules).toContainEqual(["/dashboard", "https://clearframecode.com/observatory/#scans", "301"]);
-    expect(rules).toContainEqual(["/pricing", "https://clearframecode.com/pricing/", "301"]);
+    expect(rules).toContainEqual(["/pricing", "https://clearframecode.com/observatory/#setup", "301"]);
     expect(rules).toContainEqual(["/terms/", "https://app.mcp-observatory.com/terms", "302"]);
     expect(rules.every(([source]) => source?.startsWith("/") && !/[*:]|\/auth(?:\/|$)|\/webhooks?(?:\/|$)/.test(source))).toBe(true);
 

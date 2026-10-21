@@ -57,7 +57,7 @@ describe("CLI entrypoint", () => {
     expect(stdout).toContain("packaged local demo server");
     expect(stdout).toContain("mcp-observatory-demo");
     expect(stdout).toContain("Safety Grade");
-    expect(stdout).toContain("cloud upload");
+    expect(stdout).toContain("dashboard");
     expect(stdout).not.toContain("pricing?plan=team");
   });
 
@@ -228,20 +228,20 @@ describe("CLI entrypoint", () => {
     expect(stdout).toContain("report");
   });
 
-  it("cloud subcommand prints pilot info", () => {
+  it("cloud subcommand directs users to free local tools", () => {
     const { stdout, exitCode } = runCli(["cloud"]);
     expect(exitCode).toBe(0);
-    expect(stdout).toContain("MCP Observatory Cloud");
-    expect(stdout).toContain("Release Gate Pilot");
-    expect(stdout).toContain("Individual Pro: $29/month");
-    expect(stdout).toContain("cloud upload");
+    expect(stdout).toContain("free and open source under MIT");
+    expect(stdout).toContain("clearframecode.com/download/");
+    expect(stdout).not.toContain("Individual Pro");
+    expect(stdout).toContain("dashboard");
     expect(stdout).not.toContain("pricing?plan=team");
   });
 
-  it("cloud upload advertises a free snapshot instead of checkout", () => {
+  it("cloud upload documents legacy compatibility", () => {
     const { stdout, exitCode } = runCli(["cloud", "upload", "--help"]);
     expect(exitCode).toBe(0);
-    expect(stdout.replaceAll(/\s+/g, " ")).toContain("The first hosted snapshot is free.");
+    expect(stdout.replaceAll(/\s+/g, " ")).toContain("optional legacy service");
     expect(stdout).not.toContain("opens checkout");
   });
 
@@ -476,7 +476,7 @@ describe("CLI entrypoint", () => {
       const markdown = fs.readFileSync(receiptPath, "utf8");
       expect(markdown).toContain("# MCP Observatory Receipt");
       expect(markdown).toContain("public_safety_index");
-      expect(markdown).toContain("Request Release Gate Pilot");
+      expect(markdown).toContain("Review with ClearFrame");
       expect(markdown).toContain("mcp-observatory setup-ci --all");
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });

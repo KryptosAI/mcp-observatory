@@ -12,14 +12,7 @@ MCP Observatory receipts are the canonical public trust artifact for MCP servers
 
 Each receipt has eight stable sections:
 
-- `subject`: server identity, startup command, package/repo/source, version, resolved identity, URL/path, commit, and package manager when available
-- `run_context`: timestamp, MCP Observatory version, profile, safe-mode statement, environment class, invoked command, config file, OS, and safe working-directory context
-- `evidence`: report paths and SHA-256 hashes, plus schema, tool surface, attack-simulation, and baseline/drift summaries
-- `verdict`: score, trust status, receipt state, receipt action, and reason
-- `findings`: the top findings only, with severity, control area, evidence summary, recommended fix, CI blocking status, and fingerprint
-- `reproduction`: exact rerun command, CI command, SARIF upload hint, and expected artifacts
-- `maintainer_cta`: claim/update receipt, add CI, fix findings, request rerun, and provide safe startup mode
-- `buyer_cta`: request the fixed $15,000 Release Gate Pilot for 1–3 critical servers over ten business days
+All Observatory features are free and MIT licensed. Review local history with `mcp-observatory dashboard`; prepare an optional ClearFrame CLI or Mac task with `mcp-observatory clearframe`. See [the project policy](../COMMERCIAL.md).
 
 The full audit report remains the place for every finding. The receipt is the compact trust record people and agents can cite.
 
@@ -121,10 +114,6 @@ Receipts also avoid leaking secrets or sensitive local paths. Working directorie
 
 Receipts are meant to become the object that directories, agents, CI gates, maintainers, and buyers can pass around:
 
-- a directory can link to the current receipt for a public MCP server
-- a graph can group receipts by capability boundary and recommended action
-- a maintainer can claim the receipt and add CI
-- an agent can decide whether to `allow`, `gate`, `rerun`, `quarantine`, or `escalate`
-- a buyer can request a fixed-scope Release Gate Pilot before approving 1–3 critical MCP dependencies
+All Observatory features are free and MIT licensed. Review local history with `mcp-observatory dashboard`; prepare an optional ClearFrame CLI or Mac task with `mcp-observatory clearframe`. See [the project policy](../COMMERCIAL.md).
 
-The public receipt proves the method. The Release Gate Pilot turns that method into a buyer-ready decision record without creating a separate public service offer.
+All Observatory features are free and MIT licensed. Review local history with `mcp-observatory dashboard`; prepare an optional ClearFrame CLI or Mac task with `mcp-observatory clearframe`. See [the project policy](../COMMERCIAL.md).

@@ -2,7 +2,7 @@
 
 ## Keep your results in the hosted dashboard
 
-Local CI checks are free. Uploading CI results to hosted history requires Individual Pro.
+All Observatory features are free and MIT licensed. Review local history with `mcp-observatory dashboard`; prepare an optional ClearFrame CLI or Mac task with `mcp-observatory clearframe`. See [the project policy](../COMMERCIAL.md).
 
 In your MCP server repository, run:
 

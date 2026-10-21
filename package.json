@@ -1,7 +1,7 @@
 {
   "name": "@kryptosai/mcp-observatory",
   "version": "1.37.1",
-  "description": "MCP security scanner and CI gate. Test, secure, and monitor MCP servers with attack simulation, schema drift detection, health scoring, and SARIF before agents depend on them.",
+  "description": "Free, MIT-licensed MCP security testing from ClearFrame. Scan, audit, compare and review MCP evidence locally; continue in ClearFrame CLI or Mac.",
   "mcpName": "io.github.KryptosAI/mcp-observatory",
   "license": "MIT",
   "type": "module",
@@ -92,7 +92,9 @@
     "scripts/postinstall.mjs",
     "schemas",
     "docs/usage-learning.md",
-    "examples/usage-learning.mjs"
+    "examples/usage-learning.mjs",
+    "docs/clearframe.md",
+    "docs/feature-coverage.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",

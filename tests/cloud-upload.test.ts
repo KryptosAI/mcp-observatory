@@ -23,7 +23,7 @@ describe("cloud upload response", () => {
     expect(output).toEqual([]);
   });
 
-  it("shows the hosted result before the optional Individual Pro upgrade", async () => {
+  it("shows the hosted result and a free local history alternative", async () => {
     const output: string[] = [];
     const response = {
       ok: true,
@@ -34,7 +34,7 @@ describe("cloud upload response", () => {
     await emitCloudUploadResponse(response, context, line => output.push(line));
 
     const dashboardIndex = output.findIndex(line => line.startsWith("Hosted dashboard:"));
-    const upgradeIndex = output.findIndex(line => line.includes("Review Individual Pro"));
+    const upgradeIndex = output.findIndex(line => line.includes("Local history and artifact downloads are free"));
     expect(dashboardIndex).toBeGreaterThan(-1);
     expect(upgradeIndex).toBeGreaterThan(dashboardIndex);
     expect(output[0]).toContain("Upload complete");
@@ -49,7 +49,7 @@ describe("cloud upload response", () => {
 
   it("gives quota recovery and keeps gateway HTML out of terminal output", async () => {
     await expect(emitCloudUploadResponse(new Response(JSON.stringify({ code: "quota_exceeded", message: "Monthly limit reached." }), { status: 429 }), context))
-      .rejects.toThrow("Your local receipt is safe. Review your usage and plan");
+      .rejects.toThrow("Your local receipt is safe. Review it free");
     await expect(emitCloudUploadResponse(new Response("<html>gateway debug output</html>", { status: 503 }), context))
       .rejects.toThrow("Retry the same upload");
   });

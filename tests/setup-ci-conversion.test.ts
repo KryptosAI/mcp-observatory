@@ -93,8 +93,9 @@ describe("post-check setup-ci conversion", () => {
     expect(sink.text()).toContain("Code Scanning: SARIF upload is enabled");
     expect(sink.text()).toContain("Automation: weekly scheduled checks are enabled");
     expect(sink.text()).toContain("Verify: npx -y @kryptosai/mcp-observatory@latest setup-ci --doctor");
-    expect(sink.text()).toContain("cloud upload");
-    expect(sink.text()).toContain("https://app.mcp-observatory.com/pricing?plan=individual");
+    expect(sink.text()).toContain("dashboard");
+    expect(sink.text()).toContain("clearframe");
+    expect(sink.text()).not.toContain("pricing?plan=individual");
     expect(sink.text()).not.toContain("plan=team");
   });
 

@@ -144,14 +144,9 @@ That's it. Three commands, one platform, full coverage.
 
 ## Enterprise Story
 
-### Observatory Cloud — Hosted History and Release Evidence
+### Free local history and release evidence
 
-Security teams don't want to run scanners on developer laptops. Observatory Cloud provides:
-
-- One free hosted snapshot before checkout
-- Individual Pro history, CI ingestion, regression markers, and artifact downloads for one developer
-- Evidence exports that can support a customer's own review process without claiming certification or compliance
-- A fixed `$15,000`, 1-3-server, ten-business-day Release Gate Pilot for owner-ready production decisions
+Use `mcp-observatory dashboard` to browse local receipts, reports and downloads without an account. Source audits, CI, record/replay and cross-server review are also free. `mcp-observatory clearframe` prepares a task for optional agent-assisted review in ClearFrame CLI or Mac. Review and launch it yourself; task preparation never starts inference.
 
 ### Seatbelt Proxy — On-Premises Runtime Enforcement
 

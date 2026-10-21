@@ -66,7 +66,7 @@ describe("enterprise report", () => {
     expect(report).toContain("Servers tested: 2");
     expect(report).toContain("Failing servers: 1");
     expect(report).toContain("feishu-doc-mcp");
-    expect(report).toContain("Hosted CI history");
+    expect(report).toContain("Review local history");
   });
 
   it("renders a standalone html document", () => {

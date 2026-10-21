@@ -427,7 +427,7 @@ export async function buildMcpReceipt(report: AuditReport, target: TargetConfig,
       { id: "provide_safe_startup_mode", label: "Provide safe startup mode", description: "Share a no-secret, non-destructive startup command for public receipt generation." },
     ],
     buyer_cta: [
-      { id: "request_release_gate_pilot", label: "Request Release Gate Pilot", description: "Get an owner-ready release decision for 1–3 critical MCP servers over ten business days for a fixed $15,000." },
+      { id: "continue_in_clearframe", label: "Review with ClearFrame", description: "Prepare a local review task with mcp-observatory clearframe, then use the optional ClearFrame CLI or Mac app." },
     ],
   };
 }

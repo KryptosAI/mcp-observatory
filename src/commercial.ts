@@ -12,7 +12,7 @@ export function getCloudBaseUrl(): string {
 }
 
 export function getCloudUploadEndpoint(): string {
-  return process.env["MCP_OBSERVATORY_CLOUD_ENDPOINT"]?.trim() || DEFAULT_CLOUD_UPLOAD_ENDPOINT;
+  return process.env["MCP_OBSERVATORY_CLOUD_ENDPOINT"]?.trim() || `${getCloudBaseUrl().replace(/\/$/, "")}/api/v1/artifacts`;
 }
 
 export function hasCloudToken(): boolean {
@@ -29,68 +29,33 @@ export async function cloudWhoami(): ReturnType<typeof whoami> {
   return whoami();
 }
 
-export function cloudUpgradeLine(context: "ci" | "security" | "fleet" | "general" = "general"): string {
-  const bin = getBinName();
-  const value =
-    context === "ci"
-      ? "hosted CI ingestion, 90-day history, and regression markers"
-      : context === "security"
-        ? "hosted evidence, score history, and artifact downloads"
-        : context === "fleet"
-          ? "hosted evidence history for one developer"
-          : "hosted evidence, scan history, and CI ingestion";
-
-  return [
-    c(ANSI.dim, `  Hosted option for one developer: ${value}.`),
-    c(ANSI.dim, `  Upload one hosted snapshot free: ${c(ANSI.cyan, `${bin} cloud upload`)}`),
-    c(ANSI.dim, `  Add Individual Pro · $29/month only when you need history: ${c(ANSI.cyan, `${SELF_SERVE_PRICING_URL}?plan=individual`)}`),
-  ].join("\n");
+/** Compatibility exports for old command call sites. Observatory has no paid tier. */
+export function cloudUpgradeLine(_context: "ci" | "security" | "fleet" | "general" = "general"): string {
+  return cloudPassLine(_context);
 }
 
-export function cloudPassLine(context: "ci" | "security" | "fleet" | "general" = "general"): string {
-  const value =
-    context === "ci"
-      ? "hosted CI ingestion and 90-day history"
-      : context === "security"
-        ? "hosted evidence and score history"
-        : context === "fleet"
-          ? "hosted evidence for one developer"
-          : "hosted evidence and scan history";
-  return c(ANSI.dim, `  Hosted option for one developer: ${value}. Upload one snapshot free with ${c(ANSI.cyan, `${getBinName()} cloud upload`)}.`);
+export function cloudPassLine(_context: "ci" | "security" | "fleet" | "general" = "general"): string {
+  void _context;
+  return c(ANSI.dim, `  Continue in ClearFrame: ${getBinName()} clearframe — prepare a local task for the CLI or Mac app.`);
 }
 
 export function maybePrintCloudCta(
   context: "ci" | "security" | "fleet" | "general" = "general",
-  gate?: string,
+  _gate?: string,
 ): void {
-  if (isQuiet() || hasCloudToken()) return;
-  if (gate !== "fail" && gate !== "critical_risk") {
-    process.stdout.write(`${cloudPassLine(context)}\n\n`);
-    return;
-  }
-  process.stdout.write(`${cloudUpgradeLine(context)}\n\n`);
+  void _gate;
+  if (isQuiet() || !process.stdout.isTTY || process.env["CI"] || process.env["MCP_OBSERVATORY_NO_PROMO"] === "1") return;
+  process.stderr.write(`${cloudPassLine(context)}\n`);
 }
 
 export function printCloudInfo(): void {
-  process.stdout.write(
-    [
-      "",
-      c(ANSI.bold, "MCP Observatory Cloud"),
-      "",
-      "Free local OSS use remains unlimited. Sign in with GitHub and upload one hosted",
-      "snapshot before deciding whether retained history is worth paying for.",
-      "",
-      "Self-serve hosted plan:",
-      `  Individual Pro: $29/month — ${SELF_SERVE_PRICING_URL}?plan=individual`,
-      "  One user, hosted history, CI ingestion, regression markers, and artifact downloads.",
-      `  Try the free snapshot first: ${getBinName()} cloud upload`,
-      "",
-      "Need a human production decision?",
-      "  Release Gate Pilot: $15,000 for 1-3 servers in ten business days.",
-      "  https://mcp-observatory.com/release-gate-pilot/",
-      "",
-      `Contact: ${CONTACT}`,
-      "",
-    ].join("\n"),
-  );
+  process.stdout.write([
+    "MCP Observatory is free and open source under MIT.",
+    `Local history and downloads: ${getBinName()} dashboard`,
+    `Continue in ClearFrame: ${getBinName()} clearframe`,
+    "CLI and Mac app: https://clearframecode.com/download/?utm_source=mcp-observatory&utm_medium=cli&utm_campaign=opensource",
+    "Legacy cloud login/upload remain available for existing accounts.",
+    "No Observatory subscription or ClearFrame account is needed for local features.",
+    `Contact: ${CONTACT}`, "",
+  ].join("\n"));
 }

@@ -1,29 +1,17 @@
-# MCP Observatory Commercial Offering
+# MCP Observatory is free and open source
 
-Local CLI use stays free and unlimited. Every signed-in user can upload one hosted snapshot before paying. Retained history and hosted CI ingestion are paid.
+MCP Observatory is MIT licensed, with no paid Observatory tier, paid pilot, or commercial feature boundary. Its purpose is to make MCP tools easier to inspect and to introduce developers to ClearFrame. The [hosting implementation](https://github.com/KryptosAI/mcp-observatory/tree/main/hosting) is also MIT licensed and independently deployable; infrastructure charges belong to the hosting operator.
 
-## Self-serve
+Scans, source/skill/package review, attack simulation, receipts, SARIF, CI, record/replay, local history, reports, and downloads run without an account or private service. Local data stays on your disk until you delete it. The dashboard displays up to 2,000 recent receipt files per refresh without deleting older files.
 
-| Plan | Price | Start |
-| --- | --- | --- |
-| Individual Pro | $29/month | https://app.mcp-observatory.com/pricing?plan=individual |
+## Continue in ClearFrame
 
-Run a local scan, then use `npx @kryptosai/mcp-observatory cloud upload`. The CLI signs in with GitHub and uploads the free snapshot before showing the optional Individual Pro upgrade.
+Run `mcp-observatory clearframe` after a scan to prepare a reviewable local task. Use the printed command with the ClearFrame CLI or paste the task into ClearFrame for Mac. The command never launches an agent, uploads evidence, or starts paid usage.
 
-Individual Pro is for one user and includes 90-day history, hosted CI ingestion, regression markers, score and gate history, and artifact downloads. See the [subscription and hosted-service terms](./TERMS.md).
+Download: https://clearframecode.com/download/?utm_source=mcp-observatory&utm_medium=docs&utm_campaign=opensource
 
-## Release Gate Pilot
+ClearFrame is a separate product with its own account and usage terms. It is optional. Observatory does not require a ClearFrame subscription.
 
-**$15,000 · 1–3 critical MCP servers · 10 business days**
+## Existing hosted accounts
 
-A human approve / gate / defer decision with private evidence, remediation, and CI/SARIF handoff. Use this when a named owner needs a production decision in the next 60 days.
-
-See the [full offer](./docs/paid-pilot-offer.md) or request one at [mcp-observatory.com/release-gate-pilot](https://mcp-observatory.com/release-gate-pilot/).
-
-## What stays free
-
-- Local CLI checks, attack simulation, audit profiles, SARIF, and the public Safety Index
-- Self-managed artifacts and public-project CI
-- MIT-licensed source and methodology
-
-Hosted authentication, retention, and private intelligence stay in the [open core and commercial boundary](./docs/commercial-boundary.md).
+The legacy cloud commands remain for account access and receipt recovery during migration. They are not required for any new local workflow. This source change does not itself cancel an existing subscription or migrate hosted records; review your existing billing portal and export retained records. Hosted service retirement and billing reconciliation must preserve customer access and ClearFrame accounts.

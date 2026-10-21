@@ -31,17 +31,8 @@ MCP Observatory can:
 - run lightweight MCP security checks
 - create static enterprise reports from local artifacts
 
-## Commercial path
+## Open-source adoption path
 
-The free wedge is unlimited local testing, public repository CI, and one latest
-hosted snapshot. Individual Pro adds one-user hosted continuity:
+All Observatory features are free and MIT licensed. Run a scan, inspect reports and local history with `mcp-observatory dashboard`, then prepare a review task with `mcp-observatory clearframe`.
 
-- hosted CI history
-- 90-day score and gate history
-- regression markers
-- artifact downloads
-
-The separate Release Gate Pilot is a fixed $15,000, 1–3-server, ten-business-day
-owner-ready release decision.
-
-See COMMERCIAL.md and the repository boundary document for the split.
+ClearFrame CLI and Mac are optional agent tools with their own account and usage terms. Observatory does not require them. See [the project policy](../COMMERCIAL.md) and [ClearFrame workflow](./clearframe.md).

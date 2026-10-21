@@ -16,6 +16,8 @@ import {
 } from "../src/telemetry.js";
 
 let telemetryDirectory: string;
+// Construct a visibly synthetic credential to exercise redaction without embedding a token literal.
+const syntheticGithubToken = ["ghp", "abcdefghijklmnopqrstuvwxyz"].join("_");
 
 function policy(mode: "notice-and-opt-out" | "prior-consent"): Response {
   return Response.json({ mode, noticeVersion: "2026-09-01", schemaVersion: 2 });
@@ -46,14 +48,14 @@ describe("collection precedence", () => {
     expect(await initializeTelemetry({ showNotice: false })).toBe(false);
     expect(isTelemetryEnabled()).toBe(false);
     expect((await loadTelemetryConfig()).telemetryPreference).toBe("unset");
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("enables after notice in notice-and-opt-out mode", async () => {
+  it("does not let a remote opt-out policy enable collection without consent", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(policy("notice-and-opt-out")));
-    expect(await initializeTelemetry({ showNotice: false })).toBe(true);
-    expect(isTelemetryEnabled()).toBe(true);
-    expect((await loadTelemetryConfig()).telemetryPreference).toBe("enabled");
+    expect(await initializeTelemetry({ showNotice: false })).toBe(false);
+    expect(isTelemetryEnabled()).toBe(false);
+    expect((await loadTelemetryConfig()).telemetryPreference).toBe("unset");
   });
 
   it("lets explicit disable and DO_NOT_TRACK override policy", async () => {
@@ -66,7 +68,8 @@ describe("collection precedence", () => {
 });
 
 describe("payload construction and delivery", () => {
-  it("sends the rich identifiers while dropping unknown fields and redacting secrets", async () => {
+  it("sends opted-in identifiers while dropping unknown fields and redacting secrets", async () => {
+    vi.stubEnv("MCP_OBSERVATORY_TELEMETRY", "1");
     vi.stubEnv("MCP_OBSERVATORY_CONTACT", "implicit-contact@example.test");
     const requests: Array<{ url: string; init?: RequestInit }> = [];
     vi.stubGlobal("fetch", vi.fn((input: string | URL | Request, init?: RequestInit): Promise<Response> => {
@@ -77,7 +80,7 @@ describe("payload construction and delivery", () => {
     await initializeTelemetry({ showNotice: false });
     recordEvent(buildEvent("command_complete", "test", "cli", {
       targetIds: ["real-server"],
-      serverCommands: ["node server.js --token=ghp_abcdefghijklmnopqrstuvwxyz --password hunter2"],
+      serverCommands: [`node server.js --token=${syntheticGithubToken} --password hunter2`],
       fatalError: "password=hunter2",
       featureChainOverride: ["scan", "enforce", "protect"],
       rawMcpMessage: "must not leave the process",
@@ -95,7 +98,7 @@ describe("payload construction and delivery", () => {
     expect(body.featureChain).toEqual(["scan", "enforce", "protect"]);
     expect(body).not.toHaveProperty("featureChainOverride");
     expect(JSON.stringify(body)).not.toContain("hunter2");
-    expect(JSON.stringify(body)).not.toContain("ghp_abcdefghijklmnopqrstuvwxyz");
+    expect(JSON.stringify(body)).not.toContain(syntheticGithubToken);
     expect(JSON.stringify(body)).not.toContain("implicit-contact@example.test");
     expect(body).not.toHaveProperty("rawMcpMessage");
   });
@@ -124,7 +127,8 @@ describe("payload construction and delivery", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("queues failed delivery and removes the queue on opt-out", async () => {
+  it("queues opted-in failed delivery and removes the queue on opt-out", async () => {
+    vi.stubEnv("MCP_OBSERVATORY_TELEMETRY", "1");
     vi.stubGlobal("fetch", vi.fn((input: string | URL | Request): Promise<Response> => {
       const url = input instanceof Request ? input.url : input.toString();
       if (url.endsWith("/v1/policy")) return Promise.resolve(policy("notice-and-opt-out"));

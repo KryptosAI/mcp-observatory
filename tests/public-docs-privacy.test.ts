@@ -109,10 +109,10 @@ describe("public proof docs privacy guardrails", () => {
     const readme = await readFile(path.join(process.cwd(), "README.md"), "utf8");
     const gitignore = await readFile(path.join(process.cwd(), ".gitignore"), "utf8");
 
-    expect(boundary).toContain("What Stays Open");
-    expect(boundary).toContain("What Stays Proprietary");
-    expect(boundary).toContain("The public health score in this repository is open source");
-    expect(commercial).toContain("open core and commercial boundary");
+    expect(boundary).toContain("All MCP Observatory product features are MIT licensed");
+    expect(boundary).toContain("Customer records, credentials, and production telemetry are private data");
+    expect(boundary).toContain("must work without private credentials");
+    expect(commercial).toContain("no paid Observatory tier");
     expect(readme).toContain("./docs/commercial-boundary.md");
     expect(gitignore).toContain("commercial-private/");
     expect(gitignore).toContain("private-intelligence/");

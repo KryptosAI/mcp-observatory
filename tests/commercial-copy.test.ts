@@ -108,20 +108,20 @@ describe("commercial copy consistency", () => {
     const terms = await readFile("TERMS.md", "utf8");
     const dashboardSource = await readFile("scripts/build-dashboard.ts", "utf8");
 
-    expect(commercial).toContain("Individual Pro | $29/month");
-    expect(commercial).toContain("$15,000");
-    expect(commercial).toContain("1–3 critical MCP servers");
-    expect(commercial).toContain("10 business days");
-    expect(terms).toContain("renew monthly");
-    expect(terms).toContain("Acceptable Use");
-    expect(terms).toContain("Hosted Data");
+    expect(commercial).toContain("MIT licensed");
+    expect(commercial).not.toMatch(/\$29|\$15,000/);
+    expect(commercial).toContain("no paid Observatory tier");
+    expect(commercial).toContain("ClearFrame CLI");
+    expect(terms).toContain("no account or subscription");
+    expect(terms).toContain("authorized");
+    expect(terms).toContain("Existing hosted accounts");
     expect(dashboardSource).toContain("Used by developers at");
     expect(dashboardSource).toContain("Recognizable systems. Inspectable evidence.");
     expect(dashboardSource).not.toContain("Evaluated technologies, not MCP Observatory customers, endorsements, or partnerships.");
     for (const logo of ["accenture.svg", "cisco.svg", "oracle.svg"]) {
       expect(dashboardSource).toContain(logo);
     }
-    expect(dashboardSource).toContain("@latest cloud upload");
+    expect(dashboardSource).toContain("@latest dashboard");
   });
 
   it("keeps the homepage conversion path accessible, current, and lightweight", async () => {

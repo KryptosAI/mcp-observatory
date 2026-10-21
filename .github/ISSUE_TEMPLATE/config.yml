@@ -3,9 +3,6 @@ contact_links:
   - name: Report a security vulnerability privately
     url: https://github.com/KryptosAI/mcp-observatory/security/policy
     about: Follow the security policy instead of publishing sensitive vulnerability details in an issue.
-  - name: Private production or enterprise pilot
-    url: mailto:william@banksey.com
-    about: Email for a fixed-scope Release Gate Pilot or sensitive security context.
-  - name: Commercial pilot details
-    url: https://github.com/KryptosAI/mcp-observatory/blob/main/COMMERCIAL.md
-    about: Individual Pro and fixed-scope Release Gate Pilot pricing.
+  - name: Use ClearFrame CLI or Mac
+    url: https://clearframecode.com/download/?utm_source=mcp-observatory&utm_medium=github&utm_campaign=opensource
+    about: Optional agent-assisted review and development. All Observatory features remain free.
