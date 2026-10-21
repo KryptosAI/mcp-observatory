@@ -6,6 +6,8 @@ import { Command } from "commander";
 import { isCI } from "./ci.js";
 import { ANSI, LOGO, c, getBinName, isQuiet, setNoColor, setQuiet, useColor } from "./commands/helpers.js";
 import { setAccessibleMode } from "./reporters/terminal.js";
+import { registerClearframeCommands } from "./commands/clearframe.js";
+import { registerDashboardCommands } from "./commands/dashboard.js";
 import { registerDemoCommands } from "./commands/demo.js";
 import { registerDiffCommands } from "./commands/diff.js";
 import { registerLegacyCommands } from "./commands/legacy.js";
@@ -86,11 +88,10 @@ const MENU_GROUPS: MenuGroup[] = [
     ],
   },
   {
-    heading: "Hosted",
+    heading: "Review and continue",
     items: [
-      { command: ["cloud"], label: "cloud", outcome: "Free hosted snapshot, Individual Pro history, and the Release Gate Pilot" },
-      { command: ["cloud", "login"], label: "cloud login", outcome: "Connect this CLI to your hosted account" },
-      { command: ["cloud", "upload"], label: "cloud upload", outcome: "Sign in and upload one hosted snapshot free" },
+      { command: ["dashboard"], label: "dashboard", outcome: "Review local scans, history, and downloads free" },
+      { command: ["clearframe"], label: "clearframe", outcome: "Prepare a local task for ClearFrame CLI or Mac" },
     ],
   },
   {
@@ -327,6 +328,8 @@ async function main(): Promise<void> {
   registerScoreCommands(program);
   registerLegacyCommands(program);
   registerHistoryCommands(program);
+  registerClearframeCommands(program);
+  registerDashboardCommands(program);
   registerCiReportCommands(program);
   registerEnterpriseReportCommands(program);
   registerInitCiCommands(program);
@@ -341,14 +344,14 @@ async function main(): Promise<void> {
 
   const cloudCmd = program
     .command("cloud")
-    .description("Show the free hosted snapshot, Individual Pro, and Release Gate Pilot options.")
+    .description("Show free local review and ClearFrame options; legacy hosted compatibility.")
     .action(() => {
       printCloudInfo();
     });
 
   cloudCmd
     .command("upload")
-    .description("Sign in and upload the latest local run receipt. The first hosted snapshot is free.")
+    .description("Upload a receipt to an existing hosted account (optional legacy service).")
     .argument("[artifact]", "Optional path to a run artifact JSON file. Defaults to the newest local receipt.")
     .option("--org <org>", "Legacy admin attribution; ignored for personal hosted accounts.")
     .option("--endpoint <url>", "Hosted upload endpoint.", getCloudUploadEndpoint())

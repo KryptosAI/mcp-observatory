@@ -52,7 +52,7 @@ const DEFAULT_BASE_URL = "https://mcp-observatory-telemetry.kryptosai.workers.de
 const DEFAULT_EVENT_ENDPOINT = `${DEFAULT_BASE_URL}/v1/events`;
 const DEFAULT_POLICY: TelemetryPolicy = {
   mode: "prior-consent",
-  noticeVersion: "2026-09-01",
+  noticeVersion: "2026-10-21",
   schemaVersion: 2,
 };
 const CONFIG_FILE = "config.json";
@@ -243,11 +243,17 @@ export async function initializeTelemetry(options: { showNotice?: boolean } = {}
       await clearTelemetryQueue();
       return false;
     }
-    activePolicy = await fetchPolicy();
+    // Do not request policy or inspect identity before affirmative opt-in.
+    // Old automatic opt-out defaults are not affirmative consent.
+    if (explicit !== "enabled" && (config.telemetryPreference !== "enabled" || config.policyMode === "notice-and-opt-out")) {
+      runtimeEnabled = false;
+      await clearTelemetryQueue();
+      return false;
+    }
+    activePolicy = { ...await fetchPolicy(), mode: "prior-consent" };
     const noticeChanged = config.noticeVersion !== activePolicy.noticeVersion;
     let preference = explicit ?? config.telemetryPreference;
     if (noticeChanged && activePolicy.mode === "prior-consent" && explicit !== "enabled") preference = "unset";
-    if (preference === "unset" && activePolicy.mode === "notice-and-opt-out") preference = "enabled";
     runtimeEnabled = preference === "enabled";
     if (options.showNotice !== false && (noticeChanged || config.telemetryPreference === "unset")) {
       process.stderr.write(notice(activePolicy, !runtimeEnabled));
@@ -268,7 +274,7 @@ export async function initializeTelemetry(options: { showNotice?: boolean } = {}
 
 export async function setTelemetryPreference(preference: "enabled" | "disabled"): Promise<TelemetryConfig> {
   const config = await loadTelemetryConfig();
-  activePolicy = await fetchPolicy();
+  activePolicy = preference === "enabled" ? { ...await fetchPolicy(), mode: "prior-consent" } : DEFAULT_POLICY;
   const updated = {
     ...config,
     telemetryPreference: preference,
@@ -284,13 +290,12 @@ export async function setTelemetryPreference(preference: "enabled" | "disabled")
 
 export async function telemetryStatus(): Promise<{ config: TelemetryConfig; policy: TelemetryPolicy; enabled: boolean; override?: string }> {
   const config = await loadTelemetryConfig();
-  activePolicy = await fetchPolicy();
+  activePolicy = DEFAULT_POLICY;
   const explicit = explicitEnvironmentPreference();
   return {
     config,
     policy: activePolicy,
-    enabled: explicit ? explicit === "enabled" : config.telemetryPreference === "enabled" ||
-      (config.telemetryPreference === "unset" && activePolicy.mode === "notice-and-opt-out"),
+    enabled: explicit ? explicit === "enabled" : config.telemetryPreference === "enabled" && config.policyMode !== "notice-and-opt-out",
     override: explicit ?? undefined,
   };
 }

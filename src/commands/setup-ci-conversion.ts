@@ -104,8 +104,8 @@ function printInitCiResult(result: InitCiResult, output: NodeJS.WriteStream | Wr
       : "Automation: weekly scheduled checks are enabled in the generated workflow.\n",
   );
   output.write("Verify: npx -y @kryptosai/mcp-observatory@latest setup-ci --doctor\n");
-  output.write("Upload one snapshot free: npx -y @kryptosai/mcp-observatory@latest cloud upload\n");
-  output.write("Keep CI history with Individual Pro: https://app.mcp-observatory.com/pricing?plan=individual\n");
+  output.write("Review local history free: npx -y @kryptosai/mcp-observatory@latest dashboard\n");
+  output.write("Prepare a ClearFrame review task: npx -y @kryptosai/mcp-observatory@latest clearframe\n");
 }
 
 function recordConversion(status: SetupCiConversionResult["status"], options: SetupCiConversionOptions): void {

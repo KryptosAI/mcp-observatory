@@ -72,12 +72,7 @@ Use directory badges only when their wording is backed by public evidence that t
 
 ## Submission Checklist
 
-- Link to the README.
-- Link to the README for immediate adoption.
-- Include the `setup-ci` command.
-- Mention free local OSS use.
-- Mention paid offerings accurately: Individual Pro for one user's hosted history, or the `$15,000`, 1-3-server, ten-business-day Release Gate Pilot.
-- Do not include private telemetry, account names, hostnames, emails, or customer claims.
+All Observatory features are free and MIT licensed. Review local history with `mcp-observatory dashboard`; prepare an optional ClearFrame CLI or Mac task with `mcp-observatory clearframe`. See [the project policy](../COMMERCIAL.md).
 
 ## Marketplace Copy
 

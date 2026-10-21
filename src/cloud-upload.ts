@@ -24,7 +24,7 @@ export async function emitCloudUploadResponse(
     const recovery = response.status === 401
       ? `Sign in again: ${context.binName} cloud login. Then retry the same upload.`
       : ["quota_exceeded", "target_limit_exceeded", "plan_required", "upgrade_required", "subscription_required"].includes(code) || response.status === 402
-        ? `Your local receipt is safe. Review your usage and plan: ${context.dashboardUrl}/dashboard. Plans: ${context.pricingUrl}?plan=individual`
+        ? `Your local receipt is safe. Review it free with ${context.binName} dashboard. Existing hosted accounts: ${context.dashboardUrl}/dashboard`
         : "Your local receipt is safe. Retry the same upload after resolving the error.";
     throw new Error(`Cloud upload failed (${response.status}): ${detail}\n${recovery}`);
   }
@@ -33,6 +33,6 @@ export async function emitCloudUploadResponse(
   writeLine(`Local receipt: ${context.artifactPath}`);
   writeLine(`Hosted dashboard: ${context.dashboardUrl}/dashboard`);
   writeLine("Next: open the dashboard to review this result. Use the same GitHub account you just connected.");
-  writeLine(`Need 90-day history and CI ingestion? Review Individual Pro: ${context.pricingUrl}?plan=individual`);
+  writeLine(`Local history and artifact downloads are free: ${context.binName} dashboard`);
   writeLine("Local CI remains free. Setup guide: https://mcp-observatory.com/start/");
 }

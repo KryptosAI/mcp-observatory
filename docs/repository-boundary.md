@@ -1,46 +1,9 @@
-# Repository boundary
+# Repository scope
 
-MCP Observatory now has a deliberate open/closed split.
+This MIT repository owns all MCP Observatory product functionality: scanning, audits, receipts, schemas, scoring, diffs, record/replay, CI, local history, reports, dashboards, exports, and ClearFrame task preparation. No local feature requires a private service or paid license.
 
-## Public MIT repository
+The [hosting implementation](../hosting/README.md) includes the Worker, authentication, private artifact storage, account isolation, hosted HTTP checks, reports, free access policy, schema and retention cleanup. It is independently deployable with your own configuration. No production secrets or customer records are included.
 
-KryptosAI/mcp-observatory contains the open-core product:
+Telemetry is explicitly opt-in. Keep real events, keys, administrative data and customer records out of source control. `npm run boundary:check` checks for accidentally restored operational data and secret configuration; hosting source is public product code.
 
-- scanner and MCP server tooling
-- evidence engine, receipts, schemas, scoring, baselines, and diffs
-- public benchmark fixtures and deterministic behavioral evaluation
-- local enterprise report generation
-- public Safety Index and dashboard content
-- a thin hosted compatibility client for explicit cloud upload, login, logout,
-  and whoami operations
-- the telemetry delivery client, jurisdiction policy handshake, local controls,
-  field allowlist, redaction, and bounded retry queue
-
-The public repository does not contain the hosted Worker implementation,
-raw telemetry administration/export, telemetry intelligence, fleet operations,
-private metrics, internal compliance policies, hosted secrets, or customer
-operational data.
-
-## Private cloud repository
-
-KryptosAI/mcp-observatory-cloud owns the hosted control plane, including the
-Cloudflare Worker, authentication and organization isolation, artifact storage
-and retention, hosted scans, approvals, scheduled rescans, fleet
-coordination, blast-radius analysis, enterprise IAM, managed runners, private
-indexes, compliance workflows, and hosted decision APIs.
-
-The cloud repository preserves the existing Worker service identity and v1
-routes so released public clients remain compatible.
-
-## History and transition
-
-The public repository history contains previously published hosted code. That
-material is legacy public history, not a grant of new proprietary
-implementation rights. The new proprietary implementation begins in the
-private cloud repository, which was initialized from the hosted Worker subtree
-as a transition baseline.
-
-Future hosted-only features belong in the cloud repository. Private telemetry
-ingestion and intelligence belong in the private telemetry repository. Public
-changes must remain runnable without a hosted account or private credentials,
-and telemetry failure must never change a command result.
+The existing managed account service also handles ClearFrame. Its ClearFrame-only identity integrations, inference and billing implementation remain outside Observatory. Existing accounts and records are not automatically moved by self-hosting. The managed service grants Observatory access independently of ClearFrame billing; the local product and public hosting implementation remain independently usable.

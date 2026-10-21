@@ -99,7 +99,7 @@ if (!homepage.includes("Used by developers at")) failures.push("homepage: missin
 if (count(homepage, /class="organization-logo"/g) !== 3) failures.push("homepage: expected three observed-organization logos");
 if (count(homepage, /class="technology-logo-card /g) !== 18) failures.push("homepage: expected eighteen evidence-linked technology logos");
 if (!homepage.includes('class="hero-product"')) failures.push("homepage: missing product decision visual");
-if (!homepageTop.includes("@latest cloud upload") || !homepageTop.includes("one hosted snapshot free")) failures.push("homepage: missing free-snapshot onboarding step");
+if (!homepageTop.includes("@latest dashboard")) failures.push("homepage: missing account-free local review step");
 if (count(homepageTop, /id="primary-scan-command"/g) !== 1) failures.push("homepage: expected one primary scan command above the evidence preview");
 if (count(homepage, /data-copy-command=/g) !== 2) failures.push("homepage: expected copy controls for the local scan and cloud upload");
 if (!homepage.includes('id="command-copy-status" role="status" aria-live="polite"')) failures.push("homepage: missing accessible copy confirmation");
@@ -107,8 +107,9 @@ if (!homepage.includes("PUBLISHED EVIDENCE") || />\s*LIVE\s*</i.test(homepage)) 
 if (/Trusted by|customers include|customer logos|teams at/i.test(homepageTop)) failures.push("homepage: contains unsupported customer-style proof language");
 if (/pricing\?plan=team|Team · \$299|Start Team/i.test(homepage)) failures.push("homepage: contains a self-service Team claim");
 if (/Daily verification|rerun every day|Live compatibility matrix/i.test(homepage)) failures.push("homepage: overstates the freshness of recorded verification data");
-if (!homepage.includes("Individual Pro · $29/month")) failures.push("homepage: missing Individual Pro as the primary hosted plan");
-if (!homepage.includes("use <code>cloud upload</code> to see one hosted snapshot before paying")) failures.push("homepage: final CTA bypasses the free hosted snapshot");
+if (!homepage.includes("All Observatory features are free and open source")) failures.push("homepage: missing free open-source policy");
+if (!homepage.includes("clearframecode.com/download/") || !homepage.includes("<code>clearframe</code>")) failures.push("homepage: missing ClearFrame CLI/Mac handoff");
+if (/Individual Pro|\$29|\$15,000/.test(homepage)) failures.push("homepage: contains a retired Observatory paid offer");
 if (/Start \$29/i.test(homepage)) failures.push("homepage: starts paid checkout before the free hosted snapshot");
 const verifiedCardCount = count(homepage, /class="verified-card"/g);
 if (verifiedCardCount < 1 || verifiedCardCount > 3) failures.push(`homepage: expected 1-3 verified preview cards, found ${verifiedCardCount}`);

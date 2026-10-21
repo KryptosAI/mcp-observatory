@@ -68,4 +68,4 @@ This evidence pack uses inert metadata, schema, drift, and safe captured-evidenc
 
 ## Commercial Fit
 
-This is an illustrative example of the evidence shape for the [MCP Release Gate Pilot](./paid-pilot-offer.md): $15,000 for 1–3 critical servers over ten business days. It is not a customer case study, benchmark, certification, or compliance attestation.
+All Observatory features are free and MIT licensed. Review local history with `mcp-observatory dashboard`; prepare an optional ClearFrame CLI or Mac task with `mcp-observatory clearframe`. See [the project policy](../COMMERCIAL.md).

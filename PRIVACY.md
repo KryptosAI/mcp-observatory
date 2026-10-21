@@ -10,12 +10,7 @@ data-rights requests may be sent to `william@banksey.com`.
 
 ## Collection modes and controls
 
-Before sending an event, the CLI requests a non-recording policy decision from
-the telemetry service. Configured prior-consent jurisdictions and unknown or
-unreachable policy decisions collect nothing until the operator runs
-`mcp-observatory telemetry enable` or sets
-`MCP_OBSERVATORY_TELEMETRY=1`. Other configured jurisdictions receive a
-conspicuous first-run notice and use telemetry by default.
+Telemetry is off by default in every jurisdiction. The CLI makes no telemetry policy or event request and does not inspect Git identity for telemetry until you explicitly run `mcp-observatory telemetry enable` or set `MCP_OBSERVATORY_TELEMETRY=1`. Existing automatic notice-and-opt-out preferences do not carry over as consent. An enabled installation may request the service policy and show a changed notice before sending events.
 
 The following always disable collection and remove unsent queued events:
 
@@ -70,14 +65,7 @@ ceiling and a bounded owner-only retry queue.
 ## Purposes, recipients, access, and retention
 
 Data supports product analytics, security and reliability research, adoption
-measurement, aggregate benchmarking, organization attribution, and private
-company/adoption intelligence. Notice-and-opt-out collection is used only where
-a reviewed legitimate-interest assessment or another documented non-consent
-basis applies; consent is the basis where the jurisdiction or collection
-mechanism requires prior consent. The operator maintains the purpose,
-balancing, jurisdiction, and notice-version record and must update it before
-any materially new use. Cloudflare processes requests and stores the private D1
-database. No raw identity-rich event data is published.
+measurement and aggregate benchmarking when you explicitly opt in. Cloudflare processes requests and stores the private D1 database. No raw identity-rich event data is published. Enabling telemetry is optional and does not affect any feature or scan verdict.
 
 Events have no scheduled expiry while these purposes remain active, subject to
 an annual necessity review and valid access, correction, objection, or deletion
@@ -94,20 +82,12 @@ isolation, retention, storage, and hosted workflow policy.
 Do not upload secrets, production credentials, private URLs, source code, or
 customer data unless the agreed hosted workflow specifically requires it.
 
-## Commercial forms
+## Local dashboard and ClearFrame tasks
 
-Pilot and partner forms collect only the information explicitly submitted:
-business contact details, company or domain, role, high-level MCP deployment
-context, timing, and campaign attribution. They are used to respond to the
-request and operate the commercial pipeline.
+The dashboard binds only to 127.0.0.1, loads no remote assets, and reads local run receipts. Reports and JSON may contain private evidence; review them before sharing. Local retention is controlled by your disk and deletion choices.
 
-Submit a pilot request at:
+The ClearFrame task command creates an owner-readable instruction file. It includes check statuses and excludes target names, commands, arguments, paths, URLs, check messages, and raw evidence payloads. The selected receipt is copied into a private, git-ignored review folder inside the project; it may contain sensitive evidence and is not embedded in the instruction text. It does not launch an agent or upload data. When you separately run ClearFrame, its account, model-use, and privacy terms apply.
 
-https://mcp-observatory.com/release-gate-pilot/
+## Source and operational data
 
-## Repository separation
-
-Ingestion, raw events, company intelligence, administrative rights handling,
-and private metrics are operated in a separate private repository. This public
-package contains the client and user controls but no raw-data export,
-intelligence, fleet-monitoring, or private metrics functionality.
+All Observatory product features belong in the MIT repository. Customer records, real telemetry, credentials, and account administration remain private operational data. The legacy shared account service also operates ClearFrame; its Observatory-only source migration is documented separately.

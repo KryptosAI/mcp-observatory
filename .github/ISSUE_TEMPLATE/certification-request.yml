@@ -32,8 +32,8 @@ body:
         - Add README badge
         - Generate a health score badge
         - Review a failing MCP Observatory report
-        - Discuss Individual Pro hosted history
-        - Discuss a Release Gate Pilot
+        - Improve free local or self-hosted history
+        - Prepare a ClearFrame CLI or Mac review task
     validations:
       required: true
   - type: textarea

@@ -6,7 +6,7 @@ import { validateRunArtifact, validateDiffArtifact, diffArtifacts } from '../src
 describe('published guide evidence and coverage', () => {
   it('covers every registered user command, including recording aliases', () => {
     const commands = new Set(guideTopics.flatMap(topic => topic.commands.map(command => command.split(' ')[0])));
-    for (const command of ['scan','source-audit','toxic-flow','package-check','test','demo','diff','record','replay','verify','watch','serve','suggest','telemetry','usage','score','badge','history','ci-report','enterprise-report','init-ci','setup-ci','lock','audit','enforce','receipt','risk-graph','attack-sim','skill-scan','wrap','protect','cloud','smithery','help']) {
+    for (const command of ['scan','source-audit','toxic-flow','package-check','test','demo','diff','record','replay','verify','watch','serve','suggest','telemetry','usage','score','badge','history','ci-report','enterprise-report','init-ci','setup-ci','lock','audit','enforce','receipt','risk-graph','attack-sim','skill-scan','wrap','protect','cloud','dashboard','clearframe','smithery','help']) {
       expect(commands.has(command), `${command} needs a guide workflow`).toBe(true);
     }
     for (const topic of guideTopics) {

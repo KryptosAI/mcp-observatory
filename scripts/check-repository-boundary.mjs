@@ -3,7 +3,6 @@ import path from "node:path";
 
 const root = process.cwd();
 const prohibitedPaths = [
-  "api",
   "scripts/build-fleet-monitor.sh",
   "scripts/export-telemetry-d1.ts",
   "scripts/metrics-dashboard.ts",

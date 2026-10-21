@@ -81,7 +81,7 @@ For private teams, start with static artifacts:
 - use SARIF where security review tools expect it
 - generate a static enterprise report for owner review
 
-For one developer, the next layer is Individual Pro hosted history and CI ingestion. Teams needing a production decision can use the fixed `$15,000`, 1-3-server, ten-business-day Release Gate Pilot.
+All Observatory features are free and MIT licensed. Review local history with `mcp-observatory dashboard`; prepare an optional ClearFrame CLI or Mac task with `mcp-observatory clearframe`. See [the project policy](../COMMERCIAL.md).
 
 ## Future Direction
 

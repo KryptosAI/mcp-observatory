@@ -139,6 +139,4 @@ Avoid drive-by PRs where the server requires private credentials, paid services,
 
 After a repo accepts the check or badge:
 
-- ask the maintainer to mention “tested with MCP Observatory” in their MCP directory listing
-- update the public proof docs with the accepted repo
-- invite production users to upload one free snapshot, then choose Individual Pro only if they need retained history
+All Observatory features are free and MIT licensed. Review local history with `mcp-observatory dashboard`; prepare an optional ClearFrame CLI or Mac task with `mcp-observatory clearframe`. See [the project policy](../COMMERCIAL.md).

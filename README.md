@@ -32,7 +32,7 @@
 
 </details>
 
-**Secure the MCP servers you're building.** MCP Observatory is the CI-native security tool for teams shipping custom MCP servers. Test during development, catch schema drift, simulate attacks, and generate compliance evidence — before agents depend on your servers.
+**Free, open-source MCP security testing from ClearFrame.** MCP Observatory is the CI-native security tool for teams shipping custom MCP servers. Test during development, catch schema drift, simulate attacks, and generate compliance evidence — before agents depend on your servers.
 
 Also available in [Simplified Chinese](README-zh-CN.md).
 
@@ -56,19 +56,20 @@ This downloads Observatory and checks your first configured MCP server. With no 
 
 The terminal shows the target, grade, findings, and saved receipt path. Failed checks are findings to review, not a request to pay. If connection failed, fix the startup command or credentials and rerun. A demo grade describes the example, not your own server.
 
-### 3. Save one hosted snapshot free (optional)
-
-In the **same project folder**, run:
+### 3. Review locally, then continue in ClearFrame
 
 ```bash
-npx -y @kryptosai/mcp-observatory@latest cloud upload
+npx -y @kryptosai/mcp-observatory@latest dashboard
+npx -y @kryptosai/mcp-observatory@latest clearframe
 ```
 
-Open the verification link printed in the terminal, confirm the code, connect with GitHub, then return to the terminal. Wait for **Upload complete** and open the dashboard link. No separate account setup or payment method is needed. Free includes one target, the latest snapshot, seven-day retention, and ten uploads per month.
+The dashboard shows your local scan history, HTML reports, and JSON downloads. No account, upload, subscription, or time-based retention limit. Stop it with Ctrl+C.
 
-Local scans and local CI stay free. [Individual Pro is $29/month](https://app.mcp-observatory.com/pricing?plan=individual) when you need 10 targets, 90-day history, hosted CI ingestion, or hosted HTTP scans.
+The `clearframe` command writes a private instruction file and prints a read-only CLI command. Review the file, then run that command or paste it into a new ClearFrame Mac chat with your project open. It does not launch ClearFrame or upload evidence automatically.
 
-MCP Observatory uses jurisdiction-aware product telemetry after showing the collection notice. Review the exact fields with `telemetry preview`, check the current policy with `telemetry status`, or stop collection at any time with `telemetry disable`, `MCP_OBSERVATORY_TELEMETRY=0`, or `DO_NOT_TRACK=1`. See the complete [privacy and telemetry notice](./PRIVACY.md).
+**[Get ClearFrame CLI or the Mac app](https://clearframecode.com/download/?utm_source=mcp-observatory&utm_medium=readme&utm_campaign=opensource)** · Currently Apple Silicon Mac. ClearFrame has its own account and usage terms; all Observatory features work without it.
+
+MCP Observatory is free and MIT licensed. Product telemetry is off by default and makes no telemetry network request before explicit opt-in. Use `telemetry preview` to inspect fields or `telemetry enable` to opt in. [Privacy details](./PRIVACY.md).
 
 ```bash
 npx -y @kryptosai/mcp-observatory@latest test npx -y @modelcontextprotocol/server-everything
@@ -97,7 +98,7 @@ Default-deny connect: `npx -y @kryptosai/mcp-observatory@latest protect` rewrite
 
 Runtime deny-default: `npx -y @kryptosai/mcp-observatory@latest enforce --start-proxy` writes a Seatbelt policy from the scan and starts the proxy. Local scan stays free.
 
-Proof: [Safety Index](https://mcp-observatory.com/safety-index/). Upload one hosted snapshot free with `cloud upload`; [Individual Pro is $29/month](https://app.mcp-observatory.com/pricing?plan=individual) when you need retained history and hosted CI ingestion.
+Proof: [Safety Index](https://mcp-observatory.com/safety-index/). Local history, evidence export, CI, and remediation task preparation are free.
 
 ## Learn from production usage
 
@@ -119,27 +120,32 @@ Observatory gives maintainers and teams:
 - **Health score badges** for public trust signals
 - **Record/replay/verify** workflows for regression testing
 - **MCP server mode** so agents can inspect other MCP servers directly
-- **Production support path** for one-user hosted history, CI ingestion, and owner-ready Release Gate remediation
+- **Review and remediation** with free local history, CI, and optional ClearFrame CLI or Mac tasks
 
-See [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [MCP Receipts](./docs/mcp-receipts.md), [Troubleshooting](./docs/troubleshooting.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [MCP Observatory Contributors](./docs/contributor-recognition.md), [hosted client contract](./docs/api.md), [repository boundary](./docs/repository-boundary.md), [open core boundary](./docs/commercial-boundary.md), and [commercial support](./COMMERCIAL.md).
+See [GitHub Code Scanning for MCP servers](./docs/github-code-scanning-for-mcp.md), [MCP Receipts](./docs/mcp-receipts.md), [Troubleshooting](./docs/troubleshooting.md), [Safety Methodology](./docs/methodology.md), [MCP Server Safety Index](./docs/mcp-server-safety-index.md), [MCP Observatory Contributors](./docs/contributor-recognition.md), [hosted client contract](./docs/api.md), [repository boundary](./docs/repository-boundary.md), [open-source policy](./docs/commercial-boundary.md), and [free project policy](./COMMERCIAL.md).
 
 ### Self-Assessment
 
 We scan ourselves with mcp-observatory on every release. [See results →](docs/self-assessment.md)
 
-## For Security And Platform Teams
+## Self-hosted evidence
 
-MCP servers are becoming part of the AI software supply chain. Agents need reliable, testable, auditable tools before those tools become dependencies in mission-critical workflows.
+The [MIT-licensed hosting source](https://github.com/KryptosAI/mcp-observatory/tree/main/hosting) includes private receipt storage, GitHub sign-in, multi-target history, downloads, hosted HTTP checks and retention cleanup. Deploy it with your own configuration; no Observatory subscription is required. The account-free local dashboard is the fastest start.
 
-Whether you're shipping one MCP server or running a fleet, MCP Observatory gives you CI-native security scoring, attack simulation, schema drift detection, SARIF/HTML/Markdown reports, and GitHub Code Scanning — from your first `npx` command to production deployment. Local development stays free; teams with a near-term production approval decision can use the fixed-scope [MCP Release Gate Pilot](./docs/paid-pilot-offer.md).
+## Free tools for maintainers and teams
 
-## Production Support
+All scanner features, source audits, skill scans, package-name review, cross-server capability review, receipts, record/replay, local dashboards, and CI integrations are open source under MIT. No hosted account or private API is needed.
 
-Local OSS use stays free under MIT. Teams running MCP in production can use the [MCP Release Gate Pilot](./docs/paid-pilot-offer.md) for safe-mode evidence, SARIF/Code Scanning setup, CI rollout, private reporting, and owner-ready remediation notes. The fixed public entry offer is `$15,000` for 1-3 critical MCP servers over ten business days; broader work is scoped after the release decision.
+```bash
+# Inspect local code without executing it
+npx -y @kryptosai/mcp-observatory@latest source-audit ./src
+# Review a launch package name without running it
+npx -y @kryptosai/mcp-observatory@latest package-check -- npx -y your-mcp-package
+# Review capability combinations across saved receipts
+npx -y @kryptosai/mcp-observatory@latest toxic-flow first-receipt.json second-receipt.json
+```
 
-The open source repo is the portable evidence engine. Hosted authentication, retention, organization workflows, fleet coordination, and private intelligence stay outside the OSS package; see the [repository boundary](./docs/repository-boundary.md).
-
-Run `npx @kryptosai/mcp-observatory cloud`, open a pilot request from the issue chooser, or see [COMMERCIAL.md](./COMMERCIAL.md). Also see [privacy](./PRIVACY.md), [campaign attribution](./docs/campaign-attribution.md), and [terms for production use](./TERMS.md).
+These checks identify review candidates; they do not prove a server is safe. See [coverage and competitor feature evidence](./docs/feature-coverage.md), [ClearFrame workflow](./docs/clearframe.md), and [project policy](./COMMERCIAL.md).
 
 ## How It Compares
 
@@ -221,7 +227,9 @@ Or add it manually to your config:
 | `enterprise-report` | Generate a static production/security report from run artifacts |
 | `score <cmd>` | Score an MCP server's health (0-100) |
 | `badge <cmd>` | Generate an SVG health score badge for README |
-| `cloud` | Show the free hosted snapshot, Individual Pro, and Release Gate Pilot options |
+| `dashboard` | Browse local scan history, reports, and downloads without an account |
+| `clearframe` | Prepare a local review task for ClearFrame CLI or Mac |
+| `cloud` | Legacy hosted account compatibility and free local alternatives |
 
 Run with no arguments to start `demo`. Use `--menu` for the interactive catalog.
 
@@ -400,7 +408,7 @@ Action inputs:
 
 The action can comment on PRs and set commit statuses when the workflow grants write permissions. `setup-ci` generates read-only third-party-friendly workflows by default and lets maintainers opt into comments/statuses later. `init-ci` remains available as a backward-compatible alias. See [`action/README.md`](./action/README.md) for all options.
 
-Production teams with a near-term MCP approval decision can use the fixed-scope [MCP Release Gate Pilot](./docs/paid-pilot-offer.md): an approve, gate, or defer decision for 1–3 servers in ten business days. See [COMMERCIAL.md](./COMMERCIAL.md) or request a decision at [mcp-observatory.com/release-gate-pilot](https://mcp-observatory.com/release-gate-pilot/).
+Observatory is free and open source. [Continue with ClearFrame CLI or Mac](./docs/clearframe.md) when you want an agent to help review and repair findings.
 
 ### Evidence badges for MCP Observatory
 
@@ -418,7 +426,7 @@ npx @kryptosai/mcp-observatory badge npx -y my-mcp-server --output docs/mcp-heal
 
 See the [evidence distribution loop](./docs/certification-distribution.md) for the GitHub Action template, maintainer PR body, and badge rollout playbook. A badge is a public evidence signal, not a certification or endorsement.
 
-Generate a pilot-ready production/security report from local run artifacts:
+Generate a production/security report from local run artifacts:
 
 ```bash
 npx @kryptosai/mcp-observatory enterprise-report \

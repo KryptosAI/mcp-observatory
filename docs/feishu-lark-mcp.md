@@ -62,4 +62,4 @@ npx @kryptosai/mcp-observatory enterprise-report \
 
 Production teams can use the report for MCP owner reviews, private-repo CI history, security review, and release decisions.
 
-Open a request for the fixed $15,000 Release Gate Pilot when 1–3 critical Feishu/Lark MCP servers need an owner-ready release decision within ten business days.
+All Observatory features are free and MIT licensed. Review local history with `mcp-observatory dashboard`; prepare an optional ClearFrame CLI or Mac task with `mcp-observatory clearframe`. See [the project policy](../COMMERCIAL.md).

@@ -18,14 +18,15 @@ describe("public-signal leads", () => {
     expect(draftNote(ranked[0]!)).toContain("enforce --start-proxy");
   });
 
-  it("surfaces one first scan and one free hosted next action while keeping the leads script unpublished", async () => {
+  it("surfaces one first scan and free local review and ClearFrame continuation while keeping the leads script unpublished", async () => {
     const readme = await readFile(path.join(process.cwd(), "README.md"), "utf8");
     const site = await readFile(path.join(process.cwd(), "dashboard/index.html"), "utf8");
     const pack = JSON.parse(await readFile(path.join(process.cwd(), "package.json"), "utf8")) as { files: string[] };
     expect(readme).toContain("enforce --start-proxy");
     expect(site).toContain("Run in your terminal · no account needed");
-    expect(site).toContain("Next: one hosted snapshot free");
-    expect(site).toContain("@latest cloud upload");
+    expect(site).toContain("local scan history free");
+    expect(site).toContain("@latest dashboard");
+    expect(site).toContain("clearframecode.com/download/");
     expect(site).toContain("<h3>Enforce</h3>");
     expect(pack.files.some((entry) => entry.includes("public-signal-leads"))).toBe(false);
   });

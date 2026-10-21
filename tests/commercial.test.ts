@@ -23,6 +23,7 @@ import {
 import { setQuiet } from "../src/commands/helpers.js";
 
 const originalEnv = { ...process.env };
+const originalTTY = Object.getOwnPropertyDescriptor(process.stdout, "isTTY");
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -35,6 +36,8 @@ afterEach(() => {
   process.env = { ...originalEnv };
   setQuiet(false);
   vi.restoreAllMocks();
+  if (originalTTY) Object.defineProperty(process.stdout, "isTTY", originalTTY);
+  else Reflect.deleteProperty(process.stdout, "isTTY");
 });
 
 function captureStdout(): { output: () => string } {
@@ -55,81 +58,37 @@ describe("commercial cloud messaging", () => {
     expect(hasCloudToken()).toBe(true);
   });
 
-  it("renders context-specific upgrade lines without color when NO_COLOR is set", () => {
+  it("offers the same optional ClearFrame workflow for every gate and context", () => {
     process.env["NO_COLOR"] = "1";
-
-    expect(cloudUpgradeLine("ci")).toContain("hosted CI ingestion");
-    expect(cloudUpgradeLine("security")).toContain("hosted evidence");
-    expect(cloudUpgradeLine("fleet")).toContain("one developer");
-    expect(cloudUpgradeLine("general")).toContain("hosted evidence");
-    expect(cloudUpgradeLine()).toContain("https://app.mcp-observatory.com/pricing?plan=individual");
-    expect(cloudUpgradeLine("ci")).toContain("mcp-observatory cloud upload");
-    expect(cloudUpgradeLine("ci")).not.toContain("plan=team");
+    for (const context of ["ci", "security", "fleet", "general"] as const) {
+      expect(cloudUpgradeLine(context)).toContain("mcp-observatory clearframe");
+      expect(cloudUpgradeLine(context)).not.toMatch(/pricing|\$29|subscription/);
+    }
   });
 
-  it("prints a CTA only when a cloud token is absent", () => {
-    process.env["NO_COLOR"] = "1";
-    delete process.env["MCP_OBSERVATORY_CLOUD_TOKEN"];
-    const first = captureStdout();
-
-    maybePrintCloudCta("ci", "fail");
-
-    expect(first.output()).toContain("Hosted option for one developer");
-    expect(first.output()).toContain("hosted CI ingestion");
-
-    vi.restoreAllMocks();
-    process.env["MCP_OBSERVATORY_CLOUD_TOKEN"] = "token";
-    const second = captureStdout();
-
-    maybePrintCloudCta("ci", "fail");
-
-    expect(second.output()).toBe("");
-  });
-
-  it("prints a compact CTA on passing gates", () => {
-    process.env["NO_COLOR"] = "1";
-    delete process.env["MCP_OBSERVATORY_CLOUD_TOKEN"];
+  it("keeps promotional output off stdout and suppresses it in quiet, CI, redirected, and opt-out contexts", () => {
     const stdout = captureStdout();
-
-    maybePrintCloudCta("ci", "pass");
-
-    expect(stdout.output()).toContain("Hosted option for one developer");
-    expect(stdout.output()).toContain("hosted CI ingestion");
-    expect(stdout.output()).toContain("cloud upload");
-    expect(stdout.output()).not.toContain("plan=team");
-
-    vi.restoreAllMocks();
-    const general = captureStdout();
-    maybePrintCloudCta();
-    expect(general.output()).toContain("hosted evidence and scan history");
-    expect(general.output()).toContain("cloud upload");
-  });
-
-  it("suppresses the CTA in quiet mode even without a cloud token", () => {
-    process.env["NO_COLOR"] = "1";
-    delete process.env["MCP_OBSERVATORY_CLOUD_TOKEN"];
-    setQuiet(true);
-    const stdout = captureStdout();
-
-    maybePrintCloudCta("ci");
-
+    const stderr = vi.spyOn(process.stderr, "write").mockImplementation(() => true);
+    Object.defineProperty(process.stdout, "isTTY", { value: true, configurable: true });
+    delete process.env["CI"];
+    maybePrintCloudCta("ci", "fail");
     expect(stdout.output()).toBe("");
+    expect(stderr).toHaveBeenCalledWith(expect.stringContaining("Continue in ClearFrame"));
+    stderr.mockClear();
+    setQuiet(true); maybePrintCloudCta(); setQuiet(false);
+    process.env["CI"] = "true"; maybePrintCloudCta(); delete process.env["CI"];
+    process.env["MCP_OBSERVATORY_NO_PROMO"] = "1"; maybePrintCloudCta(); delete process.env["MCP_OBSERVATORY_NO_PROMO"];
+    Object.defineProperty(process.stdout, "isTTY", { value: false, configurable: true }); maybePrintCloudCta();
+    expect(stderr).not.toHaveBeenCalled();
   });
 
-  it("prints cloud pricing and upload guidance", () => {
-    process.env["NO_COLOR"] = "1";
+  it("prints free local alternatives without an Observatory checkout", () => {
     const stdout = captureStdout();
-
     printCloudInfo();
-
-    expect(stdout.output()).toContain("MCP Observatory Cloud");
-    expect(stdout.output()).toContain("Individual Pro: $29/month");
-    expect(stdout.output()).toContain("upload one hosted");
-    expect(stdout.output()).not.toContain("Team:");
-    expect(stdout.output()).not.toContain("pricing?plan=team");
-    expect(stdout.output()).toContain("Release Gate Pilot");
-    expect(stdout.output()).toContain("cloud upload");
-    expect(stdout.output()).toContain("william@banksey.com");
+    expect(stdout.output()).toContain("free and open source under MIT");
+    expect(stdout.output()).toContain("dashboard");
+    expect(stdout.output()).toContain("clearframecode.com/download/");
+    expect(stdout.output()).not.toMatch(/Individual Pro|Release Gate Pilot|\$29/);
   });
 
   it("getCloudAccessToken prefers env token over stored token", async () => {
@@ -152,7 +111,11 @@ describe("commercial cloud messaging", () => {
 
   it("allows hosted upload endpoint overrides while preserving the production default", () => {
     delete process.env["MCP_OBSERVATORY_CLOUD_ENDPOINT"];
+    delete process.env["MCP_OBSERVATORY_CLOUD_URL"];
     expect(getCloudUploadEndpoint()).toBe(DEFAULT_CLOUD_UPLOAD_ENDPOINT);
+
+    process.env["MCP_OBSERVATORY_CLOUD_URL"] = "https://selfhost.example/";
+    expect(getCloudUploadEndpoint()).toBe("https://selfhost.example/api/v1/artifacts");
 
     process.env["MCP_OBSERVATORY_CLOUD_ENDPOINT"] = "https://staging.example/api/v1/artifacts";
     expect(getCloudUploadEndpoint()).toBe("https://staging.example/api/v1/artifacts");

@@ -127,8 +127,4 @@ Passing an Observatory check means the server passed the configured compatibilit
 
 Use the results as an engineering control:
 
-- add CI for repeatability
-- compare artifacts between releases
-- review security findings and suppressions
-- document accepted risk for broad tools
-- upload one free hosted snapshot, then use Individual Pro history or the fixed-scope Release Gate Pilot when the server becomes operationally important
+All Observatory features are free and MIT licensed. Review local history with `mcp-observatory dashboard`; prepare an optional ClearFrame CLI or Mac task with `mcp-observatory clearframe`. See [the project policy](../COMMERCIAL.md).

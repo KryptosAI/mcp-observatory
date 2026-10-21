@@ -1,9 +1,9 @@
-# ClearFrame is the commercial home of MCP Observatory.
+# ClearFrame is the home of MCP Observatory.
 # Exact human-page routes only: keep public JSON, badges, reports and documentation at their existing URLs.
 / https://clearframecode.com/observatory/ 301
 /index.html https://clearframecode.com/observatory/ 301
-/pricing https://clearframecode.com/pricing/ 301
-/pricing/ https://clearframecode.com/pricing/ 301
+/pricing https://clearframecode.com/observatory/#setup 301
+/pricing/ https://clearframecode.com/observatory/#setup 301
 /start https://clearframecode.com/observatory/#setup 301
 /start/ https://clearframecode.com/observatory/#setup 301
 /start/index.html https://clearframecode.com/observatory/#setup 301

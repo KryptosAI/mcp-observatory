@@ -371,9 +371,9 @@ export function registerDemoCommands(program: Command): void {
         if (targetConfig.targetId === "mcp-observatory-demo") {
           process.stdout.write("  This is the included example, not a result for your own server.\n");
         }
-        process.stdout.write(`\n  Next: save this result online (optional, free)\n    ${bin} cloud upload\n`);
-        process.stdout.write("  Run it in this same folder. Connect GitHub in the browser, then return here.\n");
-        process.stdout.write("  Local scanning stays free. Setup help: https://mcp-observatory.com/start/\n\n");
+        process.stdout.write(`\n  Review your local history: ${bin} dashboard\n`);
+        process.stdout.write(`  Prepare a task for ClearFrame CLI or Mac: ${bin} clearframe\n`);
+        process.stdout.write("  Free and open source. No account or upload needed.\n\n");
       }
       recordSessionEnd(sessionId);
     });
