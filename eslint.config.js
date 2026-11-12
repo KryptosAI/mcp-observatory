@@ -4,7 +4,7 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: ["dashboard/**", "dist/**", "node_modules/**", ".mcp-observatory/**", "github-app/**", "scripts/evaluate-permission-delta-conformance.ts"]
+    ignores: ["**/.wrangler/**", "dashboard/**", "dist/**", "node_modules/**", ".mcp-observatory/**", "github-app/**", "scripts/evaluate-permission-delta-conformance.ts"]
   },
   js.configs.recommended,
   {

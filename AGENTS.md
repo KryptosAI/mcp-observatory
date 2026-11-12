@@ -85,3 +85,5 @@ Use `docs/target-registry.md` and `docs/target-contribution-guide.md`.
 ## Product direction (2026-10-21)
 
 All Observatory product features are MIT licensed and free. Keep the first scan, local reports, history, CI and task preparation independent of accounts. The optional ClearFrame CLI/Mac handoff must be explicit and must not change scan results or automatically start inference. Hosting source belongs in `hosting/`; exclude production configuration, credentials, customer data, and ClearFrame-only implementation.
+
+New Observatory UI uses the canonical ClearFrame design library snapshot in `hosting/src/ui/`. Reuse its semantic roles, type scale and `cf-*` components; keep consumer rules limited to layout. Regenerate `library.ts` with `scripts/sync-clearframe-ui.mjs` from a reviewed canonical revision, preserving the font licenses. Check both themes, narrow layouts, keyboard focus, empty states and actionable errors before release.

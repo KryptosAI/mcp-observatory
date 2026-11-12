@@ -1,3 +1,6 @@
+import interFont from "./ui/fonts/inter.woff2";
+import monoFont from "./ui/fonts/mono.woff2";
+import { designAsset, designFontFile } from "./ui/shell.js";
 function textValue(value: unknown, fallback = ""): string { return typeof value === "string" || typeof value === "number" || typeof value === "boolean" ? String(value) : fallback; }
 
 /** MIT-licensed Observatory hosting. Extracted from the shared service on 2026-10-21.
@@ -380,7 +383,7 @@ function securityHeaders(): Record<string, string> {
     // every page load: the browser logged a CSP violation and Lighthouse charged
     // the page two Best Practices audits for a script the origin never asked for.
     // Its script origin and its collector origin are named here instead.
-    "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'",
+    "Content-Security-Policy": "default-src 'none'; style-src 'self' 'unsafe-inline'; font-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'",
   };
 }
 
@@ -2296,6 +2299,10 @@ export async function cleanupExpiredScans(
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
+    const font = request.method === "GET" ? designFontFile(url.pathname) : undefined;
+    if (font) return new Response(font === "inter.woff2" ? interFont : monoFont, {headers:{...securityHeaders(),"Content-Type":"font/woff2","Cache-Control":"public, max-age=3600"}});
+    const asset = request.method === "GET" ? designAsset(url.pathname) : undefined;
+    if (asset) return new Response(asset.body, { headers: { ...securityHeaders(), "Content-Type": asset.type, "Cache-Control": "public, max-age=3600" } });
     // Handle CORS preflight
     if (request.method === "OPTIONS") {
       if (url.pathname === "/api/v1/funnel") {
